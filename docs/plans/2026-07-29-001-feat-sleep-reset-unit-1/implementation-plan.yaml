@@ -1,0 +1,535 @@
+artifact:
+  title: "Sleep Reset Unit 1 Implementation Plan"
+  type: "feat"
+  date: "2026-07-29"
+  artifact_contract: "ce-unified-plan/v1"
+  artifact_readiness: "implementation-ready"
+  execution: "code"
+  product_contract_source: "completed-user-research"
+  product_spec: "docs/plans/2026-07-29-001-feat-sleep-reset-unit-1/product-spec.yaml"
+  product_contract_preservation: "Research conclusions preserved; implementation scope adds only critical feedback-engine fixes found during local inspection."
+
+goal_capsule:
+  objective: "Ship the approved Unit 1 exercise redesign with meaningful correction, privacy-safe analytics, and regression tests."
+  authority_order:
+    - "Product specification requirements and acceptance criteria"
+    - "Repository AGENTS.md instructions"
+    - "Existing journey architecture and design tokens"
+    - "Implementation-agent judgment for details not fixed by this plan"
+  execution_profile: "standard"
+  stop_conditions:
+    - "A required change would alter course scope outside Unit 1."
+    - "A required change needs a database migration or public API change."
+    - "A proposed analytics event needs personal response, mood, or note content."
+    - "Current exercise renderers cannot represent a blueprint without a new interaction type."
+  tail_owner: "implementing agent"
+
+executive_summary:
+  decision: "Use existing exercise mechanics, rewrite Unit 1 to 29 exercises, and repair the shared scored-feedback loop."
+  implementation_shape: "One small shared feedback contract, one local lesson-state correction, one matching fix, one analytics hook, one content rewrite, and targeted tests."
+  why_this_approach: "It reaches the product quality bar without a new renderer, backend migration, or broad journey refactor."
+
+planning_contract:
+  key_technical_decisions:
+    - id: "KTD1"
+      decision: "Keep GetCourseTreeResponse and Exercise storage shape unchanged."
+      rationale: "Mock content can ship through the current journey API with no persistence work."
+      governs:
+        - "R1"
+        - "R10"
+    - id: "KTD2"
+      decision: "Add a pure feedback resolver between Exercise content and NodeEngine."
+      rationale: "Different exercise types store feedback in option-level feedback, feedback_correct, feedback_incorrect, or explanation."
+      governs:
+        - "R5"
+        - "R13"
+    - id: "KTD3"
+      decision: "Incorrect scored answers remain on the current exercise until corrected."
+      rationale: "Meaningful mistakes require correction before progress."
+      governs:
+        - "AC4"
+        - "AC5"
+    - id: "KTD4"
+      decision: "Extend LessonScreen footer with optional title and message; preserve generic fallback."
+      rationale: "Shared journey content gains contextual feedback without redesigning each exercise renderer."
+      governs:
+        - "AC4"
+        - "AC5"
+    - id: "KTD5"
+      decision: "Represent timeline work with existing ordering and matching mechanics."
+      rationale: "A new drag renderer adds scope without improving the core learning decision."
+      governs:
+        - "R2"
+        - "R4"
+    - id: "KTD6"
+      decision: "Track only allowlisted course, lesson, exercise, timing, and correctness metadata in PostHog."
+      rationale: "Learning diagnostics are useful; personal sleep reflections are sensitive and unnecessary."
+      governs:
+        - "R14"
+        - "AC9"
+        - "AC10"
+    - id: "KTD7"
+      decision: "Rewrite all four lessons in one content unit."
+      rationale: "A single owner avoids conflicting edits inside sleep-reset-flat.ts and keeps sequencing coherent."
+      governs:
+        - "AC1"
+        - "AC2"
+        - "AC3"
+    - id: "KTD8"
+      decision: "Preserve course, section, unit, and node IDs; retire redundant exercise IDs as needed."
+      rationale: "Navigation and node progress stay stable while the mock exercise sequence changes."
+      governs:
+        - "A1"
+        - "A3"
+
+  high_level_flow:
+    - step: 1
+      state: "answering"
+      behavior: "Learner selects or creates a response."
+    - step: 2
+      state: "checking"
+      behavior: "NodeEngine evaluates isCorrect for scored content."
+    - step: 3
+      state: "correction"
+      behavior: "Wrong answer shows specific feedback and cannot advance."
+    - step: 4
+      state: "retry"
+      behavior: "Changing the response clears error state and enables another Check."
+    - step: 5
+      state: "confirmed"
+      behavior: "Correct answer shows specific feedback; next tap advances."
+    - step: 6
+      state: "completed"
+      behavior: "Final exercise completes node and emits privacy-safe lesson metrics."
+
+  implementation_constraints:
+    - "No new dependencies."
+    - "No new exercise type."
+    - "No database or Supabase function changes."
+    - "No user response object may be passed to analytics."
+    - "Use Geist for feedback copy and existing sage/error tokens."
+    - "Use 'Not quite yet' instead of punitive language."
+    - "Keep existing generic feedback as fallback for old content."
+    - "Do not add new any or as any usages."
+    - "Do not reformat unrelated generated-looking course data."
+
+system_changes:
+  data_model:
+    change: "none_persistent"
+    details:
+      - "Keep GetCourseTreeResponse, Course, Node, and Exercise transport shapes."
+      - "Update Unit 1 node estimatedMins and passThreshold values in mock data."
+      - "Preserve course, section, unit, and node IDs."
+      - "Add no DB columns, migrations, or content metadata fields."
+  apis:
+    change: "none"
+    details:
+      - "journeyApi continues returning sleepResetFlatData under USE_MOCK."
+      - "No Edge Function request or response contract changes."
+  ui:
+    change: "small_shared_feedback_extension"
+    details:
+      - "LessonScreen.ActionFooter accepts optional feedback title and message."
+      - "Success state displays specific explanation and Continue."
+      - "Error state displays 'Not quite yet,' specific correction, and Try again."
+      - "Existing colors, typography, spacing, and footer structure remain."
+  local_state:
+    change: "node_engine_correction_loop"
+    details:
+      - "Track attempt count per exercise."
+      - "Reset error state when the learner changes the answer."
+      - "Never advance from an error state."
+      - "Advance only after a successful Check or an unscored ready response."
+      - "Clear feedback when moving to the next exercise."
+  global_state:
+    change: "none"
+    details:
+      - "Redux journey state and progress reducers remain unchanged."
+  analytics:
+    change: "add_journey_learning_events"
+    events:
+      - name: "journey_lesson_started"
+        properties:
+          - "course_id"
+          - "node_id"
+          - "exercise_count"
+      - name: "journey_exercise_checked"
+        properties:
+          - "course_id"
+          - "node_id"
+          - "exercise_id"
+          - "exercise_type"
+          - "concept"
+          - "is_correct"
+          - "attempt_number"
+          - "elapsed_ms"
+      - name: "journey_lesson_completed"
+        properties:
+          - "course_id"
+          - "node_id"
+          - "exercise_count"
+          - "checks_count"
+          - "first_try_correct_count"
+          - "duration_ms"
+      - name: "journey_lesson_closed"
+        properties:
+          - "course_id"
+          - "node_id"
+          - "current_exercise_index"
+          - "exercise_count"
+          - "duration_ms"
+    forbidden_properties:
+      - "prompt"
+      - "option_text"
+      - "response"
+      - "reflection_text"
+      - "note"
+      - "mood_before"
+      - "mood_after"
+      - "rating_value"
+  tests:
+    change: "add_targeted_unit_and_content_contract_tests"
+    files:
+      - "src/data/mock/sleep-reset-flat.test.ts"
+      - "src/components/node/exerciseFeedback.test.ts"
+      - "src/components/node/NodeEngine.test.tsx"
+      - "src/components/exercise/MatchingExercise.test.tsx"
+      - "src/domains/journey/analytics/useJourneyAnalytics.test.ts"
+
+epics:
+  - id: "E1"
+    name: "Corrective feedback"
+    outcome: "Shared scored exercises explain mistakes and require correction."
+    units:
+      - "U1"
+      - "U2"
+      - "U3"
+  - id: "E2"
+    name: "Unit 1 learning content"
+    outcome: "Four lessons implement the approved active-learning sequence."
+    units:
+      - "U4"
+  - id: "E3"
+    name: "Learning analytics"
+    outcome: "Founder can measure attempts and completion without sensitive content."
+    units:
+      - "U5"
+  - id: "E4"
+    name: "Release verification"
+    outcome: "Automated and simulator gates prove production readiness."
+    units:
+      - "U6"
+
+milestones:
+  - id: "M1"
+    name: "Corrective learning loop"
+    outcome: "Scored exercises show useful feedback and require correction."
+    units:
+      - "U1"
+      - "U2"
+      - "U3"
+  - id: "M2"
+    name: "Unit 1 content replacement"
+    outcome: "Four lessons use the approved 29-exercise sequence."
+    units:
+      - "U4"
+  - id: "M3"
+    name: "Measurement and release proof"
+    outcome: "Privacy-safe analytics and automated/manual verification pass."
+    units:
+      - "U5"
+      - "U6"
+
+implementation_units:
+  - id: "U1"
+    epic: "E1"
+    name: "Create exercise feedback resolver"
+    goal: "Resolve the best learner-facing message for any scored exercise without changing renderer data contracts."
+    requirements:
+      - "R5"
+      - "R13"
+      - "AC4"
+    dependencies: []
+    parallel_group: "foundation_and_content"
+    parallel_safe: true
+    files:
+      create:
+        - "src/components/node/exerciseFeedback.ts"
+        - "src/components/node/exerciseFeedback.test.ts"
+      modify: []
+    approach:
+      - "Accept current Exercise plus response correctness and option ID."
+      - "Prefer selected option feedback, then correctness-specific feedback, then explanation, then calm fallback."
+      - "Return a title, message, and status suitable for LessonScreen."
+      - "Use narrow runtime guards for content and option fields."
+    patterns_to_follow:
+      - "src/components/node/NodeEngine.tsx"
+      - "src/components/ui/LessonScreen.tsx"
+    test_scenarios:
+      - "Correct scenario answer with option feedback returns that option feedback."
+      - "Incorrect multiple choice with feedback_incorrect returns the specific correction."
+      - "True/false content with explanation returns explanation for either result."
+      - "Content without feedback returns calm success or correction fallback."
+      - "Malformed content does not throw."
+    verification:
+      - "Resolver tests pass."
+      - "No React or PostHog dependency enters the helper."
+
+  - id: "U2"
+    epic: "E1"
+    name: "Repair NodeEngine correction state and LessonScreen feedback"
+    goal: "Make Check, correction, retry, success, and advance states behave consistently."
+    requirements:
+      - "AC4"
+      - "AC5"
+      - "R13"
+    dependencies:
+      - "U1"
+    parallel_group: "feedback_sequence"
+    parallel_safe: false
+    files:
+      create:
+        - "src/components/node/NodeEngine.test.tsx"
+      modify:
+        - "src/components/node/NodeEngine.tsx"
+        - "src/components/ui/LessonScreen.tsx"
+    approach:
+      - "Pass optional feedbackTitle and feedbackMessage into LessonScreen footer."
+      - "On first scored Check, set success or error and resolve feedback."
+      - "On error, keep current index fixed and label primary action Try again."
+      - "When response changes after error, clear error and feedback so learner can Check again."
+      - "On success, preserve feedback until Continue advances."
+      - "Reset response, status, feedback, and attempt-local state on next exercise."
+      - "Keep unscored exercises on the current ready-then-advance path."
+    ux_requirements:
+      - "Feedback body uses readable Geist body styling."
+      - "Success remains sage."
+      - "Correction uses restrained error tint and 'Not quite yet.'"
+      - "No extra modal, card stack, mascot, or animation."
+      - "Footer remains usable with long feedback and safe-area inset."
+    test_scenarios:
+      - "Incorrect Check shows correction and does not increment current index."
+      - "Try again without a changed answer still does not advance."
+      - "Changing an incorrect answer returns state to idle."
+      - "Correct re-check shows success; next press advances once."
+      - "Correct first try needs one Check and one Continue."
+      - "Unscored response advances without a correctness gate."
+      - "Moving to next exercise clears previous feedback."
+      - "Final success calls onNodeComplete once with accumulated responses."
+    verification:
+      - "NodeEngine interaction tests pass."
+      - "Lesson footer remains backward compatible when feedback props are absent."
+
+  - id: "U3"
+    epic: "E1"
+    name: "Fix matching correctness response"
+    goal: "Ensure completed matching exercises satisfy the shared scored-response contract."
+    requirements:
+      - "AC6"
+    dependencies: []
+    parallel_group: "foundation_and_content"
+    parallel_safe: true
+    files:
+      create:
+        - "src/components/exercise/MatchingExercise.test.tsx"
+      modify:
+        - "src/components/exercise/MatchingExercise.tsx"
+    approach:
+      - "Include isCorrect false while incomplete and true when all pairs are correctly matched."
+      - "Restore isCorrect true when loading a complete saved match set."
+      - "Keep current per-pair safe-failure interaction."
+    test_scenarios:
+      - "Incomplete matches report ready false and isCorrect false."
+      - "Final correct match reports ready true and isCorrect true."
+      - "Completed saved response reports ready true and isCorrect true."
+      - "Wrong pair does not become saved progress."
+    verification:
+      - "Matching tests pass."
+      - "NodeEngine displays success after final correct match."
+
+  - id: "U4"
+    epic: "E2"
+    name: "Replace Unit 1 lesson content"
+    goal: "Implement the lesson blueprints exactly while preserving journey structure."
+    requirements:
+      - "R1"
+      - "R2"
+      - "R3"
+      - "R4"
+      - "R5"
+      - "R6"
+      - "R7"
+      - "R8"
+      - "R9"
+      - "R10"
+      - "R11"
+      - "R12"
+      - "AC1"
+      - "AC2"
+      - "AC3"
+      - "AC7"
+      - "AC8"
+    dependencies: []
+    parallel_group: "foundation_and_content"
+    parallel_safe: true
+    files:
+      create:
+        - "src/data/mock/sleep-reset-flat.test.ts"
+      modify:
+        - "src/data/mock/sleep-reset-flat.ts"
+    approach:
+      - "Read lesson_blueprints from product-spec.yaml before editing."
+      - "Replace only exercises for u1_1_sleep_mechanics."
+      - "Use 7, 7, 7, and 8 exercises by lesson."
+      - "Use existing ExerciseRegistry type strings exactly."
+      - "Preserve course, section, unit, and node IDs."
+      - "Set estimatedMins to 4, 5, 6, and 6."
+      - "Set lesson passThreshold to 0.8."
+      - "Keep orderIndex contiguous from zero within each lesson."
+      - "Give every scored item feedback_correct and feedback_incorrect unless its type owns explanation or option feedback."
+      - "Do not edit Unit 2 exercises."
+    content_test_scenarios:
+      - "Unit 1 has 29 exercises in the required distribution."
+      - "Every lesson has contiguous orderIndex values."
+      - "Every type exists in ExerciseRegistry."
+      - "Every lesson has at least four types and all six phases in valid order."
+      - "Every lesson includes non-scored reflection or action planning."
+      - "Every final exercise is low difficulty and contains next-lesson teaser."
+      - "Every scored exercise exposes resolvable correct and incorrect feedback."
+      - "No banned certainty or diagnosis phrases appear."
+      - "Summed duration is within one minute of estimatedMins."
+      - "Unit 2 exercise objects are byte-equivalent before and after the Unit 1 range."
+    verification:
+      - "Content contract test passes."
+      - "Manual review confirms option lengths and distractor plausibility."
+
+  - id: "U5"
+    epic: "E3"
+    name: "Add privacy-safe journey learning analytics"
+    goal: "Measure lesson starts, checks, completions, and exits without collecting sensitive answers."
+    requirements:
+      - "R14"
+      - "AC9"
+      - "AC10"
+    dependencies:
+      - "U2"
+    parallel_group: "analytics_sequence"
+    parallel_safe: false
+    files:
+      create:
+        - "src/domains/journey/analytics/useJourneyAnalytics.ts"
+        - "src/domains/journey/analytics/useJourneyAnalytics.test.ts"
+      modify:
+        - "src/components/node/NodeEngine.tsx"
+        - "app/tabs/screens/(journey)/journey-flow.tsx"
+    approach:
+      - "Follow the guarded usePostHog capture pattern from onboarding analytics."
+      - "Pass courseId into NodeEngine."
+      - "Track lesson start once, scored Check attempts, completion, and close."
+      - "Build each event from an explicit property allowlist."
+      - "Track attempt number and elapsed time without serializing response objects."
+      - "Analytics failures remain best-effort and never block lesson progress."
+    test_scenarios:
+      - "Mount emits one lesson-start event."
+      - "Each scored Check emits correctness and attempt number."
+      - "Completion emits aggregate counts and duration."
+      - "Close before completion emits current index and duration."
+      - "Captured properties do not include prompt, response, option text, notes, moods, or ratings."
+      - "Missing PostHog client does not throw."
+    verification:
+      - "Analytics tests pass with mocked PostHog."
+      - "Event property snapshots contain only approved fields."
+
+  - id: "U6"
+    epic: "E4"
+    name: "Run integrated content and simulator verification"
+    goal: "Prove the content, correction loop, analytics privacy, and journey completion work together."
+    requirements:
+      - "AC1"
+      - "AC2"
+      - "AC3"
+      - "AC4"
+      - "AC5"
+      - "AC6"
+      - "AC7"
+      - "AC8"
+      - "AC9"
+      - "AC10"
+      - "AC11"
+      - "AC12"
+    dependencies:
+      - "U2"
+      - "U3"
+      - "U4"
+      - "U5"
+    parallel_group: "final_gate"
+    parallel_safe: false
+    files:
+      create: []
+      modify: []
+    approach:
+      - "Run verification.yaml gates in order."
+      - "Fix failures within owning unit instead of weakening criteria."
+      - "Inspect final diff for Unit 2 or unrelated work."
+      - "Run graphify update after all edits settle."
+    test_scenarios:
+      - "Learner completes Lesson 1 with one wrong answer and successful retry."
+      - "Learner completes matching without false failure."
+      - "Learner closes midway and returns without a crash."
+      - "Long feedback remains readable above the keyboard and footer."
+      - "Lesson 4 closes with the cumulative capability question and teaser."
+    verification:
+      - "All automated gates pass."
+      - "iOS simulator checklist passes or unverified items are explicitly reported."
+      - "git diff contains only planned files."
+
+agent_execution:
+  technical_tasks:
+    - "U1: feedback resolver"
+    - "U2: correction state and footer"
+    - "U3: matching correctness"
+    - "U4: lesson content replacement"
+    - "U5: privacy-safe analytics"
+    - "U6: integrated release proof"
+  recommended_order:
+    - batch: 1
+      units:
+        - "U1"
+        - "U3"
+        - "U4"
+      note: "Independent file ownership; may run in parallel in isolated worktrees only."
+    - batch: 2
+      units:
+        - "U2"
+      note: "Consumes U1 resolver and shared correctness contract."
+    - batch: 3
+      units:
+        - "U5"
+      note: "Touches NodeEngine after correction flow stabilizes."
+    - batch: 4
+      units:
+        - "U6"
+      note: "Integrated release gate."
+  task_handoff_contract:
+    - "Give one U-ID to one coding agent."
+    - "Agent reads product-spec.yaml, this unit, cited requirements, and verification.yaml."
+    - "Agent edits only listed files unless a discovered blocker requires scope approval."
+    - "Agent reports file-level evidence and exact verification results."
+    - "Agents sharing NodeEngine run sequentially."
+    - "Agents editing sleep-reset-flat.ts never run concurrently."
+
+dependencies_and_prerequisites:
+  required:
+    - "Existing posthog-react-native provider in app/_layout.tsx"
+    - "Existing ExerciseRegistry renderers"
+    - "Existing Jest Expo setup"
+  new_dependencies: []
+  environment_changes: []
+  migrations: []
+
+deferred_implementation_notes:
+  - "Exact helper names may change if existing conventions suggest a clearer local name."
+  - "If long feedback overflows the existing footer, adjust footer body scrolling within U2; do not introduce a modal."
+  - "If Unit 1 content is generated elsewhere before release, port the same contract tests to that pipeline instead of duplicating logic."
+
+definition_of_done_reference: "docs/plans/2026-07-29-001-feat-sleep-reset-unit-1/verification.yaml"

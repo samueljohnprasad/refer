@@ -1,0 +1,728 @@
+artifact:
+  title: "Sleep Reset Unit 1 Product Specification"
+  type: "feat"
+  date: "2026-07-29"
+  scope: "u1_1_sleep_mechanics"
+  source_of_truth:
+    kind: "completed_user_research"
+    description: "Approved Unit 1 exercise audit from current planning session"
+  research_policy:
+    additional_research: false
+    reason: "Existing research is sufficient for implementation"
+
+executive_summary:
+  outcome: "Replace Unit 1 recognition-heavy content with 29 short, active exercises and make corrective feedback visible."
+  expected_result: "Learners can explain basic sleep architecture, cycles, and circadian cues without treating clock time as a sleep-stage diagnosis."
+  product_research_status: "validated"
+  critical_product_gaps: []
+  critical_technical_gaps:
+    - id: "G1"
+      finding: "Rich feedback exists in exercise data but lesson UI displays only generic success or error text."
+      impact: "Learner cannot understand or correct a mistake."
+    - id: "G2"
+      finding: "An incorrect scored answer can advance after another primary-button tap."
+      impact: "Wrong understanding can be recorded as lesson progress."
+    - id: "G3"
+      finding: "Matching completion does not report isCorrect to NodeEngine."
+      impact: "A fully correct matching exercise can display an error."
+    - id: "G4"
+      finding: "No structural tests protect lesson count, sequence, variety, feedback, or safety wording."
+      impact: "Content regressions are easy to ship."
+
+final_decision:
+  approach: "content_rewrite_plus_minimal_feedback_engine"
+  statement: "Rewrite all four lessons in Unit 1, preserve course and node contracts, and add the smallest engine/UI changes needed for meaningful feedback and retry."
+  chosen_over:
+    - alternative: "content_only_rewrite"
+      rejection_reason: "Current UI hides the feedback required by the quality bar."
+    - alternative: "new_custom_exercise_renderers"
+      rejection_reason: "Existing ordering, matching, scenario, fill, response, rating, and choice mechanics cover this release."
+    - alternative: "backend_course_schema_migration"
+      rejection_reason: "Current release reads mock course data and needs no persistence change."
+  release_shape:
+    lesson_count: 4
+    exercise_count: 29
+    exercises_per_lesson:
+      u1_1_sleep_mechanics-n1: 7
+      u1_1_sleep_mechanics-n2: 7
+      u1_1_sleep_mechanics-n3: 7
+      u1_1_sleep_mechanics-n4: 8
+    target_minutes:
+      u1_1_sleep_mechanics-n1: 4
+      u1_1_sleep_mechanics-n2: 5
+      u1_1_sleep_mechanics-n3: 6
+      u1_1_sleep_mechanics-n4: 6
+
+product_specification:
+  audience: "Adults concerned about sleep onset, fragmented sleep, or restless nights"
+  unit_learning_outcome: "Build a simple, accurate mental model of sleep stages, sleep cycles, and circadian cues, then use it to interpret sleep experiences without self-diagnosis."
+  content_rules:
+    - id: "R1"
+      rule: "Teach one primary concept per lesson."
+    - id: "R2"
+      rule: "Use at least four exercise types per lesson."
+    - id: "R3"
+      rule: "Start with low-risk recall or prediction and end with guaranteed success."
+    - id: "R4"
+      rule: "Use active recall, reconstruction, discrimination, or application before another explanation."
+    - id: "R5"
+      rule: "Give every scored exercise specific correct and incorrect feedback."
+    - id: "R6"
+      rule: "Use plausible distractors with similar length and tone."
+    - id: "R7"
+      rule: "Include one non-scored personal reflection or action-planning exercise per lesson."
+    - id: "R8"
+      rule: "Use relative language such as earlier, later, often, and more likely; never infer an exact sleep stage from clock time alone."
+    - id: "R9"
+      rule: "Do not diagnose insomnia, call a learner broken, or promise that a symptom is completely normal."
+    - id: "R10"
+      rule: "Keep each lesson between 4 and 7 minutes, with no more than 20 minutes under any runtime condition."
+    - id: "R11"
+      rule: "Give Lesson 2 and Lesson 3 about 70 percent new practice and 30 percent woven review; treat Lesson 4 as cumulative consolidation."
+    - id: "R12"
+      rule: "Put the next-lesson teaser inside the final low-effort interaction."
+    - id: "R13"
+      rule: "Use non-punitive correction language: 'Not quite yet' plus a useful explanation."
+    - id: "R14"
+      rule: "Do not capture personal response text, mood values, or selected option text in analytics."
+  serialization_rules:
+    - "Multiple-choice and scenario options receive IDs a, b, c in listed order."
+    - "Ordering items receive numeric IDs 0 through n in listed correct order; correct_order contains those IDs."
+    - "Fill-in-the-blank options use one option per target because the existing renderer treats target as the correctness key."
+    - "Rating checks use scale 5 and note_enabled false unless the blueprint says otherwise."
+    - "Every exercise receives nodeId, zero-based orderIndex, concept, scaffoldLevel, difficulty, and isScored values consistent with its lesson role."
+
+  lesson_blueprints:
+    - lesson_id: "u1_1_sleep_mechanics-n1"
+      title: "Welcome to Sleep School"
+      primary_concept: "sleep_architecture"
+      learning_goal: "Name N1, N2, N3, and REM, and distinguish broad stage roles without using clock time as diagnosis."
+      learner_value: "Replaces vague fear with a simple map of what sleep does."
+      estimated_minutes: 4
+      content_mix:
+        new_concept_slots:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        reflection_and_close_slots:
+          - 6
+          - 7
+      sequence:
+        - slot: 1
+          type: "multiple_choice"
+          phase: "warmup"
+          duration_seconds: 20
+          scored: true
+          purpose: "prediction_before_explanation"
+          prompt: "Sleep changes across the night. Which statement is most accurate?"
+          options:
+            - text: "Sleep moves through several stages, and the mix changes across the night."
+              correct: true
+            - text: "Healthy sleep stays in one deep stage until morning."
+              correct: false
+            - text: "Dream sleep happens only when something wakes you."
+              correct: false
+          feedback_correct: "Yes. Sleep moves through N1, N2, N3, and REM in repeating cycles."
+          feedback_incorrect: "Sleep is not one steady state. It moves through several stages across the night."
+          principle: "prediction"
+        - slot: 2
+          type: "learn_cards"
+          phase: "introduce"
+          duration_seconds: 45
+          scored: false
+          purpose: "compact_model"
+          cards:
+            - "N1 is the brief transition into sleep. N2 is stable light sleep and makes up much of a typical night."
+            - "N3 is deep sleep. REM is strongly linked with vivid dreaming. Every stage supports sleep in a different way."
+          principle: "chunking"
+        - slot: 3
+          type: "matching"
+          phase: "challenge"
+          duration_seconds: 45
+          scored: true
+          purpose: "stage_function_discrimination"
+          prompt: "Match each stage with its best description."
+          pairs:
+            - left: "N1"
+              right: "Transition into sleep"
+            - left: "N2"
+              right: "Stable light sleep"
+            - left: "N3"
+              right: "Deep sleep"
+            - left: "REM"
+              right: "Vivid dreaming is common"
+          feedback_correct: "Good map. Each stage has a different role."
+          feedback_incorrect: "Use the stage names as a map: N1 transition, N2 light, N3 deep, REM vivid dreams."
+          principle: "retrieval_and_discrimination"
+        - slot: 4
+          type: "scenario"
+          phase: "challenge"
+          duration_seconds: 50
+          scored: true
+          purpose: "identify_overclaim"
+          scenario: "Maya wakes after a vivid dream and says, 'It was 4 a.m., so I know I was in REM.'"
+          question: "What is the best correction?"
+          options:
+            - text: "A vivid dream can suggest REM, but clock time alone cannot prove the stage."
+              correct: true
+            - text: "Any waking after midnight always happens during REM."
+              correct: false
+            - text: "Remembering a dream means the sleep cycle failed."
+              correct: false
+          feedback_correct: "Right. Experience gives clues, but exact sleep stage needs measurement."
+          feedback_incorrect: "Clock time and dream memory are clues, not a reliable stage diagnosis."
+          principle: "misconception_correction"
+        - slot: 5
+          type: "fill_in_the_blank"
+          phase: "peak"
+          duration_seconds: 35
+          scored: true
+          purpose: "independent_recall"
+          prompt: "Complete the sleep-stage map."
+          template: "{1} is deep sleep. {2} is the stage most linked with vivid dreams."
+          options:
+            - id: "n3"
+              text: "N3"
+              target: "1"
+            - id: "rem"
+              text: "REM"
+              target: "2"
+          feedback_correct: "Correct. N3 means deep sleep; REM is strongly linked with vivid dreaming."
+          feedback_incorrect: "Recall the two anchors: N3 is deep; REM is dream-rich."
+          principle: "retrieval"
+        - slot: 6
+          type: "guided_response"
+          phase: "consolidate"
+          duration_seconds: 45
+          scored: false
+          purpose: "personal_transfer"
+          prompt: "Which part of your sleep worries you most: falling asleep, waking during the night, or waking too early?"
+          sub_prompts:
+            - "Name one pattern. No diagnosis needed."
+            - "What would you like this course to help you understand?"
+          min_words: 3
+          max_words: 60
+          principle: "reflection"
+        - slot: 7
+          type: "rating_check"
+          phase: "cooldown"
+          duration_seconds: 15
+          scored: false
+          purpose: "guaranteed_success_and_teaser"
+          prompt: "You built your first sleep map. Next: how these stages repeat in cycles. How clear does the map feel?"
+          labels:
+            - "Still fuzzy"
+            - "Starting to click"
+            - "Mostly clear"
+            - "Clear"
+            - "I can explain it"
+          principle: "self_explanation"
+
+    - lesson_id: "u1_1_sleep_mechanics-n2"
+      title: "The 90-Minute Cycle"
+      primary_concept: "sleep_cycles"
+      learning_goal: "Explain that sleep cycles repeat but vary in length, and interpret brief waking without using a rigid 90-minute rule."
+      learner_value: "Makes fragmented sleep feel understandable without false reassurance."
+      estimated_minutes: 5
+      content_mix:
+        review_slots:
+          - 1
+          - 2
+        new_concept_slots:
+          - 3
+          - 4
+          - 5
+          - 6
+        close_slot: 7
+      sequence:
+        - slot: 1
+          type: "fill_in_the_blank"
+          phase: "warmup"
+          duration_seconds: 25
+          scored: true
+          purpose: "delayed_recall"
+          prompt: "Complete yesterday's map."
+          template: "{1} is deep sleep. {2} is dream-rich sleep."
+          options:
+            - id: "n3"
+              text: "N3"
+              target: "1"
+            - id: "rem"
+              text: "REM"
+              target: "2"
+          feedback_correct: "Map remembered."
+          feedback_incorrect: "N3 is deep sleep. REM is dream-rich sleep."
+          principle: "spaced_retrieval"
+        - slot: 2
+          type: "ordering"
+          phase: "introduce"
+          duration_seconds: 45
+          scored: true
+          purpose: "prediction_before_model"
+          prompt: "Predict the broad path through one sleep cycle."
+          items:
+            - "Drift into light sleep"
+            - "Move into deeper sleep"
+            - "Return toward lighter sleep"
+            - "Enter REM"
+          correct_order:
+            - "Drift into light sleep"
+            - "Move into deeper sleep"
+            - "Return toward lighter sleep"
+            - "Enter REM"
+          feedback_correct: "Good prediction. Sleep deepens, lightens, and then reaches REM."
+          feedback_incorrect: "Think of a wave: light, deeper, lighter again, then REM."
+          principle: "generation"
+        - slot: 3
+          type: "learn_cards"
+          phase: "introduce"
+          duration_seconds: 50
+          scored: false
+          purpose: "compact_model"
+          cards:
+            - "Sleep repeats in cycles. A cycle is not a perfect 90-minute timer; its length varies between people and across the night."
+            - "Earlier cycles usually contain more N3. Later cycles usually contain more REM."
+          principle: "conceptual_model"
+        - slot: 4
+          type: "scenario"
+          phase: "challenge"
+          duration_seconds: 50
+          scored: true
+          purpose: "apply_cycle_model"
+          scenario: "Arun briefly wakes, turns over, and falls asleep again. He thinks the waking proves his sleep failed."
+          question: "Which response best uses the cycle model?"
+          options:
+            - text: "Brief waking can happen between cycles; one waking does not show that the whole night failed."
+              correct: true
+            - text: "Brief waking always means a sleep disorder."
+              correct: false
+            - text: "Healthy sleepers never wake before morning."
+              correct: false
+          feedback_correct: "Yes. Brief waking can occur, and context matters more than one moment."
+          feedback_incorrect: "One brief waking does not define the whole night or diagnose a disorder."
+          principle: "scenario_application"
+        - slot: 5
+          type: "multiple_choice"
+          phase: "peak"
+          duration_seconds: 40
+          scored: true
+          purpose: "correct_false_belief"
+          prompt: "Why is setting an alarm for an exact 90-minute multiple unreliable?"
+          options:
+            - text: "Cycle length varies, so a clock cannot predict the exact stage."
+              correct: true
+            - text: "Every cycle stops when an alarm is set."
+              correct: false
+            - text: "Only the first cycle has sleep stages."
+              correct: false
+          feedback_correct: "Correct. Ninety minutes is a rough teaching shortcut, not a precise timer."
+          feedback_incorrect: "Cycle length varies. Exact clock math cannot identify your stage."
+          principle: "misconception_correction"
+        - slot: 6
+          type: "guided_response"
+          phase: "consolidate"
+          duration_seconds: 60
+          scored: false
+          purpose: "personal_reframe"
+          prompt: "Think of one recent night waking. Write a balanced explanation using 'could' or 'may' instead of a diagnosis."
+          sub_prompts:
+            - "What happened?"
+            - "What is one non-catastrophic explanation?"
+          min_words: 5
+          max_words: 80
+          principle: "self_explanation"
+        - slot: 7
+          type: "rating_check"
+          phase: "cooldown"
+          duration_seconds: 15
+          scored: false
+          purpose: "guaranteed_success_and_teaser"
+          prompt: "Next: the body clock that helps time sleep and wakefulness. How confident are you with the cycle idea?"
+          labels:
+            - "Need review"
+            - "A little"
+            - "Getting it"
+            - "Confident"
+            - "Can explain it"
+          principle: "metacognition"
+
+    - lesson_id: "u1_1_sleep_mechanics-n3"
+      title: "Your Internal Clock"
+      primary_concept: "circadian_rhythm"
+      learning_goal: "Explain how regular morning cues support the circadian clock and choose one realistic anchor."
+      learner_value: "Turns a broad sleep rule into one controllable morning action."
+      estimated_minutes: 6
+      content_mix:
+        review_slots:
+          - 1
+          - 4
+        new_concept_slots:
+          - 2
+          - 3
+          - 5
+          - 6
+        close_slot: 7
+      sequence:
+        - slot: 1
+          type: "multiple_choice"
+          phase: "warmup"
+          duration_seconds: 20
+          scored: true
+          purpose: "woven_review"
+          prompt: "Which statement best describes sleep cycles?"
+          options:
+            - text: "They repeat, but their timing and stage mix vary."
+              correct: true
+            - text: "They are always exactly 90 minutes."
+              correct: false
+            - text: "They stop after the first REM period."
+              correct: false
+          feedback_correct: "Correct. Cycles repeat without following an exact timer."
+          feedback_incorrect: "Cycles repeat, but length and stage mix vary."
+          principle: "spaced_retrieval"
+        - slot: 2
+          type: "scenario"
+          phase: "introduce"
+          duration_seconds: 45
+          scored: true
+          purpose: "prediction_before_model"
+          scenario: "Two people sleep the same number of hours. One wakes near the same time and gets morning light. The other changes wake time by three hours each day."
+          question: "Whose body clock receives clearer timing cues?"
+          options:
+            - text: "The person with a steady wake time and morning light."
+              correct: true
+            - text: "The person with the changing wake time."
+              correct: false
+            - text: "Neither; body clocks ignore daily cues."
+              correct: false
+          feedback_correct: "Yes. Regular timing and light give the clock clearer cues."
+          feedback_incorrect: "The circadian clock responds to repeated timing cues, especially light."
+          principle: "prediction"
+        - slot: 3
+          type: "learn_cards"
+          phase: "introduce"
+          duration_seconds: 55
+          scored: false
+          purpose: "compact_model"
+          cards:
+            - "Your circadian rhythm is an internal timing system. Light is a strong cue, and regular wake times help keep morning cues consistent."
+            - "Bedtime cannot always be forced. A stable morning routine is usually a more practical anchor."
+          principle: "conceptual_model"
+        - slot: 4
+          type: "matching"
+          phase: "challenge"
+          duration_seconds: 50
+          scored: true
+          purpose: "cause_effect_matching"
+          prompt: "Match each habit with its likely clock signal."
+          pairs:
+            - left: "Later sleep cycles"
+              right: "More REM is common"
+            - left: "Morning outdoor light"
+              right: "Strong daytime timing cue"
+            - left: "Similar wake time"
+              right: "Keeps morning cues regular"
+            - left: "Large weekend sleep-in"
+              right: "Shifts the timing pattern later"
+          feedback_correct: "Good. The clock learns from repeated daily cues."
+          feedback_incorrect: "Focus on the signal each habit sends about when the day begins."
+          principle: "cause_and_effect"
+        - slot: 5
+          type: "scenario"
+          phase: "peak"
+          duration_seconds: 55
+          scored: true
+          purpose: "choose_best_response"
+          scenario: "Leena wakes at 7 a.m. on workdays and 10 a.m. on weekends. Monday mornings feel difficult."
+          question: "What is the smallest useful experiment?"
+          options:
+            - text: "Move weekend wake time closer to the workday time and get morning light."
+              correct: true
+            - text: "Force the same bedtime even when she is not sleepy."
+              correct: false
+            - text: "Change both bedtime and wake time every day."
+              correct: false
+          feedback_correct: "Good. Change one morning anchor, then observe the pattern."
+          feedback_incorrect: "Start with a repeatable morning cue, not a forced bedtime."
+          principle: "decision_practice"
+        - slot: 6
+          type: "guided_response"
+          phase: "consolidate"
+          duration_seconds: 75
+          scored: false
+          purpose: "real_life_action_plan"
+          prompt: "Choose one morning anchor to test for the next three days."
+          sub_prompts:
+            - "Wake-time window"
+            - "Morning-light cue"
+            - "What could make this hard?"
+          min_words: 5
+          max_words: 90
+          principle: "implementation_intention"
+        - slot: 7
+          type: "rating_check"
+          phase: "cooldown"
+          duration_seconds: 15
+          scored: false
+          purpose: "guaranteed_success_and_teaser"
+          prompt: "Next: combine stages, cycles, and body-clock cues into one sleep map. How doable is your morning anchor?"
+          labels:
+            - "Not doable yet"
+            - "Needs a change"
+            - "Possible"
+            - "Doable"
+            - "Very doable"
+          principle: "commitment_check"
+
+    - lesson_id: "u1_1_sleep_mechanics-n4"
+      title: "Build Your Night Map"
+      primary_concept: "sleep_composition"
+      learning_goal: "Combine stage, cycle, and circadian knowledge to compare broad sleep patterns and reject overconfident conclusions."
+      learner_value: "Turns three lessons into a usable reasoning skill."
+      estimated_minutes: 6
+      content_mix:
+        cumulative_review_slots:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+      sequence:
+        - slot: 1
+          type: "fill_in_the_blank"
+          phase: "warmup"
+          duration_seconds: 25
+          scored: true
+          purpose: "delayed_recall"
+          prompt: "Complete the broad pattern."
+          template: "Earlier cycles usually contain more {1}. Later cycles usually contain more {2}."
+          options:
+            - id: "n3"
+              text: "N3"
+              target: "1"
+            - id: "rem"
+              text: "REM"
+              target: "2"
+          feedback_correct: "Pattern remembered."
+          feedback_incorrect: "Earlier cycles tend to carry more N3; later cycles tend to carry more REM."
+          principle: "spaced_retrieval"
+        - slot: 2
+          type: "ordering"
+          phase: "introduce"
+          duration_seconds: 45
+          scored: true
+          purpose: "timeline_prediction"
+          prompt: "Build a broad night map from sleep onset toward morning."
+          items:
+            - "More N3-rich cycles"
+            - "Repeated cycles continue"
+            - "REM periods generally lengthen"
+            - "Wake time approaches"
+          correct_order:
+            - "More N3-rich cycles"
+            - "Repeated cycles continue"
+            - "REM periods generally lengthen"
+            - "Wake time approaches"
+          feedback_correct: "Good broad map. It describes tendencies, not exact clock-time stages."
+          feedback_incorrect: "Start with N3-rich earlier cycles; REM generally grows across later cycles."
+          principle: "reconstruction"
+        - slot: 3
+          type: "learn_cards"
+          phase: "introduce"
+          duration_seconds: 45
+          scored: false
+          purpose: "model_reveal"
+          cards:
+            - "A useful night map shows changing proportions: generally more deep sleep earlier and more REM later."
+            - "It does not label exact clock times or diagnose why a person woke."
+          principle: "model_refinement"
+        - slot: 4
+          type: "matching"
+          phase: "challenge"
+          duration_seconds: 50
+          scored: true
+          purpose: "broad_position_matching"
+          prompt: "Match each clue with the safest conclusion."
+          pairs:
+            - left: "Soon after sleep onset"
+              right: "Earlier-cycle pattern is more likely"
+            - left: "Near usual wake time"
+              right: "Later-cycle pattern is more likely"
+            - left: "Exact sleep stage"
+              right: "Cannot be known from clock time alone"
+          feedback_correct: "Correct. Use broad likelihood, not certainty."
+          feedback_incorrect: "Separate a broad pattern from an exact stage claim."
+          principle: "discrimination"
+        - slot: 5
+          type: "multiple_choice"
+          phase: "peak"
+          duration_seconds: 45
+          scored: true
+          purpose: "identify_overclaim"
+          prompt: "Which statement goes beyond the evidence?"
+          options:
+            - text: "At 4 a.m. I was definitely in REM, so REM caused the waking."
+              correct: true
+            - text: "Later sleep often contains more REM than earlier sleep."
+              correct: false
+            - text: "A waking time alone cannot identify the exact stage."
+              correct: false
+          feedback_correct: "Right. 'Definitely' and 'caused' claim more than clock time can show."
+          feedback_incorrect: "Look for the statement that turns a broad pattern into certainty and cause."
+          principle: "error_detection"
+        - slot: 6
+          type: "scenario"
+          phase: "peak"
+          duration_seconds: 60
+          scored: true
+          purpose: "compare_two_sleep_maps"
+          scenario: "Map A labels every hour as one exact stage. Map B shows broad earlier-to-later trends and marks uncertainty."
+          question: "Which map is more useful and honest?"
+          options:
+            - text: "Map B, because normal sleep varies and clock time alone cannot prove a stage."
+              correct: true
+            - text: "Map A, because every person follows the same hourly schedule."
+              correct: false
+            - text: "Neither, because sleep has no broad pattern."
+              correct: false
+          feedback_correct: "Yes. A useful model can be simple without pretending to be exact."
+          feedback_incorrect: "Choose the model that shows broad patterns and preserves uncertainty."
+          principle: "model_comparison"
+        - slot: 7
+          type: "guided_response"
+          phase: "consolidate"
+          duration_seconds: 75
+          scored: false
+          purpose: "personal_transfer"
+          prompt: "Write one balanced sentence about a recent night waking."
+          sub_prompts:
+            - "Use 'may,' 'could,' or 'more likely.'"
+            - "Do not diagnose the cause from time alone."
+          min_words: 4
+          max_words: 60
+          principle: "self_explanation"
+        - slot: 8
+          type: "multiple_choice"
+          phase: "cooldown"
+          duration_seconds: 20
+          scored: true
+          purpose: "capability_close_and_teaser"
+          prompt: "What can this sleep map help you do?"
+          options:
+            - text: "Reason about broad patterns while keeping uncertainty."
+              correct: true
+            - text: "Diagnose an exact stage from the clock."
+              correct: false
+            - text: "Guarantee that every waking is harmless."
+              correct: false
+          feedback_correct: "You can now use a sleep map without turning it into a diagnosis. Next: what builds and blocks sleep pressure."
+          feedback_incorrect: "The goal is a useful broad model, not diagnosis or guarantees."
+          principle: "cumulative_retrieval"
+
+user_stories:
+  - id: "US1"
+    actor: "learner"
+    story: "I want short lessons that make me recall and apply each idea so I can tell whether I understand it."
+    acceptance_criteria:
+      - "AC1"
+      - "AC2"
+      - "AC3"
+  - id: "US2"
+    actor: "learner"
+    story: "I want a useful explanation after a mistake so I can correct my model without feeling punished."
+    acceptance_criteria:
+      - "AC4"
+      - "AC5"
+      - "AC6"
+  - id: "US3"
+    actor: "learner"
+    story: "I want examples connected to real night waking and sleep schedules without being diagnosed."
+    acceptance_criteria:
+      - "AC7"
+      - "AC8"
+  - id: "US4"
+    actor: "solo_founder"
+    story: "I want measurable lesson completion and error data without collecting sensitive reflection content."
+    acceptance_criteria:
+      - "AC9"
+      - "AC10"
+  - id: "US5"
+    actor: "content_maintainer"
+    story: "I want automated checks that stop weak or malformed lessons from shipping."
+    acceptance_criteria:
+      - "AC11"
+      - "AC12"
+
+acceptance_criteria:
+  - id: "AC1"
+    criterion: "Unit contains exactly four lessons and 29 exercises in a 7, 7, 7, 8 distribution."
+  - id: "AC2"
+    criterion: "Every lesson uses at least four distinct exercise types and follows warmup, introduce, challenge, peak, consolidate, cooldown order."
+  - id: "AC3"
+    criterion: "Every lesson has one personal reflection or action exercise and a low-effort final interaction with next-lesson teaser."
+  - id: "AC4"
+    criterion: "Every scored exercise shows exercise-specific feedback after Check."
+  - id: "AC5"
+    criterion: "Incorrect responses cannot advance the lesson and can be changed and checked again."
+  - id: "AC6"
+    criterion: "A completed matching exercise reports success instead of a generic error."
+  - id: "AC7"
+    criterion: "Scenarios use plausible sleep concerns and require a decision, correction, comparison, or explanation."
+  - id: "AC8"
+    criterion: "No exercise claims exact sleep stage or cause from clock time alone, diagnoses a condition, or guarantees normality."
+  - id: "AC9"
+    criterion: "Analytics records lesson and answer mechanics only."
+  - id: "AC10"
+    criterion: "Analytics never records prompts, response text, mood values, notes, or selected option text."
+  - id: "AC11"
+    criterion: "Automated content tests enforce counts, ordering, type support, feedback coverage, lesson duration, and safety wording."
+  - id: "AC12"
+    criterion: "TypeScript and targeted Jest checks pass with no unrelated file changes."
+
+risks_and_assumptions:
+  assumptions:
+    - id: "A1"
+      statement: "Unit 1 remains served from sleep-reset-flat.ts for this release."
+    - id: "A2"
+      statement: "Existing exercise mechanics are acceptable when prompts and feedback are improved."
+    - id: "A3"
+      statement: "Course progress does not depend on removed Unit 1 exercise IDs because saved exercise responses are not currently wired into the journey route."
+    - id: "A4"
+      statement: "English-only mock course copy remains current product scope."
+  risks:
+    - id: "RK1"
+      risk: "Content rewrite may drift into medical advice or false certainty."
+      mitigation: "Safety wording tests plus manual content review."
+    - id: "RK2"
+      risk: "NodeEngine feedback changes affect every journey course."
+      mitigation: "Keep fallback behavior, test scored and unscored flows, and verify all registered scored mechanics."
+    - id: "RK3"
+      risk: "PostHog events could capture sensitive content through broad response objects."
+      mitigation: "Use a typed allowlist of scalar metadata and never pass response payloads."
+    - id: "RK4"
+      risk: "Reducing exercise count can make declared lesson duration inaccurate."
+      mitigation: "Set estimatedMins from summed durationSeconds and enforce tolerance in tests."
+
+scope_boundaries:
+  in_scope:
+    - "Unit 1 lesson and exercise content"
+    - "Contextual feedback and retry behavior"
+    - "Matching correctness contract"
+    - "Privacy-safe journey learning analytics"
+    - "Automated content and interaction tests"
+  deferred:
+    - "New drag-and-drop timeline renderer"
+    - "Backend course-content migration"
+    - "Adaptive difficulty or placement quiz"
+    - "Spaced-repetition scheduler"
+    - "Full localization system"
+    - "Unit 2 and later course rewrite"
+  non_goals:
+    - "Journey map visual redesign"
+    - "New reward economy"
+    - "Medical diagnosis or treatment guidance"
