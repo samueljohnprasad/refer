@@ -1,3 +1,4 @@
+import { sleepResetUnit1V1Exercises } from "@/src/data/mock/sleep-reset-unit1-v1";
 import type { GetCourseTreeResponse } from "@/src/types/journeyV5";
 
 export const sleepResetFlatData: GetCourseTreeResponse = {
@@ -32,11 +33,15 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
       0.35
     ],
     "objectives": {
-      "remember": "Name the four sleep stages and understand: early sleep is deep sleep; late sleep is dream sleep.",
-      "understand": "Explain your circadian rhythm as your body's 24-hour clock. Why alcohol disrupts the second half of the night specifically.",
-      "apply": "Identify your own top sleep disruptors from a personal audit and understand the mechanism behind each one"
+      "remember": "Name the three first sleep levers: sleep pressure, body clock, and arousal.",
+      "understand": "Explain sleep as a body rhythm, not a willpower test.",
+      "apply": "Choose one low-pressure cue without turning a hard night into self-blame."
     },
     "conceptsIntroduced": [
+      "self_blame_reframe",
+      "body_clock",
+      "arousal",
+      "tiny_reset_cue",
       "sleep_architecture",
       "sleep_cycles",
       "sleep_composition",
@@ -52,7 +57,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
   {
     "id": "u1_1_sleep_mechanics",
     "sectionId": "s1_sleep_science",
-    "title": "Your Brain at Night",
+    "title": "Sleep Is Body Rhythm",
     "iconKey": "unit-icon",
     "orderIndex": 1
   },
@@ -68,16 +73,18 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
   {
     "id": "u1_1_sleep_mechanics-n1",
     "unitId": "u1_1_sleep_mechanics",
-    "title": "Welcome to Sleep School",
+    "title": "Three Sleep Levers",
     "type": "lesson",
     "icon": "book",
     "contentId": "u1_1_sleep_mechanics-n1",
     "contentType": "lesson",
     "passThreshold": 0.95,
     "orderIndex": 0,
-    "estimatedMins": 5,
+    "estimatedMins": 4,
     "newConcepts": [
-      "sleep_architecture"
+      "sleep_pressure",
+      "body_clock",
+      "arousal"
     ],
     "reviewConcepts": [],
     "prerequisites": []
@@ -85,60 +92,61 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
   {
     "id": "u1_1_sleep_mechanics-n2",
     "unitId": "u1_1_sleep_mechanics",
-    "title": "The 90-Minute Cycle",
+    "title": "Sleep Pressure",
     "type": "lesson",
     "icon": "book",
     "contentId": "u1_1_sleep_mechanics-n2",
     "contentType": "lesson",
     "passThreshold": 0.8,
     "orderIndex": 1,
-    "estimatedMins": 9,
+    "estimatedMins": 5,
     "newConcepts": [
-      "sleep_cycles"
+      "sleep_pressure"
     ],
     "reviewConcepts": [
-      "sleep_architecture"
+      "self_blame_reframe"
     ],
     "prerequisites": []
   },
   {
     "id": "u1_1_sleep_mechanics-n3",
     "unitId": "u1_1_sleep_mechanics",
-    "title": "Your Internal Clock",
+    "title": "Body Clock Cues",
     "type": "lesson",
     "icon": "book",
     "contentId": "u1_1_sleep_mechanics-n3",
     "contentType": "lesson",
     "passThreshold": 0.8,
     "orderIndex": 2,
-    "estimatedMins": 10,
+    "estimatedMins": 5,
     "newConcepts": [
-      "circadian_rhythm"
+      "body_clock"
     ],
     "reviewConcepts": [
-      "sleep_architecture",
-      "sleep_cycles"
+      "sleep_pressure",
+      "self_blame_reframe"
     ],
     "prerequisites": []
   },
   {
     "id": "u1_1_sleep_mechanics-n4",
     "unitId": "u1_1_sleep_mechanics",
-    "title": "Early vs Late Sleep",
+    "title": "Arousal Reset",
     "type": "lesson",
     "icon": "book",
     "contentId": "u1_1_sleep_mechanics-n4",
     "contentType": "lesson",
     "passThreshold": 0.78,
     "orderIndex": 3,
-    "estimatedMins": 9,
+    "estimatedMins": 5,
     "newConcepts": [
-      "sleep_composition"
+      "arousal",
+      "tiny_reset_cue"
     ],
     "reviewConcepts": [
-      "sleep_architecture",
-      "sleep_cycles",
-      "circadian_rhythm"
+      "sleep_pressure",
+      "body_clock",
+      "self_blame_reframe"
     ],
     "prerequisites": []
   },
@@ -264,252 +272,148 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     "id": "l1_e1",
     "nodeId": "u1_1_sleep_mechanics-n1",
     "orderIndex": 0,
-    "type": "learn_cards",
-    "phase": "warmup",
+    "type": "guided_recall",
+    "phase": "introduce",
     "durationSeconds": 30,
-    "scaffoldLevel": 1,
-    "difficulty": undefined,
-    "isScored": false,
-    "concept": null,
+    "scaffoldLevel": 2,
+    "difficulty": 0.15,
+    "isScored": true,
+    "concept": "sleep_architecture",
     "content": {
-      "cards": [
-        {
-          "text": "Your sleep has 4 stages. Two are for deep repair (N3). Two are for dreams (REM).",
-          "visual_url": "/assets/sleep_stages_4boxes.png"
-        },
-        {
-          "text": "Early night is mostly deep sleep. Late night is mostly dreams. Both matter.",
-          "visual_url": "/assets/sleep_night_arc.png"
-        },
-        {
-          "text": "This is why waking at 3am feels different from waking at 11pm — different brain states.",
-          "visual_url": "/assets/timeline_sleep_stages.png"
-        }
+      "category": "recall",
+      "format": "guided_recall",
+      "goalLabel": "Build the sleep pattern from memory.",
+      "title": "Build the sleep rule",
+      "prompt": "Tap the words in the right order.",
+      "chips": [
+        { "id": "early", "text": "Early sleep" },
+        { "id": "deep", "text": "is deep sleep" },
+        { "id": "late", "text": "late sleep" },
+        { "id": "dream", "text": "is dream sleep" },
+        { "id": "same", "text": "stays the same" }
       ],
-      "rules": {
-        "max_words_per_card": 40,
-        "max_cards": 3,
-        "auto_advance": false
-      }
+      "answerChipIds": ["early", "deep", "late", "dream"],
+      "easierOptionIds": ["early", "deep", "late", "dream"],
+      "retryVariantId": "l1_e1_retry",
+      "maxAttempts": 3,
+      "workedExample": "Early sleep has more deep sleep. Later sleep has more dream sleep.",
+      "support": {
+        "clue": "Think about the first half of the night before the second half.",
+        "easier": "Start with: Early sleep is deep sleep.",
+        "workedAnswer": "Early sleep is deep sleep. Late sleep is dream sleep."
+      },
+      "feedback_correct": "Yes. Early sleep is mostly deep sleep, and late sleep is mostly dream sleep.",
+      "feedback_incorrect": "Try the simple order: early sleep first, late sleep second."
     }
   },
   {
     "id": "l1_e1b",
     "nodeId": "u1_1_sleep_mechanics-n1",
     "orderIndex": 1,
-    "type": "true_false",
-    "phase": "introduce",
-    "durationSeconds": 20,
-    "scaffoldLevel": 2,
-    "difficulty": 0.15,
+    "type": "scenario_why",
+    "phase": "practice",
+    "durationSeconds": 40,
+    "scaffoldLevel": 3,
+    "difficulty": 0.2,
     "isScored": true,
     "concept": "sleep_architecture",
     "content": {
-      "statement": "Your body repairs muscles and bone during REM (dream) sleep.",
-      "correct": false,
-      "explanation": "Physical repair happens during N3 Deep Sleep, not REM!"
+      "category": "scenario",
+      "format": "scenario_why",
+      "goalLabel": "Use the sleep pattern in one new situation.",
+      "title": "Use it in a new situation",
+      "prompt": "You wake at 4am after a vivid dream. What is the best explanation?",
+      "situationOptions": [
+        {
+          "id": "rem",
+          "label": "Late sleep has more REM, so dreams are common."
+        },
+        {
+          "id": "broken",
+          "label": "This means sleep is broken."
+        },
+        {
+          "id": "deep",
+          "label": "This means deep sleep is strongest near morning."
+        }
+      ],
+      "reasonOptions": [
+        {
+          "id": "late_night",
+          "label": "REM sleep gets longer later in the night."
+        },
+        {
+          "id": "deep_all_night",
+          "label": "Deep sleep stays strongest all night."
+        },
+        {
+          "id": "random",
+          "label": "Dreams do not follow any sleep pattern."
+        }
+      ],
+      "correctSituationId": "rem",
+      "correctReasonId": "late_night",
+      "easierOptionIds": ["rem", "broken", "late_night", "deep_all_night"],
+      "retryVariantId": "l1_e1b_retry",
+      "maxAttempts": 3,
+      "workedExample": "If the waking is near morning and dream-like, the useful clue is REM. REM gets longer later in sleep.",
+      "support": {
+        "clue": "Morning dreams usually point to REM sleep.",
+        "easier": "Choose the answer that says late sleep has more REM.",
+        "workedAnswer": "Situation: late sleep has more REM. Reason: REM sleep gets longer later in the night."
+      },
+      "feedback_correct": "Right. Vivid dreams near morning usually fit normal late-night REM.",
+      "feedback_incorrect": "Not quite. Late sleep has more REM, so dream-like waking can be normal."
     }
   },
   {
     "id": "l1_e2",
     "nodeId": "u1_1_sleep_mechanics-n1",
     "orderIndex": 2,
-    "type": "multiple_choice",
-    "phase": "introduce",
+    "type": "close_discrimination",
+    "phase": "practice",
     "durationSeconds": 20,
     "scaffoldLevel": 2,
     "difficulty": 0.15,
     "isScored": true,
     "concept": "sleep_architecture",
     "content": {
-      "prompt": "Your brain has 4 sleep stages. Which description matches 'deep sleep' (N3)?",
-      "subPrompt": "Select the best answer...",
+      "category": "discrimination",
+      "format": "close_discrimination",
+      "goalLabel": "Tell two close sleep ideas apart.",
+      "title": "Pick the closer idea",
+      "prompt": "Which sleep stage is most connected to body repair?",
       "options": [
         {
-          "id": "a",
-          "text": "When your body repairs and grows — muscles, immune system, bone",
-          "correct": true
+          "id": "deep",
+          "label": "Deep sleep",
+          "text": "Deep sleep"
         },
         {
-          "id": "b",
-          "text": "When you dream and process emotions",
-          "correct": false
+          "id": "rem",
+          "label": "REM dream sleep",
+          "text": "REM dream sleep",
+          "misconceptionCode": "rem_body_repair"
         },
         {
-          "id": "c",
-          "text": "When you're barely asleep, just drifting off",
-          "correct": false
+          "id": "light",
+          "label": "Light sleep",
+          "text": "Light sleep",
+          "misconceptionCode": "light_body_repair"
         }
       ],
-      "feedback_correct": "Exactly. N3 is deep sleep — that's when your body does its heavy restoration work.",
-      "feedback_incorrect": "That's actually a different stage. N3 is deep sleep, when your body repairs itself — muscles, immune, bone.",
-      "rules": {
-        "shuffle_options": true,
-        "show_explanation_always": true
-      }
-    }
-  },
-  {
-    "id": "l1_e2b",
-    "nodeId": "u1_1_sleep_mechanics-n1",
-    "orderIndex": 3,
-    "type": "matching",
-    "phase": "challenge",
-    "durationSeconds": 45,
-    "scaffoldLevel": 3,
-    "difficulty": 0.2,
-    "isScored": true,
-    "concept": "sleep_architecture",
-    "content": {
-      "prompt": "Match the time of night to its primary sleep stage.",
-      "pairs": [
-        { "left": "Early Night", "right": "Mostly Deep Sleep (N3)" },
-        { "left": "Late Night", "right": "Mostly Dreams (REM)" }
-      ]
-    }
-  },
-  {
-    "id": "l1_e3",
-    "nodeId": "u1_1_sleep_mechanics-n1",
-    "orderIndex": 4,
-    "type": "scenario",
-    "phase": "challenge",
-    "durationSeconds": 40,
-    "scaffoldLevel": 6,
-    "difficulty": 0.2,
-    "isScored": true,
-    "concept": "sleep_architecture",
-    "content": {
-      "scenario": "You wake at 3am. Your mind is racing — you're having vivid dreams or think you're in a dream. Earlier at 11pm you fell asleep deeply and didn't move.",
-      "question": "What does this tell you?",
-      "options": [
-        {
-          "id": "a",
-          "text": "At 11pm I was in deep sleep (N3). At 3am I'm in dream sleep (REM). Different brain states.",
-          "correct": true,
-          "feedback": "Yes! Early sleep is N3-heavy (deep). Late sleep is REM-heavy (dreams). That's why 3am waking feels like you're trapped in dream logic."
-        },
-        {
-          "id": "b",
-          "text": "I'm broken and will never sleep normally again",
-          "correct": false,
-          "feedback": "Actually, this is completely normal. Your sleep is cycling exactly as it should. The 'trapped' feeling is because you're waking in REM (dream) mode, not deep sleep mode."
-        },
-        {
-          "id": "c",
-          "text": "I had a nightmare and that's why I'm awake",
-          "correct": false,
-          "feedback": "Not necessarily. REM is when dreams happen, but dreams don't cause waking. More likely: something environmental (noise, temperature) woke you during your late-night REM cycle."
-        }
-      ],
-      "rules": {
-        "realistic_scenario": true,
-        "plausible_distractors": true,
-        "feedback_explains_why": true
-      }
-    }
-  },
-  {
-    "id": "l1_e3b",
-    "nodeId": "u1_1_sleep_mechanics-n1",
-    "orderIndex": 5,
-    "type": "multiple_choice",
-    "phase": "consolidate",
-    "durationSeconds": 25,
-    "scaffoldLevel": 4,
-    "difficulty": 0.2,
-    "isScored": true,
-    "concept": "sleep_architecture",
-    "content": {
-      "prompt": "If you wake up at 4am, what sleep stage were you most likely just in?",
-      "options": [
-        { "id": "a", "text": "REM (dream sleep)", "correct": true },
-        { "id": "b", "text": "N3 (deep sleep)", "correct": false },
-        { "id": "c", "text": "Light sleep", "correct": false }
-      ],
-      "feedback_correct": "Right! REM cycles get longer later in the night.",
-      "feedback_incorrect": "Not quite. Deep sleep (N3) happens early. By 4am, you are mostly experiencing REM."
-    }
-  },
-  {
-    "id": "l1_e4a",
-    "nodeId": "u1_1_sleep_mechanics-n1",
-    "orderIndex": 6,
-    "type": "fill_in_the_blank",
-    "phase": "consolidate",
-    "durationSeconds": 30,
-    "scaffoldLevel": 3,
-    "difficulty": 0.25,
-    "isScored": true,
-    "concept": "sleep_architecture",
-    "content": {
-      "prompt": "Complete the rule of thumb:",
-      "template": "Early sleep is for {1}, late sleep is for {2}.",
-      "options": [
-        { "id": "opt_1", "text": "physical repair", "target": "1" },
-        { "id": "opt_2", "text": "dreams", "target": "2" }
-      ],
-      "feedback_correct": "Exactly! The first half of the night repairs the body, the second half repairs the mind.",
-      "feedback_incorrect": "Remember: Body first (deep sleep), Mind second (REM)."
-    }
-  },
-  {
-    "id": "l1_e4b",
-    "nodeId": "u1_1_sleep_mechanics-n1",
-    "orderIndex": 7,
-    "type": "true_false",
-    "phase": "consolidate",
-    "durationSeconds": 20,
-    "scaffoldLevel": 2,
-    "difficulty": 0.1,
-    "isScored": true,
-    "concept": "sleep_architecture",
-    "content": {
-      "statement": "Waking up from a vivid dream at 5am means your sleep architecture is broken.",
-      "correct": false,
-      "explanation": "It's completely normal! You are naturally in a heavy REM phase at 5am."
-    }
-  },
-  {
-    "id": "l1_e4",
-    "nodeId": "u1_1_sleep_mechanics-n1",
-    "orderIndex": 8,
-    "type": "free_text",
-    "phase": "cooldown",
-    "durationSeconds": 45,
-    "scaffoldLevel": 5,
-    "difficulty": 0.1,
-    "isScored": false,
-    "concept": null,
-    "content": {
-      "prompt": "Did this change how you understand your 3am or 5am waking?",
-      "min_words": 3,
-      "max_words": 100,
-      "placeholder": "E.g., 'I never knew my sleep cycles were this specific...'"
-    }
-  },
-  {
-    "id": "l1_e5",
-    "nodeId": "u1_1_sleep_mechanics-n1",
-    "orderIndex": 9,
-    "type": "rating_check",
-    "phase": "cooldown",
-    "durationSeconds": 15,
-    "scaffoldLevel": undefined,
-    "difficulty": undefined,
-    "isScored": false,
-    "concept": null,
-    "content": {
-      "prompt": "After learning about sleep stages, how do you feel?",
-      "scale": 5,
-      "labels": [
-        "Confused",
-        "Uncertain",
-        "Neutral",
-        "Hopeful",
-        "Empowered"
-      ],
-      "note_enabled": true
+      "correctOptionId": "deep",
+      "easierOptionIds": ["deep", "rem"],
+      "retryVariantId": "l1_e2_retry",
+      "maxAttempts": 3,
+      "workedExample": "Deep sleep is the better match for body repair. REM is closer to dreaming.",
+      "support": {
+        "clue": "REM is mostly linked with dreams.",
+        "easier": "Body repair belongs with deep sleep.",
+        "workedAnswer": "Deep sleep is the body-repair answer. REM is the dream-sleep distractor."
+      },
+      "feedback_correct": "Yes. Deep sleep is the body-repair stage.",
+      "feedback_incorrect": "REM is more connected to dreams. Deep sleep is more connected to body repair."
     }
   },
   {
@@ -1993,3 +1897,10 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
   }
 ],
 };
+
+sleepResetFlatData.exercises = [
+  ...sleepResetUnit1V1Exercises,
+  ...sleepResetFlatData.exercises.filter(
+    (exercise) => !exercise.nodeId.startsWith("u1_1_sleep_mechanics-"),
+  ),
+];

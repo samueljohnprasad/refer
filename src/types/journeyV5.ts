@@ -224,6 +224,7 @@ export interface StartCourseResponse {
 export interface CompleteNodeArgs {
   nodeId: string;
   courseId: string;
+  responses?: Record<string, unknown>;
 }
 
 export interface CompleteNodeResponse {

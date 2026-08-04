@@ -49,7 +49,7 @@ export const OptionButton = ({
     <View className={`w-full relative mb-1 ${className}`}>
       {/* Rim (Shadow Base) */}
       <View
-        className="absolute left-0 right-0 top-[4px] bottom-[-4px] rounded-2xl"
+        className="absolute left-0 right-0 top-[3px] bottom-[-3px] rounded-xl"
         style={{ backgroundColor: rimColor }}
       />
       
@@ -59,25 +59,26 @@ export const OptionButton = ({
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         onPress={onPress}
-        className="rounded-2xl px-5 py-4 border-2 flex-row items-center"
+        className="rounded-xl px-4 py-3 border-2 flex-row items-center"
         style={[
           {
             backgroundColor: faceColor,
             borderColor: rimColor,
-            minHeight: 56,
+            minHeight: 48,
             justifyContent: prefix || alignText === 'left' ? 'flex-start' : 'center',
           },
           animatedStyle
         ]}
       >
-        {prefix && <View className="mr-4">{prefix}</View>}
+        {prefix && <View className="mr-3">{prefix}</View>}
         <Text
           className={`flex-1 ${alignText === 'center' && !prefix ? 'text-center' : 'text-left'}`}
-          style={{ 
-            fontSize: 16, 
-            color: labelColor, 
+          style={{
+            fontSize: 14,
+            lineHeight: 19,
+            color: labelColor,
             fontFamily: "GeistBold",
-            letterSpacing: 0.16 
+            letterSpacing: 0.08
           }}
         >
           {label}

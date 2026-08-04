@@ -8,7 +8,6 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import LottieView from "lottie-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   GiftedChat,

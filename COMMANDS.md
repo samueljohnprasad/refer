@@ -33,3 +33,6 @@ This document contains a quick reference for commonly used CLI commands in this 
 codex --yolo
 https://github.com/everyinc/compound-engineering-plugin
 https://github.com/howells/arc?utm_source=chatgpt.com
+
+https://github.com/mattpocock/skills
+https://revenuecat-shipaton-2025.devpost.com/project-gallery?page=1

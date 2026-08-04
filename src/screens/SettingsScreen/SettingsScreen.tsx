@@ -12,7 +12,6 @@ import Constants from "expo-constants";
 import { Stack, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
-import { useToast } from "heroui-native";
 import {
   AlertSquareIcon,
   Delete02Icon,
@@ -49,6 +48,7 @@ import PostTrialDiscountBanner from "@/src/components/premium/PostTrialDiscountB
 import SignInBottomSheet from "@/src/components/SignInBottomSheet";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { PremiumStatusCard } from "./components/PremiumStatusCard";
+import { SettingsTestComponentsSection } from "./components/SettingsTestComponentsSection";
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -56,7 +56,6 @@ export default function SettingsScreen() {
   const signInSheetRef = React.useRef<BottomSheetModal>(null);
   const { customerInfo, hasPro, isLoadingRevenueCat, presentPaywall } =
     useRevenueCat();
-  const { toast } = useToast();
 
   const {
     isSignoutOPen,
@@ -286,29 +285,7 @@ export default function SettingsScreen() {
                   router.push("/tabs/screens/active-model" as any);
                 }}
               />
-              <SettingsItem
-                icon={StarIcon}
-                title="Test Graph Components"
-                subtitle="View mock graph and UI components"
-                onPress={() => {
-                  Haptics.selectionAsync();
-                  router.push("/tabs/screens/test-charts" as any);
-                }}
-              />
-              <SettingsItem
-                icon={Notification01Icon}
-                title="Test Toast Notifications"
-                subtitle="Trigger a sample toast"
-                onPress={() => {
-                  Haptics.selectionAsync();
-                  toast.show({
-                    variant: "success",
-                    label: "Toast is working!",
-                    description: "If you see this, the toast provider is correctly configured.",
-                  });
-                }}
-                showArrow={false}
-              />
+              <SettingsTestComponentsSection />
             </SettingsSection>
           )}
         </Animated.ScrollView>

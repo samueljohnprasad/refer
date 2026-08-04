@@ -1,7 +1,5 @@
-import React, { type ReactNode, type ReactElement } from "react";
+import React, { type ReactNode } from "react";
 import {
-  View,
-  Text,
   StyleSheet,
   type ViewProps,
   type ScrollViewProps,
@@ -11,17 +9,16 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ScreenLayout } from "@/src/components/ui/ScreenLayout";
 import { LessonHeader } from "@/src/components/ui/LessonHeader";
-import { Button } from "@/src/components/ui/Button";
-import { Feather } from "@expo/vector-icons";
+import {
+  LessonScreenFooter,
+  type LessonScreenFooterProps,
+  type LessonScreenFooterVariant,
+} from "@/src/components/ui/LessonScreenFooter";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type BackButtonVariant = "close-text" | "close-icon" | "arrow";
-type FooterVariant = "solid" | "transparent";
-
-interface LessonScreenProps extends ViewProps {
-  children: ReactNode;
-}
+type FooterVariant = LessonScreenFooterVariant;
 
 interface ProgressHeaderProps {
   /** Progress value (0–1). Omit to hide the bar entirely. */
@@ -52,45 +49,11 @@ interface ContentProps extends ScrollViewProps {
   hasFooter?: boolean;
 }
 
-interface ActionFooterProps {
-  // ── Primary button ──────────────────────────────────────────────────────
-  /** Label for the primary (3-D depth) button. @default "Continue" */
-  primaryLabel?: string;
-  /** Callback fired when the primary button is pressed. */
-  onPrimaryPress: () => void;
-  /** Disable the primary button. @default false */
-  primaryDisabled?: boolean;
-  /** Show a loading spinner in the primary button. @default false */
-  primaryLoading?: boolean;
-  /** Optional icon on the left side of the primary button. */
-  primaryLeftIcon?: ReactElement;
-  /** Optional icon on the right side of the primary button. */
-  primaryRightIcon?: ReactElement;
-
-  // ── Secondary button (optional) ─────────────────────────────────────────
-  /** Label for the ghost secondary button. Omit to hide it. */
-  secondaryLabel?: string;
-  /** Callback fired when the secondary button is pressed. */
-  onSecondaryPress?: () => void;
-  /** Disable the secondary button. @default false */
-  secondaryDisabled?: boolean;
-
-  // ── Footer chrome ───────────────────────────────────────────────────────
-  /** Background variant for the footer sheet. @default "solid" */
-  variant?: FooterVariant;
-  /** Custom style applied to the outer footer container. */
-  style?: StyleProp<ViewStyle>;
-  /** Custom className for the footer container. */
-  className?: string;
-  /** Status of the action footer */
-  status?: "default" | "success" | "error";
-}
-
 interface LessonScreenProps
   extends
     ViewProps,
     Partial<Omit<ProgressHeaderProps, "style">>,
-    Partial<Omit<ActionFooterProps, "style" | "variant" | "className">> {
+    Partial<Omit<LessonScreenFooterProps, "style" | "variant" | "className">> {
   children: ReactNode;
   /** Hide the header entirely when using the monolithic component. @default false */
   hideHeader?: boolean;
@@ -109,7 +72,7 @@ interface LessonScreenProps
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
 import { GlassView } from "expo-glass-effect";
-import { Stack, Link } from "expo-router";
+import { Stack } from "expo-router";
 
 /**
  * Fixed top bar with close/back navigation, animated progress bar, and
@@ -193,86 +156,6 @@ const Content: React.FC<ContentProps> = ({
   );
 };
 
-/**
- * Fixed bottom sheet with a primary (3-D tactile) button and an optional
- * ghost secondary button. All buttons, colors, and the sheet variant are
- * configurable via props.
- */
-const ActionFooter: React.FC<ActionFooterProps> = ({
-  primaryLabel = "Continue",
-  onPrimaryPress,
-  primaryDisabled = false,
-  primaryLoading = false,
-  primaryLeftIcon,
-  primaryRightIcon,
-  secondaryLabel,
-  onSecondaryPress,
-  secondaryDisabled = false,
-  variant = "solid",
-  style,
-  className,
-  status = "default",
-}) => {
-  const isSuccess = status === "success";
-  const isError = status === "error";
-
-  return (
-    <ScreenLayout.Footer 
-      variant={variant} 
-      style={style} 
-      className={`${className || ""} ${
-        isSuccess 
-          ? "bg-sage-selected border-t border-sage-200" 
-          : isError 
-          ? "bg-red-100 border-t border-red-200" 
-          : variant === "transparent"
-          ? "bg-transparent border-t-0"
-          : "bg-white border-t border-brand-border"
-      }`}
-    >
-      <View className="w-full gap-1">
-        {isSuccess && (
-          <View className="flex-row items-center mb-4">
-            <View className="w-8 h-8 rounded-full bg-sage-500 items-center justify-center mr-4">
-              <Feather name="check" size={20} color="white" />
-            </View>
-            <Text className="text-sage-700 font-bold text-xl">Awesome!</Text>
-          </View>
-        )}
-        {isError && (
-          <View className="flex-row items-center mb-4">
-            <View className="w-8 h-8 rounded-full bg-red-500 items-center justify-center mr-4">
-              <Feather name="x" size={20} color="white" />
-            </View>
-            <Text className="text-red-500 font-bold text-xl">Incorrect</Text>
-          </View>
-        )}
-
-        <Button
-          label={primaryLabel}
-          onPress={onPrimaryPress}
-          disabled={primaryDisabled}
-          loading={primaryLoading}
-          leftIcon={primaryLeftIcon}
-          rightIcon={primaryRightIcon}
-          variant={isError ? "danger" : "primary"}
-          fullWidth
-        />
-
-        {secondaryLabel && onSecondaryPress ? (
-          <Button
-            label={secondaryLabel}
-            onPress={onSecondaryPress}
-            disabled={secondaryDisabled}
-            variant="ghost"
-            fullWidth
-          />
-        ) : null}
-      </View>
-    </ScreenLayout.Footer>
-  );
-};
-
 // ─── Root component ──────────────────────────────────────────────────────────
 
 /**
@@ -322,6 +205,7 @@ const LessonScreen = ({
   footerVariant,
   footerStyle,
   status,
+  statusMessage,
   ...props
 }: LessonScreenProps) => {
   const flattenedStyle = StyleSheet.flatten(props.style) || {};
@@ -347,7 +231,7 @@ const LessonScreen = ({
         {children}
       </Content>
       {!hideFooter && onPrimaryPress && (
-        <ActionFooter
+        <LessonScreenFooter
           primaryLabel={primaryLabel}
           onPrimaryPress={onPrimaryPress}
           primaryDisabled={primaryDisabled}
@@ -363,6 +247,7 @@ const LessonScreen = ({
             screenBg ? { backgroundColor: screenBg, borderTopWidth: 0 } : undefined,
           ]}
           status={status}
+          statusMessage={statusMessage}
         />
       )}
     </ScreenLayout>
@@ -376,5 +261,5 @@ export type {
   LessonScreenProps,
   ProgressHeaderProps as LessonScreenHeaderProps,
   ContentProps as LessonScreenContentProps,
-  ActionFooterProps as LessonScreenFooterProps,
+  LessonScreenFooterProps,
 };

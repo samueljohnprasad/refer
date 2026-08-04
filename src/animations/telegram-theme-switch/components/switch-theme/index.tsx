@@ -11,15 +11,12 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import Reanimated, {
   interpolate,
-  useAnimatedProps,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
   withTiming,
   Easing,
 } from 'react-native-reanimated';
-
-import { AnimatedLottieView } from '../animated-lottie-view';
 
 import { SwitchThemeContext, useSwitchTheme, type Theme } from './context';
 import {
@@ -147,6 +144,12 @@ const SwitchThemeProvider: React.FC<SwitchThemeProviderProps> = ({
     };
   }, []);
 
+  const rPulseStyle = useAnimatedStyle(() => {
+    return {
+      opacity: animationProgress.value > 0 && animationProgress.value < 1 ? 0.5 : 1,
+    };
+  });
+
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
   const clipPath = useDerivedValue(() => {
@@ -169,12 +172,6 @@ const SwitchThemeProvider: React.FC<SwitchThemeProviderProps> = ({
     );
     return path;
   }, [center]);
-
-  const animatedProps = useAnimatedProps(() => {
-    return {
-      progress: animationProgress.value,
-    };
-  });
 
   return (
     // Provide the 'value' to child components using the SwitchThemeContext context
@@ -219,19 +216,15 @@ const SwitchThemeProvider: React.FC<SwitchThemeProviderProps> = ({
             alignItems: 'center', // Center content horizontally
           },
         ]}>
-        {/* Lottie animation for the theme switch */}
-        <AnimatedLottieView
-          animatedProps={animatedProps}
-          source={require('../../assets/switch-theme.json')} // Lottie animation file
-          style={{
-            height: MAX_THEME_ANIMATION_SIZE,
-            width: MAX_THEME_ANIMATION_SIZE,
-          }}
-          colorFilters={[
+        <Reanimated.View
+          style={[
             {
-              keypath: 'Layer 1/icons Outlines',
-              color: '#fff',
+              height: MAX_THEME_ANIMATION_SIZE,
+              width: MAX_THEME_ANIMATION_SIZE,
+              borderRadius: MAX_THEME_ANIMATION_SIZE / 2,
+              backgroundColor: '#fff',
             },
+            rPulseStyle,
           ]}
         />
       </Reanimated.View>

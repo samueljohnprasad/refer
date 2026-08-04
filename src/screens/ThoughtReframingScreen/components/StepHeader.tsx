@@ -16,13 +16,13 @@ interface StepHeaderProps {
 export const StepHeader: React.FC<StepHeaderProps> = React.memo(
   ({ title, subtitle }) => {
     return (
-      <View className="mb-5 w-full">
-        <Text variant="h1" className="mb-1.5 leading-snug">
+      <View className="mb-6 w-full">
+        <Text variant="h1" className="mb-2 leading-snug text-[28px]">
           {title}
         </Text>
 
         {subtitle ? (
-          <Text variant="body" className="text-[16px] leading-[23px] text-ink-soft">
+          <Text variant="body" className="text-[17px] leading-[24px] text-ink-soft">
             {subtitle}
           </Text>
         ) : null}

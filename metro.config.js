@@ -11,7 +11,7 @@ config.transformer = {
   ...transformer,
   babelTransformerPath: require.resolve("react-native-svg-transformer/expo"),
   getTransformOptions: async () => ({
-    transform: { inlineRequires: true, experimentalImportSupport: false },
+    transform: { inlineRequires: false, experimentalImportSupport: false },
   }),
 };
 

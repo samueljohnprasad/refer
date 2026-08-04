@@ -18,20 +18,32 @@ import type {
   CourseCatalogListItem,
   CourseStatus,
 } from "@/src/types/journeyV5";
-import type { ExercisePayload } from "@/types/exercises";
+import type {
+  StartV1LearningSessionArgs,
+  V1LearningSessionResult,
+} from "@/src/types/journeyLearning";
+import { V1NodeSessionKindEnum } from "@/src/types/journeyLearning";
 import { callEdgeFunction, EDGE_FUNCTION_URLS } from "@/src/lib/supabase/edgeFunctions";
+import { resolveV1ExerciseCategory } from "@/src/domains/journey/learning/v1LearningCategoryResolver";
+import { migrateLegacyCourseTreeToV1 } from "@/src/domains/journey/learning/migrateLegacyExercisesToV1";
+import { saveMockNodeLearningEvidence } from "@/src/domains/journey/learning/mockLearningEvidenceStore";
 
 import catalogData from "@/src/data/mock/course-catalog.json";
-import sleepResetData from "@/src/data/mock/sleep-reset.json";
 import { sleepResetFlatData } from "@/src/data/mock/sleep-reset-flat";
 
 // Toggle this to use the mock JSON data instead of the backend
 const USE_MOCK = true;
+const mockSleepResetV1Data = migrateLegacyCourseTreeToV1(sleepResetFlatData);
 
 export const journeyApi = createApi({
   reducerPath: "journeyApi",
   baseQuery: fakeBaseQuery(),
-  tagTypes: ["CourseTree", "CourseProgress", "EnrolledCourses", "NodeExercises"],
+  tagTypes: [
+    "CourseTree",
+    "CourseProgress",
+    "EnrolledCourses",
+    "NodeExercises",
+  ],
 
   endpoints: (builder) => ({
     // ── READ: enrolled course ids ───────────────────────────────────────────
@@ -213,7 +225,7 @@ export const journeyApi = createApi({
       providesTags: (_, __, courseId) => [{ type: "CourseTree", id: courseId }],
       queryFn: async (courseId) => {
         if (USE_MOCK) {
-          return { data: sleepResetFlatData };
+          return { data: mockSleepResetV1Data };
         }
         try {
           const data = await callEdgeFunction<
@@ -263,6 +275,56 @@ export const journeyApi = createApi({
       },
     }),
 
+    // ── READ: node learning session ─────────────────────────────────────────
+    /**
+     * Mock-only v1 boundary for now.
+     * Later Supabase should return this same result shape authoritatively.
+     */
+    startLearningSession: builder.query<
+      V1LearningSessionResult,
+      StartV1LearningSessionArgs
+    >({
+      providesTags: (_, __, { nodeId }) => [{ type: "NodeExercises", id: nodeId }],
+      queryFn: async ({ nodeId }) => {
+        const nodeExercises = mockSleepResetV1Data.exercises.filter(
+          (exercise) => exercise.nodeId === nodeId,
+        );
+
+        if (nodeExercises.length === 0) {
+          return {
+            error: {
+              status: "CUSTOM_ERROR",
+              error: `No v1 exercises found for node ${nodeId}.`,
+            },
+          };
+        }
+
+        const v1ExerciseIds = nodeExercises
+          .filter((exercise) => resolveV1ExerciseCategory(exercise) !== null)
+          .map((exercise) => exercise.id);
+
+        if (v1ExerciseIds.length !== nodeExercises.length) {
+          return {
+            error: {
+              status: "CUSTOM_ERROR",
+              error: `Node ${nodeId} contains non-v1 exercises after migration.`,
+            },
+          };
+        }
+
+        return {
+          data: {
+            kind: V1NodeSessionKindEnum.V1Session,
+            nodeId,
+            sessionId: `mock:${nodeId}`,
+            exerciseIds: v1ExerciseIds,
+            requiredResolvedItemCount: v1ExerciseIds.length,
+            source: "mock",
+          },
+        };
+      },
+    }),
+
     // ── MUTATION: start course (auto-enroll) ────────────────────────────────
     /**
      * Creates user_course_progress for the course.
@@ -304,8 +366,15 @@ export const journeyApi = createApi({
       invalidatesTags: (_, __, { courseId }) => [
         { type: "CourseProgress", id: courseId },
       ],
-      queryFn: async ({ nodeId, courseId }) => {
+      queryFn: async ({ nodeId, courseId, responses = {} }) => {
         if (USE_MOCK) {
+          saveMockNodeLearningEvidence({
+            courseId,
+            nodeId,
+            responses,
+            completedAt: new Date().toISOString(),
+          });
+
           return {
             data: {
               nodeId,
@@ -336,6 +405,7 @@ export const {
   useGetCourseCatalogQuery,
   useGetCourseTreeQuery,
   useGetCourseProgressQuery,
+  useStartLearningSessionQuery,
   useStartCourseMutation,
   useCompleteNodeMutation,
 } = journeyApi;

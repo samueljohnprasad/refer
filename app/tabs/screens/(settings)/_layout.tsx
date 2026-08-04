@@ -104,6 +104,16 @@ export default function SettingsGroupLayout() {
           animation: "slide_from_right",
         }}
       />
+      <Stack.Screen
+        name="animated-symbols"
+        options={{
+          headerShown: true,
+          title: "Animated Symbols",
+          freezeOnBlur: true,
+          headerBackButtonDisplayMode: "minimal",
+          animation: "slide_from_right",
+        }}
+      />
     </Stack>
   );
 }

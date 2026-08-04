@@ -1,0 +1,467 @@
+audit:
+  id: sleep-reset-unit1-learning-audit-2026-07-30
+  course: Sleep Reset
+  scope: Unit 1 only
+  status: superseded_by_unit1_curriculum_execution
+  superseded_by:
+    decision_path: .r2d/unit1-curriculum-execution/decision.md
+    implemented_path: src/data/mock/sleep-reset-unit1-v1.ts
+    reason: >
+      This audit described the stage-first Unit 1. Unit 1 now leads with sleep
+      pressure, body clock, arousal, self-blame reframe, and one tiny reset cue.
+  file_reviewed:
+    - path: src/data/mock/sleep-reset-unit1-v1.ts
+      evidence: "20 active V1 exercises across 4 Unit 1 lessons."
+    - path: src/components/node/NodeEngineRouter.tsx
+      evidence: "Runtime uses feedback, retry, progressive support, and completion responses."
+    - path: src/domains/journey/learning/v1LearningSessionSlice.ts
+      evidence: "Runtime tracks attempt count and support state."
+    - path: src/domains/journey/data/journeyApi.ts
+      evidence: "Mock path stores learning evidence; Supabase is intentionally not used yet."
+  target_audience:
+    - General users with little or no sleep-science knowledge.
+    - Users with anxiety, depression, stress, overthinking, insomnia, or poor sleep.
+    - Users with low attention, low motivation, or low mental energy.
+
+unit_summary:
+  plain_english: >
+    Unit 1 teaches that sleep is not one flat state. It moves through stages,
+    cycles repeat through the night, deep sleep is often stronger earlier, REM
+    is often stronger later, dream waking near morning can be normal, and the
+    body clock responds to repeatable cues like wake time and morning light.
+  current_learning_objective_inferred: >
+    Help the learner replace fear-based sleep interpretations with a simple,
+    calm model of sleep stages, sleep cycles, REM/deep sleep timing, and body
+    clock cues.
+  redesigned_learning_objective: >
+    By the end of Unit 1, the learner can explain one bad night without panic:
+    "Sleep has stages and cycles. Deep sleep and REM shift across the night.
+    Waking from a dream can be common. One small morning cue is a safe first
+    experiment."
+  smallest_real_world_change: >
+    The learner can stop treating one vivid dream waking as proof that sleep is
+    broken, and choose one low-pressure cue for 3 days: morning light, a steadier
+    wake time, or noticing wake time without judging it.
+
+scores:
+  curriculum_structure:
+    score: 8
+    why_not_10: >
+      The sequence is logical: stages -> cycles -> body clock cues -> calm use
+      of the model. It is not a 10 because there is no compact visual model of
+      the night pattern, and Lesson 3 introduces body-clock cues quickly without
+      enough bridge from stages/cycles.
+  clarity:
+    score: 8
+    why_not_10: >
+      Copy is simple and safer than before. It is not a 10 because terms like
+      N1, N2, N3, and REM still need a tiny always-visible glossary or visual cue
+      for complete beginners.
+  knowledge_value:
+    score: 8
+    why_not_10: >
+      The unit teaches a useful mental model, not random facts. It is not a 10
+      because retention is not proven later, and the stress-sleep-thought loop
+      is still mostly implied rather than demonstrated in Unit 1.
+  exercise_variety:
+    score: 7
+    why_not_10: >
+      It uses close discrimination, guided recall, scenario-why, and low-pressure
+      choice reflection. It is not a 10 because the unit still relies heavily on
+      choice cards and lacks a small visual timeline or generated explanation.
+  exercise_depth:
+    score: 7
+    why_not_10: >
+      Scenario-why exercises require causal thinking, but many screens are still
+      recognition. A 10 would require more learner generation: "explain this in
+      your own words" or "choose the best sentence to tell yourself tonight."
+  engagement:
+    score: 7
+    why_not_10: >
+      The unit is shorter, calmer, and more bite-size. It is not a 10 because
+      repeated close-discrimination screens can feel predictable, and no visual
+      QA confirmed final pacing on device.
+  personal_relevance:
+    score: 7
+    why_not_10: >
+      Two unscored choices personalize worry and next action. It is not a 10
+      because those choices do not yet branch examples or resurface later.
+  behaviour_change_potential:
+    score: 7
+    why_not_10: >
+      The unit ends with a tiny action. It is not a 10 because the app does not
+      yet check whether the action happened or loop it into future review.
+  mental_health_safety:
+    score: 8
+    why_not_10: >
+      The content avoids blame, avoids diagnosis, and uses bounded language such
+      as "can be common" and "consider support." It is not a 10 because the unit
+      still needs a consistent support boundary for severe distress, long-term
+      insomnia, safety risk, or daytime impairment.
+  duolingo_level_production_quality:
+    score: 7
+    why_not_10: >
+      It now has bite-size exercises, feedback, retries, and support. It is not
+      full Duolingo-level yet because there is no spaced review scheduler, no
+      production analytics, no personalization loop, and no final simulator QA.
+  overall:
+    score: 7.4
+    verdict: >
+      Good V1 mock-pilot quality. Not yet expert-built large-scale course quality
+      until retention, adaptation, review, and telemetry dashboards are closed.
+
+lesson_by_lesson:
+  - lesson: 1
+    node_id: u1_1_sleep_mechanics-n1
+    theme: Sleep has stages
+    progression_judgment: >
+      Strong opening. It replaces the misconception "sleep is one steady state"
+      with a simple stage map, then asks the learner to reconstruct the map and
+      apply it to a dream-waking scenario.
+    exercises:
+      - id: u1_l1_e1
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:17"
+        title: Start with the map
+        teaches: Sleep is a changing pattern of stages.
+        thinking_depth: moderate
+        issue: Good first contrast, but answer choices are easy.
+        recommendation: Keep, but add a tiny visual "stage map" after answer.
+      - id: u1_l1_e2
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:51"
+        title: Build the stage map
+        teaches: Active recall of N1, N2, N3, REM.
+        thinking_depth: high_for_v1
+        issue: Best learning screen in Lesson 1 because it requires generation by ordering.
+        recommendation: Keep. Make chips shorter on mobile.
+      - id: u1_l1_e3
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:90"
+        title: Use the map safely
+        teaches: Dream memory is a clue, not a diagnosis.
+        thinking_depth: high_for_v1
+        issue: Strong safety framing. Good for anxious users.
+        recommendation: Keep.
+      - id: u1_l1_e4
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:130"
+        title: Make it yours
+        teaches: Personal concern capture without scoring.
+        thinking_depth: low
+        issue: Useful for relevance, but currently does not branch future examples.
+        recommendation: Keep for V1, then later use answer to personalize examples.
+      - id: u1_l1_e5
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:165"
+        title: Quick recap
+        teaches: Consolidates the full stage map.
+        thinking_depth: moderate
+        issue: Reinforces correctly, but repeats e1/e2.
+        recommendation: Keep only if it remains very fast; otherwise combine with e2.
+
+  - lesson: 2
+    node_id: u1_1_sleep_mechanics-n2
+    theme: Sleep cycles repeat and change
+    progression_judgment: >
+      Good continuation from stages into cycle shape. The lesson correctly avoids
+      overclaiming exact clock rules, but the old node title "90-Minute Cycle"
+      may still imply precision.
+    exercises:
+      - id: u1_l2_e1
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:199"
+        title: Remember one stage
+        teaches: REM is linked with vivid dreams.
+        thinking_depth: low
+        issue: Too easy as standalone.
+        recommendation: Keep only as a fast retrieval warm-up.
+      - id: u1_l2_e2
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:232"
+        title: Build one cycle
+        teaches: Light sleep -> deep sleep -> REM -> repeat.
+        thinking_depth: high_for_v1
+        issue: Strong active recall.
+        recommendation: Keep; make cards shorter for bite-size UI.
+      - id: u1_l2_e3
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:267"
+        title: Pick the useful rule
+        teaches: Earlier sleep often has more deep sleep; later sleep often has more REM.
+        thinking_depth: moderate
+        issue: Good misconception correction.
+        recommendation: Keep.
+      - id: u1_l2_e4
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:301"
+        title: Use the cycle
+        teaches: Apply REM timing to a near-morning dream waking.
+        thinking_depth: high_for_v1
+        issue: Good transfer screen.
+        recommendation: Keep.
+      - id: u1_l2_e5
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:341"
+        title: Correct the worry
+        teaches: Brief waking between cycles can happen; support matters if frequent or impairing.
+        thinking_depth: moderate
+        issue: Strong mental-health safety screen.
+        recommendation: Keep.
+
+  - lesson: 3
+    node_id: u1_1_sleep_mechanics-n3
+    theme: Body clock uses cues
+    progression_judgment: >
+      Useful mental-health bridge because it turns sleep from "my fault" into
+      "my body responds to cues." Needs one more micro-explanation showing how
+      wake time and light send timing signals.
+    exercises:
+      - id: u1_l3_e1
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:375"
+        title: Keep it alive
+        teaches: Retrieval of "later sleep often has more REM."
+        thinking_depth: low
+        issue: Useful spaced recall inside unit, but easy.
+        recommendation: Keep as a 5-second retrieval card.
+      - id: u1_l3_e2
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:408"
+        title: Body clock cues
+        teaches: Wake cues and morning light help the body clock.
+        thinking_depth: moderate
+        issue: Good concept, but should show cue -> clock -> sleepy timing visually.
+        recommendation: Keep and add a tiny cue chain in feedback.
+      - id: u1_l3_e3
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:442"
+        title: Weekend shift
+        teaches: Monday grogginess can come from mixed wake cues, not laziness.
+        thinking_depth: high_for_v1
+        issue: Strong mental-health relevance and anti-blame framing.
+        recommendation: Keep.
+      - id: u1_l3_e4
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:482"
+        title: Make it realistic
+        teaches: Gentle cue experiments beat strict sleep perfectionism.
+        thinking_depth: moderate
+        issue: Very appropriate for low-energy users.
+        recommendation: Keep.
+      - id: u1_l3_e5
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:516"
+        title: Pick one cue
+        teaches: Choose a low-pressure next action.
+        thinking_depth: low
+        issue: Behaviour-change moment is good, but follow-up is missing.
+        recommendation: Keep for V1; later add a next-day check-in.
+
+  - lesson: 4
+    node_id: u1_1_sleep_mechanics-n4
+    theme: Use the model calmly
+    progression_judgment: >
+      Strong closing lesson. It tests transfer in changed situations and teaches
+      safe wording. This is the most CBT-like part of Unit 1 because it changes
+      interpretation, not just knowledge.
+    exercises:
+      - id: u1_l4_e1
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:551"
+        title: Build the night pattern
+        teaches: Early -> deep sleep, later -> REM.
+        thinking_depth: high_for_v1
+        issue: Strong recall loop.
+        recommendation: Keep.
+      - id: u1_l4_e2
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:586"
+        title: Changed situation
+        teaches: Transfer the sleep model to late bedtime plus dream waking.
+        thinking_depth: high_for_v1
+        issue: Strong changed-example retry style.
+        recommendation: Keep.
+      - id: u1_l4_e3
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:626"
+        title: Explain why
+        teaches: "Causal explanation: later sleep -> more REM -> vivid dreams."
+        thinking_depth: high_for_v1
+        issue: Strongest deep-learning exercise in the unit.
+        recommendation: Keep and reuse this pattern in other courses.
+      - id: u1_l4_e4
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:666"
+        title: Choose the safer copy
+        teaches: Avoid panic and avoid over-reassurance.
+        thinking_depth: moderate
+        issue: Excellent trust guardrail; this should be common across mental-health courses.
+        recommendation: Keep.
+      - id: u1_l4_e5
+        ref: "src/data/mock/sleep-reset-unit1-v1.ts:700"
+        title: One small next step
+        teaches: Translate learning into one optional small action.
+        thinking_depth: low
+        issue: Good ending, but outcome is not yet measured later.
+        recommendation: Keep for V1; later schedule a gentle follow-up.
+
+teaching_quality:
+  meaningful_learning:
+    - Learner understands sleep has stages and cycles, not one fixed state.
+    - Learner understands vivid dreams near morning can fit normal REM-heavy later sleep.
+    - Learner understands wake time and morning light are body-clock cues.
+    - Learner understands one wake-up is not enough to diagnose a sleep problem.
+  likely_to_forget_without_review:
+    - Exact labels N1, N2, N3.
+    - Exact cycle shape if not reviewed later.
+    - Difference between "common" and "guaranteed normal" unless safe-copy practice repeats.
+  missing_or_thin:
+    - A compact visual night timeline.
+    - A simple stress -> worry -> monitoring -> worse sleep loop.
+    - Follow-up after chosen action.
+    - Later spaced review of misconceptions.
+    - Personalization based on the worry selected in Lesson 1.
+
+mental_health_relevance:
+  what_works:
+    - Turns scary wake-ups into explainable patterns.
+    - Uses non-blaming language: timing cues, not laziness or brokenness.
+    - Avoids diagnostic certainty from one night.
+    - Keeps actions small and optional.
+  risks_to_watch:
+    - Do not imply all waking is harmless.
+    - Do not imply sleep stages can be identified from dreams or clock time alone.
+    - Do not make users monitor sleep too closely if they are anxious.
+    - Add support boundary for severe distress, persistent insomnia, or daytime impairment.
+
+exercise_system_judgment:
+  current_formats:
+    close_discrimination:
+      value: "Fast misconception correction and safe wording choice."
+      weakness: "Can become easy tapping if distractors are too obvious."
+    guided_recall:
+      value: "Active reconstruction; better than recognition."
+      weakness: "Needs short chips to stay bite-size."
+    scenario_why:
+      value: "Best transfer format; requires applying a concept plus explaining why."
+      weakness: "Should eventually support generated explanations, not only choices."
+    unscored_choice:
+      value: "Low-friction personalization and action selection."
+      weakness: "Not yet used for adaptive branching."
+  feedback_and_retry:
+    current_state: >
+      Feedback is specific and safer than generic "wrong." Retry support escalates
+      from clue to easier to worked answer. This is correct for tired or anxious
+      learners.
+    remaining_gap: >
+      The retry loop is local to the exercise. It does not yet schedule later
+      review or lower future difficulty based on repeated misconceptions.
+
+strengths:
+  - "The unit now teaches one coherent mental model instead of scattered sleep facts."
+  - "Scenario-why exercises make learners apply the model to real sleep worries."
+  - "Safety language is much better: common patterns are normalized without saying 'ignore all problems.'"
+
+biggest_weaknesses:
+  - "No spaced review loop yet, so durable retention is unproven."
+  - "No adaptive personalization from selected worry or selected action."
+  - "No compact visual model of the night, which would help low-energy learners."
+  - "Too many choice-card screens can feel predictable."
+  - "Production telemetry is mock-only; no dashboard proves mastery at scale."
+
+remove_combine_rewrite:
+  remove:
+    - "Do not remove any current exercise for V1; all have a role."
+  combine_if_pacing_feels_long:
+    - "Combine u1_l1_e5 with u1_l1_e2 if Lesson 1 feels repetitive on device."
+  rewrite:
+    - exercise_id: u1_l2_e1
+      reason: "Too easy as standalone."
+      better_version: "Show two dream-waking explanations and ask which one is safer."
+    - exercise_id: u1_l3_e2
+      reason: "Needs clearer causal bridge."
+      better_version: "Morning light -> body clock cue -> easier timing tomorrow."
+
+better_lesson_sequence:
+  - lesson: 1
+    title: Sleep is not one flat state
+    purpose: "Replace the biggest misconception."
+  - lesson: 2
+    title: Your night has a pattern
+    purpose: "Teach early deep sleep and later REM without exact promises."
+  - lesson: 3
+    title: Your body clock listens to cues
+    purpose: "Connect sleep to daily behavior without blame."
+  - lesson: 4
+    title: Use the model when you worry
+    purpose: "Apply the model to real waking, dreams, and safe self-talk."
+
+improved_exercise_ideas:
+  - format: guided_reconstruction
+    example_prompt: "Build the simple night pattern."
+    example_answer: "Early -> more deep sleep -> later -> more REM."
+    why: "Forces active recall and keeps the core model memorable."
+  - format: close_discrimination
+    example_prompt: "Which sentence is safer after a vivid dream?"
+    example_answer: "This can happen in REM-heavy later sleep."
+    why: "Corrects anxious overinterpretation without over-reassurance."
+  - format: scenario_why
+    example_prompt: "You wake at 4am after a vivid dream. What is happening, and why?"
+    example_answer: "Later sleep often has more REM; REM is linked with vivid dreams."
+    why: "Tests transfer, not just fact memory."
+  - format: safe_copy_choice
+    example_prompt: "Choose what the app should say."
+    example_answer: "This can be common. If it is frequent or affects your day, consider support."
+    why: "Prevents medical overclaiming and builds trust."
+  - format: tiny_action_pick
+    example_prompt: "Pick one cue you could try for 3 days."
+    example_answer: "Morning light, steadier wake time, or skip for now."
+    why: "Creates behaviour change without pressure."
+
+telemetry_requirements:
+  already_captured_in_v1_mock:
+    - exercise_id
+    - concept
+    - category
+    - retry_variant_id
+    - selected option ids or ordered ids
+    - misconception_code when present
+    - resolution
+    - attempt_count
+    - support_used
+    - time_to_first_answer_ms
+    - time_to_resolution_ms
+  still_needed_for_duolingo_scale:
+    - concept_mastery_score_by_concept
+    - misconception_recurrence_by_code
+    - review_due_at
+    - changed_scenario_success_rate
+    - first_try_correct_without_support_rate
+    - action_selected
+    - action_followup_completed
+    - dropoff_screen_id
+    - support_boundary_triggered
+    - content_version
+
+before_after_transformation:
+  before: >
+    "I woke from a vivid dream at 4am. My sleep is broken. Something may be
+    wrong with me."
+  after: >
+    "A vivid dream near morning can fit later REM-heavy sleep. One night does
+    not prove a problem. I can notice it calmly and try one small morning cue."
+
+decision:
+  v1_release_readiness: release_for_mock_pilot
+  do_not_claim: "Do not claim treatment, diagnosis, cure, or guaranteed sleep improvement."
+  must_fix_before_large_scale:
+    - "Add spaced review scheduler."
+    - "Use learner-selected worry/action for adaptive examples."
+    - "Add production telemetry and mastery dashboard."
+    - "Add visual QA on device."
+    - "Add support boundary copy for persistent or severe sleep distress."
+
+sources:
+  - id: sleep_stages_nhlbi
+    url: https://www.nhlbi.nih.gov/health/sleep/stages-of-sleep
+    used_for: "Sleep cycles, REM/non-REM phases, brief waking between cycles."
+  - id: sleep_stages_nichd
+    url: https://www.nichd.nih.gov/health/topics/sleep/conditioninfo/what-happens
+    used_for: "REM periods increase later; deep sleep decreases later."
+  - id: circadian_nhlbi
+    url: https://www.nhlbi.nih.gov/health/circadian-rhythm-disorders
+    used_for: "Body clock and circadian rhythm framing."
+  - id: circadian_light_nhlbi
+    url: https://www.nhlbi.nih.gov/health/circadian-rhythm-disorders/causes
+    used_for: "Bright light and gradual sleep-wake timing adjustment."
+  - id: retrieval_practice_karpicke_roediger_2008
+    url: https://pubmed.ncbi.nlm.nih.gov/18276894/
+    used_for: "Retrieval practice supports long-term learning better than repeated study."
+  - id: spacing_karpicke_roediger_2007
+    url: https://profiles.wustl.edu/en/publications/expanding-retrieval-practice-promotes-short-term-retention-but-eq/
+    used_for: "Equally spaced retrieval can support longer retention."
+  - id: duolingo_method
+    url: https://blog.duolingo.com/duolingo-teaching-method/
+    used_for: "Bite-size lessons, active practice, long-term habit design."

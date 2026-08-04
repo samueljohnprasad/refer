@@ -6,12 +6,14 @@ import journeyReducer from "@/src/domains/journey/state/journeySlice";
 import { journeyApi } from "@/src/domains/journey/data/journeyApi";
 import happyAssistantReducer from "@/src/store/slices/happyAssistantSlice";
 import { timelineReducer } from "@/src/domains/timeline/state/timeline.slice";
+import { v1LearningSessionReducer } from "@/src/domains/journey/learning/v1LearningSessionSlice";
 
 export const store = configureStore({
   reducer: {
     journey: journeyReducer,
     happyAssistant: happyAssistantReducer,
     timeline: timelineReducer,
+    v1LearningSessions: v1LearningSessionReducer,
     [journeyApi.reducerPath]: journeyApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

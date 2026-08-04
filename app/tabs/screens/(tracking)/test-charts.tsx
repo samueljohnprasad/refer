@@ -446,7 +446,7 @@ export default function TestChartsScreen() {
             borderColor: "#E5E7EB",
           }}
         >
-          <AddToCart />
+          <AddToCart embedded />
         </View>
       </ScrollView>
     </View>

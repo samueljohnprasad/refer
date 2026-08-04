@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Stack, router, useLocalSearchParams, Link } from "expo-router";
+import { Stack, router, useLocalSearchParams } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { journeyApi } from "@/src/domains/journey/data/journeyApi";
 import {
@@ -13,7 +13,9 @@ import {
   selectExercisesForNode,
 } from "@/src/domains/journey/state/journeySelectors";
 import { Skeleton, SkeletonCard } from "@/src/components/ui/Skeleton";
-import { NodeEngine } from "@/src/components/node/NodeEngine";
+import { NodeEngineRouter } from "@/src/components/node/NodeEngineRouter";
+import { LessonScreen } from "@/src/components/ui/LessonScreen";
+import { Text } from "@/src/components/ui/Text";
 
 export default function JourneyFlowRoute() {
   const { courseId, nodeId } = useLocalSearchParams<{
@@ -28,17 +30,21 @@ export default function JourneyFlowRoute() {
     selectExercisesForNode(state, nodeId || ""),
   );
   const isLoading = !node;
+  const learningSession = journeyApi.useStartLearningSessionQuery(
+    { courseId: courseId || "", nodeId: nodeId || "" },
+    { skip: !courseId || !nodeId || isLoading },
+  );
 
   const handleDismiss = useCallback(() => {
     router.back();
   }, []);
 
   const handleComplete = useCallback(
-    async (responses: Record<string, any>) => {
+    async (responses: Record<string, unknown>) => {
       if (!nodeId || !courseId) return;
 
       try {
-        await completeNode({ nodeId, courseId }).unwrap();
+        await completeNode({ nodeId, courseId, responses }).unwrap();
         dispatch(
           optimisticSetNodeStatus({
             nodeId,
@@ -91,6 +97,16 @@ export default function JourneyFlowRoute() {
   }
 
   if (!nodeId) return null;
+  const sessionResult = learningSession.data;
+  const routedExercises = sessionResult
+    ? sessionResult.exerciseIds
+        .map((exerciseId) =>
+          exercises.find((exercise) => exercise.id === exerciseId),
+        )
+        .filter((exercise): exercise is NonNullable<typeof exercise> =>
+          Boolean(exercise),
+        )
+    : [];
 
   return (
     <>
@@ -101,12 +117,44 @@ export default function JourneyFlowRoute() {
           animation: "fade",
         }}
       />
-      <NodeEngine
-        nodeId={nodeId}
-        exercises={exercises}
-        onNodeComplete={handleComplete}
-        onClose={handleDismiss}
-      />
+      {learningSession.isLoading ? (
+        <LessonScreen
+          progress={0}
+          onClose={handleDismiss}
+          primaryLabel="Check"
+          primaryDisabled
+          onPrimaryPress={() => undefined}
+        >
+          <View className="flex-1 justify-center px-8">
+            <Text variant="body" color="soft">
+              Loading practice…
+            </Text>
+          </View>
+        </LessonScreen>
+      ) : learningSession.isError || !sessionResult ? (
+        <LessonScreen
+          progress={0}
+          onClose={handleDismiss}
+          primaryLabel="Close"
+          onPrimaryPress={handleDismiss}
+        >
+          <View className="flex-1 justify-center px-8">
+            <Text variant="h2" color="ink" className="mb-3">
+              Practice data needs v1 content.
+            </Text>
+            <Text variant="body" color="soft">
+              This node must be migrated before it can run.
+            </Text>
+          </View>
+        </LessonScreen>
+      ) : (
+        <NodeEngineRouter
+          nodeId={nodeId}
+          exercises={routedExercises}
+          onNodeComplete={handleComplete}
+          onClose={handleDismiss}
+        />
+      )}
     </>
   );
 }

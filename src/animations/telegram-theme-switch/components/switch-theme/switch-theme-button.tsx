@@ -2,7 +2,6 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import Reanimated, {
   measure,
   runOnJS,
-  useAnimatedProps,
   useAnimatedRef,
   useAnimatedStyle,
   useDerivedValue,
@@ -10,8 +9,6 @@ import Reanimated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-
-import { AnimatedLottieView } from '../animated-lottie-view';
 
 import { useSwitchTheme } from './context';
 
@@ -74,9 +71,9 @@ const SwitchThemeButton: React.FC<SwitchThemeButtonProps> = ({
     };
   });
 
-  const animatedProps = useAnimatedProps(() => {
+  const rPulseStyle = useAnimatedStyle(() => {
     return {
-      progress: animationProgress.value,
+      opacity: isInvisible.value ? 0.5 : 1,
     };
   });
 
@@ -89,21 +86,15 @@ const SwitchThemeButton: React.FC<SwitchThemeButtonProps> = ({
             { flex: 1, justifyContent: 'center', alignItems: 'center' },
             rAnimatedStyle,
           ]}>
-          <AnimatedLottieView
-            animatedProps={animatedProps}
+          <Reanimated.View
             style={[
               style,
               {
                 height: MAX_THEME_ANIMATION_SIZE,
                 width: MAX_THEME_ANIMATION_SIZE,
+                borderRadius: MAX_THEME_ANIMATION_SIZE / 2,
               },
-            ]}
-            source={require('../../assets/switch-theme.json')}
-            colorFilters={[
-              {
-                keypath: 'Layer 1/icons Outlines',
-                color: '#fff',
-              },
+              rPulseStyle,
             ]}
           />
         </Reanimated.View>

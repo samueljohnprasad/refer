@@ -1,6 +1,6 @@
 import { Feather } from '@expo/vector-icons';
 import { useCallback, useMemo, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { MeasuredDimensions } from 'react-native-reanimated';
 import Animated, {
   cancelAnimation,
@@ -27,7 +27,11 @@ const items = new Array(20).fill(0).map((_, index) => ({
   count: 0,
 }));
 
-const AddToCart = () => {
+interface AddToCartProps {
+  embedded?: boolean;
+}
+
+const AddToCart = ({ embedded = false }: AddToCartProps) => {
   const [listItems, setListItems] = useState(items);
   const { top } = useSafeAreaInsets();
   const animationProgress = useSharedValue(0);
@@ -101,36 +105,46 @@ const AddToCart = () => {
     return <Feather name="shopping-cart" size={18} color="white" />;
   }, []);
 
+  const renderListItem = (item: (typeof items)[number]) => (
+    <ListItem
+      item={item}
+      selectedIndex={selectedIndex}
+      onTap={onTap}
+      key={item.id}
+      index={item.id}
+      style={styles.listItem}
+      animationProgress={animationProgress}
+      buttonStyle={[
+        styles.buyButton,
+        {
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+      ]}
+      confirmButtonChildren={confirmButtonChildren}
+    />
+  );
+
   return (
     <View style={[styles.container, { flex: 1 }]}>
-      <FlatList
-        data={listItems}
-        contentContainerStyle={{
-          paddingBottom: 100,
-          paddingTop: top + 24,
-        }}
-        renderItem={({ item }) => {
-          return (
-            <ListItem
-              item={item}
-              selectedIndex={selectedIndex}
-              onTap={onTap}
-              key={item.id}
-              index={item.id}
-              style={styles.listItem}
-              animationProgress={animationProgress}
-              buttonStyle={[
-                styles.buyButton,
-                {
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                },
-              ]}
-              confirmButtonChildren={confirmButtonChildren}
-            />
-          );
-        }}
-      />
+      {embedded ? (
+        <ScrollView
+          nestedScrollEnabled
+          contentContainerStyle={{ paddingBottom: 100, paddingTop: top + 24 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {listItems.map(renderListItem)}
+        </ScrollView>
+      ) : (
+        <FlatList
+          data={listItems}
+          contentContainerStyle={{
+            paddingBottom: 100,
+            paddingTop: top + 24,
+          }}
+          renderItem={({ item }) => renderListItem(item)}
+        />
+      )}
       <Backdrop animationProgress={animationProgress} onPress={onDismiss} />
       <ConfirmButton
         layoutData={layoutData}
