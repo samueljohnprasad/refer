@@ -1,0 +1,382 @@
+schema: journey_exercise_ui_design_context/v2
+purpose: >-
+  Design production-grade native iOS exercise screens for Happy Journals Journey.
+  This is an exercise-screen brief, not a lesson syllabus. Use it to generate
+  reusable screen designs, interaction states, feedback, retry behavior, and
+  accessibility details.
+
+ai_agent_role:
+  title: Expert Product Designer and Duolingo-Style Microlearning Architect
+  mission: >-
+    Create clear, polished, native iOS learning screens where every visual and
+    interaction helps the learner understand, recall, apply, or reflect on one
+    idea. Combine expert product design, instructional design, CBT-aware
+    psychoeducation, accessibility, and reusable mobile UI craft.
+  responsibilities:
+    - Design the learner action before designing decoration.
+    - Use interaction type to serve the learning objective, never to add empty variety.
+    - Design ready, answered, feedback, support, retry, complete, skipped, and exit states.
+    - Make the interface familiar, trustworthy, calm, and feasible in React Native.
+    - Protect dignity, privacy, accessibility, and emotional safety.
+    - Return one coherent product-grade recommendation, not a moodboard of options.
+  decision_order:
+    - learning_outcome
+    - learner_clarity
+    - psychological_safety
+    - accessibility
+    - product_consistency
+    - visual_polish
+
+product_context:
+  product: Happy Journals
+  feature: Journey exercise screens
+  promise: Reclaim your nights, one small shift at a time.
+  job_to_be_done: >-
+    Help a tired or worried person learn one useful idea in a few minutes,
+    practise it, and leave with one gentle action they can try.
+  audience:
+    - Adults experiencing sleep onset problems, restless nights, or inconsistent sleep.
+    - People who may be stressed, self-critical, cognitively tired, or using English as a second language.
+  emotional_contract:
+    - The learner is not being judged.
+    - A hard night is information, not a moral failure.
+    - Progress is small, private, and non-linear.
+    - The app teaches psychoeducation; it does not diagnose or promise a cure.
+  course_context:
+    course: Sleep Reset
+    section: How Sleep Actually Works
+    units: [Sleep Is Body Rhythm, What's Stealing Your Sleep]
+    concepts: [sleep_pressure, body_clock, arousal, sleep_cycles, caffeine_sleep, alcohol_sleep]
+
+source_of_truth:
+  course_data: src/data/mock/sleep-reset-flat.ts
+  unit_1_exercises: src/data/mock/sleep-reset-unit1-v1.ts
+  runtime_route: >-
+    course data -> journey selectors/API -> NodeEngine -> ExerciseRenderer ->
+    ExerciseRegistry -> exercise screen
+  source_types:
+    - close_discrimination
+    - fill_in_the_blank
+    - free_text
+    - guided_recall
+    - guided_response
+    - learn_cards
+    - matching
+    - multiple_choice
+    - ordering
+    - rating_check
+    - scenario
+    - scenario_why
+    - slider_rating
+    - true_false
+  authored_state_data: [feedback, support, workedExample, maxAttempts, difficulty, passThreshold]
+  implementation_note: >-
+    The design must visibly support authored feedback, progressive support,
+    retry, and persistence. Completion or XP alone is not evidence of learning.
+
+learning_and_psychology:
+  core_loop:
+    - teach_one_idea
+    - retrieve_without_rereading
+    - distinguish_useful_model_from_misconception
+    - explain_why_it_fits
+    - apply_to_changed_situation
+    - choose_one_low_pressure_next_step
+  principles:
+    retrieval_practice: Ask the learner to remember before showing the answer.
+    spacing: Reuse concepts in later exercise screens and checkpoint review.
+    transfer: Change the person, context, timing, or surface details.
+    progressive_support: clue -> easier choice -> worked example -> changed retry.
+    misconception_feedback: Explain the tempting wrong model and replace it with the useful one.
+    adaptive_difficulty: Remove cues after stable success; restore support after repeated errors.
+    motivation: Show capability gained, not only points, streaks, or time spent.
+  cbt_mapping:
+    sleep_reframe: Sleep is a body rhythm with levers, not a test of willpower.
+    anti_shame: Use neutral language; never turn one hard night into personal failure.
+    arousal_awareness: Help learners notice effort, worry, and monitoring without diagnosing them.
+    tiny_action: Prefer one feasible, reversible cue over a perfect nightly plan.
+  safety:
+    disclaimer: >-
+      Educational self-help only; not medical advice, diagnosis, or a substitute
+      for a licensed professional.
+    avoid: [guaranteed outcomes, rigid rules, blame, forced disclosure, medical claims]
+
+design_standard:
+  name: Product-Grade Duolingo Microlearning, Adapted for Happy
+  borrow_from_duolingo:
+    - Bite-size tasks with one obvious action.
+    - Clear progress through the current exercise and Journey path.
+    - Immediate feedback that teaches, not merely marks correct or incorrect.
+    - Purposeful exercise variety across recognition, recall, ordering, matching, and transfer.
+    - Progressive difficulty and adaptive support.
+    - Visible capability progress and recoverable progress after missed days.
+  product_grade_bar:
+    - One primary job and one primary CTA per screen.
+    - Learner always knows what they are doing, why, and what happens next.
+    - Every control has relevant default, selected, focused, disabled, loading, error, and completed states.
+    - Feedback changes understanding, not only the answer color.
+    - Handle interruption, long copy, Dynamic Type, VoiceOver, reduced motion, and keyboard states.
+    - Use one consistent component vocabulary across every exercise type.
+    - Feasible in React Native and Expo Router, not only attractive in a static mockup.
+  adapt_for_mental_health:
+    motivation: Replace streak pressure, hearts, lives, and leaderboards with calm progress and agency.
+    feedback: Warm, precise, non-shaming, and specific to the learner's answer.
+    visual_energy: Sage, white, dark-green ink, editorial typography, restrained motion.
+    privacy: Mood, sleep quality, journaling, and disclosure are never scored or public.
+  never_copy:
+    - Duolingo branding, mascot assets, or visual identity.
+    - Hearts, lives, punitive streak loss, timers, public competition, or forced continuation.
+    - Bright game celebrations after vulnerable answers.
+    - Random rewards presented as therapeutic value.
+
+visual_system:
+  platform: iOS 26+
+  implementation: React Native with Expo Router; native mobile patterns only
+  tone: premium, editorial, calm, precise, trustworthy, private
+  palette:
+    canvas: "#F8FAF7"
+    surface: "#FFFFFF"
+    soft_sage: "#F8FBF6"
+    sage: "#5F7F58"
+    dark_sage: "#29452A"
+    ink: "#142414"
+    muted_ink: "#767676"
+    border: "#E5E5E5"
+    feedback_warm: "#FFF7ED"
+  typography:
+    reflective_title: Cormorant
+    body_controls_labels: Geist
+  rules:
+    - Inputs, choices, and learner words are more important than decoration.
+    - Use tonal layering, spacing, crisp borders, and restrained shadows.
+    - Maximum card/input radius is 24px; pills are for buttons and chips.
+    - Never use generic gradients, sparkle AI decoration, ghost cards, or tracked uppercase eyebrows.
+    - Do not use pale muted text that fails contrast.
+
+exercise_screen_shell:
+  anatomy:
+    - quiet_progress_header: Show current exercise number and calm Journey progress.
+    - concise_title: Name the task, not a marketing slogan.
+    - one_sentence_instruction: Use short literal language.
+    - primary_exercise_surface: Put the learner's action first.
+    - optional_support: Place examples, clue, voice, or AI help below the task.
+    - inline_feedback: Explain the concept directly under the response.
+    - primary_cta: Use Check answer, Continue, Try again, or Save reflection.
+    - skip_exit: Preserve progress; provide Skip for now without shame.
+  state_flow:
+    ready: Explain the task before asking for effort.
+    answered: Preserve the response and enable the CTA only when valid.
+    feedback_correct: Confirm the useful idea and show why it fits.
+    feedback_incorrect: Explain the misconception; never show only Incorrect.
+    support: Reveal clue, easier choice, then worked answer progressively.
+    retry: Change the example or arrangement; never repeat a failed screen exactly.
+    complete: Name capability gained and offer the next step without pressure.
+    skipped: Save position and make return easy.
+    exit: Save state and return to Journey without an interruptive confirmation loop.
+  shared_accessibility:
+    - Minimum comfortable tap targets and VoiceOver labels.
+    - Never communicate meaning through color alone.
+    - Dynamic Type must not hide the primary action.
+    - Preserve focus after feedback and retry.
+    - Offer non-voice alternatives and reduced-motion transitions.
+    - Do not penalize slower reading, assistive technology, or skipped reflection.
+
+exercise_catalog:
+  - type: learn_cards
+    cognitive_job: First exposure to one concept.
+    learner_action: Swipe or tap through 1-5 short cards, then recall the idea.
+    use_when: Introducing sleep science or a short worked example.
+    screen_anatomy: title -> one visual idea -> short card copy -> Next -> recall prompt
+    interaction: One idea per card; no auto-advance; clear progress dots.
+    feedback: No correctness state on cards; test recall after the final card.
+    support: Optional replay; never hide the concept behind a long article.
+    constraints: Maximum 40 words per card; never use two card sets back-to-back.
+    avoid: Dense reading, decorative carousel effects, or passive completion counted as mastery.
+
+  - type: multiple_choice
+    cognitive_job: Recognition and comprehension.
+    learner_action: Select one answer from 3-4 plausible options.
+    use_when: Warmup, concept check, or close misconception contrast.
+    screen_anatomy: prompt -> stacked options -> Check answer -> inline explanation
+    interaction: Single select; shuffle answer position; keep selected state visible.
+    feedback: State why the correct answer fits and why a tempting distractor fails.
+    support: Clue first, then reduce to an easier two-option contrast.
+    retry: Use a changed example or option wording.
+    avoid: Trick wording, obviously silly distractors, or advancing without feedback.
+
+  - type: close_discrimination
+    cognitive_job: Distinguish a useful model from a realistic misconception.
+    learner_action: Choose the least blaming, most accurate explanation.
+    use_when: CBT reframes, sleep myths, rigid rules, and self-blame correction.
+    screen_anatomy: short prompt -> close options -> Check answer -> misconception feedback
+    interaction: Keep alternatives similar in tone and plausibility.
+    feedback: Name the mistaken model and replace it with a simple useful sentence.
+    support: Show a body-system clue, then an easier contrast.
+    retry: Change the person or situation, not merely the option order.
+    avoid: Moralizing, shame, red/green-only feedback, or "try harder" language.
+
+  - type: true_false
+    cognitive_job: Challenge a plausible misconception.
+    learner_action: Choose True or False, then read the explanation.
+    use_when: Quick consolidation of a specific claim.
+    screen_anatomy: statement -> two large choices -> Check answer -> explanation
+    interaction: Two clear buttons; explanation is always shown.
+    feedback: Teach the reason even when the answer is correct.
+    support: Highlight the concept being tested, not the answer.
+    avoid: Absolute medical claims, ambiguous statements, and using True/False as the only assessment.
+
+  - type: guided_recall
+    cognitive_job: Active retrieval of terms, rules, or causal chains.
+    learner_action: Tap chips and arrange them into the remembered pattern.
+    use_when: Sleep levers, pressure loops, cue chains, or compact rules.
+    screen_anatomy: prompt -> answer tray -> available chips -> Check answer
+    interaction: Tap to add; tap again to remove; drag only if it improves clarity.
+    feedback: Show the completed pattern and one-line meaning.
+    support: Give the first item or a category clue, then show the worked sequence.
+    retry: Reorder a changed set or use a new example.
+    avoid: Tiny chips, more than 6 items, or recall that is actually recognition.
+
+  - type: fill_in_the_blank
+    cognitive_job: Guided production and active recall.
+    learner_action: Type a missing word or short phrase.
+    use_when: Specific terms, sequences, or a short rule already seen twice.
+    screen_anatomy: sentence -> roomy text input -> Check answer -> accepted answer feedback
+    interaction: Accept reasonable synonyms, capitalization, and minor spelling variation.
+    feedback: Show the complete sentence and explain the meaning.
+    support: Reveal a word bank or first letter after an error.
+    retry: Keep the concept but change the sentence context.
+    avoid: Exact-string grading, long writing, or more than two blanks.
+
+  - type: ordering
+    cognitive_job: Procedural or causal sequence understanding.
+    learner_action: Arrange 3-5 items in the useful order.
+    use_when: Pressure loops, sleep timing, or cause-and-effect chains.
+    screen_anatomy: prompt -> movable rows/chips -> Check order -> partial/full feedback
+    interaction: Drag or tap-to-place with a clear insertion point; support partial credit.
+    feedback: Show the correct sequence and explain the relationship between steps.
+    support: Pin the first item or show the beginning of the chain.
+    avoid: More than 6 items, tiny drag targets, or unrelated steps.
+
+  - type: matching
+    cognitive_job: Association and categorization.
+    learner_action: Pair concepts with meanings, effects, or examples.
+    use_when: Interleaved review of related concepts.
+    screen_anatomy: prompt -> two labeled columns -> selected pair state -> feedback
+    interaction: Tap one item from each side; make matched pairs settle visibly.
+    feedback: Explain each pairing, including a close wrong pairing.
+    support: Lock one obvious pair or highlight the relevant category.
+    avoid: More than 5 pairs, random unrelated concepts, or color-only matching.
+
+  - type: scenario
+    cognitive_job: Transfer a concept to a changed situation.
+    learner_action: Read a brief real-life vignette and choose the useful next interpretation or action.
+    use_when: Applying sleep pressure, body-clock cues, arousal, or disruptor concepts.
+    screen_anatomy: vignette -> one decision -> optional reason -> feedback -> changed retry
+    interaction: Keep context readable; separate situation facts from answer choices.
+    feedback: Explain why the answer fits this context, not only the general rule.
+    support: Surface the relevant clue before showing an easier option.
+    retry: Change person, time, or context while preserving the concept.
+    avoid: Advice presented as diagnosis, perfect answers, or false certainty.
+
+  - type: scenario_why
+    cognitive_job: Causal explanation and CBT transfer.
+    learner_action: Choose what is happening and why it fits.
+    use_when: The learner must connect a situation to a mechanism.
+    screen_anatomy: vignette -> situation choice -> reason choice -> Check -> joined explanation
+    interaction: Require both choices; keep the two decision groups visually distinct.
+    feedback: Join the answers into one plain-language explanation.
+    support: Give a mechanism clue, then reduce the answer set.
+    retry: Use a changed person or surface detail.
+    avoid: Asking for personal disclosure or treating emotional experience as objectively wrong.
+
+  - type: guided_response
+    cognitive_job: Explain an idea in the learner's own words with support.
+    learner_action: Write or optionally speak one short explanation.
+    use_when: Meaningful transfer or consolidation where production adds value.
+    screen_anatomy: prompt -> roomy input -> two visible examples -> Save response -> supportive feedback
+    interaction: Text first; voice is optional and never the primary path.
+    feedback: Validate the useful concept and offer a specific improvement, not a score.
+    support: Show at least two adaptive examples by default; label them as examples.
+    retry: Offer a sentence starter or changed situation.
+    avoid: AI replacing the learner's words, overlong response requirements, or forced disclosure.
+
+  - type: free_text
+    cognitive_job: Personal reflection or application.
+    learner_action: Write a private, optional response.
+    use_when: Naming a takeaway, observation, or tiny next cue.
+    screen_anatomy: short prompt -> multiline input -> Save reflection -> gentle completion
+    interaction: No right/wrong state; allow Skip for now and Not sure.
+    feedback: Reflect back the chosen action without evaluating emotional content.
+    support: Offer two starter examples below the empty input, never above it.
+    avoid: Scoring, sentiment judgment, mandatory disclosure, or generic AI praise.
+
+  - type: slider_rating
+    cognitive_job: Non-judgmental self-report or intensity check.
+    learner_action: Choose a point on a labeled scale.
+    use_when: Optional baseline, effort, sleepiness, or confidence check.
+    screen_anatomy: one clear question -> labeled slider -> Save -> neutral acknowledgment
+    interaction: Large thumb, labeled endpoints, optional Not sure.
+    feedback: Acknowledge the value without calling the rating good or bad.
+    support: Explain the scale labels; do not suggest a desired answer.
+    scoring: Unscored; never lowers mastery or locks the path.
+    avoid: Fake precision, unlabeled scales, or gamified score treatment.
+
+  - type: rating_check
+    cognitive_job: Lightweight confidence or readiness check.
+    learner_action: Choose a simple rating before or after practice.
+    use_when: Checking confidence, clarity, or whether support is needed.
+    screen_anatomy: short question -> 3-5 labeled choices -> Save -> next action
+    interaction: Keep labels concrete; include Not sure or Need more help.
+    feedback: Route to support or review when requested; never shame low confidence.
+    scoring: Unscored unless explicitly measuring an objective skill with evidence.
+    avoid: Presenting confidence as mastery or requiring a positive rating.
+
+  - type: checkpoint
+    cognitive_job: Spaced retrieval and integration across earlier exercises.
+    learner_action: Complete a short mixed set of previously learned concepts.
+    use_when: End of a section or after several concepts are available for interleaving.
+    screen_anatomy: calm review intro -> mixed exercise shell -> capability summary -> review route
+    interaction: Reuse known exercise types; do not introduce a new mechanic here.
+    feedback: Show concepts solid, concepts to revisit, and a clear gentle next step.
+    support: Restore support per concept; never create a fail screen from one error.
+    completion: Capability summary, not a celebration spectacle or score wall.
+    avoid: One noisy cumulative quiz, harsh pass/fail, or blocking safety content.
+
+  - type: chest
+    cognitive_job: Journey completion/reward transition, not learning assessment.
+    learner_action: Open a milestone after completing required exercise work.
+    use_when: A section or meaningful capability milestone is complete.
+    screen_anatomy: completion summary -> earned milestone -> optional next action
+    interaction: Calm reveal; allow close and return to Journey.
+    feedback: Name the capability earned before any reward detail.
+    scoring: Never treat the chest itself as mastery evidence.
+    avoid: Random therapeutic claims, loud effects, or withholding essential content.
+
+design_agent_output:
+  for_each_exercise_screen:
+    - exercise_type_and_learning_job
+    - screen_purpose
+    - content_hierarchy
+    - primary_user_action
+    - component_anatomy
+    - ready_answered_feedback_support_retry_complete_states
+    - correct_and_incorrect_feedback_copy
+    - adaptive_support_rule
+    - accessibility_and_reduced_motion_notes
+    - keyboard_safe_area_and_scroll_behavior
+    - persistence_and_exit_behavior
+  generate_as_a_system:
+    - One reusable exercise shell with interchangeable exercise bodies.
+    - One shared feedback component with correct, incorrect, support, and retry variants.
+    - One shared progress header and completion summary.
+    - Native iOS controls with large targets and consistent vocabulary.
+    - At least two visible adaptive examples for guided response screens.
+
+design_quality_check:
+  exercise_fit: Does the interaction prove recall, discrimination, explanation, transfer, or reflection?
+  product_grade: Is the next action obvious and are all important states designed?
+  learning: Does feedback teach and does retry use a changed example?
+  psychology: Does the screen reduce shame and avoid diagnosis or promises?
+  hierarchy: Is the learner's answer more important than AI support or decoration?
+  accessibility: Are targets, contrast, labels, focus, Dynamic Type, and reduced motion handled?
+  runtime: Can the design map to the current ExerciseRenderer and persisted attempt state?

@@ -1,12 +1,7 @@
-import React, { useEffect, useMemo } from "react";
-import { View, Share, Alert, Modal, Text as RNText, StyleSheet } from "react-native";
+import React, { useMemo } from "react";
+import { View, Share, Modal, Text as RNText, StyleSheet } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import {
-  Share01Icon,
-  StarIcon,
-  Tick02Icon,
-  Fire02Icon,
-} from "@hugeicons/core-free-icons";
+import { Share01Icon } from "@hugeicons/core-free-icons";
 import { useStreak } from "@/src/hooks/useStreak";
 import { useReviewPrompt } from "@/src/hooks/useReviewPrompt";
 
@@ -17,11 +12,8 @@ import {
   presentationBackground,
 } from "@expo/ui/swift-ui/modifiers";
 import { Text } from "@/src/components/ui/Text";
-import { Card } from "@/src/components/ui/Card";
 import { Button } from "@/src/components/ui/Button";
-import { GOLD, PARROT_ORANGE, SAGE, INK, INK_MUTED } from "@/lib/tokens";
-import { triggerIfEnabledSync } from "@/lib/haptics/hapticUtils";
-import { HAPTIC_INTENSITIES } from "@/lib/haptics/hapticConfig";
+import { PARROT_ORANGE, INK, INK_MUTED } from "@/lib/tokens";
 import { LinearGradient } from "expo-linear-gradient";
 import { AnimatedEmberIcon } from "@/src/components/ui/AnimatedStatIcon";
 
@@ -98,35 +90,6 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
     () => ({ currentStreak, weeklyProgress }),
     [currentStreak, weeklyProgress]
   );
-
-  useEffect(() => {
-    if (!visible || streakData.currentStreak === 0) return;
-
-    // Initial heartbeat on open
-    void triggerIfEnabledSync("heartbeat", HAPTIC_INTENSITIES.HEARTBEAT);
-
-    const lastCompletedIndex = streakData.weeklyProgress.days.lastIndexOf(true);
-    if (lastCompletedIndex === -1) return;
-
-    // Calculate exactly when the final ember finishes its entrance animation
-    // delayMs = 150 + index * 120
-    // entry duration = 600ms
-    const entryFinishTime = 150 + lastCompletedIndex * 120 + 600;
-
-    let interval: NodeJS.Timeout;
-    const timeout = setTimeout(() => {
-      // The breathing loop (1800ms inhale, 1800ms exhale) starts here.
-      // We trigger a soft heartbeat haptic exactly at the peak of each inhale/exhale (every 1800ms).
-      interval = setInterval(() => {
-        void triggerIfEnabledSync("breath", HAPTIC_INTENSITIES.WHISPER_SUBTLE);
-      }, 1800);
-    }, entryFinishTime);
-
-    return () => {
-      clearTimeout(timeout);
-      if (interval) clearInterval(interval);
-    };
-  }, [visible, streakData.currentStreak, streakData.weeklyProgress]);
 
   // Trigger review prompt at 1-day streak milestone
   useReviewPrompt({
