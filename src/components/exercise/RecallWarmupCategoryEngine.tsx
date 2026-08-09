@@ -41,8 +41,8 @@ export function RecallWarmupCategoryEngine({
           {card?.question}
         </Text>
         {revealed ? (
-          <View className="rounded-[20px] border-[1.5px] border-[#7A8A5E] bg-[#F0FAE1] px-4 py-3.5">
-            <Text className="happy-font-body text-[14.5px] leading-[22px] text-[#56633F]">
+          <View className="rounded-[20px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-4 py-3.5">
+            <Text className="happy-font-body text-[14.5px] leading-[22px] text-[#29452A]">
               {card?.answer}
             </Text>
           </View>
@@ -55,7 +55,7 @@ export function RecallWarmupCategoryEngine({
             key={index}
             className={
               index === cardIndex
-                ? "h-2 w-[22px] rounded-full bg-[#7A8A5E]"
+                ? "h-2 w-[22px] rounded-full bg-[#5F7F58]"
                 : "h-2 w-2 rounded-full bg-[#DCD3C4]"
             }
           />

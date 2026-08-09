@@ -97,7 +97,6 @@ export function WhiteBearExperimentCategoryEngine({
               key={option.id}
               label={option.label}
               selected={selectedOptionId === option.id}
-              selectedTone="olive"
               showConfirmationIcon={false}
               disabled={locked}
               onPress={() => selectOption(option.id)}
@@ -148,7 +147,7 @@ const styles = StyleSheet.create({
     shadowRadius: 7,
   },
   countdown: {
-    color: COURSE_EXERCISE_COLORS.orangeRim,
+    color: COURSE_EXERCISE_COLORS.accentDark,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 44,
     lineHeight: 50,
@@ -157,14 +156,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderWidth: 1.5,
-    borderColor: COURSE_EXERCISE_COLORS.orangeLight,
+    borderColor: COURSE_EXERCISE_COLORS.accentLight,
     borderRadius: 18,
-    backgroundColor: COURSE_EXERCISE_COLORS.orangeTint,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   bearVisible: { opacity: 1 },
   bearHidden: { opacity: 0.15 },
   bearLabel: {
-    color: COURSE_EXERCISE_COLORS.orangeRim,
+    color: COURSE_EXERCISE_COLORS.accentDark,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 13.5,
     fontStyle: "italic",
@@ -189,7 +188,7 @@ const styles = StyleSheet.create({
     shadowRadius: 7,
   },
   rule: {
-    color: COURSE_EXERCISE_COLORS.oliveDark,
+    color: COURSE_EXERCISE_COLORS.accentDark,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 20,
     lineHeight: 25,
@@ -203,7 +202,7 @@ const styles = StyleSheet.create({
   },
   fix: {
     marginTop: 9,
-    color: COURSE_EXERCISE_COLORS.oliveDark,
+    color: COURSE_EXERCISE_COLORS.accentDark,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 13,
     lineHeight: 20,

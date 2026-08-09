@@ -64,22 +64,22 @@ export function AssociationMeterCategoryEngine({
 
       <View className="rounded-[26px] border border-[#E4DACB] bg-[#F9F4ED] px-5 py-5 shadow-sm shadow-black/10">
         <View className="flex-row justify-between gap-4">
-          <Text className="happy-font-body-bold max-w-[45%] text-[11.5px] leading-4 text-[#8C491A]">
+          <Text className="happy-font-body-bold max-w-[45%] text-[11.5px] leading-4 text-[#29452A]">
             {readString(content.leftLabel)}
           </Text>
-          <Text className="happy-font-body-bold max-w-[45%] text-right text-[11.5px] leading-4 text-[#56633F]">
+          <Text className="happy-font-body-bold max-w-[45%] text-right text-[11.5px] leading-4 text-[#29452A]">
             {readString(content.rightLabel)}
           </Text>
         </View>
         <View className="relative mt-5 h-6 justify-center">
           <View className="h-[7px] overflow-hidden rounded-full bg-[#E7E0D4]">
             <View
-              className="h-full rounded-full bg-[#8FA476]"
+              className="h-full rounded-full bg-[#5F7F58]"
               style={{ width: `${position}%` }}
             />
           </View>
           <View
-            className="absolute h-[22px] w-[22px] rounded-full border-[3px] border-[#F9F4ED] bg-[#C77A3E] shadow-sm shadow-black/20"
+            className="absolute h-[22px] w-[22px] rounded-full border-[3px] border-[#F9F4ED] bg-[#5F7F58] shadow-sm shadow-black/20"
             style={{ left: `${position}%`, transform: [{ translateX: -11 }] }}
           />
         </View>
@@ -105,7 +105,7 @@ export function AssociationMeterCategoryEngine({
       </View>
 
       {hasFlipped ? (
-        <View className="mt-3 rounded-[22px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] p-4">
+        <View className="mt-3 rounded-[22px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] p-4">
           <Text className="happy-font-heading-bold text-lg leading-[22px] text-[#3F4A31]">
             {readString(content.rule)}
           </Text>

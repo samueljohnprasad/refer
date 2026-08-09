@@ -79,8 +79,8 @@ export function GuidedDiscoveryTrailCategoryEngine({
               })}
 
               {answered ? (
-                <View className="rounded-br-[20px] rounded-t-[20px] rounded-bl-md border-[1.5px] border-[#7A8A5E] bg-[#F0FAE1] px-[15px] py-[13px]">
-                  <Text className="happy-font-body text-[14px] leading-[21px] text-[#56633F]">
+                <View className="rounded-br-[20px] rounded-t-[20px] rounded-bl-md border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-[15px] py-[13px]">
+                  <Text className="happy-font-body text-[14px] leading-[21px] text-[#29452A]">
                     {question.options[selectedOptionIndex]?.reply}
                   </Text>
                 </View>
@@ -91,8 +91,8 @@ export function GuidedDiscoveryTrailCategoryEngine({
       </View>
 
       {complete ? (
-        <View className="mt-2.5 rounded-[20px] border-[1.5px] border-dashed border-[#7A8A5E] px-[18px] py-4">
-          <Text className="happy-font-heading-bold text-center text-[18px] leading-[25px] text-[#56633F]">
+        <View className="mt-2.5 rounded-[20px] border-[1.5px] border-dashed border-[#5F7F58] px-[18px] py-4">
+          <Text className="happy-font-heading-bold text-center text-[18px] leading-[25px] text-[#29452A]">
             {readString(content.stamp)}
           </Text>
         </View>
@@ -134,7 +134,7 @@ function getOptionClassName({
   selected: boolean;
 }): string {
   if (selected) {
-    return "min-h-[52px] justify-center rounded-[22px] border-[1.5px] border-[#7A8A5E] bg-[#F0FAE1] px-4 py-3 shadow-sm shadow-black/10 active:translate-y-px active:shadow-none";
+    return "min-h-[52px] justify-center rounded-[22px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-4 py-3 shadow-sm shadow-black/10 active:translate-y-px active:shadow-none";
   }
   if (answered) {
     return "min-h-[52px] justify-center rounded-[22px] border-[1.5px] border-[#DCD3C4] bg-[#F9F4ED] px-4 py-3 opacity-50";

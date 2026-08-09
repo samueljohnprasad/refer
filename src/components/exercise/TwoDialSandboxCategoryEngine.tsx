@@ -98,7 +98,7 @@ export function TwoDialSandboxCategoryEngine({
           low="quiet"
           high="everything at once"
           value={load}
-          color={COURSE_EXERCISE_COLORS.orange}
+          color={COURSE_EXERCISE_COLORS.accent}
           disabled={locked}
           onChange={(value) => updateDials(value, recovery)}
         />
@@ -108,7 +108,7 @@ export function TwoDialSandboxCategoryEngine({
           low="running dry"
           high="topped up"
           value={recovery}
-          color={COURSE_EXERCISE_COLORS.olive}
+          color={COURSE_EXERCISE_COLORS.accent}
           disabled={locked}
           onChange={(value) => updateDials(load, value)}
         />

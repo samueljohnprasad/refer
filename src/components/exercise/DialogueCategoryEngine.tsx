@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   messageRight: { alignItems: "flex-end" },
   name: { marginHorizontal: 10, marginBottom: 3, color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 10.5, letterSpacing: 0.5 },
   bubble: { maxWidth: "82%", paddingHorizontal: 14, paddingVertical: 10, borderWidth: 1.5, borderColor: COURSE_EXERCISE_COLORS.border, borderRadius: 18, borderBottomLeftRadius: 6, backgroundColor: COURSE_EXERCISE_COLORS.surface, shadowColor: COURSE_EXERCISE_COLORS.shadow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 4 },
-  bubbleRight: { borderColor: COURSE_EXERCISE_COLORS.oliveLight, borderBottomLeftRadius: 18, borderBottomRightRadius: 6, backgroundColor: COURSE_EXERCISE_COLORS.oliveTint },
+  bubbleRight: { borderColor: COURSE_EXERCISE_COLORS.accentLight, borderBottomLeftRadius: 18, borderBottomRightRadius: 6, backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
   messageText: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 14.5, lineHeight: 21 },
   insight: { marginTop: 16, paddingHorizontal: 16, paddingVertical: 14, borderRadius: 20, backgroundColor: COURSE_EXERCISE_COLORS.surface, shadowColor: COURSE_EXERCISE_COLORS.shadow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.09, shadowRadius: 4 },
   insightKicker: { marginBottom: 4, color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 10.5, letterSpacing: 0.7 },

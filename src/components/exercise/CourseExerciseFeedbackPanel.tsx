@@ -47,7 +47,9 @@ export function CourseExerciseFeedbackPanel({
             <Text style={styles.title}>
               {isSuccess ? (successTitle ?? "Nice.") : "Try another way."}
             </Text>
-            {feedbackText ? <Text style={styles.body}>{feedbackText}</Text> : null}
+            {feedbackText ? (
+              <Text style={styles.body}>{feedbackText}</Text>
+            ) : null}
             {isSuccess && successTakeaway ? (
               <Text style={styles.takeaway}>
                 <Text style={styles.takeawayLabel}>New capability: </Text>
@@ -76,12 +78,12 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   success: {
-    borderColor: COURSE_EXERCISE_COLORS.olive,
-    backgroundColor: COURSE_EXERCISE_COLORS.oliveTint,
+    borderColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   retry: {
-    borderColor: COURSE_EXERCISE_COLORS.orange,
-    backgroundColor: COURSE_EXERCISE_COLORS.orangeTint,
+    borderColor: COURSE_EXERCISE_COLORS.error,
+    backgroundColor: COURSE_EXERCISE_COLORS.errorTint,
   },
   review: {
     borderColor: COURSE_EXERCISE_COLORS.border,
@@ -101,7 +103,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 14,
-    backgroundColor: COURSE_EXERCISE_COLORS.olive,
+    backgroundColor: COURSE_EXERCISE_COLORS.accent,
   },
   successIconLabel: {
     color: COURSE_EXERCISE_COLORS.surface,
@@ -110,7 +112,7 @@ const styles = StyleSheet.create({
   },
   kicker: {
     marginBottom: 5,
-    color: COURSE_EXERCISE_COLORS.orange,
+    color: COURSE_EXERCISE_COLORS.accent,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 11,
     letterSpacing: 1,
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
   },
   takeaway: {
     marginTop: 9,
-    color: COURSE_EXERCISE_COLORS.oliveDark,
+    color: COURSE_EXERCISE_COLORS.accentDark,
     fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
     fontSize: 13,
     lineHeight: 18,

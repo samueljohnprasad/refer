@@ -63,7 +63,7 @@ export function StoryWalkthroughCategoryEngine({
           <Feather
             name={isInsight ? "check" : currentBeat?.icon ?? "circle"}
             size={38}
-            color={COURSE_EXERCISE_COLORS.oliveDark}
+            color={COURSE_EXERCISE_COLORS.accentDark}
           />
         </View>
         <Text style={styles.kicker}>
@@ -144,18 +144,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.14,
     shadowRadius: 8,
   },
-  insightCard: { backgroundColor: COURSE_EXERCISE_COLORS.oliveTint },
+  insightCard: { backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
   iconCircle: {
     width: 82,
     height: 82,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 41,
-    backgroundColor: COURSE_EXERCISE_COLORS.oliveLight,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentLight,
   },
   kicker: {
     marginTop: 4,
-    color: COURSE_EXERCISE_COLORS.orange,
+    color: COURSE_EXERCISE_COLORS.accent,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 11,
     letterSpacing: 0.75,
@@ -179,6 +179,6 @@ const styles = StyleSheet.create({
     marginTop: 14,
   },
   dot: { height: 8, borderRadius: 4 },
-  activeDot: { width: 22, backgroundColor: COURSE_EXERCISE_COLORS.olive },
+  activeDot: { width: 22, backgroundColor: COURSE_EXERCISE_COLORS.accent },
   inactiveDot: { width: 8, backgroundColor: COURSE_EXERCISE_COLORS.border },
 });

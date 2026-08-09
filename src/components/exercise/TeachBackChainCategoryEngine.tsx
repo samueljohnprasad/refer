@@ -92,14 +92,14 @@ export function TeachBackChainCategoryEngine({
               key={hint}
               className={
                 filled
-                  ? "min-h-12 flex-row items-center gap-2.5 rounded-[20px] border-[1.5px] border-[#7A8A5E] bg-[#F0FAE1] px-[13px] py-2.5"
+                  ? "min-h-12 flex-row items-center gap-2.5 rounded-[20px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-[13px] py-2.5"
                   : "min-h-12 flex-row items-center gap-2.5 rounded-[20px] border-[1.5px] border-dashed border-[#82796A] px-[13px] py-2.5"
               }
             >
               <View
                 className={
                   filled
-                    ? "h-[22px] w-[22px] items-center justify-center rounded-full bg-[#7A8A5E]"
+                    ? "h-[22px] w-[22px] items-center justify-center rounded-full bg-[#5F7F58]"
                     : "h-[22px] w-[22px] items-center justify-center rounded-full bg-[#EBDDC5]"
                 }
               >
@@ -116,7 +116,7 @@ export function TeachBackChainCategoryEngine({
               <Text
                 className={
                   filled
-                    ? "happy-font-body-bold flex-1 text-[13.5px] leading-[19px] text-[#56633F]"
+                    ? "happy-font-body-bold flex-1 text-[13.5px] leading-[19px] text-[#29452A]"
                     : "happy-font-body flex-1 text-[13.5px] italic leading-[19px] text-[#82796A]"
                 }
               >
@@ -186,7 +186,7 @@ export function TeachBackChainCategoryEngine({
       {selectedFollowUp ? (
         <View className="mt-3 gap-2.5">
           <PipMessage text={selectedFollowUp.reply} confirmed />
-          <Text className="happy-font-body-bold text-center text-[13px] leading-[19px] text-[#56633F]">
+          <Text className="happy-font-body-bold text-center text-[13px] leading-[19px] text-[#29452A]">
             {selectedFollowUp.takeaway}
           </Text>
         </View>
@@ -207,15 +207,15 @@ function PipMessage({
       <View
         className={
           confirmed
-            ? "h-[42px] w-[42px] items-center justify-center rounded-full bg-[#7A8A5E]"
-            : "h-[42px] w-[42px] items-center justify-center rounded-full bg-[#E1EECC]"
+            ? "h-[42px] w-[42px] items-center justify-center rounded-full bg-[#5F7F58]"
+            : "h-[42px] w-[42px] items-center justify-center rounded-full bg-[#D3E0CD]"
         }
       >
         <Text
           className={
             confirmed
               ? "happy-font-heading-bold text-[19px] text-white"
-              : "happy-font-heading-bold text-[19px] text-[#56633F]"
+              : "happy-font-heading-bold text-[19px] text-[#29452A]"
           }
         >
           P
@@ -224,7 +224,7 @@ function PipMessage({
       <View
         className={
           confirmed
-            ? "flex-1 rounded-br-[20px] rounded-t-[20px] rounded-bl-md border-[1.5px] border-[#7A8A5E] bg-[#F0FAE1] px-3.5 py-[11px]"
+            ? "flex-1 rounded-br-[20px] rounded-t-[20px] rounded-bl-md border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-3.5 py-[11px]"
             : "flex-1 rounded-br-[20px] rounded-t-[20px] rounded-bl-md border-[1.5px] border-[#DCD3C4] bg-[#F9F4ED] px-3.5 py-[11px]"
         }
       >
@@ -254,7 +254,7 @@ function readNumber(value: unknown): number | null {
 
 function getFollowUpClassName(selected: boolean, answered: boolean): string {
   if (selected) {
-    return "min-h-[52px] justify-center rounded-[22px] border-[1.5px] border-[#7A8A5E] bg-[#F0FAE1] px-4 py-3 shadow-sm shadow-black/10";
+    return "min-h-[52px] justify-center rounded-[22px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-4 py-3 shadow-sm shadow-black/10";
   }
   if (answered) {
     return "min-h-[52px] justify-center rounded-[22px] border-[1.5px] border-[#DCD3C4] bg-[#F9F4ED] px-4 py-3 opacity-50";

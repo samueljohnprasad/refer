@@ -76,14 +76,14 @@ function ComparisonColumnCard({
     <View
       className={
         isOlive
-          ? "flex-1 gap-2 rounded-[24px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-4 py-4"
+          ? "flex-1 gap-2 rounded-[24px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-4 py-4"
           : "flex-1 gap-2 rounded-[24px] border-[1.5px] border-[#DCD3C4] bg-[#F9F4ED] px-4 py-4"
       }
     >
       <Text
         className={
           isOlive
-            ? "happy-font-body-bold text-[11px] tracking-[0.45px] text-[#56633F]"
+            ? "happy-font-body-bold text-[11px] tracking-[0.45px] text-[#29452A]"
             : "happy-font-body-bold text-[11px] tracking-[0.45px] text-[#82796A]"
         }
       >
@@ -100,7 +100,7 @@ function ComparisonColumnCard({
       <Text
         className={
           isOlive
-            ? "happy-font-body-bold mt-auto border-t-[1.5px] border-[#C9D9AF] pt-2 text-[12.5px] leading-[18px] text-[#3F4A31]"
+            ? "happy-font-body-bold mt-auto border-t-[1.5px] border-[#ABC0A2] pt-2 text-[12.5px] leading-[18px] text-[#3F4A31]"
             : "happy-font-body-bold mt-auto border-t-[1.5px] border-[#DCD3C4] pt-2 text-[12.5px] leading-[18px] text-[#5E574D]"
         }
       >

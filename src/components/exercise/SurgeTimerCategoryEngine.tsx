@@ -39,12 +39,12 @@ export function SurgeTimerCategoryEngine({
         <View className="flex-row items-center gap-[18px]">
           <View className="h-24 w-[62px] justify-end overflow-hidden rounded-[14px] border-2 border-[#DCD3C4] bg-[#EBDDC5]">
             <View
-              className="w-full bg-[#C67139]"
+              className="w-full bg-[#5F7F58]"
               style={{ height: `${remainingPercent}%` }}
             />
           </View>
           <View className="flex-1">
-            <Text className="happy-font-heading-bold text-[36px] leading-[38px] text-[#8C491A]">
+            <Text className="happy-font-heading-bold text-[36px] leading-[38px] text-[#29452A]">
               {remainingPercent}%
             </Text>
             <Text className="happy-font-body mt-1.5 text-[13px] leading-[19.5px] text-[#3F3A34]">
@@ -61,12 +61,12 @@ export function SurgeTimerCategoryEngine({
             accessibilityLabel="Minutes since the peak"
             accessibilityRole="adjustable"
             accessibilityValue={{ min: 0, max: 10, now: minute }}
-            minimumTrackTintColor="#C67139"
+            minimumTrackTintColor="#5F7F58"
             maximumTrackTintColor="#DCD3C4"
             minimumValue={0}
             maximumValue={10}
             step={0.5}
-            thumbTintColor="#C67139"
+            thumbTintColor="#5F7F58"
             value={minute}
             onValueChange={updateMinute}
             style={{ height: 44, width: "100%" }}
@@ -82,8 +82,8 @@ export function SurgeTimerCategoryEngine({
         </View>
       </View>
 
-      <View className="mt-3 rounded-[20px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-4 py-[13px]">
-        <Text className="happy-font-body text-[13.5px] leading-5 text-[#56633F]">
+      <View className="mt-3 rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-4 py-[13px]">
+        <Text className="happy-font-body text-[13.5px] leading-5 text-[#29452A]">
           <Text className="happy-font-body-bold">The number to keep: </Text>
           {readString(content.numberToKeep)}
         </Text>

@@ -47,15 +47,15 @@ export function WaveSequenceCategoryEngine({
                 <View
                   className={
                     last
-                      ? "h-[26px] w-[26px] items-center justify-center rounded-full bg-[#7A8A5E]"
-                      : "h-[26px] w-[26px] items-center justify-center rounded-full bg-[#E1EECC]"
+                      ? "h-[26px] w-[26px] items-center justify-center rounded-full bg-[#5F7F58]"
+                      : "h-[26px] w-[26px] items-center justify-center rounded-full bg-[#D3E0CD]"
                   }
                 >
                   <Text
                     className={
                       last
                         ? "happy-font-body-bold text-[12.5px] text-white"
-                        : "happy-font-body-bold text-[12.5px] text-[#56633F]"
+                        : "happy-font-body-bold text-[12.5px] text-[#29452A]"
                     }
                   >
                     {index + 1}
@@ -66,14 +66,14 @@ export function WaveSequenceCategoryEngine({
                 </Text>
               </View>
               {!last ? (
-                <View className="ml-3 h-3.5 w-0.5 rounded-full bg-[#C9D9AF]" />
+                <View className="ml-3 h-3.5 w-0.5 rounded-full bg-[#ABC0A2]" />
               ) : null}
             </View>
           );
         })}
 
         <View className="mt-4 border-t-[1.5px] border-[#E7DFD2] pt-3.5">
-          <Text className="happy-font-heading-bold mb-1 text-[19px] leading-6 text-[#56633F]">
+          <Text className="happy-font-heading-bold mb-1 text-[19px] leading-6 text-[#29452A]">
             {readString(content.rule)}
           </Text>
           <Text className="happy-font-body text-[13.5px] leading-5 text-[#3F3A34]">

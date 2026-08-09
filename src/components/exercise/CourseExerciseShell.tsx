@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
+import { SAGE } from "@/lib/tokens";
 import {
   COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
@@ -113,6 +114,8 @@ export function CourseExercisePrimaryButton({
   disabled?: boolean;
   onPress: () => void;
 }) {
+  const colors = getPrimaryButtonColors(disabled);
+
   return (
     <View
       accessible
@@ -127,22 +130,24 @@ export function CourseExercisePrimaryButton({
         leftRadius={27}
         rightRadius={27}
         pressDepth={5}
-        color={
-          disabled
-            ? COURSE_EXERCISE_COLORS.orangeLight
-            : COURSE_EXERCISE_COLORS.orange
-        }
-        backgroundColor={
-          disabled ? "#C79369" : COURSE_EXERCISE_COLORS.orangeRim
-        }
+        color={colors.face}
+        backgroundColor={colors.rim}
         disabled={disabled}
         onPress={onPress}
         contentContainerStyle={styles.primaryButtonContent}
       >
-        <Text style={styles.primaryLabel}>{label}</Text>
+        <Text style={[styles.primaryLabel, disabled && styles.disabledLabel]}>
+          {label}
+        </Text>
       </SvgAppButton>
     </View>
   );
+}
+
+function getPrimaryButtonColors(disabled: boolean) {
+  return disabled
+    ? { face: SAGE[300], rim: SAGE[500] }
+    : { face: SAGE[500], rim: SAGE[700] };
 }
 
 const styles = StyleSheet.create({
@@ -173,7 +178,7 @@ const styles = StyleSheet.create({
   progressFill: {
     height: "100%",
     borderRadius: 999,
-    backgroundColor: COURSE_EXERCISE_COLORS.olive,
+    backgroundColor: COURSE_EXERCISE_COLORS.accent,
   },
   progressLabel: {
     minWidth: 43,
@@ -198,9 +203,10 @@ const styles = StyleSheet.create({
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 16,
   },
+  disabledLabel: { color: SAGE[700] },
   skipButton: { minHeight: 44, alignItems: "center", justifyContent: "center" },
   skipLabel: {
-    color: COURSE_EXERCISE_COLORS.orange,
+    color: SAGE[600],
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 14,
   },

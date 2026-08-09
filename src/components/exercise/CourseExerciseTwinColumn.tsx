@@ -79,12 +79,12 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   leftHeader: {
-    borderColor: "#F6A06B",
-    backgroundColor: COURSE_EXERCISE_COLORS.orangeTint,
+    borderColor: COURSE_EXERCISE_COLORS.accentLight,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   rightHeader: {
-    borderColor: "#AEBF92",
-    backgroundColor: COURSE_EXERCISE_COLORS.oliveTint,
+    borderColor: COURSE_EXERCISE_COLORS.accentLight,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   headerLabel: {
     color: COURSE_EXERCISE_COLORS.ink,
@@ -105,13 +105,13 @@ const styles = StyleSheet.create({
     backgroundColor: COURSE_EXERCISE_COLORS.surface,
   },
   selected: {
-    borderColor: COURSE_EXERCISE_COLORS.orange,
-    backgroundColor: COURSE_EXERCISE_COLORS.orangeTint,
+    borderColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   matched: {
     borderColor: COURSE_EXERCISE_COLORS.border,
     borderBottomWidth: 1,
-    backgroundColor: COURSE_EXERCISE_COLORS.oliveTint,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
     opacity: 0.72,
   },
   disabled: { opacity: 0.6 },

@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 8,
     borderRadius: 999,
-    backgroundColor: COURSE_EXERCISE_COLORS.olive,
+    backgroundColor: COURSE_EXERCISE_COLORS.accent,
   },
   term: {
     color: COURSE_EXERCISE_COLORS.surface,
@@ -174,8 +174,8 @@ const styles = StyleSheet.create({
     backgroundColor: COURSE_EXERCISE_COLORS.surface,
   },
   openPanel: {
-    borderColor: COURSE_EXERCISE_COLORS.olive,
-    backgroundColor: COURSE_EXERCISE_COLORS.oliveTint,
+    borderColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   pressed: { transform: [{ translateY: 2 }], borderBottomWidth: 2 },
   panelLabel: {
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     fontSize: 10.5,
     letterSpacing: 0.5,
   },
-  openLabel: { color: COURSE_EXERCISE_COLORS.oliveDark },
+  openLabel: { color: COURSE_EXERCISE_COLORS.accentDark },
   panelBody: {
     color: COURSE_EXERCISE_COLORS.ink,
     fontFamily: COURSE_EXERCISE_FONTS.body,

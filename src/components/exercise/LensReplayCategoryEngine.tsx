@@ -81,10 +81,10 @@ export function LensReplayCategoryEngine({
                 onPress={() => openHighlight(index)}
                 className={
                   active
-                    ? "happy-font-body-bold rounded bg-[#DDEBC5] text-[#3F4A31]"
+                    ? "happy-font-body-bold rounded bg-[#D3E0CD] text-[#3F4A31]"
                     : seen
-                      ? "happy-font-body-bold rounded bg-[#F0E3C6] text-[#8C491A]"
-                      : "happy-font-body-bold rounded bg-[#F7DCC7] text-[#8C491A]"
+                      ? "happy-font-body-bold rounded bg-[#E5EDE1] text-[#29452A]"
+                      : "happy-font-body-bold rounded bg-[#F2F8EF] text-[#29452A]"
                 }
               >
                 {segment.text}
@@ -95,8 +95,8 @@ export function LensReplayCategoryEngine({
       </View>
 
       {activeSegment?.key ? (
-        <View className="mt-3 rounded-[21px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-4 py-[14px]">
-          <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#56633F]">
+        <View className="mt-3 rounded-[21px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-4 py-[14px]">
+          <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]">
             {activeSegment.key}
           </Text>
           <Text className="happy-font-body mt-1 text-[13.5px] leading-5 text-[#3F4A31]">

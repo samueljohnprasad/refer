@@ -88,11 +88,11 @@ export function WaveOrderingCategoryEngine({
               <View
                 className={
                   stage
-                    ? "h-6 w-6 items-center justify-center rounded-full bg-[#E1EECC]"
+                    ? "h-6 w-6 items-center justify-center rounded-full bg-[#D3E0CD]"
                     : "h-6 w-6 items-center justify-center rounded-full bg-[#EEE8DD]"
                 }
               >
-                <Text className="happy-font-body-bold text-xs text-[#56633F]">
+                <Text className="happy-font-body-bold text-xs text-[#29452A]">
                   {stageIndex + 1}
                 </Text>
               </View>
@@ -106,7 +106,7 @@ export function WaveOrderingCategoryEngine({
                 {stage ?? "Tap a chip to place it here"}
               </Text>
               {phase === "feedback" && mark ? (
-                <Text className="happy-font-body-bold text-base text-[#56633F]">
+                <Text className="happy-font-body-bold text-base text-[#29452A]">
                   ✓
                 </Text>
               ) : null}
@@ -143,7 +143,7 @@ export function WaveOrderingCategoryEngine({
 
       {phase === "entry" && attemptCount >= 1 ? (
         <View className="mt-3 flex-row items-start gap-2 rounded-[20px] bg-[#F9F4ED] px-4 py-3">
-          <Text className="happy-font-body-bold text-[#C67139]">?</Text>
+          <Text className="happy-font-body-bold text-[#5F7F58]">?</Text>
           <Text className="happy-font-body flex-1 text-[13.5px] leading-5 text-[#3F3A34]">
             <Text className="happy-font-body-bold">Clue: </Text>
             {variant?.clue}
@@ -179,12 +179,12 @@ function WaveOrderFeedback({
     <View
       className={
         positive
-          ? "mt-4 flex-row items-start gap-2.5 rounded-[24px] border-[1.5px] border-[#7A8A5E] bg-[#F0FAE1] px-[17px] py-[15px]"
-          : "mt-4 rounded-[24px] border-[1.5px] border-[#C67139] bg-[#FFF2EB] px-[17px] py-[15px]"
+          ? "mt-4 flex-row items-start gap-2.5 rounded-[24px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-[17px] py-[15px]"
+          : "mt-4 rounded-[24px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-[17px] py-[15px]"
       }
     >
       {positive ? (
-        <View className="h-7 w-7 items-center justify-center rounded-full bg-[#7A8A5E]">
+        <View className="h-7 w-7 items-center justify-center rounded-full bg-[#5F7F58]">
           <Text className="happy-font-body-bold text-sm text-white">✓</Text>
         </View>
       ) : null}
@@ -192,8 +192,8 @@ function WaveOrderFeedback({
         <Text
           className={
             positive
-              ? "happy-font-heading-bold text-base leading-5 text-[#56633F]"
-              : "happy-font-heading-bold text-base leading-5 text-[#8C491A]"
+              ? "happy-font-heading-bold text-base leading-5 text-[#29452A]"
+              : "happy-font-heading-bold text-base leading-5 text-[#29452A]"
           }
         >
           {supported
@@ -206,7 +206,7 @@ function WaveOrderFeedback({
           {feedbackText}
         </Text>
         {correct && capability ? (
-          <Text className="happy-font-body mt-2 text-[13px] leading-[18px] text-[#56633F]">
+          <Text className="happy-font-body mt-2 text-[13px] leading-[18px] text-[#29452A]">
             <Text className="happy-font-body-bold">New capability: </Text>
             {capability}
           </Text>
@@ -255,10 +255,10 @@ function getSlotClassName({
     return "min-h-[54px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-dashed border-[#82796A] px-3.5 py-2.5";
   }
   if (phase === "feedback" && mark) {
-    return "min-h-[54px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#7A8A5E] bg-[#F0FAE1] px-3.5 py-2.5 shadow-sm shadow-black/10";
+    return "min-h-[54px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-3.5 py-2.5 shadow-sm shadow-black/10";
   }
   if (phase === "feedback") {
-    return "min-h-[54px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#C67139] bg-[#FFF2EB] px-3.5 py-2.5 shadow-sm shadow-black/10";
+    return "min-h-[54px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-3.5 py-2.5 shadow-sm shadow-black/10";
   }
   return "min-h-[54px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#DCD3C4] bg-[#F9F4ED] px-3.5 py-2.5 shadow-sm shadow-black/10 active:translate-y-px active:shadow-none";
 }

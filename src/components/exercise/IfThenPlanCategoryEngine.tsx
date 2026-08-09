@@ -79,8 +79,8 @@ export function IfThenPlanCategoryEngine({
         </>
       ) : (
         <>
-          <View className="rounded-[20px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-[18px] py-4">
-            <Text className="happy-font-body-bold text-[10.5px] tracking-[0.5px] text-[#56633F]">
+          <View className="rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[18px] py-4">
+            <Text className="happy-font-body-bold text-[10.5px] tracking-[0.5px] text-[#29452A]">
               YOUR PLAN
             </Text>
             <Text className="happy-font-heading-bold mt-1 text-[19px] leading-[27px] text-[#3F4A31]">
@@ -127,7 +127,7 @@ function PlanChoiceGroup({
               onPress={() => onSelect(index)}
               className={
                 selected
-                  ? "min-h-[50px] justify-center rounded-[20px] border-[1.5px] border-[#93A876] border-b-[3px] bg-[#F0FAE1] px-4 py-2.5"
+                  ? "min-h-[50px] justify-center rounded-[20px] border-[1.5px] border-[#7E9874] border-b-[3px] bg-[#F2F8EF] px-4 py-2.5"
                   : "min-h-[50px] justify-center rounded-[20px] border-[1.5px] border-[#DCD3C4] border-b-[3px] bg-[#F9F4ED] px-4 py-2.5 active:translate-y-0.5 active:border-b-[1.5px]"
               }
             >

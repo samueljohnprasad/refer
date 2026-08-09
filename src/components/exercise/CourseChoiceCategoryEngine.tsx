@@ -62,7 +62,6 @@ export function CourseChoiceCategoryEngine({
             key={option.id}
             label={option.label}
             selected={selectedOptionId === option.id}
-            selectedTone="olive"
             showConfirmationIcon={false}
             disabled={locked}
             onPress={() => selectOption(option.id)}

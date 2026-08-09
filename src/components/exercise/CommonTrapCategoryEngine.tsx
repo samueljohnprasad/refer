@@ -164,12 +164,12 @@ const styles = StyleSheet.create({
     borderRadius: 22,
   },
   oliveOutcome: {
-    borderColor: COURSE_EXERCISE_COLORS.olive,
-    backgroundColor: COURSE_EXERCISE_COLORS.oliveTint,
+    borderColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   orangeOutcome: {
-    borderColor: COURSE_EXERCISE_COLORS.orangeLight,
-    backgroundColor: COURSE_EXERCISE_COLORS.orangeTint,
+    borderColor: COURSE_EXERCISE_COLORS.accentLight,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   iconCircle: {
     width: 28,
@@ -178,17 +178,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 14,
   },
-  oliveIcon: { backgroundColor: COURSE_EXERCISE_COLORS.olive },
-  orangeIcon: { backgroundColor: COURSE_EXERCISE_COLORS.orange },
+  oliveIcon: { backgroundColor: COURSE_EXERCISE_COLORS.accent },
+  orangeIcon: { backgroundColor: COURSE_EXERCISE_COLORS.accent },
   outcomeCopy: { flex: 1 },
   oliveKicker: {
-    color: COURSE_EXERCISE_COLORS.oliveDark,
+    color: COURSE_EXERCISE_COLORS.accentDark,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 10.5,
     letterSpacing: 0.5,
   },
   orangeKicker: {
-    color: COURSE_EXERCISE_COLORS.orangeRim,
+    color: COURSE_EXERCISE_COLORS.accentDark,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 10.5,
     letterSpacing: 0.5,

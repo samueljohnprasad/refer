@@ -10,7 +10,6 @@ interface CourseExerciseOptionButtonProps {
   selected: boolean;
   disabled?: boolean;
   align?: "left" | "center";
-  selectedTone?: "orange" | "olive";
   showConfirmationIcon?: boolean;
   onPress: () => void;
 }
@@ -20,7 +19,6 @@ export function CourseExerciseOptionButton({
   selected,
   disabled = false,
   align = "left",
-  selectedTone = "orange",
   showConfirmationIcon = true,
   onPress,
 }: CourseExerciseOptionButtonProps) {
@@ -35,7 +33,6 @@ export function CourseExerciseOptionButton({
       style={({ pressed }) => [
         styles.button,
         selected && styles.selected,
-        selected && selectedTone === "olive" && styles.selectedOlive,
         isConfirmed && styles.confirmed,
         disabled && !selected && styles.disabled,
         pressed && !disabled && styles.pressed,
@@ -67,16 +64,12 @@ const styles = StyleSheet.create({
     backgroundColor: COURSE_EXERCISE_COLORS.surface,
   },
   selected: {
-    borderColor: COURSE_EXERCISE_COLORS.orange,
-    backgroundColor: COURSE_EXERCISE_COLORS.orangeTint,
-  },
-  selectedOlive: {
-    borderColor: COURSE_EXERCISE_COLORS.olive,
-    backgroundColor: COURSE_EXERCISE_COLORS.oliveTint,
+    borderColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   confirmed: {
-    borderColor: COURSE_EXERCISE_COLORS.olive,
-    backgroundColor: COURSE_EXERCISE_COLORS.oliveTint,
+    borderColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   disabled: { borderBottomWidth: 1, opacity: 0.55 },
   pressed: { transform: [{ translateY: 2 }], borderBottomWidth: 2 },
@@ -93,7 +86,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 12,
-    backgroundColor: COURSE_EXERCISE_COLORS.olive,
+    backgroundColor: COURSE_EXERCISE_COLORS.accent,
   },
   checkLabel: {
     color: COURSE_EXERCISE_COLORS.surface,

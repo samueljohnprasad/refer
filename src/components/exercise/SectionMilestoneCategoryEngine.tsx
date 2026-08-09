@@ -33,14 +33,14 @@ export function SectionMilestoneCategoryEngine({
       <View
         className={
           opened
-            ? "h-[132px] w-[132px] items-center justify-center rounded-full bg-[#E1EECC] shadow-md shadow-black/10"
+            ? "h-[132px] w-[132px] items-center justify-center rounded-full bg-[#D3E0CD] shadow-md shadow-black/10"
             : "h-[132px] w-[132px] items-center justify-center rounded-full bg-[#EBDDC5] shadow-md shadow-black/10"
         }
       >
         <HugeiconsIcon
           icon={Medal01Icon}
           size={54}
-          color={opened ? "#56633F" : "#82796A"}
+          color={opened ? "#29452A" : "#82796A"}
         />
       </View>
 
@@ -55,8 +55,8 @@ export function SectionMilestoneCategoryEngine({
         </>
       ) : (
         <>
-          <View className="mt-4 rounded-full bg-[#E1EECC] px-3.5 py-2">
-            <Text className="happy-font-body-bold text-[12px] text-[#56633F]">
+          <View className="mt-4 rounded-full bg-[#D3E0CD] px-3.5 py-2">
+            <Text className="happy-font-body-bold text-[12px] text-[#29452A]">
               {readString(content.badge)}
             </Text>
           </View>

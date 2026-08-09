@@ -30,7 +30,7 @@ export function CourseExerciseHeader({
               progress={progress}
               trailingLabel={trailingLabel}
               onClose={onClose}
-              progressFillColor={COURSE_EXERCISE_COLORS.olive}
+              progressFillColor={COURSE_EXERCISE_COLORS.accent}
               progressTrackColor={COURSE_EXERCISE_COLORS.surfaceMuted}
               iconColor={COURSE_EXERCISE_COLORS.inkSoft}
               trailingLabelColor={COURSE_EXERCISE_COLORS.inkSoft}

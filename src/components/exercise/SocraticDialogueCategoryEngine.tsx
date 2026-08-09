@@ -105,17 +105,17 @@ export function SocraticDialogueCategoryEngine({
           accessibilityRole="button"
           accessibilityState={{ expanded: supportOpen }}
           onPress={() => updateSupport(!supportOpen)}
-          className="mt-0.5 min-h-10 flex-row items-center gap-1.5 rounded-full border border-[#C9D9AF] bg-[#F0FAE1] px-3 active:translate-y-0.5"
+          className="mt-0.5 min-h-10 flex-row items-center gap-1.5 rounded-full border border-[#ABC0A2] bg-[#F2F8EF] px-3 active:translate-y-0.5"
         >
-          <HugeiconsIcon icon={FavouriteIcon} size={15} color="#56633F" />
-          <Text className="happy-font-body-bold text-xs text-[#56633F]">
+          <HugeiconsIcon icon={FavouriteIcon} size={15} color="#29452A" />
+          <Text className="happy-font-body-bold text-xs text-[#29452A]">
             Support
           </Text>
         </Pressable>
       </View>
 
       {supportOpen ? (
-        <View className="mb-3 rounded-[22px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] p-4">
+        <View className="mb-3 rounded-[22px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] p-4">
           <Text className="happy-font-heading-bold text-lg leading-[22px] text-[#3F4A31]">
             {readString(content.supportTitle)}
           </Text>
@@ -125,9 +125,9 @@ export function SocraticDialogueCategoryEngine({
           <Pressable
             accessibilityRole="button"
             onPress={() => updateSupport(false)}
-            className="mt-3 min-h-11 items-center justify-center rounded-full border-[1.5px] border-[#93A876] bg-[#F9F4ED] px-4 active:translate-y-0.5"
+            className="mt-3 min-h-11 items-center justify-center rounded-full border-[1.5px] border-[#7E9874] bg-[#F9F4ED] px-4 active:translate-y-0.5"
           >
-            <Text className="happy-font-body-bold text-[13px] text-[#56633F]">
+            <Text className="happy-font-body-bold text-[13px] text-[#29452A]">
               Back to the conversation
             </Text>
           </Pressable>
@@ -183,16 +183,16 @@ export function SocraticDialogueCategoryEngine({
 
 function ConversationBubble({ text, role, supportive }: TranscriptMessage) {
   const className = supportive
-    ? "max-w-[91%] self-start rounded-[20px] rounded-bl-md border border-[#C9D9AF] bg-[#F0FAE1] px-4 py-3"
+    ? "max-w-[91%] self-start rounded-[20px] rounded-bl-md border border-[#ABC0A2] bg-[#F2F8EF] px-4 py-3"
     : role === "user"
-      ? "max-w-[86%] self-end rounded-[20px] rounded-br-md bg-[#C77A3E] px-4 py-3"
+      ? "max-w-[86%] self-end rounded-[20px] rounded-br-md bg-[#5F7F58] px-4 py-3"
       : "max-w-[91%] self-start rounded-[20px] rounded-bl-md border border-[#DCD3C4] bg-[#F9F4ED] px-4 py-3";
   return (
     <View className={className}>
       <Text
         className={
           role === "user"
-            ? "happy-font-body text-[13.5px] leading-5 text-[#FFF8ED]"
+            ? "happy-font-body text-[13.5px] leading-5 text-white"
             : "happy-font-body text-[13.5px] leading-5 text-[#201E1D]"
         }
       >

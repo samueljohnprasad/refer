@@ -163,14 +163,14 @@ export function LeverMatchCategoryEngine({
           </Text>
         </View>
       ) : (
-        <View className="mt-3 rounded-[21px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-4 py-[14px]">
+        <View className="mt-3 rounded-[21px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-4 py-[14px]">
           <Text className="happy-font-heading-bold text-lg leading-[22px] text-[#3F4A31]">
             {readString(content.feedbackTitle) ?? "Why it fits"}
           </Text>
           <Text className="happy-font-body mt-1.5 text-[13px] leading-[19px] text-[#3F4A31]">
             {readString(content.feedback)}
           </Text>
-          <Text className="happy-font-body-bold mt-2 text-[12.5px] leading-[18px] text-[#56633F]">
+          <Text className="happy-font-body-bold mt-2 text-[12.5px] leading-[18px] text-[#29452A]">
             New capability: {readString(content.capability)}
           </Text>
         </View>
@@ -193,11 +193,11 @@ function MatchCard({
   onPress: () => void;
 }) {
   const className = matched
-    ? "min-h-[64px] items-center justify-center rounded-[19px] border-[1.5px] border-[#93A876] bg-[#F0FAE1] px-2.5 py-2"
+    ? "min-h-[64px] items-center justify-center rounded-[19px] border-[1.5px] border-[#7E9874] bg-[#F2F8EF] px-2.5 py-2"
     : wrong
       ? "min-h-[64px] items-center justify-center rounded-[19px] border-[1.5px] border-[#C86D55] bg-[#FFF0EA] px-2.5 py-2"
       : selected
-        ? "min-h-[64px] items-center justify-center rounded-[19px] border-[1.5px] border-[#C77A3E] bg-[#FFF2EB] px-2.5 py-2"
+        ? "min-h-[64px] items-center justify-center rounded-[19px] border-[1.5px] border-[#7E9874] bg-[#F2F8EF] px-2.5 py-2"
         : "min-h-[64px] items-center justify-center rounded-[19px] border-[1.5px] border-[#DCD3C4] border-b-[3px] bg-[#F9F4ED] px-2.5 py-2 active:translate-y-0.5 active:border-b-[1.5px]";
   return (
     <Pressable
@@ -210,7 +210,7 @@ function MatchCard({
       <Text
         className={
           matched
-            ? "happy-font-body-bold text-center text-[12.5px] leading-[17px] text-[#56633F]"
+            ? "happy-font-body-bold text-center text-[12.5px] leading-[17px] text-[#29452A]"
             : "happy-font-body-bold text-center text-[12.5px] leading-[17px] text-[#201E1D]"
         }
       >

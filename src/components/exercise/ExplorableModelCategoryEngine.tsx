@@ -76,9 +76,9 @@ export function ExplorableModelCategoryEngine({
           maximumValue={100}
           step={1}
           value={load}
-          minimumTrackTintColor={COURSE_EXERCISE_COLORS.orange}
+          minimumTrackTintColor={COURSE_EXERCISE_COLORS.accent}
           maximumTrackTintColor={COURSE_EXERCISE_COLORS.border}
-          thumbTintColor={COURSE_EXERCISE_COLORS.orange}
+          thumbTintColor={COURSE_EXERCISE_COLORS.accent}
           onValueChange={(value) => update({ load: value })}
           style={styles.slider}
         />

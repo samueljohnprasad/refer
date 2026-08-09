@@ -130,12 +130,12 @@ function FillBlankFeedback({
     <View
       className={
         positive
-          ? "mt-4 flex-row items-start gap-2.5 rounded-[24px] border-[1.5px] border-[#7A8A5E] bg-[#F0FAE1] px-[17px] py-[15px]"
-          : "mt-4 rounded-[24px] border-[1.5px] border-[#C67139] bg-[#FFF2EB] px-[17px] py-[15px]"
+          ? "mt-4 flex-row items-start gap-2.5 rounded-[24px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-[17px] py-[15px]"
+          : "mt-4 rounded-[24px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-[17px] py-[15px]"
       }
     >
       {positive ? (
-        <View className="h-7 w-7 items-center justify-center rounded-full bg-[#7A8A5E]">
+        <View className="h-7 w-7 items-center justify-center rounded-full bg-[#5F7F58]">
           <Text className="happy-font-body-bold text-[14px] text-white">✓</Text>
         </View>
       ) : null}
@@ -143,8 +143,8 @@ function FillBlankFeedback({
         <Text
           className={
             positive
-              ? "happy-font-heading-bold text-[16px] leading-5 text-[#56633F]"
-              : "happy-font-heading-bold text-[16px] leading-5 text-[#8C491A]"
+              ? "happy-font-heading-bold text-[16px] leading-5 text-[#29452A]"
+              : "happy-font-heading-bold text-[16px] leading-5 text-[#29452A]"
           }
         >
           {supported
@@ -157,7 +157,7 @@ function FillBlankFeedback({
           {feedbackText}
         </Text>
         {correct && capability ? (
-          <Text className="happy-font-body mt-2 text-[13px] leading-[18px] text-[#56633F]">
+          <Text className="happy-font-body mt-2 text-[13px] leading-[18px] text-[#29452A]">
             <Text className="happy-font-body-bold">New capability: </Text>
             {capability}
           </Text>

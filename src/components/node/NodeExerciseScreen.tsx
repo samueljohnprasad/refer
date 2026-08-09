@@ -58,11 +58,7 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
           trailingLabel={props.trailingLabel}
           onClose={props.onClose}
         />
-        <LessonScreen
-          style={courseScreenStyle}
-          hideHeader
-          hideFooter
-        >
+        <LessonScreen style={courseScreenStyle} hideHeader hideFooter>
           <View style={courseContentOffset}>
             {exerciseContent}
             {props.showingFeedback ? (

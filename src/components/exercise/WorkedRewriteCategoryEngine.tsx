@@ -55,15 +55,15 @@ export function WorkedRewriteCategoryEngine({
 function RewriteCard({ row }: { row: RewriteRow }) {
   const cardClass =
     row.tone === "orange"
-      ? "rounded-[20px] border-[1.5px] border-[#E4B68F] bg-[#FFF2EB] px-[15px] py-[13px]"
+      ? "rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[15px] py-[13px]"
       : row.tone === "olive"
-        ? "rounded-[20px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-[15px] py-[13px]"
+        ? "rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[15px] py-[13px]"
         : "rounded-[20px] border border-[#DCD3C4] bg-[#F9F4ED] px-[15px] py-[13px]";
   const labelClass =
     row.tone === "orange"
-      ? "happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#8C491A]"
+      ? "happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]"
       : row.tone === "olive"
-        ? "happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#56633F]"
+        ? "happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]"
         : "happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#82796A]";
   return (
     <View className={cardClass}>

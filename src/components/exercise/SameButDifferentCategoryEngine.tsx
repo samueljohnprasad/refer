@@ -73,7 +73,7 @@ export function SameButDifferentCategoryEngine({
               onPress={() => toggleRow(index)}
               className={
                 open
-                  ? "w-full rounded-[22px] border-[1.5px] border-[#C9D9AF] bg-[#F9F4ED] px-4 py-[13px] shadow-sm shadow-[#C9D9AF] active:translate-y-0.5"
+                  ? "w-full rounded-[22px] border-[1.5px] border-[#ABC0A2] bg-[#F9F4ED] px-4 py-[13px] shadow-sm shadow-[#ABC0A2] active:translate-y-0.5"
                   : "w-full rounded-[22px] border-[1.5px] border-[#DCD3C4] bg-[#F9F4ED] px-4 py-[13px] shadow-sm shadow-black/10 active:translate-y-0.5"
               }
             >
@@ -89,7 +89,7 @@ export function SameButDifferentCategoryEngine({
               </View>
               {open ? (
                 <View className="mt-2 flex-row gap-2.5">
-                  <Text className="happy-font-body-bold flex-1 text-[13px] leading-[19px] text-[#8C491A]">
+                  <Text className="happy-font-body-bold flex-1 text-[13px] leading-[19px] text-[#29452A]">
                     {row.left}
                   </Text>
                   <Text className="happy-font-body-bold flex-1 text-[13px] leading-[19px] text-[#3F4A31]">
@@ -103,8 +103,8 @@ export function SameButDifferentCategoryEngine({
       </View>
 
       {allOpened ? (
-        <View className="mt-3 rounded-[20px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-4 py-[14px]">
-          <Text className="happy-font-body-bold mb-1 text-[10.5px] tracking-[0.5px] text-[#56633F]">
+        <View className="mt-3 rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-4 py-[14px]">
+          <Text className="happy-font-body-bold mb-1 text-[10.5px] tracking-[0.5px] text-[#29452A]">
             THE TELL
           </Text>
           <Text className="happy-font-body text-[13.5px] leading-5 text-[#3F4A31]">
@@ -133,15 +133,15 @@ function ComparisonHeading({
     <View
       className={
         tone === "olive"
-          ? "flex-1 items-center rounded-2xl border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-1.5 py-2.5"
-          : "flex-1 items-center rounded-2xl border-[1.5px] border-[#E4B68F] bg-[#FFF2EB] px-1.5 py-2.5"
+          ? "flex-1 items-center rounded-2xl border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-1.5 py-2.5"
+          : "flex-1 items-center rounded-2xl border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-1.5 py-2.5"
       }
     >
       <Text
         className={
           tone === "olive"
-            ? "happy-font-heading-bold text-base text-[#56633F]"
-            : "happy-font-heading-bold text-base text-[#8C491A]"
+            ? "happy-font-heading-bold text-base text-[#29452A]"
+            : "happy-font-heading-bold text-base text-[#29452A]"
         }
       >
         {label}

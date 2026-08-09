@@ -69,7 +69,7 @@ export function LearnCardsCategoryEngine({
           <Feather
             name="zap"
             size={34}
-            color={COURSE_EXERCISE_COLORS.oliveDark}
+            color={COURSE_EXERCISE_COLORS.accentDark}
           />
         </View>
         <Text style={styles.kicker}>{card?.kicker}</Text>
@@ -87,13 +87,12 @@ export function LearnCardsCategoryEngine({
               width: index === cardIndex ? 24 : 8,
               backgroundColor:
                 index === cardIndex
-                  ? COURSE_EXERCISE_COLORS.olive
+                  ? COURSE_EXERCISE_COLORS.accent
                   : COURSE_EXERCISE_COLORS.border,
             }}
           />
         ))}
       </View>
-
     </View>
   );
 }
@@ -180,11 +179,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 41,
-    backgroundColor: COURSE_EXERCISE_COLORS.oliveLight,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentLight,
   },
   kicker: {
     marginTop: 18,
-    color: COURSE_EXERCISE_COLORS.orange,
+    color: COURSE_EXERCISE_COLORS.accentDark,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 11,
     letterSpacing: 1,

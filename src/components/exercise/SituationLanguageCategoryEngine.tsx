@@ -64,8 +64,8 @@ export function SituationLanguageCategoryEngine({
               <Text
                 className={
                   situation
-                    ? "happy-font-heading-bold min-h-[50px] text-center text-lg leading-[25px] text-[#56633F]"
-                    : "happy-font-heading-bold min-h-[50px] text-center text-lg leading-[25px] text-[#8C491A]"
+                    ? "happy-font-heading-bold min-h-[50px] text-center text-lg leading-[25px] text-[#29452A]"
+                    : "happy-font-heading-bold min-h-[50px] text-center text-lg leading-[25px] text-[#29452A]"
                 }
               >
                 {situation ? card.situationText : card.identityText}
@@ -97,7 +97,7 @@ export function SituationLanguageCategoryEngine({
       </View>
 
       {complete ? (
-        <View className="mt-3 rounded-[20px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-4 py-[14px]">
+        <View className="mt-3 rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-4 py-[14px]">
           <Text className="happy-font-heading-bold text-lg leading-[22px] text-[#3F4A31]">
             {readString(content.rule)}
           </Text>
@@ -126,7 +126,7 @@ function Segment({
       onPress={onPress}
       className={
         selected
-          ? "min-h-[38px] justify-center bg-[#7A8A5E] px-4"
+          ? "min-h-[38px] justify-center bg-[#5F7F58] px-4"
           : "min-h-[38px] justify-center bg-transparent px-4"
       }
     >

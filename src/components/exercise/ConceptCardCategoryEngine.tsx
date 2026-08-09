@@ -119,9 +119,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 18,
     borderWidth: 1.5,
-    borderColor: COURSE_EXERCISE_COLORS.olive,
+    borderColor: COURSE_EXERCISE_COLORS.accent,
     borderRadius: 24,
-    backgroundColor: COURSE_EXERCISE_COLORS.oliveTint,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   neutralKicker: {
     marginBottom: 6,
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   },
   oliveKicker: {
     marginBottom: 6,
-    color: COURSE_EXERCISE_COLORS.oliveDark,
+    color: COURSE_EXERCISE_COLORS.accentDark,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 11,
     letterSpacing: 0.45,
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 20,
     lineHeight: 26,
-    textDecorationColor: COURSE_EXERCISE_COLORS.orange,
+    textDecorationColor: COURSE_EXERCISE_COLORS.accent,
     textDecorationLine: "line-through",
   },
   realityText: {

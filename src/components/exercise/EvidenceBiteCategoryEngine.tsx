@@ -48,15 +48,15 @@ export function EvidenceBiteCategoryEngine({
           onPress={toggleConfidence}
           className={
             confidenceOpen
-              ? "min-h-10 self-start justify-center rounded-full border-[1.5px] border-[#93A876] bg-[#E1EECC] px-4 active:translate-y-0.5"
-              : "min-h-10 self-start justify-center rounded-full border-[1.5px] border-[#93A876] bg-[#F0FAE1] px-4 active:translate-y-0.5"
+              ? "min-h-10 self-start justify-center rounded-full border-[1.5px] border-[#7E9874] bg-[#D3E0CD] px-4 active:translate-y-0.5"
+              : "min-h-10 self-start justify-center rounded-full border-[1.5px] border-[#7E9874] bg-[#F2F8EF] px-4 active:translate-y-0.5"
           }
           style={{
-            shadowColor: "#C9D9AF",
+            shadowColor: "#ABC0A2",
             shadowOffset: { width: 0, height: 3 },
           }}
         >
-          <Text className="happy-font-body-bold text-[13px] text-[#56633F]">
+          <Text className="happy-font-body-bold text-[13px] text-[#29452A]">
             How sure are we? · {readString(content.confidence)}
           </Text>
         </Pressable>

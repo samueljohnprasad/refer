@@ -44,8 +44,8 @@ export function AnnotatedDiaryCategoryEngine({
         </Text>
       </View>
 
-      <View className="ml-[26px] mt-2.5 rounded-[24px] rounded-tl-md border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-5 py-4">
-        <Text className="happy-font-body-bold mb-[5px] text-[11px] tracking-[0.45px] text-[#56633F]">
+      <View className="ml-[26px] mt-2.5 rounded-[24px] rounded-tl-md border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-5 py-4">
+        <Text className="happy-font-body-bold mb-[5px] text-[11px] tracking-[0.45px] text-[#29452A]">
           A THERAPIST’S NOTE
         </Text>
         <Text className="happy-font-body text-sm leading-[22px] text-[#3F4A31]">

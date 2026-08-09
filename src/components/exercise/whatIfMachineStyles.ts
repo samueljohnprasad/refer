@@ -29,9 +29,9 @@ export const whatIfMachineStyles = StyleSheet.create({
     paddingHorizontal: 13,
     paddingVertical: 5,
     borderWidth: 1.5,
-    borderColor: COURSE_EXERCISE_COLORS.orangeLight,
+    borderColor: COURSE_EXERCISE_COLORS.accentLight,
     borderRadius: 999,
-    backgroundColor: COURSE_EXERCISE_COLORS.orangeTint,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   betText: {
     color: COURSE_EXERCISE_COLORS.ink,
@@ -59,7 +59,7 @@ export const whatIfMachineStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 12,
-    backgroundColor: COURSE_EXERCISE_COLORS.olive,
+    backgroundColor: COURSE_EXERCISE_COLORS.accent,
   },
   stepNumberLabel: {
     color: COURSE_EXERCISE_COLORS.surface,
@@ -85,7 +85,7 @@ export const whatIfMachineStyles = StyleSheet.create({
     shadowRadius: 7,
   },
   rule: {
-    color: COURSE_EXERCISE_COLORS.oliveDark,
+    color: COURSE_EXERCISE_COLORS.accentDark,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 20,
     lineHeight: 26,

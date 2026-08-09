@@ -49,8 +49,8 @@ export const guidedRecallChipsStyles = StyleSheet.create({
     backgroundColor: COURSE_EXERCISE_COLORS.surface,
   },
   selectedChip: {
-    borderColor: COURSE_EXERCISE_COLORS.olive,
-    backgroundColor: COURSE_EXERCISE_COLORS.oliveTint,
+    borderColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   mutedChip: { opacity: 0.28, borderBottomWidth: 1 },
   pressedChip: { transform: [{ translateY: 2 }], borderBottomWidth: 2 },
@@ -60,7 +60,7 @@ export const guidedRecallChipsStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
-    backgroundColor: COURSE_EXERCISE_COLORS.olive,
+    backgroundColor: COURSE_EXERCISE_COLORS.accent,
   },
   chipNumberLabel: {
     color: COURSE_EXERCISE_COLORS.surface,

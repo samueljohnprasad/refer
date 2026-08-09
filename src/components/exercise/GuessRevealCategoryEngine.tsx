@@ -71,9 +71,9 @@ export function GuessRevealCategoryEngine({
           step={1}
           value={guess}
           disabled={locked}
-          minimumTrackTintColor={COURSE_EXERCISE_COLORS.orange}
+          minimumTrackTintColor={COURSE_EXERCISE_COLORS.accent}
           maximumTrackTintColor={COURSE_EXERCISE_COLORS.border}
-          thumbTintColor={COURSE_EXERCISE_COLORS.orange}
+          thumbTintColor={COURSE_EXERCISE_COLORS.accent}
           accessibilityLabel="Your guess, from 0 to 10 adults"
           accessibilityValue={{ min: 0, max: 10, now: guess }}
           onValueChange={setGuess}
@@ -130,18 +130,18 @@ const styles = StyleSheet.create({
   dot: { width: 20, height: 20, borderRadius: 10, borderWidth: 2.5 },
   dotGuess: {
     borderColor: "transparent",
-    backgroundColor: COURSE_EXERCISE_COLORS.orange,
+    backgroundColor: COURSE_EXERCISE_COLORS.accent,
   },
   dotActual: {
     borderColor: "transparent",
-    backgroundColor: COURSE_EXERCISE_COLORS.olive,
+    backgroundColor: COURSE_EXERCISE_COLORS.accent,
   },
   dotEmpty: {
     borderColor: "transparent",
     backgroundColor: COURSE_EXERCISE_COLORS.surfaceMuted,
   },
   dotGuessOutline: {
-    borderColor: COURSE_EXERCISE_COLORS.orange,
+    borderColor: COURSE_EXERCISE_COLORS.accent,
   },
   slider: { width: "100%", height: 52, marginTop: 12 },
   scaleLabels: {

@@ -86,7 +86,7 @@ export function WaveScrubberCategoryEngine({
           <Polyline
             points={CURVE_POINTS}
             fill="none"
-            stroke="#7A8A5E"
+            stroke="#5F7F58"
             strokeWidth="3.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -96,20 +96,20 @@ export function WaveScrubberCategoryEngine({
             y1="14"
             x2={marker.x}
             y2="118"
-            stroke="#C67139"
+            stroke="#5F7F58"
             strokeWidth="2.5"
             strokeLinecap="round"
           />
-          <Circle cx={marker.x} cy={marker.y} r="6" fill="#C67139" />
+          <Circle cx={marker.x} cy={marker.y} r="6" fill="#5F7F58" />
         </Svg>
         <Slider
           accessibilityLabel="Minutes into the wave"
-          minimumTrackTintColor="#C67139"
+          minimumTrackTintColor="#5F7F58"
           maximumTrackTintColor="#DCD3C4"
           minimumValue={0}
           maximumValue={10}
           step={0.25}
-          thumbTintColor="#C67139"
+          thumbTintColor="#5F7F58"
           value={minute}
           onValueChange={updateMinute}
           style={{ height: 44, width: "100%" }}
@@ -185,10 +185,10 @@ function getPhasePillClassName(
   tone: ScrubberPhase["tone"] | undefined,
 ): string {
   if (tone === "orange") {
-    return "happy-font-body-bold self-start rounded-full bg-[#FFF2EB] px-3 py-1 text-xs text-[#8C491A]";
+    return "happy-font-body-bold self-start rounded-full bg-[#F2F8EF] px-3 py-1 text-xs text-[#29452A]";
   }
   if (tone === "olive") {
-    return "happy-font-body-bold self-start rounded-full bg-[#F0FAE1] px-3 py-1 text-xs text-[#56633F]";
+    return "happy-font-body-bold self-start rounded-full bg-[#F2F8EF] px-3 py-1 text-xs text-[#29452A]";
   }
   return "happy-font-body-bold self-start rounded-full bg-[#EEE8DD] px-3 py-1 text-xs text-[#3F3A34]";
 }

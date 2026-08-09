@@ -62,7 +62,7 @@ export const twoDialSandboxStyles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: COURSE_EXERCISE_COLORS.surfaceMuted,
   },
-  tankFill: { width: "100%", backgroundColor: COURSE_EXERCISE_COLORS.olive },
+  tankFill: { width: "100%", backgroundColor: COURSE_EXERCISE_COLORS.accent },
   outcome: {
     flex: 1,
     justifyContent: "center",
@@ -72,12 +72,12 @@ export const twoDialSandboxStyles = StyleSheet.create({
     borderRadius: 20,
   },
   warning: {
-    borderColor: COURSE_EXERCISE_COLORS.orangeLight,
-    backgroundColor: COURSE_EXERCISE_COLORS.orangeTint,
+    borderColor: COURSE_EXERCISE_COLORS.accentLight,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   steady: {
-    borderColor: COURSE_EXERCISE_COLORS.olive,
-    backgroundColor: COURSE_EXERCISE_COLORS.oliveTint,
+    borderColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   outcomeTitle: {
     marginBottom: 4,

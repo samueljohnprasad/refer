@@ -59,14 +59,14 @@ export function PrivateCheckCategoryEngine({
               onPress={() => toggleItem(index)}
               className={
                 selected
-                  ? "min-h-14 flex-row items-center gap-3 rounded-[24px] border-[1.5px] border-[#93A876] bg-[#F0FAE1] px-4 py-[13px] shadow-sm shadow-[#C9D9AF] active:translate-y-0.5"
+                  ? "min-h-14 flex-row items-center gap-3 rounded-[24px] border-[1.5px] border-[#7E9874] bg-[#F2F8EF] px-4 py-[13px] shadow-sm shadow-[#ABC0A2] active:translate-y-0.5"
                   : "min-h-14 flex-row items-center gap-3 rounded-[24px] border-[1.5px] border-[#DCD3C4] bg-[#F9F4ED] px-4 py-[13px] shadow-sm shadow-black/10 active:translate-y-0.5"
               }
             >
               <View
                 className={
                   selected
-                    ? "h-6 w-6 items-center justify-center rounded-full border-2 border-[#7A8A5E] bg-[#7A8A5E]"
+                    ? "h-6 w-6 items-center justify-center rounded-full border-2 border-[#5F7F58] bg-[#5F7F58]"
                     : "h-6 w-6 items-center justify-center rounded-full border-2 border-[#A99E8D]"
                 }
               >
@@ -90,8 +90,8 @@ export function PrivateCheckCategoryEngine({
       </View>
 
       {showingFeedback ? (
-        <View className="mt-3.5 flex-row gap-2.5 rounded-[20px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-4 py-[14px]">
-          <View className="mt-0.5 h-7 w-7 items-center justify-center rounded-full bg-[#7A8A5E]">
+        <View className="mt-3.5 flex-row gap-2.5 rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-4 py-[14px]">
+          <View className="mt-0.5 h-7 w-7 items-center justify-center rounded-full bg-[#5F7F58]">
             <HugeiconsIcon icon={Tick01Icon} size={15} color="#F9F4ED" />
           </View>
           <View className="flex-1">

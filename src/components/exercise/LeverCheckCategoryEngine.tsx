@@ -67,7 +67,7 @@ export function LeverCheckCategoryEngine({
 
       {allPulled ? (
         <View className="mt-3.5 rounded-[24px] bg-[#F9F4ED] px-[22px] py-5 shadow-md shadow-black/10">
-          <Text className="happy-font-heading-bold text-[19px] leading-[25px] text-[#56633F]">
+          <Text className="happy-font-heading-bold text-[19px] leading-[25px] text-[#29452A]">
             {readString(content.rule)}
           </Text>
           <Text className="happy-font-body mt-1.5 text-sm leading-[22px] text-[#201E1D]">
@@ -101,7 +101,7 @@ function LeverRow({
       </Text>
       <View className="h-[22px] overflow-hidden rounded-[10px] bg-[#EBDDC5]">
         <View
-          className={isOlive ? "h-full bg-[#93A876]" : "h-full bg-[#D99A68]"}
+          className="h-full bg-[#7E9874]"
           style={{ width: `${pulled ? lever.remainingPercent : 100}%` }}
         >
           {pulled ? (

@@ -58,7 +58,7 @@ export function ReframeBuilderCategoryEngine({
       />
 
       <View className="mb-3 rounded-[24px] rounded-bl-md bg-[#F9F4ED] px-[17px] py-[14px] shadow-sm shadow-black/10">
-        <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#56633F]">
+        <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]">
           {readString(content.sceneLabel)}
         </Text>
         <Text className="happy-font-body mt-1 text-[14px] leading-[21px] text-[#201E1D]">
@@ -69,26 +69,26 @@ export function ReframeBuilderCategoryEngine({
       <View
         className={
           showingFeedback
-            ? "mb-3 w-[72%] rounded-[20px] border-[1.5px] border-[#E4B68F] bg-[#FFF2EB] px-[14px] py-2.5 opacity-75"
-            : "mb-3 rounded-[22px] border-[1.5px] border-[#E4B68F] bg-[#FFF2EB] px-[18px] py-4"
+            ? "mb-3 w-[72%] rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[14px] py-2.5 opacity-75"
+            : "mb-3 rounded-[22px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[18px] py-4"
         }
       >
-        <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#8C491A]">
+        <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]">
           THE HOT THOUGHT
         </Text>
         <Text
           className={
             showingFeedback
-              ? "happy-font-heading-bold mt-1 text-[14px] leading-[19px] text-[#8C491A]"
-              : "happy-font-heading-bold mt-1 text-xl leading-[27px] text-[#8C491A]"
+              ? "happy-font-heading-bold mt-1 text-[14px] leading-[19px] text-[#29452A]"
+              : "happy-font-heading-bold mt-1 text-xl leading-[27px] text-[#29452A]"
           }
         >
           {readString(content.hotThought)}
         </Text>
       </View>
 
-      <View className="rounded-[22px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-[18px] py-4">
-        <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#56633F]">
+      <View className="rounded-[22px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[18px] py-4">
+        <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]">
           THE FAIRER THOUGHT
         </Text>
         <Text
@@ -122,7 +122,7 @@ export function ReframeBuilderCategoryEngine({
                       onPress={() => selectLine(trayIndex, optionIndex)}
                       className={
                         selected
-                          ? "min-h-[50px] justify-center rounded-[20px] border-[1.5px] border-[#93A876] border-b-[3px] bg-[#F0FAE1] px-4 py-2.5"
+                          ? "min-h-[50px] justify-center rounded-[20px] border-[1.5px] border-[#7E9874] border-b-[3px] bg-[#F2F8EF] px-4 py-2.5"
                           : "min-h-[50px] justify-center rounded-[20px] border-[1.5px] border-[#DCD3C4] border-b-[3px] bg-[#F9F4ED] px-4 py-2.5 active:translate-y-0.5 active:border-b-[1.5px]"
                       }
                     >

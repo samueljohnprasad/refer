@@ -127,7 +127,7 @@ export function BreathingRoundCategoryEngine({
             key={step.label}
             className="flex-1 items-center rounded-[18px] bg-[#F9F4ED] px-1 py-3 shadow-sm shadow-black/10"
           >
-            <Text className="happy-font-heading-bold text-[26px] text-[#8C491A]">
+            <Text className="happy-font-heading-bold text-[26px] text-[#29452A]">
               {step.number}
             </Text>
             <Text className="happy-font-body-bold mt-0.5 text-center text-[10.5px] tracking-[0.5px] text-[#82796A]">
@@ -145,7 +145,7 @@ export function BreathingRoundCategoryEngine({
         <View className="h-[118px] items-center justify-center">
           <Animated.View
             accessibilityLabel={getPhaseLabel(phase)}
-            className="h-[110px] w-[110px] items-center justify-center rounded-full bg-[#7A8A5E] shadow-md shadow-black/10"
+            className="h-[110px] w-[110px] items-center justify-center rounded-full bg-[#5F7F58] shadow-md shadow-black/10"
             style={circleStyle}
           >
             <Text className="happy-font-heading-bold text-[30px] text-[#F9F4ED]">
@@ -153,7 +153,7 @@ export function BreathingRoundCategoryEngine({
             </Text>
           </Animated.View>
         </View>
-        <Text className="happy-font-body-bold min-h-[18px] text-center text-[12.5px] tracking-[0.6px] text-[#56633F]">
+        <Text className="happy-font-body-bold min-h-[18px] text-center text-[12.5px] tracking-[0.6px] text-[#29452A]">
           {getPhaseLabel(phase)}
         </Text>
         <Pressable
@@ -190,15 +190,15 @@ function Tag({
     <View
       className={
         tone === "olive"
-          ? "rounded-full border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-3 py-1.5"
-          : "rounded-full border-[1.5px] border-[#E4B68F] bg-[#FFF2EB] px-3 py-1.5"
+          ? "rounded-full border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-3 py-1.5"
+          : "rounded-full border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-3 py-1.5"
       }
     >
       <Text
         className={
           tone === "olive"
-            ? "happy-font-body-bold text-xs text-[#56633F]"
-            : "happy-font-body-bold text-xs text-[#8C491A]"
+            ? "happy-font-body-bold text-xs text-[#29452A]"
+            : "happy-font-body-bold text-xs text-[#29452A]"
         }
       >
         {label}

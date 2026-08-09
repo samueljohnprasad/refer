@@ -186,7 +186,6 @@ export function StorySerialCategoryEngine({
               key={option.id}
               label={option.label}
               selected={selectedReflectionId === option.id}
-              selectedTone="olive"
               showConfirmationIcon={false}
               disabled={locked}
               onPress={() => chooseReflection(option)}

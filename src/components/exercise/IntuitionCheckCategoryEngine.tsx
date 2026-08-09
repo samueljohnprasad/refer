@@ -64,7 +64,6 @@ export function IntuitionCheckCategoryEngine({
             label={option.label}
             selected={selectedOptionId === option.id}
             align="center"
-            selectedTone="olive"
             showConfirmationIcon={false}
             disabled={locked}
             onPress={() => chooseOption(option.id)}
@@ -109,9 +108,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 17,
     paddingVertical: 15,
     borderWidth: 1.5,
-    borderColor: COURSE_EXERCISE_COLORS.olive,
+    borderColor: COURSE_EXERCISE_COLORS.accent,
     borderRadius: 24,
-    backgroundColor: COURSE_EXERCISE_COLORS.oliveTint,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   revealIcon: {
     width: 24,
@@ -119,7 +118,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 12,
-    backgroundColor: COURSE_EXERCISE_COLORS.olive,
+    backgroundColor: COURSE_EXERCISE_COLORS.accent,
   },
   revealIconLabel: {
     color: COURSE_EXERCISE_COLORS.surface,
@@ -128,7 +127,7 @@ const styles = StyleSheet.create({
   },
   revealCopy: { flex: 1 },
   revealTitle: {
-    color: COURSE_EXERCISE_COLORS.oliveDark,
+    color: COURSE_EXERCISE_COLORS.accentDark,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 16,
     lineHeight: 20,

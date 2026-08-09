@@ -46,8 +46,8 @@ export function ConceptInsightCategoryEngine({
 
 function WhyItMattersCard({ content }: { content: Record<string, unknown> }) {
   return (
-    <View className="gap-3 rounded-[24px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-6 py-[26px]">
-      <Text className="happy-font-body-bold text-[11px] tracking-[0.55px] text-[#56633F]">
+    <View className="gap-3 rounded-[24px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-6 py-[26px]">
+      <Text className="happy-font-body-bold text-[11px] tracking-[0.55px] text-[#29452A]">
         WHY IT MATTERS TO YOU
       </Text>
       <Text className="happy-font-heading-bold text-[22px] leading-[28px] text-[#201E1D]">

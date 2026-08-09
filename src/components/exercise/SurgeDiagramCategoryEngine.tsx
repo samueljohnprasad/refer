@@ -60,16 +60,16 @@ export function SurgeDiagramCategoryEngine({
             <Path
               d="M14,110 C40,108 48,24 74,20 C104,16 150,70 288,106"
               fill="none"
-              stroke="#7A8A5E"
+              stroke="#5F7F58"
               strokeWidth="4"
               strokeLinecap="round"
             />
-            <Circle cx="74" cy="20" r="6" fill="#C67139" />
+            <Circle cx="74" cy="20" r="6" fill="#5F7F58" />
           </Svg>
-          <Text className="happy-font-body-bold absolute left-[31%] top-[8%] text-[12px] text-[#8C491A]">
+          <Text className="happy-font-body-bold absolute left-[31%] top-[8%] text-[12px] text-[#29452A]">
             {readString(content.peakLabel)}
           </Text>
-          <Text className="happy-font-body-bold absolute left-[56%] top-[47%] text-[12px] text-[#56633F]">
+          <Text className="happy-font-body-bold absolute left-[56%] top-[47%] text-[12px] text-[#29452A]">
             {readString(content.fadeLabel)}
           </Text>
           <Text className="happy-font-body absolute bottom-0 right-[2%] text-[11px] text-[#82796A]">

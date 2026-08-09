@@ -1,3 +1,5 @@
+import { SAGE } from "@/lib/tokens";
+
 export const COURSE_EXERCISE_COLORS = {
   background: "#F5EAD8",
   surface: "#F9F4ED",
@@ -6,14 +8,12 @@ export const COURSE_EXERCISE_COLORS = {
   inkSoft: "#82796A",
   border: "#DCD3C4",
   shadow: "#2E2B25",
-  orange: "#C67139",
-  orangeLight: "#E4B68F",
-  orangeRim: "#8C491A",
-  orangeTint: "#FFF2EB",
-  olive: "#7A8A5E",
-  oliveDark: "#56633F",
-  oliveLight: "#E1EECC",
-  oliveTint: "#F0FAE1",
+  accent: SAGE[500],
+  accentDark: SAGE[700],
+  accentLight: SAGE[300],
+  accentTint: SAGE.selected,
+  error: "#C86D55",
+  errorTint: "#FFF0EA",
 } as const;
 
 export const COURSE_EXERCISE_FONTS = {

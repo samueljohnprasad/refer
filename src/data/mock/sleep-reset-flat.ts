@@ -310,7 +310,8 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         waitingPrimaryLabel: "Choose above",
         retryPhase: "recall",
         feedbackTitle: "Why it fits",
-        feedbackTakeaway: "You can tell tiredness from a body that is still alert.",
+        feedbackTakeaway:
+          "You can tell tiredness from a body that is still alert.",
         cards: [
           {
             id: "sleep-pressure",
@@ -417,9 +418,21 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         title: "Match the sleep levers",
         instruction: "Tap a lever, then match what it does.",
         pairs: [
-          { id: "pressure", left: "Sleep pressure", right: "Builds while you are awake" },
-          { id: "clock", left: "Body clock", right: "Uses light and timing cues" },
-          { id: "arousal", left: "Arousal", right: "Sets how alert the body feels" },
+          {
+            id: "pressure",
+            left: "Sleep pressure",
+            right: "Builds while you are awake",
+          },
+          {
+            id: "clock",
+            left: "Body clock",
+            right: "Uses light and timing cues",
+          },
+          {
+            id: "arousal",
+            left: "Arousal",
+            right: "Sets how alert the body feels",
+          },
         ],
         rightOrder: ["arousal", "pressure", "clock"],
         clue: "Sleep pressure builds with awake time.",
@@ -446,7 +459,8 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         format: C.LeverScenario,
         completionMode: "direct",
         title: "Use the sleep map",
-        instruction: "Read the moment, then choose the most useful explanation.",
+        instruction:
+          "Read the moment, then choose the most useful explanation.",
         capability: "You can read a hard night without blaming yourself.",
         variants: [
           {
@@ -460,7 +474,8 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
             options: [
               {
                 id: "arousal",
-                label: "Her arousal rose; soften effort and let the body settle",
+                label:
+                  "Her arousal rose; soften effort and let the body settle",
                 isCorrect: true,
                 feedback:
                   "Yes. She is tired, but her body is on alert. Reducing pressure and clock-checking gives arousal room to fall.",
@@ -473,7 +488,8 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
               },
               {
                 id: "failure",
-                label: "She is failing because tired people should sleep immediately",
+                label:
+                  "She is failing because tired people should sleep immediately",
                 feedback:
                   "Tiredness does not switch sleep on by command. Arousal can stay high without saying anything about her effort or character.",
               },
@@ -587,14 +603,31 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         category: C.LearnCards,
         format: C.LearnCards,
         title: "Sleep pressure builds",
-        instruction: "See how sleep need and sleep stages change across a night.",
+        instruction:
+          "See how sleep need and sleep stages change across a night.",
         cards: [
-          { id: "pressure-builds", kicker: "THE NEED", title: "Pressure builds while awake", body: "Time awake gradually increases the need for sleep. Sleep lowers that pressure; a long nap can lower it before bedtime." },
-          { id: "early-night", kicker: "EARLY NIGHT", title: "Early sleep is deeper", body: "Deep sleep is usually more common earlier in the night. This is one reason the first part of sleep can feel physically restorative." },
-          { id: "late-night", kicker: "LATE NIGHT", title: "Later sleep has more REM", body: "REM sleep tends to occupy more of the later cycles. A brief waking then is not proof that your sleep is broken." },
+          {
+            id: "pressure-builds",
+            kicker: "THE NEED",
+            title: "Pressure builds while awake",
+            body: "Time awake gradually increases the need for sleep. Sleep lowers that pressure; a long nap can lower it before bedtime.",
+          },
+          {
+            id: "early-night",
+            kicker: "EARLY NIGHT",
+            title: "Early sleep is deeper",
+            body: "Deep sleep is usually more common earlier in the night. This is one reason the first part of sleep can feel physically restorative.",
+          },
+          {
+            id: "late-night",
+            kicker: "LATE NIGHT",
+            title: "Later sleep has more REM",
+            body: "REM sleep tends to occupy more of the later cycles. A brief waking then is not proof that your sleep is broken.",
+          },
         ],
         recall: {
-          prompt: "After a long evening nap, which lever may be lower at bedtime?",
+          prompt:
+            "After a long evening nap, which lever may be lower at bedtime?",
           correctOptionId: "pressure",
           options: [
             { id: "pressure", label: "Sleep pressure" },
@@ -603,8 +636,10 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
           ],
         },
         feedback_correct: "Right. The nap released some sleep pressure.",
-        feedback_incorrect: "A long nap can lower the sleep pressure that would otherwise build toward bedtime.",
-        workedExample: "Sleep pressure builds during wakefulness and is released by sleep or naps. Sleep stages also shift across the night.",
+        feedback_incorrect:
+          "A long nap can lower the sleep pressure that would otherwise build toward bedtime.",
+        workedExample:
+          "Sleep pressure builds during wakefulness and is released by sleep or naps. Sleep stages also shift across the night.",
       },
     },
     {
@@ -624,7 +659,8 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         completionMode: "direct",
         title: "Name what is happening",
         instruction: "Type the missing sleep term. Close spellings count.",
-        capability: "You can name the two sleep ideas without turning them into a rule to fear.",
+        capability:
+          "You can name the two sleep ideas without turning them into a rule to fear.",
         variants: [
           {
             pre: "The need for sleep builds while we are",
@@ -669,16 +705,36 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         format: C.CourseChoice,
         title: "Explain the changed night",
         instruction: "Choose the most useful reading of what changed.",
-        context: "Jules takes a long nap at 5pm, is calm but not sleepy at 11pm, then wakes briefly after a vivid dream.",
+        context:
+          "Jules takes a long nap at 5pm, is calm but not sleepy at 11pm, then wakes briefly after a vivid dream.",
         prompt: "Which explanation uses the sleep map without blame?",
         options: [
-          { id: "map", label: "The nap lowered pressure, and later REM can make vivid dreams or brief waking more noticeable", isCorrect: true, feedback: "Right. Two ordinary sleep processes explain the changed night without calling it failure." },
-          { id: "broken", label: "The sleep system is broken because Jules woke up", feedback: "A brief waking does not diagnose a broken system. Look at the nap and the changing cycles." },
-          { id: "force", label: "Jules should force sleep so the night is not wasted", feedback: "Urgency can raise arousal. A calmer explanation gives sleep more room." },
+          {
+            id: "map",
+            label:
+              "The nap lowered pressure, and later REM can make vivid dreams or brief waking more noticeable",
+            isCorrect: true,
+            feedback:
+              "Right. Two ordinary sleep processes explain the changed night without calling it failure.",
+          },
+          {
+            id: "broken",
+            label: "The sleep system is broken because Jules woke up",
+            feedback:
+              "A brief waking does not diagnose a broken system. Look at the nap and the changing cycles.",
+          },
+          {
+            id: "force",
+            label: "Jules should force sleep so the night is not wasted",
+            feedback:
+              "Urgency can raise arousal. A calmer explanation gives sleep more room.",
+          },
         ],
         feedbackTitle: "Why this map fits",
-        feedbackTakeaway: "You can explain a changed night without making it a verdict about yourself.",
-        workedExample: "A late nap can lower pressure, while later REM can make dreams and brief wakings more noticeable. Both are information, not failure.",
+        feedbackTakeaway:
+          "You can explain a changed night without making it a verdict about yourself.",
+        workedExample:
+          "A late nap can lower pressure, while later REM can make dreams and brief wakings more noticeable. Both are information, not failure.",
         primaryLabel: "Check answer",
         retryPhase: "choice",
       },
@@ -702,14 +758,22 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         instruction: "Choose the smallest useful experiment.",
         prompt: "Which experiment gives sleep pressure more room to build?",
         options: [
-          { id: "protect-pressure", label: "Keep a long late nap from becoming the default" },
+          {
+            id: "protect-pressure",
+            label: "Keep a long late nap from becoming the default",
+          },
           { id: "force-bedtime", label: "Go to bed earlier and try harder" },
-          { id: "judge-night", label: "Treat one late bedtime as proof something is wrong" },
+          {
+            id: "judge-night",
+            label: "Treat one late bedtime as proof something is wrong",
+          },
         ],
         bestOptionId: "protect-pressure",
         revealTitle: "Small experiment",
-        reveal: "Notice what happens when a long late nap is shorter or earlier. Treat it as information, not a rule you must perform perfectly.",
-        alternateReveal: "A small observation is more useful than forcing bedtime or judging one night.",
+        reveal:
+          "Notice what happens when a long late nap is shorter or earlier. Treat it as information, not a rule you must perform perfectly.",
+        alternateReveal:
+          "A small observation is more useful than forcing bedtime or judging one night.",
         primaryLabel: "Continue",
         waitingPrimaryLabel: "Choose an experiment",
       },
@@ -868,16 +932,25 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         completionMode: "direct",
         title: "Pick one observation",
         instruction: "Choose the smallest thing to notice this week.",
-        prompt: "Which plan gives your body clock information without adding pressure?",
+        prompt:
+          "Which plan gives your body clock information without adding pressure?",
         options: [
-          { id: "wake", label: "Notice when I wake, without forcing an exact time" },
+          {
+            id: "wake",
+            label: "Notice when I wake, without forcing an exact time",
+          },
           { id: "light", label: "Notice morning light on one ordinary day" },
-          { id: "both", label: "Notice both, but change only one thing at a time" },
+          {
+            id: "both",
+            label: "Notice both, but change only one thing at a time",
+          },
         ],
         bestOptionId: "both",
         revealTitle: "Observe, do not police",
-        reveal: "A small observation can teach you how your clock responds. The goal is information, not a perfect schedule.",
-        alternateReveal: "Pick one cue that feels realistic. You can learn from it without making it a new rule.",
+        reveal:
+          "A small observation can teach you how your clock responds. The goal is information, not a perfect schedule.",
+        alternateReveal:
+          "Pick one cue that feels realistic. You can learn from it without making it a new rule.",
         primaryLabel: "Continue",
         waitingPrimaryLabel: "Choose an observation",
       },
@@ -900,10 +973,30 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         title: "Two voices at 2:17am",
         instruction: "Tap through the tired body and the alarm story.",
         messages: [
-          { id: "body", name: "Tired body", side: "left", text: "I feel heavy. I want to rest." },
-          { id: "alarm", name: "Alarm story", side: "right", text: "Check the time again. If you do not sleep now, tomorrow is ruined." },
-          { id: "body-again", name: "Tired body", side: "left", text: "I am tired and alert at the same time. That feels bad, but it is not proof I am broken." },
-          { id: "map", name: "A kinder map", side: "right", text: "Arousal can keep the body watchful. Lower the fight; do not demand instant sleep." },
+          {
+            id: "body",
+            name: "Tired body",
+            side: "left",
+            text: "I feel heavy. I want to rest.",
+          },
+          {
+            id: "alarm",
+            name: "Alarm story",
+            side: "right",
+            text: "Check the time again. If you do not sleep now, tomorrow is ruined.",
+          },
+          {
+            id: "body-again",
+            name: "Tired body",
+            side: "left",
+            text: "I am tired and alert at the same time. That feels bad, but it is not proof I am broken.",
+          },
+          {
+            id: "map",
+            name: "A kinder map",
+            side: "right",
+            text: "Arousal can keep the body watchful. Lower the fight; do not demand instant sleep.",
+          },
         ],
         insight:
           "Sleep pressure and arousal can point in different directions. Naming the alert system gives you room to soften it.",
@@ -960,10 +1053,14 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         format: C.WhiteBearExperiment,
         completionMode: "direct",
         title: "Do not think about sleep",
-        instruction: "For ten seconds, whatever you do, do not think about sleep.",
+        instruction:
+          "For ten seconds, whatever you do, do not think about sleep.",
         options: [
           { id: "thought", label: "Sleep came to mind quickly" },
-          { id: "monitoring", label: "I kept checking whether I was thinking about sleep" },
+          {
+            id: "monitoring",
+            label: "I kept checking whether I was thinking about sleep",
+          },
         ],
         rule: "Thought suppression can keep the thought active.",
         body: "Trying not to think about sleep makes you monitor for sleep. That monitoring keeps attention switched on. This is one reason “just stop thinking” can backfire at night.",
@@ -1174,7 +1271,8 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         options: [
           {
             id: "both",
-            label: "The nap changed sleep pressure, while the usual wake cue still shaped morning timing",
+            label:
+              "The nap changed sleep pressure, while the usual wake cue still shaped morning timing",
             isCorrect: true,
             feedback:
               "Right. The nap and the regular wake cue can both matter. One night does not prove a broken system.",
@@ -1220,8 +1318,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         instruction: "Tap to complete the thought.",
         firstLine: "When sleep is off…",
         secondLine: "…ask which system changed before you blame yourself.",
-        why:
-          "The question keeps the model useful. Pressure, timing, naps, light, and arousal can all change a night; noticing the clue gives you a next step without demanding certainty.",
+        why: "The question keeps the model useful. Pressure, timing, naps, light, and arousal can all change a night; noticing the clue gives you a next step without demanding certainty.",
       },
     },
 
@@ -1268,7 +1365,8 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         completionMode: "direct",
         title: "Place a useful bet",
         instruction: "Commit before the answer.",
-        question: "What gives the clearest answer about caffeine and your sleep?",
+        question:
+          "What gives the clearest answer about caffeine and your sleep?",
         options: [
           "A universal cutoff that works for everyone",
           "Your timing, amount, sensitivity, and sleep pattern together",
@@ -1327,16 +1425,32 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         format: C.CourseChoice,
         title: "Read the afternoon coffee",
         instruction: "Choose the most careful explanation.",
-        context: "Priya drinks a large coffee at 3pm and feels wired at 11pm. She wants to know whether the coffee could be part of the pattern.",
+        context:
+          "Priya drinks a large coffee at 3pm and feels wired at 11pm. She wants to know whether the coffee could be part of the pattern.",
         prompt: "What is the best next step?",
         options: [
-          { id: "observe", label: "Compare caffeine timing and sleep across several nights", isCorrect: true, feedback: "Yes. A pattern is more useful than a single guess." },
-          { id: "certain", label: "Assume the coffee is definitely the only cause", feedback: "Caffeine may contribute, but sleep usually has more than one influence." },
-          { id: "ignore", label: "Assume caffeine cannot affect sleep after lunch", feedback: "Some people remain sensitive for many hours." },
+          {
+            id: "observe",
+            label: "Compare caffeine timing and sleep across several nights",
+            isCorrect: true,
+            feedback: "Yes. A pattern is more useful than a single guess.",
+          },
+          {
+            id: "certain",
+            label: "Assume the coffee is definitely the only cause",
+            feedback:
+              "Caffeine may contribute, but sleep usually has more than one influence.",
+          },
+          {
+            id: "ignore",
+            label: "Assume caffeine cannot affect sleep after lunch",
+            feedback: "Some people remain sensitive for many hours.",
+          },
         ],
         feedbackTitle: "Use the model carefully",
         feedbackTakeaway: "A personal pattern beats a rigid universal rule.",
-        workedExample: "Caffeine may contribute to later alertness. Observe timing, amount, and sleep before deciding what to change.",
+        workedExample:
+          "Caffeine may contribute to later alertness. Observe timing, amount, and sleep before deciding what to change.",
         primaryLabel: "Check answer",
         retryPhase: "choice",
       },
@@ -1500,8 +1614,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         ],
         rightOrderIds: ["morning", "onset", "waking"],
         rule: "Sleep onset and sleep quality are different questions.",
-        body:
-          "Match the observation to a bounded explanation. The pattern can be real without proving one exact cause.",
+        body: "Match the observation to a bounded explanation. The pattern can be real without proving one exact cause.",
         next: "Now apply the whole-night reading to a new example.",
       },
     },
@@ -1521,16 +1634,36 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         format: C.CourseChoice,
         title: "Read the second half",
         instruction: "Choose the most grounded explanation.",
-        context: "Arun falls asleep quickly after drinking, then wakes several times later and feels unrefreshed.",
+        context:
+          "Arun falls asleep quickly after drinking, then wakes several times later and feels unrefreshed.",
         prompt: "What could be part of the explanation?",
         options: [
-          { id: "architecture", label: "Alcohol may have changed sleep architecture and increased later disruption", isCorrect: true, feedback: "Yes. The whole-night pattern matters, not only how fast sleep began." },
-          { id: "proof", label: "The pattern proves one exact biological cause", feedback: "Several factors can affect sleep. Keep the explanation bounded." },
-          { id: "character", label: "Arun is weak for needing alcohol to sleep", feedback: "Moral judgement does not explain the sleep pattern and can make help harder to seek." },
+          {
+            id: "architecture",
+            label:
+              "Alcohol may have changed sleep architecture and increased later disruption",
+            isCorrect: true,
+            feedback:
+              "Yes. The whole-night pattern matters, not only how fast sleep began.",
+          },
+          {
+            id: "proof",
+            label: "The pattern proves one exact biological cause",
+            feedback:
+              "Several factors can affect sleep. Keep the explanation bounded.",
+          },
+          {
+            id: "character",
+            label: "Arun is weak for needing alcohol to sleep",
+            feedback:
+              "Moral judgement does not explain the sleep pattern and can make help harder to seek.",
+          },
         ],
         feedbackTitle: "Look at the whole night",
-        feedbackTakeaway: "Sleep onset and sleep quality are different questions.",
-        workedExample: "Alcohol can change the shape of the night. If drinking or sleep disruption is worrying, professional support is appropriate.",
+        feedbackTakeaway:
+          "Sleep onset and sleep quality are different questions.",
+        workedExample:
+          "Alcohol can change the shape of the night. If drinking or sleep disruption is worrying, professional support is appropriate.",
         primaryLabel: "Check answer",
         retryPhase: "choice",
       },
@@ -1744,16 +1877,33 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         format: C.CourseChoice,
         title: "Read Monday morning",
         instruction: "Choose the clearest pattern.",
-        context: "Dara wakes at 7am on weekdays but sleeps until 10am on both weekend days. Monday feels groggy.",
+        context:
+          "Dara wakes at 7am on weekdays but sleeps until 10am on both weekend days. Monday feels groggy.",
         prompt: "What is a useful first hypothesis?",
         options: [
-          { id: "drift", label: "The weekend shift may be giving the clock mixed cues", isCorrect: true, feedback: "Yes. Timing is a reasonable place to look before making a judgement." },
-          { id: "lazy", label: "Dara is simply lazy", feedback: "A schedule pattern is not a moral label." },
-          { id: "certain", label: "The weekend shift is definitely the only cause", feedback: "It is a hypothesis, not a diagnosis. Other factors can matter too." },
+          {
+            id: "drift",
+            label: "The weekend shift may be giving the clock mixed cues",
+            isCorrect: true,
+            feedback:
+              "Yes. Timing is a reasonable place to look before making a judgement.",
+          },
+          {
+            id: "lazy",
+            label: "Dara is simply lazy",
+            feedback: "A schedule pattern is not a moral label.",
+          },
+          {
+            id: "certain",
+            label: "The weekend shift is definitely the only cause",
+            feedback:
+              "It is a hypothesis, not a diagnosis. Other factors can matter too.",
+          },
         ],
         feedbackTitle: "Hypothesis, not verdict",
         feedbackTakeaway: "You can investigate a cue without overclaiming.",
-        workedExample: "Weekend drift is one plausible timing clue. Observe it alongside light, stress, and sleep quality.",
+        workedExample:
+          "Weekend drift is one plausible timing clue. Observe it alongside light, stress, and sleep quality.",
         primaryLabel: "Check answer",
         retryPhase: "choice",
       },
@@ -1808,7 +1958,8 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         format: C.CourseCheckpoint,
         completionMode: "direct",
         title: "Sleep science checkpoint",
-        instruction: "A calm mixed review. Use the map without memory pressure.",
+        instruction:
+          "A calm mixed review. Use the map without memory pressure.",
         introTitle: "Look for the pattern",
         intro:
           "Four short questions revisit the levers and disruptors. A miss only marks a useful revisit; it does not erase progress.",
@@ -1822,7 +1973,8 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
               "Pressure, clock, and arousal can shift. Naming the lever gives you a next question without turning a night into a verdict.",
             options: [
               {
-                label: "A sleep lever may have shifted; the person has not failed",
+                label:
+                  "A sleep lever may have shifted; the person has not failed",
                 isCorrect: true,
                 feedback:
                   "Right. Sleep is a body system with changing levers, not a test of worth.",
@@ -1857,7 +2009,8 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
           },
           {
             concept: "Timing cues",
-            context: "Bright light, a replayed work message, and a three-hour Sunday sleep-in happen together.",
+            context:
+              "Bright light, a replayed work message, and a three-hour Sunday sleep-in happen together.",
             prompt: "What makes the next step more useful?",
             clue: "Separate the clues before changing them.",
             worked:
@@ -1923,7 +2076,8 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         cards: [
           {
             question: "What does a useful sleep experiment change first?",
-            answer: "One clear cue. Do not change every part of the night at once.",
+            answer:
+              "One clear cue. Do not change every part of the night at once.",
           },
           {
             question: "How long should you observe before judging the pattern?",
@@ -1931,7 +2085,8 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
           },
           {
             question: "What does a difficult result mean?",
-            answer: "It is information for the next question, not proof that you failed.",
+            answer:
+              "It is information for the next question, not proof that you failed.",
           },
         ],
       },
@@ -1952,7 +2107,8 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         format: C.TwinCase,
         completionMode: "direct",
         title: "Signal or verdict?",
-        instruction: "Match each observation with the reading that keeps learning open.",
+        instruction:
+          "Match each observation with the reading that keeps learning open.",
         leftTitle: "OBSERVATION",
         rightTitle: "USEFUL READING",
         pairs: [
@@ -1977,7 +2133,12 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
             right: "Several cues may overlap; avoid a single-cause verdict",
           },
         ],
-        rightOrderIds: ["stressful-day", "one-night", "no-change", "three-nights"],
+        rightOrderIds: [
+          "stressful-day",
+          "one-night",
+          "no-change",
+          "three-nights",
+        ],
         rule: "Observation becomes learning when you separate a clue from a conclusion.",
         body: "You can notice a pattern without demanding certainty from a small sample.",
         next: "The next card follows one person through that kind of experiment.",
@@ -2076,19 +2237,23 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         options: [
           {
             id: "pattern",
-            label: "Steadier timing may help, while stress still changes the picture",
+            label:
+              "Steadier timing may help, while stress still changes the picture",
             isCorrect: true,
-            feedback: "Yes. The notes support a cautious pattern, not a single-cause verdict.",
+            feedback:
+              "Yes. The notes support a cautious pattern, not a single-cause verdict.",
           },
           {
             id: "proof",
             label: "Steady wake time fixes sleep for everyone",
-            feedback: "That overclaims. A personal experiment teaches one context, not a universal rule.",
+            feedback:
+              "That overclaims. A personal experiment teaches one context, not a universal rule.",
           },
           {
             id: "failure",
             label: "The experiment failed because one night was rough",
-            feedback: "One rough night is part of the data. Look at the whole small run.",
+            feedback:
+              "One rough night is part of the data. Look at the whole small run.",
           },
         ],
         feedbackTitle: "A useful pattern",

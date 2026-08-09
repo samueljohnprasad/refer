@@ -97,9 +97,9 @@ export function FadedThoughtRecordCategoryEngine({
             key={index}
             className={
               index === screenIndex
-                ? "h-2 w-[22px] rounded-full bg-[#7A8A5E]"
+                ? "h-2 w-[22px] rounded-full bg-[#5F7F58]"
                 : index < screenIndex
-                  ? "h-2 w-2 rounded-full bg-[#7A8A5E]"
+                  ? "h-2 w-2 rounded-full bg-[#5F7F58]"
                   : "h-2 w-2 rounded-full bg-[#DCD3C4]"
             }
           />
@@ -161,15 +161,15 @@ function RecordRowCard({
   const cardClass = blank
     ? "rounded-[20px] border-[1.5px] border-dashed border-[#B9AFA0] bg-transparent px-[14px] py-3"
     : row.kind === "thought"
-      ? "rounded-[20px] border-[1.5px] border-[#E4B68F] bg-[#FFF2EB] px-[14px] py-3"
+      ? "rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[14px] py-3"
       : complete && row.slot
-        ? "rounded-[20px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-[14px] py-3"
+        ? "rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[14px] py-3"
         : "rounded-[20px] border border-[#DCD3C4] bg-[#F9F4ED] px-[14px] py-3";
   const labelClass =
     row.kind === "thought"
-      ? "happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#8C491A]"
+      ? "happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]"
       : row.kind === "against" || row.kind === "realistic"
-        ? "happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#56633F]"
+        ? "happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]"
         : "happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#82796A]";
   return (
     <View className={cardClass}>

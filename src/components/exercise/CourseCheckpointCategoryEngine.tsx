@@ -93,7 +93,7 @@ export function CourseCheckpointCategoryEngine({
               <View
                 className={
                   selected
-                    ? "h-5 w-5 items-center justify-center rounded-full bg-[#7A8A5E]"
+                    ? "h-5 w-5 items-center justify-center rounded-full bg-[#5F7F58]"
                     : "h-5 w-5 rounded-full border-2 border-[#B6AB9B]"
                 }
               >
@@ -137,8 +137,8 @@ function CheckpointIntro({ content }: { content: Record<string, unknown> }) {
         instruction={readString(content.instruction) ?? "A calm mixed review."}
       />
       <View className="rounded-[24px] bg-[#F9F4ED] px-6 py-6 shadow-sm shadow-black/10">
-        <View className="h-16 w-16 items-center justify-center rounded-full bg-[#E1EECC]">
-          <HugeiconsIcon icon={ReloadIcon} size={30} color="#56633F" />
+        <View className="h-16 w-16 items-center justify-center rounded-full bg-[#D3E0CD]">
+          <HugeiconsIcon icon={ReloadIcon} size={30} color="#29452A" />
         </View>
         <Text className="happy-font-heading-bold mt-3 text-[21px] leading-[26px] text-[#201E1D]">
           {readString(content.introTitle)}
@@ -195,7 +195,7 @@ function SummaryGroup({
       <Text
         className={
           solid
-            ? "happy-font-body-bold mb-2 text-[10.5px] tracking-[0.5px] text-[#56633F]"
+            ? "happy-font-body-bold mb-2 text-[10.5px] tracking-[0.5px] text-[#29452A]"
             : "happy-font-body-bold mb-2 text-[10.5px] tracking-[0.5px] text-[#82796A]"
         }
       >
@@ -207,7 +207,7 @@ function SummaryGroup({
             key={item.concept}
             className={
               solid
-                ? "rounded-full bg-[#E1EECC] px-3.5 py-2"
+                ? "rounded-full bg-[#D3E0CD] px-3.5 py-2"
                 : "rounded-full bg-[#EBDDC5] px-3.5 py-2"
             }
           >
@@ -223,7 +223,7 @@ function SummaryGroup({
 
 function getOptionClassName(selected: boolean, feedback: boolean): string {
   if (selected) {
-    return "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#93A876] border-b-[3px] bg-[#F0FAE1] px-4 py-3";
+    return "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#7E9874] border-b-[3px] bg-[#F2F8EF] px-4 py-3";
   }
   if (feedback) {
     return "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border border-[#DCD3C4] bg-[#F9F4ED] px-4 py-3 opacity-50";

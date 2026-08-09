@@ -70,14 +70,14 @@ export function CuriosityBetCategoryEngine({
             <Text className="happy-font-body-bold text-[11px] tracking-[0.45px] text-[#82796A]">
               YOUR BET
             </Text>
-            <Text className="happy-font-body-semibold rounded-full border-[1.5px] border-[#E6A579] bg-[#FFF2EB] px-[13px] py-[5px] text-[13px] text-[#201E1D]">
+            <Text className="happy-font-body-semibold rounded-full border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[13px] py-[5px] text-[13px] text-[#201E1D]">
               {selectedOptionIndex == null ? "" : options[selectedOptionIndex]}
             </Text>
           </View>
-          <Text className="happy-font-body-bold text-[11px] tracking-[0.45px] text-[#56633F]">
+          <Text className="happy-font-body-bold text-[11px] tracking-[0.45px] text-[#29452A]">
             THE ANSWER
           </Text>
-          <Text className="happy-font-heading-bold text-[26px] leading-[31px] text-[#56633F]">
+          <Text className="happy-font-heading-bold text-[26px] leading-[31px] text-[#29452A]">
             {readString(content.answer)}
           </Text>
         </View>
@@ -106,16 +106,16 @@ function getOptionClassName({
   selected: boolean;
 }): string {
   if (locked && best) {
-    return "min-h-14 justify-center rounded-[22px] border-[1.5px] border-[#7A8A5E] bg-[#F0FAE1] px-4 py-[13px] shadow-sm shadow-black/10";
+    return "min-h-14 justify-center rounded-[22px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-4 py-[13px] shadow-sm shadow-black/10";
   }
   if (locked && selected) {
-    return "min-h-14 justify-center rounded-[22px] border-[1.5px] border-[#C67139] bg-[#FFF2EB] px-4 py-[13px] shadow-sm shadow-black/10";
+    return "min-h-14 justify-center rounded-[22px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-4 py-[13px] shadow-sm shadow-black/10";
   }
   if (locked) {
     return "min-h-14 justify-center rounded-[22px] border-[1.5px] border-[#DCD3C4] bg-[#F9F4ED] px-4 py-[13px] opacity-50";
   }
   if (selected) {
-    return "min-h-14 justify-center rounded-[22px] border-[1.5px] border-[#C67139] bg-[#FFF2EB] px-4 py-[13px] shadow-sm shadow-black/10";
+    return "min-h-14 justify-center rounded-[22px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-4 py-[13px] shadow-sm shadow-black/10";
   }
   return "min-h-14 justify-center rounded-[22px] border-[1.5px] border-[#DCD3C4] bg-[#F9F4ED] px-4 py-[13px] shadow-sm shadow-black/10 active:translate-y-px active:shadow-none";
 }

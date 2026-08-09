@@ -78,7 +78,7 @@ export function LeverScenarioCategoryEngine({
       />
 
       <View className="mb-3.5 rounded-[24px] rounded-bl-md bg-[#F9F4ED] px-[18px] py-4 shadow-sm shadow-black/10">
-        <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#56633F]">
+        <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]">
           {variant.sceneLabel}
         </Text>
         <Text className="happy-font-body mt-1 text-[14.5px] leading-[22px] text-[#201E1D]">
@@ -101,7 +101,7 @@ export function LeverScenarioCategoryEngine({
               onPress={() => selectOption(option)}
               className={
                 selected
-                  ? "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#93A876] border-b-[3px] bg-[#F0FAE1] px-4 py-3"
+                  ? "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#7E9874] border-b-[3px] bg-[#F2F8EF] px-4 py-3"
                   : showingFeedback
                     ? "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border border-[#DCD3C4] bg-[#F9F4ED] px-4 py-3 opacity-50"
                     : "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#DCD3C4] border-b-[3px] bg-[#F9F4ED] px-4 py-3 active:translate-y-0.5 active:border-b-[1.5px]"
@@ -110,7 +110,7 @@ export function LeverScenarioCategoryEngine({
               <View
                 className={
                   selected
-                    ? "h-5 w-5 items-center justify-center rounded-full border-2 border-[#7A8A5E] bg-[#7A8A5E]"
+                    ? "h-5 w-5 items-center justify-center rounded-full border-2 border-[#5F7F58] bg-[#5F7F58]"
                     : "h-5 w-5 rounded-full border-2 border-[#B6AB9B]"
                 }
               >

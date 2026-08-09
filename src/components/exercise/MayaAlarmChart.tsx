@@ -63,14 +63,14 @@ export function MayaAlarmChart({
         y1={16}
         x2={bedtimeX}
         y2={132}
-        stroke={COURSE_EXERCISE_COLORS.orangeLight}
+        stroke={COURSE_EXERCISE_COLORS.accentLight}
         strokeWidth={2}
         strokeDasharray="4 4"
       />
       <SvgText
         x={bedtimeX}
         y={11}
-        fill={COURSE_EXERCISE_COLORS.orangeRim}
+        fill={COURSE_EXERCISE_COLORS.accentDark}
         fontFamily={COURSE_EXERCISE_FONTS.bodyBold}
         fontSize={9}
         textAnchor="middle"
@@ -84,7 +84,7 @@ export function MayaAlarmChart({
             y1={thresholdY}
             x2={292}
             y2={thresholdY}
-            stroke={COURSE_EXERCISE_COLORS.olive}
+            stroke={COURSE_EXERCISE_COLORS.accent}
             strokeWidth={2}
             strokeDasharray="3 5"
             strokeLinecap="round"
@@ -92,7 +92,7 @@ export function MayaAlarmChart({
           <SvgText
             x={290}
             y={thresholdY - 5}
-            fill={COURSE_EXERCISE_COLORS.oliveDark}
+            fill={COURSE_EXERCISE_COLORS.accentDark}
             fontFamily={COURSE_EXERCISE_FONTS.bodyBold}
             fontSize={9}
             textAnchor="end"
@@ -104,7 +104,7 @@ export function MayaAlarmChart({
       <Polyline
         points={points.join(" ")}
         fill="none"
-        stroke={COURSE_EXERCISE_COLORS.orange}
+        stroke={COURSE_EXERCISE_COLORS.accent}
         strokeWidth={3.5}
         strokeLinecap="round"
         strokeLinejoin="round"

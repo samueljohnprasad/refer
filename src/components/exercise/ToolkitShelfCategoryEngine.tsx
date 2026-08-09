@@ -64,14 +64,14 @@ export function ToolkitShelfCategoryEngine({
               key={tool.label}
               className={
                 selected
-                  ? "min-h-[78px] flex-1 -translate-y-1 items-center justify-center rounded-[18px] border-[1.5px] border-[#93A876] bg-[#F0FAE1] px-2 py-2.5 shadow-md shadow-[#C9D9AF]"
+                  ? "min-h-[78px] flex-1 -translate-y-1 items-center justify-center rounded-[18px] border-[1.5px] border-[#7E9874] bg-[#F2F8EF] px-2 py-2.5 shadow-md shadow-[#ABC0A2]"
                   : "min-h-[78px] flex-1 items-center justify-center rounded-[18px] border border-[#DCD3C4] bg-[#F9F4ED] px-2 py-2.5"
               }
             >
               <Text
                 className={
                   selected
-                    ? "happy-font-heading-bold text-center text-[15px] leading-[18px] text-[#56633F]"
+                    ? "happy-font-heading-bold text-center text-[15px] leading-[18px] text-[#29452A]"
                     : "happy-font-heading-bold text-center text-[15px] leading-[18px] text-[#201E1D]"
                 }
               >
@@ -101,7 +101,7 @@ export function ToolkitShelfCategoryEngine({
               onPress={() => selectMoment(index)}
               className={
                 selected
-                  ? "min-h-[54px] justify-center rounded-[21px] border-[1.5px] border-[#93A876] border-b-[3px] bg-[#F0FAE1] px-4 py-3 active:translate-y-0.5"
+                  ? "min-h-[54px] justify-center rounded-[21px] border-[1.5px] border-[#7E9874] border-b-[3px] bg-[#F2F8EF] px-4 py-3 active:translate-y-0.5"
                   : "min-h-[54px] justify-center rounded-[21px] border-[1.5px] border-[#DCD3C4] border-b-[3px] bg-[#F9F4ED] px-4 py-3 active:translate-y-0.5 active:border-b-[1.5px]"
               }
             >
@@ -114,8 +114,8 @@ export function ToolkitShelfCategoryEngine({
       </View>
 
       {selectedMoment ? (
-        <View className="mt-3 rounded-[21px] border-[1.5px] border-[#C9D9AF] bg-[#F0FAE1] px-4 py-[14px]">
-          <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#56633F]">
+        <View className="mt-3 rounded-[21px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-4 py-[14px]">
+          <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]">
             {selectedMoment.key}
           </Text>
           <Text className="happy-font-body mt-1 text-[13.5px] leading-5 text-[#3F4A31]">

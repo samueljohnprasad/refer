@@ -88,7 +88,7 @@ export function PanicWaveCommitCategoryEngine({
                 y1="18"
                 x2={guessX}
                 y2="136"
-                stroke="#7A8A5E"
+                stroke="#5F7F58"
                 strokeWidth="2"
                 strokeDasharray="4 4"
                 strokeLinecap="round"
@@ -96,7 +96,7 @@ export function PanicWaveCommitCategoryEngine({
               <SvgText
                 x={guessX}
                 y="12"
-                fill="#56633F"
+                fill="#29452A"
                 fontSize="9"
                 fontWeight="700"
                 textAnchor="middle"
@@ -108,7 +108,7 @@ export function PanicWaveCommitCategoryEngine({
           <Polyline
             points={curvePoints}
             fill="none"
-            stroke="#C67139"
+            stroke="#5F7F58"
             strokeWidth="3.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -145,8 +145,8 @@ export function PanicWaveCommitCategoryEngine({
           <Text
             className={
               guess >= 21
-                ? "happy-font-body-bold text-xs text-[#8C491A]"
-                : "happy-font-body-bold text-xs text-[#56633F]"
+                ? "happy-font-body-bold text-xs text-[#29452A]"
+                : "happy-font-body-bold text-xs text-[#29452A]"
             }
           >
             {guess >= 21
@@ -157,12 +157,12 @@ export function PanicWaveCommitCategoryEngine({
         <Slider
           accessibilityLabel="Your guess in minutes; the far right means never"
           disabled={phase !== "ready"}
-          minimumTrackTintColor="#C67139"
+          minimumTrackTintColor="#5F7F58"
           maximumTrackTintColor="#DCD3C4"
           minimumValue={1}
           maximumValue={21}
           step={1}
-          thumbTintColor="#C67139"
+          thumbTintColor="#5F7F58"
           value={guess}
           onValueChange={updateGuess}
           style={{ height: 40, width: "100%" }}
@@ -174,7 +174,7 @@ export function PanicWaveCommitCategoryEngine({
           <Text className="happy-font-body-bold text-[11px] text-[#82796A]">
             20 min
           </Text>
-          <Text className="happy-font-body-bold text-[11px] text-[#8C491A]">
+          <Text className="happy-font-body-bold text-[11px] text-[#29452A]">
             never
           </Text>
         </View>
@@ -182,13 +182,13 @@ export function PanicWaveCommitCategoryEngine({
 
       {phase === "revealed" ? (
         <View className="mt-3 gap-2 rounded-[24px] bg-[#F9F4ED] px-[22px] py-5 shadow-md shadow-black/10">
-          <Text className="happy-font-heading-bold text-xl leading-[26px] text-[#56633F]">
+          <Text className="happy-font-heading-bold text-xl leading-[26px] text-[#29452A]">
             {readString(content.rule)}
           </Text>
           <Text className="happy-font-body text-sm leading-[22px] text-[#201E1D]">
             {getGuessExplanation(content, guess)}
           </Text>
-          <Text className="happy-font-body-bold mt-1 text-[13px] leading-5 text-[#56633F]">
+          <Text className="happy-font-body-bold mt-1 text-[13px] leading-5 text-[#29452A]">
             {readString(content.safetyNote)}
           </Text>
         </View>

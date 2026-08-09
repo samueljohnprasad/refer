@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
   },
   revealTitle: {
-    color: COURSE_EXERCISE_COLORS.oliveDark,
+    color: COURSE_EXERCISE_COLORS.accentDark,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 19,
     lineHeight: 24,
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   },
   next: {
     marginTop: 10,
-    color: COURSE_EXERCISE_COLORS.orange,
+    color: COURSE_EXERCISE_COLORS.accent,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 13,
     lineHeight: 18,

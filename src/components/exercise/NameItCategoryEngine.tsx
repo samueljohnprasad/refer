@@ -146,9 +146,9 @@ export function NameItCategoryEngine({
             step={1}
             value={intensity}
             disabled={locked}
-            minimumTrackTintColor={COURSE_EXERCISE_COLORS.orange}
+            minimumTrackTintColor={COURSE_EXERCISE_COLORS.accent}
             maximumTrackTintColor={COURSE_EXERCISE_COLORS.border}
-            thumbTintColor={COURSE_EXERCISE_COLORS.orange}
+            thumbTintColor={COURSE_EXERCISE_COLORS.accent}
             accessibilityLabel="Feeling intensity, 0 to 10"
             accessibilityValue={{ min: 0, max: 10, now: intensity }}
             onValueChange={setIntensity}
@@ -206,20 +206,20 @@ const styles = StyleSheet.create({
   family: { minHeight: 54, justifyContent: "center", paddingHorizontal: 24, borderWidth: 1, borderBottomWidth: 4, borderColor: COURSE_EXERCISE_COLORS.border, borderRadius: 27, backgroundColor: COURSE_EXERCISE_COLORS.surface },
   familyLabel: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 16 },
   pressed: { transform: [{ translateY: 2 }], opacity: 0.8 },
-  changeFamily: { alignSelf: "flex-start", minHeight: 40, justifyContent: "center", marginBottom: 12, paddingHorizontal: 16, borderWidth: 1.5, borderColor: COURSE_EXERCISE_COLORS.olive, borderRadius: 20, backgroundColor: COURSE_EXERCISE_COLORS.oliveTint },
-  changeFamilyLabel: { color: COURSE_EXERCISE_COLORS.oliveDark, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 13 },
+  changeFamily: { alignSelf: "flex-start", minHeight: 40, justifyContent: "center", marginBottom: 12, paddingHorizontal: 16, borderWidth: 1.5, borderColor: COURSE_EXERCISE_COLORS.accent, borderRadius: 20, backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
+  changeFamilyLabel: { color: COURSE_EXERCISE_COLORS.accentDark, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 13 },
   wordList: { gap: 9 },
   word: { minHeight: 56, paddingHorizontal: 16, paddingVertical: 11, borderWidth: 1, borderBottomWidth: 4, borderColor: COURSE_EXERCISE_COLORS.border, borderRadius: 22, backgroundColor: COURSE_EXERCISE_COLORS.surface },
-  wordSelected: { borderColor: COURSE_EXERCISE_COLORS.olive, backgroundColor: COURSE_EXERCISE_COLORS.oliveTint },
+  wordSelected: { borderColor: COURSE_EXERCISE_COLORS.accent, backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
   wordLabel: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 15 },
   wordDescription: { marginTop: 3, color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 12.5, lineHeight: 17 },
   intensityCard: { alignItems: "center", gap: 16, paddingHorizontal: 22, paddingVertical: 24, borderRadius: 28, backgroundColor: COURSE_EXERCISE_COLORS.surface, shadowColor: COURSE_EXERCISE_COLORS.shadow, shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.14, shadowRadius: 8 },
-  wordPill: { paddingHorizontal: 22, paddingVertical: 9, borderRadius: 22, overflow: "hidden", color: COURSE_EXERCISE_COLORS.surface, backgroundColor: COURSE_EXERCISE_COLORS.olive, fontFamily: COURSE_EXERCISE_FONTS.heading, fontSize: 21 },
+  wordPill: { paddingHorizontal: 22, paddingVertical: 9, borderRadius: 22, overflow: "hidden", color: COURSE_EXERCISE_COLORS.surface, backgroundColor: COURSE_EXERCISE_COLORS.accent, fontFamily: COURSE_EXERCISE_FONTS.heading, fontSize: 21 },
   intensityLabel: { color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 12, letterSpacing: 0.6 },
   slider: { width: "100%", height: 44 },
   scaleLabels: { width: "100%", flexDirection: "row", justifyContent: "space-between" },
   scaleLabel: { color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 12 },
-  feedback: { marginTop: 16, paddingHorizontal: 17, paddingVertical: 15, borderWidth: 1.5, borderColor: COURSE_EXERCISE_COLORS.olive, borderRadius: 24, backgroundColor: COURSE_EXERCISE_COLORS.oliveTint },
+  feedback: { marginTop: 16, paddingHorizontal: 17, paddingVertical: 15, borderWidth: 1.5, borderColor: COURSE_EXERCISE_COLORS.accent, borderRadius: 24, backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
   feedbackTitle: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.heading, fontSize: 16 },
   feedbackBody: { marginTop: 5, color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 13.5, lineHeight: 20 },
 });

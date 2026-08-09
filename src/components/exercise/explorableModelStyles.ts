@@ -70,8 +70,8 @@ export const explorableModelStyles = StyleSheet.create({
     backgroundColor: COURSE_EXERCISE_COLORS.surface,
   },
   activeLever: {
-    borderColor: COURSE_EXERCISE_COLORS.olive,
-    backgroundColor: COURSE_EXERCISE_COLORS.olive,
+    borderColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: COURSE_EXERCISE_COLORS.accent,
   },
   leverText: {
     color: COURSE_EXERCISE_COLORS.inkSoft,
@@ -88,12 +88,12 @@ export const explorableModelStyles = StyleSheet.create({
     borderRadius: 20,
   },
   positive: {
-    borderColor: COURSE_EXERCISE_COLORS.olive,
-    backgroundColor: COURSE_EXERCISE_COLORS.oliveTint,
+    borderColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   warning: {
-    borderColor: COURSE_EXERCISE_COLORS.orangeLight,
-    backgroundColor: COURSE_EXERCISE_COLORS.orangeTint,
+    borderColor: COURSE_EXERCISE_COLORS.accentLight,
+    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
   verdictTitle: {
     marginBottom: 3,
