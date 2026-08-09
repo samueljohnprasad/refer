@@ -73,7 +73,7 @@ export function IntuitionCheckCategoryEngine({
       </View>
 
       <Text style={styles.note}>
-        No wrong answer — it’s a gut check, not a test.
+        No wrong answer. It’s a gut check, not a test.
       </Text>
 
       {selectedOptionId ? (

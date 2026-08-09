@@ -144,7 +144,7 @@ ${parts.join("\n")}
 
 Rules:
 - Write as direct address ("you"), max 4 sentences
-- No bullet points, no headers — just a flowing paragraph
+- No bullet points, no headers, just a flowing paragraph
 - Reference specific numbers from the data
 - End on an encouraging or actionable note
 - Tone: like a supportive coach who genuinely knows this person`;

@@ -194,9 +194,6 @@ export function PanicWaveCommitCategoryEngine({
         </View>
       ) : null}
 
-      <Text className="happy-font-body mt-3 text-center text-[12.5px] leading-[18px] text-[#82796A]">
-        Committing first — even to “never” — is what makes the answer stick.
-      </Text>
     </View>
   );
 }

@@ -87,7 +87,7 @@ export function TriggerClusterCard() {
         Your Pattern
       </Text>
       <Text className="text-[12px] text-ink-muted mb-2">
-        What triggers your anxiety — detected from your exercises
+        Triggers detected from your exercises
       </Text>
 
       {data.clusters.map((cluster, i) => (

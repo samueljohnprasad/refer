@@ -66,7 +66,7 @@ const DailyGoalStep: React.FC<DailyGoalStepProps> = ({
           {ctx.testimonial.quote}
         </Text>
         <Text className="happy-font-body-bold mt-2.5 text-xs font-bold text-sage-600">
-          — {ctx.testimonial.name}, {ctx.testimonial.age}
+          {ctx.testimonial.name}, {ctx.testimonial.age}
         </Text>
       </Animated.View>
     </ScrollView>
@@ -74,4 +74,3 @@ const DailyGoalStep: React.FC<DailyGoalStepProps> = ({
 };
 
 export default React.memo(DailyGoalStep);
-

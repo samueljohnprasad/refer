@@ -61,9 +61,6 @@ export function RecallWarmupCategoryEngine({
           />
         ))}
       </View>
-      <Text className="happy-font-body mt-3 text-center text-[12.5px] leading-[18px] text-[#82796A]">
-        Recalling it yourself beats rereading — even silently. Never scored.
-      </Text>
     </View>
   );
 }

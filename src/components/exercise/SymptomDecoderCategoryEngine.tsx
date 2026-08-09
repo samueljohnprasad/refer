@@ -80,7 +80,7 @@ export function SymptomDecoderCategoryEngine({
       <View style={styles.privateNote}>
         <Feather name="lock" size={14} color={COURSE_EXERCISE_COLORS.inkSoft} />
         <Text style={styles.privateNoteText}>
-          Private — the tap quietly shapes which lessons come first.
+          Private. Your choice quietly shapes which lessons come first.
         </Text>
       </View>
     </View>

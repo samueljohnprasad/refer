@@ -120,7 +120,7 @@ export function ParadoxCardCategoryEngine({
               pressed && styles.pressed,
             ]}
           >
-            <Text style={styles.stopLabel}>Stop pushing — let it pass</Text>
+            <Text style={styles.stopLabel}>Stop pushing. Let it pass.</Text>
           </Pressable>
         ) : null}
       </View>

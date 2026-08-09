@@ -180,7 +180,7 @@ export const STRESS_LEVEL_OPTIONS: readonly QuizOption<StressLevel>[] = [
     id: "light",
     emoji: "🌤️",
     title: "Light breeze",
-    subtitle: "Manageable — I just want to stay ahead of it",
+    subtitle: "Manageable, I just want to stay ahead of it",
   },
   {
     id: "moderate",
@@ -212,7 +212,7 @@ export const MOTIVATION_FOLLOWUP: Record<
 > = {
   anxiety: {
     question: "How intense is your anxiety",
-    subtext: "This helps us set the right pace — no judgment here.",
+    subtext: "This helps us set the right pace, no judgment here.",
     options: [
       {
         id: "light",
@@ -302,7 +302,7 @@ export const MOTIVATION_FOLLOWUP: Record<
   },
   self_understanding: {
     question: "How lost do you feel right now",
-    subtext: "There's no wrong answer — we'll meet you exactly where you are.",
+    subtext: "There's no wrong answer, we'll meet you exactly where you are.",
     options: [
       {
         id: "light",
@@ -344,7 +344,7 @@ export const MOTIVATION_FOLLOWUP: Record<
         id: "moderate",
         emoji: "🌥️",
         title: "Inconsistent",
-        subtitle: "Sleep varies a lot — good nights and bad nights",
+        subtitle: "Sleep varies a lot, good nights and bad nights",
       },
       {
         id: "heavy",
@@ -536,9 +536,9 @@ export const PAYWALL_BENEFITS = [
   "Streak repair & premium themes",
 ];
 
-export const PACT_TEXT = `I commit to showing up for myself — even on the days I don't feel like it. Just {minutes} minutes. That's all it takes.`;
+export const PACT_TEXT = `I commit to showing up for myself, even on the days I don't feel like it. Just {minutes} minutes. That's all it takes.`;
 
-export const FUTURE_LETTER_TEXT = `You did it. You actually showed up — not once, but every single day for 30 days.\n\nRemember how heavy things felt when you started? The {timing} were the hardest. But you kept coming back. {minutes} minutes at a time.\n\nYou're not the same person who opened this app a month ago. You're calmer. You notice your thoughts before they spiral. You have tools now.\n\nI'm proud of you.`;
+export const FUTURE_LETTER_TEXT = `You did it. You actually showed up, not once, but every single day for 30 days.\n\nRemember how heavy things felt when you started? The {timing} were the hardest. But you kept coming back. {minutes} minutes at a time.\n\nYou're not the same person who opened this app a month ago. You're calmer. You notice your thoughts before they spiral. You have tools now.\n\nI'm proud of you.`;
 
 export const PLAN_STATS = [
   { value: "7", label: "Days" },

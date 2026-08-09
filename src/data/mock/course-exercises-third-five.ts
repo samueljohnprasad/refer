@@ -16,8 +16,8 @@ export const THIRD_FIVE_COURSE_EXERCISES: Exercise[] = [
       completionMode: "direct",
       variant: "myth",
       title: "A sticky myth",
-      instruction: "Just read — nothing to answer.",
-      primaryLabel: "Got it — continue",
+      instruction: "Just read, nothing to answer.",
+      primaryLabel: "Got it, continue",
       myth: "Strong feelings prove the thought behind them is true.",
       reality:
         "Intensity measures the alarm, not the facts. A thought can feel certain at 2am and be wrong by breakfast.",
@@ -44,20 +44,20 @@ export const THIRD_FIVE_COURSE_EXERCISES: Exercise[] = [
       feedbackTakeaway:
         "You can spot the interpretation between event and feeling.",
       workedExample:
-        "Event → interpretation → feeling. The middle step is fast and automatic, but it can be noticed — and gently questioned.",
+        "Event → interpretation → feeling. The middle step is fast and automatic, but it can be noticed, and gently questioned.",
       options: [
         {
           id: "true",
           label: "True",
           isCorrect: true,
           feedback:
-            "Right — between event and emotion sits an interpretation, usually automatic. Same situation, different reading, different feeling. That gap is where you get leverage.",
+            "Right, between event and emotion sits an interpretation, usually automatic. Same situation, different reading, different feeling. That gap is where you get leverage.",
         },
         {
           id: "false",
           label: "False",
           feedback:
-            "It feels like situations hit us directly — but two people in the same moment can feel completely differently. The interpretation in between is what differs.",
+            "It feels like situations hit us directly, but two people in the same moment can feel completely differently. The interpretation in between is what differs.",
         },
       ],
     },
@@ -73,7 +73,7 @@ export const THIRD_FIVE_COURSE_EXERCISES: Exercise[] = [
       format: CourseExerciseCategoryEnum.StoryWalkthrough,
       completionMode: "direct",
       title: "Ana’s Tuesday",
-      instruction: "A short story — tap through at your pace.",
+      instruction: "A short story, tap through at your pace.",
       primaryLabel: "Next",
       beats: [
         {
@@ -89,7 +89,7 @@ export const THIRD_FIVE_COURSE_EXERCISES: Exercise[] = [
           kicker: "ANA · 2PM",
           title: "The quiet cancel",
           body:
-            "She texts “can’t make it today”. Relief, for a minute — then the afternoon feels even emptier.",
+            "She texts “can’t make it today”. Relief, for a minute, then the afternoon feels even emptier.",
           icon: "activity",
         },
         {
@@ -104,7 +104,7 @@ export const THIRD_FIVE_COURSE_EXERCISES: Exercise[] = [
       insight: {
         title: "People who relate to Ana often find…",
         body:
-          "…it was never laziness. Low mood shrinks energy, skipping empties the day, and the empty day lowers mood again. It’s a loop — and loops have doors. Ana’s door: the five-minute version of one skipped thing.",
+          "…it was never laziness. Low mood shrinks energy, skipping empties the day, and the empty day lowers mood again. It’s a loop, and loops have doors. Ana’s door: the five-minute version of one skipped thing.",
       },
     },
   },
@@ -123,13 +123,13 @@ export const THIRD_FIVE_COURSE_EXERCISES: Exercise[] = [
       primaryLabel: "And then what happens?",
       trapTitle: "Withdrawing to “recharge”",
       trapBody:
-        "Of course you cancel. People are draining when you’re flat, and the couch asks nothing of you. It works — for about an hour.",
+        "Of course you cancel. People are draining when you’re flat, and the couch asks nothing of you. It works, for about an hour.",
       relief:
         "Quiet, no demands, real relief. That’s why the trap is intelligent, not weak.",
       rebound:
         "An emptier day for the mood to feed on. By evening the dip has more room, not less.",
       counterMove:
-        "Shrink the plan instead of cancelling it — ten minutes of the walk still counts as a door.",
+        "Shrink the plan instead of cancelling it, ten minutes of the walk still counts as a door.",
     },
   },
   {
@@ -144,8 +144,8 @@ export const THIRD_FIVE_COURSE_EXERCISES: Exercise[] = [
       completionMode: "direct",
       variant: "rule",
       title: "One rule to keep",
-      instruction: "Just read — nothing to answer.",
-      primaryLabel: "Got it — continue",
+      instruction: "Just read, nothing to answer.",
+      primaryLabel: "Got it, continue",
       rule: "Action first. Motivation follows.",
       explanation:
         "Low mood says wait until you feel like it. The wiring runs the other way: a five-minute start is what generates the feeling-like-it.",

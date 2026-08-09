@@ -65,7 +65,7 @@ const PostTrialDiscountBanner: React.FC<PostTrialDiscountBannerProps> = ({
           </View>
 
           <Text className="happy-font-body-medium text-ink-soft text-sm leading-5 mb-4">
-            Your trial has ended, but we have a special deal — get{' '}
+            Your trial has ended. Get{' '}
             <Text className="happy-font-body-bold text-sage-700">
               {POST_TRIAL_DISCOUNT_PERCENT}% off
             </Text>{' '}

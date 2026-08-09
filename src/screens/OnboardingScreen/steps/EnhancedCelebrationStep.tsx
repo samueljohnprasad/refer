@@ -124,7 +124,7 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                                 Premium Trial Active
                             </Text>
                             <Text className="text-purple-600 text-xs font-medium mt-0.5">
-                                Your free trial is active — let's make the most of it!
+                                Your free trial is active, let's make the most of it!
                             </Text>
                         </View>
                     </View>
@@ -193,7 +193,7 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                         </Text>
                         <View className="flex-1 flex-row items-center flex-wrap gap-1">
                             <Text className="text-gray-600 dark:text-gray-300 text-sm font-medium leading-5">
-                                Try voice journaling — just talk it out
+                                Try voice journaling, just talk it out
                             </Text>
                             <HugeiconsIcon icon={Mic01Icon} size={14} color={SAGE[600]} />
                         </View>
@@ -203,7 +203,7 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                             3.
                         </Text>
                         <Text className="flex-1 text-gray-600 dark:text-gray-300 text-sm font-medium leading-5">
-                            Build a streak — even 30 seconds counts!
+                            Build a streak, even 30 seconds counts!
                         </Text>
                     </View>
                 </View>

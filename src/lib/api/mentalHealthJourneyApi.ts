@@ -76,6 +76,30 @@ export async function fetchUserStreak(): Promise<
   }
 }
 
+/**
+ * Records one activity day for the authenticated user.
+ * The database RPC is idempotent for repeat activity on the same day.
+ */
+export async function updateUserStreak(): Promise<ApiResponse<null>> {
+  try {
+    const { error } = await supabase.rpc("update_user_streak");
+
+    if (error) {
+      log.error("updateUserStreak RPC error", error.message);
+      return { data: null, success: false, error: error.message };
+    }
+
+    return { data: null, success: true };
+  } catch (err) {
+    log.error("updateUserStreak exception", err);
+    return {
+      data: null,
+      success: false,
+      error: err instanceof Error ? err.message : "Unknown error",
+    };
+  }
+}
+
 
 // ============================================================================
 // Insight Points API

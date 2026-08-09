@@ -198,7 +198,7 @@ export function TherapistNotebookCard() {
 
         {!expanded && (
           <Text className="text-[12px] text-ink-muted mt-1" numberOfLines={2}>
-            "{data.coreBeliefIdentified}" — updated {dateLabel}
+            Updated {dateLabel}: “{data.coreBeliefIdentified}”
           </Text>
         )}
       </Pressable>

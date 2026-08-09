@@ -4,13 +4,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import {
   useGetCourseCatalogQuery,
-  useGetCourseTreeQuery,
   useStartCourseMutation,
 } from "@/src/domains/journey/data/journeyApi";
-import { buildCourseJourneyPreview } from "@/src/domains/journey/model/courseCatalogPreview";
 import type {
   CourseCatalogListItem,
-  CourseJourneyPreviewSection,
   EnrolledCourseListItem,
 } from "@/src/types/journeyV5";
 import { resolveCourseAccentColor } from "@/src/domains/journey/model/courseVisuals";
@@ -29,12 +26,14 @@ function resolveInitialCourseId(
   activeCourseId?: string | null,
 ): string | null {
   if (courses.length === 0) return null;
+  const activeCourse = courses.find((course) => course.id === activeCourseId);
+  if (activeCourse && enrolledCourseIds.has(activeCourse.id)) {
+    return activeCourse.id;
+  }
   const firstNotEnrolledCourse = courses.find(
     (course) => !enrolledCourseIds.has(course.id),
   );
   if (firstNotEnrolledCourse) return firstNotEnrolledCourse.id;
-  const activeCourse = courses.find((course) => course.id === activeCourseId);
-  if (activeCourse) return activeCourse.id;
   return courses[0]?.id ?? null;
 }
 
@@ -49,13 +48,7 @@ function getErrorMessage(error: unknown): string {
 
 export function useCourseAccordionViewModel(course: CourseCatalogListItem, isExpanded: boolean) {
   const courseAccentColor = resolveCourseAccentColor(course.colorHex);
-  const { data: selectedCourseTree, isFetching: isPreviewLoading } =
-    useGetCourseTreeQuery(course.id, { skip: !isExpanded });
-
-  const preview = useMemo(
-    () => (selectedCourseTree ? buildCourseJourneyPreview(selectedCourseTree) : null),
-    [selectedCourseTree],
-  );
+  const preview = course.metadata;
 
   const expansionProgress = useSharedValue(isExpanded ? 1 : 0);
 
@@ -76,14 +69,14 @@ export function useCourseAccordionViewModel(course: CourseCatalogListItem, isExp
     };
   });
 
-  return { courseAccentColor, isPreviewLoading, preview, animatedChevronStyle };
+  return { courseAccentColor, preview, animatedChevronStyle };
 }
 
 export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
   const { activeCourseId, enrolledCourses, isPresented, onClose, onCourseSelect } = props;
   const insets = useSafeAreaInsets();
-  const listRef = useRef<FlatList>(null);
-  const [expandedCourseIds, setExpandedCourseIds] = useState<Set<string>>(new Set());
+  const listRef = useRef<FlatList<CourseCatalogListItem> | null>(null);
+  const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);
   const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
   const [shouldRender, setShouldRender] = useState(isPresented);
 
@@ -94,6 +87,10 @@ export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
       const timer = setTimeout(() => setShouldRender(false), 250);
       return () => clearTimeout(timer);
     }
+  }, [isPresented]);
+
+  useEffect(() => {
+    if (isPresented) setEnrollmentError(null);
   }, [isPresented]);
 
   const { data: catalogCourses = [], isFetching: isCatalogLoading } =
@@ -109,10 +106,9 @@ export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
 
   useEffect(() => {
     if (!isPresented || catalogCourses.length === 0) return;
-    const hasValidExpanded = Array.from(expandedCourseIds).some((id) =>
-      catalogCourses.some((c) => c.id === id),
-    );
-    if (hasValidExpanded) return;
+    if (expandedCourseId && catalogCourses.some((course) => course.id === expandedCourseId)) {
+      return;
+    }
 
     const initialId = resolveInitialCourseId(
       catalogCourses,
@@ -120,36 +116,24 @@ export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
       activeCourseId,
     );
     if (initialId) {
-      setExpandedCourseIds(new Set([initialId]));
+      setExpandedCourseId(initialId);
     }
-  }, [activeCourseId, catalogCourses, enrolledCourseIds, isPresented, expandedCourseIds]);
+  }, [activeCourseId, catalogCourses, enrolledCourseIds, expandedCourseId, isPresented]);
 
   const [startCourse, { isLoading: isStartingCourse }] = useStartCourseMutation();
 
   const handleToggle = useCallback(
     (id: string) => {
-      setExpandedCourseIds((prev) => {
-        const next = new Set(prev);
-        if (next.has(id)) {
-          next.delete(id);
-        } else {
-          next.add(id);
-          const idx = catalogCourses.findIndex((c) => c.id === id);
-          if (idx !== -1 && listRef.current) {
-            setTimeout(() => {
-              listRef.current?.scrollToIndex({
-                index: idx,
-                animated: true,
-                viewPosition: 0,
-              });
-            }, 150);
-          }
+      setExpandedCourseId((previousId) => {
+        if (previousId === id) {
+          return null;
         }
-        return next;
+
+        return id;
       });
       setEnrollmentError(null);
     },
-    [catalogCourses],
+    [],
   );
 
   const handlePrimaryActionPress = useCallback(
@@ -176,7 +160,7 @@ export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
     model: {
       insets,
       listRef,
-      expandedCourseIds,
+      expandedCourseId,
       enrollmentError,
       shouldRender,
       catalogCourses,

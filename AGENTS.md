@@ -52,6 +52,7 @@ This repo currently has multiple lockfiles (`package-lock.json`, `yarn.lock`, `b
 
 ## Engineering Decision Rules
 
+- Do not make major decisions independently. Stay within the user’s explicit request and existing product direction. Ask for permission before changing a source of truth, architecture, data model, visible content, navigation or user flow, dependencies, scope, or performing a destructive/broad refactor. Do not silently invent alternatives, hide data, remove records, or choose a materially different behavior; report the tradeoff and wait for direction.
 - Do not maintain backward compatibility for deprecated code paths. Remove deprecated paths directly instead of adding compatibility layers, fallbacks, or migration plans.
 - Under the current requirements, choose the simplest implementation that runs end to end. Avoid abstractions, configuration, and indirection without a concrete need.
 - Build progressively: complete the smallest usable version first, then add features on a stable foundation.

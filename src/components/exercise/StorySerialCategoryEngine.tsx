@@ -172,7 +172,7 @@ export function StorySerialCategoryEngine({
             pressed && styles.pressed,
           ]}
         >
-          <Text style={styles.rewindLabel}>Rewind — walk the other path</Text>
+          <Text style={styles.rewindLabel}>Rewind and walk the other path</Text>
         </Pressable>
       ) : null}
 

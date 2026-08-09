@@ -16,6 +16,8 @@ import { Skeleton, SkeletonCard } from "@/src/components/ui/Skeleton";
 import { NodeEngineRouter } from "@/src/components/node/NodeEngineRouter";
 import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import { Text } from "@/src/components/ui/Text";
+import { updateUserStreak } from "@/src/lib/api/mentalHealthJourneyApi";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function JourneyFlowRoute() {
   const { courseId, nodeId } = useLocalSearchParams<{
@@ -23,6 +25,7 @@ export default function JourneyFlowRoute() {
     nodeId: string;
   }>();
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
   const [completeNode] = journeyApi.useCompleteNodeMutation();
   const node = useAppSelector((state) => selectNode(state, nodeId || ""));
@@ -45,6 +48,8 @@ export default function JourneyFlowRoute() {
 
       try {
         await completeNode({ nodeId, courseId, responses }).unwrap();
+        await updateUserStreak();
+        await queryClient.invalidateQueries({ queryKey: ["streak"] });
         dispatch(
           optimisticSetNodeStatus({
             nodeId,
@@ -66,7 +71,14 @@ export default function JourneyFlowRoute() {
         handleDismiss();
       }
     },
-    [nodeId, courseId, completeNode, dispatch, handleDismiss],
+    [
+      nodeId,
+      courseId,
+      completeNode,
+      dispatch,
+      handleDismiss,
+      queryClient,
+    ],
   );
 
   if (isLoading) {

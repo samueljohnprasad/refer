@@ -46,8 +46,8 @@ export function TeachBackChainCategoryEngine({
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
       const previousStep = orderedSteps[completedStepCount - 1];
       const hint = previousStep
-        ? `Almost — what happens right after “${previousStep.label}”?`
-        : "Almost — what happens first?";
+        ? `Almost. What happens right after “${previousStep.label}”?`
+        : "Almost. What happens first?";
       onInteraction(createResponse({ ...saved, coachHint: hint }), false);
       return;
     }

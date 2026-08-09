@@ -60,7 +60,7 @@ const BlurredPremiumPreview: React.FC<BlurredPremiumPreviewProps> = ({
             </Text>
 
             <Text className="text-xs text-gray-500 dark:text-gray-400 font-medium text-center leading-4 mb-4 px-4">
-                Get a sneak peek — unlock the full experience with Premium
+                Get a sneak peek. Unlock the full experience with Premium.
             </Text>
 
             <TouchableOpacity
@@ -111,6 +111,5 @@ const BlurredPremiumPreview: React.FC<BlurredPremiumPreviewProps> = ({
 };
 
 export default React.memo(BlurredPremiumPreview);
-
 
 

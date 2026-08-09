@@ -224,7 +224,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           <TestimonialCard
             initial="M"
             tone="sage"
-            quote={`"I'm a 47-year-old guy. Never thought I'd journal. The CBT lessons are why I stayed — they actually teach you something. Day 89."`}
+            quote={`"I'm a 47-year-old guy. Never thought I'd journal. The CBT lessons are why I stayed, they actually teach you something. Day 89."`}
             name="Marcus"
             age={47}
             metaLabel="Happy Plus member"

@@ -14,7 +14,7 @@ export const FIRST_FIVE_COURSE_EXERCISES: Exercise[] = [
       category: CourseExerciseCategoryEnum.GuessReveal,
       format: CourseExerciseCategoryEnum.GuessReveal,
       title: "Take a guess",
-      instruction: "No wrong answers — just your gut.",
+      instruction: "No wrong answers, just your gut.",
       prompt:
         "Out of 10 adults, how many get tension headaches in a stressful month?",
       actual: 7,
@@ -93,7 +93,7 @@ export const FIRST_FIVE_COURSE_EXERCISES: Exercise[] = [
           id: "alarm-not-flaw",
           kicker: "Card 1 of 3",
           title: "An alarm, not a flaw",
-          body: "When your brain senses pressure, it turns on a built-in alarm. A racing heart, tight shoulders, and shallow breath mean the alarm is working — not that you are failing.",
+          body: "When your brain senses pressure, it turns on a built-in alarm. A racing heart, tight shoulders, and shallow breath mean the alarm is working, not that you are failing.",
         },
         {
           id: "body-signal",
@@ -118,7 +118,7 @@ export const FIRST_FIVE_COURSE_EXERCISES: Exercise[] = [
         ],
       },
       feedback_correct:
-        "Right — the surge is built-in equipment, the same in every body. It says nothing about your character.",
+        "Right, the surge is built-in equipment, the same in every body. It says nothing about your character.",
       feedback_incorrect:
         "Under pressure, a racing heart can be the alarm response: automatic, physical, and able to settle.",
       workedExample:
@@ -163,8 +163,8 @@ export const FIRST_FIVE_COURSE_EXERCISES: Exercise[] = [
         },
       ],
       rule: "Your alarm is an oversensitive smoke detector.",
-      body: "A loud ring doesn’t mean the fire is real — and a racing heart doesn’t mean the danger is. The alarm is doing its job; it’s just tuned too hot.",
-      next: "Where the analogy breaks: a smoke alarm can’t learn. Yours can be retrained — that’s this whole course.",
+      body: "A loud ring doesn’t mean the fire is real, and a racing heart doesn’t mean the danger is. The alarm is doing its job; it’s just tuned too hot.",
+      next: "A smoke alarm cannot learn. Your alarm can become less sensitive through repeated safe experiences.",
     },
   },
   {
@@ -182,7 +182,7 @@ export const FIRST_FIVE_COURSE_EXERCISES: Exercise[] = [
       title: "What does your gut say?",
       instruction: "Tap the one that feels true.",
       prompt:
-        "Which fades faster — a feeling you fight, or a feeling you name?",
+        "Which fades faster, a feeling you fight, or a feeling you name?",
       options: [
         { id: "fight", label: "The one you fight" },
         { id: "name", label: "The one you name" },
@@ -190,9 +190,9 @@ export const FIRST_FIVE_COURSE_EXERCISES: Exercise[] = [
       bestOptionId: "name",
       revealTitle: "What the research finds",
       reveal:
-        "Your gut was right. Putting a feeling into words — “this is worry” — measurably turns the alarm down. Fighting it keeps the alarm’s full attention on it.",
+        "Your gut was right. Putting a feeling into words, “this is worry”, measurably turns the alarm down. Fighting it keeps the alarm’s full attention on it.",
       alternateReveal:
-        "Most people guess this — the surprise is the lesson. Putting a feeling into words — “this is worry” — measurably turns the alarm down. Fighting it keeps the alarm’s full attention on it.",
+        "Putting a feeling into words, such as “this is worry”, can turn the alarm down. Fighting it keeps the alarm’s full attention on it.",
     },
   },
 ];

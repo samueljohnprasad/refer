@@ -8,7 +8,6 @@ export const unstable_settings = {
   initialRouteName: "(tabs)",
 };
 
-
 import { Stack, useRouter } from "expo-router";
 import { isLiquidGlassAvailable, GlassView } from "expo-glass-effect";
 import { useCSSVariable } from "uniwind";
@@ -16,6 +15,10 @@ import { useSystemBackgroundColor } from "@/src/utils/useSystemBackgroundColor";
 
 const GLASS = isLiquidGlassAvailable();
 const IS_ANDROID = process.env.EXPO_OS === "android";
+const TABS_SCREEN_OPTIONS = {
+  headerShown: false,
+  animation: "fade",
+} as const;
 
 export default function AppLayout() {
   const router = useRouter();
@@ -31,22 +34,42 @@ export default function AppLayout() {
         },
       }}
     >
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(tabs)"
+        options={TABS_SCREEN_OPTIONS}
+      />
       <Stack.Screen
         name="screens/habits-modal"
         options={{
           presentation: "modal",
           headerShown: false,
-          animation: "default",
         }}
       />
-      <Stack.Screen name="screens/(settings)" options={{ headerShown: false }} />
-      <Stack.Screen name="screens/(recording)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="screens/(settings)"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="screens/(recording)"
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="screens/(journey)" options={{ headerShown: false }} />
-      <Stack.Screen name="screens/(exercises)" options={{ headerShown: false, animation: "fade" }} />
-      <Stack.Screen name="screens/(gamification)" options={{ headerShown: false }} />
-      <Stack.Screen name="screens/(tracking)" options={{ headerShown: false }} />
-      <Stack.Screen name="screens/(onboarding)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="screens/(exercises)"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="screens/(gamification)"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="screens/(tracking)"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="screens/(onboarding)"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }

@@ -80,6 +80,7 @@ export interface CourseCatalogListItem {
   iconUrl: string | null;
   colorHex: string;
   orderIndex: number;
+  metadata: CourseJourneyPreview | null;
 }
 
 export interface CourseHeaderSummary {

@@ -1,10 +1,9 @@
 import React, { memo } from "react";
 import { Pressable, Text, View } from "react-native";
-import { SvgProps } from "react-native-svg";
 import Animated, { FadeOut } from "react-native-reanimated";
 import { FullWindowOverlay } from "react-native-screens";
-import { Flag } from "@/assets/icons";
 import HeaderOverlayContent from "./header-overlay-content";
+import { CourseHeaderIcon } from "./CourseHeaderIcon";
 import {
   useEditorialHeaderViewModel,
   type EditorialHeaderProps,
@@ -14,7 +13,11 @@ import {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 type HeaderButtonProps = {
-  Icon: React.FC<SvgProps>;
+  Icon: React.ComponentType<{
+    color?: string;
+    height?: number;
+    width?: number;
+  }>;
   accessibilityLabel: string;
   onPress?: () => void;
   title: string;
@@ -73,7 +76,7 @@ export const EditorialHeaderView = memo(function EditorialHeaderView({
     >
       <HeaderButton
         accessibilityLabel={`${enrolledCourseCount} enrolled courses`}
-        Icon={Flag}
+        Icon={CourseHeaderIcon}
         onPress={openCourseOverlay}
         title={activeCourseSummary?.title || "Your Journey"}
       />

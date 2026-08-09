@@ -4,11 +4,12 @@ import "@/global.css";
 import { DefaultTheme, ThemeProvider } from "expo-router/react-navigation";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Slot, router as expoRouter } from "expo-router";
 import { AuthProvider } from "@/src/context/AuthContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View, useColorScheme } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { Presets } from "react-native-pulsar";
 import { PressablesConfig } from "pressto";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -54,6 +55,7 @@ import {
 } from "@/src/utils/notificationConversionTracker";
 import { usePushNotificationSetup } from "@/src/hooks/data/usePushNotificationSetup";
 import { ReduxProvider } from "@/src/store/ReduxProvider";
+import { SplashOverlay } from "@/src/components/splash";
 
 const APP_COLOR_MODE = "light";
 const queryClient = new QueryClient();
@@ -68,8 +70,8 @@ export {
 } from "expo-router";
 
 SplashScreen.setOptions({
-  duration: 1000,
-  fade: true,
+  duration: 0,
+  fade: false,
 });
 
 void SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -105,20 +107,23 @@ export default function RootLayout() {
     GeistSemiBold: Geist_600SemiBold,
     GeistBold: Geist_700Bold,
   });
+  const fontsReady = loaded || Boolean(error);
+  const dark = useColorScheme() === "dark";
+  const [splashDone, setSplashDone] = useState(false);
+  const [overlayReady, setOverlayReady] = useState(false);
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
-      void SplashScreen.hideAsync().catch(() => {});
+    if (fontsReady) {
       // Initialize premium haptic system
       void HapticManager.initialize().catch(() => {});
       Presets.System.impactHeavy();
     }
-  }, [loaded]);
+  }, [fontsReady]);
+
+  useEffect(() => {
+    if (!fontsReady || !overlayReady) return;
+    void SplashScreen.hideAsync().catch(() => {});
+  }, [fontsReady, overlayReady]);
 
   // Handle push notification taps — deep link to appropriate screen
   useEffect(() => {
@@ -159,8 +164,26 @@ export default function RootLayout() {
     return () => subscription.remove();
   }, []);
 
-  return <RootLayoutNav />;
+  return (
+    <>
+      <View style={styles.root}>
+        <RootLayoutNav />
+        {!splashDone && fontsReady ? (
+          <SplashOverlay
+            canFinish={fontsReady && overlayReady}
+            onReady={() => setOverlayReady(true)}
+            onDone={() => setSplashDone(true)}
+          />
+        ) : null}
+      </View>
+      <StatusBar style={splashDone ? "auto" : dark ? "dark" : "light"} />
+    </>
+  );
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+});
 
 function RootLayoutNav() {
   return (

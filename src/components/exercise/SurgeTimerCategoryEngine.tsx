@@ -117,13 +117,13 @@ function formatMinute(minute: number): string {
 
 function getRemainingDescription(remainingPercent: number): string {
   if (remainingPercent >= 80) {
-    return "of the surge still washing through — heart loud, hands buzzing. This is the part that feels endless.";
+    return "of the surge still washing through. Your heart is loud and your hands are buzzing. This is the part that feels endless.";
   }
   if (remainingPercent >= 45) {
-    return "still circulating. Past the peak — the fade has already started, whether it feels like it or not.";
+    return "still circulating. Past the peak, the fade has already started whether it feels like it or not.";
   }
   if (remainingPercent >= 20) {
     return "left. The shakes now are the tide going out, not a new wave.";
   }
-  return "left — chemistry nearly cleared. The body did this on its own; no technique required.";
+  return "left. The chemistry is nearly cleared. The body did this on its own; no technique required.";
 }

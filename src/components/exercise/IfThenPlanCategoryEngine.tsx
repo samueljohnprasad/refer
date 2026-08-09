@@ -91,7 +91,7 @@ export function IfThenPlanCategoryEngine({
             </Text>
           </View>
           <CourseExerciseTeachingPanel
-            title={readString(content.feedbackTitle) ?? "Saved — now rehearse"}
+            title={readString(content.feedbackTitle) ?? "Saved. Now rehearse"}
             body={readString(content.feedback) ?? ""}
           />
         </>

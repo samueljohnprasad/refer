@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type ReactNode } from "react";
 import {
   StyleProp,
   StyleSheet,
@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowRight02Icon } from "@hugeicons/core-free-icons";
+import { INK_SOFT } from "@/lib/tokens";
 
 type BeginButtonProps = {
   onPress: () => void;
@@ -21,6 +22,8 @@ type BeginButtonProps = {
   disabled?: boolean;
   showIcon?: boolean;
   activeOpacity?: number;
+  accessibilityLabel?: string;
+  leadingIcon?: ReactNode;
 };
 
 export default function BeginButton({
@@ -33,6 +36,8 @@ export default function BeginButton({
   disabled = false,
   showIcon = true,
   activeOpacity = 1,
+  accessibilityLabel,
+  leadingIcon,
 }: BeginButtonProps): React.JSX.Element {
   return (
     <TouchableOpacity
@@ -41,9 +46,13 @@ export default function BeginButton({
       onPressOut={onPressOut}
       activeOpacity={activeOpacity}
       disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel ?? name}
+      accessibilityState={{ disabled }}
       style={[styles.button, disabled && styles.disabledButton, style]}
     >
       <View style={styles.content}>
+        {leadingIcon}
         <Text
           style={[styles.label, disabled && styles.disabledLabel, labelStyle]}
         >
@@ -53,7 +62,7 @@ export default function BeginButton({
           <HugeiconsIcon
             icon={ArrowRight02Icon}
             size={24}
-            color={disabled ? "#6B7280" : "#FFFFFF"}
+            color={disabled ? INK_SOFT : "#FFFFFF"}
           />
         ) : null}
       </View>
@@ -84,6 +93,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   disabledLabel: {
-    color: "#6B7280",
+    color: INK_SOFT,
   },
 });

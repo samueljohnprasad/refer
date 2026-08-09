@@ -154,7 +154,7 @@ function getFeedbackTitle(correct: boolean, attempts: number): string {
   if (attempts >= 3) return "Here’s the thinking";
   return attempts >= 2
     ? "Let’s make it simpler"
-    : "A tempting model — not this one";
+    : "A tempting model. Not this one.";
 }
 
 function readVariants(value: unknown): LeverScenario[] {

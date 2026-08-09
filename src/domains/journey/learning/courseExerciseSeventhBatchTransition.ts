@@ -44,7 +44,7 @@ export function getSeventhBatchPrimaryTransition(
 function getCommitLabel(response: Record<string, unknown>): string {
   if (response.phase === "running") return "Watch…";
   if (response.phase === "revealed") return "Continue";
-  return "Commit — run the wave";
+  return "Run the wave";
 }
 
 function getWaveOrderLabel(

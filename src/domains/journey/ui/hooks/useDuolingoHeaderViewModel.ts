@@ -9,8 +9,8 @@ import {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { scheduleOnRN } from "react-native-worklets";
-import { Flag } from "@/assets/icons";
 import { AnimatedFireIcon, GrayFireIcon } from "@/src/components/ui/AnimatedStatIcon";
+import { CourseHeaderIcon } from "@/src/domains/journey/ui/components/CourseHeaderIcon";
 import type { CourseHeaderSummary, EnrolledCourseListItem } from "@/src/types/journeyV5";
 
 const SHEET_SPRING = { damping: 14, stiffness: 50, mass: 1 } as const;
@@ -116,8 +116,8 @@ export function useDuolingoHeaderViewModel({
   const buttons = [
     {
       accessibilityLabel: `${enrolledCourseCount} enrolled courses`,
-      name: "Flag",
-      Icon: Flag,
+      name: "Courses",
+      Icon: CourseHeaderIcon,
       onPress: openCourseOverlay,
       title: String(enrolledCourseCount),
       textClassName: "text-ink",

@@ -15,7 +15,7 @@ export const ELEVENTH_FIVE_COURSE_EXERCISES: Exercise[] = [
       format: CourseExerciseCategoryEnum.LeverScenario,
       completionMode: "direct",
       title: "Put it to work",
-      instruction: "A real moment — pick what would actually help.",
+      instruction: "A real moment, pick what would actually help.",
       capability: "You can pick the right lever in a live moment.",
       variants: [
         {
@@ -25,26 +25,26 @@ export const ELEVENTH_FIVE_COURSE_EXERCISES: Exercise[] = [
           prompt: "Which move would genuinely help tonight?",
           clue: "One option feeds a loop you’ve seen. One is a lever that works in seconds.",
           worked:
-            "Calling in sick is the avoidance loop — relief now, louder alarm later. Rereading is rumination — replays without solving. The lever that works at 11pm is the body one: slow exhales turn the alarm down, and the wave fades on its own.",
+            "Calling in sick is the avoidance loop, relief now, louder alarm later. Rereading is rumination, replays without solving. The lever that works at 11pm is the body one: slow exhales turn the alarm down, and the wave fades on its own.",
           options: [
             {
               id: "exhale",
               label: "Put the phone down and take ten slow exhales",
               isCorrect: true,
               feedback:
-                "Yes — that’s the alarm’s volume knob. The wave peaks and fades on its own; her job tonight is to stop feeding it and wait it out.",
+                "Yes, that’s the alarm’s volume knob. The wave peaks and fades on its own; her job tonight is to stop feeding it and wait it out.",
             },
             {
               id: "avoid",
               label: "Call in sick to skip the review",
               feedback:
-                "Relief tonight, louder alarm next time — that’s the avoidance loop you rebuilt with the chips.",
+                "Relief tonight, louder alarm next time, that’s the avoidance loop you rebuilt with the chips.",
             },
             {
               id: "reread",
               label: "Keep rereading the emails until she feels certain",
               feedback:
-                "Rumination — it feels like preparing, but it replays without solving, and keeps the alarm fed.",
+                "Rumination, it feels like preparing, but it replays without solving, and keeps the alarm fed.",
             },
           ],
         },
@@ -55,20 +55,20 @@ export const ELEVENTH_FIVE_COURSE_EXERCISES: Exercise[] = [
           prompt: "What’s the most useful move?",
           clue: "Which option shrinks the action instead of cancelling it?",
           worked:
-            "Cancelling feeds the low-mood loop: skip → emptier day → lower mood. The lever is the smallest version of the thing — action first, motivation follows.",
+            "Cancelling feeds the low-mood loop: skip → emptier day → lower mood. The lever is the smallest version of the thing, action first, motivation follows.",
           options: [
             {
               id: "five-minute",
               label: "Counter-offer the five-minute version of the walk",
               isCorrect: true,
               feedback:
-                "Right — the smallest action is the door out of the loop. Motivation usually shows up after he’s moving, not before.",
+                "Right, the smallest action is the door out of the loop. Motivation usually shows up after he’s moving, not before.",
             },
             {
               id: "wait",
               label: "Wait until he genuinely feels like going",
               feedback:
-                "Low mood argues against the exact things that lift it — waiting for motivation feeds the loop.",
+                "Low mood argues against the exact things that lift it, waiting for motivation feeds the loop.",
             },
             {
               id: "full-day",
@@ -99,19 +99,19 @@ export const ELEVENTH_FIVE_COURSE_EXERCISES: Exercise[] = [
         {
           tone: "orange",
           label: "THE THOUGHT · 2:14AM",
-          text: "“If I mess up the review, that’s it — they’ll finally see I can’t do this.”",
+          text: "“If I mess up the review, that’s it, they’ll finally see I can’t do this.”",
           coach: "Move 1: catch it and write it down exactly. No editing yet.",
         },
         {
           tone: "neutral",
           label: "MOVE 2 · EVIDENCE FOR",
           text: "“Reviews matter. Feedback can sting. My brain isn’t inventing the stakes.”",
-          coach: "Respect the thought — your brain has reasons. No strawmen.",
+          coach: "Respect the thought, your brain has reasons. No strawmen.",
         },
         {
           tone: "neutral",
           label: "MOVE 3 · EVIDENCE AGAINST",
-          text: "“Every past review: fine or better. Nobody’s watching for my downfall — they’re busy with their own.”",
+          text: "“Every past review: fine or better. Nobody’s watching for my downfall, they’re busy with their own.”",
           coach:
             "Check the record, not the feeling. History beats 2am predictions.",
         },
@@ -120,11 +120,11 @@ export const ELEVENTH_FIVE_COURSE_EXERCISES: Exercise[] = [
           label: "MOVE 4 · THE REALISTIC THOUGHT",
           text: "“I’ll be nervous and prepared. Some parts will go well; one might not. Nothing ends.”",
           coach:
-            "Calibrated, not cheerful — “nervous and prepared” is believable at 2am; “it’ll be great!” is not.",
+            "Calibrated, not cheerful, “nervous and prepared” is believable at 2am; “it’ll be great!” is not.",
         },
       ],
       finalNote:
-        "Next: the same record with training wheels — then you build one solo.",
+        "Next: the same record with training wheels, then you build one solo.",
     },
   },
   {
@@ -144,7 +144,7 @@ export const ELEVENTH_FIVE_COURSE_EXERCISES: Exercise[] = [
           title: "Watch one, fully done",
           label: "SCREEN 1 OF 3 · WATCH",
           coach:
-            "Four moves. Watch how each works — next screen, one becomes yours.",
+            "Four moves. Watch how each works, next screen, one becomes yours.",
           rows: [
             {
               kind: "thought",
@@ -172,7 +172,7 @@ export const ELEVENTH_FIVE_COURSE_EXERCISES: Exercise[] = [
           title: "Your turn: one step",
           label: "SCREEN 2 OF 3 · FILL ONE",
           coach:
-            "Pick the real evidence-against. Careful — two of these are the thought talking, not evidence.",
+            "Pick the real evidence-against. Careful, two of these are the thought talking, not evidence.",
           rows: [
             {
               kind: "thought",
@@ -187,7 +187,7 @@ export const ELEVENTH_FIVE_COURSE_EXERCISES: Exercise[] = [
             {
               kind: "against",
               label: "EVIDENCE AGAINST",
-              text: "your move — pick below",
+              text: "your move, pick below",
               slot: "evidence",
             },
             {
@@ -199,20 +199,20 @@ export const ELEVENTH_FIVE_COURSE_EXERCISES: Exercise[] = [
           ],
           evidenceOptions: [
             {
-              text: "“The slip had three causes — I was one part, not the whole story.”",
+              text: "“The slip had three causes, I was one part, not the whole story.”",
               isCorrect: true,
               feedback:
-                "Yes — that counts. It’s checkable: you can list the three causes. The realistic thought unlocks…",
+                "Yes, that counts. It’s checkable: you can list the three causes. The realistic thought unlocks…",
             },
             {
               text: "“Everyone secretly agrees I ruined it.”",
               feedback:
-                "That’s the thought talking — “secretly” can’t be checked. Evidence must be checkable to count.",
+                "That’s the thought talking, “secretly” can’t be checked. Evidence must be checkable to count.",
             },
             {
               text: "“Deadlines don’t matter anyway.”",
               feedback:
-                "Comforting, but not true — and evidence has to be true to hold up at 2am. Try again.",
+                "Comforting, but not true, and evidence has to be true to hold up at 2am. Try again.",
             },
           ],
           realisticAfter:
@@ -248,28 +248,28 @@ export const ELEVENTH_FIVE_COURSE_EXERCISES: Exercise[] = [
           ],
           evidenceOptions: [
             {
-              text: "“Two things failing ≠ everything failing — the walk last week helped, checkably.”",
+              text: "“Two things failing ≠ everything failing, the walk last week helped, checkably.”",
               isCorrect: true,
               feedback:
-                "Counts — specific and checkable. Now the realistic thought: calibrated, not cheerful.",
+                "Counts, specific and checkable. Now the realistic thought: calibrated, not cheerful.",
             },
             {
               text: "“I’m sure it’ll all magically work out.”",
               feedback:
-                "That’s cheerfulness, not evidence — it won’t hold up when tested. Pick the checkable one.",
+                "That’s cheerfulness, not evidence, it won’t hold up when tested. Pick the checkable one.",
             },
           ],
           realisticOptions: [
             {
-              text: "“A rough patch, with two data points — not a verdict on me.”",
+              text: "“A rough patch, with two data points, not a verdict on me.”",
               isCorrect: true,
               feedback:
-                "That’s the skill. Believable beats sunny — you just ran a thought record nearly solo.",
+                "That’s the skill. Believable beats sunny, you just ran a thought record nearly solo.",
             },
             {
               text: "“Everything is actually amazing!”",
               feedback:
-                "Too sunny to believe at 2am — realistic thoughts must be calibrated. Try the other.",
+                "Too sunny to believe at 2am, realistic thoughts must be calibrated. Try the other.",
             },
           ],
         },
@@ -288,10 +288,10 @@ export const ELEVENTH_FIVE_COURSE_EXERCISES: Exercise[] = [
       completionMode: "direct",
       title: "Build a fairer thought",
       instruction:
-        "Not a nicer thought — one with more of the picture in it. Take one line from each tray.",
+        "Not a nicer thought, one with more of the picture in it. Take one line from each tray.",
       sceneLabel: "BACK TO THURSDAY · 11PM",
       scene:
-        "Noor again — night before the review, phone finally down. One thought is still up at full size:",
+        "Noor again, night before the review, phone finally down. One thought is still up at full size:",
       hotThought: "“I’ll blow the review and everyone will see it.”",
       trays: [
         {
@@ -318,7 +318,7 @@ export const ELEVENTH_FIVE_COURSE_EXERCISES: Exercise[] = [
       ],
       feedbackTitle: "More of the picture",
       feedback:
-        "The hot thought didn’t get deleted — it got company, and it shrank on its own. That’s the whole move: never “your thought was wrong”, just a fairer one with more of the picture, sitting alongside. As mastery grows, the trays offer fewer chips — until it’s your own words.",
+        "The hot thought didn’t get deleted, it got company, and it shrank on its own. That’s the whole move: never “your thought was wrong”, just a fairer one with more of the picture, sitting alongside. As mastery grows, the trays offer fewer chips, until it’s your own words.",
       waitingPrimaryLabel: "Pick one line from each tray",
     },
   },
@@ -342,12 +342,12 @@ export const ELEVENTH_FIVE_COURSE_EXERCISES: Exercise[] = [
           identityWhy:
             "Identity language. Every wave becomes evidence: “proof this is who I am.” The story hardens each time it’s repeated.",
           situationWhy:
-            "Situation language. A wave becomes a data point with a fix attached — same facts, room to move.",
+            "Situation language. A wave becomes a data point with a fix attached, same facts, room to move.",
         },
         {
           identityText: "“I’m just lazy.”",
           situationText:
-            "“I’m in a low-energy week — and I know one of the reasons.”",
+            "“I’m in a low-energy week, and I know one of the reasons.”",
           identityWhy: "Fixed trait → nothing to do but suffer it.",
           situationWhy:
             "A situation with causes → causes have fixes. You just did the flip yourself.",
@@ -355,7 +355,7 @@ export const ELEVENTH_FIVE_COURSE_EXERCISES: Exercise[] = [
       ],
       rule: "You’re not aiming to be a person without waves.",
       takeaway:
-        "You’re becoming someone who has hard days — everyone does — and knows the first move. Resilience survives bad weeks; perfection doesn’t.",
+        "You’re becoming someone who has hard days, everyone does, and knows the first move. Resilience survives bad weeks; perfection doesn’t.",
       waitingPrimaryLabel: "Flip the second one yourself",
     },
   },

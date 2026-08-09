@@ -76,7 +76,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
             changes your trajectory.&rdquo;
           </Text>
           <Text className="mt-1.5 text-center text-[11px] font-semibold tracking-wide text-sage-600">
-            — MOCHI
+            MOCHI
           </Text>
         </Animated.View>
       </View>

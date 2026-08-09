@@ -57,7 +57,7 @@ export function InventFirstCategoryEngine({
     <View style={styles.screenContent}>
       <CourseExerciseHeading
         title={readString(content.title) ?? "Invent the rule"}
-        instruction={readString(content.instruction) ?? "Guessing is the learning."}
+        instruction={readString(content.instruction) ?? "Choose the rule that fits."}
       />
 
       <View style={styles.caseList}>
@@ -103,7 +103,6 @@ export function InventFirstCategoryEngine({
         </View>
       ) : null}
 
-      <Text style={styles.note}>Guessing first is the learning — nothing here is scored.</Text>
     </View>
   );
 }
@@ -139,5 +138,4 @@ const styles = StyleSheet.create({
   revealTitle: { color: COURSE_EXERCISE_COLORS.oliveDark, fontFamily: COURSE_EXERCISE_FONTS.heading, fontSize: 20, lineHeight: 26 },
   revealBody: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 14, lineHeight: 22 },
   revealNext: { color: COURSE_EXERCISE_COLORS.oliveDark, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 13, lineHeight: 19 },
-  note: { marginTop: 12, color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 12.5, textAlign: "center" },
 });

@@ -30,6 +30,7 @@ import { isCourseExerciseCategory } from "@/src/types/courseExercises";
 
 import catalogData from "@/src/data/mock/course-catalog.json";
 import { sleepResetFlatData } from "@/src/data/mock/sleep-reset-flat";
+import { getMockCatalogCourses } from "./courseCatalogMock";
 
 // Toggle this to use the mock JSON data instead of the backend
 const USE_MOCK = true;
@@ -169,19 +170,14 @@ export const journeyApi = createApi({
 
     /**
      * Returns every published course for the add-course catalog.
-     * Uses a direct Supabase query because only lightweight course metadata is
-     * needed up front; the full tree is fetched lazily for the selected course.
+     * Uses a direct Supabase query because only course metadata is needed up
+     * front; the full journey tree is not part of the catalog response.
      */
     getCourseCatalog: builder.query<CourseCatalogListItem[], void>({
       queryFn: async () => {
         if (USE_MOCK) {
           return {
-            data: catalogData.map((c) => ({
-              ...c,
-              iconUrl: c.icon_url,
-              colorHex: c.color_hex,
-              orderIndex: c.order_index,
-            })) as CourseCatalogListItem[],
+            data: getMockCatalogCourses(),
           };
         }
 
@@ -210,6 +206,7 @@ export const journeyApi = createApi({
           iconUrl: course.icon_url,
           colorHex: course.color_hex,
           orderIndex: course.order_index,
+          metadata: null,
         }));
 
         return { data: courses };

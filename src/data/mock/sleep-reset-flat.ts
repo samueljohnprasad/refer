@@ -529,11 +529,11 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         category: C.RecallWarmup,
         format: C.RecallWarmup,
         title: "Bring the map back",
-        instruction: "Answer in your head, then flip. Nothing is scored.",
+        instruction: "Answer in your head, then reveal each card.",
         cards: [
           {
             question: "What builds while you are awake?",
-            answer: "Sleep pressure — the body’s growing need for sleep.",
+            answer: "Sleep pressure is the body’s growing need for sleep.",
           },
           {
             question: "What sets the timing of sleepiness?",
@@ -541,12 +541,9 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
           },
           {
             question: "What can keep the alarm switched on?",
-            answer: "Arousal — stress activation that makes settling harder.",
+            answer: "Arousal is stress activation that makes settling harder.",
           },
         ],
-        feedbackTitle: "Why start with recall?",
-        feedback_correct:
-          "Pulling the three levers from memory makes the new sleep-cycle idea easier to place.",
         successPrimaryLabel: "Continue",
       },
     },
@@ -842,7 +839,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         completionMode: "direct",
         primaryLabel: "Continue",
         title: "Notice your timing cues",
-        instruction: "Tick any that feel familiar — or none.",
+        instruction: "Tick any that feel familiar or choose none.",
         items: [
           "My wake time shifts by several hours across the week",
           "I get much less morning light on some days",
@@ -969,7 +966,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
           { id: "monitoring", label: "I kept checking whether I was thinking about sleep" },
         ],
         rule: "Thought suppression can keep the thought active.",
-        body: "Trying not to think about sleep makes you monitor for sleep. That monitoring keeps attention switched on — one reason “just stop thinking” can backfire at night.",
+        body: "Trying not to think about sleep makes you monitor for sleep. That monitoring keeps attention switched on. This is one reason “just stop thinking” can backfire at night.",
         fix: "The counter-move is softer: notice the thought, then return attention to a neutral body cue without arguing with it.",
       },
     },
@@ -1306,7 +1303,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         steps: [
           "Choose one usual drink and note its time and amount.",
           "For a few comparable nights, move only that drink earlier or leave it unchanged.",
-          "Notice bedtime sleepiness, settling, and next-morning rest — not just one moment.",
+          "Notice bedtime sleepiness, settling, and next-morning rest, not just one moment.",
           "Use the pattern as information. Keep what helps; drop the rule if it does not fit.",
         ],
         rule: "One small comparison beats a universal caffeine rule.",
@@ -1371,7 +1368,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
           "compare a few similar nights before changing anything big",
           "try moving one drink earlier and observe what changes",
         ],
-        privacy: "Saved privately — no reminders unless you ask.",
+        privacy: "Saved privately. No reminders unless you ask.",
         feedbackTitle: "Pattern before policy",
         feedback:
           "A small comparison gives you more useful information than a permanent rule. If sleep problems persist, a clinician can help assess the whole picture.",
@@ -1555,7 +1552,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         completionMode: "direct",
         primaryLabel: "Continue",
         title: "A private pattern check",
-        instruction: "Tick any that feel familiar — or none.",
+        instruction: "Tick any that feel familiar or choose none.",
         items: [
           "I fall asleep quickly after drinking but wake more later",
           "I use alcohol because I hope it will make sleep easier",
@@ -1649,7 +1646,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         title: "A Sunday night, in one line",
         instruction: "Notice the clues without judging the person.",
         diary:
-          "11:20pm — The room is bright, I keep replaying a work message, and I plan to sleep late tomorrow.",
+          "11:20pm. The room is bright, I keep replaying a work message, and I plan to sleep late tomorrow.",
         annotation:
           "Three different clues appear together: light, stress, and wake-time drift. Naming them separately makes the next experiment clearer.",
         note: "One difficult night can teach you something without defining you.",
@@ -1788,7 +1785,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
           "write the thought down, then return to a neutral cue",
           "try a wake time closer to weekdays and observe Monday",
         ],
-        privacy: "Saved privately — no reminders unless you ask.",
+        privacy: "Saved privately. No reminders unless you ask.",
         feedbackTitle: "One cue, one response",
         feedback:
           "A small plan makes the pattern testable. You do not need to change light, stress, and wake time all at once.",
@@ -1811,7 +1808,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         format: C.CourseCheckpoint,
         completionMode: "direct",
         title: "Sleep science checkpoint",
-        instruction: "A calm mixed review — use the map, not memory pressure.",
+        instruction: "A calm mixed review. Use the map without memory pressure.",
         introTitle: "Look for the pattern",
         intro:
           "Four short questions revisit the levers and disruptors. A miss only marks a useful revisit; it does not erase progress.",
@@ -1926,7 +1923,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
         cards: [
           {
             question: "What does a useful sleep experiment change first?",
-            answer: "One clear cue — not every part of the night at once.",
+            answer: "One clear cue. Do not change every part of the night at once.",
           },
           {
             question: "How long should you observe before judging the pattern?",
@@ -2131,7 +2128,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
           "write one line about the call, then return to a neutral cue",
           "note the nap time and compare the next bedtime",
         ],
-        privacy: "Saved privately — no reminders unless you ask.",
+        privacy: "Saved privately. No reminders unless you ask.",
         feedbackTitle: "Your question is ready",
         feedback:
           "A small experiment gives the next week a clear question. Keep the result private, review it gently, and change only one cue at a time.",

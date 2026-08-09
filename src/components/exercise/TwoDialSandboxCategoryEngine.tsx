@@ -24,17 +24,17 @@ interface DialPreset {
 const OUTCOMES = {
   HL: {
     title: "Running on fumes",
-    body: "High demand, thin refill. This is where the alarm stops switching off between rounds — tension by day, wired by night.",
+    body: "High demand, thin refill. The alarm stops switching off between rounds. Tension rises by day; the body stays wired by night.",
     warning: true,
   },
   HH: {
     title: "Stretched but steady",
-    body: "Big load, real recovery. Demanding weeks are survivable when the refill keeps pace — stress isn’t the enemy; the missing refill is.",
+    body: "Big load, real recovery. Demanding weeks are survivable when the refill keeps pace. Stress is not the enemy; the missing refill is.",
     warning: false,
   },
   LL: {
     title: "Flat and stalled",
-    body: "Little asked, little refilled — the low-mood loop’s favorite weather. Empty days drain quieter than hard ones.",
+    body: "Little asked, little refilled. This is the low-mood loop’s favorite weather. Empty days drain more quietly than hard ones.",
     warning: true,
   },
   LH: {
@@ -142,8 +142,8 @@ export function TwoDialSandboxCategoryEngine({
       </View>
       <Text style={styles.meta}>
         {visited.length >= 4
-          ? "All four states found — including the trap."
-          : `${visited.length} of 4 states found — keep twisting.`}
+          ? "All four states found, including the trap."
+          : `${visited.length} of 4 states found. Keep twisting.`}
       </Text>
     </View>
   );

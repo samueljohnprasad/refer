@@ -65,7 +65,7 @@ function getRecallLabel(
   exercise: Exercise,
   response: Record<string, unknown>,
 ): string {
-  if (response.revealed !== true) return "I said it — flip";
+  if (response.revealed !== true) return "Flip the card";
   const cardIndex = readNumber(response.cardIndex);
   const cardCount = readRecallCards(exercise.content?.cards).length;
   return cardIndex < cardCount - 1 ? "Next one" : "Wrap up";

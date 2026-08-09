@@ -35,7 +35,7 @@ const MascotGreetingStep: React.FC = () => {
               </Text>
               {"\n"}
               I&apos;m a panda. I&apos;m soft. I&apos;m patient. I&apos;ll be your
-              companion on this journey — just{" "}
+              companion on this journey, just{" "}
               <Text className="happy-font-heading-bold text-ink">
                 6 quick questions
               </Text>{" "}

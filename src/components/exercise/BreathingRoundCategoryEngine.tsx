@@ -218,9 +218,9 @@ function readBreathingSteps(value: unknown): BreathingStep[] {
 }
 
 function getPhaseLabel(phase: BreathPhase): string {
-  if (phase === "inhale") return "BREATHE IN — NOSE";
-  if (phase === "exhale") return "BREATHE OUT — SLOW";
-  if (phase === "done") return "THAT’S ONE ROUND — NICE";
+  if (phase === "inhale") return "BREATHE IN THROUGH YOUR NOSE";
+  if (phase === "exhale") return "BREATHE OUT SLOWLY";
+  if (phase === "done") return "ONE ROUND COMPLETE";
   return "ONE ROUND · ~12 SECONDS";
 }
 

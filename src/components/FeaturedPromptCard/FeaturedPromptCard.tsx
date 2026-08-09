@@ -1,13 +1,13 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { SymbolView } from "expo-symbols";
 import { Card } from "@/src/components/ui/Card";
-import { SAGE, INK_MUTED, INK } from "@/lib/tokens";
+import BeginButton from "@/src/components/BeginButton";
+import { BRAND_SURFACE, SAGE, INK } from "@/lib/tokens";
 import { StaggeredText, type StaggeredTextRef } from "@/src/animations/everybody-can-cook/components/staggered-text";
-import { format } from "date-fns";
 import { useInterval } from "@/src/hooks/useInterval";
 import type { QuickJournalPrompt } from "@/src/screens/DiscoveryScreen/QuickJournalSection";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 interface FeaturedPromptCardProps {
   prompts: QuickJournalPrompt[];
@@ -32,8 +32,6 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
   useInterval(cyclePrompt, 60000);
 
   const currentPrompt = prompts[activeIndex];
-  const currentDateStr = format(new Date(), "MMMM d");
-
   const textRef = useRef<StaggeredTextRef>(null);
 
   useEffect(() => {
@@ -47,17 +45,14 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
     <Card
       variant="tile"
       radius="xl"
-      onPress={() => onPress(currentPrompt)}
       showDepth={false}
-      haptic="light"
-      contentClassName="pt-5 px-5 pb-0 overflow-hidden min-h-[220px]"
-      accessibilityLabel={`Take a moment to write. Featured Prompt: ${currentPrompt.description}.`}
-      accessibilityHint="Opens the journal recorder for this prompt"
+      haptic="none"
+      contentClassName="min-h-[220px] p-5"
     >
-      <View className="mb-6 flex-row items-center justify-end z-10">
-        <TouchableOpacity 
+      <View className="absolute right-2 top-2 z-10">
+        <TouchableOpacity
           onPress={cyclePrompt}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          className="h-11 w-11 items-center justify-center"
           accessibilityLabel="Show next prompt"
           accessibilityRole="button"
         >
@@ -65,7 +60,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
         </TouchableOpacity>
       </View>
 
-      <View className="z-10 pr-[120px] pb-12" key={currentPrompt.id}>
+      <View className="min-h-[112px] pr-10" key={currentPrompt.id}>
         <StaggeredText
           ref={textRef}
           text={currentPrompt.description}
@@ -79,13 +74,23 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
         />
       </View>
 
-      {/* Mascot Image positioned absolutely at the bottom right */}
-      <View className="absolute -bottom-2 -right-4 opacity-100 z-0 pointer-events-none">
-        <Image 
-          source={require('@/assets/images/panda/panda-happy.png')}
-          style={{ width: 140, height: 140, resizeMode: "contain" }}
-        />
-      </View>
+      <BeginButton
+        name="Start reflection"
+        showIcon={false}
+        leadingIcon={
+          <SymbolView
+            name="mic"
+            size={18}
+            tintColor={BRAND_SURFACE}
+            weight="medium"
+            style={{ width: 18, height: 18 }}
+          />
+        }
+        onPress={() => onPress(currentPrompt)}
+        accessibilityLabel={`Start reflection: ${currentPrompt.description}`}
+        style={{ minHeight: 50, marginTop: 20, paddingHorizontal: 24 }}
+        labelStyle={{ fontFamily: "GeistBold", fontSize: 16 }}
+      />
     </Card>
   );
 };

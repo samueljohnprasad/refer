@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { BRAND_BORDER, SAGE } from "@/lib/tokens";
 import { Text } from "@/src/components/ui/Text";
 import { LessonScreen } from "@/src/components/ui/LessonScreen";
+import { Skeleton } from "@/src/components/ui/Skeleton";
 import { V1CheckStatusEnum, type V1CheckStatus } from "@/src/types/journeyLearning";
 
 export function LoadingPracticeScreen({ onClose }: { onClose?: () => void }) {
@@ -14,10 +15,21 @@ export function LoadingPracticeScreen({ onClose }: { onClose?: () => void }) {
       primaryDisabled
       onPrimaryPress={() => undefined}
     >
-      <View className="flex-1 justify-center px-8">
-        <Text variant="body" color="soft">
-          Loading practice…
-        </Text>
+      <View className="flex-1 px-6 pt-10">
+        <Skeleton width={88} height={12} radius={6} className="mb-5" />
+        <Skeleton width="86%" height={26} radius={8} className="mb-3" />
+        <Skeleton width="62%" height={26} radius={8} />
+
+        <View className="mt-10 rounded-3xl border border-brand-border bg-brand-surface p-5">
+          <Skeleton width="92%" height={14} radius={7} className="mb-3" />
+          <Skeleton width="74%" height={14} radius={7} />
+        </View>
+
+        <View className="mt-4 gap-3">
+          <Skeleton height={56} radius={16} />
+          <Skeleton height={56} radius={16} />
+          <Skeleton height={56} radius={16} />
+        </View>
       </View>
     </LessonScreen>
   );

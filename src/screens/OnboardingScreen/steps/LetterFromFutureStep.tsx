@@ -217,8 +217,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
               color: "#142414",
             }}
           >
-            Hey, friend —
-          </Text>
+            Hey, friend,           </Text>
 
           <View style={{ marginTop: 10 }}>
             <Text
@@ -262,7 +261,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
                 color: "#243324",
               }}
             >
-              But yesterday, when the spiral started — I caught it. I named it.
+              But yesterday, when the spiral started, I caught it. I named it.
               I sat with it for thirty seconds.{" "}
               <Text
                 style={{
@@ -333,7 +332,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
                 color: "#C8694B",
               }}
             >
-              — You, in 30 days.
+              You, in 30 days.
             </Text>
             <Text
               style={{

@@ -123,7 +123,7 @@ const QuickWinMoodStep: React.FC<QuickWinMoodStepProps> = ({
                     How are you feeling{"\n"}right now?
                 </Text>
                 <Text className="text-center text-gray-500 dark:text-gray-400 text-sm font-medium leading-5">
-                    Your first mood check-in — this is where it all begins
+                    Your first mood check-in, this is where it all begins
                 </Text>
             </Animated.View>
 

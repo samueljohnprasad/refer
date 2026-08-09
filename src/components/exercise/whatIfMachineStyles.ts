@@ -12,13 +12,6 @@ export const whatIfMachineStyles = StyleSheet.create({
     paddingBottom: 12,
   },
   prediction: { gap: 10 },
-  helper: {
-    marginTop: 2,
-    color: COURSE_EXERCISE_COLORS.inkSoft,
-    fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 12.5,
-    textAlign: "center",
-  },
   betRow: {
     flexDirection: "row",
     alignItems: "center",

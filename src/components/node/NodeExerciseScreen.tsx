@@ -125,4 +125,4 @@ const courseScreenStyle = {
 
 const footerSpacer = { height: 132 } as const;
 const shortFooterSpacer = { height: 64 } as const;
-const COURSE_CONTENT_TOP_PADDING = 24;
+const COURSE_CONTENT_TOP_PADDING = 12;

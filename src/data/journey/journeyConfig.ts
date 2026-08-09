@@ -490,7 +490,7 @@ const MASCOT_MESSAGE_REGISTRY: Record<string, string> = {
   section_2_intro: "Ready for the next challenge?",
   unit_1_encourage: "Great start! Keep going!",
   unit_2_encourage: "You're building strong skills!",
-  unit_3_encourage: "Advanced territory — impressive!",
+  unit_3_encourage: "Advanced territory. Impressive!",
 };
 
 // ---------------------------------------------------------------------------

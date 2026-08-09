@@ -105,7 +105,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
                   style={{ fontFamily: "CormorantRegularItalic" }}
                   className="text-[22px] tracking-[-0.01em] text-sage-600"
                 >
-                  — You, today
+                  You, today
                 </Text>
               </View>
             </View>

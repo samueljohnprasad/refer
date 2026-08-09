@@ -81,11 +81,7 @@ export function CuriosityBetCategoryEngine({
             {readString(content.answer)}
           </Text>
         </View>
-      ) : (
-        <Text className="happy-font-body mt-3 text-center text-[12.5px] leading-[18px] text-[#82796A]">
-          Committing to a guess first is what makes the answer stick.
-        </Text>
-      )}
+      ) : null}
     </View>
   );
 }

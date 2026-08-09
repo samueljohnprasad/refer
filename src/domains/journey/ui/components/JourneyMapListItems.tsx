@@ -86,7 +86,7 @@ export function JourneyMapEmptyState(): React.JSX.Element {
         style={{ fontFamily: "GeistMedium" }}
         className="mt-2.5 text-center text-[15px] leading-relaxed text-ink-soft"
       >
-        Check back shortly — your personalized path will be ready soon.
+        Check back shortly. Your personalized path will be ready soon.
       </Text>
     </View>
   );

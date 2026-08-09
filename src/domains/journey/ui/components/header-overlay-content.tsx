@@ -15,6 +15,7 @@ import { Card } from "@/src/components/ui/Card";
 import StageProgressBar from "@/src/components/ui/StageProgressBar";
 import type { EnrolledCourseListItem } from "@/src/types/journeyV5";
 import {
+  getCourseImageSource,
   getCourseMonogram,
   resolveCourseAccentColor,
 } from "@/src/domains/journey/model/courseVisuals";
@@ -37,6 +38,7 @@ function CourseAvatar({
   isActive: boolean;
 }): React.JSX.Element {
   const courseAccentColor = resolveCourseAccentColor(course.colorHex);
+  const courseImageSource = getCourseImageSource(course.id, course.iconUrl);
 
   return (
     <Card
@@ -57,10 +59,10 @@ function CourseAvatar({
         className="h-[56px] w-[56px] items-center justify-center rounded-[18px]"
         style={{ backgroundColor: `${courseAccentColor}1A` }}
       >
-        {course.iconUrl ? (
+        {courseImageSource ? (
           <Image
-            source={course.iconUrl}
-            className="h-[38px] w-[38px] rounded-[12px]"
+            source={courseImageSource}
+            style={{ width: 54, height: 54, borderRadius: 18 }}
             cachePolicy="memory-disk"
             contentFit="contain"
             transition={150}

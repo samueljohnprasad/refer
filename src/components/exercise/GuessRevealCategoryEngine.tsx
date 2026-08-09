@@ -87,7 +87,7 @@ export function GuessRevealCategoryEngine({
 
       <Text style={styles.note}>
         {locked
-          ? "Your guess is outlined — the filled dots are the real number."
+          ? "Your guess is outlined. The filled dots are the real number."
           : "Drag to guess, then check."}
       </Text>
     </View>

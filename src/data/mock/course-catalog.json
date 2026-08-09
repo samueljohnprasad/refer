@@ -3,10 +3,25 @@
     "id": "sleep-reset",
     "title": "Sleep Reset",
     "description": "Fix your sleep schedule and wake up feeling refreshed. Learn evidence-based techniques to fall asleep faster and stay asleep.",
-    "icon_url": "moon", 
+    "icon_url": "moon",
     "color_hex": "#4B5563",
     "order_index": 0,
-    "is_published": true
+    "is_published": true,
+    "metadata": {
+      "section_count": 1,
+      "unit_count": 2,
+      "node_count": 11,
+      "estimated_minutes": 51,
+      "sections": [
+        {
+          "id": "s1_sleep_science",
+          "title": "How Sleep Actually Works",
+          "order_index": 1,
+          "unit_count": 2,
+          "node_count": 11
+        }
+      ]
+    }
   },
   {
     "id": "mindful-morning",
@@ -15,6 +30,21 @@
     "icon_url": "sun",
     "color_hex": "#F59E0B",
     "order_index": 1,
-    "is_published": true
+    "is_published": true,
+    "metadata": {
+      "section_count": 1,
+      "unit_count": 2,
+      "node_count": 7,
+      "estimated_minutes": 35,
+      "sections": [
+        {
+          "id": "s1_mindful_morning",
+          "title": "Mindful Morning Foundations",
+          "order_index": 1,
+          "unit_count": 2,
+          "node_count": 7
+        }
+      ]
+    }
   }
 ]

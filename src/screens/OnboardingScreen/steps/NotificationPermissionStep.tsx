@@ -47,7 +47,7 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
           When should Mochi remind you?
         </Text>
         <Text className="mt-3 text-[15px] leading-relaxed text-ink-soft">
-          A gentle nudge — never annoying.{" "}
+          A gentle nudge, never annoying.{" "}
           {stressTiming && (
             <Text className="italic">You picked {stressTiming}s earlier.</Text>
           )}

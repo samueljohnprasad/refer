@@ -123,7 +123,7 @@ async function generateTherapistInsight(
 ): Promise<TherapistInsight | null> {
   const sessionText = sessions
     .map((s, i) => {
-      let text = `${i + 1}. ${s.date} — ${s.exerciseLabel}`;
+      let text = `${i + 1}. ${s.date}, ${s.exerciseLabel}`;
       if (s.situation) text += `\n   Situation: "${s.situation}"`;
       if (s.automaticThought) text += `\n   Thought: "${s.automaticThought}"`;
       if (s.distortions.length > 0)
@@ -138,7 +138,7 @@ async function generateTherapistInsight(
     })
     .join("\n\n");
 
-  const prompt = `You are a CBT therapist reviewing a client's exercise journal for the past month. Analyze these sessions holistically — don't just summarize, synthesize. Connect dots the client can't see.
+  const prompt = `You are a CBT therapist reviewing a client's exercise journal for the past month. Analyze these sessions holistically, don't just summarize, synthesize. Connect dots the client can't see.
 
 Sessions:
 ${sessionText}
@@ -146,9 +146,9 @@ ${sessionText}
 As their therapist, provide:
 1. coreBeliefIdentified: The single core belief or schema driving most of these patterns (one sentence in quotes, e.g., "If I make a mistake, people will reject me")
 2. manifestations: How this belief shows up across situations (2-3 examples, each with the situation, which distortion it triggered, and which exercise type)
-3. whatIsWorking: Which techniques/evidence have been most effective for this client (be specific — reference their actual evidence-against texts or exercise types with good delta scores)
+3. whatIsWorking: Which techniques/evidence have been most effective for this client (be specific, reference their actual evidence-against texts or exercise types with good delta scores)
 4. bestEvidence: Quote the single strongest piece of evidence-against text the client has generated that disproves their core belief (copy it verbatim from their entries)
-5. suggestion: One specific, actionable suggestion for next week (not generic advice — tailored to their pattern)`;
+5. suggestion: One specific, actionable suggestion for next week (not generic advice, tailored to their pattern)`;
 
   const response = await ai.models.generateContent({
     model: "gemini-2.0-flash",

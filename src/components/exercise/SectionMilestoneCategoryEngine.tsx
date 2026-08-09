@@ -72,7 +72,7 @@ export function SectionMilestoneCategoryEngine({
               <Text className="happy-font-body-bold">
                 {readString(content.nextTitle)}
               </Text>{" "}
-              — {readString(content.nextBody)}
+              {readString(content.nextBody)}
             </Text>
           </View>
         </>

@@ -32,7 +32,7 @@ const DiscountInterceptModal: React.FC<DiscountInterceptModalProps> = ({
               style={{ fontFamily: "GeistBold" }}
               className="mt-2 text-xs font-bold uppercase tracking-widest text-sage-500"
             >
-              Wait — one more thing
+              Wait, one more thing
             </Text>
             <Text
               style={{ fontFamily: "CormorantSemiBold" }}
@@ -44,7 +44,7 @@ const DiscountInterceptModal: React.FC<DiscountInterceptModalProps> = ({
               style={{ fontFamily: "GeistRegular" }}
               className="mt-2 text-center text-sm text-ink-soft"
             >
-              A first month, on us — almost. No pressure. No catch.
+              A first month, on us, almost. No pressure. No catch.
             </Text>
           </View>
 

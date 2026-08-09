@@ -41,7 +41,7 @@ export function PrivateCheckCategoryEngine({
     <View className="flex-1 px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Sounds familiar?"}
-        instruction={readString(content.instruction) ?? "Tick any — or none."}
+        instruction={readString(content.instruction) ?? "Tick any that fit or choose none."}
       />
 
       <View accessibilityRole="list" className="gap-2.5">
@@ -85,7 +85,7 @@ export function PrivateCheckCategoryEngine({
       <View className="mt-3 flex-row items-center justify-center gap-1.5">
         <HugeiconsIcon icon={LockIcon} size={13} color="#82796A" />
         <Text className="happy-font-body text-[12.5px] text-[#82796A]">
-          Private — never scored or shared.
+          Private. Never scored or shared.
         </Text>
       </View>
 

@@ -83,6 +83,7 @@ import { useExerciseRecommendation } from "@/src/hooks/insights/useExerciseRecom
 import { CBTHistoryTimeline } from "./components/CBTHistoryTimeline";
 import { TimelineSkeleton } from "../../../src/components/ui/Timeline/TimelineSkeleton";
 import { ExerciseTimeline } from "./components/ExerciseTimeline";
+import { JumpBackInCard } from "./components/JumpBackInCard";
 import { Card } from "@/src/components/ui/Card";
 import { GOLD, INK_MUTED, SAGE, OTTER_BLUE, MACAW_PURPLE } from "@/lib/tokens";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
@@ -230,6 +231,8 @@ const CAROUSEL_PEEK = 20;
 // Fit ~1.85 cards across the screen so exercise titles wrap cleanly on 2 lines
 const SHELF_CARD_WIDTH =
   (SCREEN_WIDTH - CAROUSEL_PEEK * 2 - CAROUSEL_GAP * 2) / 1.85;
+const JUMP_BACK_CARD_WIDTH =
+  (SCREEN_WIDTH - CAROUSEL_PEEK * 2) / 2.55;
 
 interface LayoutCardProps {
   exercise: ExerciseConfig<any>;
@@ -459,7 +462,11 @@ function JumpBackInShelf({
 
   // Map IDs to actual exercise config objects
   // Pad with defaults if fewer than 2 recent exercises
-  const defaultIds = ["thought_catcher", "thought_reframing"];
+  const defaultIds = [
+    "thought_catcher",
+    "mindful_breathing_1min",
+    "thought_reframing",
+  ];
   const displayIds = Array.from(new Set([...recentIds, ...defaultIds])).slice(
     0,
     2,
@@ -492,12 +499,17 @@ function JumpBackInShelf({
             gap: CAROUSEL_GAP,
             paddingHorizontal: CAROUSEL_PEEK,
           }}
-          snapToInterval={SHELF_CARD_WIDTH + CAROUSEL_GAP}
+          snapToInterval={JUMP_BACK_CARD_WIDTH + CAROUSEL_GAP}
           decelerationRate="fast"
         >
-          {items.map((item) => (
-            <View key={item.type} style={{ width: SHELF_CARD_WIDTH }}>
-              <ExerciseShelfCard exercise={item} onPress={onPress} />
+          {items.map((item, index) => (
+            <View key={item.type} style={{ width: JUMP_BACK_CARD_WIDTH }}>
+              <JumpBackInCard
+                exercise={item}
+                width={JUMP_BACK_CARD_WIDTH}
+                blurred={index > 1}
+                onPress={onPress}
+              />
             </View>
           ))}
         </ScrollView>
@@ -1276,6 +1288,21 @@ const nutrieStyles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 0,
     gap: 8,
+  },
+  jumpBackInHeader: {
+    paddingTop: 16,
+    marginBottom: 2,
+  },
+  jumpBackInTitle: {
+    color: "#1C1C1E",
+    fontSize: 20,
+    fontWeight: "800",
+    letterSpacing: -0.3,
+  },
+  jumpBackInSubtitle: {
+    color: "#77777E",
+    fontSize: 13,
+    marginTop: 3,
   },
   categoryBadge: {
     flexDirection: "row",

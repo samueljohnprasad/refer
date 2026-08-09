@@ -118,7 +118,7 @@ export function LensReplayCategoryEngine({
 
       <Text className="happy-font-body mt-3 text-center text-xs text-[#82796A]">
         {allSeen
-          ? "Same lines — new eyes."
+          ? "Same lines. New eyes."
           : `${seenIndexes.length} of ${highlightIndexes.length} highlights`}
       </Text>
     </View>

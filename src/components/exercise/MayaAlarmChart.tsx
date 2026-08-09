@@ -156,8 +156,8 @@ export function getMayaAlarmVerdict(
       title: `Alarm still running at 11pm: ${alarmAtEleven}%`,
       body:
         stage === 0
-          ? "Every demand adds to the tank; quiet hours drain it slowly. Like hunger — but for recovery."
-          : "Watch the lunch dip — a real break spends alarm mid-day instead of banking it for tonight.",
+          ? "Every demand adds to the tank; quiet hours drain it slowly. Like hunger, but for recovery."
+          : "Watch the lunch dip. A real break spends alarm mid-day instead of banking it for tonight.",
     };
   }
 
@@ -166,20 +166,20 @@ export function getMayaAlarmVerdict(
     return {
       positive: true,
       title: `Her mind lets go around ${formatTime(switchOff)}`,
-      body: "Alarm under the line while the evening is still young — the switch-off happens on its own.",
+      body: "The alarm falls below the line while the evening is still young. The switch-off happens on its own.",
     };
   }
   if (switchOff != null) {
     return {
       positive: false,
       title: `Staring at the ceiling until ${formatTime(switchOff)}`,
-      body: "The tank is still too full at bedtime — her mind waits for the alarm to catch down.",
+      body: "The tank is still too full at bedtime. Her mind waits for the alarm to settle.",
     };
   }
   return {
     positive: false,
     title: "Still wired past 1am",
-    body: "High load plus the replay — nothing tells the alarm to stand down. Rough night, fully explained.",
+    body: "High load plus the replay. Nothing tells the alarm to stand down. The rough night makes sense.",
   };
 }
 

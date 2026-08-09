@@ -46,7 +46,7 @@ export function getCoursePrimaryLabel(
     case CourseExerciseCategoryEnum.WhiteBearExperiment:
       return getWhiteBearLabel(response);
     case CourseExerciseCategoryEnum.InventFirst:
-      return response.selectedOptionId ? "Look again — what differs?" : null;
+      return response.selectedOptionId ? "Look again. What differs?" : null;
     default:
       return null;
   }
@@ -114,7 +114,7 @@ function getWhiteBearLabel(response: Record<string, unknown>): string {
   if (readNumber(response.secondsRemaining) > 0) {
     return "Don’t think about it…";
   }
-  return response.selectedOptionId ? "Continue" : "So — what happened?";
+  return response.selectedOptionId ? "Continue" : "So, what happened?";
 }
 
 function getNextExplorableModelState(
@@ -185,7 +185,7 @@ function getNameItLabel(response: Record<string, unknown>): string | null {
   if (response.phase === "word") {
     return response.selectedWord ? "That’s the one" : "Tap the closest word";
   }
-  return response.phase === "intensity" ? "Done — one line for you" : null;
+  return response.phase === "intensity" ? "Done. One line for you" : null;
 }
 
 function getNextNameItState(

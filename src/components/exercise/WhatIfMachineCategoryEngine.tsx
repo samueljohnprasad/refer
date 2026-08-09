@@ -83,9 +83,6 @@ export function WhatIfMachineCategoryEngine({
               onPress={() => chooseOption(option.id)}
             />
           ))}
-          <Text style={styles.helper}>
-            Being surprised is what makes the answer stick.
-          </Text>
         </View>
       ) : (
         <View>

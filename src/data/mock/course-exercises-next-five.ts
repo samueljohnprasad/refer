@@ -15,10 +15,10 @@ export const NEXT_FIVE_COURSE_EXERCISES: Exercise[] = [
       format: CourseExerciseCategoryEnum.NameIt,
       title: "Name the feeling",
       instruction:
-        "Whatever is around right now — or the last strong feeling you remember.",
+        "Whatever is around right now, or the last strong feeling you remember.",
       primaryLabel: "Tap the closest family",
       teach:
-        "Naming turns the volume down — the same lever from the gut check, used on a real feeling. One precise word hands the alarm to the thinking brain.",
+        "Naming turns the volume down, the same lever from the gut check, used on a real feeling. One precise word hands the alarm to the thinking brain.",
       families: [
         {
           name: "Scared",
@@ -100,7 +100,7 @@ export const NEXT_FIVE_COURSE_EXERCISES: Exercise[] = [
           label: "His alarm system is already bracing for Monday",
           isCorrect: true,
           feedback:
-            "Yes — expecting pressure fires the same alarm as pressure itself. Muscles brace, and held tension often becomes a headache.",
+            "Yes, expecting pressure fires the same alarm as pressure itself. Muscles brace, and held tension often becomes a headache.",
         },
         {
           id: "head-problem",
@@ -112,13 +112,13 @@ export const NEXT_FIVE_COURSE_EXERCISES: Exercise[] = [
           id: "personality",
           label: "He is not a relaxed enough person",
           feedback:
-            "Relaxation is not a personality grade. His body is responding to a real signal — the approaching week.",
+            "Relaxation is not a personality grade. His body is responding to a real signal, the approaching week.",
         },
         {
           id: "random",
           label: "Tension headaches strike at random",
           feedback:
-            "This one keeps an appointment — Sunday, every week. The pattern points to the alarm system.",
+            "This one keeps an appointment, Sunday, every week. The pattern points to the alarm system.",
         },
       ],
     },
@@ -135,7 +135,7 @@ export const NEXT_FIVE_COURSE_EXERCISES: Exercise[] = [
       completionMode: "direct",
       title: "Three people. One email.",
       instruction:
-        "Friday, 5pm — the same boss sends all three: “Can we talk Monday?” Invent the rule. Guessing is the learning.",
+        "Friday, 5pm. The same boss sends all three: “Can we talk Monday?” Choose the rule that fits.",
       primaryLabel: "Continue",
       waitingPrimaryLabel: "Tap the rule that fits best",
       cases: [
@@ -149,26 +149,25 @@ export const NEXT_FIVE_COURSE_EXERCISES: Exercise[] = [
           label: "The body reacts to the reading of the message, not the message itself",
           isCorrect: true,
           feedback:
-            "That is the one — three identical emails, three different stories, three different nights.",
+            "That is the one, three identical emails, three different stories, three different nights.",
         },
         {
           id: "job",
           label: "It comes down to how stressful the job is",
           feedback:
-            "Reasonable theory — but same boss, same job, same email. Look at the one thing that differs: the reading.",
+            "Reasonable theory, but same boss, same job, same email. Look at the one thing that differs: the reading.",
         },
         {
           id: "wired",
           label: "Some people are just wired to worry",
           feedback:
-            "Tempting story — but Sam shrugged off the same kind of email last month. Same person, different reading, different night.",
+            "Tempting story, but Sam shrugged off the same kind of email last month. Same person, different reading, different night.",
         },
       ],
       rule: "You just invented the thought-feeling link.",
       body:
-        "Psychologists call it appraisal: the alarm answers your interpretation of an event, not the event. Sam’s chest was reacting to “I’m in trouble” — a story written on no evidence.",
-      next:
-        "Your rule → the science. It sticks because you did the discovering. The next screens show it in the wild.",
+        "Psychologists call it appraisal: the alarm answers your interpretation of an event, not the event. Sam’s chest was reacting to “I’m in trouble”, a story written on no evidence.",
+      next: "Next, see how this pattern appears in other situations.",
     },
   },
   {
@@ -186,11 +185,11 @@ export const NEXT_FIVE_COURSE_EXERCISES: Exercise[] = [
       primaryLabel: "Zoom in",
       layers: [
         { kicker: "LAYER 1 · WHAT HAPPENED", title: "The event", body: "A friend leaves Mia’s message on read overnight." },
-        { kicker: "LAYER 2 · WHAT THE BODY DID", title: "The alarm", body: "Chest tightens, stomach drops — the alarm fires within seconds." },
+        { kicker: "LAYER 2 · WHAT THE BODY DID", title: "The alarm", body: "Chest tightens, stomach drops, the alarm fires within seconds." },
         { kicker: "LAYER 3 · WHAT THE STORY SAID", title: "The interpretation", body: "“She’s upset with me.” Written by the alarm, on no new evidence." },
       ],
       insight:
-        "Every hard moment has these three layers: event, body, story. The event took one second — the story kept the alarm running. Seeing the layers apart is the skill this unit trains.",
+        "Every hard moment has these three layers: event, body, story. The event took one second, the story kept the alarm running. Seeing the layers apart is the skill this unit trains.",
     },
   },
   {
@@ -210,10 +209,10 @@ export const NEXT_FIVE_COURSE_EXERCISES: Exercise[] = [
         { id: "sam-1", side: "left", name: "Sam", text: "Boss just emailed: “Can we talk Monday?” I can’t stop thinking about it." },
         { id: "priya-1", side: "right", name: "Priya", text: "I got the same email. Honestly assumed it is about the new project." },
         { id: "sam-2", side: "left", name: "Sam", text: "See, my brain went straight to “I’m in trouble.” Now my chest is tight." },
-        { id: "priya-2", side: "right", name: "Priya", text: "Same words, though. Your body is not reacting to the email — it is reacting to your reading of it." },
+        { id: "priya-2", side: "right", name: "Priya", text: "Same words, though. Your body is not reacting to the email, it is reacting to your reading of it." },
       ],
       insight:
-        "Same event, two readings, two different feelings. The email did not cause the tight chest — the interpretation did. That gap is where this unit works.",
+        "Same event, two readings, two different feelings. The email did not cause the tight chest, the interpretation did. That gap is where this unit works.",
     },
   },
 ];

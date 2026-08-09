@@ -15,7 +15,7 @@ export const FIFTH_FIVE_COURSE_EXERCISES: Exercise[] = [
       format: CourseExerciseCategoryEnum.ParadoxCard,
       completionMode: "direct",
       title: "Try harder. See what happens.",
-      instruction: "A strategy that backfires — push the button and watch it.",
+      instruction: "A strategy that backfires, push the button and watch it.",
       expectation:
         "More effort → calmer. That’s how effort works everywhere else.",
       reality:
@@ -28,10 +28,10 @@ export const FIFTH_FIVE_COURSE_EXERCISES: Exercise[] = [
         "Fully wired. The door spins as fast as you push it.",
       ],
       stopCaption:
-        "You stop fighting it — feet on the floor, one long exhale, let the wave be a wave. Unpushed, the system stands down on its own.",
+        "You stop fighting it, feet on the floor, one long exhale, let the wave be a wave. Unpushed, the system stands down on its own.",
       rule: "“Calm is a revolving door. The harder you push, the faster it spins.”",
       takeaway:
-        "Stopping the push isn’t giving up — it’s the mechanism. The wave fades by itself; effort is the one thing that keeps it fed.",
+        "Stopping the push isn’t giving up, it’s the mechanism. The wave fades by itself; effort is the one thing that keeps it fed.",
     },
   },
   {
@@ -48,7 +48,7 @@ export const FIFTH_FIVE_COURSE_EXERCISES: Exercise[] = [
       instruction: "Tap to complete the thought.",
       firstLine: "Avoiding the scary thing feels like safety…",
       secondLine: "…but the relief teaches fear to grow.",
-      why: "Every avoided thing hands the alarm a receipt: “that really was dangerous”. Small approach — not bravery — is what shrinks it. The next exercise shows the loop.",
+      why: "Every avoided thing hands the alarm a receipt: “that really was dangerous”. Small approach, not bravery, is what shrinks it. The next exercise shows the loop.",
     },
   },
   {
@@ -63,21 +63,21 @@ export const FIFTH_FIVE_COURSE_EXERCISES: Exercise[] = [
       completionMode: "direct",
       title: "What if you skip the party?",
       instruction:
-        "You’re dreading it, and you skip it. Predict first — then run it.",
+        "You’re dreading it, and you skip it. Predict first, then run it.",
       options: [
         { id: "shrinks", label: "The fear of the next one shrinks" },
         { id: "same", label: "It stays about the same" },
         { id: "grows", label: "It grows" },
       ],
       steps: [
-        "8:00pm — you send “so sorry, can’t make it”. Relief lands in seconds. Real relief.",
+        "8:00pm, you send “so sorry, can’t make it”. Relief lands in seconds. Real relief.",
         "The brain files the receipt: skipping = safety. Fast relief is the strongest teacher it has.",
-        "Next invite — the alarm fires earlier and louder. The party grew scarier while you weren’t looking.",
-        "A month on — the “safe” circle has quietly shrunk by one more room.",
+        "Next invite, the alarm fires earlier and louder. The party grew scarier while you weren’t looking.",
+        "A month on, the “safe” circle has quietly shrunk by one more room.",
       ],
       rule: "Avoidance trades one evening of relief for a louder alarm.",
       takeaway:
-        "This one fools almost everyone, because the relief is genuine — that’s exactly why it teaches so well. The counter-move is unchanged: the smallest version of showing up.",
+        "This one fools almost everyone, because the relief is genuine, that’s exactly why it teaches so well. The counter-move is unchanged: the smallest version of showing up.",
     },
   },
   {
@@ -114,7 +114,7 @@ export const FIFTH_FIVE_COURSE_EXERCISES: Exercise[] = [
       feedbackTitle: "Why it fits",
       feedbackTakeaway: "You can draw the loop that keeps worry alive.",
       feedback_correct:
-        "Relief is the trap — it rewards avoiding, so next time the worry is louder. The leftover chips are the point: “just relax” and “think positive” aren’t in the loop, and they don’t break it. Small approach does.",
+        "Relief is the trap, it rewards avoiding, so next time the worry is louder. The leftover chips are the point: “just relax” and “think positive” aren’t in the loop, and they don’t break it. Small approach does.",
       feedback_incorrect:
         "Some steps are out of place. Look at where the chain starts and ends.",
       workedExample:
@@ -132,9 +132,9 @@ export const FIFTH_FIVE_COURSE_EXERCISES: Exercise[] = [
       category: CourseExerciseCategoryEnum.TermChip,
       format: CourseExerciseCategoryEnum.TermChip,
       completionMode: "direct",
-      primaryLabel: "Got it — continue",
+      primaryLabel: "Got it, continue",
       title: "Safety behavior",
-      instruction: "One term — tap the example and the non-example.",
+      instruction: "One term, tap the example and the non-example.",
       word: "Safety behavior",
       definition:
         "A just-in-case move that makes you feel safe when you already are safe.",
@@ -146,7 +146,7 @@ export const FIFTH_FIVE_COURSE_EXERCISES: Exercise[] = [
           example:
             "Only going to the party if a friend stays glued to your side.",
           explanation:
-            "It works tonight — and quietly teaches the alarm the party was survivable only because of the escort.",
+            "It works tonight, and quietly teaches the alarm the party was survivable only because of the escort.",
         },
         {
           id: "non-example",
@@ -154,10 +154,10 @@ export const FIFTH_FIVE_COURSE_EXERCISES: Exercise[] = [
           revealLabel: "WHY IT DOESN’T",
           example: "Taking one slow breath before you walk in.",
           explanation:
-            "Calming the body dodges nothing — you still fully show up, so the alarm learns the room itself is fine.",
+            "Calming the body dodges nothing, you still fully show up, so the alarm learns the room itself is fine.",
         },
       ],
-      note: "This chip comes back in later exercises — same words, same shape.",
+      note: "This chip comes back in later exercises, same words, same shape.",
     },
   },
 ];

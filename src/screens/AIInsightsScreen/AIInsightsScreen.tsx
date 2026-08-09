@@ -111,7 +111,7 @@ export default function AIInsightsScreen() {
   const previousWeek = subWeeks(new Date(), 1);
   const prevWeekStart = startOfWeek(previousWeek);
   const prevWeekEnd = endOfWeek(previousWeek);
-  const prevWeekRangeLabel = `${format(prevWeekStart, "MMM dd")} – ${format(prevWeekEnd, "MMM dd, yyyy")}`;
+  const prevWeekRangeLabel = `${format(prevWeekStart, "MMM dd")}, ${format(prevWeekEnd, "MMM dd, yyyy")}`;
 
   const weeklySummary = cachedSummary?.weekly_summary;
   const recommendations = cachedSummary?.recommendations;

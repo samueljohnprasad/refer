@@ -177,7 +177,7 @@ export const JourneyOnboardingScreenView = React.memo(
               accessibilityLabel="Skip quiz and browse all journeys"
             >
               <Text className="text-sm font-medium text-ink">
-                Skip — browse all journeys
+                Skip and browse all journeys
               </Text>
             </Pressable>
           </View>

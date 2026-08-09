@@ -149,7 +149,7 @@ export function ReframeBuilderCategoryEngine({
 function buildFairerThought(picks: Array<string | undefined>): string {
   if (!picks.every(Boolean)) return "…";
   const [evidence, perspective, coach] = picks as string[];
-  return `${evidence.charAt(0).toUpperCase()}${evidence.slice(1)}, ${perspective} — ${coach}.`;
+  return `${evidence.charAt(0).toUpperCase()}${evidence.slice(1)}. ${perspective}. ${coach}.`;
 }
 
 function readTrays(value: unknown): ReframeTray[] {
