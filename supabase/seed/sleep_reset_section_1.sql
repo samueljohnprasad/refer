@@ -133,7 +133,7 @@ $function$;
 
 WITH curriculum AS (
   SELECT *
-  FROM jsonb_to_recordset('[{"source_id":"sleep-reset","title":"Sleep Reset","description":"Reclaim your nights, one small shift at a time","icon_url":"moon","color_hex":"5F7F58","order_index":0,"is_published":true,"domain":"sleep_wellness","target_audience":"Adults struggling with sleep onset, quality, or restless nights","total_lessons":10,"total_duration_weeks":2,"sessions_per_week":5,"session_duration_minutes":[3,7]}]'::jsonb) AS row(
+  FROM jsonb_to_recordset('[{"source_id":"sleep-reset","title":"Sleep Reset","description":"Reclaim your nights, one small shift at a time","icon_url":"sleep-reset","color_hex":"5F7F58","order_index":0,"is_published":true,"domain":"sleep_wellness","target_audience":"Adults struggling with sleep onset, quality, or restless nights","total_lessons":10,"total_duration_weeks":2,"sessions_per_week":5,"session_duration_minutes":[3,7]}]'::jsonb) AS row(
     source_id TEXT,
     title TEXT,
     description TEXT,

@@ -15,7 +15,10 @@ import type {
   CourseCatalogListItem,
   CourseJourneyPreviewSection,
 } from "@/src/types/journeyV5";
-import { getCourseImageSource, getCourseMonogram } from "@/src/domains/journey/model/courseVisuals";
+import {
+  getCourseImageSource,
+  getCourseMonogram,
+} from "@/src/domains/journey/model/courseVisuals";
 import { SAGE } from "@/lib/tokens";
 import { useCourseAccordionViewModel } from "../../hooks/useCourseCatalogViewModel";
 
@@ -50,13 +53,21 @@ const CoursePreviewSectionRow = React.memo(function CoursePreviewSectionRow({
       </View>
 
       <View className="flex-1 gap-1">
-        <Text variant="body-bold" className="text-base leading-snug text-ink" numberOfLines={1}>
+        <Text
+          variant="body-bold"
+          className="text-base leading-snug text-ink"
+          numberOfLines={1}
+        >
           {section.title}
         </Text>
         <Text variant="caption-muted" className="text-sm">
-          {formatPreviewCount(section.unitCount, "unit")} · {formatPreviewCount(section.nodeCount, "lesson")}
+          {formatPreviewCount(section.unitCount, "unit")} ·{" "}
+          {formatPreviewCount(section.nodeCount, "lesson")}
         </Text>
-        <View className="mt-1 flex-row items-center gap-1" accessibilityLabel={`${section.unitCount} units`}>
+        <View
+          className="mt-1 flex-row items-center gap-1"
+          accessibilityLabel={`${section.unitCount} units`}
+        >
           {Array.from({ length: visibleUnitSegments }).map((_, index) => (
             <View
               key={index}
@@ -94,12 +105,11 @@ export const CourseAccordionCard = React.memo(function CourseAccordionCard({
   enrollmentError,
   onEnroll,
 }: CourseAccordionCardProps): React.JSX.Element {
-  const {
-    courseAccentColor,
-    preview,
-    animatedChevronStyle,
-  } = useCourseAccordionViewModel(course, isExpanded);
-  const courseImageSource = getCourseImageSource(course.id, course.iconUrl);
+  const { courseAccentColor, preview, animatedChevronStyle } =
+    useCourseAccordionViewModel(course, isExpanded);
+  const courseImageSource = getCourseImageSource(
+    course.iconUrl,
+  );
   const canStartCourse = isEnrolled || Boolean(preview);
   const primaryLabel = isEnrolled
     ? "Continue journey"
@@ -118,7 +128,9 @@ export const CourseAccordionCard = React.memo(function CourseAccordionCard({
     >
       <View
         className="flex-row items-center p-4"
-        style={isExpanded ? { backgroundColor: `${courseAccentColor}08` } : undefined}
+        style={
+          isExpanded ? { backgroundColor: `${courseAccentColor}08` } : undefined
+        }
       >
         <Pressable
           onPress={() => onToggle(course.id)}
@@ -128,7 +140,11 @@ export const CourseAccordionCard = React.memo(function CourseAccordionCard({
         >
           <View
             className="h-11 w-11 items-center justify-center rounded-xl"
-            style={{ backgroundColor: `${courseAccentColor}1A` }}
+            style={
+              courseImageSource
+                ? undefined
+                : { backgroundColor: `${courseAccentColor}1A` }
+            }
           >
             {courseImageSource ? (
               <Image
@@ -148,7 +164,11 @@ export const CourseAccordionCard = React.memo(function CourseAccordionCard({
               {course.title}
             </Text>
             {isEnrolled ? (
-              <Text variant="chip" color="sage" className="mt-1 uppercase tracking-wider">
+              <Text
+                variant="chip"
+                color="sage"
+                className="mt-1 uppercase tracking-wider"
+              >
                 Enrolled
               </Text>
             ) : null}
@@ -175,8 +195,14 @@ export const CourseAccordionCard = React.memo(function CourseAccordionCard({
       </View>
 
       {isExpanded ? (
-        <View className="px-4 pb-4" style={{ backgroundColor: `${courseAccentColor}04` }}>
-          <Text variant="body" className="mb-3 mt-2 text-base leading-relaxed text-ink-soft">
+        <View
+          className="px-4 pb-4"
+          style={{ backgroundColor: `${courseAccentColor}04` }}
+        >
+          <Text
+            variant="body"
+            className="mb-3 mt-2 text-base leading-relaxed text-ink-soft"
+          >
             {course.description || "A guided journey you can start today."}
           </Text>
 
@@ -209,7 +235,10 @@ export const CourseAccordionCard = React.memo(function CourseAccordionCard({
               className="mb-3 rounded-lg bg-red-50 p-3"
               accessibilityRole="alert"
             >
-              <Text variant="caption" className="text-center font-medium text-red-700">
+              <Text
+                variant="caption"
+                className="text-center font-medium text-red-700"
+              >
                 {enrollmentError}
               </Text>
             </Animated.View>

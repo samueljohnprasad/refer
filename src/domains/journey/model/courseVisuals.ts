@@ -5,16 +5,11 @@ const COURSE_IMAGE_SOURCES: Record<string, ImageSourcePropType> = {
 };
 
 export function getCourseImageSource(
-  courseId: string,
   iconUrl: string | null | undefined,
-): ImageSourcePropType | string | null {
-  if (COURSE_IMAGE_SOURCES[courseId]) {
-    return COURSE_IMAGE_SOURCES[courseId];
-  }
+): ImageSourcePropType | null {
+  if (typeof iconUrl !== "string") return null;
 
-  return typeof iconUrl === "string" && /^https?:\/\//.test(iconUrl)
-    ? iconUrl
-    : null;
+  return COURSE_IMAGE_SOURCES[iconUrl.trim()] ?? null;
 }
 
 export function resolveCourseAccentColor(

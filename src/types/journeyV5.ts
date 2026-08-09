@@ -45,7 +45,7 @@ export interface Course {
   id: string;
   title: string;
   description: string;
-  /** URL to course icon image */
+  /** Key in the bundled course image registry */
   iconUrl: string;
   /** Hex colour without # prefix, e.g. '4A90D9' */
   colorHex: string;
