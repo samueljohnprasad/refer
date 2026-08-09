@@ -17,6 +17,7 @@ export default function ExercisesGroupLayout() {
         name="exercise-flow"
         options={{
           headerShown: false,
+          headerBackButtonMenuEnabled: false,
           title: "Exercise",
           freezeOnBlur: true,
           animation: "fade",

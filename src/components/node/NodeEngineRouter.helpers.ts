@@ -1,161 +1,183 @@
 import type { Exercise } from "@/src/types/journeyV5";
+import { getCoursePrimaryLabel } from "@/src/domains/journey/learning/courseExercisePrimaryTransition";
+import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import {
-  V1ActivityResolutionEnum,
   V1CheckStatusEnum,
   type V1CheckStatus,
-  type V1SupportLevel,
-  V1SupportLevelEnum,
 } from "@/src/types/journeyLearning";
 
-export type SupportFallback = {
-  clue: string;
-  easier: string;
-};
+const ATTEMPTS_BEFORE_EXPLANATION = 2;
 
-export function getCanContinueAfterSupport({
+export function getCanContinueAfterExplanation({
   attemptCount,
   checkStatus,
-  maxAttempts,
-  supportLevel,
 }: {
   attemptCount: number;
   checkStatus: V1CheckStatus;
-  maxAttempts: number;
-  supportLevel: V1SupportLevel;
 }): boolean {
   return (
     checkStatus === V1CheckStatusEnum.Error &&
-    supportLevel === V1SupportLevelEnum.Worked &&
-    attemptCount >= maxAttempts
+    attemptCount >= ATTEMPTS_BEFORE_EXPLANATION
   );
 }
 
 export function getFeedbackText(
   exercise: Exercise | undefined,
   checkStatus: V1CheckStatus,
+  response?: Record<string, unknown> | null,
 ): string | null {
+  const responseFeedback = readString(response?.feedbackText);
+  const selectedOptionFeedback = getSelectedOptionFeedback(exercise, response);
   if (checkStatus === V1CheckStatusEnum.Success) {
-    return readString(exercise?.content?.feedback_correct);
+    return (
+      responseFeedback ??
+      selectedOptionFeedback ??
+      readString(exercise?.content?.feedback_correct)
+    );
   }
 
   if (checkStatus === V1CheckStatusEnum.Error) {
-    return readString(exercise?.content?.feedback_incorrect);
+    return (
+      responseFeedback ??
+      selectedOptionFeedback ??
+      readString(exercise?.content?.feedback_incorrect)
+    );
   }
 
   return null;
 }
 
+function getSelectedOptionFeedback(
+  exercise: Exercise | undefined,
+  response?: Record<string, unknown> | null,
+): string | null {
+  if (exercise?.type !== CourseExerciseCategoryEnum.CourseChoice) {
+    return null;
+  }
+
+  const selectedOptionId = readString(response?.selectedOptionId);
+  const options = exercise?.content?.options;
+  if (!selectedOptionId || !Array.isArray(options)) {
+    return null;
+  }
+
+  const selectedOption = options.find((option) => {
+    return (
+      option &&
+      typeof option === "object" &&
+      !Array.isArray(option) &&
+      readString((option as Record<string, unknown>).id) === selectedOptionId
+    );
+  });
+  return selectedOption && typeof selectedOption === "object"
+    ? readString((selectedOption as Record<string, unknown>).feedback)
+    : null;
+}
+
 export function getPrimaryLabel({
-  canContinueAfterSupport,
+  canContinueAfterExplanation,
   checkStatus,
+  exercise,
   lastExercise,
 }: {
-  canContinueAfterSupport: boolean;
+  canContinueAfterExplanation: boolean;
   checkStatus: V1CheckStatus;
+  exercise?: Exercise;
   lastExercise: boolean;
 }): string {
   if (checkStatus === V1CheckStatusEnum.Idle) {
-    return "Check";
+    return readString(exercise?.content?.primaryLabel) ?? "Check";
   }
 
   if (checkStatus === V1CheckStatusEnum.Error) {
-    return canContinueAfterSupport ? "Continue" : "Try again";
+    return canContinueAfterExplanation ? "Continue" : "Try again";
   }
 
-  return lastExercise ? "Finish" : "Continue";
+  return (
+    readString(exercise?.content?.successPrimaryLabel) ??
+    (lastExercise ? "Finish" : "Continue")
+  );
 }
 
-export function getCompletionResolution(
-  attemptCount: number,
-  supportLevel: V1SupportLevel,
-): V1ActivityResolutionEnum {
-  return supportLevel === V1SupportLevelEnum.None && attemptCount === 0
-    ? V1ActivityResolutionEnum.IndependentComplete
-    : V1ActivityResolutionEnum.SupportedComplete;
+export function completesOnPrimaryInteraction(exercise: Exercise): boolean {
+  return exercise.content?.completionMode === "direct";
 }
 
-export function readSupportText(
-  exercise: Exercise | undefined,
-  key: V1SupportLevelEnum.Clue | V1SupportLevelEnum.Easier | V1SupportLevelEnum.Worked,
-  fallback?: SupportFallback,
+export function getDisplayPrimaryLabel(
+  exercise: Exercise,
+  response: Record<string, unknown> | null,
+  ready: boolean,
+  defaultLabel: string,
 ): string {
+  const courseLabel = getCoursePrimaryLabel(exercise, response);
+  if (courseLabel) {
+    return courseLabel;
+  }
+
+  const waitingLabel = exercise.content?.waitingPrimaryLabel;
+  return !ready && typeof waitingLabel === "string"
+    ? waitingLabel
+    : defaultLabel;
+}
+
+export function buildRetryResponse(
+  exercise: Exercise,
+  response: Record<string, unknown>,
+): Record<string, unknown> | null {
+  const retryPhase = exercise.content?.retryPhase;
+  if (typeof retryPhase !== "string") {
+    return null;
+  }
+
+  const baseResponse = {
+    ...response,
+    phase: retryPhase,
+    selectedOptionId: null,
+    isCorrect: false,
+    feedbackText: null,
+  };
+
+  return exercise.type === CourseExerciseCategoryEnum.GuidedRecallChips
+    ? { ...baseResponse, selectedChips: [] }
+    : baseResponse;
+}
+
+export function readWorkedExplanation(
+  exercise: Exercise | undefined,
+): string | null {
   const support = exercise?.content?.support;
   if (support && typeof support === "object" && !Array.isArray(support)) {
     const supportRecord = support as Record<string, unknown>;
-    const value =
-      key === V1SupportLevelEnum.Worked
-        ? supportRecord.workedAnswer ?? exercise?.content?.workedExample
-        : supportRecord[key];
-    const text = readString(value);
-    if (text) {
-      return text;
-    }
+    return readString(
+      supportRecord.workedAnswer ?? exercise?.content?.workedExample,
+    );
   }
 
-  if (key === V1SupportLevelEnum.Clue) {
-    return fallback?.clue ?? "Look for the simple rule in the question.";
-  }
-
-  if (key === V1SupportLevelEnum.Easier) {
-    return fallback?.easier ?? "Use the option that matches the main idea from this lesson.";
-  }
-
-  return "Here is one safe example. Read it, then continue.";
-}
-
-export function readMaxAttempts(exercise: Exercise | undefined): number {
-  const raw = exercise?.content?.maxAttempts;
-  return typeof raw === "number" && Number.isFinite(raw)
-    ? Math.max(1, Math.floor(raw))
-    : 3;
+  return readString(exercise?.content?.workedExample);
 }
 
 export function buildResolvedResponse(
   exercise: Exercise,
   response: Record<string, unknown>,
-  resolution: V1ActivityResolutionEnum,
   attemptCount: number,
-  supportLevel: V1SupportLevel,
-  currentStartedAtMs: number,
-  firstAnsweredAtMs: number | null,
 ): Record<string, unknown> {
-  const resolvedAtMs = Date.now();
   return {
     ...response,
-    exercise_id: exercise.id,
-    concept: exercise.concept ?? null,
-    category: readString(exercise.content?.category) ?? null,
-    retry_variant_id: readString(exercise.content?.retryVariantId) ?? null,
-    resolution,
-    attemptCount,
-    attempt_count: attemptCount,
-    supportLevel,
-    support_used: supportLevel,
-    time_to_first_answer_ms: Math.max(
-      0,
-      (firstAnsweredAtMs ?? resolvedAtMs) - currentStartedAtMs,
-    ),
-    time_to_resolution_ms: Math.max(0, resolvedAtMs - currentStartedAtMs),
+    exerciseId: exercise.id,
+    attempts: attemptCount,
+    skipped: false,
   };
 }
 
 export function buildSkippedResponse(
   exercise: Exercise,
-  supportLevel: V1SupportLevel,
-  currentStartedAtMs: number,
 ): Record<string, unknown> {
-  const resolvedAtMs = Date.now();
   return {
     format: exercise.type,
-    exercise_id: exercise.id,
-    concept: exercise.concept ?? null,
-    category: readString(exercise.content?.category) ?? null,
-    retry_variant_id: readString(exercise.content?.retryVariantId) ?? null,
-    resolution: V1ActivityResolutionEnum.Skipped,
-    supportLevel,
-    support_used: supportLevel,
-    time_to_first_answer_ms: null,
-    time_to_resolution_ms: Math.max(0, resolvedAtMs - currentStartedAtMs),
+    exerciseId: exercise.id,
+    isCorrect: false,
+    attempts: 0,
+    skipped: true,
   };
 }
 

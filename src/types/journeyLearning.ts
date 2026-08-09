@@ -81,11 +81,6 @@ export interface V1LearningSupport {
   workedAnswer: string;
 }
 
-export type V1SupportKey =
-  | V1SupportLevelEnum.Clue
-  | V1SupportLevelEnum.Easier
-  | V1SupportLevelEnum.Worked;
-
 export interface V1LearningItemBase {
   skillId: string;
   itemId: string;

@@ -1,12 +1,11 @@
 import React, { useMemo } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { BRAND_BORDER, BRAND_SURFACE, INK, SAGE } from "@/lib/tokens";
 import {
   V1LearningFormatEnum,
   V1ResponseModeEnum,
-  V1SupportLevelEnum,
 } from "@/src/types/journeyLearning";
 
 interface RecallChip {
@@ -17,7 +16,6 @@ interface RecallChip {
 export function RecallCategoryEngine({
   exercise,
   savedResponse,
-  supportLevel,
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
@@ -29,17 +27,6 @@ export function RecallCategoryEngine({
   const selectedChipIds = savedChipIds;
   const prompt = readString(content.prompt) ?? "Build the answer.";
   const answerChipIds = readStringArray(content.answerChipIds);
-  const easierChipIds = readStringArray(content.easierOptionIds);
-  const visibleChips =
-    supportLevel === V1SupportLevelEnum.Easier ||
-    supportLevel === V1SupportLevelEnum.Worked
-      ? chips.filter(
-          (chip) =>
-            easierChipIds.length === 0 ||
-            easierChipIds.includes(chip.id) ||
-            selectedChipIds.includes(chip.id),
-        )
-      : chips;
 
   const selectedChips = useMemo(
     () =>
@@ -63,7 +50,6 @@ export function RecallCategoryEngine({
         format: V1LearningFormatEnum.GuidedRecall,
         responseMode: V1ResponseModeEnum.WordBank,
         selectedChipIds: nextIds,
-        supportLevel,
         isCorrect: sameOrderedIds(nextIds, answerChipIds),
       },
       nextIds.length > 0,
@@ -71,19 +57,13 @@ export function RecallCategoryEngine({
   };
 
   return (
-    <ScrollView className="flex-1 px-6 pt-8" showsVerticalScrollIndicator={false}>
+    <View className="px-6 pt-8">
       <Text variant="h2" color="ink" className="mb-3">
         {readString(exercise.content?.title) ?? "Practise the idea"}
       </Text>
       <Text variant="body" color="ink" className="mb-6">
         {prompt}
       </Text>
-      {supportLevel === V1SupportLevelEnum.Easier ? (
-        <Text variant="caption" color="soft" className="mb-4">
-          Start with early sleep, then finish the late sleep part.
-        </Text>
-      ) : null}
-
       <View
         className="min-h-[96px] rounded-2xl border px-4 py-4 mb-6"
         style={{ backgroundColor: BRAND_SURFACE, borderColor: BRAND_BORDER }}
@@ -107,8 +87,10 @@ export function RecallCategoryEngine({
         )}
       </View>
 
-      <View className="flex-row flex-wrap gap-2 pb-12">
-        {visibleChips.map((chip) => (
+      <View
+        className={`flex-row flex-wrap gap-2 ${locked ? "pb-5" : "pb-12"}`}
+      >
+        {chips.map((chip) => (
           <Chip
             key={chip.id}
             label={chip.text}
@@ -118,7 +100,7 @@ export function RecallCategoryEngine({
           />
         ))}
       </View>
-    </ScrollView>
+    </View>
   );
 }
 

@@ -1,11 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   V1CheckStatusEnum,
-  V1ActivityResolutionEnum,
-  V1SupportLevelEnum,
   type V1CheckStatus,
-  type V1SupportKey,
-  type V1SupportLevel,
 } from "@/src/types/journeyLearning";
 
 export interface V1SessionDraft {
@@ -16,12 +12,7 @@ export interface V1SessionDraft {
   currentResponse: Record<string, unknown> | null;
   ready: boolean;
   checkStatus: V1CheckStatus;
-  supportLevel: V1SupportLevel;
-  supportKey?: V1SupportKey | null;
   attemptCount?: number;
-  currentStartedAtMs?: number;
-  firstAnsweredAtMs?: number | null;
-  lastResolution?: V1ActivityResolutionEnum | null;
   hydrated?: boolean;
 }
 
@@ -60,33 +51,7 @@ export async function loadV1SessionDraft(
         parsed.checkStatus === V1CheckStatusEnum.Error
           ? parsed.checkStatus
           : V1CheckStatusEnum.Idle,
-      supportLevel:
-        parsed.supportLevel === V1SupportLevelEnum.Clue ||
-        parsed.supportLevel === V1SupportLevelEnum.Easier ||
-        parsed.supportLevel === V1SupportLevelEnum.Worked
-          ? parsed.supportLevel
-          : V1SupportLevelEnum.None,
-      supportKey:
-        parsed.supportKey === V1SupportLevelEnum.Clue ||
-        parsed.supportKey === V1SupportLevelEnum.Easier ||
-        parsed.supportKey === V1SupportLevelEnum.Worked
-          ? parsed.supportKey
-          : null,
       attemptCount: clampCount(parsed.attemptCount),
-      currentStartedAtMs:
-        typeof parsed.currentStartedAtMs === "number"
-          ? parsed.currentStartedAtMs
-          : Date.now(),
-      firstAnsweredAtMs:
-        typeof parsed.firstAnsweredAtMs === "number"
-          ? parsed.firstAnsweredAtMs
-          : null,
-      lastResolution:
-        parsed.lastResolution === V1ActivityResolutionEnum.IndependentComplete ||
-        parsed.lastResolution === V1ActivityResolutionEnum.SupportedComplete ||
-        parsed.lastResolution === V1ActivityResolutionEnum.Skipped
-          ? parsed.lastResolution
-          : null,
       hydrated: true,
     };
   } catch {

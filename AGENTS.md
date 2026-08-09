@@ -64,3 +64,4 @@ This repo currently has multiple lockfiles (`package-lock.json`, `yarn.lock`, `b
 - Do not add subtitles, helper text, or descriptive copy beneath headings, labels, cards, or settings by default. Use concise, self-explanatory labels; add supporting copy only when explicitly requested or needed to prevent misunderstanding or error.
 - Keep comments focused on durable reasoning. Do not add comments about minor events, bug fixes, or historical migrations unless they answer an important question future readers will have.
 - This project supports iOS 26 and later only. Do not add Android support or fallbacks for iOS versions below 26.
+- dont write the test cases

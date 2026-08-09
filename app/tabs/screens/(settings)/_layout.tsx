@@ -114,6 +114,16 @@ export default function SettingsGroupLayout() {
           animation: "slide_from_right",
         }}
       />
+      <Stack.Screen
+        name="course-exercises"
+        options={{
+          headerShown: true,
+          title: "Course Exercises",
+          freezeOnBlur: true,
+          headerBackButtonDisplayMode: "minimal",
+          animation: "slide_from_right",
+        }}
+      />
     </Stack>
   );
 }

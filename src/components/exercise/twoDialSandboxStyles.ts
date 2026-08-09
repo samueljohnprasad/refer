@@ -1,0 +1,118 @@
+import { StyleSheet } from "react-native";
+import {
+  COURSE_EXERCISE_COLORS,
+  COURSE_EXERCISE_FONTS,
+} from "@/src/components/exercise/courseExerciseTheme";
+
+export const twoDialSandboxStyles = StyleSheet.create({
+  screenContent: {
+    flex: 1,
+    paddingHorizontal: 8,
+    paddingTop: 6,
+    paddingBottom: 12,
+  },
+  modelCard: {
+    gap: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    borderRadius: 28,
+    backgroundColor: COURSE_EXERCISE_COLORS.surface,
+    shadowColor: COURSE_EXERCISE_COLORS.shadow,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 7,
+  },
+  dial: { gap: 2 },
+  dialHeading: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+  dialTitle: {
+    color: COURSE_EXERCISE_COLORS.ink,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
+    fontSize: 14,
+  },
+  dialCaption: {
+    color: COURSE_EXERCISE_COLORS.inkSoft,
+    fontFamily: COURSE_EXERCISE_FONTS.body,
+    fontSize: 11.5,
+  },
+  slider: { width: "100%", height: 38 },
+  rangeLabels: { flexDirection: "row", justifyContent: "space-between" },
+  rangeLabel: {
+    color: COURSE_EXERCISE_COLORS.inkSoft,
+    fontFamily: COURSE_EXERCISE_FONTS.body,
+    fontSize: 11,
+  },
+  outcomeRow: {
+    height: 150,
+    flexDirection: "row",
+    alignItems: "stretch",
+    gap: 13,
+    marginTop: 2,
+  },
+  tank: {
+    width: 46,
+    justifyContent: "flex-end",
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: COURSE_EXERCISE_COLORS.border,
+    borderRadius: 16,
+    backgroundColor: COURSE_EXERCISE_COLORS.surfaceMuted,
+  },
+  tankFill: { width: "100%", backgroundColor: COURSE_EXERCISE_COLORS.olive },
+  outcome: {
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    borderWidth: 1.5,
+    borderRadius: 20,
+  },
+  warning: {
+    borderColor: COURSE_EXERCISE_COLORS.orangeLight,
+    backgroundColor: COURSE_EXERCISE_COLORS.orangeTint,
+  },
+  steady: {
+    borderColor: COURSE_EXERCISE_COLORS.olive,
+    backgroundColor: COURSE_EXERCISE_COLORS.oliveTint,
+  },
+  outcomeTitle: {
+    marginBottom: 4,
+    color: COURSE_EXERCISE_COLORS.ink,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
+    fontSize: 15,
+  },
+  outcomeBody: {
+    color: COURSE_EXERCISE_COLORS.ink,
+    fontFamily: COURSE_EXERCISE_FONTS.body,
+    fontSize: 12.5,
+    lineHeight: 19,
+  },
+  presets: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 12 },
+  preset: {
+    minHeight: 40,
+    justifyContent: "center",
+    paddingHorizontal: 13,
+    paddingVertical: 8,
+    borderWidth: 1.5,
+    borderStyle: "dashed",
+    borderColor: COURSE_EXERCISE_COLORS.inkSoft,
+    borderRadius: 20,
+  },
+  presetLabel: {
+    color: COURSE_EXERCISE_COLORS.inkSoft,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
+    fontSize: 12,
+  },
+  pressed: { opacity: 0.65, transform: [{ translateY: 1 }] },
+  meta: {
+    marginTop: 12,
+    color: COURSE_EXERCISE_COLORS.inkSoft,
+    fontFamily: COURSE_EXERCISE_FONTS.body,
+    fontSize: 12.5,
+    textAlign: "center",
+  },
+});

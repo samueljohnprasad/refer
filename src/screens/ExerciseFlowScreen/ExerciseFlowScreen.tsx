@@ -15,7 +15,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Text } from "@/src/components/ui/Text";
 import { useRouter } from "expo-router";
-import { useNavigation } from "expo-router/react-navigation";
+import { useNavigation, usePreventRemove } from "expo-router/react-navigation";
 import { useExerciseFlow } from "@/src/hooks/useExerciseFlow";
 import { useExerciseMutation } from "@/src/hooks/useExerciseMutation";
 import { useExerciseAI } from "@/src/hooks/useExerciseAI";
@@ -141,7 +141,10 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
 }) => {
   const router = useRouter();
   const exerciseType = config.type;
+  const navigation = useNavigation();
   const isConfirmedExitRef = useRef(false);
+  const [isConfirmedExit, setIsConfirmedExit] = React.useState(false);
+  const pendingExitActionRef = useRef<Parameters<typeof navigation.dispatch>[0] | null>(null);
   // ─── Flow state ───────────────────────────────────────────────────
   const flow = useExerciseFlow(config as ExerciseConfig<any>, existingEntry, readOnly);
 
@@ -178,8 +181,17 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
 
   const exitScreen = useCallback(() => {
     isConfirmedExitRef.current = true;
+    setIsConfirmedExit(true);
     router.back();
   }, [router]);
+
+  useEffect(() => {
+    const action = pendingExitActionRef.current;
+    if (!isConfirmedExit || !action) return;
+
+    pendingExitActionRef.current = null;
+    navigation.dispatch(action);
+  }, [isConfirmedExit, navigation]);
 
   // Trigger AI when entering a step with AI config (now handled internally by useExerciseAI)
 
@@ -221,7 +233,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       const payload = flow.getSavePayload("completed");
       await save(payload, existingEntry?.id);
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      
+
       if (!existingEntry || existingEntry.status !== "completed") {
         xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
           customDescription: config.title || "Exercise completed",
@@ -235,27 +247,27 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   }, [flow, existingEntry, save, config.title, xp, exitScreen]);
 
   const handleNavigateDeeper = useCallback(async (type: ExerciseType) => {
-    try {
-      // 1. Save the current exercise
-      const payload = flow.getSavePayload("completed");
-      await save(payload, existingEntry?.id);
+      try {
+        // 1. Save the current exercise
+        const payload = flow.getSavePayload("completed");
+        await save(payload, existingEntry?.id);
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      
-      if (!existingEntry || existingEntry.status !== "completed") {
-        xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
-          customDescription: config.title || "Exercise completed",
-        });
-      }
 
-      // 2. Set exit flag so beforeRemove doesn't intercept if needed, 
-      // though router.replace will trigger beforeRemove.
-      isConfirmedExitRef.current = true;
-      
-      // 3. Navigate to the next exercise
+        if (!existingEntry || existingEntry.status !== "completed") {
+          xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
+            customDescription: config.title || "Exercise completed",
+          });
+        }
+
+        // 2. Set exit flag so beforeRemove doesn't intercept if needed,
+        // though router.replace will trigger beforeRemove.
+        isConfirmedExitRef.current = true;
+
+        // 3. Navigate to the next exercise
       router.replace({ pathname: "/tabs/screens/exercise-flow", params: { type } });
-    } catch (err) {
-      Alert.alert("Save failed", "Please try again.");
-    }
+      } catch (err) {
+        Alert.alert("Save failed", "Please try again.");
+      }
   }, [flow, existingEntry, save, config.title, xp, router]);
 
   // ─── Android hardware back button ─────────────────────────────────
@@ -268,19 +280,17 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   }, [handleClose]);
 
   // ─── iOS swipe-back gesture prevention ────────────────────────────
-  const navigation = useNavigation();
-  React.useEffect(() => {
-    if (readOnly || flow.currentStepIndex === 0) return;
-    const unsub = navigation.addListener("beforeRemove", (e: any) => {
+  usePreventRemove(
+    !readOnly && flow.currentStepIndex > 0 && !isConfirmedExit,
+    ({ data: { action } }) => {
       if (isConfirmedExitRef.current) {
+        pendingExitActionRef.current = action;
         return;
       }
 
-      e.preventDefault();
       handleClose();
-    });
-    return unsub;
-  }, [navigation, handleClose, readOnly, flow.currentStepIndex]);
+    },
+  );
 
   // ─── Step rendering ───────────────────────────────────────────────
   const StepComponent = currentStep?.component;
@@ -344,7 +354,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
 
   const pct = Math.round(flow.progress * 100);
   const primaryLabel = currentStep?.nextLabel || (isFinalStep ? "Finish" : "Continue");
-  
+
   // In readOnly mode, the primary button is always "Done" and just closes the screen
   const defaultPrimaryPress = readOnly ? handleClose : isFinalStep ? handleSave : flow.goNext;
   

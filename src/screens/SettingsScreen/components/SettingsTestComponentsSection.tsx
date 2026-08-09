@@ -4,6 +4,7 @@ import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useToast } from "heroui-native";
 import {
+  Brain01Icon,
   Notification01Icon,
   StarIcon,
 } from "@hugeicons/core-free-icons";
@@ -21,6 +22,14 @@ export function SettingsTestComponentsSection() {
       <View className="mb-4 rounded-[28px] border border-sage-100 bg-white px-4 py-5 shadow-sm">
         <AnimatedSymbolsDemo />
       </View>
+      <SettingsItem
+        icon={Brain01Icon}
+        title="Course Exercises"
+        subtitle="Test the first five Journey exercises"
+        onPress={() => {
+          router.push("/tabs/screens/course-exercises" as never);
+        }}
+      />
       <SettingsItem
         icon={StarIcon}
         title="Test Graph Components"

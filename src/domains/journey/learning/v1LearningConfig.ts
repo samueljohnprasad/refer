@@ -16,11 +16,6 @@ export interface V1ExerciseCategoryConfig {
   engine: ComponentType<V1CategoryEngineProps>;
   goalLabel: string;
   unavailableCopy: string;
-  easierHint: string;
-  supportFallback: {
-    clue: string;
-    easier: string;
-  };
 }
 
 export const V1_EXERCISE_CATEGORY_CONFIG: Record<
@@ -33,11 +28,6 @@ export const V1_EXERCISE_CATEGORY_CONFIG: Record<
     engine: RecallCategoryEngine,
     goalLabel: "Build the idea from memory.",
     unavailableCopy: "This recall practice is not available yet.",
-    easierHint: "Start with the first part, then finish the second part.",
-    supportFallback: {
-      clue: "Look for the simple rule in the question.",
-      easier: "Start with the first part of the rule.",
-    },
   },
   [V1ExerciseCategoryEnum.Scenario]: {
     category: V1ExerciseCategoryEnum.Scenario,
@@ -45,11 +35,6 @@ export const V1_EXERCISE_CATEGORY_CONFIG: Record<
     engine: ScenarioCategoryEngine,
     goalLabel: "Use the idea in a new situation.",
     unavailableCopy: "This scenario practice is not available yet.",
-    easierHint: "Look for the option that says this can be a normal pattern.",
-    supportFallback: {
-      clue: "Look for the option that explains the situation without judging it.",
-      easier: "Choose the answer that matches the main lesson rule.",
-    },
   },
   [V1ExerciseCategoryEnum.Discrimination]: {
     category: V1ExerciseCategoryEnum.Discrimination,
@@ -57,11 +42,6 @@ export const V1_EXERCISE_CATEGORY_CONFIG: Record<
     engine: DiscriminationCategoryEngine,
     goalLabel: "Choose between close ideas.",
     unavailableCopy: "This discrimination practice is not available yet.",
-    easierHint: "Focus on the closest difference between the two ideas.",
-    supportFallback: {
-      clue: "Compare the two labels slowly.",
-      easier: "Use the option that matches the main idea from this lesson.",
-    },
   },
 };
 

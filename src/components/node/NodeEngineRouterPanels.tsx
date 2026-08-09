@@ -50,28 +50,28 @@ export function PracticeDataErrorScreen({
 }
 
 export function FeedbackPanel({
-  canContinueAfterSupport,
+  canContinueAfterExplanation,
   checkStatus,
+  explanationText,
   feedbackText,
-  supportText,
 }: {
-  canContinueAfterSupport: boolean;
+  canContinueAfterExplanation: boolean;
   checkStatus: V1CheckStatus;
+  explanationText: string | null;
   feedbackText: string | null;
-  supportText: string | null;
 }) {
-  if (!feedbackText && !supportText) {
+  if (!feedbackText && !explanationText) {
     return null;
   }
 
   const isSuccess = checkStatus === V1CheckStatusEnum.Success;
   const helperText =
-    !isSuccess && canContinueAfterSupport
-      ? supportText ?? "Use the example, then continue. This still counts as practice."
+    !isSuccess && canContinueAfterExplanation
+      ? explanationText
       : null;
 
   return (
-    <View className="flex-1 justify-center px-6 pb-16">
+    <View className="px-6 pb-6">
       <View
         className="rounded-2xl border px-5 py-5"
         style={{
@@ -92,35 +92,13 @@ export function FeedbackPanel({
           style={{ backgroundColor: SAGE.selected, borderColor: SAGE[200] }}
         >
           <Text variant="caption" color="sage" className="mb-1">
-            Use this clue
+            Review this
           </Text>
           <Text variant="body" color="ink">
             {helperText}
           </Text>
         </View>
       ) : null}
-      {!isSuccess && !helperText ? (
-        <Text variant="caption" color="soft" className="mt-3 px-1">
-          Try again with the clue in mind.
-        </Text>
-      ) : null}
-    </View>
-  );
-}
-
-export function SupportPanel({ supportText }: { supportText: string | null }) {
-  if (!supportText) {
-    return null;
-  }
-
-  return (
-    <View
-      className="mx-6 mt-4 rounded-2xl border px-4 py-3"
-      style={{ backgroundColor: SAGE.selected, borderColor: SAGE[200] }}
-    >
-      <Text variant="body" color="ink">
-        {supportText}
-      </Text>
     </View>
   );
 }

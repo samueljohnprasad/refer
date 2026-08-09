@@ -1,44 +1,38 @@
 import React, { useCallback } from "react";
-import {
-  resolveV1ExerciseCategory,
-  v1ExerciseCategoryEngineRegistry,
-} from "@/src/components/exercise/v1ExerciseCategoryEngineRegistry";
-import { ExerciseSupportRow } from "@/src/components/exercise/ExerciseSupportRow";
-import { LessonScreen } from "@/src/components/ui/LessonScreen";
+import { courseExerciseCategoryEngineRegistry } from "@/src/components/exercise/courseExerciseCategoryEngineRegistry";
 import type { Exercise } from "@/src/types/journeyV5";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { clearV1SessionDraft } from "@/src/domains/journey/learning/sessionDraftStore";
+import type { V1InteractionOptions } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import {
   checkV1LearningAnswer,
   clearV1LearningSession,
   completeV1LearningItem,
   recordV1LearningInteraction,
   resetV1LearningAnswer,
-  showV1LearningSupport,
   skipV1LearningItem,
 } from "@/src/domains/journey/learning/v1LearningSessionSlice";
-import {
-  V1ActivityResolutionEnum,
-  V1CheckStatusEnum,
-  V1SupportLevelEnum,
-} from "@/src/types/journeyLearning";
+import { V1CheckStatusEnum } from "@/src/types/journeyLearning";
 import {
   buildResolvedResponse,
+  buildRetryResponse,
   buildSkippedResponse,
-  getCanContinueAfterSupport,
-  getCompletionResolution,
+  completesOnPrimaryInteraction,
+  getCanContinueAfterExplanation,
+  getDisplayPrimaryLabel,
   getFeedbackText,
   getPrimaryLabel,
-  readMaxAttempts,
-  readSupportText,
+  readWorkedExplanation,
 } from "@/src/components/node/NodeEngineRouter.helpers";
 import {
-  FeedbackPanel,
   LoadingPracticeScreen,
   PracticeDataErrorScreen,
-  SupportPanel,
 } from "@/src/components/node/NodeEngineRouterPanels";
+import { NodeExerciseScreen } from "@/src/components/node/NodeExerciseScreen";
 import { useV1NodeSessionDraft } from "@/src/components/node/useV1NodeSessionDraft";
+import { resolveCourseExerciseCategory } from "@/src/domains/journey/learning/courseExerciseCategoryResolver";
+import { getCoursePrimaryTransition } from "@/src/domains/journey/learning/courseExercisePrimaryTransition";
+import { isCourseExerciseCategory } from "@/src/types/courseExercises";
 
 interface NodeEngineRouterProps {
   nodeId: string;
@@ -67,33 +61,30 @@ export function NodeEngineRouter({
   const currentResponse = session?.currentResponse ?? null;
   const ready = session?.ready === true;
   const checkStatus = session?.checkStatus ?? V1CheckStatusEnum.Idle;
-  const supportLevel = session?.supportLevel ?? V1SupportLevelEnum.None;
-  const supportKey = session?.supportKey ?? null;
   const attemptCount = session?.attemptCount ?? 0;
-  const currentStartedAtMs = session?.currentStartedAtMs ?? Date.now();
-  const firstAnsweredAtMs = session?.firstAnsweredAtMs ?? null;
   const currentExercise = exercises[currentIndex];
   const category = currentExercise
-    ? resolveV1ExerciseCategory(currentExercise)
+    ? resolveCourseExerciseCategory(currentExercise)
     : null;
   const categoryConfig = category
-    ? v1ExerciseCategoryEngineRegistry[category]
+    ? courseExerciseCategoryEngineRegistry[category]
     : null;
   const Engine = categoryConfig?.engine;
   const lastExercise = currentIndex === exercises.length - 1;
-  const maxAttempts = readMaxAttempts(currentExercise);
-  const canContinueAfterSupport = getCanContinueAfterSupport({
+  const canContinueAfterExplanation = getCanContinueAfterExplanation({
     attemptCount,
     checkStatus,
-    maxAttempts,
-    supportLevel,
   });
-  const feedbackText = getFeedbackText(currentExercise, checkStatus);
-  const supportText = supportKey
-    ? readSupportText(currentExercise, supportKey, categoryConfig?.supportFallback)
+  const feedbackText = getFeedbackText(
+    currentExercise,
+    checkStatus,
+    currentResponse,
+  );
+  const explanationText = canContinueAfterExplanation
+    ? readWorkedExplanation(currentExercise)
     : null;
   const showingFeedback = checkStatus !== V1CheckStatusEnum.Idle;
-  const showingSupportRow = !showingFeedback && !ready;
+  const showingSkipAction = !showingFeedback && !ready;
 
   useV1NodeSessionDraft({
     dispatch,
@@ -105,7 +96,11 @@ export function NodeEngineRouter({
   });
 
   const handleInteraction = useCallback(
-    (response: Record<string, unknown>, isReady = true) => {
+    (
+      response: Record<string, unknown>,
+      isReady = true,
+      options?: V1InteractionOptions,
+    ) => {
       dispatch(
         recordV1LearningInteraction({
           nodeId,
@@ -113,6 +108,9 @@ export function NodeEngineRouter({
           ready: isReady,
         }),
       );
+      if (options?.revealImmediately) {
+        dispatch(checkV1LearningAnswer({ nodeId }));
+      }
     },
     [dispatch, nodeId],
   );
@@ -123,44 +121,69 @@ export function NodeEngineRouter({
     }
 
     if (checkStatus === V1CheckStatusEnum.Idle) {
-      dispatch(checkV1LearningAnswer({ nodeId, maxAttempts }));
-      return;
-    }
+      const courseTransition = getCoursePrimaryTransition(
+        currentExercise,
+        currentResponse,
+      );
+      if (courseTransition?.kind === "response") {
+        dispatch(
+          recordV1LearningInteraction({
+            nodeId,
+            response: courseTransition.response,
+            ready: courseTransition.ready,
+          }),
+        );
+        return;
+      }
+      if (courseTransition?.kind === "check") {
+        dispatch(checkV1LearningAnswer({ nodeId }));
+        return;
+      }
 
-    if (checkStatus === V1CheckStatusEnum.Error) {
-      if (canContinueAfterSupport) {
+      if (completesOnPrimaryInteraction(currentExercise)) {
         await completeCurrentExercise(
-          buildResolvedResponse(
-            currentExercise,
-            currentResponse,
-            V1ActivityResolutionEnum.SupportedComplete,
-            attemptCount,
-            supportLevel,
-            currentStartedAtMs,
-            firstAnsweredAtMs,
-          ),
+          buildResolvedResponse(currentExercise, currentResponse, attemptCount),
         );
         return;
       }
 
+      dispatch(checkV1LearningAnswer({ nodeId }));
+      return;
+    }
+
+    if (checkStatus === V1CheckStatusEnum.Error) {
+      if (canContinueAfterExplanation) {
+        await completeCurrentExercise(
+          buildResolvedResponse(currentExercise, currentResponse, attemptCount),
+        );
+        return;
+      }
+
+      const retryResponse = buildRetryResponse(
+        currentExercise,
+        currentResponse,
+      );
       dispatch(resetV1LearningAnswer({ nodeId }));
+      if (retryResponse) {
+        dispatch(
+          recordV1LearningInteraction({
+            nodeId,
+            response: retryResponse,
+            ready: false,
+          }),
+        );
+      }
       return;
     }
 
     await completeCurrentExercise(
-      buildResolvedResponse(
-        currentExercise,
-        currentResponse,
-        getCompletionResolution(attemptCount, supportLevel),
-        attemptCount,
-        supportLevel,
-        currentStartedAtMs,
-        firstAnsweredAtMs,
-      ),
+      buildResolvedResponse(currentExercise, currentResponse, attemptCount),
     );
   };
 
-  const completeCurrentExercise = async (resolvedResponse: Record<string, unknown>) => {
+  const completeCurrentExercise = async (
+    resolvedResponse: Record<string, unknown>,
+  ) => {
     if (!currentExercise) {
       return;
     }
@@ -186,27 +209,6 @@ export function NodeEngineRouter({
     );
   };
 
-  const showClue = () => {
-    dispatch(
-      showV1LearningSupport({
-        nodeId,
-        supportLevel:
-          supportLevel === V1SupportLevelEnum.None
-            ? V1SupportLevelEnum.Clue
-            : supportLevel,
-      }),
-    );
-  };
-
-  const makeEasier = () => {
-    dispatch(
-      showV1LearningSupport({
-        nodeId,
-        supportLevel: V1SupportLevelEnum.Easier,
-      }),
-    );
-  };
-
   const skipForNow = async () => {
     if (!currentExercise) {
       return;
@@ -214,11 +216,7 @@ export function NodeEngineRouter({
 
     const nextResponses = {
       ...responses,
-      [currentExercise.id]: buildSkippedResponse(
-        currentExercise,
-        supportLevel,
-        currentStartedAtMs,
-      ),
+      [currentExercise.id]: buildSkippedResponse(currentExercise),
     };
 
     if (lastExercise) {
@@ -228,11 +226,13 @@ export function NodeEngineRouter({
       return;
     }
 
-    dispatch(skipV1LearningItem({
-      nodeId,
-      exerciseId: currentExercise.id,
-      response: nextResponses[currentExercise.id] as Record<string, unknown>,
-    }));
+    dispatch(
+      skipV1LearningItem({
+        nodeId,
+        exerciseId: currentExercise.id,
+        response: nextResponses[currentExercise.id] as Record<string, unknown>,
+      }),
+    );
   };
 
   if (!session?.hydrated) {
@@ -249,50 +249,39 @@ export function NodeEngineRouter({
   }
 
   return (
-    <LessonScreen
+    <NodeExerciseScreen
+      Engine={Engine}
+      exercise={currentExercise}
+      savedResponse={currentResponse ?? responses[currentExercise.id]}
+      isCourseExercise={category !== null && isCourseExerciseCategory(category)}
       progress={(currentIndex + 1) / exercises.length}
       trailingLabel={`${currentIndex + 1} of ${exercises.length}`}
       onClose={onClose}
-      primaryLabel={getPrimaryLabel({
-        canContinueAfterSupport,
-        checkStatus,
-        lastExercise,
-      })}
-      primaryDisabled={!ready}
-      onPrimaryPress={handlePrimaryPress}
-      status="default"
-    >
-      {showingFeedback ? (
-        <FeedbackPanel
-          canContinueAfterSupport={canContinueAfterSupport}
-          checkStatus={checkStatus}
-          feedbackText={feedbackText}
-          supportText={supportText}
-        />
-      ) : (
-        <>
-          <SupportPanel supportText={supportText} />
-          <Engine
-            exercise={currentExercise}
-            savedResponse={currentResponse ?? responses[currentExercise.id]}
-            supportLevel={supportLevel}
-            locked={false}
-            onInteraction={handleInteraction}
-          />
-          {showingSupportRow ? (
-            <ExerciseSupportRow
-              onShowClue={showClue}
-              onMakeEasier={makeEasier}
-              onSkip={skipForNow}
-              clueDisabled={supportLevel !== V1SupportLevelEnum.None}
-              easierDisabled={
-                supportLevel === V1SupportLevelEnum.Easier ||
-                supportLevel === V1SupportLevelEnum.Worked
-              }
-            />
-          ) : null}
-        </>
+      primaryLabel={getDisplayPrimaryLabel(
+        currentExercise,
+        checkStatus === V1CheckStatusEnum.Idle ? currentResponse : null,
+        ready,
+        getPrimaryLabel({
+          canContinueAfterExplanation,
+          checkStatus,
+          exercise: currentExercise,
+          lastExercise,
+        }),
       )}
-    </LessonScreen>
+      onPrimaryPress={handlePrimaryPress}
+      ready={ready}
+      locked={showingFeedback}
+      hideFooter={
+        currentExercise.content?.hideFooterUntilReady === true && !ready
+      }
+      showingFeedback={showingFeedback}
+      showingSkipAction={showingSkipAction}
+      canContinueAfterExplanation={canContinueAfterExplanation}
+      checkStatus={checkStatus}
+      explanationText={explanationText}
+      feedbackText={feedbackText}
+      onInteraction={handleInteraction}
+      onSkip={skipForNow}
+    />
   );
 }

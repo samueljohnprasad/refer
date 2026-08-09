@@ -1,12 +1,11 @@
 import React from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { OptionButton } from "@/src/components/ui/OptionButton";
 import { Text } from "@/src/components/ui/Text";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import {
   V1LearningFormatEnum,
   V1ResponseModeEnum,
-  V1SupportLevelEnum,
 } from "@/src/types/journeyLearning";
 
 interface ScenarioOption {
@@ -17,7 +16,6 @@ interface ScenarioOption {
 export function ScenarioCategoryEngine({
   exercise,
   savedResponse,
-  supportLevel,
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
@@ -27,21 +25,6 @@ export function ScenarioCategoryEngine({
   const selectedReasonId = readString(saved?.selectedReasonId);
   const situationOptions = readOptions(content.situationOptions);
   const reasonOptions = readOptions(content.reasonOptions);
-  const easierOptionIds = readStringArray(content.easierOptionIds);
-  const visibleSituationOptions =
-    supportLevel === V1SupportLevelEnum.Easier ||
-    supportLevel === V1SupportLevelEnum.Worked
-      ? situationOptions.filter((option) =>
-          shouldShowEasierOption(option.id, easierOptionIds, selectedSituationId),
-        )
-      : situationOptions;
-  const visibleReasonOptions =
-    supportLevel === V1SupportLevelEnum.Easier ||
-    supportLevel === V1SupportLevelEnum.Worked
-      ? reasonOptions.filter((option) =>
-          shouldShowEasierOption(option.id, easierOptionIds, selectedReasonId),
-        )
-      : reasonOptions;
   const correctSituationId = readString(content.correctSituationId);
   const correctReasonId = readString(content.correctReasonId);
   const selectedSituation = situationOptions.find(
@@ -56,7 +39,6 @@ export function ScenarioCategoryEngine({
         responseMode: V1ResponseModeEnum.Choice,
         selectedSituationId: nextSituationId,
         selectedReasonId: nextReasonId,
-        supportLevel,
         isCorrect:
           nextSituationId === correctSituationId &&
           nextReasonId === correctReasonId,
@@ -80,7 +62,7 @@ export function ScenarioCategoryEngine({
   };
 
   return (
-    <ScrollView className="flex-1 px-6 pt-6" showsVerticalScrollIndicator={false}>
+    <View className="px-6 pt-6">
       <Text variant="h2" color="ink" className="mb-2">
         {readString(content.title) ?? "Try a new situation"}
       </Text>
@@ -89,12 +71,6 @@ export function ScenarioCategoryEngine({
           {readString(content.prompt) ?? "Choose what fits best."}
         </Text>
       ) : null}
-      {supportLevel === V1SupportLevelEnum.Easier ? (
-        <Text variant="caption" color="soft" className="mb-4">
-          Look for the option that says this can be a normal sleep pattern.
-        </Text>
-      ) : null}
-
       {showingReasonStep ? (
         <>
           {selectedSituation ? (
@@ -108,8 +84,8 @@ export function ScenarioCategoryEngine({
           <Text variant="label-bold" color="ink" className="mb-3">
             Why?
           </Text>
-          <View className="gap-3 pb-12">
-            {visibleReasonOptions.map((option) => (
+          <View className={`gap-3 ${locked ? "pb-5" : "pb-12"}`}>
+            {reasonOptions.map((option) => (
               <OptionButton
                 key={option.id}
                 label={option.label}
@@ -126,8 +102,8 @@ export function ScenarioCategoryEngine({
           <Text variant="label-bold" color="ink" className="mb-3">
             What is happening here?
           </Text>
-          <View className="gap-3 pb-12">
-            {visibleSituationOptions.map((option) => (
+          <View className={`gap-3 ${locked ? "pb-5" : "pb-12"}`}>
+            {situationOptions.map((option) => (
               <OptionButton
                 key={option.id}
                 label={option.label}
@@ -140,7 +116,7 @@ export function ScenarioCategoryEngine({
           </View>
         </>
       )}
-    </ScrollView>
+    </View>
   );
 }
 
@@ -165,22 +141,4 @@ function readRecord(value: unknown): Record<string, unknown> | null {
 
 function readString(value: unknown): string | null {
   return typeof value === "string" && value.length > 0 ? value : null;
-}
-
-function readStringArray(value: unknown): string[] {
-  return Array.isArray(value)
-    ? value.filter((item): item is string => typeof item === "string")
-    : [];
-}
-
-function shouldShowEasierOption(
-  optionId: string,
-  easierOptionIds: string[],
-  selectedOptionId: string | null,
-): boolean {
-  return (
-    easierOptionIds.length === 0 ||
-    easierOptionIds.includes(optionId) ||
-    optionId === selectedOptionId
-  );
 }
