@@ -17,7 +17,6 @@ import type {
   UserNodeProgress,
   GetCourseTreeResponse,
   GetCourseProgressResponse,
-  Exercise,
 } from "@/src/types/journeyV5";
 
 // ── Entity adapters ───────────────────────────────────────────────────────────
@@ -26,7 +25,6 @@ const coursesAdapter = createEntityAdapter<Course>();
 const sectionsAdapter = createEntityAdapter<Section>();
 const unitsAdapter = createEntityAdapter<Unit>();
 const nodesAdapter = createEntityAdapter<Node>();
-const exercisesAdapter = createEntityAdapter<Exercise>();
 
 // ── State shape ───────────────────────────────────────────────────────────────
 
@@ -36,13 +34,11 @@ export interface JourneyState {
   sections: ReturnType<typeof sectionsAdapter.getInitialState>;
   units: ReturnType<typeof unitsAdapter.getInitialState>;
   nodes: ReturnType<typeof nodesAdapter.getInitialState>;
-  exercises: ReturnType<typeof exercisesAdapter.getInitialState>;
 
   // Relationship indexes — O(1) parent→children lookup (ordered)
   sectionsByCourse: Record<string, string[]>;
   unitsBySection: Record<string, string[]>;
   nodesByUnit: Record<string, string[]>;
-  exercisesByNode: Record<string, string[]>;
 
   // Progress — flat maps keyed by entity id
   courseProgress: Record<string, UserCourseProgress>;
@@ -51,6 +47,7 @@ export interface JourneyState {
   // Loading state — keyed by courseId for O(1) check
   loadedCourses: Record<string, boolean>;
   loadingCourses: Record<string, boolean>;
+  courseLoadErrors: Record<string, string>;
 
   // UI state
   activeCourseId: string | null;
@@ -63,18 +60,17 @@ const initialState: JourneyState = {
   sections: sectionsAdapter.getInitialState(),
   units: unitsAdapter.getInitialState(),
   nodes: nodesAdapter.getInitialState(),
-  exercises: exercisesAdapter.getInitialState(),
 
   sectionsByCourse: {},
   unitsBySection: {},
   nodesByUnit: {},
-  exercisesByNode: {},
 
   courseProgress: {},
   nodeProgress: {},
 
   loadedCourses: {},
   loadingCourses: {},
+  courseLoadErrors: {},
 
   activeCourseId: null,
   previewSectionIdByCourse: {},
@@ -95,15 +91,13 @@ const journeySlice = createSlice({
      * Marks the course as loaded and removes it from loadingCourses.
      */
     setCourseTree(state, action: PayloadAction<GetCourseTreeResponse>) {
-      const { course, sections, units, nodes, exercises } = action.payload;
+      const { course, sections, units, nodes } = action.payload;
 
       // Upsert into entity stores (additive — multi-course sharing one flat store)
       coursesAdapter.upsertOne(state.courses, course);
       sectionsAdapter.upsertMany(state.sections, sections);
       unitsAdapter.upsertMany(state.units, units);
       nodesAdapter.upsertMany(state.nodes, nodes);
-      exercisesAdapter.upsertMany(state.exercises, exercises);
-
 
       // Build sectionsByCourse index
       state.sectionsByCourse[course.id] = [...sections]
@@ -126,18 +120,10 @@ const journeySlice = createSlice({
           .map((n) => n.id);
       }
 
-
-      for (const node of nodes) {
-        state.exercisesByNode[node.id] = exercises
-          .filter((e) => e.nodeId === node.id)
-          .sort((a, b) => a.orderIndex - b.orderIndex)
-          .map((e) => e.id);
-      }
-
-
       // Mark as loaded
       state.loadedCourses[course.id] = true;
       delete state.loadingCourses[course.id];
+      delete state.courseLoadErrors[course.id];
     },
 
     /**
@@ -188,6 +174,20 @@ const journeySlice = createSlice({
     /** Marks a course as currently being fetched (prevents duplicate fetches). */
     setLoadingCourse(state, action: PayloadAction<string>) {
       state.loadingCourses[action.payload] = true;
+      delete state.courseLoadErrors[action.payload];
+    },
+
+    setCourseLoadFailed(
+      state,
+      action: PayloadAction<{ courseId: string; message: string }>,
+    ) {
+      const { courseId, message } = action.payload;
+      delete state.loadingCourses[courseId];
+      state.courseLoadErrors[courseId] = message;
+    },
+
+    clearCourseLoadError(state, action: PayloadAction<string>) {
+      delete state.courseLoadErrors[action.payload];
     },
 
     // ── UI state ──────────────────────────────────────────────────────────────
@@ -220,6 +220,8 @@ export const {
   setCourseProgress,
   optimisticSetNodeStatus,
   setLoadingCourse,
+  setCourseLoadFailed,
+  clearCourseLoadError,
   setActiveCourse,
   setPreviewSection,
   setActiveNodeModal,

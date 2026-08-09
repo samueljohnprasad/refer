@@ -21,10 +21,9 @@ import {
   selectActiveCourseIdState,
   selectActiveNodeModalIdByCourseMap,
   selectCourseEntities,
+  selectCourseLoadErrorsMap,
   selectCourseIdParam,
   selectCourseProgressMap,
-  selectExerciseEntities,
-  selectExercisesByNodeIndex,
   selectLoadedCoursesMap,
   selectLoadingCoursesMap,
   selectNodeEntities,
@@ -86,6 +85,12 @@ export const selectIsCourseLoading = createSelector(
   (loadingCourses, courseId): boolean => !!loadingCourses[courseId],
 );
 
+export const selectCourseLoadError = createSelector(
+  [selectCourseLoadErrorsMap, selectCourseIdParam],
+  (courseLoadErrors, courseId): string | undefined =>
+    courseLoadErrors[courseId],
+);
+
 /** Returns courseProgress for a course, or undefined if not enrolled. */
 export const selectCourseProgressForCourse = createSelector(
   [selectCourseProgressMap, selectCourseIdParam],
@@ -145,19 +150,6 @@ export const selectNodesForUnit = createSelector(
       .filter((n): n is NonNullable<typeof n> => n !== undefined),
 );
 
-export const selectExerciseIdsForNode = createSelector(
-  [selectExercisesByNodeIndex, selectNodeIdParam],
-  (exercisesByNode, nodeId): string[] => exercisesByNode[nodeId] ?? [],
-);
-
-export const selectExercisesForNode = createSelector(
-  [selectExerciseIdsForNode, selectExerciseEntities],
-  (exerciseIds, entities) =>
-    exerciseIds
-      .map((id) => entities[id])
-      .filter((e): e is NonNullable<typeof e> => e !== undefined),
-);
-
 // ── Status selectors ──────────────────────────────────────────────────────────
 
 /**
@@ -167,7 +159,8 @@ export const selectExercisesForNode = createSelector(
  */
 export const selectNodeStatus = createSelector(
   [selectNodeProgressMap, selectNodeIdParam],
-  (nodeProgress, nodeId): NodeStatus => nodeProgress[nodeId]?.status ?? "locked",
+  (nodeProgress, nodeId): NodeStatus =>
+    nodeProgress[nodeId]?.status ?? "locked",
 );
 
 /**
@@ -220,7 +213,11 @@ export const selectUnitStatus = createSelector(
       nodeProgress,
     );
 
-    return resolveDerivedStatusFromNodeIds(nodeIds, currentNodeId, nodeProgress);
+    return resolveDerivedStatusFromNodeIds(
+      nodeIds,
+      currentNodeId,
+      nodeProgress,
+    );
   },
 );
 
@@ -259,7 +256,11 @@ export const selectSectionStatus = createSelector(
       nodeProgress,
     );
 
-    return resolveDerivedStatusFromNodeIds(nodeIds, currentNodeId, nodeProgress);
+    return resolveDerivedStatusFromNodeIds(
+      nodeIds,
+      currentNodeId,
+      nodeProgress,
+    );
   },
 );
 
@@ -300,12 +301,9 @@ export const selectCurrentNodeIdForCourse = createSelector(
  * O(n) traversal of indexes with early return. Never scans the full entity store.
  */
 export const selectCurrentNodeForCourse = createSelector(
-  [
-    selectCurrentNodeIdForCourse,
-    selectNodeEntities,
-  ],
+  [selectCurrentNodeIdForCourse, selectNodeEntities],
   (currentNodeId, nodeEntities): Node | null =>
-    currentNodeId ? nodeEntities[currentNodeId] ?? null : null,
+    currentNodeId ? (nodeEntities[currentNodeId] ?? null) : null,
 );
 
 export const selectCurrentNode = selectCurrentNodeForCourse;
@@ -332,11 +330,7 @@ export const selectDefaultSectionIdForCourse = createSelector(
     selectSectionIdsForCourse,
     selectCourseProgressForCourse,
   ],
-  (
-    currentSectionId,
-    sectionIds,
-    courseProgress,
-  ): string | null => {
+  (currentSectionId, sectionIds, courseProgress): string | null => {
     if (currentSectionId) {
       return currentSectionId;
     }
@@ -361,7 +355,7 @@ export const selectDefaultSectionIdForCourse = createSelector(
 export const selectCurrentSectionForCourse = createSelector(
   [selectDefaultSectionIdForCourse, selectSectionEntities],
   (sectionId, sectionEntities): Section | null =>
-    sectionId ? sectionEntities[sectionId] ?? null : null,
+    sectionId ? (sectionEntities[sectionId] ?? null) : null,
 );
 
 export const selectCurrentSectionNumberForCourse = createSelector(
@@ -434,7 +428,7 @@ export const selectOrderedUnitIdsForCourse = createSelector(
 export const selectRenderedUnitIdsForCourse = createSelector(
   [selectRenderedSectionIdForCourse, selectUnitsBySectionIndex],
   (renderedSectionId, unitsBySection): string[] =>
-    renderedSectionId ? unitsBySection[renderedSectionId] ?? [] : [],
+    renderedSectionId ? (unitsBySection[renderedSectionId] ?? []) : [],
 );
 
 function resolveRenderedUnitId(
@@ -459,16 +453,8 @@ export const selectRenderedUnitIdForCourse = createSelector(
     selectRenderedUnitIdsForCourse,
     selectVisibleUnitIdParam,
   ],
-  (
-    currentUnitId,
-    renderedUnitIds,
-    visibleUnitId,
-  ): string | null =>
-    resolveRenderedUnitId(
-      currentUnitId,
-      renderedUnitIds,
-      visibleUnitId,
-    ),
+  (currentUnitId, renderedUnitIds, visibleUnitId): string | null =>
+    resolveRenderedUnitId(currentUnitId, renderedUnitIds, visibleUnitId),
 );
 
 export const selectRenderedUnitForCourse = createSelector(
@@ -477,11 +463,7 @@ export const selectRenderedUnitForCourse = createSelector(
     selectOrderedUnitIdsForCourse,
     selectUnitEntities,
   ],
-  (
-    renderedUnitId,
-    orderedUnitIds,
-    unitEntities,
-  ): RenderedUnitView | null => {
+  (renderedUnitId, orderedUnitIds, unitEntities): RenderedUnitView | null => {
     if (!renderedUnitId) {
       return null;
     }
@@ -509,10 +491,7 @@ export const selectRenderedUnitForCourse = createSelector(
 
 export const selectRenderedJourneyViewForCourse = createSelector(
   [selectRenderedSectionForCourse, selectRenderedUnitForCourse],
-  (
-    renderedSection,
-    renderedUnit,
-  ): RenderedJourneyView => ({
+  (renderedSection, renderedUnit): RenderedJourneyView => ({
     renderedSection,
     renderedUnit,
   }),
@@ -590,7 +569,9 @@ export const selectSectionOverviewItemsForCourse = createSelector(
           totalNodes,
           completedNodes,
           progressPercent:
-            totalNodes > 0 ? Math.round((completedNodes / totalNodes) * 100) : 0,
+            totalNodes > 0
+              ? Math.round((completedNodes / totalNodes) * 100)
+              : 0,
           isUnlocked: section.orderIndex <= currentSectionNumber,
           isCurrent: section.orderIndex === currentSectionNumber,
         };
@@ -637,7 +618,9 @@ export const selectCourseNodeCountsForCourse = createSelector(
 export const selectCourseProgressPct = createSelector(
   [selectCourseNodeCountsForCourse],
   ({ completedNodes, totalNodes }): number => {
-    return totalNodes === 0 ? 0 : Math.round((completedNodes / totalNodes) * 100);
+    return totalNodes === 0
+      ? 0
+      : Math.round((completedNodes / totalNodes) * 100);
   },
 );
 
@@ -712,19 +695,25 @@ export const selectCurrentNodeForActiveCourse = createSelector(
 export const selectCurrentSectionForActiveCourse = createSelector(
   [selectActiveCourseId, selectRootState],
   (activeCourseId, state): Section | null =>
-    activeCourseId ? selectCurrentSectionForCourse(state, activeCourseId) : null,
+    activeCourseId
+      ? selectCurrentSectionForCourse(state, activeCourseId)
+      : null,
 );
 
 export const selectPreviewSectionForActiveCourse = createSelector(
   [selectActiveCourseId, selectRootState],
   (activeCourseId, state): Section | null =>
-    activeCourseId ? selectPreviewSectionForCourse(state, activeCourseId) : null,
+    activeCourseId
+      ? selectPreviewSectionForCourse(state, activeCourseId)
+      : null,
 );
 
 export const selectRenderedSectionForActiveCourse = createSelector(
   [selectActiveCourseId, selectRootState],
   (activeCourseId, state): Section | null =>
-    activeCourseId ? selectRenderedSectionForCourse(state, activeCourseId) : null,
+    activeCourseId
+      ? selectRenderedSectionForCourse(state, activeCourseId)
+      : null,
 );
 
 export const selectActiveNodeModalIdForCourse = createSelector(
@@ -736,5 +725,7 @@ export const selectActiveNodeModalIdForCourse = createSelector(
 export const selectActiveNodeModalId = createSelector(
   [selectActiveCourseId, selectRootState],
   (activeCourseId, state) =>
-    activeCourseId ? selectActiveNodeModalIdForCourse(state, activeCourseId) : null,
+    activeCourseId
+      ? selectActiveNodeModalIdForCourse(state, activeCourseId)
+      : null,
 );

@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo } from "react";
 
-import { useGetEnrolledCourseIdsQuery } from "@/src/domains/journey/data/journeyApi";
+import {
+  useGetCourseCatalogQuery,
+  useGetEnrolledCourseIdsQuery,
+} from "@/src/domains/journey/data/journeyApi";
 import { selectActiveCourseId } from "@/src/domains/journey/state/journeySelectors";
 import { setActiveCourse } from "@/src/domains/journey/state/journeySlice";
-import { JOURNEY } from "@/src/lib/constants/journey";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 
 export interface UseActiveCourseResult {
@@ -13,6 +15,7 @@ export interface UseActiveCourseResult {
   isLoading: boolean;
   /** Error string if the enrolled courses query failed. */
   error: string | undefined;
+  retry: () => void;
   /** Updates the globally active course. */
   setActiveCourseId: (courseId: string | null) => void;
 }
@@ -20,54 +23,54 @@ export interface UseActiveCourseResult {
 function resolveActiveCourseId(
   activeCourseId: string | null,
   enrolledIds: string[] | undefined,
+  catalogIds: string[] | undefined,
   isLoading: boolean,
-  hasError: boolean,
 ): string | null {
   if (!activeCourseId && isLoading) {
     return null;
   }
 
-  const resolvedEnrolledIds = enrolledIds ?? [];
-  const hasEnrollments = resolvedEnrolledIds.length > 0;
+  const availableCourseIds = [...(enrolledIds ?? []), ...(catalogIds ?? [])];
 
   if (activeCourseId) {
-    if (isLoading || hasError || enrolledIds === undefined) {
+    if (isLoading) {
       return activeCourseId;
     }
 
-    if (resolvedEnrolledIds.includes(activeCourseId)) {
-      return activeCourseId;
-    }
-
-    if (activeCourseId === JOURNEY.DEFAULT_COURSE_ID && !hasEnrollments) {
+    if (availableCourseIds.includes(activeCourseId)) {
       return activeCourseId;
     }
   }
 
-  if (hasEnrollments) {
-    return resolvedEnrolledIds[0] ?? JOURNEY.DEFAULT_COURSE_ID;
-  }
-
-  return JOURNEY.DEFAULT_COURSE_ID;
+  return availableCourseIds[0] ?? null;
 }
 
 export function useActiveCourse(): UseActiveCourseResult {
   const dispatch = useAppDispatch();
   const activeCourseId = useAppSelector(selectActiveCourseId);
+  const enrolledCoursesQuery = useGetEnrolledCourseIdsQuery();
+  const courseCatalogQuery = useGetCourseCatalogQuery();
   const {
     data: enrolledIds,
-    isLoading,
-    error,
-  } = useGetEnrolledCourseIdsQuery();
+    isLoading: isLoadingEnrollments,
+    error: enrollmentError,
+  } = enrolledCoursesQuery;
+  const {
+    data: courseCatalog,
+    isLoading: isLoadingCatalog,
+    error: catalogError,
+  } = courseCatalogQuery;
+  const isLoading = isLoadingEnrollments || isLoadingCatalog;
+  const error = enrollmentError ?? catalogError;
   const resolvedCourseId = useMemo(
     () =>
       resolveActiveCourseId(
         activeCourseId,
         enrolledIds,
+        courseCatalog?.map((course) => course.id),
         isLoading,
-        Boolean(error),
       ),
-    [activeCourseId, enrolledIds, error, isLoading],
+    [activeCourseId, courseCatalog, enrolledIds, isLoading],
   );
 
   useEffect(() => {
@@ -85,7 +88,19 @@ export function useActiveCourse(): UseActiveCourseResult {
   return {
     courseId: resolvedCourseId,
     isLoading,
-    error: error ? String(error) : undefined,
+    error: getQueryErrorMessage(error),
+    retry: () => {
+      void enrolledCoursesQuery.refetch();
+      void courseCatalogQuery.refetch();
+    },
     setActiveCourseId,
   };
+}
+
+function getQueryErrorMessage(error: unknown): string | undefined {
+  if (!error) return undefined;
+  if (typeof error === "object" && "error" in error) {
+    return String(error.error);
+  }
+  return error instanceof Error ? error.message : String(error);
 }

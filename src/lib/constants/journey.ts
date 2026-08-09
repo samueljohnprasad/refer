@@ -3,10 +3,6 @@
 // Import JOURNEY from here — never hardcode these values elsewhere.
 
 export const JOURNEY = {
-  // ── Course ──────────────────────────────────────────────────────────────
-  /** Course shown to users with zero enrollments. Set to your published course UUID. */
-  DEFAULT_COURSE_ID: "00000000-0000-0000-0000-000000000001",
-
   // ── Progression thresholds ───────────────────────────────────────────────
   /** Minimum score to pass a quiz or challenge node (0–100). */
   DEFAULT_PASS_THRESHOLD: 70,

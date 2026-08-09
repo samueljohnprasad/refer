@@ -10,7 +10,11 @@ import { HomeMainButton } from "./components/home-main-button";
 import { DuolingoHeader } from "./components/DuolingoHeader";
 import JourneyMapFlashList from "./components/JourneyMapFlashList";
 import JourneyLoadingSkeleton from "./components/JourneyLoadingSkeleton";
-import type { JourneyMapViewModel, JourneyMapActions } from "./hooks/useJourneyMapViewModel";
+import JourneyUnavailableState from "./components/JourneyUnavailableState";
+import type {
+  JourneyMapViewModel,
+  JourneyMapActions,
+} from "./hooks/useJourneyMapViewModel";
 
 export interface JourneyMapViewProps {
   model: JourneyMapViewModel;
@@ -29,7 +33,24 @@ export const JourneyMapView = React.memo(function JourneyMapView({
   isOnboarding,
 }: JourneyMapViewProps): React.JSX.Element {
   if (model.isPreparing) {
-    return <JourneyLoadingSkeleton />;
+    return (
+      <>
+        <Stack.Screen options={{ headerShown: false }} />
+        <JourneyLoadingSkeleton />
+      </>
+    );
+  }
+
+  if (model.loadError || model.hasNoCourses) {
+    return (
+      <>
+        <Stack.Screen options={{ headerShown: false }} />
+        <JourneyUnavailableState
+          hasError={Boolean(model.loadError)}
+          onRetry={actions.retry}
+        />
+      </>
+    );
   }
 
   const {
@@ -42,11 +63,7 @@ export const JourneyMapView = React.memo(function JourneyMapView({
     controller,
   } = model;
 
-  const {
-    setActiveCourseId,
-    onAddCoursePress,
-    onCloseCatalogSheet,
-  } = actions;
+  const { setActiveCourseId, onAddCoursePress, onCloseCatalogSheet } = actions;
 
   return (
     <>
@@ -94,12 +111,12 @@ export const JourneyMapView = React.memo(function JourneyMapView({
       />
       <>
         <AmbientTapDust>
-          <Animated.View
-            className="flex-1 bg-white"
-            style={animatedStyle}
-          >
+          <Animated.View className="flex-1 bg-white" style={animatedStyle}>
             {courseId && (
-              <JourneyMapFlashList courseId={courseId} controller={controller} />
+              <JourneyMapFlashList
+                courseId={courseId}
+                controller={controller}
+              />
             )}
           </Animated.View>
         </AmbientTapDust>

@@ -207,7 +207,8 @@ export interface GetCourseTreeResponse {
   sections: Section[];
   units: Unit[];
   nodes: Node[];
-  exercises: Exercise[];
+  /** Authoring snapshots may embed exercises; server tree responses do not. */
+  exercises?: Exercise[];
 }
 
 export interface GetCourseProgressResponse {

@@ -1,3 +1,5 @@
+import type { Exercise } from "@/src/types/journeyV5";
+
 export enum V1LearningFormatEnum {
   GuidedRecall = "guided_recall",
   ScenarioWhy = "scenario_why",
@@ -229,12 +231,11 @@ export interface StartV1LearningSessionArgs {
   nodeId: string;
 }
 
-export type V1LearningSessionResult =
-  {
-    kind: V1NodeSessionKindEnum.V1Session;
-    nodeId: string;
-    sessionId: string;
-    exerciseIds: string[];
-    requiredResolvedItemCount: number;
-    source: "mock";
-  };
+export type V1LearningSessionResult = {
+  kind: V1NodeSessionKindEnum.V1Session;
+  nodeId: string;
+  sessionId: string;
+  exercises: Exercise[];
+  requiredResolvedItemCount: number;
+  source: "server";
+};

@@ -8,16 +8,16 @@ import {
   optimisticSetNodeStatus,
   setCourseProgress,
 } from "@/src/domains/journey/state/journeySlice";
-import {
-  selectNode,
-  selectExercisesForNode,
-} from "@/src/domains/journey/state/journeySelectors";
+import { selectNode } from "@/src/domains/journey/state/journeySelectors";
 import { Skeleton, SkeletonCard } from "@/src/components/ui/Skeleton";
 import { NodeEngineRouter } from "@/src/components/node/NodeEngineRouter";
 import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import { Text } from "@/src/components/ui/Text";
 import { updateUserStreak } from "@/src/lib/api/mentalHealthJourneyApi";
 import { useQueryClient } from "@tanstack/react-query";
+import { createLogger } from "@/src/lib/logger";
+
+const log = createLogger("JourneyFlow");
 
 export default function JourneyFlowRoute() {
   const { courseId, nodeId } = useLocalSearchParams<{
@@ -29,9 +29,6 @@ export default function JourneyFlowRoute() {
 
   const [completeNode] = journeyApi.useCompleteNodeMutation();
   const node = useAppSelector((state) => selectNode(state, nodeId || ""));
-  const exercises = useAppSelector((state) =>
-    selectExercisesForNode(state, nodeId || ""),
-  );
   const isLoading = !node;
   const learningSession = journeyApi.useStartLearningSessionQuery(
     { courseId: courseId || "", nodeId: nodeId || "" },
@@ -45,6 +42,13 @@ export default function JourneyFlowRoute() {
   const handleComplete = useCallback(
     async (responses: Record<string, unknown>) => {
       if (!nodeId || !courseId) return;
+
+      const startedAt = Date.now();
+      log.info("node_completion_started", {
+        courseId,
+        nodeId,
+        responseCount: Object.keys(responses).length,
+      });
 
       try {
         await completeNode({ nodeId, courseId, responses }).unwrap();
@@ -65,20 +69,23 @@ export default function JourneyFlowRoute() {
         if ("data" in progressResult && progressResult.data) {
           dispatch(setCourseProgress(progressResult.data));
         }
+        log.info("node_completion_succeeded", {
+          courseId,
+          nodeId,
+          durationMs: Date.now() - startedAt,
+        });
       } catch (e) {
-        console.error("Failed to complete node:", e);
+        log.error("node_completion_failed", {
+          courseId,
+          nodeId,
+          error: e instanceof Error ? e.message : String(e),
+          durationMs: Date.now() - startedAt,
+        });
       } finally {
         handleDismiss();
       }
     },
-    [
-      nodeId,
-      courseId,
-      completeNode,
-      dispatch,
-      handleDismiss,
-      queryClient,
-    ],
+    [nodeId, courseId, completeNode, dispatch, handleDismiss, queryClient],
   );
 
   if (isLoading) {
@@ -110,16 +117,6 @@ export default function JourneyFlowRoute() {
 
   if (!nodeId) return null;
   const sessionResult = learningSession.data;
-  const routedExercises = sessionResult
-    ? sessionResult.exerciseIds
-        .map((exerciseId) =>
-          exercises.find((exercise) => exercise.id === exerciseId),
-        )
-        .filter((exercise): exercise is NonNullable<typeof exercise> =>
-          Boolean(exercise),
-        )
-    : [];
-
   return (
     <>
       <Stack.Screen
@@ -162,7 +159,7 @@ export default function JourneyFlowRoute() {
       ) : (
         <NodeEngineRouter
           nodeId={nodeId}
-          exercises={routedExercises}
+          exercises={sessionResult.exercises}
           onNodeComplete={handleComplete}
           onClose={handleDismiss}
         />
