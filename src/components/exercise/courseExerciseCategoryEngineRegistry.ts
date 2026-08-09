@@ -36,7 +36,6 @@ import { ELEVENTH_BATCH_CATEGORY_CONFIGS } from "@/src/components/exercise/cours
 import { FINAL_BATCH_CATEGORY_CONFIGS } from "@/src/components/exercise/courseExerciseFinalBatchRegistry";
 import { NINTH_BATCH_CATEGORY_CONFIGS } from "@/src/components/exercise/courseExerciseNinthBatchRegistry";
 import { TENTH_BATCH_CATEGORY_CONFIGS } from "@/src/components/exercise/courseExerciseTenthBatchRegistry";
-import { V1_EXERCISE_CATEGORY_CONFIG } from "@/src/domains/journey/learning/v1LearningConfig";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import {
   CourseExerciseCategoryEnum,
@@ -51,11 +50,10 @@ export interface CourseExerciseCategoryConfig {
   unavailableCopy: string;
 }
 
-export const courseExerciseCategoryEngineRegistry: Record<
+export const courseExerciseCategoryEngineRegistry: Partial<Record<
   RenderableExerciseCategory,
   CourseExerciseCategoryConfig
-> = {
-  ...V1_EXERCISE_CATEGORY_CONFIG,
+>> = {
   [CourseExerciseCategoryEnum.GuessReveal]: {
     category: CourseExerciseCategoryEnum.GuessReveal,
     formats: [CourseExerciseCategoryEnum.GuessReveal],
