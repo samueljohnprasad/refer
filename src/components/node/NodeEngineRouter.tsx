@@ -242,7 +242,7 @@ export function NodeEngineRouter({
   if (!currentExercise || !Engine || !categoryConfig) {
     return (
       <PracticeDataErrorScreen
-        message="This node must use a configured v1 exercise category."
+        message="This lesson uses an unsupported exercise category."
         onClose={onClose}
       />
     );

@@ -39,7 +39,7 @@ export function PracticeDataErrorScreen({
     >
       <View className="flex-1 justify-center px-8">
         <Text variant="h2" color="ink" className="mb-3">
-          Practice data needs v1 content.
+          Practice data is unavailable.
         </Text>
         <Text variant="body" color="soft">
           {message}

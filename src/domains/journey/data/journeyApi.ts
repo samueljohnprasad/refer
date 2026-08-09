@@ -24,16 +24,16 @@ import type {
 } from "@/src/types/journeyLearning";
 import { V1NodeSessionKindEnum } from "@/src/types/journeyLearning";
 import { callEdgeFunction, EDGE_FUNCTION_URLS } from "@/src/lib/supabase/edgeFunctions";
-import { resolveV1ExerciseCategory } from "@/src/domains/journey/learning/v1LearningCategoryResolver";
-import { migrateLegacyCourseTreeToV1 } from "@/src/domains/journey/learning/migrateLegacyExercisesToV1";
+import { resolveCourseExerciseCategory } from "@/src/domains/journey/learning/courseExerciseCategoryResolver";
 import { saveMockNodeLearningEvidence } from "@/src/domains/journey/learning/mockLearningEvidenceStore";
+import { isCourseExerciseCategory } from "@/src/types/courseExercises";
 
 import catalogData from "@/src/data/mock/course-catalog.json";
 import { sleepResetFlatData } from "@/src/data/mock/sleep-reset-flat";
 
 // Toggle this to use the mock JSON data instead of the backend
 const USE_MOCK = true;
-const mockSleepResetV1Data = migrateLegacyCourseTreeToV1(sleepResetFlatData);
+const mockSleepResetData = sleepResetFlatData;
 
 export const journeyApi = createApi({
   reducerPath: "journeyApi",
@@ -225,7 +225,7 @@ export const journeyApi = createApi({
       providesTags: (_, __, courseId) => [{ type: "CourseTree", id: courseId }],
       queryFn: async (courseId) => {
         if (USE_MOCK) {
-          return { data: mockSleepResetV1Data };
+          return { data: mockSleepResetData };
         }
         try {
           const data = await callEdgeFunction<
@@ -276,17 +276,14 @@ export const journeyApi = createApi({
     }),
 
     // ── READ: node learning session ─────────────────────────────────────────
-    /**
-     * Mock-only v1 boundary for now.
-     * Later Supabase should return this same result shape authoritatively.
-     */
+    /** Mock-only exercise session boundary. */
     startLearningSession: builder.query<
       V1LearningSessionResult,
       StartV1LearningSessionArgs
     >({
       providesTags: (_, __, { nodeId }) => [{ type: "NodeExercises", id: nodeId }],
       queryFn: async ({ nodeId }) => {
-        const nodeExercises = mockSleepResetV1Data.exercises.filter(
+        const nodeExercises = mockSleepResetData.exercises.filter(
           (exercise) => exercise.nodeId === nodeId,
         );
 
@@ -294,20 +291,23 @@ export const journeyApi = createApi({
           return {
             error: {
               status: "CUSTOM_ERROR",
-              error: `No v1 exercises found for node ${nodeId}.`,
+              error: `No exercises found for node ${nodeId}.`,
             },
           };
         }
 
-        const v1ExerciseIds = nodeExercises
-          .filter((exercise) => resolveV1ExerciseCategory(exercise) !== null)
+        const exerciseIds = nodeExercises
+          .filter((exercise) => {
+            const category = resolveCourseExerciseCategory(exercise);
+            return category !== null && isCourseExerciseCategory(category);
+          })
           .map((exercise) => exercise.id);
 
-        if (v1ExerciseIds.length !== nodeExercises.length) {
+        if (exerciseIds.length !== nodeExercises.length) {
           return {
             error: {
               status: "CUSTOM_ERROR",
-              error: `Node ${nodeId} contains non-v1 exercises after migration.`,
+              error: `Node ${nodeId} contains unsupported exercise categories.`,
             },
           };
         }
@@ -317,8 +317,8 @@ export const journeyApi = createApi({
             kind: V1NodeSessionKindEnum.V1Session,
             nodeId,
             sessionId: `mock:${nodeId}`,
-            exerciseIds: v1ExerciseIds,
-            requiredResolvedItemCount: v1ExerciseIds.length,
+            exerciseIds,
+            requiredResolvedItemCount: exerciseIds.length,
             source: "mock",
           },
         };

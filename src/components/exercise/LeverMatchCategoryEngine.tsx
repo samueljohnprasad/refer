@@ -8,7 +8,6 @@ import {
   readStringArray,
 } from "@/src/components/exercise/courseExerciseContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
-import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
 interface LeverPair {
@@ -37,9 +36,7 @@ export function LeverMatchCategoryEngine({
   const selectedRightId = readString(saved?.selectedRightId);
   const mismatchCount = readCount(saved?.mismatchCount);
   const [wrongPair, setWrongPair] = useState<WrongPair | null>(null);
-  const shake = useRef(new Animated.Value(0)).current;
   const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const reduceMotion = useReducedMotion();
   const allMatched = pairs.length > 0 && matchedIds.length >= pairs.length;
   const orderedRightPairs = orderRightPairs(pairs, rightOrder);
 
@@ -98,7 +95,6 @@ export function LeverMatchCategoryEngine({
 
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     setWrongPair({ leftId, rightId });
-    runShake(shake, reduceMotion);
     const nextMismatchCount = mismatchCount + 1;
     const supportId = pairs[2]?.id;
     const nextMatched =
@@ -127,10 +123,7 @@ export function LeverMatchCategoryEngine({
         }
       />
 
-      <Animated.View
-        className="flex-row gap-2.5"
-        style={{ transform: [{ translateX: shake }] }}
-      >
+      <View className="flex-row gap-2.5">
         <View className="flex-1 gap-2.5">
           {pairs.map((pair) => (
             <MatchCard
@@ -155,7 +148,7 @@ export function LeverMatchCategoryEngine({
             />
           ))}
         </View>
-      </Animated.View>
+      </View>
 
       <Text className="happy-font-body mt-3 text-center text-xs text-[#82796A]">
         {allMatched
@@ -241,19 +234,6 @@ function readPairs(value: unknown): LeverPair[] {
 function orderRightPairs(pairs: LeverPair[], order: string[]): LeverPair[] {
   if (!order.length) return [...pairs].reverse();
   return order.flatMap((id) => pairs.find((pair) => pair.id === id) ?? []);
-}
-
-function runShake(value: Animated.Value, reduceMotion: boolean) {
-  if (reduceMotion) return;
-  Animated.sequence(
-    [-7, 7, -5, 5, 0].map((toValue) =>
-      Animated.timing(value, {
-        toValue,
-        duration: 55,
-        useNativeDriver: true,
-      }),
-    ),
-  ).start();
 }
 
 function readCount(value: unknown): number {

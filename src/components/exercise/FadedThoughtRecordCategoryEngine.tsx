@@ -14,7 +14,6 @@ import {
   type RecordSlot,
 } from "@/src/components/exercise/fadedThoughtRecordContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
-import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
 export function FadedThoughtRecordCategoryEngine({
@@ -32,9 +31,7 @@ export function FadedThoughtRecordCategoryEngine({
   const realisticIndex = readIndex(saved?.selectedRealisticIndex);
   const coachFeedback = readString(saved?.coachFeedback);
   const [wrongKey, setWrongKey] = useState<string | null>(null);
-  const shake = useRef(new Animated.Value(0)).current;
   const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     if (!saved) onInteraction(createResponse(), true);
@@ -56,7 +53,6 @@ export function FadedThoughtRecordCategoryEngine({
     if (!option.isCorrect) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       setWrongKey(`${slot}-${optionIndex}`);
-      runShake(shake, reduceMotion);
       onInteraction(
         createResponse({ ...saved, coachFeedback: option.feedback }),
         false,
@@ -125,10 +121,7 @@ export function FadedThoughtRecordCategoryEngine({
       </View>
 
       {activeOptions ? (
-        <Animated.View
-          className="mt-3 gap-2"
-          style={{ transform: [{ translateX: shake }] }}
-        >
+      <View className="mt-3 gap-2">
           {activeOptions.options.map((option, index) => (
             <Pressable
               key={option.text}
@@ -145,7 +138,7 @@ export function FadedThoughtRecordCategoryEngine({
               </Text>
             </Pressable>
           ))}
-        </Animated.View>
+      </View>
       ) : null}
 
       <Text className="happy-font-body mt-3 px-0.5 italic text-[13px] leading-[19px] text-[#696156]">
@@ -242,15 +235,6 @@ function isRowComplete(
     evidenceIndex !== null &&
     (Boolean(screen.realisticAfter) || realisticIndex !== null)
   );
-}
-
-function runShake(value: Animated.Value, reduceMotion: boolean) {
-  if (reduceMotion) return;
-  Animated.sequence(
-    [-7, 7, -5, 5, 0].map((toValue) =>
-      Animated.timing(value, { toValue, duration: 55, useNativeDriver: true }),
-    ),
-  ).start();
 }
 
 function readIndex(value: unknown): number | null {
