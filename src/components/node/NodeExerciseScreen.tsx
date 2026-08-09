@@ -21,6 +21,7 @@ interface NodeExerciseScreenProps {
   progress: number;
   trailingLabel: string;
   primaryLabel: string;
+  primaryLoading: boolean;
   ready: boolean;
   locked: boolean;
   hideFooter: boolean;
@@ -80,6 +81,7 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
           hidePrimary={props.hideFooter}
           primaryLabel={props.primaryLabel}
           primaryDisabled={!props.ready}
+          primaryLoading={props.primaryLoading}
           onPrimaryPress={props.onPrimaryPress}
           onSkip={props.onSkip}
         />
@@ -94,6 +96,7 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
       onClose={props.onClose}
       primaryLabel={props.primaryLabel}
       primaryDisabled={!props.ready}
+      primaryLoading={props.primaryLoading}
       onPrimaryPress={props.onPrimaryPress}
       status="default"
       hideFooter={props.hideFooter}

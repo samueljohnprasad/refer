@@ -11,6 +11,7 @@ import {
 interface CourseExerciseFooterProps {
   hidePrimary: boolean;
   primaryDisabled: boolean;
+  primaryLoading: boolean;
   primaryLabel: string;
   onPrimaryPress: () => void;
   onSkip: () => void;
@@ -19,6 +20,7 @@ interface CourseExerciseFooterProps {
 export function CourseExerciseFooter({
   hidePrimary,
   primaryDisabled,
+  primaryLoading,
   primaryLabel,
   onPrimaryPress,
   onSkip,
@@ -33,13 +35,20 @@ export function CourseExerciseFooter({
         <CourseExercisePrimaryButton
           label={primaryLabel}
           disabled={primaryDisabled}
+          loading={primaryLoading}
           onPress={onPrimaryPress}
         />
       ) : null}
       <Pressable
         accessibilityRole="button"
+        accessibilityState={{ disabled: primaryLoading }}
+        disabled={primaryLoading}
         onPress={onSkip}
-        style={({ pressed }) => [styles.skipButton, pressed && styles.pressed]}
+        style={({ pressed }) => [
+          styles.skipButton,
+          primaryLoading && styles.disabledSkip,
+          pressed && styles.pressed,
+        ]}
       >
         <Text style={styles.skipLabel}>Skip for now</Text>
       </Pressable>
@@ -64,5 +73,6 @@ const styles = StyleSheet.create({
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 14,
   },
+  disabledSkip: { opacity: 0.45 },
   pressed: { opacity: 0.55 },
 });

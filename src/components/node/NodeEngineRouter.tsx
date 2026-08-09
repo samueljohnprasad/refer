@@ -1,4 +1,5 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
+import { InteractionManager } from "react-native";
 import { courseExerciseCategoryEngineRegistry } from "@/src/components/exercise/courseExerciseCategoryEngineRegistry";
 import type { Exercise } from "@/src/types/journeyV5";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
@@ -38,7 +39,7 @@ interface NodeEngineRouterProps {
   nodeId: string;
   exercises: Exercise[];
   initialSavedResponses?: Record<string, unknown>;
-  onNodeComplete: (responses: Record<string, unknown>) => void;
+  onNodeComplete: (responses: Record<string, unknown>) => void | Promise<void>;
   onClose?: () => void;
 }
 
@@ -52,6 +53,7 @@ export function NodeEngineRouter({
   onClose,
 }: NodeEngineRouterProps) {
   const dispatch = useAppDispatch();
+  const [isCompleting, setIsCompleting] = useState(false);
   const session = useAppSelector(
     (state) => state.v1LearningSessions.byNodeId[nodeId],
   );
@@ -116,7 +118,7 @@ export function NodeEngineRouter({
   );
 
   const handlePrimaryPress = async () => {
-    if (!currentExercise || !currentResponse) {
+    if (!currentExercise || !currentResponse || isCompleting) {
       return;
     }
 
@@ -194,9 +196,7 @@ export function NodeEngineRouter({
     };
 
     if (lastExercise) {
-      await clearV1SessionDraft(nodeId);
-      dispatch(clearV1LearningSession({ nodeId }));
-      onNodeComplete(nextResponses);
+      await finishNode(nextResponses);
       return;
     }
 
@@ -207,6 +207,19 @@ export function NodeEngineRouter({
         response: resolvedResponse,
       }),
     );
+  };
+
+  const finishNode = async (nextResponses: Record<string, unknown>) => {
+    setIsCompleting(true);
+    try {
+      await clearV1SessionDraft(nodeId);
+      await onNodeComplete(nextResponses);
+      InteractionManager.runAfterInteractions(() => {
+        dispatch(clearV1LearningSession({ nodeId }));
+      });
+    } finally {
+      setIsCompleting(false);
+    }
   };
 
   const skipForNow = async () => {
@@ -220,9 +233,7 @@ export function NodeEngineRouter({
     };
 
     if (lastExercise) {
-      await clearV1SessionDraft(nodeId);
-      dispatch(clearV1LearningSession({ nodeId }));
-      onNodeComplete(nextResponses);
+      await finishNode(nextResponses);
       return;
     }
 
@@ -268,9 +279,10 @@ export function NodeEngineRouter({
           lastExercise,
         }),
       )}
+      primaryLoading={isCompleting}
       onPrimaryPress={handlePrimaryPress}
       ready={ready}
-      locked={showingFeedback}
+      locked={showingFeedback || isCompleting}
       hideFooter={
         currentExercise.content?.hideFooterUntilReady === true && !ready
       }

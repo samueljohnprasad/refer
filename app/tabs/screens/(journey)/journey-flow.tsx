@@ -11,6 +11,7 @@ import {
 import { selectNode } from "@/src/domains/journey/state/journeySelectors";
 import { Skeleton, SkeletonCard } from "@/src/components/ui/Skeleton";
 import { NodeEngineRouter } from "@/src/components/node/NodeEngineRouter";
+import { LoadingPracticeScreen } from "@/src/components/node/NodeEngineRouterPanels";
 import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import { Text } from "@/src/components/ui/Text";
 import { updateUserStreak } from "@/src/lib/api/mentalHealthJourneyApi";
@@ -127,19 +128,7 @@ export default function JourneyFlowRoute() {
         }}
       />
       {learningSession.isLoading ? (
-        <LessonScreen
-          progress={0}
-          onClose={handleDismiss}
-          primaryLabel="Check"
-          primaryDisabled
-          onPrimaryPress={() => undefined}
-        >
-          <View className="flex-1 justify-center px-8">
-            <Text variant="body" color="soft">
-              Loading practice…
-            </Text>
-          </View>
-        </LessonScreen>
+        <LoadingPracticeScreen onClose={handleDismiss} />
       ) : learningSession.isError || !sessionResult ? (
         <LessonScreen
           progress={0}

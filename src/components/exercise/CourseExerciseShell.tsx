@@ -1,5 +1,12 @@
 import React, { type ReactNode } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -108,20 +115,23 @@ export function CourseExerciseShell({
 export function CourseExercisePrimaryButton({
   label,
   disabled = false,
+  loading = false,
   onPress,
 }: {
   label: string;
   disabled?: boolean;
+  loading?: boolean;
   onPress: () => void;
 }) {
-  const colors = getPrimaryButtonColors(disabled);
+  const isDisabled = disabled || loading;
+  const colors = getPrimaryButtonColors(isDisabled);
 
   return (
     <View
       accessible
       accessibilityLabel={label}
       accessibilityRole="button"
-      accessibilityState={{ disabled }}
+      accessibilityState={{ busy: loading, disabled: isDisabled }}
       style={styles.primaryButton}
     >
       <SvgAppButton
@@ -132,13 +142,20 @@ export function CourseExercisePrimaryButton({
         pressDepth={5}
         color={colors.face}
         backgroundColor={colors.rim}
-        disabled={disabled}
+        disabled={isDisabled}
         onPress={onPress}
         contentContainerStyle={styles.primaryButtonContent}
       >
-        <Text style={[styles.primaryLabel, disabled && styles.disabledLabel]}>
-          {label}
-        </Text>
+        {loading ? (
+          <ActivityIndicator
+            color={COURSE_EXERCISE_COLORS.surface}
+            size="small"
+          />
+        ) : (
+          <Text style={[styles.primaryLabel, disabled && styles.disabledLabel]}>
+            {label}
+          </Text>
+        )}
       </SvgAppButton>
     </View>
   );
