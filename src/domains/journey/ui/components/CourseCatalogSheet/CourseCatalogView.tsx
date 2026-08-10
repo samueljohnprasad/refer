@@ -10,7 +10,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { CourseCatalogSheetContent } from "./CourseCatalogSheetContent";
 
-export { CourseAccordionCard } from "./CourseAccordionCard";
 export { CourseCatalogSheetContent } from "./CourseCatalogSheetContent";
 
 export const CourseCatalogView = React.memo(function CourseCatalogView({

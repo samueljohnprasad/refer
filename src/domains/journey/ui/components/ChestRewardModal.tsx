@@ -1,137 +1,112 @@
-import React, { forwardRef } from "react";
-import { View } from "react-native";
-import { Text } from "@/src/components/ui/Text";
+import React from "react";
+import { Text as RNText, View } from "react-native";
 import {
-  BottomSheetModal,
-  BottomSheetView,
-  BottomSheetBackdrop,
-  type BottomSheetBackdropProps,
-} from "@gorhom/bottom-sheet";
-import { PressableScale } from "@/src/components/ui/PressableScale";
-import { JourneyRewardType } from "@/src/types/journey/enums";
+  BottomSheet,
+  Group,
+  Host,
+  Image,
+  RNHostView,
+  Text,
+  VStack,
+} from "@expo/ui/swift-ui";
 import {
-  useChestRewardModalViewModel,
-  type ChestRewardModalProps,
-} from "../hooks/useChestRewardModalViewModel";
+  font,
+  foregroundStyle,
+  padding,
+  presentationBackground,
+  presentationDetents,
+  presentationDragIndicator,
+} from "@expo/ui/swift-ui/modifiers";
+import { GOLD, SAGE } from "@/lib/tokens";
+import { SvgAppButton } from "@/src/domains/journey/ui/components/svg-app-button";
+import type { PathNodeData } from "@/src/types/journey/node";
 
-function Backdrop(props: BottomSheetBackdropProps): React.JSX.Element {
+export interface ChestRewardModalProps {
+  node: PathNodeData | null;
+  isClaiming: boolean;
+  onClaim: () => Promise<void>;
+  onDismiss: () => void;
+}
+
+function ChestRewardContent({
+  isClaiming,
+  onClaim,
+}: Omit<ChestRewardModalProps, "node" | "onDismiss">): React.JSX.Element {
   return (
-    <BottomSheetBackdrop
-      {...props}
-      disappearsOnIndex={-1}
-      appearsOnIndex={0}
-      opacity={0.5}
-    />
+    <VStack
+      alignment="center"
+      spacing={18}
+      modifiers={[padding({ horizontal: 24, vertical: 20 })]}
+    >
+      <Image systemName="gift.fill" size={30} color={GOLD} />
+      <VStack alignment="center" spacing={4}>
+        <Text modifiers={[font({ size: 24, weight: "semibold" })]}>
+          Treasure Chest!
+        </Text>
+        <Text modifiers={[font({ size: 15 }), foregroundStyle("secondary")]}>
+          You&apos;ve found a chest!
+        </Text>
+      </VStack>
+      <RNHostView matchContents>
+        <View style={{ width: 280 }}>
+          <SvgAppButton
+            width={280}
+            height={54}
+            color={isClaiming ? SAGE[300] : SAGE[500]}
+            backgroundColor={SAGE[700]}
+            leftRadius={14}
+            rightRadius={14}
+            disabled={isClaiming}
+            onPress={() => {
+              void onClaim();
+            }}
+            contentContainerStyle={{
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <RNText
+              style={{
+                color: "#FFFFFF",
+                fontFamily: "GeistSemiBold",
+                fontSize: 16,
+              }}
+            >
+              {isClaiming ? "Claiming…" : "Claim Rewards"}
+            </RNText>
+          </SvgAppButton>
+        </View>
+      </RNHostView>
+    </VStack>
   );
 }
 
-export interface ChestRewardModalViewProps
-  extends ReturnType<typeof useChestRewardModalViewModel> {
-  bottomSheetRef: React.ForwardedRef<BottomSheetModal>;
-}
-
-/**
- * Presentational View component for ChestRewardModal.
- * Strictly contains JSX code without internal hooks.
- */
-export const ChestRewardModalView = React.memo(
-  function ChestRewardModalView({
-    snapPoints,
-    handleClaim,
-    isLocked,
-    node,
-    bottomSheetRef,
-  }: ChestRewardModalViewProps): React.JSX.Element {
-    return (
-      <BottomSheetModal
-        ref={bottomSheetRef}
-        index={0}
-        snapPoints={snapPoints}
-        backdropComponent={Backdrop}
-        enablePanDownToClose
-        handleIndicatorStyle={{
-          backgroundColor: "#94A3B8",
-          width: 32,
-          height: 4,
+export function ChestRewardModal({
+  node,
+  isClaiming,
+  onClaim,
+  onDismiss,
+}: ChestRewardModalProps): React.JSX.Element {
+  return (
+    <Host>
+      <BottomSheet
+        isPresented={node !== null}
+        onIsPresentedChange={(isPresented) => {
+          if (!isPresented && !isClaiming) onDismiss();
         }}
       >
-        <BottomSheetView className="flex-1 px-6 pt-2">
-          <View className="items-center mb-6">
-            <View className="w-16 h-16 bg-yellow-100 rounded-2xl items-center justify-center mb-3">
-              <Text className="text-3xl">{isLocked ? "🔒" : "🎁"}</Text>
-            </View>
-            <Text className="text-xl font-semibold text-ink text-center">
-              {isLocked ? "Locked Chest" : "Treasure Chest!"}
-            </Text>
-            <Text className="text-sm text-ink-soft text-center mt-1">
-              {isLocked
-                ? "Complete more nodes to unlock this chest"
-                : `You've found chest ${node.index + 1}!`}
-            </Text>
-          </View>
-
-          {!isLocked && node.rewards && node.rewards.length > 0 && (
-            <View className="mb-6">
-              <Text className="text-lg font-semibold text-ink mb-3">
-                Rewards
-              </Text>
-              <View className="flex-row flex-wrap">
-                {node.rewards.map((reward, index) => (
-                  <View
-                    key={index}
-                    className="flex-row items-center px-4 py-3 rounded-2xl mr-3 mb-3 bg-yellow-50"
-                  >
-                    <Text className="text-xl mr-2">
-                      {reward.type === JourneyRewardType.XP
-                        ? "⚡"
-                        : reward.type === JourneyRewardType.GEMS
-                          ? "💎"
-                          : reward.type === JourneyRewardType.HEARTS
-                            ? "❤️"
-                            : "🏆"}
-                    </Text>
-                    <Text className="text-sm font-medium text-ink">
-                      {reward.amount} {reward.type}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          )}
-
-          <PressableScale
-            onPress={handleClaim}
-            disabled={isLocked}
-            scale={0.95}
-            className={`w-full py-4 rounded-2xl items-center ${
-              isLocked ? "bg-sage-100" : "bg-violet-600"
-            }`}
-          >
-            <Text
-              className={`text-lg font-semibold ${
-                isLocked ? "text-ink-muted" : "text-white"
-              }`}
-            >
-              {isLocked ? "Locked" : "Claim Rewards"}
-            </Text>
-          </PressableScale>
-        </BottomSheetView>
-      </BottomSheetModal>
-    );
-  },
-);
-
-/**
- * Container component for ChestRewardModal.
- */
-const ChestRewardModal = forwardRef<BottomSheetModal, ChestRewardModalProps>(
-  (props, ref) => {
-    const viewModel = useChestRewardModalViewModel(props);
-    return <ChestRewardModalView {...viewModel} bottomSheetRef={ref} />;
-  },
-);
-
-ChestRewardModal.displayName = "ChestRewardModal";
+        <Group
+          modifiers={[
+            presentationDetents([{ fraction: 0.42 }]),
+            presentationDragIndicator("visible"),
+            presentationBackground("#FFFFFF"),
+          ]}
+        >
+          <ChestRewardContent isClaiming={isClaiming} onClaim={onClaim} />
+        </Group>
+      </BottomSheet>
+    </Host>
+  );
+}
 
 export default ChestRewardModal;
-export type { ChestRewardModalProps };

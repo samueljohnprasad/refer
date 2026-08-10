@@ -7,7 +7,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Link } from "expo-router";
 import { Text } from "@/src/components/ui/Text";
-import { NodeStatus } from "@/src/types/journey";
+import { NodeStatus, NodeType } from "@/src/types/journey";
 import { DuolingoSvgNodeButton } from "./DuolingoSvgNodeButton";
 import {
   useJourneyNodeCellViewModel,
@@ -217,7 +217,7 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
             item.status === NodeStatus.ACTIVE ? activeScaleStyle : undefined
           }
         >
-          {isInteractive ? (
+          {isInteractive && item.type !== NodeType.CHEST ? (
             <Link
               href={{
                 pathname: "/tabs/screens/journey-flow",

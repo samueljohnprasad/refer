@@ -1,15 +1,15 @@
-# Section 4: Sleep Mindset — Exercise Mapping (l26-l31)
+# Section 4: Sleep Mindset — Exercise Mapping (l27-l32)
 # Sleep anxiety, cognitive defusion, catastrophizing, identity, resilience
 
 lesson:
-  id: l26
+  id: l27
   title: "The Sleep Effort Trap"
   duration_minutes: 10
   target_accuracy: 0.85
   emotional_arc: [warmup, introduce, challenge, peak, cooldown]
 
   exercises:
-    - id: l26_e1
+    - id: l27_e1
       type: "learn_cards"
       phase: "warmup"
       duration_seconds: 45
@@ -22,7 +22,7 @@ lesson:
           visual_key: "stimulus_control_reset"
       note: "Introduce sleep_effort_paradox and sleep_anxiety. Connect back to stimulus control."
 
-    - id: l26_e2
+    - id: l27_e2
       type: "multiple_choice"
       phase: "introduce"
       concept: "sleep_effort_paradox"
@@ -41,7 +41,7 @@ lesson:
       feedback_incorrect: "Actually, that thought is a threat signal. Your brain interprets 'I MUST sleep' as 'something is wrong.'"
       note: "Recognizes how effort creates hyperarousal."
 
-    - id: l26_e3
+    - id: l27_e3
       type: "scenario"
       phase: "challenge"
       concept: "sleep_effort_paradox"
@@ -62,7 +62,7 @@ lesson:
           feedback: "Nothing is broken. This is a normal response to sleep pressure + threat perception. The cycle is learned; it can be unlearned with stimulus control."
       note: "Real-world high-stakes scenario. User recognizes effort trap in their own experience."
 
-    - id: l26_e4
+    - id: l27_e4
       type: "free_text"
       phase: "peak"
       duration_seconds: 60
@@ -72,7 +72,7 @@ lesson:
       is_scored: false
       note: "Personal reflection. User recognizes their own effort trap and imagines alternative response."
 
-    - id: l26_e5
+    - id: l27_e5
       type: "mood_check"
       phase: "cooldown"
       duration_seconds: 15
@@ -89,14 +89,14 @@ lesson:
 ---
 
 lesson:
-  id: l27
+  id: l28
   title: "Watching Your Thoughts"
   duration_minutes: 11
   target_accuracy: 0.80
   emotional_arc: [warmup, introduce, challenge, peak, consolidate, cooldown]
 
   exercises:
-    - id: l27_e1
+    - id: l28_e1
       type: "learn_cards"
       phase: "warmup"
       duration_seconds: 45
@@ -109,7 +109,7 @@ lesson:
           visual_key: "struggle_vs_thought"
       note: "Introduce cognitive_defusion. Emphasize non-suppression (which worsens hyperarousal)."
 
-    - id: l27_e2
+    - id: l28_e2
       type: "true_false"
       phase: "introduce"
       concept: "cognitive_defusion"
@@ -121,7 +121,7 @@ lesson:
       explanation: "False. The goal is to stop STRUGGLING with the thoughts. Racing thoughts at 2am are normal. The struggle — trying to suppress them, fighting them — is what keeps you awake."
       note: "Critical misconception. Prevent users from accidentally suppressing (which worsens hyperarousal)."
 
-    - id: l27_e3
+    - id: l28_e3
       type: "scenario"
       phase: "challenge"
       concept: "cognitive_defusion"
@@ -142,7 +142,7 @@ lesson:
           feedback: "That's still struggling to control your thoughts. Just notice the catastrophizing thought, let it be, and move on."
       note: "Application. User practices mental stance shift."
 
-    - id: l27_e4
+    - id: l28_e4
       type: "guided_journal"
       phase: "peak"
       concept: "cognitive_defusion"
@@ -158,7 +158,7 @@ lesson:
       is_scored: false
       note: "Hands-on practice. User creates personal defusion response."
 
-    - id: l27_e5
+    - id: l28_e5
       type: "multiple_choice"
       phase: "consolidate"
       concept: "cognitive_defusion"
@@ -176,7 +176,7 @@ lesson:
       feedback_correct: "Right. Observation, not suppression. Not fighting, not replacing."
       note: "Clarify defusion vs. suppression."
 
-    - id: l27_e6
+    - id: l28_e6
       type: "mood_check"
       phase: "cooldown"
       duration_seconds: 15
@@ -194,14 +194,14 @@ lesson:
 ---
 
 lesson:
-  id: l28
+  id: l29
   title: "Rewriting the Disaster Story"
   duration_minutes: 12
   target_accuracy: 0.78
   emotional_arc: [warmup, introduce, challenge, peak, consolidate, cooldown]
 
   exercises:
-    - id: l28_e1
+    - id: l29_e1
       type: "learn_cards"
       phase: "warmup"
       duration_seconds: 50
@@ -214,7 +214,7 @@ lesson:
           visual_key: "realistic_outcome"
       note: "Introduce sleep_catastrophizing and reality-checking approach."
 
-    - id: l28_e2
+    - id: l29_e2
       type: "true_false"
       phase: "introduce"
       concept: "sleep_catastrophizing"
@@ -226,7 +226,7 @@ lesson:
       explanation: "False. You'll be tired, maybe foggy, but still functional. Most people survive bad nights regularly. Your brain is catastrophizing to prepare for 'danger,' but the actual consequence is much milder."
       note: "Misconception: catastrophe is inevitable. Reality: mild functional decline."
 
-    - id: l28_e3
+    - id: l29_e3
       type: "scenario"
       phase: "challenge"
       concept: "sleep_catastrophizing"
@@ -247,7 +247,7 @@ lesson:
           feedback: "That reinforces the cycle. Instead, reality-check the thought. You'll likely be okay."
       note: "Application of thought records."
 
-    - id: l28_e4
+    - id: l29_e4
       type: "guided_journal"
       phase: "peak"
       concept: "sleep_catastrophizing"
@@ -264,7 +264,7 @@ lesson:
       is_scored: false
       note: "Hands-on thought record. User applies CBT-I on personal catastrophe."
 
-    - id: l28_e5
+    - id: l29_e5
       type: "multiple_choice"
       phase: "consolidate"
       concept: "sleep_catastrophizing"
@@ -282,7 +282,7 @@ lesson:
       feedback_correct: "Yes. That's the one to reality-check first. Evidence usually shows you'll be tired but okay."
       note: "Primer for personal use."
 
-    - id: l28_e6
+    - id: l29_e6
       type: "mood_check"
       phase: "cooldown"
       duration_seconds: 15
@@ -299,7 +299,7 @@ lesson:
 
 ---
 
-# Lessons l29-l31 (Sleep Identity, Building Resilience, Course Finale)
-# l29: Sleep Identity → learn_cards + multiple_choice + scenario (how to talk about yourself) + free_text (what's your new identity?)
-# l30: Building Resilience → learn_cards + scenario (3am bad night post-course) + guided practice (create recovery toolkit) + free_text
-# l31: Course Finale → celebration + final commitment exercise (write personal sleep manifesto) + final mood_check + badge "Quiet Mind"
+# Lessons l30-l32 (Sleep Identity, Building Resilience, Course Finale)
+# l30: Sleep Identity → learn_cards + multiple_choice + scenario (how to talk about yourself) + free_text (what's your new identity?)
+# l31: Building Resilience → learn_cards + scenario (3am bad night post-course) + guided practice (create recovery toolkit) + free_text
+# l32: Course Finale → celebration + final commitment exercise (write personal sleep manifesto) + final mood_check + badge "Quiet Mind"

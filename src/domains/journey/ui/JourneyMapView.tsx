@@ -11,6 +11,7 @@ import { DuolingoHeader } from "./components/DuolingoHeader";
 import JourneyMapFlashList from "./components/JourneyMapFlashList";
 import JourneyLoadingSkeleton from "./components/JourneyLoadingSkeleton";
 import JourneyUnavailableState from "./components/JourneyUnavailableState";
+import { ChestRewardModal } from "./components";
 import type {
   JourneyMapViewModel,
   JourneyMapActions,
@@ -123,11 +124,18 @@ export const JourneyMapView = React.memo(function JourneyMapView({
       </>
       <CourseCatalogSheet
         isPresented={isCourseCatalogPresented}
-        activeCourseId={courseId}
         enrolledCourses={enrolledCourses}
         onClose={onCloseCatalogSheet}
         onCourseSelect={setActiveCourseId}
       />
+      {controller.rewardNode ? (
+        <ChestRewardModal
+          node={controller.rewardNode}
+          isClaiming={controller.isClaimingReward}
+          onClaim={controller.handleClaimReward}
+          onDismiss={controller.handleDismissReward}
+        />
+      ) : null}
     </>
   );
 });

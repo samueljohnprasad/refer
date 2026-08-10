@@ -1,0 +1,157 @@
+import { defineLesson, exercise } from "../exercise.js";
+
+export const fearAndAnxiety = defineLesson({
+  sourceId: "anxiety-s1-u1-n5-fear-and-anxiety",
+  title: "Fear and Anxiety",
+  objective: "Distinguish fear of a present threat from anxiety about a possible future threat.",
+  concepts: ["protective_urges", "fear_and_anxiety"],
+  durationMinutes: 7,
+  exercises: [
+    exercise({
+      sourceId: "term-map-recall",
+      category: "recall_warmup",
+      phase: "retrieve",
+      concept: "protective_urges",
+      durationSeconds: 45,
+      scaffoldLevel: 2,
+      difficulty: 0.16,
+      content: {
+        completionMode: "direct",
+        title: "Bring back three parts of the alarm",
+        instruction: "Recall each answer, then reveal.",
+        cards: [
+          {
+            question: "What do we call the body's preparation for possible danger?",
+            answer: "Body alarm.",
+          },
+          {
+            question: "What do we call the meaning the mind adds about what may happen?",
+            answer: "Threat prediction.",
+          },
+          {
+            question: "What do we call the action the alarm proposes next?",
+            answer: "Protective urge.",
+          },
+        ],
+        successPrimaryLabel: "Continue",
+      },
+    }),
+    exercise({
+      sourceId: "fear-anxiety-compare",
+      category: "same_but_different",
+      phase: "distinguish",
+      concept: "fear_and_anxiety",
+      durationSeconds: 55,
+      scaffoldLevel: 2,
+      difficulty: 0.18,
+      content: {
+        title: "Fear and anxiety",
+        instruction: "Open each difference.",
+        leftHeading: "FEAR",
+        rightHeading: "ANXIETY",
+        rows: [
+          { question: "Where is the threat?", left: "Here or happening now", right: "Expected or imagined ahead" },
+          { question: "What does attention track?", left: "Immediate danger cues", right: "Signs of what might happen" },
+          { question: "What action feels urgent?", left: "Protect now", right: "Prevent, prepare, or avoid" },
+        ],
+        tell: "Fear responds to a threat in the present. Anxiety prepares for a threat that may happen. Both use the same protection system.",
+      },
+    }),
+    exercise({
+      sourceId: "anxiety-transfer",
+      category: "lever_scenario",
+      phase: "transfer",
+      concept: "fear_and_anxiety",
+      durationSeconds: 65,
+      scaffoldLevel: 3,
+      difficulty: 0.22,
+      isScored: true,
+      content: {
+        completionMode: "direct",
+        title: "Find future preparation",
+        instruction: "Choose the process most visible in the moment.",
+        capability: "You can identify anxiety as preparation for a possible future threat.",
+        variants: [
+          {
+            sceneLabel: "NEXT WEEK · FLIGHT",
+            scene: "Priya's flight is next week. Each time she imagines boarding, her stomach tightens and she wants to avoid choosing a seat.",
+            prompt: "Which process is most visible?",
+            clue: "Look at when the possible threat is expected.",
+            worked: "The flight is not happening now. Priya's body and attention are preparing for a possible future threat, which fits anxiety.",
+            options: [
+              {
+                id: "anxiety",
+                label: "Anxiety preparing for a possible future threat",
+                isCorrect: true,
+                feedback: "Yes. Her protection system is preparing for something expected later.",
+              },
+              {
+                id: "fear",
+                label: "Fear responding to danger happening now",
+                feedback: "The flight is next week, so the threat is anticipated rather than present.",
+              },
+              { id: "certainty", label: "Proof that the flight will be unsafe", feedback: "The body response does not establish what will happen on the flight." },
+            ],
+          },
+          {
+            sceneLabel: "NEXT MONTH · PERFORMANCE",
+            scene: "Leo's performance is next month. Seeing the stage makes him tense and alert, and he wants to stop attending rehearsals.",
+            prompt: "What best describes this response?",
+            clue: "Separate present danger from preparation for what may happen later.",
+            worked: "No performance is happening now. Leo's system is preparing for a possible future social threat, which fits anxiety.",
+            options: [
+              {
+                id: "anxiety",
+                label: "Anxiety about a possible future threat",
+                isCorrect: true,
+                feedback: "Right. The alertness and avoidance urge are organized around a future event.",
+              },
+              {
+                id: "fear",
+                label: "Fear of immediate danger on the stage",
+                feedback: "The performance is not happening now, so immediate danger is not the clearest fit.",
+              },
+              { id: "present", label: "A response to danger happening now", feedback: "The performance is still in the future, so this is anticipatory anxiety." },
+            ],
+          },
+        ],
+      },
+    }),
+    exercise({
+      sourceId: "fear-anxiety-production",
+      category: "fill_blank",
+      phase: "produce",
+      concept: "fear_and_anxiety",
+      durationSeconds: 65,
+      scaffoldLevel: 4,
+      difficulty: 0.22,
+      isScored: true,
+      content: {
+        completionMode: "direct",
+        title: "Name the process",
+        instruction: "Type the missing word.",
+        capability: "You can distinguish fear from anxiety by locating the threat in time.",
+        variants: [
+          {
+            pre: "A response to danger happening now is closer to",
+            post: ".",
+            answers: ["fear"],
+            exampleWords: ["fear", "anxiety"],
+            correctFeedback: "Yes. Fear is organized around a threat in the present.",
+            incorrectFeedback: "Look for the process tied most closely to danger happening now.",
+            workedExample: "A car moves toward you in the road. The immediate response is fear.",
+          },
+          {
+            pre: "Preparation for a threat that may happen later is closer to",
+            post: ".",
+            answers: ["anxiety"],
+            exampleWords: ["fear", "anxiety"],
+            correctFeedback: "Right. Anxiety prepares for a possible threat ahead.",
+            incorrectFeedback: "Look at whether the threat is present or expected later.",
+            workedExample: "A presentation is next week. Preparing for possible rejection is closer to anxiety.",
+          },
+        ],
+      },
+    }),
+  ],
+});

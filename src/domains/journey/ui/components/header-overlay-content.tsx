@@ -71,7 +71,7 @@ function CourseAvatar({
         {courseImageSource ? (
           <Image
             source={courseImageSource}
-            style={{ width: 54, height: 54, borderRadius: 18 }}
+            style={{ width: 58, height: 58, borderRadius: 18 }}
             cachePolicy="memory-disk"
             contentFit="contain"
             transition={150}

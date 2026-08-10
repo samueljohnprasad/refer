@@ -1,6 +1,7 @@
 import type { ImageSourcePropType } from "react-native";
 
 const COURSE_IMAGE_SOURCES: Record<string, ImageSourcePropType> = {
+  anxiety: require("@/assets/images/panda/panda-anxiety.png"),
   "sleep-reset": require("@/assets/images/panda/panda-yet-sleep-pillow.png"),
 };
 

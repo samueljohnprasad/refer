@@ -1,294 +1,336 @@
-# Section 3: Evening Architecture — Exercise Mapping (l19-l25)
-# Wind-down, environment, stimulus control, worry dump
+section:
+  id: s3_evening_architecture
+  title: "Design Your Evening"
+  outcome: "Build a flexible evening plan, test one practical change, and choose a fitting response when sleep does not arrive."
+  exercise_inventory_count: 58
+  selected_category_count: 17
+  selection_rule: "Choose the smallest mechanic that proves the lesson objective; never add a type only for variety."
 
-lesson:
-  id: l19
-  title: "The 90-Minute Switch"
-  duration_minutes: 9
-  target_accuracy: 0.88
-  emotional_arc: [warmup, introduce, challenge, peak, cooldown]
+  selected_categories:
+    - recall_warmup
+    - intuition_check
+    - curiosity_bet
+    - concept_card
+    - learn_cards
+    - evening_comparison
+    - same_but_different
+    - lever_match
+    - story_walkthrough
+    - common_trap
+    - lever_scenario
+    - course_choice
+    - private_check
+    - teach_back_chain
+    - if_then_plan
+    - course_checkpoint
+    - section_milestone
 
-  exercises:
-    - id: l19_e1
-      type: "learn_cards"
-      phase: "warmup"
-      duration_seconds: 45
-      scaffold_level: 1
-      cards:
-        - text: "Wind-down window = 60-90 minutes before bed. Shift from day (tasks, bright light) to night (calm, dim)."
-          visual_key: "wind_down_timeline"
-        - text: "During this window, your circadian alert is dropping, adenosine is rising. Your body needs time to catch up."
-          visual_key: "circadian_process_overlap"
-        - text: "If you jump from emails at 10:45pm to bed at 11pm, your nervous system stays ON — too fast a transition."
-          visual_key: "too_fast_transition"
-      note: "Intro to wind_down_window. Why it matters + timing."
+  safety_updates:
+    - "Wind-down timing is a flexible range, not a rigid nightly test."
+    - "Light guidance avoids universal effect sizes; brightness, spectrum, timing, duration, and distance all matter."
+    - "Bedroom temperature and comfort are personalized; no universal temperature is scored as correct."
+    - "Stimulus control uses sleepiness and frustration cues, not clock-watching."
+    - "Sleep-window restriction is clinician-guided and is not prescribed in this self-guided section."
+    - "Worry and journal content stays private and unscored."
+    - "One good or bad night is never treated as proof that an evening change caused the result."
 
-    - id: l19_e2
-      type: "multiple_choice"
-      phase: "introduce"
-      concept: "wind_down_window"
-      scaffold_level: 2
-      difficulty: 0.15
-      duration_seconds: 20
-      prompt: "What is the main benefit of a 60-90 minute wind-down window?"
-      options:
-        - text: "Gives your nervous system time to shift from ON to OFF as circadian alert drops"
-          correct: true
-        - text: "Guarantees you'll fall asleep immediately"
-          correct: false
-        - text: "Reduces the amount of sleep you need"
-          correct: false
-      feedback_correct: "Exactly. You're giving your body time to downshift. It's not forced sleep; it's preparation."
-      feedback_incorrect: "Not quite. Wind-down is about giving your body TIME to transition, not guaranteeing instant sleep."
-      note: "Recognizes purpose of wind-down window."
+  units:
+    - id: u3_1_wind_down
+      title: "The Wind-Down Window"
+      outcome: "Shape a flexible transition from daytime activity to sleep-supporting conditions."
+      lessons:
+        - id: l19
+          title: "The 90-Minute Switch"
+          outcome: "Build a realistic wind-down range with one repeatable transition cue."
+          exercises:
+            - {
+                id: l19_e1,
+                type: recall_warmup,
+                purpose: "Retrieve body-downshift ideas from Section 2.",
+                scoring: unscored,
+              }
+            - {
+                id: l19_e2,
+                type: evening_comparison,
+                purpose: "Contrast an abrupt evening with a buffered transition.",
+                scoring: unscored,
+              }
+            - {
+                id: l19_e3,
+                type: concept_card,
+                purpose: "Correct the rigid ninety-minute rule misconception.",
+                scoring: unscored,
+              }
+            - {
+                id: l19_e4,
+                type: lever_scenario,
+                purpose: "Choose a workable range in changed schedules.",
+                scoring: objective,
+              }
+            - {
+                id: l19_e5,
+                type: if_then_plan,
+                purpose: "Create one private transition plan.",
+                scoring: unscored,
+              }
 
-    - id: l19_e3
-      type: "scenario"
-      phase: "challenge"
-      concept: "wind_down_window"
-      scaffold_level: 5
-      difficulty: 0.22
-      duration_seconds: 45
-      scenario: "You work late, finish at 10:50pm, then immediately try to sleep at 11pm. You're still thinking about work, mind racing."
-      question: "What would help?"
-      options:
-        - text: "A 60-90 minute wind-down window. Start around 9:30-10pm: finish work, dim lights, no screens."
-          correct: true
-          feedback: "Yes. Your nervous system needs time to shift. Jumping from work to bed doesn't give it that time."
-        - text: "Just trying harder to fall asleep"
-          correct: false
-          feedback: "That would just increase effort-related hyperarousal (remember l26?). You need actual downtime."
-        - text: "Sleeping longer the next night"
-          correct: false
-          feedback: "That doesn't help tonight. You need to give your nervous system a transition period NOW."
-      note: "Application to personal schedule conflict. User plans their own wind-down."
+        - id: l20
+          title: "Light Is Information"
+          outcome: "Reduce the most changeable evening light exposure without treating color filters as a complete shield."
+          exercises:
+            - {
+                id: l20_e1,
+                type: curiosity_bet,
+                purpose: "Commit to a brightness-versus-color prediction.",
+                scoring: unscored,
+              }
+            - {
+                id: l20_e2,
+                type: concept_card,
+                purpose: "Model the cautious light rule.",
+                scoring: unscored,
+              }
+            - {
+                id: l20_e3,
+                type: same_but_different,
+                purpose: "Distinguish brightness reduction from spectrum change.",
+                scoring: unscored,
+              }
+            - {
+                id: l20_e4,
+                type: course_choice,
+                purpose: "Apply the rule to necessary late screen use.",
+                scoring: objective,
+              }
+            - {
+                id: l20_e5,
+                type: if_then_plan,
+                purpose: "Choose one accessible dimming action.",
+                scoring: unscored,
+              }
 
-    - id: l19_e4
-      type: "free_text"
-      phase: "peak"
-      concept: "wind_down_window"
-      duration_seconds: 60
-      prompt: "What time does your work/stress usually end? When could you realistically start wind-down? (Remember: it's a RANGE like 9-10pm, not rigid.)"
-      min_words: 10
-      max_words: 100
-      is_scored: false
-      note: "Personal planning. User designs their wind-down timing. Emphasizes RANGE not rigid timing."
+        - id: l21
+          title: "Your Sleep Environment Audit"
+          outcome: "Identify the largest repeatable bedroom disturbance and choose one practical experiment."
+          exercises:
+            - {
+                id: l21_e1,
+                type: recall_warmup,
+                purpose: "Retrieve light and flexible wind-down rules.",
+                scoring: unscored,
+              }
+            - {
+                id: l21_e2,
+                type: learn_cards,
+                purpose: "Model five adjustable environment dimensions.",
+                scoring: unscored,
+              }
+            - {
+                id: l21_e3,
+                type: lever_match,
+                purpose: "Match disturbances with practical responses.",
+                scoring: objective,
+              }
+            - {
+                id: l21_e4,
+                type: private_check,
+                purpose: "Audit the learner's room without storing disclosure.",
+                scoring: unscored,
+              }
+            - {
+                id: l21_e5,
+                type: if_then_plan,
+                purpose: "Plan one low-cost environment experiment.",
+                scoring: unscored,
+              }
 
-    - id: l19_e5
-      type: "mood_check"
-      phase: "cooldown"
-      duration_seconds: 15
-      prompt: "Does this wind-down window idea feel doable for your schedule?"
-      scale: 5
-      labels: ["Not at all", "Maybe", "Could work", "Likely", "Yes, definitely"]
-      note: "Feasibility check. Informs user adherence expectation."
+    - id: u3_2_pre_sleep_practices
+      title: "Clearing the Mind Before Bed"
+      outcome: "Protect the bed-sleep association, move unfinished thinking outside bed, and evaluate one evening change."
+      lessons:
+        - id: l22
+          title: "The Bed-Sleep Connection"
+          outcome: "Apply stimulus control and recognize when sleep-window treatment needs trained support."
+          exercises:
+            - {
+                id: l22_e1,
+                type: intuition_check,
+                purpose: "Surface the urge to stay in bed and force sleep.",
+                scoring: unscored,
+              }
+            - {
+                id: l22_e2,
+                type: concept_card,
+                purpose: "Teach bed as a cue for sleep rather than effort.",
+                scoring: unscored,
+              }
+            - {
+                id: l22_e3,
+                type: story_walkthrough,
+                purpose: "Model leaving and returning by sleepiness cues.",
+                scoring: unscored,
+              }
+            - {
+                id: l22_e4,
+                type: lever_scenario,
+                purpose: "Apply stimulus control with accessibility and safety variants.",
+                scoring: objective,
+              }
+            - {
+                id: l22_e5,
+                type: if_then_plan,
+                purpose: "Choose a safe quiet place and activity.",
+                scoring: unscored,
+              }
 
-  completion_reward:
-    xp: 14
-    bonus_xp_if_accuracy_above_88: 4
-  next_lesson_teaser: "Tomorrow: Light controls sleep. Learn why brightness matters more than blue light color."
+        - id: l23
+          title: "The Worry Dump"
+          outcome: "Move unfinished thoughts onto paper before bed without solving or scoring them."
+          exercises:
+            - {
+                id: l23_e1,
+                type: recall_warmup,
+                purpose: "Retrieve the bed-sleep association rule.",
+                scoring: unscored,
+              }
+            - {
+                id: l23_e2,
+                type: common_trap,
+                purpose: "Contrast mental rehearsal in bed with externalizing earlier.",
+                scoring: unscored,
+              }
+            - {
+                id: l23_e3,
+                type: learn_cards,
+                purpose: "Model a short capture-close-return process.",
+                scoring: unscored,
+              }
+            - {
+                id: l23_e4,
+                type: private_check,
+                purpose: "Guide an offline worry dump without storing its content.",
+                scoring: unscored,
+              }
+            - {
+                id: l23_e5,
+                type: course_choice,
+                purpose: "Choose when and how to use the tool.",
+                scoring: objective,
+              }
 
----
+        - id: l24
+          title: "Pre-Sleep Journaling (Optional)"
+          outcome: "Distinguish optional reflection from the core worry-dump tool and choose freely."
+          exercises:
+            - {
+                id: l24_e1,
+                type: same_but_different,
+                purpose: "Separate clearing from optional reflection.",
+                scoring: unscored,
+              }
+            - {
+                id: l24_e2,
+                type: learn_cards,
+                purpose: "Model a brief gratitude-and-intention ritual.",
+                scoring: unscored,
+              }
+            - {
+                id: l24_e3,
+                type: intuition_check,
+                purpose: "Check personal fit without judgment.",
+                scoring: unscored,
+              }
+            - {
+                id: l24_e4,
+                type: private_check,
+                purpose: "Offer offline practice without storing journal text.",
+                scoring: unscored,
+              }
+            - {
+                id: l24_e5,
+                type: course_choice,
+                purpose: "Correct the belief that journaling is required for sleep.",
+                scoring: objective,
+              }
 
-lesson:
-  id: l20
-  title: "Light Is Information"
-  duration_minutes: 10
-  target_accuracy: 0.82
-  emotional_arc: [warmup, introduce, challenge, peak, cooldown]
+        - id: l25
+          title: "Test One Change at a Time"
+          outcome: "Choose one safe evening change and judge it from a pattern across several comparable nights."
+          exercises:
+            - {
+                id: l25_e1,
+                type: recall_warmup,
+                purpose: "Retrieve the one-change rule from the environment audit.",
+                scoring: unscored,
+              }
+            - {
+                id: l25_e2,
+                type: common_trap,
+                purpose: "Expose why changing everything at once hides what helped.",
+                scoring: unscored,
+              }
+            - {
+                id: l25_e3,
+                type: learn_cards,
+                purpose: "Model choose, observe, compare, and decide.",
+                scoring: unscored,
+              }
+            - {
+                id: l25_e4,
+                type: course_choice,
+                purpose: "Reject a one-night causal conclusion in a changed context.",
+                scoring: objective,
+              }
+            - {
+                id: l25_e5,
+                type: if_then_plan,
+                purpose: "Choose one private, low-risk evening experiment.",
+                scoring: unscored,
+              }
 
-  exercises:
-    - id: l20_e1
-      type: "multiple_choice"
-      phase: "warmup"
-      concept: "circadian_rhythm"
-      scaffold_level: 3
-      difficulty: 0.15
-      duration_seconds: 20
-      prompt: "What does brightness signal to your brain?"
-      options:
-        - text: "Daytime = stay alert, block melatonin"
-          correct: true
-        - text: "Nighttime = time to sleep"
-          correct: false
-      feedback_correct: "Right. Bright light = daytime signal."
-      note: "Recall of circadian rhythm concept from S1."
+        - id: l26
+          title: "Evening Architecture Checkpoint"
+          outcome: "Explain the evening system, build a flexible plan, and name one change to test."
+          exercises:
+            - {
+                id: l26_e1,
+                type: recall_warmup,
+                purpose: "Retrieve the complete evening map.",
+                scoring: unscored,
+              }
+            - {
+                id: l26_e2,
+                type: teach_back_chain,
+                purpose: "Reconstruct the causal evening sequence.",
+                scoring: objective,
+              }
+            - {
+                id: l26_e3,
+                type: course_checkpoint,
+                purpose: "Transfer the rules across six changed situations.",
+                scoring: objective,
+              }
+            - {
+                id: l26_e4,
+                type: if_then_plan,
+                purpose: "Build the learner's private evening plan.",
+                scoring: unscored,
+              }
+            - {
+                id: l26_e5,
+                type: section_milestone,
+                purpose: "Award Evening Architect after demonstrated review.",
+                scoring: unscored,
+              }
 
-    - id: l20_e2
-      type: "learn_cards"
-      phase: "introduce"
-      concept: "light_and_sleep"
-      scaffold_level: 1
-      duration_seconds: 50
-      cards:
-        - text: "Blue light (~460nm) suppresses melatonin most efficiently. At 10pm, a bright screen says 'it's 10am' to your brain."
-          visual_key: "blue_light_wavelength"
-        - text: "BUT: Total brightness matters 100x more than color. Dimming to minimum reduces effect far more than orange glasses."
-          visual_key: "brightness_vs_color_comparison"
-        - text: "Strategy: Dim all lights first. Blue-light glasses are helpful but secondary."
-          visual_key: "dim_lights_priority"
-      note: "Introduce light_and_sleep. Corrects common misconception (blue light > brightness)."
-
-    - id: l20_e3
-      type: "true_false"
-      phase: "challenge"
-      concept: "light_and_sleep"
-      scaffold_level: 3
-      difficulty: 0.18
-      duration_seconds: 25
-      statement: "Blue-light glasses on a bright screen at 10pm are more effective at preserving melatonin than dimming the screen to minimum."
-      correct: false
-      explanation: "False. Dimming the screen to minimum reduces melatonin suppression to <1% of full brightness. Blue-light filters on a bright screen reduce it only 67%. Brightness >> color."
-      note: "Evidence-based misconception correction. Builds trust."
-
-    - id: l20_e4
-      type: "scenario"
-      phase: "peak"
-      concept: "light_and_sleep"
-      scaffold_level: 5
-      duration_seconds: 45
-      scenario: "At 9:30pm you're about to wind down. You want to check one email on your phone. What's the best approach?"
-      options:
-        - text: "Dim phone to minimum brightness (or turn on Night Shift), then use it. Much better than keeping it bright."
-          correct: true
-          feedback: "Exactly. If you must use a screen during wind-down, dimming is the key lever."
-        - text: "Keep full brightness and use blue-light glasses"
-          correct: false
-          feedback: "Brightness is what matters most. Dim first; glasses are optional bonus."
-        - text: "Avoid screens entirely"
-          correct: false
-          feedback: "Ideal, but not always realistic. If you use a screen, dimming is the lever that works."
-      note: "Real-world trade-off. User applies light_and_sleep to practical scenario."
-
-    - id: l20_e5
-      type: "free_text"
-      phase: "cooldown"
-      duration_seconds: 45
-      prompt: "What's one thing you could dim or turn off during your wind-down window? (Lights, screens, etc.)"
-      min_words: 5
-      max_words: 80
-      is_scored: false
-      note: "Actionable planning. User identifies personal light change."
-
-  completion_reward:
-    xp: 15
-    bonus_xp_if_accuracy_above_82: 4
-  next_lesson_teaser: "Tomorrow: Your sleep environment audit — temperature, darkness, sound, comfort."
-
----
-
-lesson:
-  id: l21
-  title: "Your Sleep Environment Audit"
-  duration_minutes: 11
-  target_accuracy: 0.80
-  emotional_arc: [warmup, introduce, challenge, peak, consolidate, cooldown]
-
-  exercises:
-    - id: l21_e1
-      type: "learn_cards"
-      phase: "warmup"
-      duration_seconds: 40
-      cards:
-        - text: "Sleep environment = temperature, light, sound, texture. Your brain uses these as signals."
-          visual_key: "environment_4_factors"
-        - text: "Cool (65-68°F) = 'go to sleep.' Dark = 'melatonin time.' Quiet = 'safe.' Soft = 'rest.'"
-          visual_key: "optimal_sleep_env"
-      note: "Intro to sleep_environment. Four levers."
-
-    - id: l21_e2
-      type: "matching"
-      phase: "introduce"
-      concept: "sleep_environment"
-      scaffold_level: 2
-      difficulty: 0.18
-      duration_seconds: 45
-      prompt: "Match each environmental factor to what it signals:"
-      pairs:
-        - left: "Cool temperature (65-68°F)"
-          right: "'Go to sleep' — core temp drops"
-        - left: "Darkness"
-          right: "'Melatonin time' — circadian signal"
-        - left: "Quiet or white noise"
-          right: "'We're safe' — no threats"
-        - left: "Soft textures"
-          right: "'Rest mode' — comfort signal"
-      note: "Recognize environment-to-signal mapping."
-
-    - id: l21_e3
-      type: "scenario"
-      phase: "challenge"
-      concept: "sleep_environment"
-      scaffold_level: 5
-      difficulty: 0.25
-      duration_seconds: 50
-      scenario: "Your bedroom is warm (72°F), has ambient light from the hallway, and you can hear traffic outside. You're struggling to fall asleep."
-      question: "What environmental signals are you sending your brain?"
-      options:
-        - text: "'Stay alert' — warmth, light, and noise all signal 'this is not sleep time'"
-          correct: true
-          feedback: "Exactly. Your environment is saying 'stay awake.' You need to optimize: cool it down, darken it, and quiet it."
-        - text: "'Time to sleep' — this environment is perfect"
-          correct: false
-          feedback: "Actually, this environment is sending 'stay alert' signals. Warmth, light, and noise all keep your nervous system on."
-        - text: "Environment doesn't matter for sleep"
-          correct: false
-          feedback: "Environment matters a lot. It's one of the top levers for signaling sleep or wakefulness."
-      note: "Application. User recognizes their own environmental barriers."
-
-    - id: l21_e4
-      type: "free_text"
-      phase: "peak"
-      duration_seconds: 90
-      prompt: "Audit your bedroom on each dimension. Rate each (poor/okay/good), then identify 1-2 fixes you can make this week."
-      sub_prompts:
-        - "Temperature: How does your room feel? (Poor/Okay/Good)"
-        - "Light: Is your room dark enough? (Poor/Okay/Good)"
-        - "Sound: Is it quiet or do you hear noise/traffic? (Poor/Okay/Good)"
-        - "Comfort: How comfortable is your mattress/pillows? (Poor/Okay/Good)"
-        - "1-2 fixes you could implement: (e.g., blackout curtains, turn down heat, earplugs)"
-      min_words: 30
-      max_words: 200
-      is_scored: false
-      note: "Hands-on audit. User prioritizes environmental changes."
-
-    - id: l21_e5
-      type: "multiple_choice"
-      phase: "consolidate"
-      concept: "sleep_environment"
-      scaffold_level: 3
-      difficulty: 0.15
-      duration_seconds: 20
-      prompt: "Which is most important if you can only fix one thing?"
-      options:
-        - text: "Temperature (65-68°F cool is your body's sleep signal)"
-          correct: true
-        - text: "Light"
-          correct: false
-        - text: "Sound"
-          correct: false
-      feedback_correct: "Cool temperature is the strongest biological signal. Start there."
-      note: "Priority guidance. Prevents user overwhelm."
-
-    - id: l21_e6
-      type: "mood_check"
-      phase: "cooldown"
-      duration_seconds: 15
-      prompt: "After this audit, how hopeful do you feel about improving your sleep environment?"
-      scale: 5
-      labels: ["Not at all", "Slightly", "Moderate", "Hopeful", "Very hopeful"]
-      note: "Motivation check."
-
-  completion_reward:
-    xp: 16
-    bonus_xp_if_accuracy_above_80: 5
-    variable_reward_roll: true
-  next_lesson_teaser: "Tomorrow: The Bed-Sleep Connection — stimulus control and sleep restriction."
-
----
-
-# Lessons l22-l25 (Stimulus Control, Worry Dump, Pre-sleep Journaling, Checkpoint)
-# l22: Stimulus Control + Sleep Restriction → learn_cards + CBT-I core explanation + scenario (get up after 20 min) + free_text commitment
-# l23: Worry Dump (Borkovec) → learn_cards + guided practice (write 5 worries) + scenario (when to use) + mood_check
-# l24: Pre-sleep Journaling (optional) → learn_cards + guided practice (gratitude + intention) + free_text (does this resonate?)
-# l25: Checkpoint → quick review quiz (stimulus control, worry dump, environment, wind-down), scenario-based (build personal wind-down plan), badge "Evening Architect"
+  validation:
+    objective_coverage: pass
+    prerequisite_order: pass
+    retrieval_coverage: pass
+    session_budget: pass
+    accessibility: pass
+    safety: pass
+    notes:
+      - "Every lesson uses five exercises; each action serves a distinct objective."
+      - "Personal disclosure never contributes to accuracy or mastery."
+      - "Full content contracts live in section-3 JavaScript lesson modules."

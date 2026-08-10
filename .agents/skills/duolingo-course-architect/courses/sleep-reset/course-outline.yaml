@@ -47,29 +47,30 @@ course:
     sleep_pressure:                 [6, 8, 14, 21]
     caffeine_sleep:                 [7, 9, 16, 22]
     alcohol_sleep:                  [8, 10, 17, 23]
-    light_stress_disruptors:        [9, 11, 19, 25]
+    light_stress_disruptors:        [9, 11, 19, 26]
     stress_response_basics:         [11, 14, 15, 22]
     belly_breathing:                [11, 12, 15, 20]
     box_breathing:                  [12, 13, 15, 21, 32]
     breathing_478:                  [13, 14, 18, 23]
     breathing_comparison:           [14, 16, 20]
     body_scan:                      [15, 19, 24, 32]
-    progressive_muscle_relaxation:  [16, 20, 25, 32]
-    body_relaxation_choice:         [17, 21, 26]
+    progressive_muscle_relaxation:  [16, 20, 26, 32]
+    body_relaxation_choice:         [17, 21, 27]
     wind_down_window:               [19, 21, 22, 32]
-    light_and_sleep:                [20, 22, 25]
-    sleep_environment:              [21, 22, 27]
-    stimulus_control:               [23, 25, 32]
-    sleep_restriction_basics:       [23, 26, 32]
-    worry_dump:                     [24, 26, 28]
-    pre_sleep_journaling:           [25, 27, 29]
-    sleep_anxiety:                  [26, 27, 32]
-    sleep_effort_paradox:           [26, 28]
-    cognitive_defusion:             [27, 28, 32]
-    sleep_catastrophizing:          [28, 32]
-    sleep_identity:                 [30, 32]
-    relapse_resilience:             [31, 32]
-    building_resilience:            [31, 32]
+    light_and_sleep:                [20, 22, 25, 26]
+    sleep_environment:              [21, 22, 25, 28]
+    stimulus_control:               [23, 26, 32]
+    sleep_window_clinician_guidance: [23, 27, 32]
+    worry_dump:                     [24, 27, 29]
+    pre_sleep_journaling:           [25, 26, 28, 30]
+    evening_experiment:             [26, 32]
+    sleep_anxiety:                  [27, 28, 32]
+    sleep_effort_paradox:           [27, 29]
+    cognitive_defusion:             [28, 29, 32]
+    sleep_catastrophizing:          [29, 32]
+    sleep_identity:                 [31, 32]
+    relapse_resilience:             [32]
+    building_resilience:            [32]
 
   # ─────────────────────────────────────────────
   sections:
@@ -188,7 +189,7 @@ course:
               duration_minutes: 10
               new_concepts: [alcohol_sleep]
               review_concepts: [sleep_cycles, sleep_pressure]
-              note: "WHAT: Alcohol helps onset (acts like sleeping pill) but destroys second-half REM (~4-5 hrs post-dose). WHY: Alcohol metabolite (acetaldehyde) causes REM rebound when BAC drops. At high doses, second-half sleep is fragmented. At low doses, effect is dose-dependent (may not disrupt). CONCRETE: 'One drink at 6pm: helps you fall asleep at 9pm, but wakes you at 1-2am with fragmented REM. Three drinks: sleep onset is easy, but you wake at midnight fragmented and groggy. One beer at 10pm: minimal second-half effect.' FRAME: 'Dose matters. Even "one glass of wine" disrupts sleep for many people.'"
+              note: "WHAT: Alcohol helps onset (acts like sleeping pill) but destroys second-half REM (~4-5 hrs post-dose). WHY: Alcohol metabolite (acetaldehyde) causes REM rebound when BAC drops. At high doses, second-half sleep is fragmented. At low doses, effect is dose-dependent (may not disrupt). CONCRETE: 'One drink at 6pm: helps you fall asleep at 9pm, but wakes you at 1-2am with fragmented REM. Three drinks: sleep onset is easy, but you wake at midnight fragmented and groggy. One beer at 10pm: minimal second-half effect.' FRAME: 'Dose matters. Even one glass of wine disrupts sleep for many people.'"
               research_sources:
                 - title: "Alcohol and Sleep I: Effects on Normal Sleep"
                   source: "Roehrs & Roth, Alcohol Research & Health, 2001"
@@ -330,19 +331,20 @@ course:
       difficulty_range: [0.50, 0.70]
 
       objectives:
-        remember: "Define the wind-down window, stimulus control rule, and sleep restriction principle"
-        understand: "Explain how brightness (not just blue light), temperature, and bed-association affect sleep onset"
-        apply: "Build a personal pre-sleep routine using course techniques"
-        analyze: "Audit your current evening environment and bed associations for sleep blockers"
+        remember: "Define a flexible wind-down window and the stimulus-control rule"
+        understand: "Explain how light exposure, bedroom comfort, and bed association can affect settling for sleep"
+        apply: "Build a personal pre-sleep routine and test one practical change at a time"
+        analyze: "Audit changeable evening cues, compare several nights without treating one night as proof, and recognize when sleep-window treatment needs clinician guidance"
 
       concepts_introduced:
         - wind_down_window          # 60-90 min pre-bed buffer
         - light_and_sleep           # brightness matters more than blue light color
-        - sleep_environment         # temperature 65-68°F, sound, texture
+        - sleep_environment         # personally comfortable temperature, light, sound, air, and bedding
         - stimulus_control          # CBT-I core: bed = sleep only
-        - sleep_restriction_basics  # CBT-I lite: consolidate sleep window
+        - sleep_window_clinician_guidance # tailored CBT-I component; not a self-directed rule
         - worry_dump                # written pre-sleep brain-clearing (Borkovec)
         - pre_sleep_journaling      # gratitude + intention; optional ritual
+        - evening_experiment        # change one safe lever, observe several comparable nights, then keep, change, or drop it
 
       badge_on_complete: "Evening Architect"
 
@@ -358,7 +360,7 @@ course:
               duration_minutes: 9
               new_concepts: [wind_down_window]
               review_concepts: [circadian_rhythm]
-              note: "WHAT: Wind-down window = 60-90 minutes before bed when you shift from day (tasks, stimulation, bright light) to night (calm, dimmed, quiet). WHY: Your nervous system and brain need time to downshift. During this window, your circadian alert (Process C) is dropping, adenosine is rising. If you jump from work emails at 10:45pm to bed at 11pm, your nervous system stays in sympathetic mode — the pressure to sleep is high but alertness is too. CONCRETE: 'Start wind-down around 9:30 or 10pm. Finish work, dim lights, no screens. This gives your body time to catch up to your clock.' CRITICAL: 'Frame this as a RANGE (sometime between 9-10pm), not a rigid 9:30 alarm. Rigid timing creates new clock-watching anxiety.' Avoid replacing one anxiety (can't sleep) with another (rigid bedtime ritual)."
+              note: "WHAT: A wind-down window is a flexible transition from daytime tasks and stimulation toward quieter, dimmer conditions. Some evenings allow 60-90 minutes; a shorter buffer still counts. WHY: Repeatable cues can help the body and attention change pace without demanding sleep. CONCRETE: 'After the last necessary task, lower unnecessary light, close work, and choose one calm activity.' CRITICAL: Use a movable range or sequence, not a rigid start time. Necessary screen use can be brief and dim rather than framed as a ruined night."
 
             - id: l20
               title: "Light Is Information"
@@ -366,16 +368,16 @@ course:
               duration_minutes: 10
               new_concepts: [light_and_sleep]
               review_concepts: [wind_down_window, circadian_rhythm]
-              note: "WHAT: Your brain releases melatonin (sleep hormone) when it's dark. Blue light (~460nm wavelength) is the color your eyes are most tuned to notice — it signals 'daytime,' which blocks melatonin. CONCRETE: 'Screens emit blue light. At 10pm, a bright screen tells your brain it's 10am.' BUT: 'The total brightness matters more than the color. Dimming a screen to minimum reduces the effect 100x more than orange glasses on a bright screen.' PRACTICAL: 'Lead with brightness over color. Dim all lights > blue-light glasses on a bright screen. Blue light is real but smaller than commonly stated. Evidence-accurate framing builds trust.'"
+              note: "WHAT: Evening light can delay or weaken the body's night signal. Both brightness and spectrum matter, and changing screen color alone may be insufficient when the display remains bright. PRACTICAL: 'Reduce unnecessary brightness and exposure first. A warmer display can be an extra comfort setting, not a shield that makes bright late-night use neutral.' Avoid exact universal effect sizes because response varies with intensity, duration, timing, distance, and the person."
               research_sources:
                 - title: "Evening Exposure to a Light-Emitting Diodes (LED)-Backlit Computer Screen..."
                   source: "Lockley et al., Journal of Clinical Endocrinology & Metabolism, 2003"
                   url: "https://pubmed.ncbi.nlm.nih.gov/12435261/"
                   key_finding: "460 nm light suppresses melatonin significantly more than 550 nm at matched photon irradiance"
-                - title: "Display Brightness and Melatonin Suppression"
-                  source: "Nagare et al., Ophthalmic & Physiological Optics, 2019"
+                - title: "Does the iPad Night Shift Mode Reduce Melatonin Suppression?"
+                  source: "Nagare et al., Lighting Research & Technology, 2019"
                   url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6751071/"
-                  key_finding: "Dimming a smartphone to minimum reduces melanopsin activation to <1% of max; Night Shift color-shift only reduces it 67% at full brightness"
+                  key_finding: "Changing spectrum without reducing brightness did not significantly change melatonin suppression between the two Night Shift conditions; brightness and exposure still matter"
 
             - id: l21
               title: "Your Sleep Environment Audit"
@@ -383,7 +385,12 @@ course:
               duration_minutes: 11
               new_concepts: [sleep_environment]
               review_concepts: [light_and_sleep, wind_down_window]
-              note: "WHAT: Sleep environment = temperature, darkness, sound, texture. WHY: Your body uses environmental cues as signals. Cool (65-68°F) signals 'go to sleep' (core temp drops). Darkness signals 'melatonin time.' Quiet signals 'safe.' Soft textures (vs stiff) signal 'rest.' CONCRETE: 'Your brain recognizes the sleeping space. If your bedroom is bright + noisy + warm + uncomfortable, it's sending 'stay alert' signals. Optimize each lever: cool blankets, blackout curtains, earplugs or white noise, comfortable mattress/pillows.' EXERCISE: Audit the user's current environment on each dimension (temp/light/sound/comfort). Identify 1-2 fixes they can implement this week. This tests understanding that environment shapes sleep, not just willpower."
+              note: "WHAT: Sleep environment includes temperature, light, sound, air, and physical comfort. WHY: Heat, noise, light, poor ventilation, or uncomfortable bedding can disturb sleep, but there is no single ideal setup for every person, home, age, or climate. CONCRETE: 'Notice the biggest repeatable disturbance in your room, then test one practical change for several nights.' EXERCISE: Audit each dimension and choose one low-cost, accessible change. Do not rank temperature as universally most important or prescribe one fixed temperature."
+              research_sources:
+                - title: "Associations of Bedroom PM2.5, CO2, Temperature, Humidity, and Noise with Sleep"
+                  source: "Mishra et al., Sleep Health, 2023"
+                  url: "https://pubmed.ncbi.nlm.nih.gov/37076419/"
+                  key_finding: "In a small home-based observational study, higher temperature, carbon dioxide, fine particles, and noise were associated with lower hourly sleep efficiency; the study does not establish one universal bedroom target"
 
         - id: u3_2_pre_sleep_practices
           title: "Clearing the Mind Before Bed"
@@ -393,14 +400,18 @@ course:
               title: "The Bed-Sleep Connection"
               type: practice
               duration_minutes: 11
-              new_concepts: [stimulus_control, sleep_restriction_basics]
+              new_concepts: [stimulus_control, sleep_window_clinician_guidance]
               review_concepts: [sleep_environment, sleep_pressure]
-              note: "WHAT: Stimulus control = bed = sleep ONLY. If you're awake more than 20 min, get up and do something calm elsewhere until sleepy, then return. Sleep restriction = when sleep is fragmented, consolidate your window (don't extend it hoping for more). WHY: Your brain is like Pavlov's dog. If you spend hours worrying in bed, your brain learns 'bed = anxiety.' Stimulus control *retrains* that association. Getting up breaks the worry-bed link. CONCRETE: 'Spend 3 hours worrying in bed? Your brain learns bed=worry. Tonight, bed=sleep only. Awake 20 min? Get up. Read, walk, breathe until sleepy. Get back in bed.' FRAME GENTLY: 'This is about efficiency (more of your bed time = actual sleep), not deprivation (cutting hours). Most people sleep *better* with a shorter, solid window than a long, fragmented one.' This is AASM-endorsed CBT-I core."
+              note: "PRIMARY SKILL: Stimulus control strengthens bed as a cue for sleep. Go to bed when sleepy. If you cannot sleep and frustration is building, leave bed without clock-watching, do something quiet in a safe dim place, and return when sleepy. Adapt this for mobility limits, fall risk, caregiving, or unsafe surroundings. CLINICIAN BOUNDARY: Sleep restriction or sleep-window compression is a tailored CBT-I treatment based on sleep-diary data, not a self-directed lesson rule. It can require adaptation or delay with excessive daytime sleepiness, seizure disorders, bipolar disorder, pregnancy or postpartum, acute mental-health symptoms, fall risk, unstable medical conditions, or safety-sensitive work. The lesson teaches recognition and referral, not a personal sleep-window prescription."
               research_sources:
                 - title: "Behavioral and Psychological Treatments for Chronic Insomnia Disorder in Adults"
                   source: "Edinger et al., AASM Systematic Review & Meta-Analysis, 2021"
                   url: "https://doi.org/10.1093/sleep/zsaa109"
-                  key_finding: "Stimulus control and sleep restriction therapy received strong GRADE recommendations; both are the highest-evidence standalone behavioral CBT-I components"
+                  key_finding: "Multicomponent CBT-I received a strong recommendation; stimulus control and sleep restriction received conditional recommendations as single-component treatments"
+                - title: "Management of Chronic Insomnia Disorder and Obstructive Sleep Apnea"
+                  source: "VA/DoD Clinical Practice Guideline, 2025"
+                  url: "https://www.healthquality.va.gov/guidelines/CD/insomnia/"
+                  key_finding: "CBT-I and brief behavioral treatment may need adaptation or delay for specific medical, safety, pregnancy, substance-use, and acute mental-health contexts"
 
             - id: l23
               title: "The Worry Dump"
@@ -408,7 +419,7 @@ course:
               duration_minutes: 12
               new_concepts: [worry_dump]
               review_concepts: [stimulus_control, progressive_muscle_relaxation]
-              note: "WHAT: Worry dump = write down everything in your head (tasks, fears, plans) 30-60 min before bed. WHY: Your brain at 11pm is like a browser with 50 tabs open — notifications, plans, worries all firing. Writing externalizes the thoughts. Your brain stops trying to hold them (because they're now on paper) and calms down. CONCRETE: 'Get a notepad. Write: grocery list, tomorrow's 10am meeting, that embarrassing thing you said, your fear about money, your plans for the weekend. Write messy, don't organize. Tear it up or close the notebook. Your brain says 'it's handled' and lets go.' RESEARCH: Borkovec's scheduled worry time (CBT) shows this reduces pre-sleep cognitive arousal. FRAME: 'This isn't journaling for therapy; it's brain-clearing for sleep. One sentence per worry. Done in 5 minutes.'"
+              note: "WHAT: A worry dump is a short private capture of tasks, concerns, and reminders before bed. WHY: Moving open loops onto paper can reduce the need to rehearse them, but it does not promise an empty mind or immediate sleep. CONCRETE: 'Write short fragments, add one next step when it is obvious, close the page, and return to wind-down.' FRAME: 'This is optional brain-clearing, not therapy journaling. Do not solve every uncertainty or store personal content in the course.'"
 
             - id: l24
               title: "Pre-Sleep Journaling (Optional)"
@@ -416,15 +427,23 @@ course:
               duration_minutes: 12
               new_concepts: [pre_sleep_journaling]
               review_concepts: [worry_dump, stimulus_control]
-              note: "WHAT: Pre-sleep journaling (gratitude + intention) = optional wind-down ritual for mood/wind-down benefit, NOT a sleep technique. WHY: Unlike worry dump (clearing), this is intentional priming. Gratitude shifts mood; intention primes identity. CONCRETE: '3 things you're grateful for (however small). 1 thing you want from sleep tonight (rest, processing dreams, recovery). Write 2 min, stop.' FRAME: 'Optional. Worry dump is the core. This is the cherry on top if it resonates with you.' Prevents users from seeing journaling as mandatory; emphasizes choice."
+              note: "WHAT: Pre-sleep reflection is an optional ritual, not a sleep treatment or requirement. Unlike a worry dump, reflection notices one small good thing and one gentle intention. CONCRETE: 'Write for up to two minutes, then stop.' FRAME: 'Use, change, or skip it. If writing feels activating or forced, choose another wind-down option without losing progress.'"
 
             - id: l25
+              title: "Test One Change at a Time"
+              type: practice
+              duration_minutes: 10
+              new_concepts: [evening_experiment]
+              review_concepts: [light_and_sleep, sleep_environment, pre_sleep_journaling]
+              note: "WHAT: A useful evening experiment changes one safe, practical lever while keeping the rest of the routine roughly stable when possible. Observe the same simple signals across several comparable nights, then keep, change, or drop the experiment. WHY: Sleep naturally varies, so one good or bad night cannot prove that one change caused the result. CONCRETE: 'For several work nights, lower only the hallway light and notice whether settling feels easier and whether the plan is practical.' FRAME: This is personal observation, not diagnosis or a promise of better sleep. Do not test unsafe changes, restrict time in bed, or ignore health needs."
+
+            - id: l26
               title: "Evening Architecture Checkpoint"
               type: checkpoint
               duration_minutes: 10
               new_concepts: []
-              review_concepts: [wind_down_window, light_and_sleep, stimulus_control, worry_dump, sleep_environment, sleep_restriction_basics, pre_sleep_journaling]
-              note: "Checkpoint — difficulty drops. Pure review + optional new ritual. Badge: Evening Architect. EXERCISE: User builds their first personal wind-down plan. Template: Start time (range, not rigid) → wind-down ritual (e.g., dim lights, warm tea, write worries, body scan) → bed time → bed rules (stimulus control). Must include at least 3 techniques from S2 or S3 (breathing, light dimming, worry dump, PMR, etc.). This tests understanding that evening design is *personalized*, not one-size-fits-all."
+              review_concepts: [wind_down_window, light_and_sleep, stimulus_control, worry_dump, sleep_environment, sleep_window_clinician_guidance, pre_sleep_journaling, evening_experiment]
+              note: "Checkpoint — difficulty drops. Pure review + optional planning. Badge: Evening Architect. EXERCISE: User builds their first personal wind-down plan. Template: Start cue or range → wind-down ritual → bed cue → safe bed rule → one change to test. Must include at least 3 techniques from S2 or S3. This tests understanding that evening design is personalized, flexible, and evaluated through patterns rather than one-night proof."
 
     # ══════════════════════════════════════════
     - id: s4_sleep_mindset
@@ -457,7 +476,7 @@ course:
           title: "When the Mind Fights Sleep"
           position: 1
           lessons:
-            - id: l26
+            - id: l27
               title: "The Sleep Effort Trap"
               type: introduction
               duration_minutes: 10
@@ -465,7 +484,7 @@ course:
               review_concepts: [stress_response_basics]
               note: "WHAT: Sleep effort paradox = the harder you try to sleep, the more awake you become. This is hyperarousal (your nervous system in overdrive). WHY: When you lie in bed thinking 'I MUST sleep' or 'it's 2am and I have work tomorrow,' your brain interprets this as a threat. Adrenaline floods. Muscles tense. The pressure backfires. CONCRETE: 'The night you *need* sleep most (big presentation tomorrow), you can't sleep. Because trying hard = threat signal = stress hormones = wakefulness. Trying to force sleep is like pushing a revolving door — the harder you push, the faster it spins.' CONNECT BACK: 'This is WHY stimulus control works (l22): when you can't sleep, you GET UP. You stop trying. Your nervous system interprets 'we're doing something else' as 'no threat' and slowly calms down.' Must include scenario exercise where users recognize the hyperarousal cycle in their own behavior — not just didactic."
 
-            - id: l27
+            - id: l28
               title: "Watching Your Thoughts"
               type: practice
               duration_minutes: 11
@@ -478,7 +497,7 @@ course:
                   url: "https://pubmed.ncbi.nlm.nih.gov/"
                   key_finding: "ACT-based interventions (including cognitive defusion) show growing empirical support for insomnia; typically framed as adjunct or emerging compared to CBT-I"
 
-            - id: l28
+            - id: l29
               title: "Rewriting the Disaster Story"
               type: practice
               duration_minutes: 12
@@ -490,7 +509,7 @@ course:
           title: "Becoming a Good Sleeper"
           position: 2
           lessons:
-            - id: l29
+            - id: l30
               title: "Your Sleep Story"
               type: practice
               duration_minutes: 12
@@ -498,7 +517,7 @@ course:
               review_concepts: [sleep_catastrophizing, cognitive_defusion]
               note: "WHAT: Sleep identity = how you think about yourself as a sleeper. Current: 'I'm an insomniac / bad sleeper.' New: 'I'm someone who understands sleep and can self-correct.' WHY: Your identity shapes behavior. If you believe 'I'm a bad sleeper,' one bad night = 'proof I'm broken.' If you believe 'I'm resilient,' one bad night = 'data point, here's my fix.' CONCRETE: 'Notice: are you thinking 'I have insomnia' or 'I'm having a night where sleep is hard'? The first is identity. The second is situation.' BENCHMARK: 'Here's the truth: 1-2 bad nights per week is *normal* even for good sleepers. You're not aiming for perfection; you're aiming for resilience.' Identity reframe from 'perfect sleeper' to 'resilient sleeper who knows what to do.'"
 
-            - id: l30
+            - id: l31
               title: "Building Resilience After Course"
               type: practice
               duration_minutes: 12
@@ -506,13 +525,10 @@ course:
               review_concepts: [sleep_identity, relapse_resilience]
               note: "WHAT: Relapse resilience = plan for the post-course reality. Bad nights will happen. CONCRETE: 'After this course, you might have 1-2 nights where everything falls apart. That's not failure. That's normal. You'll recognize the disruptor (coffee too late, stress spike, irregular wake time) and reapply what you learned.' DEEP-DIVE: 'Which techniques feel most natural to you? Make a quick-reference card. Which concepts do you want to revisit? Bookmark them. What's your 3am-waking response (get up, 4-7-8, check circadian rhythm)? Write it down.' This cements understanding that course is toolkit, not cure — user is the expert on their sleep."
 
-            - id: l31
+            - id: l32
               title: "Course Finale: The Quiet Mind"
               type: checkpoint
               duration_minutes: 12
               new_concepts: []
-              review_concepts: [sleep_identity, building_resilience, sleep_anxiety, wind_down_window, box_breathing, body_scan, stimulus_control]
+              review_concepts: [sleep_identity, building_resilience, sleep_anxiety, wind_down_window, box_breathing, body_scan, stimulus_control, evening_experiment]
               note: "Final lesson. Difficulty drops. Pure review + celebration. No new concepts. Badge: Quiet Mind. EXERCISE: User writes a personal sleep commitment (1-2 paragraphs). Template: 'I understand my sleep now because [2-3 key learnings]. My biggest disruptor is [specific to them]. My wind-down plan includes [specific techniques]. I know that 1-2 bad nights are normal. I will [specific action for next bad night].' This commitment tests understanding of all 4 sections AND personal application. Celebrate completion of 32 lessons (8 weeks of work). Frame as: 'You're no longer an insomniac trying to sleep. You're now a sleep scientist who can read your own system and fix it.' End on easy guaranteed success."
-
-
-

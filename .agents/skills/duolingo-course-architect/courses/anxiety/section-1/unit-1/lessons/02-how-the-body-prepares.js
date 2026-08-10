@@ -1,0 +1,140 @@
+import { defineLesson, exercise } from "../exercise.js";
+
+export const howTheBodyPrepares = defineLesson({
+  sourceId: "anxiety-s1-u1-n2-how-the-body-prepares",
+  title: "How the Body Prepares",
+  objective: "Connect common anxiety sensations to the body's short-term preparation for action.",
+  concepts: ["protective_alarm", "body_alarm"],
+  durationMinutes: 6,
+  exercises: [
+    exercise({
+      sourceId: "body-story",
+      category: "story_walkthrough",
+      phase: "model",
+      concept: "body_alarm",
+      durationSeconds: 55,
+      scaffoldLevel: 1,
+      difficulty: 0.1,
+      content: {
+        completionMode: "direct",
+        title: "The body moves first",
+        instruction: "Follow one ordinary alarm response.",
+        beats: [
+          { id: "cue", kicker: "THE CUE", title: "Mina hears her name", body: "She is asked to speak next in a meeting.", icon: "zap" },
+          { id: "prepare", kicker: "THE PREPARATION", title: "Her body changes", body: "Her heart speeds up, her mouth feels dry, and her shoulders tighten.", icon: "activity" },
+          { id: "action", kicker: "THE JOB", title: "Attention narrows", body: "Her system shifts energy toward quick action before the situation is fully understood.", icon: "activity" },
+        ],
+        insight: {
+          title: "Preparation can feel like danger",
+          body: "The sensations are real. Familiar anxiety sensations can show body preparation, but new, severe, or concerning physical symptoms need medical assessment.",
+        },
+      },
+    }),
+    exercise({
+      sourceId: "body-layer-zoom",
+      category: "layer_zoom",
+      phase: "teach",
+      concept: "body_alarm",
+      durationSeconds: 45,
+      scaffoldLevel: 2,
+      difficulty: 0.13,
+      content: {
+        title: "One moment, three layers",
+        instruction: "Open each layer.",
+        layers: [
+          { kicker: "SITUATION", title: "A name is called", body: "Mina is asked to speak next in a meeting." },
+          { kicker: "BODY ALARM", title: "The system prepares", body: "Her heart speeds up, her mouth feels dry, and her shoulders tighten." },
+          { kicker: "FUNCTION", title: "The body gets ready", body: "More alertness and muscle readiness would help if quick action were needed." },
+        ],
+        insight: "The body can prepare before the mind knows whether the situation is dangerous, difficult, or simply important.",
+      },
+    }),
+    exercise({
+      sourceId: "surge-shape",
+      category: "surge_diagram",
+      phase: "model",
+      concept: "body_alarm",
+      durationSeconds: 35,
+      scaffoldLevel: 1,
+      difficulty: 0.12,
+      content: {
+        title: "An alarm changes over time",
+        instruction: "Read the shape.",
+        diagramTitle: "Activation rises, peaks, and can fall",
+        peakLabel: "strongest point",
+        fadeLabel: "body adjusts",
+        axisLabel: "time",
+        explanation: "Anxiety sensations can rise quickly because the system values speed. If the situation stays safe enough, the body can update and activation can fall.",
+        note: "The exact shape and timing vary. Do not assume an unfamiliar or severe physical symptom is anxiety.",
+      },
+    }),
+    exercise({
+      sourceId: "body-preparation-transfer",
+      category: "lever_scenario",
+      phase: "transfer",
+      concept: "body_alarm",
+      durationSeconds: 65,
+      scaffoldLevel: 3,
+      difficulty: 0.21,
+      isScored: true,
+      content: {
+        completionMode: "direct",
+        title: "Read what the body is doing",
+        instruction: "Choose what the moment supports.",
+        capability: "You can recognize body preparation without using it to predict the outcome.",
+        variants: [
+          {
+            sceneLabel: "MEETING · 10:15AM",
+            scene: "Nora is called to present. Her heart speeds up, her palms feel warm, and her attention locks onto the first slide.",
+            prompt: "What is the most accurate reading?",
+            clue: "Focus on the job of the body changes.",
+            worked: "The body increased alertness and readiness before Nora began. That preparation cannot tell us how the presentation will go.",
+            options: [
+              {
+                id: "prepare",
+                label: "Her body is preparing for quick action and focused attention",
+                isCorrect: true,
+                feedback: "Yes. These changes fit short-term preparation for an important moment.",
+              },
+              {
+                id: "outcome",
+                label: "Her body proves the presentation will go badly",
+                feedback: "Body preparation cannot predict how the presentation will go.",
+              },
+              {
+                id: "broken",
+                label: "The sensations mean her body is failing",
+                feedback: "The sensations can be uncomfortable while still serving a protective preparation response.",
+              },
+            ],
+          },
+          {
+            sceneLabel: "STREET · 7:30PM",
+            scene: "Arun hears footsteps behind him on a busy, well-lit street. His shoulders tighten and his walking pace increases. He turns and sees another commuter.",
+            prompt: "What do the body changes establish?",
+            clue: "Separate fast preparation from the meaning of the cue.",
+            worked: "Arun's system prepared before the footsteps were fully understood. Looking back supplied new information about the situation.",
+            options: [
+              {
+                id: "fast-alarm",
+                label: "His alarm prepared him before the cue was fully understood",
+                isCorrect: true,
+                feedback: "Right. Fast preparation came before a clearer reading of the situation.",
+              },
+              {
+                id: "danger-proof",
+                label: "The tight shoulders prove the footsteps were dangerous",
+                feedback: "The body response was real, but it did not identify who made the sound or why.",
+              },
+              {
+                id: "imaginary",
+                label: "The sensations were imaginary because the commuter was safe",
+                feedback: "The sensations were real preparation, even though the cue became less threatening after checking.",
+              },
+            ],
+          },
+        ],
+      },
+    }),
+  ],
+});

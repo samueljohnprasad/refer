@@ -80,7 +80,6 @@ export interface CourseCatalogListItem {
   iconUrl: string | null;
   colorHex: string;
   orderIndex: number;
-  metadata: CourseJourneyPreview | null;
 }
 
 export interface CourseHeaderSummary {
@@ -142,23 +141,6 @@ export interface Node {
   newConcepts?: string[];
   reviewConcepts?: string[];
   prerequisites?: string[];
-}
-
-export interface CourseJourneyPreviewSection {
-  id: string;
-  title: string;
-  orderIndex: number;
-  unitCount: number;
-  nodeCount: number;
-}
-
-export interface CourseJourneyPreview {
-  courseId: string;
-  sectionCount: number;
-  unitCount: number;
-  nodeCount: number;
-  estimatedMinutes: number;
-  sections: CourseJourneyPreviewSection[];
 }
 
 // ── Progress types (mirrors DB progress tables) ──────────────────────────────

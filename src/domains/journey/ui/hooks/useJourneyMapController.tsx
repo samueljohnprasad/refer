@@ -7,7 +7,10 @@ import { useSetAtom } from "jotai";
 import { router, useFocusEffect } from "expo-router";
 
 import { useToast } from "heroui-native";
-import { setPreviewSection } from "@/src/domains/journey/state/journeySlice";
+import {
+  setCourseProgress,
+  setPreviewSection,
+} from "@/src/domains/journey/state/journeySlice";
 import {
   selectCourse,
   selectCurrentSectionIdForCourse,
@@ -29,6 +32,7 @@ import { useVisibleUnit } from "@/src/hooks/useVisibleUnit";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import type { JourneyFlashListItem, PathNodeData } from "@/src/types/journey";
 import type { SectionOverviewItem } from "@/src/types/journey/sectionMap";
+import { journeyApi } from "@/src/domains/journey/data/journeyApi";
 import { LIST_BOTTOM_SPACER_HEIGHT } from "../components/JourneyMapListItems";
 import { getJourneyMapHeaderState } from "../../model/journeyMapHeaderState";
 
@@ -51,9 +55,13 @@ type JourneyMapController = {
   isSectionSheetOpen: boolean;
   legendListRef: RefObject<LegendListRef | null>;
   listKey: string;
+  rewardNode: PathNodeData | null;
+  isClaimingReward: boolean;
   scrollHint: ActiveNodeScrollHint;
   sectionOverviewItems: SectionOverviewItem[];
   setIsSectionSheetOpen: Dispatch<SetStateAction<boolean>>;
+  handleClaimReward: () => Promise<void>;
+  handleDismissReward: () => void;
 };
 
 export function useJourneyMapController(
@@ -61,6 +69,9 @@ export function useJourneyMapController(
 ): JourneyMapController {
   const legendListRef = useRef<LegendListRef | null>(null);
   const [isSectionSheetOpen, setIsSectionSheetOpen] = useState(false);
+  const [rewardNode, setRewardNode] = useState<PathNodeData | null>(null);
+  const [isClaimingReward, setIsClaimingReward] = useState(false);
+  const [completeNode] = journeyApi.useCompleteNodeMutation();
   const isRoutingRef = useRef(false);
   const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
@@ -156,11 +167,46 @@ export function useJourneyMapController(
         return;
       }
 
+      if (node.type === "chest") {
+        setRewardNode(node);
+        return;
+      }
+
       // Routing for active/completed nodes is handled declaratively by <Link> in JourneyNodeCell
       return;
     },
-    [courseId, dispatch, toast],
+    [toast],
   );
+
+  const handleDismissReward = useCallback((): void => {
+    if (!isClaimingReward) setRewardNode(null);
+  }, [isClaimingReward]);
+
+  const handleClaimReward = useCallback(async (): Promise<void> => {
+    if (!rewardNode || isClaimingReward) return;
+
+    setIsClaimingReward(true);
+    try {
+      await completeNode({ nodeId: rewardNode.id, courseId }).unwrap();
+      const progressResult = await dispatch(
+        journeyApi.endpoints.getCourseProgress.initiate(courseId, {
+          forceRefetch: true,
+        }),
+      );
+      if ("data" in progressResult && progressResult.data) {
+        dispatch(setCourseProgress(progressResult.data));
+      }
+      setRewardNode(null);
+    } catch {
+      toast.show({
+        placement: "top",
+        variant: "danger",
+        label: "We could not claim that reward. Try again.",
+      });
+    } finally {
+      setIsClaimingReward(false);
+    }
+  }, [completeNode, courseId, dispatch, isClaimingReward, rewardNode, toast]);
 
   const handleOpenSections = useCallback((): void => {
     if (!canOpenSections) return;
@@ -198,8 +244,12 @@ export function useJourneyMapController(
     isSectionSheetOpen,
     legendListRef,
     listKey,
+    rewardNode,
+    isClaimingReward,
     scrollHint,
     sectionOverviewItems,
     setIsSectionSheetOpen,
+    handleClaimReward,
+    handleDismissReward,
   };
 }

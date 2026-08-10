@@ -1,47 +1,39 @@
 import React from "react";
-import { FlatList, Pressable, View } from "react-native";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Cancel01Icon } from "@hugeicons/core-free-icons";
-import { Skeleton } from "@/src/components/ui/Skeleton";
-import { Text } from "@/src/components/ui/Text";
-import { SAGE } from "@/lib/tokens";
+import { FlatList, View } from "react-native";
+import Animated, {
+  Easing,
+  SlideInLeft,
+  SlideInRight,
+  SlideOutLeft,
+  SlideOutRight,
+} from "react-native-reanimated";
+import { useReducedMotion } from "@/src/hooks/useReducedMotion";
+import type { CourseOverview } from "@/src/domains/journey/model/courseOverview";
 import type { CourseCatalogListItem } from "@/src/types/journeyV5";
-import { CourseAccordionCard } from "./CourseAccordionCard";
+import { CourseCatalogList } from "./CourseCatalogList";
+import { CourseOverviewScreen } from "./CourseOverviewScreen";
 
 interface CourseCatalogModel {
   insets: { top: number; bottom: number };
   listRef: React.RefObject<FlatList<CourseCatalogListItem> | null>;
-  expandedCourseId: string | null;
-  enrollmentError: string | null;
   catalogCourses: CourseCatalogListItem[];
   isCatalogLoading: boolean;
   enrolledCourseIds: Set<string>;
+  selectedCourseId: string | null;
+  selectedCourse: CourseCatalogListItem | null;
+  courseOverview: CourseOverview | null;
+  isCourseTreeLoading: boolean;
+  hasCourseTreeError: boolean;
   isStartingCourse: boolean;
+  enrollmentError: string | null;
 }
 
 interface CourseCatalogActions {
-  handleToggle: (courseId: string) => void;
+  handleCoursePress: (courseId: string) => void;
+  handleCourseBack: () => void;
   handlePrimaryActionPress: (courseId: string) => void;
+  retryCourseTree: () => void;
   onClose: () => void;
-}
-
-function CourseCatalogLoadingState(): React.JSX.Element {
-  return (
-    <View className="gap-3 py-4" accessibilityLabel="Loading journeys">
-      {Array.from({ length: 2 }).map((_, index) => (
-        <View key={index} className="rounded-xl border border-slate-100 bg-white p-4">
-          <View className="flex-row items-center gap-3">
-            <Skeleton width={44} height={44} radius={12} />
-            <View className="flex-1 gap-2">
-              <Skeleton width="58%" height={15} radius={7} />
-              <Skeleton width="32%" height={11} radius={5} />
-            </View>
-            <Skeleton width={20} height={20} radius={10} />
-          </View>
-        </View>
-      ))}
-    </View>
-  );
 }
 
 export function CourseCatalogSheetContent({
@@ -51,75 +43,70 @@ export function CourseCatalogSheetContent({
   model: CourseCatalogModel;
   actions: CourseCatalogActions;
 }): React.JSX.Element {
-  const {
-    insets,
-    listRef,
-    expandedCourseId,
-    enrollmentError,
-    catalogCourses,
-    isCatalogLoading,
-    enrolledCourseIds,
-    isStartingCourse,
-  } = model;
+  const isReducedMotion = useReducedMotion();
+  const hasOpenedCourse = React.useRef(false);
+  const showsCourse = Boolean(model.selectedCourseId && model.selectedCourse);
 
-  React.useEffect(() => {
-    listRef.current?.scrollToOffset({ offset: 0, animated: false });
-  }, [listRef]);
+  if (showsCourse) hasOpenedCourse.current = true;
 
   return (
-    <View className="flex-1 happy-brand-screen" style={{ paddingTop: Math.max(insets.top, 12) }}>
-      <View className="flex-row items-center justify-between px-5 pt-2 pb-1">
-        <View className="h-11 w-11" />
-        <Pressable
-          onPress={actions.onClose}
-          className="h-11 w-11 items-center justify-center rounded-full bg-slate-100/80"
-          accessibilityRole="button"
-          accessibilityLabel="Close course catalog"
+    <View className="flex-1 overflow-hidden">
+      {showsCourse && model.selectedCourse ? (
+        <Animated.View
+          key="course-overview"
+          entering={
+            isReducedMotion
+              ? undefined
+              : SlideInRight.duration(220).easing(Easing.out(Easing.cubic))
+          }
+          exiting={
+            isReducedMotion
+              ? undefined
+              : SlideOutRight.duration(180).easing(Easing.in(Easing.cubic))
+          }
+          className="absolute inset-0"
         >
-          <HugeiconsIcon icon={Cancel01Icon} size={20} color={SAGE[600]} />
-        </Pressable>
-      </View>
-
-      <FlatList
-        ref={listRef}
-        data={catalogCourses}
-        keyExtractor={(item) => item.id}
-        contentContainerClassName="px-5 pt-3"
-        contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
-        showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          <View className="gap-2 px-1 mb-8">
-            <Text className="happy-font-heading text-4xl leading-10 text-ink">
-              Explore Journeys
-            </Text>
-            <Text className="happy-font-body text-base leading-relaxed text-ink-soft">
-              Preview a journey, then start when you are ready.
-            </Text>
-          </View>
-        }
-        renderItem={({ item }) => (
-          <CourseAccordionCard
-            course={item}
-            isExpanded={expandedCourseId === item.id}
-            isEnrolled={enrolledCourseIds.has(item.id)}
-            onToggle={actions.handleToggle}
-            isStartingCourse={isStartingCourse && expandedCourseId === item.id}
-            enrollmentError={expandedCourseId === item.id ? enrollmentError : null}
-            onEnroll={actions.handlePrimaryActionPress}
+          <CourseOverviewScreen
+            insets={model.insets}
+            course={model.selectedCourse}
+            overview={model.courseOverview}
+            isLoading={model.isCourseTreeLoading}
+            hasError={model.hasCourseTreeError}
+            isEnrolled={model.enrolledCourseIds.has(model.selectedCourse.id)}
+            isStartingCourse={model.isStartingCourse}
+            enrollmentError={model.enrollmentError}
+            onBack={actions.handleCourseBack}
+            onClose={actions.onClose}
+            onRetry={actions.retryCourseTree}
+            onPrimaryActionPress={actions.handlePrimaryActionPress}
           />
-        )}
-        ListEmptyComponent={
-          isCatalogLoading ? (
-            <CourseCatalogLoadingState />
-          ) : (
-            <View className="items-center justify-center py-12">
-              <Text variant="body" className="text-center text-base text-ink-muted">
-                No published courses are available yet.
-              </Text>
-            </View>
-          )
-        }
-      />
+        </Animated.View>
+      ) : (
+        <Animated.View
+          key="course-catalog"
+          entering={
+            isReducedMotion || !hasOpenedCourse.current
+              ? undefined
+              : SlideInLeft.duration(220).easing(Easing.out(Easing.cubic))
+          }
+          exiting={
+            isReducedMotion
+              ? undefined
+              : SlideOutLeft.duration(180).easing(Easing.in(Easing.cubic))
+          }
+          className="absolute inset-0"
+        >
+          <CourseCatalogList
+            insets={model.insets}
+            listRef={model.listRef}
+            courses={model.catalogCourses}
+            enrolledCourseIds={model.enrolledCourseIds}
+            isLoading={model.isCatalogLoading}
+            onCoursePress={actions.handleCoursePress}
+            onClose={actions.onClose}
+          />
+        </Animated.View>
+      )}
     </View>
   );
 }

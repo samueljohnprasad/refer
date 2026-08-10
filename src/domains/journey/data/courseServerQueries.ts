@@ -99,10 +99,7 @@ export async function fetchCourseCatalog(): Promise<CourseCatalogListItem[]> {
     .order("order_index", { ascending: true });
 
   if (error) throw new Error(error.message);
-  return ((data ?? []) as CourseRow[]).map((course) => ({
-    ...mapCourse(course),
-    metadata: null,
-  }));
+  return ((data ?? []) as CourseRow[]).map(mapCourse);
 }
 
 export async function startServerLearningSession(
