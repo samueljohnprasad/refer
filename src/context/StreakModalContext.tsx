@@ -7,6 +7,9 @@ const STREAK_MODAL_STORAGE_KEY = "@happy/last_streak_modal_date";
 type Listener = () => void;
 const modalListeners = new Set<Listener>();
 
+export type VisibilityListener = (visible: boolean) => void;
+export const streakModalVisibilityListeners = new Set<VisibilityListener>();
+
 /**
  * Global trigger called on daily log actions (e.g. awardXP).
  * Opens StreakDisplay modal ONLY if it has not been shown yet today.
@@ -44,6 +47,10 @@ export const StreakModalProvider: React.FC<{ children: ReactNode }> = ({ childre
       modalListeners.delete(handleTrigger);
     };
   }, []);
+
+  useEffect(() => {
+    streakModalVisibilityListeners.forEach((l) => l(isVisible));
+  }, [isVisible]);
 
   const showStreakModal = useCallback(() => {
     setIsVisible(true);

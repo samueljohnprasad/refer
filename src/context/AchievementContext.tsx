@@ -4,10 +4,12 @@ import React, {
   ReactNode,
   useState,
   useCallback,
+  useEffect,
 } from "react";
 import { useAchievements, UserStats } from "@/hooks/data/useAchievements";
 import { Achievement } from "@/src/types/achievements";
 import { AchievementUnlockModal } from "@/src/components/Achievements";
+import { streakModalVisibilityListeners } from "./StreakModalContext";
 
 interface AchievementContextValue {
   checkAchievements: (stats: UserStats) => Promise<void>;
@@ -31,8 +33,28 @@ export const AchievementProvider: React.FC<AchievementProviderProps> = ({
 }) => {
   const { checkAndUnlockAchievements, isLoading } = useAchievements();
   const [celebrationQueue, setCelebrationQueue] = useState<Achievement[]>([]);
-  const [currentCelebration, setCurrentCelebration] =
-    useState<Achievement | null>(null);
+  const [currentCelebration, setCurrentCelebration] = useState<Achievement | null>(null);
+  const [isStreakActive, setIsStreakActive] = useState(false);
+
+  useEffect(() => {
+    const handleStreakVisibility = (visible: boolean) => {
+      setIsStreakActive(visible);
+    };
+    streakModalVisibilityListeners.add(handleStreakVisibility);
+    return () => {
+      streakModalVisibilityListeners.delete(handleStreakVisibility);
+    };
+  }, []);
+
+  // Process the queue automatically when no celebration is active and streak modal is hidden
+  useEffect(() => {
+    if (!currentCelebration && !isStreakActive && celebrationQueue.length > 0) {
+      const timer = setTimeout(() => {
+        setCurrentCelebration(celebrationQueue[0]);
+      }, 500); // Wait 500ms for UIWindow to settle if another modal just closed
+      return () => clearTimeout(timer);
+    }
+  }, [currentCelebration, isStreakActive, celebrationQueue]);
 
   const checkAchievements = useCallback(
     async (stats: UserStats): Promise<void> => {
@@ -40,29 +62,14 @@ export const AchievementProvider: React.FC<AchievementProviderProps> = ({
 
       if (newlyUnlocked.length > 0) {
         setCelebrationQueue((prev) => [...prev, ...newlyUnlocked]);
-
-        // Show first celebration if not already showing
-        if (!currentCelebration) {
-          setCurrentCelebration(newlyUnlocked[0]);
-        }
       }
     },
-    [checkAndUnlockAchievements, currentCelebration],
+    [checkAndUnlockAchievements],
   );
 
   const handleDismissCelebration = useCallback(() => {
     setCurrentCelebration(null);
-
-    // Show next in queue
-    setCelebrationQueue((prev) => {
-      const next = prev.slice(1);
-      if (next.length > 0) {
-        setTimeout(() => {
-          setCurrentCelebration(next[0]);
-        }, 300);
-      }
-      return next;
-    });
+    setCelebrationQueue((prev) => prev.slice(1));
   }, []);
 
   const value: AchievementContextValue = {
