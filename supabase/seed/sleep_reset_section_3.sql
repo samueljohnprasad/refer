@@ -1,0 +1,3027 @@
+-- Sleep Reset, Section 3: Design Your Evening
+-- Run after sleep_reset_section_1.sql. Stable UUIDs and upserts make reruns safe.
+
+BEGIN;
+
+CREATE OR REPLACE FUNCTION pg_temp.seed_uuid(seed_value TEXT)
+RETURNS UUID
+LANGUAGE SQL
+IMMUTABLE
+STRICT
+AS $function$
+  SELECT (
+    substr(md5(seed_value), 1, 8) || '-' ||
+    substr(md5(seed_value), 9, 4) || '-' ||
+    substr(md5(seed_value), 13, 4) || '-' ||
+    substr(md5(seed_value), 17, 4) || '-' ||
+    substr(md5(seed_value), 21, 12)
+  )::uuid;
+$function$;
+
+CREATE OR REPLACE FUNCTION pg_temp.text_array(input_json JSONB)
+RETURNS TEXT[]
+LANGUAGE SQL
+IMMUTABLE
+AS $function$
+  SELECT COALESCE(
+    ARRAY(SELECT jsonb_array_elements_text(COALESCE(input_json, '[]'::jsonb))),
+    '{}'::text[]
+  );
+$function$;
+
+CREATE OR REPLACE FUNCTION pg_temp.numeric_array(input_json JSONB)
+RETURNS NUMERIC[]
+LANGUAGE SQL
+IMMUTABLE
+AS $function$
+  SELECT COALESCE(
+    ARRAY(
+      SELECT value::numeric
+      FROM jsonb_array_elements_text(COALESCE(input_json, '[]'::jsonb))
+    ),
+    '{}'::numeric[]
+  );
+$function$;
+
+WITH curriculum AS (
+  SELECT *
+  FROM jsonb_to_recordset($json$
+    [
+      {
+        "source_id": "s3_evening_architecture",
+        "course_source_id": "sleep-reset",
+        "title": "Design Your Evening",
+        "order_index": 3,
+        "narrative_hook": "You cannot force sleep. You can make it easier for your body to find.",
+        "badge_on_complete": "Evening Architect",
+        "difficulty_range": [
+          0.45,
+          0.72
+        ],
+        "objectives": {
+          "remember": "Recall the flexible wind-down, evening-light, and safe stimulus-control rules.",
+          "understand": "Explain how transition cues, environmental friction, and repeated bed behaviour can influence settling.",
+          "apply": "Choose a realistic wind-down cue, mind-clearing option, safe bed response, and one evening experiment.",
+          "analyze": "Distinguish useful self-guided changes from sleep-window treatment that requires clinician guidance."
+        },
+        "concepts_introduced": [
+          "evening_transition",
+          "wind_down_range",
+          "transition_cue",
+          "evening_light",
+          "flexible_screen_use",
+          "sleep_environment",
+          "smallest_useful_change",
+          "bed_sleep_association",
+          "stimulus_control",
+          "sleep_window_clinician_guidance",
+          "worry_capture",
+          "mind_clearing_choice",
+          "evening_experiment",
+          "evening_blueprint"
+        ]
+      }
+    ]
+  $json$::jsonb) AS row(
+    source_id TEXT,
+    course_source_id TEXT,
+    title TEXT,
+    order_index INT,
+    narrative_hook TEXT,
+    badge_on_complete TEXT,
+    difficulty_range JSONB,
+    objectives JSONB,
+    concepts_introduced JSONB
+  )
+)
+INSERT INTO sections (
+  id,
+  course_id,
+  title,
+  order_index,
+  narrative_hook,
+  badge_on_complete,
+  difficulty_range,
+  objectives,
+  concepts_introduced
+)
+SELECT
+  pg_temp.seed_uuid(source_id),
+  pg_temp.seed_uuid(course_source_id),
+  title,
+  order_index,
+  narrative_hook,
+  badge_on_complete,
+  pg_temp.numeric_array(difficulty_range),
+  objectives,
+  pg_temp.text_array(concepts_introduced)
+FROM curriculum
+ON CONFLICT (id) DO UPDATE SET
+  course_id = EXCLUDED.course_id,
+  title = EXCLUDED.title,
+  order_index = EXCLUDED.order_index,
+  narrative_hook = EXCLUDED.narrative_hook,
+  badge_on_complete = EXCLUDED.badge_on_complete,
+  difficulty_range = EXCLUDED.difficulty_range,
+  objectives = EXCLUDED.objectives,
+  concepts_introduced = EXCLUDED.concepts_introduced;
+
+WITH curriculum AS (
+  SELECT *
+  FROM jsonb_to_recordset($json$
+    [
+      {
+        "source_id": "u3_1_shift_into_night",
+        "section_source_id": "s3_evening_architecture",
+        "title": "Shift Into Night",
+        "icon_key": "unit-icon",
+        "order_index": 1
+      },
+      {
+        "source_id": "u3_2_make_the_bedroom_work",
+        "section_source_id": "s3_evening_architecture",
+        "title": "Make the Bedroom Work",
+        "icon_key": "unit-icon",
+        "order_index": 2
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize",
+        "section_source_id": "s3_evening_architecture",
+        "title": "Clear, Test, Personalize",
+        "icon_key": "unit-icon",
+        "order_index": 3
+      }
+    ]
+  $json$::jsonb) AS row(
+    source_id TEXT,
+    section_source_id TEXT,
+    title TEXT,
+    icon_key TEXT,
+    order_index INT
+  )
+)
+INSERT INTO units (id, section_id, title, icon_key, order_index)
+SELECT
+  pg_temp.seed_uuid(source_id),
+  pg_temp.seed_uuid(section_source_id),
+  title,
+  icon_key,
+  order_index
+FROM curriculum
+ON CONFLICT (id) DO UPDATE SET
+  section_id = EXCLUDED.section_id,
+  title = EXCLUDED.title,
+  icon_key = EXCLUDED.icon_key,
+  order_index = EXCLUDED.order_index;
+
+WITH curriculum AS (
+  SELECT *
+  FROM jsonb_to_recordset($json$
+    [
+      {
+        "source_id": "u3_1_shift_into_night-n1",
+        "unit_source_id": "u3_1_shift_into_night",
+        "title": "The Body Needs a Transition",
+        "type": "lesson",
+        "content_type": "lesson",
+        "pass_threshold": 80,
+        "order_index": 0,
+        "estimated_mins": 4,
+        "icon": "book",
+        "new_concepts": [
+          "evening_transition"
+        ],
+        "review_concepts": [
+          "stress_response_basics",
+          "circadian_rhythm"
+        ],
+        "prerequisites": []
+      },
+      {
+        "source_id": "u3_1_shift_into_night-n2",
+        "unit_source_id": "u3_1_shift_into_night",
+        "title": "Your Wind-Down Range",
+        "type": "lesson",
+        "content_type": "lesson",
+        "pass_threshold": 80,
+        "order_index": 1,
+        "estimated_mins": 4,
+        "icon": "book",
+        "new_concepts": [
+          "wind_down_range"
+        ],
+        "review_concepts": [
+          "evening_transition"
+        ],
+        "prerequisites": []
+      },
+      {
+        "source_id": "u3_1_shift_into_night-n3",
+        "unit_source_id": "u3_1_shift_into_night",
+        "title": "Find Your Switch Cue",
+        "type": "lesson",
+        "content_type": "lesson",
+        "pass_threshold": 80,
+        "order_index": 2,
+        "estimated_mins": 5,
+        "icon": "book",
+        "new_concepts": [
+          "transition_cue"
+        ],
+        "review_concepts": [
+          "evening_transition",
+          "wind_down_range"
+        ],
+        "prerequisites": []
+      },
+      {
+        "source_id": "u3_1_shift_into_night-n4",
+        "unit_source_id": "u3_1_shift_into_night",
+        "title": "Light Is Information",
+        "type": "lesson",
+        "content_type": "lesson",
+        "pass_threshold": 80,
+        "order_index": 3,
+        "estimated_mins": 5,
+        "icon": "book",
+        "new_concepts": [
+          "evening_light"
+        ],
+        "review_concepts": [
+          "transition_cue",
+          "circadian_rhythm"
+        ],
+        "prerequisites": []
+      },
+      {
+        "source_id": "u3_1_shift_into_night-n5",
+        "unit_source_id": "u3_1_shift_into_night",
+        "title": "Dim Without Disconnecting",
+        "type": "lesson",
+        "content_type": "lesson",
+        "pass_threshold": 80,
+        "order_index": 4,
+        "estimated_mins": 5,
+        "icon": "book",
+        "new_concepts": [
+          "flexible_screen_use"
+        ],
+        "review_concepts": [
+          "evening_light",
+          "transition_cue"
+        ],
+        "prerequisites": []
+      },
+      {
+        "source_id": "u3_2_make_the_bedroom_work-n1",
+        "unit_source_id": "u3_2_make_the_bedroom_work",
+        "title": "The Bedroom Detective",
+        "type": "lesson",
+        "content_type": "lesson",
+        "pass_threshold": 80,
+        "order_index": 0,
+        "estimated_mins": 5,
+        "icon": "book",
+        "new_concepts": [
+          "sleep_environment"
+        ],
+        "review_concepts": [
+          "evening_light",
+          "wind_down_range"
+        ],
+        "prerequisites": []
+      },
+      {
+        "source_id": "u3_2_make_the_bedroom_work-n2",
+        "unit_source_id": "u3_2_make_the_bedroom_work",
+        "title": "Fix the Biggest Friction",
+        "type": "lesson",
+        "content_type": "lesson",
+        "pass_threshold": 80,
+        "order_index": 1,
+        "estimated_mins": 5,
+        "icon": "book",
+        "new_concepts": [
+          "smallest_useful_change"
+        ],
+        "review_concepts": [
+          "sleep_environment",
+          "evening_light"
+        ],
+        "prerequisites": []
+      },
+      {
+        "source_id": "u3_2_make_the_bedroom_work-n3",
+        "unit_source_id": "u3_2_make_the_bedroom_work",
+        "title": "How Bed Learns Wakefulness",
+        "type": "lesson",
+        "content_type": "lesson",
+        "pass_threshold": 80,
+        "order_index": 2,
+        "estimated_mins": 5,
+        "icon": "book",
+        "new_concepts": [
+          "bed_sleep_association"
+        ],
+        "review_concepts": [
+          "sleep_pressure",
+          "wind_down_range"
+        ],
+        "prerequisites": []
+      },
+      {
+        "source_id": "u3_2_make_the_bedroom_work-n4",
+        "unit_source_id": "u3_2_make_the_bedroom_work",
+        "title": "Rebuild the Bed-Sleep Connection",
+        "type": "lesson",
+        "content_type": "lesson",
+        "pass_threshold": 80,
+        "order_index": 3,
+        "estimated_mins": 6,
+        "icon": "book",
+        "new_concepts": [
+          "stimulus_control"
+        ],
+        "review_concepts": [
+          "bed_sleep_association",
+          "sleep_pressure"
+        ],
+        "prerequisites": []
+      },
+      {
+        "source_id": "u3_2_make_the_bedroom_work-n5",
+        "unit_source_id": "u3_2_make_the_bedroom_work",
+        "title": "When Sleep Advice Needs a Clinician",
+        "type": "lesson",
+        "content_type": "lesson",
+        "pass_threshold": 80,
+        "order_index": 4,
+        "estimated_mins": 4,
+        "icon": "book",
+        "new_concepts": [
+          "sleep_window_clinician_guidance"
+        ],
+        "review_concepts": [
+          "stimulus_control",
+          "sleep_environment"
+        ],
+        "prerequisites": []
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n1",
+        "unit_source_id": "u3_3_clear_test_personalize",
+        "title": "Capture, Don’t Solve",
+        "type": "lesson",
+        "content_type": "lesson",
+        "pass_threshold": 80,
+        "order_index": 0,
+        "estimated_mins": 5,
+        "icon": "book",
+        "new_concepts": [
+          "worry_capture"
+        ],
+        "review_concepts": [
+          "stimulus_control",
+          "transition_cue"
+        ],
+        "prerequisites": []
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n2",
+        "unit_source_id": "u3_3_clear_test_personalize",
+        "title": "Choose Your Mind-Clearing Tool",
+        "type": "lesson",
+        "content_type": "lesson",
+        "pass_threshold": 80,
+        "order_index": 1,
+        "estimated_mins": 4,
+        "icon": "book",
+        "new_concepts": [
+          "mind_clearing_choice"
+        ],
+        "review_concepts": [
+          "smallest_useful_change",
+          "evening_light"
+        ],
+        "prerequisites": []
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n3",
+        "unit_source_id": "u3_3_clear_test_personalize",
+        "title": "The One-Change Rule",
+        "type": "lesson",
+        "content_type": "lesson",
+        "pass_threshold": 80,
+        "order_index": 2,
+        "estimated_mins": 5,
+        "icon": "book",
+        "new_concepts": [
+          "evening_experiment"
+        ],
+        "review_concepts": [
+          "smallest_useful_change",
+          "stimulus_control"
+        ],
+        "prerequisites": []
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n4",
+        "unit_source_id": "u3_3_clear_test_personalize",
+        "title": "Your Evening Blueprint",
+        "type": "lesson",
+        "content_type": "lesson",
+        "pass_threshold": 80,
+        "order_index": 3,
+        "estimated_mins": 6,
+        "icon": "book",
+        "new_concepts": [
+          "evening_blueprint"
+        ],
+        "review_concepts": [
+          "transition_cue",
+          "evening_light",
+          "stimulus_control",
+          "smallest_useful_change"
+        ],
+        "prerequisites": []
+      }
+    ]
+  $json$::jsonb) AS row(
+    source_id TEXT,
+    unit_source_id TEXT,
+    title TEXT,
+    type TEXT,
+    content_type TEXT,
+    pass_threshold INT,
+    order_index INT,
+    estimated_mins INT,
+    icon TEXT,
+    new_concepts JSONB,
+    review_concepts JSONB,
+    prerequisites JSONB
+  )
+)
+INSERT INTO nodes (
+  id,
+  unit_id,
+  title,
+  type,
+  content_type,
+  pass_threshold,
+  order_index,
+  estimated_mins,
+  icon,
+  new_concepts,
+  review_concepts,
+  prerequisites
+)
+SELECT
+  pg_temp.seed_uuid(source_id),
+  pg_temp.seed_uuid(unit_source_id),
+  title,
+  type,
+  content_type,
+  pass_threshold,
+  order_index,
+  estimated_mins,
+  icon,
+  pg_temp.text_array(new_concepts),
+  pg_temp.text_array(review_concepts),
+  pg_temp.text_array(prerequisites)
+FROM curriculum
+ON CONFLICT (id) DO UPDATE SET
+  unit_id = EXCLUDED.unit_id,
+  title = EXCLUDED.title,
+  type = EXCLUDED.type,
+  content_type = EXCLUDED.content_type,
+  pass_threshold = EXCLUDED.pass_threshold,
+  order_index = EXCLUDED.order_index,
+  estimated_mins = EXCLUDED.estimated_mins,
+  icon = EXCLUDED.icon,
+  new_concepts = EXCLUDED.new_concepts,
+  review_concepts = EXCLUDED.review_concepts,
+  prerequisites = EXCLUDED.prerequisites;
+
+WITH curriculum AS (
+  SELECT *
+  FROM jsonb_to_recordset($json$
+    [
+      {
+        "source_id": "u3_l19_transition_recall",
+        "node_source_id": "u3_1_shift_into_night-n1",
+        "order_index": 0,
+        "type": "recall_warmup",
+        "phase": "recall",
+        "duration_seconds": 35,
+        "scaffold_level": 2,
+        "difficulty": 0.14,
+        "is_scored": false,
+        "concept": "stress_response_basics",
+        "content": {
+          "category": "recall_warmup",
+          "format": "recall_warmup",
+          "completionMode": "direct",
+          "title": "Recall the evening signals",
+          "instruction": "Answer in your head, then reveal.",
+          "cards": [
+            {
+              "question": "What can keep the body in a more alert state after activity ends?",
+              "answer": "Demand, stimulation, or stress signals can keep the body's alert response active."
+            },
+            {
+              "question": "What does the circadian rhythm use from the environment?",
+              "answer": "Timing cues that help the body distinguish active time from rest time."
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l19_transition_compare",
+        "node_source_id": "u3_1_shift_into_night-n1",
+        "order_index": 1,
+        "type": "evening_comparison",
+        "phase": "model",
+        "duration_seconds": 45,
+        "scaffold_level": 1,
+        "difficulty": 0.12,
+        "is_scored": false,
+        "concept": "evening_transition",
+        "content": {
+          "category": "evening_comparison",
+          "format": "evening_comparison",
+          "completionMode": "direct",
+          "title": "Same bedtime, different landing",
+          "instruction": "Compare the signals in these two ordinary evenings.",
+          "columns": [
+            {
+              "heading": "Abrupt stop",
+              "rows": [
+                "Work message still open",
+                "Choir video playing loudly",
+                "Straight from task to bed"
+              ],
+              "outcome": "Demand stays high until the stop"
+            },
+            {
+              "heading": "Short bridge",
+              "rows": [
+                "Work is marked done for today",
+                "One familiar, lower-demand activity",
+                "Bed follows when the bridge is over"
+              ],
+              "outcome": "Demand steps down before rest"
+            }
+          ],
+          "explanation": "A transition is a bridge between activity and rest. It can be short and imperfect; it does not make sleep happen on command.",
+          "note": "The useful feature is a change in demand, not a perfect routine."
+        }
+      },
+      {
+        "source_id": "u3_l19_transition_retrieval",
+        "node_source_id": "u3_1_shift_into_night-n1",
+        "order_index": 2,
+        "type": "course_choice",
+        "phase": "guide",
+        "duration_seconds": 40,
+        "scaffold_level": 2,
+        "difficulty": 0.16,
+        "is_scored": true,
+        "concept": "evening_transition",
+        "content": {
+          "category": "course_choice",
+          "format": "course_choice",
+          "title": "Name the bridge",
+          "instruction": "Choose the best explanation.",
+          "context": "Priya ends a lively group call, washes one cup, and listens to one quiet song before getting ready for bed.",
+          "prompt": "What makes those last two actions a transition?",
+          "options": [
+            {
+              "id": "demand-step",
+              "label": "They step demand down between activity and rest",
+              "isCorrect": true,
+              "feedback": "Yes. The actions create a noticeable shift without demanding immediate sleepiness."
+            },
+            {
+              "id": "fixed-length",
+              "label": "They fill a required 60–90 minute window",
+              "feedback": "A longer window can suit some evenings, but there is no required length. The shift in demand is the key."
+            },
+            {
+              "id": "sleep-switch",
+              "label": "They switch sleep on automatically",
+              "feedback": "A transition can support rest, but it does not determine when sleep begins."
+            }
+          ],
+          "feedbackTitle": "A bridge, not a command",
+          "feedbackTakeaway": "Identify a transition by the change in demand.",
+          "workedExample": "An ordinary bridge might be: close the work app, wash up, then play one familiar audio track.",
+          "primaryLabel": "Check answer",
+          "retryPhase": "guide"
+        }
+      },
+      {
+        "source_id": "u3_l19_transition_transfer",
+        "node_source_id": "u3_1_shift_into_night-n1",
+        "order_index": 3,
+        "type": "lever_scenario",
+        "phase": "apply",
+        "duration_seconds": 65,
+        "scaffold_level": 6,
+        "difficulty": 0.24,
+        "is_scored": true,
+        "concept": "evening_transition",
+        "content": {
+          "category": "lever_scenario",
+          "format": "lever_scenario",
+          "completionMode": "direct",
+          "title": "Build a landing on a late night",
+          "instruction": "Choose the response that preserves a transition.",
+          "capability": "You can make a transition smaller when the evening is compressed.",
+          "variants": [
+            {
+              "sceneLabel": "LATE DEADLINE",
+              "scene": "Mateo finishes urgent work 20 minutes before he hopes to be in bed. He usually has a longer evening routine.",
+              "prompt": "What is the most flexible next move?",
+              "clue": "Keep the function of the routine, then shrink its size.",
+              "worked": "Mateo can mark work finished, lower the room's activity, and do one familiar five-minute cue. A short bridge still counts.",
+              "options": [
+                {
+                  "id": "short-bridge",
+                  "label": "Close work, do one familiar low-demand cue, then reassess",
+                  "isCorrect": true,
+                  "feedback": "This keeps a clear transition while fitting the time available. It supports rest without promising sleep."
+                },
+                {
+                  "id": "cancel-transition",
+                  "label": "Skip every cue because the full routine no longer fits",
+                  "feedback": "That treats the routine as all-or-nothing. Keeping one small cue preserves the bridge."
+                },
+                {
+                  "id": "delay-for-full",
+                  "label": "Stay up to complete the full routine exactly",
+                  "feedback": "Completeness is not the goal. Extending the night to obey a routine can make the routine less flexible."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l19_transition_plan",
+        "node_source_id": "u3_1_shift_into_night-n1",
+        "order_index": 4,
+        "type": "if_then_plan",
+        "phase": "reflect",
+        "duration_seconds": 55,
+        "scaffold_level": 4,
+        "difficulty": 0.14,
+        "is_scored": false,
+        "concept": "evening_transition",
+        "content": {
+          "category": "if_then_plan",
+          "format": "if_then_plan",
+          "completionMode": "direct",
+          "title": "Sketch a two-step bridge",
+          "instruction": "Choose one ending cue and one lower-demand move.",
+          "privacy": "Private and unscored. Edit or skip it at any time.",
+          "cues": [
+            "I finish my last planned task",
+            "the household begins to quiet",
+            "I decide daytime activity is done"
+          ],
+          "actions": [
+            "put one work item away and play one familiar song",
+            "wash up and sit somewhere quieter for a few minutes",
+            "lower one source of stimulation and choose a calm activity"
+          ],
+          "feedbackTitle": "A flexible bridge",
+          "feedback": "This is a draft, not a rule. On a crowded night, keep the cue and make the action smaller."
+        }
+      },
+      {
+        "source_id": "u3_l20_range_model",
+        "node_source_id": "u3_1_shift_into_night-n2",
+        "order_index": 0,
+        "type": "concept_card",
+        "phase": "model",
+        "duration_seconds": 60,
+        "scaffold_level": 1,
+        "difficulty": 0.12,
+        "is_scored": false,
+        "concept": "wind_down_range",
+        "content": {
+          "category": "concept_card",
+          "format": "concept_card",
+          "completionMode": "direct",
+          "title": "Use a range, not a rule",
+          "instruction": "Replace one rigid idea with a flexible one.",
+          "myth": "A wind-down only counts if it lasts 60–90 minutes.",
+          "reality": "A wind-down can be a range: a smaller version for crowded nights and a fuller version when time allows. Sixty to ninety minutes is one example, not a requirement.",
+          "note": "Keep the purpose; resize the routine. Length does not determine whether sleep begins.",
+          "variant": "myth"
+        }
+      },
+      {
+        "source_id": "u3_l20_range_retrieval",
+        "node_source_id": "u3_1_shift_into_night-n2",
+        "order_index": 1,
+        "type": "course_choice",
+        "phase": "guide",
+        "duration_seconds": 45,
+        "scaffold_level": 3,
+        "difficulty": 0.2,
+        "is_scored": true,
+        "concept": "wind_down_range",
+        "content": {
+          "category": "course_choice",
+          "format": "course_choice",
+          "title": "Retrieve the flexible rule",
+          "instruction": "Choose the version that keeps the wind-down reusable.",
+          "context": "Yesterday, the full routine took 45 minutes. Tonight, only 10 minutes are free.",
+          "prompt": "What stays the same when the routine gets smaller?",
+          "options": [
+            {
+              "id": "purpose",
+              "label": "Its purpose: marking a shift toward lower demand",
+              "isCorrect": true,
+              "feedback": "Right. The bridge keeps its purpose even when the number or length of steps changes."
+            },
+            {
+              "id": "duration",
+              "label": "Its exact duration, even if bedtime moves later",
+              "feedback": "Duration can change with the evening. Protect the shift in demand rather than an exact number of minutes."
+            },
+            {
+              "id": "completeness",
+              "label": "Every optional step, or the routine does not count",
+              "feedback": "Optional steps can drop away. The short core remains a valid wind-down, not a failed full one."
+            }
+          ],
+          "feedbackTitle": "Keep the function",
+          "feedbackTakeaway": "Resize a wind-down without calling the smaller version a failure.",
+          "workedExample": "Short version: close tasks and wash up. Full version: add reading or quiet audio after those same cues.",
+          "primaryLabel": "Check answer",
+          "retryPhase": "guide"
+        }
+      },
+      {
+        "source_id": "u3_l20_range_transfer",
+        "node_source_id": "u3_1_shift_into_night-n2",
+        "order_index": 2,
+        "type": "lever_scenario",
+        "phase": "apply",
+        "duration_seconds": 75,
+        "scaffold_level": 6,
+        "difficulty": 0.25,
+        "is_scored": true,
+        "concept": "wind_down_range",
+        "content": {
+          "category": "lever_scenario",
+          "format": "lever_scenario",
+          "completionMode": "direct",
+          "title": "Resize, don't erase",
+          "instruction": "Choose the plan that fits the night.",
+          "capability": "You can resize a routine while preserving its purpose.",
+          "variants": [
+            {
+              "sceneLabel": "CHANGING COMMUTE",
+              "scene": "Lena gets home at 8:00 on some days and 10:15 on others. Her current six-step routine makes late days feel like failure.",
+              "prompt": "What would make the routine more usable?",
+              "clue": "Separate the essential bridge from the optional extras.",
+              "worked": "Lena can define a ten-minute core and add optional steps on earlier nights. Both versions serve the same transition.",
+              "options": [
+                {
+                  "id": "core-plus",
+                  "label": "Create a short core, then add optional steps when time allows",
+                  "isCorrect": true,
+                  "feedback": "This creates a real range. The late-night version is a valid routine, not a failed full version."
+                },
+                {
+                  "id": "force-six",
+                  "label": "Do all six steps even when it pushes the night later",
+                  "feedback": "Following every step can make the routine serve the checklist instead of the transition."
+                },
+                {
+                  "id": "two-hours",
+                  "label": "Set a two-hour minimum so the routine feels serious",
+                  "feedback": "A longer minimum adds rigidity. Duration is not a measure of effort or a guarantee of sleep."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l20_range_plan",
+        "node_source_id": "u3_1_shift_into_night-n2",
+        "order_index": 3,
+        "type": "if_then_plan",
+        "phase": "reflect",
+        "duration_seconds": 60,
+        "scaffold_level": 4,
+        "difficulty": 0.15,
+        "is_scored": false,
+        "concept": "wind_down_range",
+        "content": {
+          "category": "if_then_plan",
+          "format": "if_then_plan",
+          "completionMode": "direct",
+          "title": "Choose your smaller version",
+          "instruction": "Pair a crowded-night cue with a valid short routine.",
+          "privacy": "Private and unscored. This is a menu, not a prescription.",
+          "cues": [
+            "I have only a few minutes",
+            "I have more room than usual",
+            "the evening changes unexpectedly"
+          ],
+          "actions": [
+            "use my core two-step transition",
+            "use the core, then add one pleasant low-demand activity",
+            "keep one ending cue and choose the smallest useful next step"
+          ],
+          "feedbackTitle": "A range you can reuse",
+          "feedback": "The smaller version counts. You can adjust the range again after seeing how it fits ordinary life."
+        }
+      },
+      {
+        "source_id": "u3_l21_cue_recall",
+        "node_source_id": "u3_1_shift_into_night-n3",
+        "order_index": 0,
+        "type": "recall_warmup",
+        "phase": "recall",
+        "duration_seconds": 45,
+        "scaffold_level": 2,
+        "difficulty": 0.17,
+        "is_scored": false,
+        "concept": "wind_down_range",
+        "content": {
+          "category": "recall_warmup",
+          "format": "recall_warmup",
+          "completionMode": "direct",
+          "title": "Retrieve the flexible rule",
+          "instruction": "Recall first, then flip each card.",
+          "cards": [
+            {
+              "question": "What part of a wind-down should stay stable when time shrinks?",
+              "answer": "Its purpose: a clear shift from higher demand toward rest."
+            },
+            {
+              "question": "Does the shorter version count?",
+              "answer": "Yes. Keeping a small core is flexibility, not failure."
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l21_cue_model",
+        "node_source_id": "u3_1_shift_into_night-n3",
+        "order_index": 1,
+        "type": "learn_cards",
+        "phase": "model",
+        "duration_seconds": 75,
+        "scaffold_level": 1,
+        "difficulty": 0.14,
+        "is_scored": false,
+        "concept": "transition_cue",
+        "content": {
+          "category": "learn_cards",
+          "format": "learn_cards",
+          "completionMode": "direct",
+          "title": "Give the shift a handle",
+          "instruction": "Read the model, then make one easy recall choice.",
+          "cards": [
+            {
+              "id": "cue-job",
+              "kicker": "THE JOB",
+              "title": "A cue marks the boundary",
+              "body": "A transition cue is a repeatable event that means daytime activity is ending. It starts the bridge; it does not switch sleep on."
+            },
+            {
+              "id": "cue-shape",
+              "kicker": "THE SHAPE",
+              "title": "Events travel better than exact times",
+              "body": "Closing the laptop, clearing one cup, or changing one light can move with the evening more easily than a rigid clock minute."
+            }
+          ],
+          "recall": {
+            "prompt": "Which is a movable transition cue?",
+            "correctOptionId": "event",
+            "options": [
+              {
+                "id": "event",
+                "label": "When I close my last active task",
+                "isCorrect": true,
+                "feedback": "An event-based cue can move with the end of the day."
+              },
+              {
+                "id": "perfect",
+                "label": "Only when every task is finished perfectly",
+                "feedback": "A cue needs to be usable, not dependent on a perfect day."
+              },
+              {
+                "id": "sleep",
+                "label": "The moment I must become sleepy",
+                "feedback": "A cue starts a transition; it cannot require sleepiness or make that feeling happen."
+              }
+            ]
+          },
+          "feedback_correct": "Right. An event cue can travel with the evening and mark when active time ends.",
+          "feedback_incorrect": "Choose an observable event you can perform. A cue should not depend on perfection or on already feeling sleepy."
+        }
+      },
+      {
+        "source_id": "u3_l21_cue_contrast",
+        "node_source_id": "u3_1_shift_into_night-n3",
+        "order_index": 2,
+        "type": "course_choice",
+        "phase": "guide",
+        "duration_seconds": 45,
+        "scaffold_level": 3,
+        "difficulty": 0.22,
+        "is_scored": true,
+        "concept": "transition_cue",
+        "content": {
+          "category": "course_choice",
+          "format": "course_choice",
+          "title": "Cue or outcome?",
+          "instruction": "Choose the cue you can actually perform.",
+          "prompt": "Which option marks a boundary without demanding a feeling?",
+          "options": [
+            {
+              "id": "lamp",
+              "label": "After my last planned task, I switch off the desk lamp",
+              "isCorrect": true,
+              "feedback": "Yes. It is observable, repeatable, and does not depend on already feeling sleepy."
+            },
+            {
+              "id": "sleepy",
+              "label": "I begin only when I feel completely sleepy",
+              "feedback": "Sleepiness is a state, not an action you can reliably use as a cue."
+            },
+            {
+              "id": "exact-time",
+              "label": "At 9:00 sharp, even if I am still commuting",
+              "feedback": "A clock cue can work for some people, but this one cannot move with the person's real evening."
+            }
+          ],
+          "feedbackTitle": "Make the boundary visible",
+          "feedbackTakeaway": "Choose a cue you can notice and perform.",
+          "workedExample": "When the last active task closes, put the charger away or change one light.",
+          "primaryLabel": "Check answer",
+          "retryPhase": "guide"
+        }
+      },
+      {
+        "source_id": "u3_l21_cue_transfer",
+        "node_source_id": "u3_1_shift_into_night-n3",
+        "order_index": 3,
+        "type": "lever_scenario",
+        "phase": "apply",
+        "duration_seconds": 75,
+        "scaffold_level": 6,
+        "difficulty": 0.28,
+        "is_scored": true,
+        "concept": "transition_cue",
+        "content": {
+          "category": "lever_scenario",
+          "format": "lever_scenario",
+          "completionMode": "direct",
+          "title": "Move the cue with the day",
+          "instruction": "Pick the cue that survives a changing schedule.",
+          "capability": "You can anchor a transition to an event rather than a perfect clock time.",
+          "variants": [
+            {
+              "sceneLabel": "ROTATING SHIFTS",
+              "scene": "Dev's work ends at different times each week. A fixed 9:30 wind-down alarm often rings while Dev is still working.",
+              "prompt": "Which cue is most portable?",
+              "clue": "Look for something that reliably happens when active work ends.",
+              "worked": "Dev can use closing the work app and putting away the badge as a boundary, then choose the short or full wind-down version.",
+              "options": [
+                {
+                  "id": "close-work",
+                  "label": "When work closes, put away the badge and change one light",
+                  "isCorrect": true,
+                  "feedback": "The event moves with the schedule and clearly marks the boundary."
+                },
+                {
+                  "id": "ignore-life",
+                  "label": "Keep 9:30 and treat every missed alarm as a failure",
+                  "feedback": "This turns schedule variation into blame. A movable event cue fits the actual constraint."
+                },
+                {
+                  "id": "wait-feeling",
+                  "label": "Use feeling exhausted as the only cue",
+                  "feedback": "Exhaustion varies and is not an action. A visible event makes the transition easier to start."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l21_cue_plan",
+        "node_source_id": "u3_1_shift_into_night-n3",
+        "order_index": 4,
+        "type": "if_then_plan",
+        "phase": "reflect",
+        "duration_seconds": 60,
+        "scaffold_level": 4,
+        "difficulty": 0.16,
+        "is_scored": false,
+        "concept": "transition_cue",
+        "content": {
+          "category": "if_then_plan",
+          "format": "if_then_plan",
+          "completionMode": "direct",
+          "title": "Choose your switch cue",
+          "instruction": "Pair one visible boundary with one first move.",
+          "privacy": "Private and unscored. Choose none if these do not fit.",
+          "cues": [
+            "I close my last active task",
+            "I clear the last cup or plate",
+            "I put away my work bag or badge"
+          ],
+          "actions": [
+            "change one light and begin the short wind-down",
+            "put my phone on its evening setting and wash up",
+            "play one familiar audio cue and lower the room's demand"
+          ],
+          "feedbackTitle": "A cue you can move",
+          "feedback": "Try the cue as a boundary, not a test. If it does not fit, edit it rather than judging the night."
+        }
+      },
+      {
+        "source_id": "u3_l22_light_recall",
+        "node_source_id": "u3_1_shift_into_night-n4",
+        "order_index": 0,
+        "type": "recall_warmup",
+        "phase": "recall",
+        "duration_seconds": 45,
+        "scaffold_level": 2,
+        "difficulty": 0.18,
+        "is_scored": false,
+        "concept": "circadian_rhythm",
+        "content": {
+          "category": "recall_warmup",
+          "format": "recall_warmup",
+          "completionMode": "direct",
+          "title": "Recall the signal",
+          "instruction": "Answer in your head, then reveal.",
+          "cards": [
+            {
+              "question": "What does a circadian rhythm use from the environment?",
+              "answer": "Timing information, including patterns of light and darkness."
+            },
+            {
+              "question": "What is a transition cue for?",
+              "answer": "To mark a boundary between higher-demand activity and wind-down."
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l22_light_model",
+        "node_source_id": "u3_1_shift_into_night-n4",
+        "order_index": 1,
+        "type": "evening_comparison",
+        "phase": "model",
+        "duration_seconds": 70,
+        "scaffold_level": 1,
+        "difficulty": 0.15,
+        "is_scored": false,
+        "concept": "evening_light",
+        "content": {
+          "category": "evening_comparison",
+          "format": "evening_comparison",
+          "completionMode": "direct",
+          "title": "Light carries timing information",
+          "instruction": "Compare the signal, not the person's discipline.",
+          "columns": [
+            {
+              "heading": "Higher evening signal",
+              "rows": [
+                "Several bright overhead lights",
+                "Full-brightness screen close to the face",
+                "Same light level as active daytime tasks"
+              ],
+              "outcome": "More alerting light information"
+            },
+            {
+              "heading": "Lower evening signal",
+              "rows": [
+                "Only the lights needed for the task",
+                "Comfortable lower screen brightness",
+                "A visible change after the switch cue"
+              ],
+              "outcome": "A clearer shift toward evening"
+            }
+          ],
+          "explanation": "Light is one source of timing information. Reducing it can make the evening signal clearer, but darkness does not determine when sleep begins.",
+          "note": "Keep enough light for mobility, caregiving, reading, and safety."
+        }
+      },
+      {
+        "source_id": "u3_l22_light_contrast",
+        "node_source_id": "u3_1_shift_into_night-n4",
+        "order_index": 2,
+        "type": "course_choice",
+        "phase": "guide",
+        "duration_seconds": 45,
+        "scaffold_level": 3,
+        "difficulty": 0.23,
+        "is_scored": true,
+        "concept": "evening_light",
+        "content": {
+          "category": "course_choice",
+          "format": "course_choice",
+          "title": "Information, not a verdict",
+          "instruction": "Choose the most accurate reading.",
+          "prompt": "What does a bright evening environment tell you?",
+          "options": [
+            {
+              "id": "one-cue",
+              "label": "It is one alerting cue I may be able to adjust",
+              "isCorrect": true,
+              "feedback": "Yes. Light is one input among many, and a small adjustment can make the timing signal clearer."
+            },
+            {
+              "id": "ruined",
+              "label": "It proves the night's sleep is already ruined",
+              "feedback": "One cue does not decide the whole night. Treat it as adjustable information, not a prediction."
+            },
+            {
+              "id": "moral",
+              "label": "It shows I lack discipline",
+              "feedback": "Lighting is an environmental variable, not a measure of character."
+            }
+          ],
+          "feedbackTitle": "One adjustable input",
+          "feedbackTakeaway": "Read evening light as information, not fate.",
+          "workedExample": "If it is safe and practical, lower one overhead light or move to a smaller task light after the transition cue.",
+          "primaryLabel": "Check answer",
+          "retryPhase": "guide"
+        }
+      },
+      {
+        "source_id": "u3_l22_light_transfer",
+        "node_source_id": "u3_1_shift_into_night-n4",
+        "order_index": 3,
+        "type": "lever_scenario",
+        "phase": "apply",
+        "duration_seconds": 80,
+        "scaffold_level": 6,
+        "difficulty": 0.29,
+        "is_scored": true,
+        "concept": "evening_light",
+        "content": {
+          "category": "lever_scenario",
+          "format": "lever_scenario",
+          "completionMode": "direct",
+          "title": "Dim without losing function",
+          "instruction": "Choose the smallest safe change.",
+          "capability": "You can reduce an alerting light cue while preserving the task and safety.",
+          "variants": [
+            {
+              "sceneLabel": "SHARED HOME",
+              "scene": "Amal shares a bright kitchen with family and needs enough light to prepare medication safely. The overhead light stays on late.",
+              "prompt": "What is the most useful experiment?",
+              "clue": "Preserve safety first, then change one unnecessary source of brightness.",
+              "worked": "Amal can keep clear task lighting at the counter, switch off an unused overhead bank, and notice whether the evening feels more distinct.",
+              "options": [
+                {
+                  "id": "task-light",
+                  "label": "Keep safe task light and reduce an unused overhead light",
+                  "isCorrect": true,
+                  "feedback": "This changes the evening signal without compromising a necessary task."
+                },
+                {
+                  "id": "darkness",
+                  "label": "Prepare the medication in near-darkness",
+                  "feedback": "Safety comes first. An evening light change should not make medication, mobility, or caregiving harder."
+                },
+                {
+                  "id": "no-options",
+                  "label": "Give up because the whole home cannot be dark",
+                  "feedback": "The room does not need to be completely dark. One practical light change can still be a useful experiment."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l22_light_plan",
+        "node_source_id": "u3_1_shift_into_night-n4",
+        "order_index": 4,
+        "type": "if_then_plan",
+        "phase": "reflect",
+        "duration_seconds": 60,
+        "scaffold_level": 4,
+        "difficulty": 0.17,
+        "is_scored": false,
+        "concept": "evening_light",
+        "content": {
+          "category": "if_then_plan",
+          "format": "if_then_plan",
+          "completionMode": "direct",
+          "title": "Pick one safe light shift",
+          "instruction": "Choose a cue and a practical lighting response.",
+          "privacy": "Private and unscored. Safety and accessibility come first.",
+          "cues": [
+            "my transition cue happens",
+            "the last active household task ends",
+            "I move from work to a quieter activity"
+          ],
+          "actions": [
+            "switch off one unnecessary overhead light",
+            "keep a safe task light and lower other brightness",
+            "use a comfortable evening screen setting"
+          ],
+          "feedbackTitle": "One clear light cue",
+          "feedback": "Try one change that still lets you move, read, care, or work safely. The result is information, not a sleep promise."
+        }
+      },
+      {
+        "source_id": "u3_l23_screen_recall",
+        "node_source_id": "u3_1_shift_into_night-n5",
+        "order_index": 0,
+        "type": "recall_warmup",
+        "phase": "recall",
+        "duration_seconds": 45,
+        "scaffold_level": 2,
+        "difficulty": 0.19,
+        "is_scored": false,
+        "concept": "evening_light",
+        "content": {
+          "category": "recall_warmup",
+          "format": "recall_warmup",
+          "completionMode": "direct",
+          "title": "Retrieve before redesigning",
+          "instruction": "Recall, then flip.",
+          "cards": [
+            {
+              "question": "Is evening light a guarantee about the night?",
+              "answer": "No. It is one source of timing and alerting information."
+            },
+            {
+              "question": "What should an evening light change preserve?",
+              "answer": "Safety, accessibility, necessary tasks, and real-life connection."
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l23_screen_model",
+        "node_source_id": "u3_1_shift_into_night-n5",
+        "order_index": 1,
+        "type": "concept_card",
+        "phase": "model",
+        "duration_seconds": 70,
+        "scaffold_level": 1,
+        "difficulty": 0.16,
+        "is_scored": false,
+        "concept": "flexible_screen_use",
+        "content": {
+          "category": "concept_card",
+          "format": "concept_card",
+          "completionMode": "direct",
+          "title": "A screen is a bundle of levers",
+          "instruction": "Replace blame with a choice you can test.",
+          "myth": "Using a screen at night means I failed my sleep routine.",
+          "reality": "Screens carry different things: light, novelty, work, connection, and alerts. Change an alerting feature while keeping the function you value.",
+          "note": "A family call is different from a work thread. Brightness, distance, content, sound, and alerts are separate levers. Screen use is not a moral failure, and no screen choice determines when sleep begins.",
+          "variant": "myth"
+        }
+      },
+      {
+        "source_id": "u3_l23_screen_contrast",
+        "node_source_id": "u3_1_shift_into_night-n5",
+        "order_index": 2,
+        "type": "course_choice",
+        "phase": "guide",
+        "duration_seconds": 45,
+        "scaffold_level": 3,
+        "difficulty": 0.24,
+        "is_scored": true,
+        "concept": "flexible_screen_use",
+        "content": {
+          "category": "course_choice",
+          "format": "course_choice",
+          "title": "Find the adjustable feature",
+          "instruction": "Choose the most precise first change.",
+          "context": "Jo needs a tablet for a nightly video call with a parent. After the call, work notifications keep arriving.",
+          "prompt": "Which first change preserves connection and reduces one alerting feature?",
+          "options": [
+            {
+              "id": "notifications",
+              "label": "Keep the call, then mute work alerts and lower comfortable brightness",
+              "isCorrect": true,
+              "feedback": "Yes. This protects the valued connection while changing specific alerting features."
+            },
+            {
+              "id": "ban",
+              "label": "Cancel the call because all evening screen use is bad",
+              "feedback": "That treats every screen function as identical and sacrifices connection unnecessarily."
+            },
+            {
+              "id": "nothing",
+              "label": "Change nothing because screens never affect alertness",
+              "feedback": "Screens can carry alerting light and content. The useful move is a specific, realistic adjustment."
+            }
+          ],
+          "feedbackTitle": "Keep the value, change the lever",
+          "feedbackTakeaway": "Separate a screen's function from its alerting features.",
+          "workedExample": "Finish the family call, enable a quieter notification setting, lower comfortable brightness, and choose familiar content if continuing.",
+          "primaryLabel": "Check answer",
+          "retryPhase": "guide"
+        }
+      },
+      {
+        "source_id": "u3_l23_screen_transfer",
+        "node_source_id": "u3_1_shift_into_night-n5",
+        "order_index": 3,
+        "type": "lever_scenario",
+        "phase": "apply",
+        "duration_seconds": 80,
+        "scaffold_level": 6,
+        "difficulty": 0.3,
+        "is_scored": true,
+        "concept": "flexible_screen_use",
+        "content": {
+          "category": "lever_scenario",
+          "format": "lever_scenario",
+          "completionMode": "direct",
+          "title": "Dim without disappearing",
+          "instruction": "Choose the plan that fits real life.",
+          "capability": "You can reduce one screen-related alert while preserving access and connection.",
+          "variants": [
+            {
+              "sceneLabel": "ON-CALL EVENING",
+              "scene": "Rina is on call and must receive urgent messages. She also notices that checking every non-urgent alert keeps work mentally active.",
+              "prompt": "What is the most flexible screen plan?",
+              "clue": "Keep the channel that matters and quiet the rest.",
+              "worked": "Rina can allow the urgent contact channel, mute non-essential apps, use comfortable brightness, and place the phone where alerts remain audible without constant checking.",
+              "options": [
+                {
+                  "id": "urgent-only",
+                  "label": "Allow urgent contacts, mute other alerts, and reduce comfortable brightness",
+                  "isCorrect": true,
+                  "feedback": "This preserves the on-call responsibility while reducing avoidable light and mental reactivation."
+                },
+                {
+                  "id": "airplane",
+                  "label": "Use airplane mode and risk missing urgent messages",
+                  "feedback": "The plan must preserve the required connection. Total disconnection is not appropriate here."
+                },
+                {
+                  "id": "blame",
+                  "label": "Keep checking everything and blame poor discipline",
+                  "feedback": "Blame does not separate urgent from non-urgent alerts. A precise setting change is more useful."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l23_screen_plan",
+        "node_source_id": "u3_1_shift_into_night-n5",
+        "order_index": 4,
+        "type": "if_then_plan",
+        "phase": "reflect",
+        "duration_seconds": 60,
+        "scaffold_level": 4,
+        "difficulty": 0.18,
+        "is_scored": false,
+        "concept": "flexible_screen_use",
+        "content": {
+          "category": "if_then_plan",
+          "format": "if_then_plan",
+          "completionMode": "direct",
+          "title": "Build a connected wind-down",
+          "instruction": "Choose one screen moment and one flexible adjustment.",
+          "privacy": "Private and unscored. Keep any access or connection you need.",
+          "cues": [
+            "my transition cue happens",
+            "an evening call ends",
+            "I notice myself opening alerts automatically"
+          ],
+          "actions": [
+            "lower comfortable brightness and choose familiar content",
+            "mute non-essential notifications while keeping needed contacts",
+            "place the screen farther away and pause before the next open"
+          ],
+          "feedbackTitle": "A plan without blame",
+          "feedback": "The aim is one realistic adjustment, not a screen ban. Revise the plan if it blocks connection, work duties, or accessibility."
+        }
+      },
+      {
+        "source_id": "u3_l24_recall_evening_cues",
+        "node_source_id": "u3_2_make_the_bedroom_work-n1",
+        "order_index": 0,
+        "type": "recall_warmup",
+        "phase": "retrieve",
+        "duration_seconds": 40,
+        "scaffold_level": 1,
+        "difficulty": 0.1,
+        "is_scored": false,
+        "concept": "evening_light",
+        "content": {
+          "title": "Bring back the evening map",
+          "instruction": "Answer in your head, then reveal each card.",
+          "cards": [
+            {
+              "question": "What can bright evening light signal to the body clock?",
+              "answer": "It can support alertness and shift the body away from its night-time cue."
+            },
+            {
+              "question": "Why is a wind-down range more useful than a perfect start time?",
+              "answer": "A flexible range can survive ordinary life while still repeating a recognisable transition."
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l24_inspect_bedroom_clues",
+        "node_source_id": "u3_2_make_the_bedroom_work-n1",
+        "order_index": 1,
+        "type": "annotated_diary",
+        "phase": "inspect",
+        "duration_seconds": 55,
+        "scaffold_level": 1,
+        "difficulty": 0.14,
+        "is_scored": false,
+        "concept": "sleep_environment",
+        "content": {
+          "title": "Read the room like a detective",
+          "instruction": "Separate the clues before deciding what matters most.",
+          "diary": "12:10am. The room feels comfortable, but my work phone lights up on the bedside table, the hall light reaches my pillow, and I answer one last message in bed.",
+          "annotation": "There are three cues: phone light, hall light, and answering work messages in bed. The repeated work-phone cue may create more friction than a one-off detail.",
+          "note": "A clue is a hypothesis, not proof or a personal failing."
+        }
+      },
+      {
+        "source_id": "u3_l24_contrast_room_targets",
+        "node_source_id": "u3_2_make_the_bedroom_work-n1",
+        "order_index": 2,
+        "type": "evening_comparison",
+        "phase": "contrast",
+        "duration_seconds": 55,
+        "scaffold_level": 2,
+        "difficulty": 0.16,
+        "is_scored": false,
+        "concept": "sleep_environment",
+        "content": {
+          "title": "Perfect room or useful target?",
+          "instruction": "Compare what each inspection is trying to find.",
+          "columns": [
+            {
+              "heading": "PERFECTION HUNT",
+              "rows": [
+                "Treats every sound or light as a failure",
+                "Changes several things at once",
+                "Uses someone else's ideal temperature"
+              ],
+              "outcome": "More pressure, less information"
+            },
+            {
+              "heading": "DETECTIVE CHECK",
+              "rows": [
+                "Notices repeated light, sound, comfort, and activity cues",
+                "Ranks the strongest likely friction",
+                "Respects comfort, safety, and real living conditions"
+              ],
+              "outcome": "One useful first target"
+            }
+          ],
+          "explanation": "The aim is not a flawless bedroom. It is to find one repeated cue that is both meaningful and adjustable.",
+          "note": "Comfort differs from person to person; no single temperature fits everyone."
+        }
+      },
+      {
+        "source_id": "u3_l24_choose_biggest_friction",
+        "node_source_id": "u3_2_make_the_bedroom_work-n1",
+        "order_index": 3,
+        "type": "course_choice",
+        "phase": "transfer",
+        "duration_seconds": 65,
+        "scaffold_level": 3,
+        "difficulty": 0.24,
+        "is_scored": true,
+        "concept": "sleep_environment",
+        "content": {
+          "title": "Choose the strongest clue",
+          "instruction": "Use frequency, impact, and changeability.",
+          "context": "Asha likes her bedding and usually finds the room comfortable. Her phone pings beside her pillow several times most nights. A little hallway light appears once when her flatmate comes home.",
+          "prompt": "What is the most useful first source of friction to investigate?",
+          "options": [
+            {
+              "id": "phone",
+              "label": "The repeated phone pings beside the pillow",
+              "isCorrect": true,
+              "feedback": "Yes. This cue is frequent, close to sleep, and adjustable, so it is the strongest first hypothesis."
+            },
+            {
+              "id": "bedding",
+              "label": "The bedding, because every sleep problem starts with comfort",
+              "feedback": "Asha already finds the bedding comfortable. Replacing it ignores the clearer repeated cue."
+            },
+            {
+              "id": "hallway",
+              "label": "The brief hallway light, because any light must be eliminated",
+              "feedback": "The hallway light may matter, but it is brief and less frequent. Start with the larger repeated friction rather than chasing a light-free room."
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l24_private_friction_scan",
+        "node_source_id": "u3_2_make_the_bedroom_work-n1",
+        "order_index": 4,
+        "type": "private_check",
+        "phase": "reflect",
+        "duration_seconds": 65,
+        "scaffold_level": 2,
+        "difficulty": 0.14,
+        "is_scored": false,
+        "concept": "sleep_environment",
+        "content": {
+          "title": "Your private friction scan",
+          "instruction": "Tick any repeated cue worth noticing, or choose none.",
+          "items": [
+            "Light reaches me when I am trying to settle",
+            "A sound or alert repeatedly pulls my attention",
+            "Work, scrolling, or planning continues in bed",
+            "Comfort or access needs make settling harder",
+            "Caregiving or shared-space needs shape how the room is used"
+          ],
+          "feedbackTitle": "Look for the largest workable clue",
+          "feedback": "A useful target is repeated, noticeable, and realistic to adjust. You do not need to fix every item or disclose your choices."
+        }
+      },
+      {
+        "source_id": "u3_l25_recall_friction_rule",
+        "node_source_id": "u3_2_make_the_bedroom_work-n2",
+        "order_index": 0,
+        "type": "recall_warmup",
+        "phase": "retrieve",
+        "duration_seconds": 35,
+        "scaffold_level": 1,
+        "difficulty": 0.12,
+        "is_scored": false,
+        "concept": "sleep_environment",
+        "content": {
+          "title": "Retrieve the detective rule",
+          "instruction": "Recall first, then reveal.",
+          "cards": [
+            {
+              "question": "What makes a bedroom clue useful to investigate first?",
+              "answer": "It is repeated, has a noticeable impact, and is realistic to adjust."
+            },
+            {
+              "question": "What is the goal of a bedroom check?",
+              "answer": "Find one useful target, not build a perfect room."
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l25_good_enough_change",
+        "node_source_id": "u3_2_make_the_bedroom_work-n2",
+        "order_index": 1,
+        "type": "concept_card",
+        "phase": "model",
+        "duration_seconds": 50,
+        "scaffold_level": 1,
+        "difficulty": 0.12,
+        "is_scored": false,
+        "concept": "smallest_useful_change",
+        "content": {
+          "title": "Good enough beats total overhaul",
+          "instruction": "Replace the perfection rule with a testable one.",
+          "variant": "myth",
+          "myth": "If the whole bedroom is not ideal, one small change is pointless.",
+          "reality": "A small change aimed at the largest repeated friction can teach you more than changing everything at once.",
+          "note": "The first change is an experiment, not a guarantee of sleep."
+        }
+      },
+      {
+        "source_id": "u3_l25_apply_smallest_change",
+        "node_source_id": "u3_2_make_the_bedroom_work-n2",
+        "order_index": 2,
+        "type": "lever_scenario",
+        "phase": "transfer",
+        "duration_seconds": 65,
+        "scaffold_level": 3,
+        "difficulty": 0.25,
+        "is_scored": true,
+        "concept": "smallest_useful_change",
+        "content": {
+          "title": "Make the first change count",
+          "instruction": "Choose the smallest move aimed at the clearest friction.",
+          "capability": "You can turn one bedroom clue into a feasible experiment.",
+          "variants": [
+            {
+              "sceneLabel": "WEEKNIGHTS · SHARED FLAT",
+              "scene": "Luis's room is comfortable. Work notifications wake the screen beside his bed several times each night. He cannot renovate the room or control his flatmates' schedules.",
+              "prompt": "What is the smallest useful first change?",
+              "clue": "Aim at the repeated cue Luis can control.",
+              "worked": "The repeated bedside notifications are the strongest adjustable cue. A scheduled quiet mode or moving the phone out of reach tests that cue without rebuilding the room.",
+              "options": [
+                {
+                  "id": "quiet-mode",
+                  "label": "Schedule quiet mode and place the phone out of reach",
+                  "isCorrect": true,
+                  "feedback": "Yes. It directly reduces the repeated cue and is small enough to test on ordinary nights."
+                },
+                {
+                  "id": "renovate",
+                  "label": "Save for a complete soundproof bedroom renovation",
+                  "feedback": "A renovation is costly and does not target the phone cue already visible in the case."
+                },
+                {
+                  "id": "everything",
+                  "label": "Change the lights, bedding, bedtime, and room layout tonight",
+                  "feedback": "Changing everything adds effort and hides which cue mattered. Start with the phone friction."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l25_match_small_changes",
+        "node_source_id": "u3_2_make_the_bedroom_work-n2",
+        "order_index": 3,
+        "type": "toolkit_shelf",
+        "phase": "inspect",
+        "duration_seconds": 55,
+        "scaffold_level": 2,
+        "difficulty": 0.17,
+        "is_scored": false,
+        "concept": "smallest_useful_change",
+        "content": {
+          "title": "Match the change to the friction",
+          "instruction": "Tap a moment to reveal the most direct target.",
+          "tools": [
+            {
+              "label": "Light cue",
+              "use": "reduce one intrusive light"
+            },
+            {
+              "label": "Sound cue",
+              "use": "soften one repeated sound"
+            },
+            {
+              "label": "Activity cue",
+              "use": "move one alerting task"
+            }
+          ],
+          "moments": [
+            {
+              "label": "A charging screen flashes beside the pillow",
+              "toolIndex": 0,
+              "key": "LIGHT CUE",
+              "response": "Turn the screen away, cover the glow safely, or charge it farther from the bed."
+            },
+            {
+              "label": "Optional alerts chime through the night",
+              "toolIndex": 1,
+              "key": "SOUND CUE",
+              "response": "Use a scheduled quiet setting while preserving any alerts needed for safety or caregiving."
+            },
+            {
+              "label": "Tomorrow's work is planned under the covers",
+              "toolIndex": 2,
+              "key": "ACTIVITY CUE",
+              "response": "Move the planning step to a chair, desk, or earlier cue when practical."
+            }
+          ],
+          "note": "The useful move fits the person, the home, and any safety needs."
+        }
+      },
+      {
+        "source_id": "u3_l25_private_change_plan",
+        "node_source_id": "u3_2_make_the_bedroom_work-n2",
+        "order_index": 4,
+        "type": "if_then_plan",
+        "phase": "reflect",
+        "duration_seconds": 65,
+        "scaffold_level": 2,
+        "difficulty": 0.16,
+        "is_scored": false,
+        "concept": "smallest_useful_change",
+        "content": {
+          "title": "Choose one good-enough experiment",
+          "instruction": "Pick one cue and one feasible response.",
+          "privacy": "Saved privately. No reminders unless you ask.",
+          "cues": [
+            "one repeated light cue becomes noticeable",
+            "an optional sound or alert reaches the bed",
+            "an alerting task follows me into bed"
+          ],
+          "actions": [
+            "reduce that one cue in the smallest safe way I can",
+            "protect necessary safety or caregiving alerts and quiet the rest",
+            "move that task to another practical place or earlier moment"
+          ],
+          "feedbackTitle": "One target is enough",
+          "feedback": "Try the smallest feasible change first. The result is information, not a pass-or-fail sleep score."
+        }
+      },
+      {
+        "source_id": "u3_l26_story_bed_learns",
+        "node_source_id": "u3_2_make_the_bedroom_work-n3",
+        "order_index": 0,
+        "type": "story_walkthrough",
+        "phase": "model",
+        "duration_seconds": 65,
+        "scaffold_level": 1,
+        "difficulty": 0.13,
+        "is_scored": false,
+        "concept": "bed_sleep_association",
+        "content": {
+          "title": "The bed learns by repetition",
+          "instruction": "Follow one ordinary loop without blame.",
+          "beats": [
+            {
+              "id": "early-bed",
+              "kicker": "NIGHT 1",
+              "title": "Rae gets into bed before feeling sleepy",
+              "body": "Rae hopes extra time in bed will make sleep arrive sooner, so the bed begins as a place for waiting.",
+              "icon": "moon"
+            },
+            {
+              "id": "alert-work",
+              "kicker": "NIGHT 3",
+              "title": "The bed becomes a work zone",
+              "body": "Emails and tomorrow's planning keep attention switched on in the same place used for sleep.",
+              "icon": "activity"
+            },
+            {
+              "id": "frustrated",
+              "kicker": "NIGHT 6",
+              "title": "The pillow starts to cue effort",
+              "body": "Rae notices frustration as soon as the light goes out. This is learned association, not proof that sleep is broken.",
+              "icon": "zap"
+            }
+          ],
+          "insight": {
+            "title": "Associations can be relearned",
+            "body": "Repeated sleepy, low-effort experiences can gradually make the bed a clearer cue for sleep again."
+          }
+        }
+      },
+      {
+        "source_id": "u3_l26_contrast_bed_pairings",
+        "node_source_id": "u3_2_make_the_bedroom_work-n3",
+        "order_index": 1,
+        "type": "same_but_different",
+        "phase": "contrast",
+        "duration_seconds": 55,
+        "scaffold_level": 2,
+        "difficulty": 0.18,
+        "is_scored": false,
+        "concept": "bed_sleep_association",
+        "content": {
+          "title": "Same bed, different lesson",
+          "instruction": "Open each row to compare what repetition teaches.",
+          "leftHeading": "WAKEFUL PAIRING",
+          "rightHeading": "SLEEPY PAIRING",
+          "rows": [
+            {
+              "question": "What starts the visit?",
+              "left": "Going to bed mainly because the clock says so",
+              "right": "Going to bed when sleepiness is present"
+            },
+            {
+              "question": "What happens there?",
+              "left": "Work, scrolling, monitoring, or frustrated effort",
+              "right": "A low-effort settling context"
+            },
+            {
+              "question": "What can repeat?",
+              "left": "Bed predicts alertness or effort",
+              "right": "Bed more often predicts sleep"
+            }
+          ],
+          "tell": "The brain learns the repeated pairing. This is a changeable pattern, not a verdict about the sleeper."
+        }
+      },
+      {
+        "source_id": "u3_l26_retrieve_association",
+        "node_source_id": "u3_2_make_the_bedroom_work-n3",
+        "order_index": 2,
+        "type": "fill_blank",
+        "phase": "retrieve",
+        "duration_seconds": 55,
+        "scaffold_level": 2,
+        "difficulty": 0.22,
+        "is_scored": true,
+        "concept": "bed_sleep_association",
+        "content": {
+          "title": "Name what the bed learns",
+          "instruction": "Type the missing idea. Close wording counts.",
+          "capability": "You can explain the bed-wake loop without blaming the sleeper.",
+          "variants": [
+            {
+              "pre": "Bed-sleep associations grow through repeated",
+              "post": ".",
+              "answers": [
+                "pairings",
+                "pairing",
+                "experiences"
+              ],
+              "exampleWords": [
+                "pairings",
+                "promises",
+                "temperatures"
+              ],
+              "correctFeedback": "Right. Repeated experiences teach the brain what a place predicts.",
+              "incorrectFeedback": "Look for the learning process: the bed becomes linked with what repeatedly happens there.",
+              "workedExample": "Repeated pairings of bed with alert activity can strengthen wakefulness; repeated sleepy pairings can rebuild the sleep cue."
+            },
+            {
+              "pre": "A bed-wake",
+              "post": "is learned, not proof that the body has forgotten sleep.",
+              "answers": [
+                "association",
+                "link",
+                "connection"
+              ],
+              "exampleWords": [
+                "association",
+                "diagnosis",
+                "temperature"
+              ],
+              "correctFeedback": "Yes. Association describes a learned link, not a permanent defect.",
+              "incorrectFeedback": "The missing word names a learned connection between bed and wakefulness.",
+              "workedExample": "A bed-wake association is a repeated learned connection. Learned connections can change."
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l26_transfer_learned_loop",
+        "node_source_id": "u3_2_make_the_bedroom_work-n3",
+        "order_index": 3,
+        "type": "course_choice",
+        "phase": "transfer",
+        "duration_seconds": 65,
+        "scaffold_level": 3,
+        "difficulty": 0.27,
+        "is_scored": true,
+        "concept": "bed_sleep_association",
+        "content": {
+          "title": "Explain the pattern, not the person",
+          "instruction": "Choose the explanation that fits the learning loop.",
+          "context": "Noor gets into bed long before feeling sleepy, finishes work there, and watches the time while trying hard to sleep. Soon, getting under the covers brings a burst of alertness.",
+          "prompt": "What is the most useful explanation?",
+          "options": [
+            {
+              "id": "association",
+              "label": "Repeated alert activity may have taught the bed to predict wakefulness",
+              "isCorrect": true,
+              "feedback": "Yes. The repeated pairing explains the alertness without blaming Noor or treating it as permanent."
+            },
+            {
+              "id": "broken",
+              "label": "Noor's sleep system has permanently stopped working",
+              "feedback": "The pattern does not prove a permanent problem. Learned associations can be rebuilt gradually."
+            },
+            {
+              "id": "earlier",
+              "label": "Going to bed even earlier will automatically overpower the alertness",
+              "feedback": "More wakeful time in bed may repeat the same pairing. Clock time alone does not create sleepiness."
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l26_private_bed_use_check",
+        "node_source_id": "u3_2_make_the_bedroom_work-n3",
+        "order_index": 4,
+        "type": "private_check",
+        "phase": "reflect",
+        "duration_seconds": 50,
+        "scaffold_level": 2,
+        "difficulty": 0.14,
+        "is_scored": false,
+        "concept": "bed_sleep_association",
+        "content": {
+          "title": "What does your bed sometimes host?",
+          "instruction": "Tick anything familiar, or choose none.",
+          "items": [
+            "Trying hard to make sleep happen",
+            "Clock-checking or sleep monitoring",
+            "Work, planning, or difficult messages",
+            "Scrolling mainly because I am awake",
+            "Necessary rest, mobility support, or caregiving"
+          ],
+          "feedbackTitle": "Context matters",
+          "feedback": "These are observations, not faults. Necessary rest, access, and caregiving are not failures; the next lesson shows how the sleep cue can adapt safely."
+        }
+      },
+      {
+        "source_id": "u3_l27_recall_association_rule",
+        "node_source_id": "u3_2_make_the_bedroom_work-n4",
+        "order_index": 0,
+        "type": "recall_warmup",
+        "phase": "retrieve",
+        "duration_seconds": 45,
+        "scaffold_level": 1,
+        "difficulty": 0.14,
+        "is_scored": false,
+        "concept": "bed_sleep_association",
+        "content": {
+          "title": "Retrieve the learning rule",
+          "instruction": "Recall the idea before seeing the answer.",
+          "cards": [
+            {
+              "question": "How can bed become linked with alertness?",
+              "answer": "Repeated wakeful, effortful, or frustrated experiences in bed can teach that association."
+            },
+            {
+              "question": "Is the association permanent?",
+              "answer": "No. Repeated sleepy, low-effort pairings can gradually rebuild the sleep connection."
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l27_stimulus_control_rule",
+        "node_source_id": "u3_2_make_the_bedroom_work-n4",
+        "order_index": 1,
+        "type": "concept_card",
+        "phase": "model",
+        "duration_seconds": 55,
+        "scaffold_level": 1,
+        "difficulty": 0.15,
+        "is_scored": false,
+        "concept": "stimulus_control",
+        "content": {
+          "title": "Follow sleepiness, not the clock",
+          "instruction": "Keep the rule flexible and safe.",
+          "variant": "rule",
+          "rule": "Use bed when sleepy; if wakefulness and frustration build, change context safely and return when sleepier.",
+          "explanation": "A context change might mean a safe nearby seat, or a quiet change of posture and activity when moving is unsafe. There is no minute threshold to watch.",
+          "note": "Mobility, fall risk, caregiving, and surroundings always come before the textbook version."
+        }
+      },
+      {
+        "source_id": "u3_l27_contrast_safe_versions",
+        "node_source_id": "u3_2_make_the_bedroom_work-n4",
+        "order_index": 2,
+        "type": "same_but_different",
+        "phase": "contrast",
+        "duration_seconds": 60,
+        "scaffold_level": 2,
+        "difficulty": 0.2,
+        "is_scored": false,
+        "concept": "stimulus_control",
+        "content": {
+          "title": "Rigid rule or safe principle?",
+          "instruction": "Open each row to see what stays constant.",
+          "leftHeading": "RIGID VERSION",
+          "rightHeading": "SAFE VERSION",
+          "rows": [
+            {
+              "question": "When do I respond?",
+              "left": "When a fixed number of minutes has passed",
+              "right": "When wakefulness and frustration are building"
+            },
+            {
+              "question": "What must I do?",
+              "left": "Leave the bed and walk elsewhere no matter what",
+              "right": "Change context in a way that fits mobility, safety, and caregiving"
+            },
+            {
+              "question": "When do I return?",
+              "left": "At a scheduled clock time",
+              "right": "When sleepiness is more present, if I moved away"
+            }
+          ],
+          "tell": "The learning principle is a safer pairing of bed with sleepiness. The exact movement depends on the person's context."
+        }
+      },
+      {
+        "source_id": "u3_l27_apply_safe_stimulus_control",
+        "node_source_id": "u3_2_make_the_bedroom_work-n4",
+        "order_index": 3,
+        "type": "lever_scenario",
+        "phase": "transfer",
+        "duration_seconds": 90,
+        "scaffold_level": 3,
+        "difficulty": 0.3,
+        "is_scored": true,
+        "concept": "stimulus_control",
+        "content": {
+          "title": "Adapt the rule to real life",
+          "instruction": "Choose the response that protects safety and the sleep cue.",
+          "capability": "You can adapt stimulus control without a clock threshold.",
+          "variants": [
+            {
+              "sceneLabel": "NIGHT · FALL RISK",
+              "scene": "Meera is awake in bed and frustration is building. Walking through the dark room would increase her fall risk, and her usual mobility support is not within reach.",
+              "prompt": "What is the safest useful response?",
+              "clue": "The principle can adapt; safety is not optional.",
+              "worked": "Meera can stay in the safe setup, change posture or activity, use a quiet neutral cue, and let sleepiness return without monitoring minutes.",
+              "options": [
+                {
+                  "id": "safe-context",
+                  "label": "Stay safe and shift posture or quiet activity until sleepiness returns",
+                  "isCorrect": true,
+                  "feedback": "Yes. This changes the wakeful context without creating a fall risk or turning the clock into a test."
+                },
+                {
+                  "id": "dark-walk",
+                  "label": "Walk to another room in the dark because the rule must be followed exactly",
+                  "feedback": "A textbook movement is not worth a fall risk. Adapt the context change to the safe setup."
+                },
+                {
+                  "id": "force",
+                  "label": "Stay completely still and try harder to make sleep happen",
+                  "feedback": "Trying harder can keep effort and frustration paired with bed. A safe, quiet context shift is more consistent with the principle."
+                }
+              ]
+            },
+            {
+              "sceneLabel": "NIGHT · CAREGIVING",
+              "scene": "Jon is awake after caring for a child. Leaving the safe caregiving area is not practical, and he notices frustration building as he tries to sleep immediately.",
+              "prompt": "How can Jon use the principle?",
+              "clue": "Necessary caregiving changes the form, not the person's worth or progress.",
+              "worked": "Jon can finish caregiving safely, use a quiet low-effort context shift where he is, and return to a sleep posture when sleepiness is present.",
+              "options": [
+                {
+                  "id": "adapt-care",
+                  "label": "Finish caregiving safely, then use a quiet context shift until sleepier",
+                  "isCorrect": true,
+                  "feedback": "Right. The response respects caregiving and still reduces frustrated effort in the sleep context."
+                },
+                {
+                  "id": "abandon-care",
+                  "label": "Leave immediately even though the caregiving situation would be unsafe",
+                  "feedback": "Safety and caregiving come first. Stimulus control should adapt to the context, not override it."
+                },
+                {
+                  "id": "count-minutes",
+                  "label": "Watch the clock and respond only after a fixed threshold",
+                  "feedback": "Clock thresholds are not required and can add monitoring. Use the felt pattern of wakefulness and frustration instead."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l27_private_safe_plan",
+        "node_source_id": "u3_2_make_the_bedroom_work-n4",
+        "order_index": 4,
+        "type": "if_then_plan",
+        "phase": "reflect",
+        "duration_seconds": 95,
+        "scaffold_level": 2,
+        "difficulty": 0.18,
+        "is_scored": false,
+        "concept": "stimulus_control",
+        "content": {
+          "title": "Choose your safe version",
+          "instruction": "Pick the shared cue, then the response that fits your context.",
+          "privacy": "Saved privately. No reminders unless you ask.",
+          "cues": [
+            "I am awake in bed and frustration is building"
+          ],
+          "actions": [
+            "move to a safe nearby place for a quiet activity, then return when sleepier",
+            "stay in my safe setup and change posture or quiet activity without walking in the dark",
+            "finish necessary caregiving safely, then reset the sleep context when practical"
+          ],
+          "feedbackTitle": "Safety is part of the skill",
+          "feedback": "Use the version that fits your mobility, fall risk, caregiving, and surroundings. No clock-watching is needed."
+        }
+      },
+      {
+        "source_id": "u3_l28_recall_safe_boundary",
+        "node_source_id": "u3_2_make_the_bedroom_work-n5",
+        "order_index": 0,
+        "type": "recall_warmup",
+        "phase": "retrieve",
+        "duration_seconds": 35,
+        "scaffold_level": 1,
+        "difficulty": 0.14,
+        "is_scored": false,
+        "concept": "stimulus_control",
+        "content": {
+          "title": "Retrieve the safe principle",
+          "instruction": "Recall first, then reveal.",
+          "cards": [
+            {
+              "question": "What guides a stimulus-control response: elapsed minutes or the experience of wakefulness and frustration?",
+              "answer": "The experience of wakefulness and frustration. There is no fixed clock threshold."
+            },
+            {
+              "question": "What comes before the textbook version of the rule?",
+              "answer": "Mobility, fall risk, caregiving, and safety in the person's surroundings."
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l28_contrast_advice_scope",
+        "node_source_id": "u3_2_make_the_bedroom_work-n5",
+        "order_index": 1,
+        "type": "same_but_different",
+        "phase": "contrast",
+        "duration_seconds": 50,
+        "scaffold_level": 2,
+        "difficulty": 0.2,
+        "is_scored": false,
+        "concept": "sleep_window_clinician_guidance",
+        "content": {
+          "title": "Two kinds of sleep change",
+          "instruction": "Open each row to find the clinical boundary.",
+          "leftHeading": "SELF-GUIDED",
+          "rightHeading": "CLINICIAN-GUIDED",
+          "rows": [
+            {
+              "question": "What changes?",
+              "left": "One light, sound, activity, or safe context cue",
+              "right": "The amount or timing of time allowed in bed"
+            },
+            {
+              "question": "What is the aim?",
+              "left": "Reduce one friction and observe the pattern",
+              "right": "Use a personalised sleep window as part of treatment"
+            },
+            {
+              "question": "What support is needed?",
+              "left": "A small, reversible experiment may be self-guided",
+              "right": "Qualified assessment, tailoring, and monitoring"
+            }
+          ],
+          "tell": "Sleep restriction, compression, and personalised sleep windows are treatment decisions, not app-prescribed experiments."
+        }
+      },
+      {
+        "source_id": "u3_l28_clinician_boundary",
+        "node_source_id": "u3_2_make_the_bedroom_work-n5",
+        "order_index": 2,
+        "type": "concept_card",
+        "phase": "model",
+        "duration_seconds": 45,
+        "scaffold_level": 1,
+        "difficulty": 0.16,
+        "is_scored": false,
+        "concept": "sleep_window_clinician_guidance",
+        "content": {
+          "title": "Keep the boundary clear",
+          "instruction": "One rule protects the learner.",
+          "variant": "rule",
+          "rule": "Do not set a restricted, compressed, or personalised sleep window on your own from this course.",
+          "explanation": "These approaches can be part of evidence-based treatment, but they need a qualified clinician to assess context, tailor the plan, and monitor it.",
+          "note": "Asking for guidance is a skill, not a failure."
+        }
+      },
+      {
+        "source_id": "u3_l28_apply_clinician_boundary",
+        "node_source_id": "u3_2_make_the_bedroom_work-n5",
+        "order_index": 3,
+        "type": "lever_scenario",
+        "phase": "transfer",
+        "duration_seconds": 70,
+        "scaffold_level": 3,
+        "difficulty": 0.29,
+        "is_scored": true,
+        "concept": "sleep_window_clinician_guidance",
+        "content": {
+          "title": "Know when to pause",
+          "instruction": "Choose the response that stays inside the course boundary.",
+          "capability": "You can recognise a sleep-window plan that needs clinical guidance.",
+          "variants": [
+            {
+              "sceneLabel": "ONLINE ADVICE · TONIGHT",
+              "scene": "An online post tells Priya to sharply reduce her time in bed and gives her a narrow sleep window to start tonight. It does not ask about health, medication, safety, work, or caregiving.",
+              "prompt": "What is the safest next step?",
+              "clue": "Changing time in bed is different from dimming a light or quieting an alert.",
+              "worked": "Priya should not copy the window. A qualified clinician can assess whether a sleep-window approach fits and monitor it safely.",
+              "options": [
+                {
+                  "id": "clinician",
+                  "label": "Pause and discuss any sleep-window plan with a qualified clinician",
+                  "isCorrect": true,
+                  "feedback": "Yes. Sleep-window changes require individual assessment and monitoring before use."
+                },
+                {
+                  "id": "copy",
+                  "label": "Copy the narrow window exactly because it worked for the poster",
+                  "feedback": "Another person's plan does not account for Priya's health, safety, schedule, or caregiving context."
+                },
+                {
+                  "id": "narrower",
+                  "label": "Make the window even narrower to get a faster result",
+                  "feedback": "More restriction is not a self-guided shortcut and may increase risk. This is where clinical guidance is needed."
+                }
+              ]
+            },
+            {
+              "sceneLabel": "APP PLAN · PERSONAL DATA",
+              "scene": "A generic app asks Arun to calculate a compressed sleep window from a few nights of data, without clinical assessment or follow-up.",
+              "prompt": "Which response fits this course?",
+              "clue": "A personal data point is not the same as a clinically tailored plan.",
+              "worked": "Arun can keep observing sleep cues, but should not use the app to prescribe a compressed window. A qualified clinician should guide that decision.",
+              "options": [
+                {
+                  "id": "observe-and-ask",
+                  "label": "Keep observations, but ask a qualified clinician before changing the sleep window",
+                  "isCorrect": true,
+                  "feedback": "Right. Observation can inform a conversation; it does not replace clinical assessment."
+                },
+                {
+                  "id": "app-prescribes",
+                  "label": "Treat the app calculation as a personalised prescription",
+                  "feedback": "A calculation without assessment and monitoring is not a safe personalised treatment plan."
+                },
+                {
+                  "id": "self-adjust",
+                  "label": "Change the window night by night until exhaustion forces sleep",
+                  "feedback": "Self-adjusting toward exhaustion is not the goal and falls outside safe self-guided practice."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_l28_private_support_choice",
+        "node_source_id": "u3_2_make_the_bedroom_work-n5",
+        "order_index": 4,
+        "type": "private_check",
+        "phase": "reflect",
+        "duration_seconds": 45,
+        "scaffold_level": 2,
+        "difficulty": 0.15,
+        "is_scored": false,
+        "concept": "sleep_window_clinician_guidance",
+        "content": {
+          "title": "Would more support help?",
+          "instruction": "Tick any conversation you may want, or choose none.",
+          "items": [
+            "Ask a qualified clinician about persistent or distressing sleep difficulty",
+            "Discuss breathing pauses, gasping, or loud snoring noticed during sleep",
+            "Discuss daytime sleepiness that affects driving, work, or safety",
+            "Review medicines, health conditions, shifts, mobility, or caregiving before a sleep-window change",
+            "Keep using only small environmental experiments for now"
+          ],
+          "feedbackTitle": "Choose support that fits",
+          "feedback": "This check is private and unscored. A clinician can help assess symptoms or safety concerns and decide whether a sleep-window treatment is appropriate."
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n1-e1",
+        "node_source_id": "u3_3_clear_test_personalize-n1",
+        "order_index": 0,
+        "type": "guided_recall_chips",
+        "phase": "recall",
+        "duration_seconds": 50,
+        "scaffold_level": 4,
+        "difficulty": 0.18,
+        "is_scored": false,
+        "concept": "stimulus_control",
+        "content": {
+          "title": "Rebuild the reset",
+          "instruction": "Tap the steps in order.",
+          "prompt": "When bed becomes a place of wakeful struggle, what is the helpful sequence?",
+          "chips": [
+            "leave the bed",
+            "choose a quiet activity",
+            "return when sleepy",
+            "solve tomorrow now"
+          ],
+          "answer": [
+            "leave the bed",
+            "choose a quiet activity",
+            "return when sleepy"
+          ]
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n1-e2",
+        "node_source_id": "u3_3_clear_test_personalize-n1",
+        "order_index": 1,
+        "type": "same_but_different",
+        "phase": "model",
+        "duration_seconds": 70,
+        "scaffold_level": 2,
+        "difficulty": 0.14,
+        "is_scored": false,
+        "concept": "worry_capture",
+        "content": {
+          "title": "Capture is not solving",
+          "instruction": "Open each row to compare the two moves.",
+          "leftHeading": "Capture",
+          "rightHeading": "Solve",
+          "rows": [
+            {
+              "question": "How much do you write?",
+              "left": "A few brief fragments.",
+              "right": "A full analysis or long journal entry."
+            },
+            {
+              "question": "What comes next?",
+              "left": "Name one daytime next step, or stop.",
+              "right": "Keep searching for certainty tonight."
+            },
+            {
+              "question": "What if writing activates you?",
+              "left": "Stop and choose no writing, quiet reading, or a familiar relaxation practice.",
+              "right": "Push through until the worry feels resolved."
+            }
+          ],
+          "tell": "Capture gives the mind a parking place; it does not require an answer tonight."
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n1-e3",
+        "node_source_id": "u3_3_clear_test_personalize-n1",
+        "order_index": 2,
+        "type": "lever_scenario",
+        "phase": "apply",
+        "duration_seconds": 90,
+        "scaffold_level": 6,
+        "difficulty": 0.28,
+        "is_scored": true,
+        "concept": "worry_capture",
+        "content": {
+          "title": "Keep the capture small",
+          "instruction": "Choose the move that clears space without starting a solving session.",
+          "capability": "You can separate a brief capture from late-night problem-solving.",
+          "variants": [
+            {
+              "sceneLabel": "10:40 PM",
+              "scene": "Mina keeps remembering an unfinished work task as her usual transition cue begins. She wants to keep thinking until she has the perfect answer.",
+              "prompt": "What is the most useful first move?",
+              "clue": "Look for a brief record plus a daytime action—not a complete solution.",
+              "worked": "Write: ‘Budget question—email Sam after breakfast.’ Then return to the wind-down. If writing ramps things up, stop and choose a non-writing option.",
+              "options": [
+                {
+                  "id": "brief-capture",
+                  "label": "Write a brief fragment and one daytime next step, then stop.",
+                  "feedback": "This preserves the concern and gives it a next step without turning the evening into a problem-solving session.",
+                  "isCorrect": true
+                },
+                {
+                  "id": "full-analysis",
+                  "label": "List every possible outcome until the uncertainty is gone.",
+                  "feedback": "A full analysis keeps the mind in solving mode; capture is deliberately brief and does not demand certainty tonight.",
+                  "isCorrect": false
+                },
+                {
+                  "id": "force-writing",
+                  "label": "Keep journaling even if writing makes her more activated.",
+                  "feedback": "Writing is optional. If it feels activating, stopping and choosing quiet reading, a familiar relaxation practice, or no writing protects choice.",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n1-e4",
+        "node_source_id": "u3_3_clear_test_personalize-n1",
+        "order_index": 3,
+        "type": "if_then_plan",
+        "phase": "reflect",
+        "duration_seconds": 90,
+        "scaffold_level": 5,
+        "difficulty": 0.16,
+        "is_scored": false,
+        "concept": "worry_capture",
+        "content": {
+          "title": "Choose your private parking plan",
+          "instruction": "Optional: pair one cue with one gentle response.",
+          "privacy": "Private and unscored. Skip this plan if you prefer.",
+          "cues": [
+            "a worry repeats and writing still feels neutral",
+            "I notice I am trying to solve tomorrow tonight and writing still feels neutral"
+          ],
+          "actions": [
+            "note one brief fragment and one daytime next step, then stop",
+            "skip writing and choose quiet reading",
+            "use a familiar relaxation practice that already feels safe",
+            "stop the exercise and choose no writing"
+          ],
+          "feedbackTitle": "A plan, not an assignment",
+          "feedback": "Capture stays optional and brief. The aim is a parking place and one next step—not a solved worry or a test of whether sleep follows. If writing becomes activating, stop writing and switch to quiet reading, a familiar relaxation practice, or no exercise."
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n2-e1",
+        "node_source_id": "u3_3_clear_test_personalize-n2",
+        "order_index": 0,
+        "type": "guided_recall_chips",
+        "phase": "recall",
+        "duration_seconds": 45,
+        "scaffold_level": 4,
+        "difficulty": 0.19,
+        "is_scored": false,
+        "concept": "evening_light",
+        "content": {
+          "title": "Retrieve the light test",
+          "instruction": "Build the smallest useful sequence.",
+          "prompt": "How do you test an evening-light change cleanly?",
+          "chips": [
+            "choose one light source",
+            "make it dimmer or warmer",
+            "keep other levers stable",
+            "redesign the whole evening"
+          ],
+          "answer": [
+            "choose one light source",
+            "make it dimmer or warmer",
+            "keep other levers stable"
+          ]
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n2-e2",
+        "node_source_id": "u3_3_clear_test_personalize-n2",
+        "order_index": 1,
+        "type": "toolkit_shelf",
+        "phase": "model",
+        "duration_seconds": 70,
+        "scaffold_level": 3,
+        "difficulty": 0.15,
+        "is_scored": false,
+        "concept": "mind_clearing_choice",
+        "content": {
+          "title": "Four valid ways to clear space",
+          "instruction": "Tap a moment to see a fitting option.",
+          "note": "No tool has to make you sleepy. Choose the least activating option that fits tonight.",
+          "tools": [
+            {
+              "label": "Quiet reading",
+              "use": "Shift attention gently"
+            },
+            {
+              "label": "Familiar relaxation",
+              "use": "Use a practice you already know"
+            },
+            {
+              "label": "Brief capture",
+              "use": "Fragments plus one next step"
+            },
+            {
+              "label": "No writing",
+              "use": "Protect choice and stop"
+            }
+          ],
+          "moments": [
+            {
+              "label": "My mind is busy, but words on paper make it busier.",
+              "toolIndex": 0,
+              "key": "QUIET READING",
+              "response": "Choose calm, non-work reading in suitable low light; there is nothing to record or solve."
+            },
+            {
+              "label": "A familiar relaxation practice usually feels steady.",
+              "toolIndex": 1,
+              "key": "FAMILIAR RELAXATION",
+              "response": "Use the practice you already know. You do not need to add a new technique tonight."
+            },
+            {
+              "label": "One task keeps looping and I want a parking place.",
+              "toolIndex": 2,
+              "key": "BRIEF CAPTURE",
+              "response": "Write a few fragments and one daytime next step, then close the note."
+            },
+            {
+              "label": "Any extra exercise feels like pressure tonight.",
+              "toolIndex": 3,
+              "key": "NO WRITING",
+              "response": "Choose no writing. Doing less can be the smallest useful change."
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n2-e3",
+        "node_source_id": "u3_3_clear_test_personalize-n2",
+        "order_index": 2,
+        "type": "lever_scenario",
+        "phase": "apply",
+        "duration_seconds": 70,
+        "scaffold_level": 6,
+        "difficulty": 0.29,
+        "is_scored": true,
+        "concept": "mind_clearing_choice",
+        "content": {
+          "title": "Switch when a tool activates",
+          "instruction": "Choose the response that protects flexibility.",
+          "capability": "You can choose or change a mind-clearing tool without grading the night.",
+          "variants": [
+            {
+              "sceneLabel": "A TOOL THAT ISN’T HELPING",
+              "scene": "Dev starts a worry note, but after two lines feels more alert and pulled into analysis. Quiet reading has felt neutral before.",
+              "prompt": "What fits the choice rule?",
+              "clue": "A tool is optional; activation is a reason to stop, not to try harder.",
+              "worked": "Close the note and switch to familiar quiet reading—or choose no exercise. The goal is a fitting option, not completion.",
+              "options": [
+                {
+                  "id": "switch-or-stop",
+                  "label": "Stop writing and switch to quiet reading, or choose no exercise.",
+                  "feedback": "This responds to activation and uses a familiar, lower-pressure option without making completion the goal.",
+                  "isCorrect": true
+                },
+                {
+                  "id": "finish-page",
+                  "label": "Finish a full page so the exercise counts.",
+                  "feedback": "Completion is not the target. Continuing an activating tool can turn a choice into pressure.",
+                  "isCorrect": false
+                },
+                {
+                  "id": "add-tools",
+                  "label": "Add a new relaxation method and keep writing too.",
+                  "feedback": "Stacking unfamiliar tools adds effort and obscures what helped; one fitting, familiar option is enough.",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n2-e4",
+        "node_source_id": "u3_3_clear_test_personalize-n2",
+        "order_index": 3,
+        "type": "if_then_plan",
+        "phase": "reflect",
+        "duration_seconds": 55,
+        "scaffold_level": 5,
+        "difficulty": 0.16,
+        "is_scored": false,
+        "concept": "mind_clearing_choice",
+        "content": {
+          "title": "Pick tonight’s low-pressure option",
+          "instruction": "Optional: choose a cue and a response.",
+          "privacy": "Private and unscored. Choosing no writing is valid.",
+          "cues": [
+            "my mind is busy during wind-down and writing still feels neutral",
+            "a repeated task needs a daytime next step and writing still feels neutral"
+          ],
+          "actions": [
+            "read something quiet in suitable low light",
+            "use a familiar relaxation practice",
+            "write brief fragments and one next step, then stop",
+            "choose no writing and keep the evening simple"
+          ],
+          "feedbackTitle": "Your tool can change",
+          "feedback": "This is a menu, not a prescription. If writing becomes activating, stop writing and switch to quiet reading, a familiar relaxation practice, or no exercise. Do not use sleep onset as the grade."
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n3-e1",
+        "node_source_id": "u3_3_clear_test_personalize-n3",
+        "order_index": 0,
+        "type": "guided_recall_chips",
+        "phase": "recall",
+        "duration_seconds": 45,
+        "scaffold_level": 4,
+        "difficulty": 0.2,
+        "is_scored": false,
+        "concept": "smallest_useful_change",
+        "content": {
+          "title": "Retrieve the small-change rule",
+          "instruction": "Put the decision chain in order.",
+          "prompt": "When an evening routine feels too large, what comes first?",
+          "chips": [
+            "name the friction",
+            "shrink the action",
+            "try the smallest useful version",
+            "add three more changes"
+          ],
+          "answer": [
+            "name the friction",
+            "shrink the action",
+            "try the smallest useful version"
+          ]
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n3-e2",
+        "node_source_id": "u3_3_clear_test_personalize-n3",
+        "order_index": 1,
+        "type": "same_but_different",
+        "phase": "model",
+        "duration_seconds": 70,
+        "scaffold_level": 3,
+        "difficulty": 0.16,
+        "is_scored": false,
+        "concept": "evening_experiment",
+        "content": {
+          "title": "Experiment, not performance test",
+          "instruction": "Open each row to find the difference.",
+          "leftHeading": "One-change experiment",
+          "rightHeading": "Sleep performance test",
+          "rows": [
+            {
+              "question": "What changes?",
+              "left": "One safe lever; the rest stays as stable as practical.",
+              "right": "Several parts of the evening change at once."
+            },
+            {
+              "question": "How much evidence counts?",
+              "left": "Several reasonably comparable nights.",
+              "right": "One good or bad night becomes the verdict."
+            },
+            {
+              "question": "What stays protected?",
+              "left": "Time-in-bed needs, medication, symptoms, caregiving, and other health needs.",
+              "right": "The plan is followed even when health or safety needs change."
+            }
+          ],
+          "tell": "A useful experiment changes one safe lever, watches a pattern, and never asks one night to prove anything."
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n3-e3",
+        "node_source_id": "u3_3_clear_test_personalize-n3",
+        "order_index": 2,
+        "type": "lever_scenario",
+        "phase": "apply",
+        "duration_seconds": 90,
+        "scaffold_level": 6,
+        "difficulty": 0.32,
+        "is_scored": true,
+        "concept": "evening_experiment",
+        "content": {
+          "title": "Make the test interpretable",
+          "instruction": "Choose the safest plan that can teach you something.",
+          "capability": "You can test one safe evening lever across comparable nights.",
+          "variants": [
+            {
+              "sceneLabel": "A WEEK WITH ROOM TO TEST",
+              "scene": "Isha wants to know whether dimming one living-room lamp during wind-down suits her. Her work schedule is similar for the next four nights.",
+              "prompt": "Which experiment gives the clearest, safest signal?",
+              "clue": "Change one lever, keep health needs intact, and look across more than one night.",
+              "worked": "Dim that one lamp during the same wind-down window for several comparable nights. Keep other routines and necessary time in bed unchanged, then review the pattern.",
+              "options": [
+                {
+                  "id": "one-lamp",
+                  "label": "Dim that lamp for several comparable nights and keep other routines as stable as practical.",
+                  "feedback": "One safe lever across comparable nights makes the pattern easier to interpret while protecting existing needs.",
+                  "isCorrect": true
+                },
+                {
+                  "id": "total-overhaul",
+                  "label": "Dim every light, add journaling, change bedtime, and judge the first night.",
+                  "feedback": "Multiple changes hide which lever mattered, and one night is too noisy to serve as proof.",
+                  "isCorrect": false
+                },
+                {
+                  "id": "cut-bed-time",
+                  "label": "Restrict time in bed so the experiment produces a stronger result.",
+                  "feedback": "This course does not use time-in-bed restriction. An evening experiment must not override sleep opportunity or other health needs.",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n3-e4",
+        "node_source_id": "u3_3_clear_test_personalize-n3",
+        "order_index": 3,
+        "type": "if_then_plan",
+        "phase": "reflect",
+        "duration_seconds": 95,
+        "scaffold_level": 5,
+        "difficulty": 0.18,
+        "is_scored": false,
+        "concept": "evening_experiment",
+        "content": {
+          "title": "Set one safe experiment",
+          "instruction": "Optional: choose one cue and one change to test.",
+          "privacy": "Private and unscored. Pause whenever health, safety, or care needs take priority.",
+          "cues": [
+            "my usual wind-down window begins on a comparable evening",
+            "my chosen transition cue appears on a comparable evening"
+          ],
+          "actions": [
+            "dim or warm one light source and keep other levers stable for several comparable nights",
+            "use ten minutes of quiet reading and keep other levers stable for several comparable nights",
+            "use one familiar relaxation practice and keep other levers stable for several comparable nights"
+          ],
+          "feedbackTitle": "Collect a pattern, not a verdict",
+          "feedback": "Review several comparable nights. One night is one data point, never proof. If a night becomes meaningfully different or health or care needs arise, protect those needs first and mark the night as not comparable. Do not restrict time in bed or change medication for this experiment."
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n4-e1",
+        "node_source_id": "u3_3_clear_test_personalize-n4",
+        "order_index": 0,
+        "type": "guided_recall_chips",
+        "phase": "recall",
+        "duration_seconds": 35,
+        "scaffold_level": 4,
+        "difficulty": 0.22,
+        "is_scored": false,
+        "concept": "transition_cue",
+        "content": {
+          "title": "Rebuild the flexible loop",
+          "instruction": "Arrange the blueprint from cue to review.",
+          "prompt": "What sequence keeps an evening plan useful and testable?",
+          "chips": [
+            "notice the transition cue",
+            "use a familiar wind-down",
+            "change one safe lever",
+            "review several comparable nights",
+            "grade sleep after one night"
+          ],
+          "answer": [
+            "notice the transition cue",
+            "use a familiar wind-down",
+            "change one safe lever",
+            "review several comparable nights"
+          ]
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n4-e2",
+        "node_source_id": "u3_3_clear_test_personalize-n4",
+        "order_index": 1,
+        "type": "if_then_plan",
+        "phase": "reflect",
+        "duration_seconds": 40,
+        "scaffold_level": 5,
+        "difficulty": 0.18,
+        "is_scored": false,
+        "concept": "evening_blueprint",
+        "content": {
+          "title": "Layer 1: Start the transition",
+          "instruction": "Optional: choose a reliable cue and a familiar start.",
+          "privacy": "Private and unscored. Any combination below is a gentle transition, not a sleep command.",
+          "cues": [
+            "I finish my last necessary task",
+            "I switch off the main room light",
+            "I put away my work materials"
+          ],
+          "actions": [
+            "begin my familiar wind-down in lower light",
+            "choose quiet reading or a familiar relaxation practice",
+            "do the smallest useful version of my usual wind-down"
+          ],
+          "feedbackTitle": "Your transition is rehearsed",
+          "feedback": "The cue starts an action you control. It does not promise sleep, and you can shorten or skip the routine when health or care needs take priority."
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n4-e3",
+        "node_source_id": "u3_3_clear_test_personalize-n4",
+        "order_index": 2,
+        "type": "if_then_plan",
+        "phase": "reflect",
+        "duration_seconds": 45,
+        "scaffold_level": 5,
+        "difficulty": 0.2,
+        "is_scored": false,
+        "concept": "evening_blueprint",
+        "content": {
+          "title": "Layer 2: Protect the bed cue",
+          "instruction": "Optional: rehearse a safe response to wakeful struggle in bed.",
+          "privacy": "Private and unscored. Choose only responses that are safe and feasible for your mobility, setting, and care needs.",
+          "cues": [
+            "I notice I am awake and struggling in bed",
+            "bed starts to feel like a place for planning or effort"
+          ],
+          "actions": [
+            "leave the bed for a quiet activity and return when sleepy, if safe and feasible",
+            "use a safe seated or in-bed quiet reset when leaving is unsafe or impractical",
+            "attend to mobility, caregiving, symptoms, or other health needs before any sleep strategy"
+          ],
+          "feedbackTitle": "A safe awake response",
+          "feedback": "Each option reduces struggle without using a clock threshold. Health, mobility, fall-risk, caregiving, and environmental safety always shape the response."
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n4-e4",
+        "node_source_id": "u3_3_clear_test_personalize-n4",
+        "order_index": 3,
+        "type": "if_then_plan",
+        "phase": "reflect",
+        "duration_seconds": 40,
+        "scaffold_level": 5,
+        "difficulty": 0.18,
+        "is_scored": false,
+        "concept": "evening_blueprint",
+        "content": {
+          "title": "Layer 3: Keep a short-night fallback",
+          "instruction": "Optional: choose a smaller version for a constrained evening.",
+          "privacy": "Private and unscored. Protect health and care needs first; never cut necessary time in bed.",
+          "cues": [
+            "the evening is shorter than usual after necessary tasks",
+            "health, caregiving, or safety needs make the full routine impractical"
+          ],
+          "actions": [
+            "protect the need first, then use one familiar two-minute transition if it still fits",
+            "skip the experiment and keep only a safe, familiar cue if it still fits",
+            "choose no routine tonight and preserve necessary time in bed"
+          ],
+          "feedbackTitle": "The fallback still counts",
+          "feedback": "A short-night plan removes pressure. It never asks you to ignore care needs, compress necessary sleep opportunity, or treat one unusual night as experiment evidence."
+        }
+      },
+      {
+        "source_id": "u3_3_clear_test_personalize-n4-e5",
+        "node_source_id": "u3_3_clear_test_personalize-n4",
+        "order_index": 4,
+        "type": "course_checkpoint",
+        "phase": "apply",
+        "duration_seconds": 200,
+        "scaffold_level": 6,
+        "difficulty": 0.36,
+        "is_scored": true,
+        "concept": "evening_blueprint",
+        "content": {
+          "title": "Clear, test, personalize",
+          "instruction": "A cumulative review of the choices that keep an evening plan flexible.",
+          "introTitle": "Four decisions, no sleep grade",
+          "intro": "Retrieve the principles, apply them to realistic evenings, and use any misses as pointers for review.",
+          "items": [
+            {
+              "concept": "Stimulus control",
+              "context": "After a long wakeful stretch, bed is starting to feel like a place for effort and planning.",
+              "prompt": "Which response best protects the bed–sleep association?",
+              "clue": "Recall what to do when wakeful struggle has taken over the bed.",
+              "worked": "Leave the bed, choose a quiet activity, and return when sleepy, while still protecting health and mobility needs.",
+              "options": [
+                {
+                  "label": "Leave the bed for a quiet activity and return when sleepy, if safe and feasible.",
+                  "feedback": "This interrupts wakeful struggle in bed and preserves flexibility for safety, mobility, and health needs.",
+                  "isCorrect": true
+                },
+                {
+                  "label": "Stay in bed and work harder at making sleep happen.",
+                  "feedback": "Effort can strengthen the link between bed and wakeful struggle; the reset changes context rather than forcing sleep.",
+                  "isCorrect": false
+                },
+                {
+                  "label": "Use the time to solve tomorrow’s hardest problem.",
+                  "feedback": "Problem-solving keeps the bed paired with alert effort instead of offering a quiet reset.",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "concept": "Worry capture",
+              "context": "A repeated task comes to mind during wind-down, and writing usually feels neutral.",
+              "prompt": "What makes a capture different from late-night solving?",
+              "clue": "Keep it brief and give daytime one next step.",
+              "worked": "Use a few fragments plus one next step for tomorrow, then stop; writing remains optional.",
+              "options": [
+                {
+                  "label": "A few fragments and one daytime next step, followed by stopping.",
+                  "feedback": "This parks the concern without demanding a solution or certainty tonight.",
+                  "isCorrect": true
+                },
+                {
+                  "label": "A complete analysis of causes, risks, and every possible outcome.",
+                  "feedback": "That turns capture into an alert problem-solving session rather than a brief parking place.",
+                  "isCorrect": false
+                },
+                {
+                  "label": "Continuing to write even when it becomes activating.",
+                  "feedback": "Writing is optional; activation is a cue to stop and choose quiet reading, familiar relaxation, or no writing.",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "concept": "One-change experiment",
+              "context": "A learner dims one lamp, reads longer, changes bedtime, and tries a new relaxation method all on the same night.",
+              "prompt": "What is the strongest evaluation?",
+              "clue": "Ask whether one safe lever changed across enough comparable nights.",
+              "worked": "Return to one safe change, keep other levers as stable as practical, and review several comparable nights.",
+              "options": [
+                {
+                  "label": "The result is hard to interpret; retest one safe lever across several comparable nights.",
+                  "feedback": "Changing one lever and widening the observation window creates a clearer, less pressurized experiment.",
+                  "isCorrect": true
+                },
+                {
+                  "label": "If sleep was better, all four changes are proven to work.",
+                  "feedback": "One night cannot identify which change mattered or establish a reliable pattern.",
+                  "isCorrect": false
+                },
+                {
+                  "label": "Restrict time in bed next time to make the result clearer.",
+                  "feedback": "Time-in-bed restriction is outside this course and must not be used to strengthen an evening experiment.",
+                  "isCorrect": false
+                }
+              ]
+            },
+            {
+              "concept": "Flexible blueprint",
+              "context": "After one difficult night, Priya says, ‘My blueprint failed, so I need a stricter one.’",
+              "prompt": "Which response best evaluates the plan?",
+              "clue": "Separate actions under her control from sleep as an automatic outcome.",
+              "worked": "Check whether the cue and chosen actions were usable, then review a pattern across comparable nights without grading sleep.",
+              "options": [
+                {
+                  "label": "Review whether the actions were usable and wait for a pattern across comparable nights.",
+                  "feedback": "A blueprint is evaluated by whether its actions are safe and workable, not by commanding sleep on one night.",
+                  "isCorrect": true
+                },
+                {
+                  "label": "Add more rules until every night produces quick sleep.",
+                  "feedback": "More rules can turn a guide into a performance test, and no routine can guarantee sleep on command.",
+                  "isCorrect": false
+                },
+                {
+                  "label": "Ignore symptoms or care needs so the plan stays consistent.",
+                  "feedback": "Health and care needs always outrank consistency; unusual nights can be marked as not comparable.",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ],
+          "solidMessage": "You can build an evening plan around choices you control and evaluate it without grading sleep.",
+          "revisitMessage": "A short revisit can strengthen any principle that still feels effortful; no single response lowers your path."
+        }
+      }
+    ]
+
+  $json$::jsonb) AS row(
+    source_id TEXT,
+    node_source_id TEXT,
+    order_index INT,
+    type TEXT,
+    phase TEXT,
+    duration_seconds INT,
+    scaffold_level INT,
+    difficulty NUMERIC,
+    is_scored BOOLEAN,
+    concept TEXT,
+    content JSONB
+  )
+)
+INSERT INTO exercises (
+  id,
+  node_id,
+  order_index,
+  type,
+  phase,
+  duration_seconds,
+  scaffold_level,
+  difficulty,
+  is_scored,
+  concept,
+  content
+)
+SELECT
+  pg_temp.seed_uuid(source_id),
+  pg_temp.seed_uuid(node_source_id),
+  order_index,
+  type,
+  phase,
+  duration_seconds,
+  scaffold_level,
+  difficulty,
+  is_scored,
+  concept,
+  content
+FROM curriculum
+ON CONFLICT (id) DO UPDATE SET
+  node_id = EXCLUDED.node_id,
+  order_index = EXCLUDED.order_index,
+  type = EXCLUDED.type,
+  phase = EXCLUDED.phase,
+  duration_seconds = EXCLUDED.duration_seconds,
+  scaffold_level = EXCLUDED.scaffold_level,
+  difficulty = EXCLUDED.difficulty,
+  is_scored = EXCLUDED.is_scored,
+  concept = EXCLUDED.concept,
+  content = EXCLUDED.content;
+
+UPDATE courses
+SET total_lessons = 32
+WHERE id = pg_temp.seed_uuid('sleep-reset');
+
+COMMIT;
+
+SELECT
+  c.id AS course_id,
+  c.title AS course_title,
+  COUNT(DISTINCT s.id) AS sections,
+  COUNT(DISTINCT u.id) AS units,
+  COUNT(DISTINCT n.id) AS nodes,
+  COUNT(DISTINCT e.id) AS exercises
+FROM courses c
+JOIN sections s ON s.course_id = c.id
+JOIN units u ON u.section_id = s.id
+JOIN nodes n ON n.unit_id = u.id
+LEFT JOIN exercises e ON e.node_id = n.id
+WHERE c.id = pg_temp.seed_uuid('sleep-reset')
+  AND s.id = pg_temp.seed_uuid('s3_evening_architecture')
+GROUP BY c.id, c.title;
