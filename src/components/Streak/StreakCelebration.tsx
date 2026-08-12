@@ -271,15 +271,16 @@ function DayStreakLabel({ startAnim, reducedMotion }: { startAnim: boolean, redu
   );
 }
 
-function WeekStreakRow({ startAnim, reducedMotion }: { startAnim: boolean, reducedMotion: boolean | null }) {
+function WeekStreakRow({ startAnim, reducedMotion, overrideDays }: { startAnim: boolean, reducedMotion: boolean | null, overrideDays?: boolean[] }) {
   const { weeklyProgress } = useStreak();
   const labels = ["S", "M", "T", "W", "T", "F", "S"];
   
-  const mostRecentCompletedIndex = [...weeklyProgress.days].findLastIndex(Boolean);
+  const days = overrideDays ?? weeklyProgress.days;
+  const mostRecentCompletedIndex = [...days].findLastIndex(Boolean);
 
   return (
     <View style={styles.weekRow}>
-      {weeklyProgress.days.map((isCompleted, idx) => {
+      {days.map((isCompleted, idx) => {
         const isToday = idx === mostRecentCompletedIndex;
         
         return (
@@ -389,6 +390,29 @@ function PrimaryCTA({ onPress, startAnim, reducedMotion }: { onPress: () => void
 
 // --- MAIN EXPORT ---
 
+export function StreakProgressGraphic({ streak, startAnim, hideMessage, overrideDays }: { streak: number, startAnim: boolean, hideMessage?: boolean, overrideDays?: boolean[] }) {
+  const reducedMotion = useReducedMotion();
+  return (
+    <View style={styles.content}>
+      <HeroFlame streak={streak} startAnim={startAnim} reducedMotion={reducedMotion} />
+
+      <View style={styles.spacerLabel}>
+        <DayStreakLabel startAnim={startAnim} reducedMotion={reducedMotion} />
+      </View>
+
+      <View style={styles.spacerWeek}>
+        <WeekStreakRow startAnim={startAnim} reducedMotion={reducedMotion} overrideDays={overrideDays} />
+      </View>
+
+      {!hideMessage && (
+        <View style={styles.spacerMessage}>
+          <SupportingMessage startAnim={startAnim} reducedMotion={reducedMotion} />
+        </View>
+      )}
+    </View>
+  );
+}
+
 export function StreakCelebration({ 
   previousStreak, 
   streak, 
@@ -418,26 +442,11 @@ export function StreakCelebration({
 
   return (
     <View style={styles.screen}>
+      <StreakProgressGraphic streak={streak} startAnim={startAnim} />
       <View style={styles.content}>
-        
-        <HeroFlame streak={streak} startAnim={startAnim} reducedMotion={reducedMotion} />
-
-        <View style={styles.spacerLabel}>
-          <DayStreakLabel startAnim={startAnim} reducedMotion={reducedMotion} />
-        </View>
-
-        <View style={styles.spacerWeek}>
-          <WeekStreakRow startAnim={startAnim} reducedMotion={reducedMotion} />
-        </View>
-
-        <View style={styles.spacerMessage}>
-          <SupportingMessage startAnim={startAnim} reducedMotion={reducedMotion} />
-        </View>
-
         <View style={styles.spacerCTA}>
           <PrimaryCTA onPress={() => onClose && onClose()} startAnim={startAnim} reducedMotion={reducedMotion} />
         </View>
-
       </View>
     </View>
   );

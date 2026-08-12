@@ -251,15 +251,10 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
 
   const sheetHeight = premiumRecovery || accountConflict ? 380 : showSkipButton ? 340 : 290;
 
+  if (!isOpen) return null;
+
   return (
-    <Modal
-      visible={isOpen}
-      transparent
-      animationType="none"
-      statusBarTranslucent
-      onRequestClose={handleSheetDismiss}
-    >
-      <Host>
+    <Host>
         <BottomSheet
           isPresented={isOpen}
           onIsPresentedChange={(val: boolean) => {
@@ -420,6 +415,5 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
           </Group>
         </BottomSheet>
       </Host>
-    </Modal>
   );
 });

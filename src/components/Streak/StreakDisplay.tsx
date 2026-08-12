@@ -28,7 +28,7 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
   return (
     <Modal
       visible={visible}
-      transparent={false}
+      transparent={true}
       animationType="fade"
       statusBarTranslucent
       onRequestClose={onClose}

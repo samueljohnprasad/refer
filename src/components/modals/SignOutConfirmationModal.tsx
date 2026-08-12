@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Modal } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   Cancel01Icon,
@@ -28,7 +28,6 @@ interface SignOutConfirmationModalProps {
 export const SignOutConfirmationModal: React.FC<
   SignOutConfirmationModalProps
 > = ({ onConfirm, isLoading = false, isSignoutOPen = false, handleClose }) => {
-  if (!isSignoutOPen) return null;
 
   const insets = useSafeAreaInsets();
 
@@ -47,7 +46,14 @@ export const SignOutConfirmationModal: React.FC<
   const paddingBottom = Math.max(insets.bottom, 24) + 8;
 
   return (
-    <Host>
+    <Modal
+      visible={isSignoutOPen}
+      transparent
+      animationType="none"
+      statusBarTranslucent
+      onRequestClose={handleCloseCancel}
+    >
+      <Host>
       <BottomSheet
         isPresented={isSignoutOPen}
         onIsPresentedChange={(val) => {
@@ -109,5 +115,6 @@ export const SignOutConfirmationModal: React.FC<
         </Group>
       </BottomSheet>
     </Host>
+    </Modal>
   );
 };

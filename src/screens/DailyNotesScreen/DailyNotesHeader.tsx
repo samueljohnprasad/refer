@@ -56,7 +56,7 @@ const HEADER_MIN_HEIGHT = 157;
 
 // Move constants outside component to avoid recreation
 const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-const CALENDAR_EXPANDED_HEIGHT = 416; // 8pt grid multiple
+const CALENDAR_EXPANDED_HEIGHT = 456; // 8pt grid multiple
 
 interface DailyNotesHeaderProps {
   onBookmarksPress?: () => void;

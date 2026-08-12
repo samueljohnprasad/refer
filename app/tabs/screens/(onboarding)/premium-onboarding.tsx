@@ -18,8 +18,8 @@ export default function PremiumOnboardingRoute(): React.JSX.Element {
     router.replace('/tabs/(tabs)/home');
   }, [router]);
 
-  const handleComplete = async (): Promise<void> => {
-    if (isAnonymous) {
+  const handleComplete = async (skipped?: boolean): Promise<void> => {
+    if (isAnonymous && !skipped) {
       setTimeout(() => {
         signInSheetRef.current?.present();
       }, 300);

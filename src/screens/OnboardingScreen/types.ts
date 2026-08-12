@@ -63,6 +63,7 @@ export interface OnboardingStepConfig {
   showBackButton: boolean;
   showContinueButton: boolean;
   continueButtonLabel: string;
+  skipButtonLabel?: string;
   canSkip: boolean;
   autoAdvance: boolean;
   analyticsLabel: string;

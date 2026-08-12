@@ -131,7 +131,7 @@ const StaggeredTransitionCharacter: React.FC<ITransitionCharacter<SkFont>> &
         withTiming<number>(target, { duration: config.duration, easing }),
       );
       return () => cancelAnimation<number>(progress);
-    }, [triggerSnapshot, direction, delay, config]);
+    }, []);
 
     return (
       <CharRenderer

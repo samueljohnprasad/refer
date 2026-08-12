@@ -5,19 +5,9 @@ import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
-import Svg, {
-  Circle,
-  Defs,
-  Line,
-  LinearGradient as SvgLinearGradient,
-  Path,
-  Stop,
-  Text as SvgText,
-} from "react-native-svg";
 
 import { PLAN_STATS } from "../constants";
 import { MotivationAnswer } from "../types";
-import { StackedCarousel } from "../../../animations/stacked-carousel";
 import { useWindowDimensions } from "react-native";
 import { getScaledLayout } from "./progress-graph-victory/layout";
 import ProgressGraphVictoryChart from "./progress-graph-victory/ProgressGraphVictoryChart";
@@ -316,7 +306,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
 
       <Animated.View entering={FadeIn.duration(180).delay(160)}>
         <LinearGradient
-          colors={["#44633F", "#29452A"]}
+          colors={["rgba(16,130,150,0.92)", "rgba(24,86,180,0.85)"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{
@@ -328,17 +318,6 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
             paddingVertical: 28,
           }}
         >
-          <View
-            style={{
-              position: "absolute",
-              right: -34,
-              top: -30,
-              width: 108,
-              height: 108,
-              borderRadius: 999,
-              backgroundColor: "rgba(212, 169, 67, 0.25)",
-            }}
-          />
           <Text
             style={{ fontFamily: "GeistMedium" }}
             className="text-[15px] text-gold/90"

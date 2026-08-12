@@ -231,8 +231,7 @@ const CAROUSEL_PEEK = 20;
 // Fit ~1.85 cards across the screen so exercise titles wrap cleanly on 2 lines
 const SHELF_CARD_WIDTH =
   (SCREEN_WIDTH - CAROUSEL_PEEK * 2 - CAROUSEL_GAP * 2) / 1.85;
-const JUMP_BACK_CARD_WIDTH =
-  (SCREEN_WIDTH - CAROUSEL_PEEK * 2) / 2.55;
+const JUMP_BACK_CARD_WIDTH = (SCREEN_WIDTH - CAROUSEL_PEEK * 2) / 2.55;
 
 interface LayoutCardProps {
   exercise: ExerciseConfig<any>;
@@ -350,7 +349,7 @@ const ExerciseShelfCard = memo(function ExerciseShelfCard({
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.04,
-            shadowRadius: 8,
+            shadowRadius: 2,
             elevation: 1,
           },
           pressed && { opacity: 0.92, transform: [{ scale: 0.96 }] },
@@ -491,7 +490,12 @@ function JumpBackInShelf({
         </View>
       </View>
 
-      <View style={{ marginHorizontal: -CAROUSEL_PEEK, marginTop: 12 }}>
+      <View
+        style={{
+          marginHorizontal: -CAROUSEL_PEEK,
+          marginTop: 12,
+        }}
+      >
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -503,7 +507,10 @@ function JumpBackInShelf({
           decelerationRate="fast"
         >
           {items.map((item, index) => (
-            <View key={item.type} style={{ width: JUMP_BACK_CARD_WIDTH }}>
+            <View
+              key={item.type}
+              style={{ width: JUMP_BACK_CARD_WIDTH }}
+            >
               <JumpBackInCard
                 exercise={item}
                 width={JUMP_BACK_CARD_WIDTH}
@@ -593,6 +600,7 @@ const DiscoverSection = memo(function DiscoverSection({
             contentContainerStyle={{
               gap: CAROUSEL_GAP,
               paddingHorizontal: CAROUSEL_PEEK,
+              backgroundColor: "white",
             }}
             snapToInterval={SHELF_CARD_WIDTH + CAROUSEL_GAP}
             decelerationRate="fast"

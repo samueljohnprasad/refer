@@ -271,31 +271,49 @@ export type Database = {
           color_hex: string
           created_at: string
           description: string | null
+          domain: string | null
           icon_url: string | null
           id: string
           is_published: boolean
           order_index: number
+          session_duration_minutes: number[] | null
+          sessions_per_week: number | null
+          target_audience: string | null
           title: string
+          total_duration_weeks: number | null
+          total_lessons: number | null
         }
         Insert: {
           color_hex?: string
           created_at?: string
           description?: string | null
+          domain?: string | null
           icon_url?: string | null
           id?: string
           is_published?: boolean
           order_index?: number
+          session_duration_minutes?: number[] | null
+          sessions_per_week?: number | null
+          target_audience?: string | null
           title: string
+          total_duration_weeks?: number | null
+          total_lessons?: number | null
         }
         Update: {
           color_hex?: string
           created_at?: string
           description?: string | null
+          domain?: string | null
           icon_url?: string | null
           id?: string
           is_published?: boolean
           order_index?: number
+          session_duration_minutes?: number[] | null
+          sessions_per_week?: number | null
+          target_audience?: string | null
           title?: string
+          total_duration_weeks?: number | null
+          total_lessons?: number | null
         }
         Relationships: []
       }
@@ -444,6 +462,59 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      exercises: {
+        Row: {
+          concept: string | null
+          content: Json
+          created_at: string
+          difficulty: number | null
+          duration_seconds: number | null
+          id: string
+          is_scored: boolean
+          node_id: string
+          order_index: number
+          phase: string | null
+          scaffold_level: number | null
+          type: string
+        }
+        Insert: {
+          concept?: string | null
+          content?: Json
+          created_at?: string
+          difficulty?: number | null
+          duration_seconds?: number | null
+          id?: string
+          is_scored?: boolean
+          node_id: string
+          order_index?: number
+          phase?: string | null
+          scaffold_level?: number | null
+          type: string
+        }
+        Update: {
+          concept?: string | null
+          content?: Json
+          created_at?: string
+          difficulty?: number | null
+          duration_seconds?: number | null
+          id?: string
+          is_scored?: boolean
+          node_id?: string
+          order_index?: number
+          phase?: string | null
+          scaffold_level?: number | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exercises_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "nodes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       habit_completions: {
         Row: {
@@ -597,13 +668,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "insight_points_ledger_journey_id_fkey"
-            columns: ["journey_id"]
-            isOneToOne: false
-            referencedRelation: "journey_templates"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "insight_points_ledger_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -702,229 +766,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      journey_template_nodes: {
-        Row: {
-          content: Json
-          created_at: string | null
-          description: string | null
-          estimated_minutes: number
-          icon_key: string | null
-          id: string
-          metadata: Json | null
-          node_index: number
-          node_type: string
-          rewards: Json
-          task_id: string
-          title: string | null
-          unit_id: string
-          variant_key: string
-          xp_reward: number
-        }
-        Insert: {
-          content?: Json
-          created_at?: string | null
-          description?: string | null
-          estimated_minutes?: number
-          icon_key?: string | null
-          id?: string
-          metadata?: Json | null
-          node_index: number
-          node_type: string
-          rewards?: Json
-          task_id?: string
-          title?: string | null
-          unit_id: string
-          variant_key?: string
-          xp_reward?: number
-        }
-        Update: {
-          content?: Json
-          created_at?: string | null
-          description?: string | null
-          estimated_minutes?: number
-          icon_key?: string | null
-          id?: string
-          metadata?: Json | null
-          node_index?: number
-          node_type?: string
-          rewards?: Json
-          task_id?: string
-          title?: string | null
-          unit_id?: string
-          variant_key?: string
-          xp_reward?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "journey_template_nodes_unit_id_fkey"
-            columns: ["unit_id"]
-            isOneToOne: false
-            referencedRelation: "journey_template_units"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      journey_template_sections: {
-        Row: {
-          color_scheme: string
-          created_at: string | null
-          description: string
-          id: string
-          journey_id: string
-          mascot_placements: Json
-          section_number: number
-          title: string
-          unlock_rule: string
-        }
-        Insert: {
-          color_scheme?: string
-          created_at?: string | null
-          description?: string
-          id?: string
-          journey_id: string
-          mascot_placements?: Json
-          section_number: number
-          title: string
-          unlock_rule?: string
-        }
-        Update: {
-          color_scheme?: string
-          created_at?: string | null
-          description?: string
-          id?: string
-          journey_id?: string
-          mascot_placements?: Json
-          section_number?: number
-          title?: string
-          unlock_rule?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "journey_template_sections_journey_id_fkey"
-            columns: ["journey_id"]
-            isOneToOne: false
-            referencedRelation: "journey_templates"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      journey_template_units: {
-        Row: {
-          color_scheme: string
-          created_at: string | null
-          description: string
-          id: string
-          journey_id: string
-          mascot_placements: Json
-          section_id: string | null
-          section_unit_number: number | null
-          title: string
-          unit_number: number
-          unlock_rule: string
-        }
-        Insert: {
-          color_scheme?: string
-          created_at?: string | null
-          description?: string
-          id?: string
-          journey_id: string
-          mascot_placements?: Json
-          section_id?: string | null
-          section_unit_number?: number | null
-          title: string
-          unit_number: number
-          unlock_rule?: string
-        }
-        Update: {
-          color_scheme?: string
-          created_at?: string | null
-          description?: string
-          id?: string
-          journey_id?: string
-          mascot_placements?: Json
-          section_id?: string | null
-          section_unit_number?: number | null
-          title?: string
-          unit_number?: number
-          unlock_rule?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "journey_template_units_journey_id_fkey"
-            columns: ["journey_id"]
-            isOneToOne: false
-            referencedRelation: "journey_templates"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "journey_template_units_section_id_fkey"
-            columns: ["section_id"]
-            isOneToOne: false
-            referencedRelation: "journey_template_sections"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      journey_templates: {
-        Row: {
-          category: string
-          color_scheme: string
-          color_theme_key: string | null
-          created_at: string | null
-          description: string
-          difficulty: string
-          estimated_days: number | null
-          icon_key: string | null
-          icon_url: string | null
-          id: string
-          is_active: boolean
-          slug: string
-          sort_order: number
-          title: string
-          total_nodes: number
-          updated_at: string | null
-          version: number
-        }
-        Insert: {
-          category?: string
-          color_scheme?: string
-          color_theme_key?: string | null
-          created_at?: string | null
-          description?: string
-          difficulty?: string
-          estimated_days?: number | null
-          icon_key?: string | null
-          icon_url?: string | null
-          id?: string
-          is_active?: boolean
-          slug: string
-          sort_order?: number
-          title: string
-          total_nodes?: number
-          updated_at?: string | null
-          version?: number
-        }
-        Update: {
-          category?: string
-          color_scheme?: string
-          color_theme_key?: string | null
-          created_at?: string | null
-          description?: string
-          difficulty?: string
-          estimated_days?: number | null
-          icon_key?: string | null
-          icon_url?: string | null
-          id?: string
-          is_active?: boolean
-          slug?: string
-          sort_order?: number
-          title?: string
-          total_nodes?: number
-          updated_at?: string | null
-          version?: number
-        }
-        Relationships: []
       }
       lesson_contents: {
         Row: {
@@ -1085,9 +926,13 @@ export type Database = {
           content_id: string | null
           content_type: string | null
           estimated_mins: number
+          icon: string | null
           id: string
+          new_concepts: string[]
           order_index: number
           pass_threshold: number | null
+          prerequisites: string[]
+          review_concepts: string[]
           title: string
           type: string
           unit_id: string
@@ -1096,9 +941,13 @@ export type Database = {
           content_id?: string | null
           content_type?: string | null
           estimated_mins?: number
+          icon?: string | null
           id?: string
+          new_concepts?: string[]
           order_index?: number
           pass_threshold?: number | null
+          prerequisites?: string[]
+          review_concepts?: string[]
           title: string
           type: string
           unit_id: string
@@ -1107,9 +956,13 @@ export type Database = {
           content_id?: string | null
           content_type?: string | null
           estimated_mins?: number
+          icon?: string | null
           id?: string
+          new_concepts?: string[]
           order_index?: number
           pass_threshold?: number | null
+          prerequisites?: string[]
+          review_concepts?: string[]
           title?: string
           type?: string
           unit_id?: string
@@ -1393,20 +1246,35 @@ export type Database = {
       }
       sections: {
         Row: {
+          badge_on_complete: string | null
+          concepts_introduced: string[]
           course_id: string
+          difficulty_range: number[] | null
           id: string
+          narrative_hook: string | null
+          objectives: Json
           order_index: number
           title: string
         }
         Insert: {
+          badge_on_complete?: string | null
+          concepts_introduced?: string[]
           course_id: string
+          difficulty_range?: number[] | null
           id?: string
+          narrative_hook?: string | null
+          objectives?: Json
           order_index?: number
           title: string
         }
         Update: {
+          badge_on_complete?: string | null
+          concepts_introduced?: string[]
           course_id?: string
+          difficulty_range?: number[] | null
           id?: string
+          narrative_hook?: string | null
+          objectives?: Json
           order_index?: number
           title?: string
         }
@@ -1416,35 +1284,6 @@ export type Database = {
             columns: ["course_id"]
             isOneToOne: false
             referencedRelation: "courses"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      story_contents: {
-        Row: {
-          created_at: string
-          dialogues: Json
-          id: string
-          node_id: string
-        }
-        Insert: {
-          created_at?: string
-          dialogues?: Json
-          id?: string
-          node_id: string
-        }
-        Update: {
-          created_at?: string
-          dialogues?: Json
-          id?: string
-          node_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "story_contents_node_id_fkey"
-            columns: ["node_id"]
-            isOneToOne: false
-            referencedRelation: "nodes"
             referencedColumns: ["id"]
           },
         ]
@@ -1720,27 +1559,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "user_journey_enrollments_current_section_id_fkey"
-            columns: ["current_section_id"]
-            isOneToOne: false
-            referencedRelation: "journey_template_sections"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_journey_enrollments_current_unit_id_fkey"
-            columns: ["current_unit_id"]
-            isOneToOne: false
-            referencedRelation: "journey_template_units"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_journey_enrollments_journey_id_fkey"
-            columns: ["journey_id"]
-            isOneToOne: false
-            referencedRelation: "journey_templates"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "user_journey_enrollments_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -1798,20 +1616,6 @@ export type Database = {
             columns: ["enrollment_id"]
             isOneToOne: false
             referencedRelation: "user_journey_enrollments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_node_completions_journey_id_fkey"
-            columns: ["journey_id"]
-            isOneToOne: false
-            referencedRelation: "journey_templates"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_node_completions_node_id_fkey"
-            columns: ["node_id"]
-            isOneToOne: false
-            referencedRelation: "journey_template_nodes"
             referencedColumns: ["id"]
           },
           {
@@ -1881,13 +1685,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "user_node_progress_node_id_fkey"
-            columns: ["node_id"]
-            isOneToOne: false
-            referencedRelation: "journey_template_nodes"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "user_node_progress_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -1930,13 +1727,6 @@ export type Database = {
             columns: ["enrollment_id"]
             isOneToOne: false
             referencedRelation: "user_journey_enrollments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_node_replays_node_id_fkey"
-            columns: ["node_id"]
-            isOneToOne: false
-            referencedRelation: "journey_template_nodes"
             referencedColumns: ["id"]
           },
         ]

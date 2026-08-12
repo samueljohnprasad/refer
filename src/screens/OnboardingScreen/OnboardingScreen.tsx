@@ -22,6 +22,9 @@ import { useCompleteOnboarding } from "@/hooks/data/useCompleteOnboarding";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { ONBOARDING_STEPS } from "./constants";
 import { ScreenLayout } from "@/src/components/ui/ScreenLayout";
+import { updateUserStreak } from "@/src/lib/api/mentalHealthJourneyApi";
+import { XPActionType } from "@/src/types/xp";
+import { useXP } from "@/src/context/XPContext";
 
 import { LessonHeader } from "@/src/components/ui/LessonHeader";
 import { SymbolImage } from "@/src/components/symbol-image";
@@ -45,7 +48,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import type { RemindersConfig } from "@/src/components/lib/notification-reminders";
 
 interface OnboardingScreenProps {
-  onComplete: () => Promise<void>;
+  onComplete: (skipped?: boolean) => Promise<void>;
 }
 
 interface HeaderConfig {
@@ -149,6 +152,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const { presentPaywall } = useRevenueCat();
   const [loading, setLoading] = React.useState(false);
   const [isStepActionReady, setIsStepActionReady] = React.useState(false);
+  const xp = useXP();
 
   const {
     currentStepIndex,
@@ -289,7 +293,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     return () => clearTimeout(timer);
   }, [currentStep, showContinueButton]);
 
-  const handleContinue = useCallback(async () => {
+  const handleContinue = useCallback(async (skipped: boolean = false) => {
     if (!isStepActionReady || loading) return;
 
     analytics.trackStepCompleted(currentStep, currentStepIndex);
@@ -297,6 +301,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     if (isLastStep) {
       try {
         setLoading(true);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         await markCompleted({
           name: "",
           reasons: formData.motivation ? [formData.motivation] : [],
@@ -304,7 +309,15 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
           reminderEnabled: formData.notificationTime !== undefined,
           motivation: formData.motivation,
         });
-        await onComplete();
+
+        // Initialize the user's first streak and XP now that the profile is complete
+        await updateUserStreak();
+        await xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
+          customAmount: 15,
+          customDescription: "First step on your journey",
+        });
+
+        await onComplete(skipped);
       } catch (error) {
         console.error("[Onboarding] Failed to complete:", error);
       } finally {
@@ -519,13 +532,13 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         >
           <Animated.View
             style={footerAnimatedStyle}
-            className="w-full"
+            className="w-full gap-3"
           >
             <TactileButton
               label={
                 loading ? "Setting up..." : currentStepConfig.continueButtonLabel
               }
-              onPress={handleContinue}
+              onPress={() => handleContinue(false)}
               disabled={isContinueDisabled}
               rightIcon={
                 currentStepConfig.name === "welcome" ? (
@@ -535,10 +548,15 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
             />
             {currentStepConfig.canSkip && (
               <TactileButton
-                label="Skip for now"
+                label={currentStepConfig.skipButtonLabel ?? "Skip for now"}
                 onPress={() => {
                   analytics.trackStepSkipped(currentStep);
-                  goNext();
+                  if (isLastStep) {
+                    // Re-use the continue logic to complete onboarding
+                    handleContinue(true);
+                  } else {
+                    goNext();
+                  }
                 }}
                 variant="secondary"
               />

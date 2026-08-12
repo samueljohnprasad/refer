@@ -45,7 +45,6 @@ import {
 import { PostHogProvider } from "posthog-react-native";
 import { XPProvider } from "@/src/context/XPContext";
 import { LevelProvider } from "@/src/context/LevelContext";
-import { AchievementProvider } from "@/src/context/AchievementContext";
 import { RewardsProvider } from "@/src/context/RewardsContext";
 import { ChallengesProvider } from "@/src/context/ChallengesContext";
 import { StreakModalProvider } from "@/src/context/StreakModalContext";
@@ -202,33 +201,31 @@ function RootLayoutNav() {
                   <XPProvider>
                     <LevelProvider>
                       <RewardsProvider>
-                        <AchievementProvider>
-                          <ChallengesProvider>
-                            <PressablesConfig
-                              globalHandlers={globalPressableHandlers}
-                              animationType="spring"
-                            >
-                              <GluestackUIProvider mode={APP_COLOR_MODE}>
-                                <SystemBackgroundIntegration />
-                                <RevenueCatProvider>
-                                  <ThemeProvider value={DefaultTheme}>
-                                    <KeyboardProvider>
-                                      <BottomSheetModalProvider>
-                                        <StreakModalProvider>
-                                          <UpdateAvailableBanner />
-                                          <Slot />
-                                          <AnonymousPurchaseClaimPrompt />
-                                          <FloatingHappyAssistant />
-                                          <TransitionOverlay />
-                                        </StreakModalProvider>
-                                      </BottomSheetModalProvider>
-                                    </KeyboardProvider>
-                                  </ThemeProvider>
-                                </RevenueCatProvider>
-                              </GluestackUIProvider>
-                            </PressablesConfig>
-                          </ChallengesProvider>
-                        </AchievementProvider>
+                        <ChallengesProvider>
+                          <PressablesConfig
+                            globalHandlers={globalPressableHandlers}
+                            animationType="spring"
+                          >
+                            <GluestackUIProvider mode={APP_COLOR_MODE}>
+                              <SystemBackgroundIntegration />
+                              <RevenueCatProvider>
+                                <ThemeProvider value={DefaultTheme}>
+                                  <KeyboardProvider>
+                                    <BottomSheetModalProvider>
+                                      <StreakModalProvider>
+                                        <UpdateAvailableBanner />
+                                        <Slot />
+                                        <AnonymousPurchaseClaimPrompt />
+                                        <FloatingHappyAssistant />
+                                        <TransitionOverlay />
+                                      </StreakModalProvider>
+                                    </BottomSheetModalProvider>
+                                  </KeyboardProvider>
+                                </ThemeProvider>
+                              </RevenueCatProvider>
+                            </GluestackUIProvider>
+                          </PressablesConfig>
+                        </ChallengesProvider>
                       </RewardsProvider>
                     </LevelProvider>
                   </XPProvider>

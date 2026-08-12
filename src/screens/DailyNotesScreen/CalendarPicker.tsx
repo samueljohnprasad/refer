@@ -84,13 +84,6 @@ const DayCell = React.memo<DayCellProps>(
   }) => {
     const dayLabel = format(day, "d");
 
-    // All hooks MUST be called before any conditional returns (Rules of Hooks)
-    const containerClassName = useMemo(
-      () =>
-        "w-full h-full flex justify-center items-center gap-1 rounded-xl",
-      []
-    );
-
     const textVariant = useMemo(() => {
       if (isTodayDate || isSelected) return "body-bold";
       return "body";
@@ -102,7 +95,7 @@ const DayCell = React.memo<DayCellProps>(
       return isTodayDate ? "ink" : "muted";
     }, [disabled, isSelected, isTodayDate]);
 
-    const containerStyle = useMemo(() => {
+    const dateBgStyle = useMemo(() => {
       if (isSelected) {
         return {
           backgroundColor: SAGE.selected,
@@ -144,10 +137,12 @@ const DayCell = React.memo<DayCellProps>(
         accessibilityLabel={`${dayLabel}${isTodayDate ? ", today" : ""}`}
         accessibilityState={{ selected: isSelected, disabled }}
       >
-        <View className={containerClassName} style={containerStyle}>
-          <Text variant={textVariant as any} color={textColorVariant as any}>
-            {dayLabel}
-          </Text>
+        <View className="w-full h-full flex justify-center items-center gap-1">
+          <View className="w-[34px] h-[34px] rounded-full justify-center items-center" style={dateBgStyle}>
+            <Text variant={textVariant as any} color={textColorVariant as any}>
+              {dayLabel}
+            </Text>
+          </View>
           {showMoodBadge && (
             <View className={moodClassName}>
               <MoodBadge
@@ -244,10 +239,9 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
 
     const cellStyle = useMemo(() => {
       const numberOfRows = days.length / 7;
-      // 5-row months get slightly shorter cells (0.86) so the calendar
-      // height stays compact; 6-row months use squarer cells (1.05) to
-      // prevent the grid from becoming too tall on smaller screens.
-      const aspectRatio = numberOfRows === 5 ? 0.86 : 1.05;
+      // Taller cells to comfortably fit the date number and mood badge without vertical overlap.
+      // 5-row months get slightly taller cells (0.72); 6-row months get squarer but still tall (0.88).
+      const aspectRatio = numberOfRows === 5 ? 0.72 : 0.88;
       return {
         width: "14.285%" as DimensionValue,
         aspectRatio,

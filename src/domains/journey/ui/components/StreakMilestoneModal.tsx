@@ -125,7 +125,7 @@ export const StreakMilestoneModalView = React.memo(
       <Modal
         visible={visible}
         animationType="fade"
-        transparent={false}
+        transparent={true}
         onRequestClose={onDismiss}
       >
         <SafeAreaView

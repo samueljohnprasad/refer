@@ -101,17 +101,18 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
               height: diameter,
               borderRadius: radius,
               borderWidth: 1.5,
-              borderColor: SAGE[300],
+              borderColor: SAGE[200],
               borderStyle: "dashed",
               alignItems: "center",
               justifyContent: "center",
+              opacity: 0.4,
             }}
           >
             <Animated.View style={[plusAnimatedStyle, { width: diameter * 0.55, height: diameter * 0.55, justifyContent: "center", alignItems: "center" }]}>
               <HugeiconsIcon
                 icon={Add01Icon}
                 size={Math.max(10, diameter * 0.5)}
-                color={SAGE[400]}
+                color={SAGE[300]}
                 strokeWidth={2}
               />
             </Animated.View>

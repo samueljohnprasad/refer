@@ -1,15 +1,7 @@
 import React from "react";
 import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import {
-  Sun03Icon,
-  Moon02Icon,
-  SunsetIcon,
-  SleepingIcon,
-  Tick02Icon,
-  Clock04Icon,
-} from "@hugeicons/core-free-icons";
+import { SymbolView, SymbolViewProps } from "expo-symbols";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -31,12 +23,10 @@ type ReminderCardProps = {
   isLast?: boolean;
 };
 
-const iconMap: Record<string, any> = {
-  morning: Sun03Icon,
-  afternoon: Sun03Icon,
-  evening: SunsetIcon,
-  night: Moon02Icon,
-  bedtime: SleepingIcon,
+const iconMap: Record<string, SymbolViewProps["name"]> = {
+  "1": "sun.and.horizon",
+  "2": "sun.max",
+  "3": "moon.stars",
 };
 
 /**
@@ -60,7 +50,7 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
       };
     });
 
-    const icon = iconMap[item.id] || Clock04Icon;
+    const icon = iconMap[item.id] || "clock";
 
     const handlePress = () => {
       Haptics.selectionAsync();
@@ -68,57 +58,54 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
     };
 
     return (
-      <Pressable
-        onPress={handlePress}
-        accessibilityRole="checkbox"
-        accessibilityState={{ checked: isSelected }}
-        accessibilityLabel={`${item.title} reminder, ${
-          isSelected ? "enabled" : "disabled"
-        }`}
-        className="active:bg-muted/50 bg-background"
-      >
-        <View className="flex-row items-center pl-5 gap-4">
-          <View
-            className="w-8 h-8 rounded-full items-center justify-center"
-            style={{ backgroundColor: isSelected ? SAGE.pill : "#f4f4f5" }}
-          >
-            <HugeiconsIcon
-              icon={icon}
-              size={18}
-              color={isSelected ? SAGE[600] : INK_MUTED}
-              strokeWidth={2}
+      <View className="flex-row items-center pl-5 gap-4 bg-transparent">
+        <Pressable onPress={handlePress} hitSlop={8} accessibilityRole="checkbox" accessibilityState={{ checked: isSelected }}>
+          <View className="w-8 items-center justify-center">
+            <SymbolView
+              name={icon as SymbolViewProps["name"]}
+              size={22}
+              tintColor={isSelected ? SAGE[600] : INK_MUTED}
+              type="hierarchical"
             />
           </View>
-          
-          <View
-            className={`flex-1 flex-row items-center py-3.5 pr-5 ${
-              !isLast ? "border-b border-border/50" : ""
-            }`}
+        </Pressable>
+        
+        <View
+          className={`flex-1 flex-row items-center py-3.5 pr-5 ${
+            !isLast ? "border-b border-border/50" : ""
+          }`}
+        >
+          <Pressable 
+            className="flex-1 justify-center py-2 -my-2"
+            onPress={handlePress}
+            accessibilityRole="none"
           >
             <Text
-              className="text-[17px] text-foreground flex-1"
+              className="text-[17px] text-foreground"
             >
               {item.title}
             </Text>
+          </Pressable>
 
-            {/* Time Picker Button (SwiftUI) */}
-            <Host matchContents>
-              <DatePicker
-                selection={
-                  new Date(new Date().setHours(item.hour, item.minute, 0, 0))
+          {/* Time Picker Button (SwiftUI) */}
+          <Host matchContents>
+            <DatePicker
+              selection={
+                new Date(new Date().setHours(item.hour, item.minute, 0, 0))
+              }
+              displayedComponents={["hourAndMinute"]}
+              onDateChange={(date: Date) => {
+                if (onTimeChange) {
+                  onTimeChange(date.getHours(), date.getMinutes());
                 }
-                displayedComponents={["hourAndMinute"]}
-                onDateChange={(date: Date) => {
-                  if (onTimeChange) {
-                    onTimeChange(date.getHours(), date.getMinutes());
-                  }
-                }}
-              />
-            </Host>
+              }}
+            />
+          </Host>
 
-            {/* Toggle Switch */}
+          {/* Toggle Switch */}
+          <Pressable onPress={handlePress} hitSlop={8} className="ml-4" accessibilityRole="none">
             <View
-              className="w-7 h-7 rounded-full items-center justify-center border-2 ml-4"
+              className="w-7 h-7 rounded-full items-center justify-center border-2"
               style={{
                 borderColor: isSelected ? SAGE[500] : "#e4e4e7",
                 backgroundColor: isSelected ? SAGE[500] : TRANSPARENT,
@@ -129,13 +116,13 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
                   style={toggleAnimatedStyle}
                   className="items-center justify-center"
                 >
-                  <HugeiconsIcon icon={Tick02Icon} size={14} color={BRAND_SURFACE} />
+                  <SymbolView name="checkmark" size={14} tintColor={BRAND_SURFACE} weight="bold" />
                 </Animated.View>
               )}
             </View>
-          </View>
+          </Pressable>
         </View>
-      </Pressable>
+      </View>
     );
   }
 );

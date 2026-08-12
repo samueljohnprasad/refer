@@ -91,7 +91,6 @@ export const StreakModalProvider: React.FC<{ children: ReactNode }> = ({ childre
       }}
     >
       {children}
-      <StreakDisplay visible={isVisible} onClose={hideStreakModal} />
     </StreakModalContext.Provider>
   );
 };

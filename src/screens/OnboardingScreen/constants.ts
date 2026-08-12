@@ -133,9 +133,10 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
     backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: false,
     showContinueButton: true,
-    continueButtonLabel: "Begin Day 1",
+    continueButtonLabel: "Login",
     autoAdvance: false,
-    canSkip: false,
+    canSkip: true,
+    skipButtonLabel: "Maybe later",
     analyticsLabel: "welcome_to_happy",
   },
 ] as const;

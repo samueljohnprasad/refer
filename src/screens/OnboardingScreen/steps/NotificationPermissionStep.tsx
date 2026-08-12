@@ -1,25 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
-import OptionCard from "../components/OptionCard";
-import NotificationPreview from "../components/NotificationPreview";
 import { NotificationTime } from "../types";
-import { NOTIFICATION_TIMES } from "../constants";
+import { ReminderCard } from "@/src/components/notifications/ReminderCard";
+import { useReminderConfig } from "@/src/components/notifications/useReminderConfig";
+import { DEFAULT_REMINDERS } from "@/src/components/notifications/constants";
 
 interface NotificationPermissionStepProps {
   selectedTime?: NotificationTime;
   onSelectTime: (time: NotificationTime) => void;
   stressTiming?: string;
 }
-
-const TIMING_TO_DEFAULT: Record<string, NotificationTime> = {
-  morning: "morning",
-  afternoon: "afternoon",
-  evening: "evening",
-  night: "evening",
-};
 
 const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   selectedTime,
@@ -28,60 +21,60 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
 }) => {
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
-  const suggestedTime = stressTiming
-    ? TIMING_TO_DEFAULT[stressTiming]
-    : "evening";
+  
+  const {
+    items,
+    cfg,
+    handleTimeChange,
+    toggleSelected,
+  } = useReminderConfig(DEFAULT_REMINDERS);
+
+  // Notify parent that a time is "selected" if any reminder is enabled
+  useEffect(() => {
+    const hasEnabled = Object.values(cfg).some((c) => c.enabled);
+    if (hasEnabled && !selectedTime) {
+      onSelectTime("evening"); // Dummy value to enable "Continue" button
+    }
+  }, [cfg, selectedTime, onSelectTime]);
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: 24, paddingTop: headerHeight - insets.top }}
       contentInsetAdjustmentBehavior="automatic"
-      className="flex-1 px-6 pt-6"
+      className="flex-1 pt-6"
     >
-      <Animated.View entering={FadeIn.duration(180).delay(80)}>
+      <Animated.View entering={FadeIn.duration(180).delay(80)} className="px-6">
         <Text
           style={{ fontFamily: "CormorantSemiBold" }}
           className="text-[26px] leading-[1.1] text-ink"
         >
-          When should Mochi remind you?
+          Daily Reminders
         </Text>
         <Text className="mt-3 text-[15px] leading-relaxed text-ink-soft">
-          A gentle nudge, never annoying.{" "}
-          {stressTiming && (
-            <Text className="italic">You picked {stressTiming}s earlier.</Text>
-          )}
+          Set up gentle nudges to help you build a consistent journaling habit
         </Text>
       </Animated.View>
 
       <Animated.View
         entering={FadeIn.duration(180).delay(160)}
-        className="mt-5"
+        className="mt-8 border-y border-border/50"
       >
-        <NotificationPreview
-          time={
-            NOTIFICATION_TIMES.find((t) => t.id === suggestedTime)?.time ??
-            "7:00 PM"
-          }
-        />
+        {items.map((item, index) => {
+          const isSelected = cfg[item.id]?.enabled;
+          return (
+            <ReminderCard
+              key={item.id}
+              item={item}
+              index={index}
+              isSelected={isSelected}
+              onToggle={() => toggleSelected(item.id)}
+              onTimeChange={(hour, minute) => handleTimeChange(item.id, hour, minute)}
+              isLast={index === items.length - 1}
+            />
+          );
+        })}
       </Animated.View>
-
-      <View className="mt-5 gap-3">
-        {NOTIFICATION_TIMES.map((option, index) => (
-          <OptionCard
-            key={option.id}
-            option={{
-              id: option.id,
-              emoji: "",
-              title: option.label,
-              subtitle: option.time,
-            }}
-            isSelected={selectedTime === option.id}
-            onSelect={() => onSelectTime(option.id)}
-            index={index}
-          />
-        ))}
-      </View>
     </ScrollView>
   );
 };
