@@ -1,0 +1,288 @@
+exercises:
+  - id: guess_reveal
+    name: "Guess Reveal"
+    description: "Presents a prompt where the user guesses a number, then reveals the actual number (e.g. '7 in 10')."
+    when_to_use: "To test intuition about statistics or commonality before teaching a rule."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      prompt: "string"
+      actual: "number"
+
+  - id: symptom_decoder
+    name: "Symptom Decoder"
+    description: "Interactive matching exercise mapping physical/emotional symptoms to their roots."
+    when_to_use: "To normalize physical sensations of anxiety or stress."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      options: "{ id: string; label: string; body?: string; detail?: string; next?: string; feedback?: string; isCorrect?: boolean }[]"
+
+  - id: learn_cards
+    name: "Learn Cards"
+    description: "Swipeable cards presenting core material, followed by a recall check."
+    when_to_use: "For direct, bite-sized psychoeducation."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      cards: "{ id: string; kicker: string; title: string; body: string }[]"
+      recall: "{ options: { id: string; label: string; body?: string; detail?: string; next?: string; feedback?: string; isCorrect?: boolean }[] }"
+
+  - id: twin_case
+    name: "Twin Case"
+    description: "Presents two cases (left vs right) and asks user to order or match pairs to rules."
+    when_to_use: "For discrimination learning and analogy building."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      leftTitle: "string"
+      rightTitle: "string"
+      body: "string"
+      pairs: "{ id: string; left: string; right: string }[]"
+      rightOrderIds: "string[]"
+      rule: "string"
+      next: "string"
+
+  - id: intuition_check
+    name: "Intuition Check"
+    description: "A quick multiple-choice check to measure preconceptions before a lesson."
+    when_to_use: "To prime the user and challenge misconceptions."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      prompt: "string"
+      options: "{ id: string; label: string; body?: string; detail?: string; next?: string; feedback?: string; isCorrect?: boolean }[]"
+      bestOptionId: "string"
+      reveal: "string"
+      revealTitle: "string"
+      alternateReveal: "string"
+
+  - id: name_it
+    name: "Name It"
+    description: "Teaches naming feelings/situations accurately using families of terms."
+    when_to_use: "For vocabulary building and cognitive defusion."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      families: "{ name: string; words: { description: string; word: string }[] }[]"
+      teach: "string | { id: string; label: string; body?: string; detail?: string; next?: string; feedback?: string; isCorrect?: boolean }[]"
+
+  - id: course_choice
+    name: "Course Choice"
+    description: "A branching path node offering context and options."
+    when_to_use: "When offering agency in learning paths."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      context: "string"
+      prompt: "string"
+      options: "{ id: string; label: string; body?: string; detail?: string; next?: string; feedback?: string; isCorrect?: boolean }[]"
+
+  - id: invent_first
+    name: "Invent First"
+    description: "Asks user to invent the rule or strategy from contrasting cases."
+    when_to_use: "To engage active learning and build confidence."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      body: "string"
+      cases: "{ id: string; name: string; reading: string; outcome: string; isCalm: boolean }[]"
+      options: "{ id: string; label: string; body?: string; detail?: string; next?: string; feedback?: string; isCorrect?: boolean }[]"
+      rule: "string"
+      next: "string"
+
+  - id: layer_zoom
+    name: "Layer Zoom"
+    description: "Zoom through layers (e.g. event, body alarm, interpretation)."
+    when_to_use: "To teach the separation of events vs thoughts vs beliefs."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      layers: "{ body: string; kicker: string; title: string }[]"
+      insight: "{ title: string; body: string }"
+
+  - id: dialogue
+    name: "Dialogue"
+    description: "A text-message style conversation between characters."
+    when_to_use: "For modeling Socratic questioning or self-talk."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      messages: "{ id: string; name: string; side: 'left' | 'right'; text: string }[]"
+      insight: "{ title: string; body: string }"
+
+  - id: concept_card
+    name: "Concept Card"
+    description: "A polished summary card (often contrasting a myth vs reality)."
+    when_to_use: "To replace a sticky myth with a usable rule."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      myth: "string"
+      reality: "string"
+      explanation: "string"
+      rule: "string"
+      note: "string"
+      variant: "string"
+
+  - id: story_walkthrough
+    name: "Story Walkthrough"
+    description: "Follows a character's narrative through a series of beats."
+    when_to_use: "To build empathy and show the chronological progression of a loop."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      beats: "{ id: string; kicker: string; title: string; body: string; icon: string }[]"
+      insight: "{ title: string; body: string }"
+
+  - id: common_trap
+    name: "Common Trap"
+    description: "Highlights a coping move that rebounds, and offers a counter move."
+    when_to_use: "To normalize struggles and pivot to effective strategies."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      trapTitle: "string"
+      trapBody: "string"
+      relief: "string"
+      rebound: "string"
+      counterMove: "{ title: string; body: string }"
+
+  - id: story_serial
+    name: "Story Serial"
+    description: "An episodic case study with reflection prompts and branching."
+    when_to_use: "For long-term course arcs spanning multiple lessons."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      episodeLabel: "string"
+      stamp: "string"
+      hook: "string"
+      opening: "string"
+      reflectionPrompt: "string"
+      reflectionOptions: "{ id: string; label: string; feedback: string }[]"
+      branches: "{ choice: string; label: string; beats: string[] }[]"
+
+  - id: two_dial_sandbox
+    name: "Two Dial Sandbox"
+    description: "Interactive model to adjust presets and see outcomes."
+    when_to_use: "To teach non-linear relationships via exploration."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      presets: "{ id: string; label: string; load: number; recovery: number }[]"
+
+  - id: explorable_model
+    name: "Explorable Model"
+    description: "Interactive diagram with goals and stories tied to nodes."
+    when_to_use: "To explain interconnected psychological systems."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      goals: "string[]"
+      stories: "string[]"
+
+  - id: white_bear_experiment
+    name: "White Bear Experiment"
+    description: "Demonstrates that suppression backfires, using an interactive fix."
+    when_to_use: "To prove experientially the paradoxical nature of control."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      body: "string"
+      rule: "string"
+      options: "{ id: string; label: string; body?: string; detail?: string; next?: string; feedback?: string; isCorrect?: boolean }[]"
+      fix: "{ title: string; body: string }"
+
+  - id: paradox_card
+    name: "Paradox Card"
+    description: "Presents a counterintuitive CBT concept with opening/stop captions."
+    when_to_use: "To create a 'lightbulb moment' against deep-seated instincts."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      openingCaption: "string"
+      expectation: "string"
+      reality: "string"
+      takeaway: "string"
+      rule: "string"
+      captions: "string[]"
+      stopCaption: "string"
+
+  - id: one_line_reveal
+    name: "One Line Reveal"
+    description: "Impactful sentence split into first and second line reveals."
+    when_to_use: "For emotional resonance or core takeaways."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      firstLine: "string"
+      secondLine: "string"
+      why: "string"
+
+  - id: what_if_machine
+    name: "What If Machine"
+    description: "Guides user through steps to decatastrophize a scenario."
+    when_to_use: "For guided, interactive decatastrophizing."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      steps: "{ title: string; body: string }[]"
+      options: "{ id: string; label: string; body?: string; detail?: string; next?: string; feedback?: string; isCorrect?: boolean }[]"
+      rule: "string"
+      takeaway: "string"
+
+  - id: guided_recall_chips
+    name: "Guided Recall Chips"
+    description: "Fills in the blank of a prompt using chips to retrieve a concept."
+    when_to_use: "For spaced repetition and active retrieval practice."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      prompt: "string"
+      chips: "string[]"
+      answer: "string[]"
+
+  - id: term_chip
+    name: "Term Chip"
+    description: "Explains a specific word/term across multiple panels."
+    when_to_use: "To teach clinical or specialized terminology."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      word: "string"
+      definition: "string"
+      panels: "{ id: string; label: string; revealLabel: string; example: string; explanation: string }[]"
+      note: "string"
+
+  - id: guided_discovery_trail
+    name: "Guided Discovery Trail"
+    description: "Leading questions culminating in a stamp of discovery."
+    when_to_use: "To mimic Socratic questioning for personal insight."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      questions: "{ id: string; prompt: string; options: { id: string; label: string; body?: string; detail?: string; next?: string; feedback?: string; isCorrect?: boolean }[] }[]"
+      stamp: "string"
+
+  - id: teach_back_chain
+    name: "Teach-Back Chain"
+    description: "Orders steps and answers follow-ups to teach a concept back."
+    when_to_use: "To ensure full comprehension and retention."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      message: "string"
+      steps: "{ id: string; title: string; body: string }[]"
+      slotHints: "string[]"
+      followUp: "string"
+      followUpOptions: "{ id: string; label: string; body?: string; detail?: string; next?: string; feedback?: string; isCorrect?: boolean }[]"
+
+  - id: recall_warmup
+    name: "Recall Warmup"
+    description: "A quick card-based quiz activating prior knowledge."
+    when_to_use: "At the start of a session as a low-stakes warmup."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      cards: "{ id: string; prompt: string; answer: string }[]"

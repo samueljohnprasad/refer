@@ -21,6 +21,7 @@ export default function ExercisesGroupLayout() {
           title: "Exercise",
           freezeOnBlur: true,
           animation: "fade",
+          gestureEnabled: false,
         }}
       />
       <Stack.Screen

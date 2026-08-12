@@ -1,0 +1,64 @@
+exercises:
+  - id: reframe_builder
+    name: "Reframe Builder"
+    description: "Guides the user to build a balanced reframe of a negative thought by selecting parts from trays."
+    when_to_use: "For practicing cognitive restructuring in a scaffolded, step-by-step manner."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      sceneLabel: "string"
+      scene: "string"
+      hotThought: "string"
+      trays: "{ label: string; options: string[] }[]"
+      feedbackTitle: "string"
+      feedback: "string"
+
+  - id: situation_language
+    name: "Situation Language"
+    description: "Compares identity-based language ('I am broken') with situation-based language ('I am dealing with a hard situation')."
+    when_to_use: "To teach cognitive defusion and reduce self-stigma."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      rule: "string"
+      takeaway: "string"
+      cards: "{ identityText: string; situationText: string; identityWhy: string; situationWhy: string }[]"
+
+  - id: if_then_plan
+    name: "If-Then Plan"
+    description: "Helps the user formulate 'If [trigger], Then [action]' implementation intentions."
+    when_to_use: "To translate coping skills into actionable plans for specific real-world triggers."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      privacy: "string"
+      cues: "string[]"
+      actions: "string[]"
+      feedbackTitle: "string"
+      feedback: "string"
+
+  - id: course_checkpoint
+    name: "Course Checkpoint"
+    description: "A summary checklist or review node at the end of a module."
+    when_to_use: "To recap and celebrate the completion of a major learning milestone."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      introTitle: "string"
+      intro: "string"
+      items: "any[]"
+      solidMessage: "string"
+
+  - id: section_milestone
+    name: "Section Milestone"
+    description: "A grand celebration and transition node marking the end of an entire course section."
+    when_to_use: "Between major course units (e.g. moving from 'Understanding' to 'Action')."
+    content_schema:
+      closedTitle: "string"
+      closedBody: "string"
+      openTitle: "string"
+      openBody: "string"
+      nextLabel: "string"
+      nextTitle: "string"
+      nextBody: "string"
+      badge: "string"

@@ -1,0 +1,287 @@
+exercises:
+  - id: surge_diagram
+    name: "Surge Diagram"
+    description: "Visualizes the panic/adrenaline surge over time on a graph."
+    when_to_use: "To explain the timeline of a panic attack or anxiety wave."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      diagramTitle: "string"
+      explanation: "string"
+      note: "string"
+      peakLabel: "string"
+      axisLabel: "string"
+      fadeLabel: "string"
+
+  - id: fill_blank
+    name: "Fill Blank"
+    description: "Fill-in-the-blank exercise with variants for practicing terms."
+    when_to_use: "For testing recall of specific terminology or rules."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      variants: "any[]"
+      capability: "string"
+
+  - id: curiosity_bet
+    name: "Curiosity Bet"
+    description: "Prompts the user to place a 'bet' on a psychological fact or outcome."
+    when_to_use: "To leverage curiosity gaps before presenting surprising evidence."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      question: "string"
+      options: "{ id: string; label: string; body?: string; detail?: string; next?: string; feedback?: string; isCorrect?: boolean }[]"
+      answer: "string"
+      bestAnswerIndex: "number"
+
+  - id: panic_wave_commit
+    name: "Panic Wave Commit"
+    description: "Asks the user to guess the length of a panic wave before revealing the rule."
+    when_to_use: "To correct catastrophic time distortion during panic attacks."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      shortGuess: "string"
+      longGuess: "string"
+      neverGuess: "string"
+      rule: "string"
+      safetyNote: "string"
+      closeGuess: "string"
+
+  - id: wave_sequence
+    name: "Wave Sequence"
+    description: "Steps through the typical sequence of an emotional wave."
+    when_to_use: "To teach the chronological phases of a surge."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      steps: "any[]"
+      explanation: "string"
+      rule: "string"
+      note: "string"
+
+  - id: wave_ordering
+    name: "Wave Ordering"
+    description: "User must reorder the phases of an emotional wave correctly."
+    when_to_use: "For active recall of the sequence of a panic/anxiety surge."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      variants: "any[]"
+      capability: "string"
+
+  - id: wave_scrubber
+    name: "Wave Scrubber"
+    description: "Interactive timeline (scrubber) to explore phases of a wave."
+    when_to_use: "For exploring feelings at different points during a surge."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      phases: "any[]"
+
+  - id: evidence_bite
+    name: "Evidence Bite"
+    description: "Presents a single piece of scientific evidence and its confidence level."
+    when_to_use: "To bolster psychoeducation with empirical backing."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      finding: "string"
+      confidence: "string"
+      confidenceWhy: "string"
+      note: "string"
+
+  - id: surge_timer
+    name: "Surge Timer"
+    description: "An interactive timer demonstrating how long adrenaline takes to clear."
+    when_to_use: "To build tolerance and patience during the 'fade' phase of panic."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      numberToKeep: "number"
+
+  - id: why_it_matters
+    name: "Why It Matters"
+    description: "Summarizes the practical application of a concept."
+    when_to_use: "To translate theoretical models into usable instructions."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      message: "string"
+      question: "string"
+      answer: "string"
+      explanation: "string"
+
+  - id: breathing_round
+    name: "Breathing Round"
+    description: "Guided breathing exercise component (e.g., box breathing, long exhalations)."
+    when_to_use: "For physiological down-regulation and somatic practice."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      useFor: "string"
+      notFor: "string"
+      mechanism: "string"
+      variation: "string"
+      steps: "{ number: string; label: string }[]"
+
+  - id: wave_faq
+    name: "Wave FAQ"
+    description: "Answers common questions about panic waves and re-triggers."
+    when_to_use: "To address common doubts like 'why did it come back?'"
+    content_schema:
+      title: "string"
+      instruction: "string"
+      message: "string"
+      question: "string"
+      answer: "string"
+      explanation: "string"
+
+  - id: evening_comparison
+    name: "Evening Comparison"
+    description: "Side-by-side table comparing healthy vs unhealthy evening routines."
+    when_to_use: "For teaching sleep hygiene and wind-down behaviors."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      columns: "{ heading: string; rows: string[]; outcome: string }[]"
+      explanation: "string"
+      note: "string"
+
+  - id: lever_check
+    name: "Lever Check"
+    description: "Interactive check of different 'levers' (variables) affecting mood/anxiety."
+    when_to_use: "To teach multifactorial causes of mental states."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      levers: "{ id: string; label: string; remainingPercent: number; explanation: string; tone: 'orange' | 'olive' }[]"
+      rule: "string"
+      takeaway: "string"
+      note: "string"
+
+  - id: annotated_diary
+    name: "Annotated Diary"
+    description: "Presents a diary entry with interactive annotations explaining cognitive distortions."
+    when_to_use: "To practice spotting cognitive distortions in the wild."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      diary: "string"
+      annotation: "string"
+      note: "string"
+
+  - id: private_check
+    name: "Private Check"
+    description: "A secure, unrecorded checklist for sensitive self-reflection."
+    when_to_use: "For assessing deeply personal or stigmatized behaviors safely."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      items: "any[]"
+      feedbackTitle: "string"
+      feedback: "string"
+
+  - id: same_but_different
+    name: "Same But Different"
+    description: "Compares two concepts row by row to highlight subtle distinctions."
+    when_to_use: "For deep discrimination learning."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      leftHeading: "string"
+      rightHeading: "string"
+      rows: "{ question: string; left: string; right: string }[]"
+      tell: "string"
+
+  - id: socratic_dialogue
+    name: "Socratic Dialogue"
+    description: "Branching chat interface that guides user to challenge their own thoughts."
+    when_to_use: "To model cognitive restructuring and guided discovery."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      nodes: "{ message: string; options: { label: string; next: string; lead?: string }[]; done: boolean; support: boolean; supportive: boolean }[]"
+      supportTitle: "string"
+      supportBody: "string"
+      terminalNote: "string"
+
+  - id: association_meter
+    name: "Association Meter"
+    description: "Measures automatic associations to gauge implicit biases or fears."
+    when_to_use: "To reveal hidden assumptions and automatic thoughts."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      initialCaption: "string"
+      leftLabel: "string"
+      rightLabel: "string"
+      choices: "{ label: string; delta: number; caption: string }[]"
+      rule: "string"
+      takeaway: "string"
+
+  - id: lens_replay
+    name: "Lens Replay"
+    description: "Replays a diary entry or scenario through a specific cognitive 'lens'."
+    when_to_use: "To show how different perspectives change the emotional outcome of the same event."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      diaryLabel: "string"
+      segments: "{ text: string; key?: string; response?: string }[]"
+      insight: "string"
+
+  - id: toolkit_shelf
+    name: "Toolkit Shelf"
+    description: "Presents a selection of coping tools to apply to specific stressful moments."
+    when_to_use: "To build a personalized coping repertoire."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      note: "string"
+      tools: "{ label: string; use: string }[]"
+      moments: "{ label: string; toolIndex: number; key: string; response: string }[]"
+
+  - id: lever_match
+    name: "Lever Match"
+    description: "Matching exercise tying 'levers' (actions) to their respective outcomes."
+    when_to_use: "To reinforce action-outcome relationships."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      capability: "string"
+      pairs: "{ id: string; left: string; right: string }[]"
+      clue: "string"
+      rightOrder: "string[]"
+      feedbackTitle: "string"
+      feedback: "string"
+
+  - id: lever_scenario
+    name: "Lever Scenario"
+    description: "Applies the lever framework to a complex scenario with multiple variants."
+    when_to_use: "To test application of multifactorial coping."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      capability: "string"
+      variants: "{ sceneLabel: string; scene: string; prompt: string; clue: string; worked: string; options: { id: string; label: string; feedback: string; isCorrect: boolean }[] }[]"
+
+  - id: worked_rewrite
+    name: "Worked Rewrite"
+    description: "Shows step-by-step how to rewrite a negative thought into a balanced one."
+    when_to_use: "To model cognitive restructuring before asking the user to try it."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      rows: "{ tone: 'orange' | 'neutral' | 'olive'; label: string; text: string; coach: string }[]"
+      finalNote: "string"
+
+  - id: faded_thought_record
+    name: "Faded Thought Record"
+    description: "A partially completed thought record that asks the user to fill in the missing pieces."
+    when_to_use: "As a scaffolded step toward independent cognitive restructuring."
+    content_schema:
+      title: "string"
+      instruction: "string"
+      screens: "any[]"

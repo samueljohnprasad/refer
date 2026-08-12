@@ -20,6 +20,7 @@ export default function OnboardingGroupLayout() {
           title: "Onboarding",
           freezeOnBlur: true,
           animation: "fade",
+          gestureEnabled: false,
         }}
       />
       <Stack.Screen
@@ -29,6 +30,7 @@ export default function OnboardingGroupLayout() {
           title: "Onboard Container",
           freezeOnBlur: true,
           animation: "fade",
+          gestureEnabled: false,
         }}
       />
     </Stack>

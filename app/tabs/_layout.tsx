@@ -56,7 +56,7 @@ export default function AppLayout() {
       <Stack.Screen name="screens/(journey)" options={{ headerShown: false }} />
       <Stack.Screen
         name="screens/(exercises)"
-        options={{ headerShown: false, animation: "fade" }}
+        options={{ headerShown: false, animation: "fade", gestureEnabled: false }}
       />
       <Stack.Screen
         name="screens/(gamification)"
@@ -68,7 +68,7 @@ export default function AppLayout() {
       />
       <Stack.Screen
         name="screens/(onboarding)"
-        options={{ headerShown: false }}
+        options={{ headerShown: false, gestureEnabled: false }}
       />
     </Stack>
   );
