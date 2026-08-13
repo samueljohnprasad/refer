@@ -19,11 +19,20 @@ const CATEGORY_SET = new Set(MICROLEARNING_CATEGORIES);
 
 export function inventorySql(sourceText, file) {
   const parsed = parseSqlRecordsets(sourceText, file);
+  const inventory = parsed.recordsets.reduce(
+    (result, recordset) =>
+      collectCategoryObjects(
+        recordset.value,
+        file,
+        recordset.source,
+        "$",
+        result,
+      ),
+    { items: [], issues: [] },
+  );
   return {
-    issues: parsed.issues,
-    items: parsed.recordsets.flatMap((recordset) =>
-      collectCategoryObjects(recordset.value, file, recordset.source),
-    ),
+    issues: [...parsed.issues, ...inventory.issues],
+    items: inventory.items,
   };
 }
 
@@ -41,41 +50,61 @@ export function inventoryYaml(sourceText, file) {
       })),
     };
   }
-  return { issues: [], items: collectCategoryObjects(document.toJS(), file, "yaml") };
+  return collectCategoryObjects(document.toJS(), file, "yaml");
 }
 
-function collectCategoryObjects(value, file, source, path = "$") {
+function collectCategoryObjects(
+  value,
+  file,
+  source,
+  path = "$",
+  result = { items: [], issues: [] },
+) {
   if (Array.isArray(value)) {
-    return value.flatMap((item, index) =>
-      collectCategoryObjects(item, file, source, `${path}[${index}]`),
-    );
+    value.forEach((item, index) => {
+      collectCategoryObjects(item, file, source, `${path}[${index}]`, result);
+    });
+    return result;
   }
-  if (!isRecord(value)) return [];
+  if (!isRecord(value)) return result;
 
-  const items = [];
-  if (CATEGORY_SET.has(value.type) && isRecord(value.content)) {
-    items.push({
-      file,
+  if (CATEGORY_SET.has(value.type)) {
+    addRecognizedContent(result, {
       category: value.type,
-      source: readSourceId(value, source),
-      path: `${path}.content`,
       content: value.content,
+      file,
+      path: `${path}.content`,
+      source: readSourceId(value, source),
     });
   }
-  if (CATEGORY_SET.has(value.id) && isRecord(value.content_schema)) {
-    items.push({
-      file,
+  if (CATEGORY_SET.has(value.id)) {
+    addRecognizedContent(result, {
       category: value.id,
-      source: readSourceId(value, source),
-      path: `${path}.content_schema`,
       content: value.content_schema,
+      file,
+      path: `${path}.content_schema`,
+      source: readSourceId(value, source),
     });
   }
 
   for (const [key, child] of Object.entries(value)) {
-    items.push(...collectCategoryObjects(child, file, source, `${path}.${key}`));
+    collectCategoryObjects(child, file, source, `${path}.${key}`, result);
   }
-  return items;
+  return result;
+}
+
+function addRecognizedContent(result, item) {
+  if (isRecord(item.content)) {
+    result.items.push(item);
+    return;
+  }
+  result.issues.push({
+    file: item.file,
+    category: item.category,
+    source: item.source,
+    path: item.path,
+    message: "Recognized category content must be an object.",
+  });
 }
 
 function readSourceId(value, fallback) {

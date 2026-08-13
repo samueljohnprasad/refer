@@ -1,10 +1,9 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { InteractionManager } from "react-native";
 import { courseExerciseCategoryEngineRegistry } from "@/src/components/exercise/courseExerciseCategoryEngineRegistry";
 import type { Exercise } from "@/src/types/journeyV5";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { clearV1SessionDraft } from "@/src/domains/journey/learning/sessionDraftStore";
-import type { V1InteractionOptions } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import {
   checkV1LearningAnswer,
   clearV1LearningSession,
@@ -27,10 +26,11 @@ import {
 } from "@/src/components/node/NodeEngineRouter.helpers";
 import {
   LoadingPracticeScreen,
-  PracticeDataErrorScreen,
 } from "@/src/components/node/NodeEngineRouterPanels";
 import { NodeExerciseScreen } from "@/src/components/node/NodeExerciseScreen";
+import { NodeExerciseDataError } from "@/src/components/node/NodeExerciseDataError";
 import { useV1NodeSessionDraft } from "@/src/components/node/useV1NodeSessionDraft";
+import { useV1NodeInteraction } from "@/src/components/node/useV1NodeInteraction";
 import { resolveCourseExerciseCategory } from "@/src/domains/journey/learning/courseExerciseCategoryResolver";
 import { getCoursePrimaryTransition } from "@/src/domains/journey/learning/courseExercisePrimaryTransition";
 import { isCourseExerciseCategory } from "@/src/types/courseExercises";
@@ -38,8 +38,7 @@ import {
   isMicrolearningCategory,
   validateMicrolearningContent,
 } from "@/src/components/exercise/microlearning/microlearningContentValidation";
-import { isFinalMicrolearningResponse } from "@/src/components/exercise/microlearning/microlearningResponse";
-
+import { shouldCompleteOnPrimaryPress } from "@/src/components/exercise/microlearning/microlearningResponse";
 interface NodeEngineRouterProps {
   nodeId: string;
   exercises: Exercise[];
@@ -47,9 +46,7 @@ interface NodeEngineRouterProps {
   onNodeComplete: (responses: Record<string, unknown>) => void | Promise<void>;
   onClose?: () => void;
 }
-
 const EMPTY_RESPONSES: Record<string, unknown> = {};
-
 export function NodeEngineRouter({
   nodeId,
   exercises,
@@ -62,7 +59,6 @@ export function NodeEngineRouter({
   const session = useAppSelector(
     (state) => state.v1LearningSessions.byNodeId[nodeId],
   );
-
   const currentIndex = session?.currentIndex ?? 0;
   const responses = session?.responses ?? initialSavedResponses;
   const currentResponse = session?.currentResponse ?? null;
@@ -97,7 +93,6 @@ export function NodeEngineRouter({
   const showingFeedback = checkStatus !== V1CheckStatusEnum.Idle;
   const showingSkipAction =
     !isMicrolearningExercise && !showingFeedback && !ready;
-
   useV1NodeSessionDraft({
     dispatch,
     exerciseCount: exercises.length,
@@ -107,42 +102,29 @@ export function NodeEngineRouter({
     session,
   });
 
-  const handleInteraction = useCallback(
-    (
-      response: Record<string, unknown>,
-      isFooterActionEnabled = true,
-      options?: V1InteractionOptions,
-    ) => {
-      dispatch(
-        recordV1LearningInteraction({
-          nodeId,
-          response,
-          ready: isFooterActionEnabled,
-        }),
-      );
-      if (options?.revealImmediately) {
-        dispatch(checkV1LearningAnswer({ nodeId }));
-      }
-    },
-    [dispatch, nodeId],
-  );
+  const handleInteraction = useV1NodeInteraction(dispatch, nodeId);
 
   const handlePrimaryPress = async () => {
     if (!currentExercise || !currentResponse || isCompleting) {
       return;
     }
 
-    if (checkStatus === V1CheckStatusEnum.Idle) {
-      if (
-        isMicrolearningExercise &&
-        isFinalMicrolearningResponse(currentResponse)
-      ) {
+    const completesOnPress = shouldCompleteOnPrimaryPress({
+      response: currentResponse,
+      expectedFormat: currentExercise.type,
+      isMicrolearning: isMicrolearningExercise,
+      legacyCompletesDirectly: completesOnPrimaryInteraction(currentExercise),
+    });
+    if (isMicrolearningExercise) {
+      if (completesOnPress) {
         await completeCurrentExercise(
           buildResolvedResponse(currentExercise, currentResponse, attemptCount),
         );
-        return;
       }
+      return;
+    }
 
+    if (checkStatus === V1CheckStatusEnum.Idle) {
       const courseTransition = getCoursePrimaryTransition(
         currentExercise,
         currentResponse,
@@ -162,7 +144,7 @@ export function NodeEngineRouter({
         return;
       }
 
-      if (completesOnPrimaryInteraction(currentExercise)) {
+      if (completesOnPress) {
         await completeCurrentExercise(
           buildResolvedResponse(currentExercise, currentResponse, attemptCount),
         );
@@ -271,21 +253,11 @@ export function NodeEngineRouter({
   }
 
   if (!currentExercise || !Engine || !categoryConfig) {
-    return (
-      <PracticeDataErrorScreen
-        message="This lesson uses an unsupported exercise category."
-        onClose={onClose}
-      />
-    );
+    return <NodeExerciseDataError invalidContent={false} onClose={onClose} />;
   }
 
   if (contentIssues.length > 0) {
-    return (
-      <PracticeDataErrorScreen
-        message="This exercise contains invalid course data."
-        onClose={onClose}
-      />
-    );
+    return <NodeExerciseDataError invalidContent onClose={onClose} />;
   }
 
   return (

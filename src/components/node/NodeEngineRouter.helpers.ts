@@ -113,7 +113,7 @@ export function getDisplayPrimaryLabel(
 ): string {
   if (
     isMicrolearningCategory(exercise.type) &&
-    isFinalMicrolearningResponse(response)
+    isFinalMicrolearningResponse(response, exercise.type)
   ) {
     return "Continue";
   }

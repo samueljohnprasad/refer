@@ -9,8 +9,31 @@ export function readStageIndex(value: unknown, stageCount: number): number {
   return Math.max(0, Math.min(value as number, stageCount - 1));
 }
 
-export function isFinalMicrolearningResponse(value: unknown): boolean {
-  return isRecord(value) && value.phase === "complete";
+export function isFinalMicrolearningResponse(
+  value: unknown,
+  expectedFormat: string,
+): boolean {
+  return (
+    isRecord(value) &&
+    value.format === expectedFormat &&
+    value.phase === "complete"
+  );
+}
+
+export function shouldCompleteOnPrimaryPress({
+  response,
+  expectedFormat,
+  isMicrolearning,
+  legacyCompletesDirectly,
+}: {
+  response: unknown;
+  expectedFormat: string;
+  isMicrolearning: boolean;
+  legacyCompletesDirectly: boolean;
+}): boolean {
+  return isMicrolearning
+    ? isFinalMicrolearningResponse(response, expectedFormat)
+    : legacyCompletesDirectly;
 }
 
 export function sanitizeSelectedId(

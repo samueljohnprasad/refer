@@ -12,6 +12,7 @@ import type {
 interface ChoiceTrayProps {
   choices: readonly MicrolearningChoice[];
   states?: Readonly<Partial<Record<string, ChoiceVisualState>>>;
+  selectedId?: string | null;
   disabled?: boolean;
   onSelect: (id: string) => void;
 }
@@ -19,15 +20,21 @@ interface ChoiceTrayProps {
 export function ChoiceTray({
   choices,
   states = {},
+  selectedId = null,
   disabled = false,
   onSelect,
 }: ChoiceTrayProps) {
   return (
     <View accessibilityRole="radiogroup" style={styles.tray}>
       {choices.map((choice) => {
-        const state = disabled ? "disabled" : (states[choice.id] ?? "idle");
-        const isDisabled = state === "disabled" || state === "supported" || state === "unsupported";
-        const isSelected = state !== "idle" && state !== "disabled";
+        const isSelected = choice.id === selectedId;
+        const state = disabled
+          ? "disabled"
+          : (states[choice.id] ?? (isSelected ? "selected" : "idle"));
+        const isDisabled =
+          state === "disabled" ||
+          state === "supported" ||
+          state === "unsupported";
         return (
           <Pressable
             key={choice.id}
