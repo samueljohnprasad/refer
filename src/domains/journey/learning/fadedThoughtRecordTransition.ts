@@ -1,4 +1,5 @@
 import { readFadedThoughtRecordContent } from "@/src/components/exercise/fadedThoughtRecordContent";
+import { hasSameFadedThoughtRecordResponse } from "@/src/components/exercise/fadedThoughtRecordResponse";
 import {
   advanceFadedThoughtRecord,
   createFadedThoughtRecordResponse,
@@ -32,6 +33,13 @@ export function getNextFadedThoughtRecordState(
   const content = readFadedThoughtRecordContent(exercise.content);
   if (!content) return undefined;
   const response = createFadedThoughtRecordResponse(content, saved);
+  if (!hasSameFadedThoughtRecordResponse(saved, response)) {
+    return {
+      kind: "response",
+      ready: response.phase !== "active",
+      response,
+    };
+  }
   if (response.phase !== "feedback") return undefined;
   const next = response.isCorrect
     ? advanceFadedThoughtRecord(content, response)
