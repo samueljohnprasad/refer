@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { AccessibilityInfo, StyleSheet, Text, View } from "react-native";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import { readRecord } from "@/src/components/exercise/courseExerciseContent";
 import { ExerciseWorkspace, MicrolearningMedia, StageProgress } from "@/src/components/exercise/microlearning";
@@ -14,6 +14,7 @@ export function LayerZoomCategoryEngine({ exercise, savedResponse, onInteraction
   const saved = readRecord(savedResponse);
   const response = content ? createLayerZoomResponse(content, saved) : null;
   const mountedStage = useRef<number | null>(null);
+  const announcedStage = useRef<number | null>(null);
   useEffect(() => {
     if (!content || !response || (saved && hasSameLayerZoomResponse(saved, response))) return;
     onInteraction(response, true);
@@ -21,6 +22,17 @@ export function LayerZoomCategoryEngine({ exercise, savedResponse, onInteraction
   useEffect(() => {
     if (response) mountedStage.current = response.stageIndex;
   }, [response]);
+  useEffect(() => {
+    if (!content || !response) return;
+    const previousStage = announcedStage.current;
+    announcedStage.current = response.stageIndex;
+    if (previousStage === null || previousStage === response.stageIndex) return;
+    const layer = content.layers[response.stageIndex];
+    const context = `${layer.label}. ${layer.title}. ${layer.body}`;
+    void AccessibilityInfo.announceForAccessibility(
+      response.phase === "complete" ? `${context} ${content.insight}` : context,
+    );
+  }, [content, response]);
   if (!content || !response) return null;
   const currentLayer = content.layers[response.stageIndex];
   const transitionKey = mountedStage.current !== null && mountedStage.current !== response.stageIndex
