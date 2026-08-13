@@ -269,13 +269,39 @@ exercises:
 
   - id: worked_rewrite
     name: "Worked Rewrite"
-    description: "Shows step-by-step how to rewrite a negative thought into a balanced one."
+    description: "Changes one phrase at a time, then checks for the balanced move."
     when_to_use: "To model cognitive restructuring before asking the user to try it."
     content_schema:
-      title: "string"
-      instruction: "string"
-      rows: "{ tone: 'orange' | 'neutral' | 'olive'; label: string; text: string; coach: string }[]"
-      finalNote: "string"
+      title: "Rewrite a mind-reading thought"
+      instruction: "Change one phrase at a time."
+      original: "They did not reply, so they must be upset with me."
+      moves:
+        - id: "rewrite-separate-fact"
+          stepLabel: "Separate the fact"
+          result: "They did not reply, and I do not know why."
+          changedPhrase: "I do not know why"
+          rationale: "This replaces certainty with what is actually known."
+        - id: "rewrite-name-feeling"
+          stepLabel: "Name the feeling"
+          result: "They did not reply; I feel worried, and I do not know why."
+          changedPhrase: "I feel worried"
+          rationale: "Naming the feeling keeps it from becoming evidence."
+        - id: "rewrite-open-alternative"
+          stepLabel: "Leave room"
+          result: "They did not reply; I feel worried, and there may be many reasons."
+          changedPhrase: "there may be many reasons"
+          rationale: "A balanced thought makes room for uncertainty without dismissing concern."
+      recognition:
+        prompt: "Which phrase keeps the rewrite balanced?"
+        options:
+          - id: "rewrite-recognize-open"
+            label: "There may be many reasons"
+            isSupported: true
+            feedback: "This leaves room for uncertainty without forcing reassurance."
+          - id: "rewrite-recognize-certain"
+            label: "They are definitely upset"
+            isSupported: false
+            feedback: "That turns an unknown into certainty again."
 
   - id: faded_thought_record
     name: "Faded Thought Record"

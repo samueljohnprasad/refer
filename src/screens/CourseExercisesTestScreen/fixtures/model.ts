@@ -164,4 +164,56 @@ export const modelMicrolearningFixtures: readonly Exercise[] = [
       completionInsight: "A balanced record separates events, predictions, and available evidence.",
     },
   },
+  {
+    id: "fixture-worked-rewrite",
+    nodeId: "fixture-worked-rewrite-node",
+    orderIndex: 2,
+    type: "worked_rewrite",
+    isScored: false,
+    content: {
+      title: "Rewrite a mind-reading thought",
+      instruction: "Change one phrase at a time.",
+      original: "They did not reply, so they must be upset with me.",
+      moves: [
+        {
+          id: "rewrite-separate-fact",
+          stepLabel: "Separate the fact",
+          result: "They did not reply, and I do not know why.",
+          changedPhrase: "I do not know why",
+          rationale: "This replaces certainty with what is actually known.",
+        },
+        {
+          id: "rewrite-name-feeling",
+          stepLabel: "Name the feeling",
+          result: "They did not reply; I feel worried, and I do not know why.",
+          changedPhrase: "I feel worried",
+          rationale: "Naming the feeling keeps it from becoming evidence.",
+        },
+        {
+          id: "rewrite-open-alternative",
+          stepLabel: "Leave room",
+          result: "They did not reply; I feel worried, and there may be many reasons.",
+          changedPhrase: "there may be many reasons",
+          rationale: "A balanced thought makes room for uncertainty without dismissing concern.",
+        },
+      ],
+      recognition: {
+        prompt: "Which phrase keeps the rewrite balanced?",
+        options: [
+          {
+            id: "rewrite-recognize-open",
+            label: "There may be many reasons",
+            isSupported: true,
+            feedback: "This leaves room for uncertainty without forcing reassurance.",
+          },
+          {
+            id: "rewrite-recognize-certain",
+            label: "They are definitely upset",
+            isSupported: false,
+            feedback: "That turns an unknown into certainty again.",
+          },
+        ],
+      },
+    },
+  },
 ];

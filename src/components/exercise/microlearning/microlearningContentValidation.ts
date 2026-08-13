@@ -4,6 +4,7 @@ import { validateReframeBuilderContent } from "@/src/components/exercise/reframe
 import { validateTeachBackChainContent } from "@/src/components/exercise/teachBackChainValidation";
 import { validateExplorableModelContent } from "@/src/components/exercise/explorableModelContent";
 import { validateFadedThoughtRecordContent } from "@/src/components/exercise/fadedThoughtRecordContent";
+import { validateWorkedRewriteContent } from "@/src/components/exercise/workedRewriteContent";
 import type { MicrolearningContentIssue } from "./microlearningTypes";
 
 export const MICROLEARNING_CATEGORIES = [
@@ -46,6 +47,9 @@ export function validateMicrolearningContent(
   }
   if (category === CourseExerciseCategoryEnum.FadedThoughtRecord) {
     return validateFadedThoughtRecordContent(content);
+  }
+  if (category === CourseExerciseCategoryEnum.WorkedRewrite) {
+    return validateWorkedRewriteContent(content);
   }
 
   validateStringBudget(content, "title", 7, issues);

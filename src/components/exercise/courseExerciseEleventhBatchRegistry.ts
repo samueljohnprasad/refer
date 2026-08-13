@@ -16,7 +16,7 @@ export const ELEVENTH_BATCH_CATEGORY_CONFIGS = {
   [CourseExerciseCategoryEnum.WorkedRewrite]: createConfig(
     CourseExerciseCategoryEnum.WorkedRewrite,
     WorkedRewriteCategoryEngine,
-    "Follow the four moves of a realistic thought record.",
+    "Follow one rewrite move at a time.",
     "This worked rewrite is not available yet.",
   ),
   [CourseExerciseCategoryEnum.FadedThoughtRecord]: createConfig(

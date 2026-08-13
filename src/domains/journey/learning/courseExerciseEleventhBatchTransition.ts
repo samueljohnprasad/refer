@@ -9,6 +9,10 @@ import {
   getFadedThoughtRecordPrimaryLabel,
   getNextFadedThoughtRecordState,
 } from "@/src/domains/journey/learning/fadedThoughtRecordTransition";
+import {
+  getNextWorkedRewriteState,
+  getWorkedRewritePrimaryLabel,
+} from "@/src/domains/journey/learning/workedRewriteTransition";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import type { Exercise } from "@/src/types/journeyV5";
 
@@ -20,9 +24,7 @@ export function getEleventhBatchPrimaryLabel(
     case CourseExerciseCategoryEnum.LeverScenario:
       return getScenarioLabel(response);
     case CourseExerciseCategoryEnum.WorkedRewrite:
-      return isLastIndex(exercise.content?.rows, response.cardIndex)
-        ? "Continue"
-        : "Next move";
+      return getWorkedRewritePrimaryLabel(exercise, response);
     case CourseExerciseCategoryEnum.FadedThoughtRecord:
       return getFadedThoughtRecordPrimaryLabel(exercise, response);
     case CourseExerciseCategoryEnum.ReframeBuilder:
@@ -44,11 +46,7 @@ export function getEleventhBatchPrimaryTransition(
     case CourseExerciseCategoryEnum.LeverScenario:
       return getScenarioTransition(response);
     case CourseExerciseCategoryEnum.WorkedRewrite:
-      return getNextIndexedTransition(
-        exercise.content?.rows,
-        response,
-        "cardIndex",
-      );
+      return getNextWorkedRewriteState(exercise, response);
     case CourseExerciseCategoryEnum.FadedThoughtRecord:
       return getNextFadedThoughtRecordState(exercise, response);
     case CourseExerciseCategoryEnum.ReframeBuilder:
@@ -136,26 +134,6 @@ function getReframeTransition(
       isCorrect: true,
     },
   };
-}
-
-function getNextIndexedTransition(
-  itemsValue: unknown,
-  response: Record<string, unknown>,
-  indexKey: string,
-): CoursePrimaryTransition | undefined {
-  const items = readArray(itemsValue);
-  const index = readNumber(response[indexKey]);
-  if (index >= items.length - 1) return undefined;
-  return {
-    kind: "response",
-    ready: true,
-    response: { ...response, [indexKey]: index + 1 },
-  };
-}
-
-function isLastIndex(itemsValue: unknown, indexValue: unknown): boolean {
-  const items = readArray(itemsValue);
-  return items.length > 0 && readNumber(indexValue) >= items.length - 1;
 }
 
 function readArray(value: unknown): unknown[] {
