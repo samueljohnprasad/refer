@@ -186,7 +186,9 @@ function validateReframeJoin(value, trays, issues) {
     issues.push({ path: "joinStrategy.template", message: "Must be a non-empty string." });
     return;
   }
-  const trayIds = trays.map((tray) => tray.id).filter((id) => typeof id === "string");
+  const trayIds = trays
+    .map((tray) => (isRecord(tray) && typeof tray.id === "string" ? tray.id : null))
+    .filter((id) => typeof id === "string");
   const placeholders = [...value.template.matchAll(/\{([^{}]+)\}/gu)].map((match) => match[1]);
   if (/[{}]/u.test(value.template.replace(/\{[^{}]+\}/gu, ""))) {
     issues.push({ path: "joinStrategy.template", message: "Contains a malformed placeholder." });

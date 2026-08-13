@@ -32,7 +32,9 @@ export interface ReframeBuilderContent {
   comparisonFeedback: string;
 }
 
-export interface ReframeBuilderResponse extends MicrolearningResponseBase {
+export interface ReframeBuilderResponse
+  extends MicrolearningResponseBase,
+    Record<string, unknown> {
   format: CourseExerciseCategoryEnum.ReframeBuilder;
   selectedByTrayId: Record<string, string>;
   editingTrayId: string | null;
@@ -160,12 +162,15 @@ export function createReframeBuilderResponse(
     hasCompleteReframeSelection(content, selectedByTrayId);
   const editingTrayId = complete ? null : readEditingTrayId(saved?.editingTrayId, content);
   const activeTrayId = editingTrayId ?? firstUnfilledTrayId(content, selectedByTrayId);
+  const activeTrayIndex = content.trays.findIndex(
+    (tray) => tray.id === activeTrayId,
+  );
   return {
     format: CourseExerciseCategoryEnum.ReframeBuilder,
     phase: complete ? "complete" : "active",
-    stageIndex: complete
+    stageIndex: complete || activeTrayIndex === -1
       ? content.trays.length - 1
-      : Math.max(content.trays.findIndex((tray) => tray.id === activeTrayId), 0),
+      : activeTrayIndex,
     isCorrect: complete,
     selectedByTrayId,
     editingTrayId,
