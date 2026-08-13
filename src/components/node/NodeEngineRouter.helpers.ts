@@ -5,6 +5,8 @@ import {
   V1CheckStatusEnum,
   type V1CheckStatus,
 } from "@/src/types/journeyLearning";
+import { isMicrolearningCategory } from "@/src/components/exercise/microlearning/microlearningContentValidation";
+import { isFinalMicrolearningResponse } from "@/src/components/exercise/microlearning/microlearningResponse";
 
 const ATTEMPTS_BEFORE_EXPLANATION = 2;
 
@@ -109,6 +111,13 @@ export function getDisplayPrimaryLabel(
   ready: boolean,
   defaultLabel: string,
 ): string {
+  if (
+    isMicrolearningCategory(exercise.type) &&
+    isFinalMicrolearningResponse(response)
+  ) {
+    return "Continue";
+  }
+
   const courseLabel = getCoursePrimaryLabel(exercise, response);
   if (courseLabel) {
     return courseLabel;

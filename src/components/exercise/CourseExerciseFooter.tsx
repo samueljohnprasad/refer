@@ -14,7 +14,7 @@ interface CourseExerciseFooterProps {
   primaryLoading: boolean;
   primaryLabel: string;
   onPrimaryPress: () => void;
-  onSkip: () => void;
+  onSkip?: () => void;
 }
 
 export function CourseExerciseFooter({
@@ -39,19 +39,21 @@ export function CourseExerciseFooter({
           onPress={onPrimaryPress}
         />
       ) : null}
-      <Pressable
-        accessibilityRole="button"
-        accessibilityState={{ disabled: primaryLoading }}
-        disabled={primaryLoading}
-        onPress={onSkip}
-        style={({ pressed }) => [
-          styles.skipButton,
-          primaryLoading && styles.disabledSkip,
-          pressed && styles.pressed,
-        ]}
-      >
-        <Text style={styles.skipLabel}>Skip for now</Text>
-      </Pressable>
+      {onSkip ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ disabled: primaryLoading }}
+          disabled={primaryLoading}
+          onPress={onSkip}
+          style={({ pressed }) => [
+            styles.skipButton,
+            primaryLoading && styles.disabledSkip,
+            pressed && styles.pressed,
+          ]}
+        >
+          <Text style={styles.skipLabel}>Skip for now</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }

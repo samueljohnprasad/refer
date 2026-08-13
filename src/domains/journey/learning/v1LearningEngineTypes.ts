@@ -10,7 +10,8 @@ export interface V1CategoryEngineProps {
   locked?: boolean;
   onInteraction: (
     response: Record<string, unknown>,
-    isReady?: boolean,
+    /** Whether the current persistent-footer action is enabled. */
+    isFooterActionEnabled?: boolean,
     options?: V1InteractionOptions,
   ) => void;
 }

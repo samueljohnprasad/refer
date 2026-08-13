@@ -34,7 +34,7 @@ interface NodeExerciseScreenProps {
   onClose?: () => void;
   onInteraction: V1CategoryEngineProps["onInteraction"];
   onPrimaryPress: () => void;
-  onSkip: () => void;
+  onSkip?: () => void;
 }
 
 export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
@@ -110,7 +110,7 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
           feedbackText={props.feedbackText}
         />
       ) : null}
-      {props.showingSkipAction ? (
+      {props.showingSkipAction && props.onSkip ? (
         <ExerciseSkipAction onSkip={props.onSkip} />
       ) : null}
     </LessonScreen>
