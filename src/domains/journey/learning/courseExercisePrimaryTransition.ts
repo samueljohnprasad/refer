@@ -4,6 +4,10 @@ import {
   getBatchPrimaryLabel,
   getBatchPrimaryTransition,
 } from "@/src/domains/journey/learning/courseExerciseBatchTransitions";
+import {
+  getExplorableModelPrimaryLabel,
+  getNextExplorableModelState,
+} from "@/src/domains/journey/learning/explorableModelTransition";
 
 export type CoursePrimaryTransition =
   | { kind: "check" }
@@ -42,7 +46,7 @@ export function getCoursePrimaryLabel(
     case CourseExerciseCategoryEnum.StorySerial:
       return getStorySerialLabel(response);
     case CourseExerciseCategoryEnum.ExplorableModel:
-      return getExplorableModelLabel(response);
+      return getExplorableModelPrimaryLabel(exercise, response);
     case CourseExerciseCategoryEnum.WhiteBearExperiment:
       return getWhiteBearLabel(response);
     case CourseExerciseCategoryEnum.InventFirst:
@@ -81,7 +85,7 @@ export function getCoursePrimaryTransition(
             response: { ...response, revealed: true },
           };
     case CourseExerciseCategoryEnum.ExplorableModel:
-      return getNextExplorableModelState(response);
+      return getNextExplorableModelState(exercise, response) ?? null;
     case CourseExerciseCategoryEnum.WhiteBearExperiment:
       return getNextWhiteBearState(response);
     default:
@@ -98,15 +102,6 @@ function getStorySerialLabel(response: Record<string, unknown>): string {
     : "Follow the story above";
 }
 
-function getExplorableModelLabel(response: Record<string, unknown>): string {
-  const labels = [
-    "Next lever: the real break",
-    "Next lever: the replay",
-    "Open the sandbox",
-  ];
-  return labels[readNumber(response.stage)] ?? "Continue";
-}
-
 function getWhiteBearLabel(response: Record<string, unknown>): string {
   if (response.started !== true) {
     return "Start the 10 seconds";
@@ -115,20 +110,6 @@ function getWhiteBearLabel(response: Record<string, unknown>): string {
     return "Don’t think about it…";
   }
   return response.selectedOptionId ? "Continue" : "So, what happened?";
-}
-
-function getNextExplorableModelState(
-  response: Record<string, unknown>,
-): CoursePrimaryTransition | null {
-  const stage = readNumber(response.stage);
-  if (stage >= 3) {
-    return null;
-  }
-  return {
-    kind: "response",
-    ready: true,
-    response: { ...response, stage: stage + 1 },
-  };
 }
 
 function getNextWhiteBearState(

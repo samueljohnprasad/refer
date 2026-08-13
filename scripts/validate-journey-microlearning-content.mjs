@@ -4,6 +4,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import {
   validateGuidedDiscoveryTrail,
+  validateExplorableModel,
   validateReframeBuilder,
   validateStringBudget,
   validateTeachBackChain,
@@ -40,6 +41,8 @@ export async function validateJourneyMicrolearningContent(rootDirectory) {
     const contentIssues = [];
     if (item.category === "teach_back_chain") {
       validateTeachBackChain(item.content, contentIssues);
+    } else if (item.category === "explorable_model") {
+      validateExplorableModel(item.content, contentIssues);
     } else {
       validateStringBudget(item.content, "title", 7, contentIssues);
       validateStringBudget(item.content, "instruction", 12, contentIssues);

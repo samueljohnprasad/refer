@@ -2,6 +2,7 @@ import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import { validateGuidedDiscoveryTrailContent } from "@/src/components/exercise/guidedDiscoveryTrailContent";
 import { validateReframeBuilderContent } from "@/src/components/exercise/reframeBuilderContent";
 import { validateTeachBackChainContent } from "@/src/components/exercise/teachBackChainValidation";
+import { validateExplorableModelContent } from "@/src/components/exercise/explorableModelContent";
 import type { MicrolearningContentIssue } from "./microlearningTypes";
 
 export const MICROLEARNING_CATEGORIES = [
@@ -38,6 +39,9 @@ export function validateMicrolearningContent(
   }
   if (category === CourseExerciseCategoryEnum.TeachBackChain) {
     return validateTeachBackChainContent(content);
+  }
+  if (category === CourseExerciseCategoryEnum.ExplorableModel) {
+    return validateExplorableModelContent(content);
   }
 
   validateStringBudget(content, "title", 7, issues);
