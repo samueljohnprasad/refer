@@ -14,6 +14,10 @@ export interface WorkedRewriteResponse extends Record<string, unknown> {
   attemptCount: number;
 }
 
+export function isWorkedRewriteReady(response: WorkedRewriteResponse, recognitionStageIndex: number): boolean {
+  return response.phase !== "active" || response.stageIndex < recognitionStageIndex;
+}
+
 export function createWorkedRewriteResponse(content: WorkedRewriteContent, saved: Record<string, unknown> | null = null): WorkedRewriteResponse {
   const source = saved?.format === FORMAT ? saved : null;
   const completedMoveIds = readMovePrefix(source?.completedMoveIds, content);

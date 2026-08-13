@@ -1,6 +1,6 @@
 import { readWorkedRewriteContent } from "@/src/components/exercise/workedRewriteContent";
 import { hasSameWorkedRewriteResponse } from "@/src/components/exercise/workedRewriteResponse";
-import { advanceWorkedRewrite, applyWorkedRewriteMove, createWorkedRewriteResponse } from "@/src/components/exercise/workedRewriteState";
+import { advanceWorkedRewrite, applyWorkedRewriteMove, createWorkedRewriteResponse, isWorkedRewriteReady } from "@/src/components/exercise/workedRewriteState";
 import type { CoursePrimaryTransition } from "@/src/domains/journey/learning/courseExercisePrimaryTransition";
 import type { Exercise } from "@/src/types/journeyV5";
 
@@ -19,13 +19,15 @@ export function getNextWorkedRewriteState(exercise: Exercise, saved: Record<stri
   if (!content) return undefined;
   const response = createWorkedRewriteResponse(content, saved);
   if (!hasSameWorkedRewriteResponse(saved, response)) {
-    return { kind: "response", ready: response.phase !== "active", response };
+    return { kind: "response", ready: isWorkedRewriteReady(response, content.moves.length), response };
   }
   if (response.phase === "active" && response.stageIndex < content.moves.length) {
-    return { kind: "response", ready: true, response: applyWorkedRewriteMove(content, response) };
+    const next = applyWorkedRewriteMove(content, response);
+    return { kind: "response", ready: isWorkedRewriteReady(next, content.moves.length), response: next };
   }
   if (response.phase === "feedback") {
-    return { kind: "response", ready: false, response: advanceWorkedRewrite(content, response) };
+    const next = advanceWorkedRewrite(content, response);
+    return { kind: "response", ready: isWorkedRewriteReady(next, content.moves.length), response: next };
   }
   return undefined;
 }

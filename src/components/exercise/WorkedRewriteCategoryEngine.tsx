@@ -7,7 +7,7 @@ import { ActivePrompt, ChoiceTray, ExerciseWorkspace, InlineFeedback, StageProgr
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { readWorkedRewriteContent, type WorkedRewriteMove } from "./workedRewriteContent";
 import { hasSameWorkedRewriteResponse } from "./workedRewriteResponse";
-import { createWorkedRewriteResponse, getWorkedRewriteOption, selectWorkedRewriteOption } from "./workedRewriteState";
+import { createWorkedRewriteResponse, getWorkedRewriteOption, isWorkedRewriteReady, selectWorkedRewriteOption } from "./workedRewriteState";
 import { workedRewriteStyles as styles } from "./workedRewriteStyles";
 
 export function WorkedRewriteCategoryEngine({ exercise, savedResponse, locked = false, onInteraction }: V1CategoryEngineProps) {
@@ -17,7 +17,7 @@ export function WorkedRewriteCategoryEngine({ exercise, savedResponse, locked = 
 
   useEffect(() => {
     if (!content || !response || (saved && hasSameWorkedRewriteResponse(saved, response))) return;
-    onInteraction(response, response.phase !== "active");
+    onInteraction(response, isWorkedRewriteReady(response, content.moves.length));
   }, [content, onInteraction, response, saved]);
 
   if (!content || !response) return null;
@@ -33,7 +33,7 @@ export function WorkedRewriteCategoryEngine({ exercise, savedResponse, locked = 
     if (locked || !recognition || response.phase !== "active") return;
     void Haptics.selectionAsync();
     const next = selectWorkedRewriteOption(content, response, optionId);
-    onInteraction(next, next.phase !== "active");
+    onInteraction(next, isWorkedRewriteReady(next, content.moves.length));
   };
 
   return (
