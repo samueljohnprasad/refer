@@ -6,6 +6,7 @@ import {
   validateGuidedDiscoveryTrail,
   validateReframeBuilder,
   validateStringBudget,
+  validateTeachBackChain,
 } from "./journey-microlearning-validator/content-rules.mjs";
 import {
   inventorySql,
@@ -37,8 +38,12 @@ export async function validateJourneyMicrolearningContent(rootDirectory) {
 
   for (const item of items) {
     const contentIssues = [];
-    validateStringBudget(item.content, "title", 7, contentIssues);
-    validateStringBudget(item.content, "instruction", 12, contentIssues);
+    if (item.category === "teach_back_chain") {
+      validateTeachBackChain(item.content, contentIssues);
+    } else {
+      validateStringBudget(item.content, "title", 7, contentIssues);
+      validateStringBudget(item.content, "instruction", 12, contentIssues);
+    }
     if (item.category === "guided_discovery_trail") {
       validateGuidedDiscoveryTrail(item.content, contentIssues);
     }

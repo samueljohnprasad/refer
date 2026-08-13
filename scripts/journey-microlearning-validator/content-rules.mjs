@@ -2,6 +2,8 @@ export function countWords(value) {
   return value.trim().split(/\s+/u).filter(Boolean).length;
 }
 
+export { validateTeachBackChain } from "./teach-back-rules.mjs";
+
 export function validateStringBudget(root, path, maxWords, issues) {
   const value = readRequiredPath(root, path, issues);
   if (value === undefined) return;

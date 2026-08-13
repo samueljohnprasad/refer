@@ -297,16 +297,43 @@ exercises:
 
   - id: teach_back_chain
     name: "Teach-Back Chain"
-    description: "Orders steps and answers follow-ups to teach a concept back."
+    description: "Orders steps and transfers the explanation to a new choice."
     when_to_use: "To ensure full comprehension and retention."
     content_schema:
-      title: "string"
-      instruction: "string"
-      message: "string"
-      steps: "{ id: string; title: string; body: string }[]"
-      slotHints: "string[]"
-      followUp: "string"
-      followUpOptions: "{ id: string; label: string; body?: string; detail?: string; next?: string; feedback?: string; isCorrect?: boolean }[]"
+      title: "Teach the alarm sequence"
+      instruction: "Order the steps, then apply the explanation."
+      message: "An alarm can feel certain while the outcome is still unknown."
+      steps:
+        - id: "teach-evidence"
+          label: "Check separate evidence"
+          order: 4
+        - id: "teach-cue"
+          label: "A cue activates alarm"
+          order: 1
+        - id: "teach-body"
+          label: "Body prepares to protect"
+          order: 3
+        - id: "teach-prediction"
+          label: "Mind predicts danger"
+          order: 2
+      transfer:
+        prompt: "Which explanation keeps evidence open?"
+        options:
+          - id: "teach-supported"
+            label: "Keep evidence separate"
+            isSupported: true
+            response: "It explains the alarm while keeping the outcome separate."
+            takeaway: "Feelings can signal risk without confirming danger."
+          - id: "teach-proof"
+            label: "Alarm proves danger"
+            isSupported: false
+            response: "An alarm can be strong without proving the outcome."
+            takeaway: "Check evidence separately from the body alarm."
+          - id: "teach-ignore"
+            label: "Ignore the alarm"
+            isSupported: false
+            response: "The alarm deserves care, but it does not settle the facts."
+            takeaway: "Notice the signal and check what is known."
 
   - id: recall_warmup
     name: "Recall Warmup"

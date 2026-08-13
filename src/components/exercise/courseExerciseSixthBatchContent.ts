@@ -4,18 +4,6 @@ import {
   readStringArray,
 } from "@/src/components/exercise/courseExerciseContent";
 
-export interface TeachBackStep {
-  id: string;
-  label: string;
-  order: number;
-}
-
-export interface TeachBackFollowUp {
-  label: string;
-  reply: string;
-  takeaway: string;
-}
-
 export interface RecallCard {
   answer: string;
   question: string;
@@ -29,28 +17,6 @@ export interface FillBlankVariant {
   correctFeedback: string;
   incorrectFeedback: string;
   workedExample: string;
-}
-
-export function readTeachBackSteps(value: unknown): TeachBackStep[] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((item) => {
-    const step = readRecord(item);
-    const id = readString(step?.id);
-    const label = readString(step?.label);
-    const order = readPositiveNumber(step?.order);
-    return id && label && order ? [{ id, label, order }] : [];
-  });
-}
-
-export function readTeachBackFollowUps(value: unknown): TeachBackFollowUp[] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((item) => {
-    const option = readRecord(item);
-    const label = readString(option?.label);
-    const reply = readString(option?.reply);
-    const takeaway = readString(option?.takeaway);
-    return label && reply && takeaway ? [{ label, reply, takeaway }] : [];
-  });
 }
 
 export function readRecallCards(value: unknown): RecallCard[] {
@@ -93,10 +59,4 @@ export function readFillBlankVariants(value: unknown): FillBlankVariant[] {
         ]
       : [];
   });
-}
-
-function readPositiveNumber(value: unknown): number | null {
-  return typeof value === "number" && Number.isInteger(value) && value > 0
-    ? value
-    : null;
 }

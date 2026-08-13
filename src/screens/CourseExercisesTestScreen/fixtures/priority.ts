@@ -141,4 +141,48 @@ export const priorityMicrolearningFixtures: readonly Exercise[] = [
       comparisonFeedback: "This leaves room for anxiety without predicting failure.",
     },
   },
+  {
+    id: "fixture-teach-back-chain",
+    nodeId: "fixture-teach-back-chain-node",
+    orderIndex: 3,
+    type: "teach_back_chain",
+    isScored: false,
+    content: {
+      title: "Teach the worry loop",
+      instruction: "Put each step in order, then apply it.",
+      message: "A worry can feel urgent before the facts are fully known.",
+      steps: [
+        { id: "chain-check", label: "Check the evidence", order: 4 },
+        { id: "chain-cue", label: "Notice uncertainty", order: 1 },
+        { id: "chain-body", label: "Body prepares to protect", order: 3 },
+        { id: "chain-predict", label: "Mind predicts danger", order: 2 },
+      ],
+      transfer: {
+        prompt: "Which response keeps the facts open?",
+        options: [
+          {
+            id: "transfer-supported",
+            label: "Name alarm and evidence",
+            isSupported: true,
+            response: "That respects the alarm without treating it as proof.",
+            takeaway: "A feeling can matter without confirming the feared outcome.",
+          },
+          {
+            id: "transfer-proof",
+            label: "Treat alarm as proof",
+            isSupported: false,
+            response: "The alarm is a signal, not final evidence about the outcome.",
+            takeaway: "Keep the signal and the facts separate.",
+          },
+          {
+            id: "transfer-dismiss",
+            label: "Dismiss the alarm",
+            isSupported: false,
+            response: "The alarm deserves care even while the facts remain open.",
+            takeaway: "Notice the signal before choosing a next step.",
+          },
+        ],
+      },
+    },
+  },
 ];

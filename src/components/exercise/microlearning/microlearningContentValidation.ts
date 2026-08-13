@@ -1,6 +1,7 @@
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import { validateGuidedDiscoveryTrailContent } from "@/src/components/exercise/guidedDiscoveryTrailContent";
 import { validateReframeBuilderContent } from "@/src/components/exercise/reframeBuilderContent";
+import { validateTeachBackChainContent } from "@/src/components/exercise/teachBackChainValidation";
 import type { MicrolearningContentIssue } from "./microlearningTypes";
 
 export const MICROLEARNING_CATEGORIES = [
@@ -34,6 +35,9 @@ export function validateMicrolearningContent(
   const issues: MicrolearningContentIssue[] = [];
   if (!isRecord(content)) {
     return [{ path: "content", message: `${category} content must be an object.` }];
+  }
+  if (category === CourseExerciseCategoryEnum.TeachBackChain) {
+    return validateTeachBackChainContent(content);
   }
 
   validateStringBudget(content, "title", 7, issues);

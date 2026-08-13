@@ -8,6 +8,10 @@ import {
   readStageIndex,
   sanitizeSelectedId,
 } from "@/src/components/exercise/microlearning/microlearningResponse";
+import {
+  getNextTeachBackChainState,
+  getTeachBackChainPrimaryLabel,
+} from "@/src/domains/journey/learning/teachBackChainTransition";
 import type { CoursePrimaryTransition } from "@/src/domains/journey/learning/courseExercisePrimaryTransition";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import type { Exercise } from "@/src/types/journeyV5";
@@ -20,7 +24,7 @@ export function getSixthBatchPrimaryLabel(
     case CourseExerciseCategoryEnum.GuidedDiscoveryTrail:
       return getTrailLabel(exercise, response);
     case CourseExerciseCategoryEnum.TeachBackChain:
-      return getTeachBackLabel(exercise, response);
+      return getTeachBackChainPrimaryLabel(exercise, response);
     case CourseExerciseCategoryEnum.RecallWarmup:
       return getRecallLabel(exercise, response);
     case CourseExerciseCategoryEnum.FillBlank:
@@ -37,6 +41,8 @@ export function getSixthBatchPrimaryTransition(
   switch (exercise.type) {
     case CourseExerciseCategoryEnum.GuidedDiscoveryTrail:
       return getNextTrailState(exercise, response);
+    case CourseExerciseCategoryEnum.TeachBackChain:
+      return getNextTeachBackChainState(exercise, response);
     case CourseExerciseCategoryEnum.RecallWarmup:
       return getNextRecallState(exercise, response);
     case CourseExerciseCategoryEnum.FillBlank:
@@ -100,18 +106,6 @@ function getNextTrailState(
       isCorrect: true,
     },
   };
-}
-
-function getTeachBackLabel(
-  exercise: Exercise,
-  response: Record<string, unknown>,
-): string {
-  const completedStepCount = readNumber(response.completedStepCount);
-  const stepCount = readArray(exercise.content?.steps).length;
-  if (completedStepCount < stepCount) return "Build the chain above";
-  return response.selectedFollowUpIndex == null
-    ? "Answer Pip’s follow-up"
-    : "Continue";
 }
 
 function getRecallLabel(

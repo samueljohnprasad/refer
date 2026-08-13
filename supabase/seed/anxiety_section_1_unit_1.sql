@@ -1819,17 +1819,9 @@ WITH curriculum AS (
     "is_scored": true,
     "concept": "protective_alarm",
     "content": {
-      "category": "teach_back_chain",
-      "format": "teach_back_chain",
       "title": "Build the explanation",
       "instruction": "Put the causal steps in order.",
       "message": "Why can anxiety feel like proof even when the outcome is still uncertain?",
-      "slotHints": [
-        "Start with the cue",
-        "Add the mind's reading",
-        "Connect the body and urge",
-        "Finish with what must be checked"
-      ],
       "steps": [
         {
           "id": "evidence",
@@ -1852,14 +1844,32 @@ WITH curriculum AS (
           "order": 2
         }
       ],
-      "followUp": "What makes this a useful explanation?",
-      "followUpOptions": [
-        {
-          "label": "It connects each response to the next without calling the prediction a fact",
-          "reply": "Yes. The alarm sequence explains why danger can feel certain while evidence remains open.",
-          "takeaway": "A strong alarm can explain the feeling of certainty. It cannot confirm the outcome."
-        }
-      ]
+      "transfer": {
+        "prompt": "Which explanation stays useful?",
+        "options": [
+          {
+            "id": "transfer-evidence",
+            "label": "Keep evidence separate",
+            "isSupported": true,
+            "response": "The sequence explains the alarm while leaving the outcome open.",
+            "takeaway": "An alarm can feel convincing without confirming danger."
+          },
+          {
+            "id": "transfer-proof",
+            "label": "Alarm proves danger",
+            "isSupported": false,
+            "response": "The alarm can be strong without proving the outcome.",
+            "takeaway": "Check evidence separately from the body alarm."
+          },
+          {
+            "id": "transfer-ignore",
+            "label": "Ignore the alarm",
+            "isSupported": false,
+            "response": "The alarm deserves care, but it does not settle the facts.",
+            "takeaway": "Notice the signal and check what is known."
+          }
+        ]
+      }
     }
   },
   {
