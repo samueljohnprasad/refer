@@ -196,9 +196,25 @@ function alignSliderValue(
   value: number,
   control: Extract<ExplorableControl, { type: "slider" }>,
 ): number {
+  if (
+    !Number.isFinite(control.min) ||
+    !Number.isFinite(control.max) ||
+    control.max <= control.min ||
+    !Number.isFinite(control.step) ||
+    control.step <= 0
+  ) {
+    return Number.isFinite(control.min) ? control.min : 0;
+  }
   const clamped = Math.max(control.min, Math.min(value, control.max));
-  const steps = Math.round((clamped - control.min) / control.step);
-  return Math.min(control.max, control.min + steps * control.step);
+  const lastStepIndex = Math.max(
+    0,
+    Math.floor((control.max - control.min) / control.step),
+  );
+  const stepIndex = Math.max(
+    0,
+    Math.min(Math.round((clamped - control.min) / control.step), lastStepIndex),
+  );
+  return control.min + stepIndex * control.step;
 }
 
 function hasExactKeys(value: unknown, keys: readonly string[]): boolean {

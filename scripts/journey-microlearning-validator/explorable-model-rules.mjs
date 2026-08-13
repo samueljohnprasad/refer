@@ -99,6 +99,11 @@ function validateSliderNumbers(value, path, issues) {
   }
   if (!Number.isInteger(value.step) || value.step <= 0) {
     issues.push({ path: `${path}.step`, message: "Must be positive." });
+  } else if (Number.isInteger(value.min) && Number.isInteger(value.max)) {
+    const range = value.max - value.min;
+    if (value.step > range || range % value.step !== 0) {
+      issues.push({ path: `${path}.step`, message: "Must divide the slider range exactly." });
+    }
   }
 }
 

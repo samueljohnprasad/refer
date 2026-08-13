@@ -206,6 +206,12 @@ function validateSliderNumbers(value: Record<string, unknown>, path: string, iss
   }
   if (!Number.isInteger(value.step) || (value.step as number) <= 0) {
     issues.push({ path: `${path}.step`, message: "Must be positive." });
+  } else if (Number.isInteger(value.min) && Number.isInteger(value.max)) {
+    const range = (value.max as number) - (value.min as number);
+    const step = value.step as number;
+    if (step > range || range % step !== 0) {
+      issues.push({ path: `${path}.step`, message: "Must divide the slider range exactly." });
+    }
   }
 }
 
