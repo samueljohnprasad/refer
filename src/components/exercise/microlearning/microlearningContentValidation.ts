@@ -1,5 +1,6 @@
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import { validateGuidedDiscoveryTrailContent } from "@/src/components/exercise/guidedDiscoveryTrailContent";
+import { validateReframeBuilderContent } from "@/src/components/exercise/reframeBuilderContent";
 import type { MicrolearningContentIssue } from "./microlearningTypes";
 
 export const MICROLEARNING_CATEGORIES = [
@@ -39,6 +40,9 @@ export function validateMicrolearningContent(
   validateStringBudget(content, "instruction", 12, issues);
   if (category === CourseExerciseCategoryEnum.GuidedDiscoveryTrail) {
     validateGuidedDiscoveryTrailContent(content, issues);
+  }
+  if (category === CourseExerciseCategoryEnum.ReframeBuilder) {
+    validateReframeBuilderContent(content, issues);
   }
   return issues;
 }

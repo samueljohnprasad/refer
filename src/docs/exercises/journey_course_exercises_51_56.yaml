@@ -1,17 +1,31 @@
 exercises:
   - id: reframe_builder
     name: "Reframe Builder"
-    description: "Guides the user to build a balanced reframe of a negative thought by selecting parts from trays."
+    description: "Builds a fairer thought from two or three selected phrases."
     when_to_use: "For practicing cognitive restructuring in a scaffolded, step-by-step manner."
     content_schema:
-      title: "string"
-      instruction: "string"
-      sceneLabel: "string"
-      scene: "string"
-      hotThought: "string"
-      trays: "{ label: string; options: string[] }[]"
-      feedbackTitle: "string"
-      feedback: "string"
+      title: "Build a fairer thought"
+      instruction: "Choose one phrase at a time."
+      hotThought: "One mistake will prove that I am incapable."
+      trays:
+        - id: "evidence"
+          slotLabel: "What is known"
+          options:
+            - id: "evidence-learn"
+              label: "I can learn from one mistake"
+            - id: "evidence-handled"
+              label: "I have handled hard tasks before"
+        - id: "perspective"
+          slotLabel: "A balanced view"
+          options:
+            - id: "perspective-define"
+              label: "one mistake does not define my ability"
+            - id: "perspective-next"
+              label: "I can focus on the next useful step"
+      joinStrategy:
+        type: "template"
+        template: "I can remember that {evidence}, and {perspective}."
+      comparisonFeedback: "This thought keeps the mistake in proportion."
 
   - id: situation_language
     name: "Situation Language"

@@ -66,4 +66,79 @@ export const priorityMicrolearningFixtures: readonly Exercise[] = [
       ],
     },
   },
+  {
+    id: "fixture-reframe-builder-template",
+    nodeId: "fixture-reframe-builder-node",
+    orderIndex: 1,
+    type: "reframe_builder",
+    isScored: false,
+    content: {
+      title: "Build a fairer thought",
+      instruction: "Choose one phrase at a time.",
+      hotThought: "One mistake will prove that I am incapable.",
+      trays: [
+        {
+          id: "evidence",
+          slotLabel: "What is known",
+          options: [
+            { id: "evidence-learn", label: "I can learn from one mistake" },
+            { id: "evidence-handled", label: "I have handled hard tasks before" },
+          ],
+        },
+        {
+          id: "perspective",
+          slotLabel: "A balanced view",
+          options: [
+            { id: "perspective-define", label: "one mistake does not define my ability" },
+            { id: "perspective-next", label: "I can focus on the next useful step" },
+          ],
+        },
+      ],
+      joinStrategy: {
+        type: "template",
+        template: "I can remember that {evidence}, and {perspective}.",
+      },
+      comparisonFeedback: "This thought keeps the mistake in proportion.",
+    },
+  },
+  {
+    id: "fixture-reframe-builder-space",
+    nodeId: "fixture-reframe-builder-space-node",
+    orderIndex: 2,
+    type: "reframe_builder",
+    isScored: false,
+    content: {
+      title: "Build a fairer thought",
+      instruction: "Choose one phrase at a time.",
+      hotThought: "If I feel anxious, I will fail today.",
+      trays: [
+        {
+          id: "start",
+          slotLabel: "A starting phrase",
+          options: [
+            { id: "start-can", label: "I can" },
+            { id: "start-may", label: "I may" },
+          ],
+        },
+        {
+          id: "action",
+          slotLabel: "One next step",
+          options: [
+            { id: "action-breathe", label: "take one steady breath" },
+            { id: "action-begin", label: "begin with one small task" },
+          ],
+        },
+        {
+          id: "meaning",
+          slotLabel: "A wider meaning",
+          options: [
+            { id: "meaning-before", label: "before deciding what this means" },
+            { id: "meaning-while", label: "while making room for uncertainty" },
+          ],
+        },
+      ],
+      joinStrategy: { type: "space" },
+      comparisonFeedback: "This leaves room for anxiety without predicting failure.",
+    },
+  },
 ];

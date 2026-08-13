@@ -34,7 +34,9 @@ export const microlearningFixtureGroups: readonly MicrolearningFixtureGroup[] = 
 ];
 
 export const allMicrolearningFixtures: readonly Exercise[] = [
-  ...priorityMicrolearningFixtures,
+  ...priorityMicrolearningFixtures.filter(
+    (fixture) => fixture.id !== "fixture-reframe-builder-space",
+  ),
   ...modelMicrolearningFixtures,
   ...narrativeMicrolearningFixtures,
   ...reviewMicrolearningFixtures,

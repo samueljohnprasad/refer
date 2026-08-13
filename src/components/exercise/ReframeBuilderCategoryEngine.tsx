@@ -1,19 +1,28 @@
 import React, { useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
-import { CourseExerciseTeachingPanel } from "@/src/components/exercise/CourseExerciseTeachingPanel";
+import { readRecord, readString } from "@/src/components/exercise/courseExerciseContent";
 import {
-  readRecord,
-  readString,
-} from "@/src/components/exercise/courseExerciseContent";
+  ActivePrompt,
+  ChoiceTray,
+  CompactHistory,
+  ExerciseComparison,
+  ExerciseWorkspace,
+  StageProgress,
+} from "@/src/components/exercise/microlearning";
+import {
+  buildReframeThought,
+  createReframeBuilderResponse,
+  firstUnfilledTrayId,
+  hasCompleteReframeSelection,
+  readReframeBuilderContent,
+} from "@/src/components/exercise/reframeBuilderContent";
+import {
+  COURSE_EXERCISE_COLORS,
+  COURSE_EXERCISE_FONTS,
+} from "@/src/components/exercise/courseExerciseTheme";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
-import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
-
-interface ReframeTray {
-  label: string;
-  options: string[];
-}
 
 export function ReframeBuilderCategoryEngine({
   exercise,
@@ -22,164 +31,160 @@ export function ReframeBuilderCategoryEngine({
   onInteraction,
 }: V1CategoryEngineProps) {
   const content = exercise.content ?? {};
+  const builder = readReframeBuilderContent(content);
   const saved = readRecord(savedResponse);
-  const trays = readTrays(content.trays);
-  const selectedIndexes = readNumberArray(saved?.selectedIndexes);
-  const showingFeedback = saved?.phase === "feedback";
-  const picks = trays.map(
-    (tray, index) => tray.options[selectedIndexes[index]],
-  );
-  const ready = trays.length > 0 && picks.every(Boolean);
-  const fairerThought = buildFairerThought(picks);
+  const response = builder ? createReframeBuilderResponse(builder, saved) : null;
 
   useEffect(() => {
-    if (!saved) onInteraction(createResponse(), false);
-  }, [onInteraction, saved]);
+    if (!builder || !response) return;
+    if (!saved || !hasSameResponse(saved, response)) {
+      onInteraction(response, hasCompleteReframeSelection(builder, response.selectedByTrayId));
+    }
+  }, [builder, onInteraction, response, saved]);
 
-  const selectLine = (trayIndex: number, optionIndex: number) => {
-    if (locked || showingFeedback) return;
+  if (!builder || !response) return null;
+
+  const activeTrayId = response.editingTrayId ?? firstUnfilledTrayId(
+    builder,
+    response.selectedByTrayId,
+  );
+  const activeTray = builder.trays.find((tray) => tray.id === activeTrayId);
+  const complete = response.phase === "complete";
+  const fairerThought = buildReframeThought(builder, response.selectedByTrayId);
+  const completedItems = builder.trays
+    .filter((tray) => tray.id !== activeTray?.id && response.selectedByTrayId[tray.id])
+    .map((tray) => ({
+      id: tray.id,
+      label: tray.slotLabel,
+      value: tray.options.find((option) => option.id === response.selectedByTrayId[tray.id])?.label ?? "",
+    }));
+  const futureTrays = activeTray
+    ? builder.trays.slice(builder.trays.indexOf(activeTray) + 1).filter((tray) => !response.selectedByTrayId[tray.id])
+    : [];
+
+  const selectOption = (optionId: string) => {
+    if (locked || !activeTray || complete) return;
     Haptics.selectionAsync();
-    const nextIndexes = [...selectedIndexes];
-    while (nextIndexes.length < trays.length) nextIndexes.push(-1);
-    nextIndexes[trayIndex] = optionIndex;
+    const nextResponse = createReframeBuilderResponse(builder, {
+      selectedByTrayId: { ...response.selectedByTrayId, [activeTray.id]: optionId },
+      editingTrayId: null,
+    });
     onInteraction(
-      createResponse({ ...saved, selectedIndexes: nextIndexes }),
-      nextIndexes.every((index) => index >= 0),
+      nextResponse,
+      hasCompleteReframeSelection(builder, nextResponse.selectedByTrayId),
+    );
+  };
+
+  const editTray = (trayId: string) => {
+    if (locked || complete) return;
+    onInteraction(
+      createReframeBuilderResponse(builder, {
+        selectedByTrayId: response.selectedByTrayId,
+        editingTrayId: trayId,
+      }),
+      hasCompleteReframeSelection(builder, response.selectedByTrayId),
     );
   };
 
   return (
-    <View className="flex-1 px-2 pb-3 pt-1.5">
+    <View style={styles.screen}>
       <CourseExerciseHeading
         title={readString(content.title) ?? "Build a fairer thought"}
-        instruction={
-          readString(content.instruction) ?? "Take one line from each tray."
-        }
+        instruction={readString(content.instruction) ?? "Choose one phrase at a time."}
       />
-
-      <View className="mb-3 rounded-[24px] rounded-bl-md bg-[#F9F4ED] px-[17px] py-[14px] shadow-sm shadow-black/10">
-        <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]">
-          {readString(content.sceneLabel)}
-        </Text>
-        <Text className="happy-font-body mt-1 text-[14px] leading-[21px] text-[#201E1D]">
-          {readString(content.scene)}
-        </Text>
+      <View accessibilityLabel="Hot thought" style={styles.hotThought}>
+        <Text style={styles.hotThoughtLabel}>Hot thought</Text>
+        <Text numberOfLines={2} style={styles.hotThoughtText}>{builder.hotThought}</Text>
       </View>
-
-      <View
-        className={
-          showingFeedback
-            ? "mb-3 w-[72%] rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[14px] py-2.5 opacity-75"
-            : "mb-3 rounded-[22px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[18px] py-4"
-        }
-      >
-        <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]">
-          THE HOT THOUGHT
-        </Text>
-        <Text
-          className={
-            showingFeedback
-              ? "happy-font-heading-bold mt-1 text-[14px] leading-[19px] text-[#29452A]"
-              : "happy-font-heading-bold mt-1 text-xl leading-[27px] text-[#29452A]"
-          }
-        >
-          {readString(content.hotThought)}
-        </Text>
-      </View>
-
-      <View className="rounded-[22px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[18px] py-4">
-        <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]">
-          THE FAIRER THOUGHT
-        </Text>
-        <Text
-          className={
-            showingFeedback
-              ? "happy-font-heading-bold mt-1 text-[21px] leading-[29px] text-[#3F4A31]"
-              : ready
-                ? "happy-font-heading-bold mt-1 text-[17px] leading-6 text-[#3F4A31]"
-                : "happy-font-heading-bold mt-1 text-[17px] leading-6 text-[#82796A]"
-          }
-        >
-          {fairerThought}
-        </Text>
-      </View>
-
-      {!showingFeedback ? (
-        <View className="mt-3.5 gap-3.5">
-          {trays.map((tray, trayIndex) => (
-            <View key={tray.label}>
-              <Text className="happy-font-body-bold mb-2 text-[10.5px] tracking-[0.5px] text-[#82796A]">
-                {tray.label}
-              </Text>
-              <View className="gap-2">
-                {tray.options.map((option, optionIndex) => {
-                  const selected = selectedIndexes[trayIndex] === optionIndex;
-                  return (
-                    <Pressable
-                      key={option}
-                      accessibilityRole="radio"
-                      accessibilityState={{ selected }}
-                      onPress={() => selectLine(trayIndex, optionIndex)}
-                      className={
-                        selected
-                          ? "min-h-[50px] justify-center rounded-[20px] border-[1.5px] border-[#7E9874] border-b-[3px] bg-[#F2F8EF] px-4 py-2.5"
-                          : "min-h-[50px] justify-center rounded-[20px] border-[1.5px] border-[#DCD3C4] border-b-[3px] bg-[#F9F4ED] px-4 py-2.5 active:translate-y-0.5 active:border-b-[1.5px]"
-                      }
-                    >
-                      <Text className="happy-font-body text-[14px] leading-5 text-[#201E1D]">
-                        {option}
-                      </Text>
-                    </Pressable>
-                  );
-                })}
+      <StageProgress stageIndex={response.stageIndex} stageCount={builder.trays.length} label="Slot" />
+      <ExerciseWorkspace transitionKey={`${response.phase}-${activeTrayId ?? "ready"}`}>
+        {complete && fairerThought ? (
+          <ExerciseComparison
+            before={{ label: "Hot thought", value: builder.hotThought }}
+            after={{ label: "Fairer thought", value: fairerThought }}
+            caption={builder.comparisonFeedback}
+          />
+        ) : (
+          <>
+            <CompactHistory items={completedItems} onEdit={editTray} />
+            {activeTray ? (
+              <>
+                <ActivePrompt prompt={activeTray.slotLabel} />
+                <ChoiceTray
+                  choices={activeTray.options}
+                  selectedId={response.selectedByTrayId[activeTray.id] ?? null}
+                  disabled={locked}
+                  onSelect={selectOption}
+                />
+                {futureTrays.length > 0 ? (
+                  <Text style={styles.future}>
+                    Next: {futureTrays.map((tray) => tray.slotLabel).join(" · ")} ({futureTrays.length} remaining)
+                  </Text>
+                ) : null}
+              </>
+            ) : (
+              <View style={styles.ready}>
+                <Text style={styles.readyText}>Your fairer thought is ready to compare.</Text>
               </View>
-            </View>
-          ))}
-        </View>
-      ) : (
-        <CourseExerciseTeachingPanel
-          title={readString(content.feedbackTitle) ?? "More of the picture"}
-          body={readString(content.feedback) ?? ""}
-        />
-      )}
+            )}
+          </>
+        )}
+      </ExerciseWorkspace>
     </View>
   );
 }
 
-function buildFairerThought(picks: Array<string | undefined>): string {
-  if (!picks.every(Boolean)) return "…";
-  const [evidence, perspective, coach] = picks as string[];
-  return `${evidence.charAt(0).toUpperCase()}${evidence.slice(1)}. ${perspective}. ${coach}.`;
+function hasSameResponse(
+  saved: Record<string, unknown>,
+  response: ReturnType<typeof createReframeBuilderResponse>,
+): boolean {
+  const selected = saved.selectedByTrayId;
+  return (
+    saved.format === response.format &&
+    saved.phase === response.phase &&
+    saved.stageIndex === response.stageIndex &&
+    saved.isCorrect === response.isCorrect &&
+    saved.editingTrayId === response.editingTrayId &&
+    selected !== null &&
+    typeof selected === "object" &&
+    !Array.isArray(selected) &&
+    Object.keys(selected as Record<string, unknown>).length === Object.keys(response.selectedByTrayId).length &&
+    Object.entries(response.selectedByTrayId).every(
+      ([trayId, optionId]) => (selected as Record<string, unknown>)[trayId] === optionId,
+    )
+  );
 }
 
-function readTrays(value: unknown): ReframeTray[] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((item) => {
-    const tray = readRecord(item);
-    const label = readString(tray?.label);
-    const options = readStringList(tray?.options);
-    return label && options.length ? [{ label, options }] : [];
-  });
-}
-
-function readStringList(value: unknown): string[] {
-  return Array.isArray(value)
-    ? value.filter((item): item is string => typeof item === "string")
-    : [];
-}
-
-function readNumberArray(value: unknown): number[] {
-  return Array.isArray(value)
-    ? value.filter((item): item is number => typeof item === "number")
-    : [];
-}
-
-function createResponse(extra: Record<string, unknown> = {}) {
-  return {
-    format: CourseExerciseCategoryEnum.ReframeBuilder,
-    phase: "building",
-    selectedIndexes: [],
-    isCorrect: true,
-    ...extra,
-  };
-}
+const styles = StyleSheet.create({
+  screen: { flex: 1, gap: 16, paddingHorizontal: 10, paddingBottom: 12, paddingTop: 6 },
+  hotThought: {
+    gap: 3,
+    borderLeftWidth: 3,
+    borderLeftColor: COURSE_EXERCISE_COLORS.accentLight,
+    paddingLeft: 12,
+  },
+  hotThoughtLabel: {
+    color: COURSE_EXERCISE_COLORS.inkSoft,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
+    fontSize: 12,
+  },
+  hotThoughtText: {
+    color: COURSE_EXERCISE_COLORS.ink,
+    fontFamily: COURSE_EXERCISE_FONTS.body,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  future: {
+    color: COURSE_EXERCISE_COLORS.inkSoft,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
+    fontSize: 13,
+    lineHeight: 19,
+  },
+  ready: { paddingVertical: 16 },
+  readyText: {
+    color: COURSE_EXERCISE_COLORS.accentDark,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
+    fontSize: 16,
+    lineHeight: 22,
+  },
+});

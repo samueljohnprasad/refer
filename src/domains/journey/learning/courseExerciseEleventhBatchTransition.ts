@@ -1,4 +1,10 @@
 import type { CoursePrimaryTransition } from "@/src/domains/journey/learning/courseExercisePrimaryTransition";
+import {
+  buildReframeThought,
+  createReframeBuilderResponse,
+  hasCompleteReframeSelection,
+  readReframeBuilderContent,
+} from "@/src/components/exercise/reframeBuilderContent";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import type { Exercise } from "@/src/types/journeyV5";
 
@@ -150,26 +156,37 @@ function getReframeLabel(
   exercise: Exercise,
   response: Record<string, unknown>,
 ): string {
-  if (response.phase === "feedback") return "Continue";
-  const trayCount = readArray(exercise.content?.trays).length;
-  const selections = readArray(response.selectedIndexes);
-  return trayCount > 0 && selections.filter(isSelectedIndex).length >= trayCount
-    ? "Set it beside the old one"
-    : "Pick one line from each tray";
+  if (response.phase === "complete") return "Continue";
+  const content = readReframeBuilderContent(exercise.content);
+  if (!content) return "Complete each slot";
+  const normalized = createReframeBuilderResponse(content, response);
+  return hasCompleteReframeSelection(content, normalized.selectedByTrayId)
+    ? "Compare thoughts"
+    : "Complete each slot";
 }
 
 function getReframeTransition(
   exercise: Exercise,
   response: Record<string, unknown>,
 ): CoursePrimaryTransition | undefined {
-  if (response.phase !== "building") return undefined;
-  const trayCount = readArray(exercise.content?.trays).length;
-  const selections = readArray(response.selectedIndexes);
-  if (selections.filter(isSelectedIndex).length < trayCount) return undefined;
+  if (response.phase !== "active") return undefined;
+  const content = readReframeBuilderContent(exercise.content);
+  if (!content) return undefined;
+  const normalized = createReframeBuilderResponse(content, response);
+  if (
+    !hasCompleteReframeSelection(content, normalized.selectedByTrayId) ||
+    !buildReframeThought(content, normalized.selectedByTrayId)
+  ) return undefined;
   return {
     kind: "response",
     ready: true,
-    response: { ...response, phase: "feedback", isCorrect: true },
+    response: {
+      ...normalized,
+      phase: "complete",
+      stageIndex: content.trays.length - 1,
+      editingTrayId: null,
+      isCorrect: true,
+    },
   };
 }
 
@@ -191,10 +208,6 @@ function getNextIndexedTransition(
 function isLastIndex(itemsValue: unknown, indexValue: unknown): boolean {
   const items = readArray(itemsValue);
   return items.length > 0 && readNumber(indexValue) >= items.length - 1;
-}
-
-function isSelectedIndex(value: unknown): boolean {
-  return typeof value === "number" && value >= 0;
 }
 
 function readRecord(value: unknown): Record<string, unknown> | null {

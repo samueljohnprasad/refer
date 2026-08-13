@@ -102,6 +102,42 @@ export function validateGuidedDiscoveryTrail(content, issues) {
   });
 }
 
+export function validateReframeBuilder(content, issues) {
+  if (!Object.keys(content).every((key) => ["title", "instruction", "hotThought", "trays", "joinStrategy", "comparisonFeedback"].includes(key))) {
+    issues.push({ path: "content", message: "Contains unsupported Reframe Builder fields." });
+  }
+  validateText(content.hotThought, "hotThought", 24, issues);
+  validateText(content.comparisonFeedback, "comparisonFeedback", 24, issues);
+  if (typeof content.comparisonFeedback === "string" && !isSingleSentence(content.comparisonFeedback)) {
+    issues.push({ path: "comparisonFeedback", message: "Must be one sentence." });
+  }
+  const trays = readArray(content.trays, "trays", 2, 3, issues);
+  if (!trays) return;
+
+  const ids = new Set();
+  trays.forEach((tray, trayIndex) => {
+    const path = `trays[${trayIndex}]`;
+    if (!hasOnlyKeys(tray, ["id", "slotLabel", "options"])) {
+      issues.push({ path, message: "Must use only id, slotLabel, and options." });
+      return;
+    }
+    validateGlobalId(tray.id, `${path}.id`, ids, issues);
+    validateText(tray.slotLabel, `${path}.slotLabel`, 6, issues);
+    const options = readArray(tray.options, `${path}.options`, 2, 3, issues);
+    if (!options) return;
+    options.forEach((option, optionIndex) => {
+      const optionPath = `${path}.options[${optionIndex}]`;
+      if (!hasOnlyKeys(option, ["id", "label"])) {
+        issues.push({ path: optionPath, message: "Must use only id and label." });
+        return;
+      }
+      validateGlobalId(option.id, `${optionPath}.id`, ids, issues);
+      validateText(option.label, `${optionPath}.label`, 12, issues);
+    });
+  });
+  validateReframeJoin(content.joinStrategy, trays, issues);
+}
+
 function readArray(value, path, minimum, maximum, issues) {
   if (!Array.isArray(value)) {
     issues.push({ path, message: "Must be an array." });
@@ -129,6 +165,42 @@ function validateGlobalId(value, path, ids, issues) {
   } else {
     ids.add(value);
   }
+}
+
+function validateReframeJoin(value, trays, issues) {
+  if (!isRecord(value) || typeof value.type !== "string") {
+    issues.push({ path: "joinStrategy", message: "Must be a valid join strategy." });
+    return;
+  }
+  if (value.type === "space") {
+    if (!hasOnlyKeys(value, ["type"])) {
+      issues.push({ path: "joinStrategy", message: "Space joins use only type." });
+    }
+    return;
+  }
+  if (value.type !== "template" || !hasOnlyKeys(value, ["type", "template"])) {
+    issues.push({ path: "joinStrategy", message: "Must be a space or template join." });
+    return;
+  }
+  if (typeof value.template !== "string" || !value.template.trim()) {
+    issues.push({ path: "joinStrategy.template", message: "Must be a non-empty string." });
+    return;
+  }
+  const trayIds = trays.map((tray) => tray.id).filter((id) => typeof id === "string");
+  const placeholders = [...value.template.matchAll(/\{([^{}]+)\}/gu)].map((match) => match[1]);
+  if (/[{}]/u.test(value.template.replace(/\{[^{}]+\}/gu, ""))) {
+    issues.push({ path: "joinStrategy.template", message: "Contains a malformed placeholder." });
+  }
+  placeholders.forEach((placeholder) => {
+    if (!trayIds.includes(placeholder)) {
+      issues.push({ path: "joinStrategy.template", message: `Unknown placeholder "${placeholder}".` });
+    }
+  });
+  trayIds.forEach((id) => {
+    if (placeholders.filter((placeholder) => placeholder === id).length !== 1) {
+      issues.push({ path: "joinStrategy.template", message: `Placeholder "${id}" must appear exactly once.` });
+    }
+  });
 }
 
 function hasOnlyKeys(value, keys) {

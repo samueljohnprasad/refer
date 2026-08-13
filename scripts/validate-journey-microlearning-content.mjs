@@ -4,6 +4,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import {
   validateGuidedDiscoveryTrail,
+  validateReframeBuilder,
   validateStringBudget,
 } from "./journey-microlearning-validator/content-rules.mjs";
 import {
@@ -40,6 +41,9 @@ export async function validateJourneyMicrolearningContent(rootDirectory) {
     validateStringBudget(item.content, "instruction", 12, contentIssues);
     if (item.category === "guided_discovery_trail") {
       validateGuidedDiscoveryTrail(item.content, contentIssues);
+    }
+    if (item.category === "reframe_builder") {
+      validateReframeBuilder(item.content, contentIssues);
     }
     issues.push(
       ...contentIssues.map((issue) => ({
