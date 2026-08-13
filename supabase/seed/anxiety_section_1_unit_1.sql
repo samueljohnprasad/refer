@@ -740,23 +740,24 @@ WITH curriculum AS (
     "is_scored": false,
     "concept": "body_alarm",
     "content": {
-      "category": "layer_zoom",
-      "format": "layer_zoom",
       "title": "One moment, three layers",
-      "instruction": "Open each layer.",
+      "instruction": "Zoom in one layer at a time.",
       "layers": [
         {
-          "kicker": "SITUATION",
+          "id": "anxiety-layer-situation",
+          "label": "Situation",
           "title": "A name is called",
           "body": "Mina is asked to speak next in a meeting."
         },
         {
-          "kicker": "BODY ALARM",
+          "id": "anxiety-layer-body-alarm",
+          "label": "Body alarm",
           "title": "The system prepares",
           "body": "Her heart speeds up, her mouth feels dry, and her shoulders tighten."
         },
         {
-          "kicker": "FUNCTION",
+          "id": "anxiety-layer-function",
+          "label": "Function",
           "title": "The body gets ready",
           "body": "More alertness and muscle readiness would help if quick action were needed."
         }

@@ -7,6 +7,7 @@ import {
   validateExplorableModel,
   validateFadedThoughtRecord,
   validateWorkedRewrite,
+  validateLayerZoom,
   validateReframeBuilder,
   validateStringBudget,
   validateTeachBackChain,
@@ -49,6 +50,8 @@ export async function validateJourneyMicrolearningContent(rootDirectory) {
       validateFadedThoughtRecord(item.content, contentIssues);
     } else if (item.category === "worked_rewrite") {
       validateWorkedRewrite(item.content, contentIssues);
+    } else if (item.category === "layer_zoom") {
+      validateLayerZoom(item.content, contentIssues);
     } else {
       validateStringBudget(item.content, "title", 7, contentIssues);
       validateStringBudget(item.content, "instruction", 12, contentIssues);

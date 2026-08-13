@@ -6,6 +6,7 @@ export { validateTeachBackChain } from "./teach-back-rules.mjs";
 export { validateExplorableModel } from "./explorable-model-rules.mjs";
 export { validateFadedThoughtRecord } from "./faded-thought-record-rules.mjs";
 export { validateWorkedRewrite } from "./worked-rewrite-rules.mjs";
+export { validateLayerZoom } from "./layer-zoom-rules.mjs";
 
 export function validateStringBudget(root, path, maxWords, issues) {
   const value = readRequiredPath(root, path, issues);

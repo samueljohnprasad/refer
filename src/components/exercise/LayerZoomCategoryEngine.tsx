@@ -1,107 +1,58 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
-import {
-  COURSE_EXERCISE_COLORS,
-  COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
-import {
-  readNumber,
-  readRecord,
-  readString,
-} from "@/src/components/exercise/courseExerciseContent";
+import { readRecord } from "@/src/components/exercise/courseExerciseContent";
+import { ExerciseWorkspace, MicrolearningMedia, StageProgress } from "@/src/components/exercise/microlearning";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
-import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
+import { readLayerZoomContent } from "./layerZoomContent";
+import { hasSameLayerZoomResponse } from "./layerZoomResponse";
+import { createLayerZoomResponse } from "./layerZoomState";
+import { COURSE_EXERCISE_COLORS, COURSE_EXERCISE_FONTS } from "./courseExerciseTheme";
 
-interface ZoomLayer {
-  body: string;
-  kicker: string;
-  title: string;
-}
-
-export function LayerZoomCategoryEngine({
-  exercise,
-  savedResponse,
-  onInteraction,
-}: V1CategoryEngineProps) {
-  const content = exercise.content ?? {};
+export function LayerZoomCategoryEngine({ exercise, savedResponse, onInteraction }: V1CategoryEngineProps) {
+  const content = readLayerZoomContent(exercise.content);
   const saved = readRecord(savedResponse);
-  const layers = readLayers(content.layers);
-  const cardIndex = Math.min(readNumber(saved?.cardIndex) ?? 0, layers.length - 1);
-  const visibleLayers = layers.slice(0, cardIndex + 1);
-  const isComplete = cardIndex >= layers.length - 1;
-
+  const response = content ? createLayerZoomResponse(content, saved) : null;
+  const mountedStage = useRef<number | null>(null);
   useEffect(() => {
-    if (!saved) {
-      onInteraction(
-        {
-          format: CourseExerciseCategoryEnum.LayerZoom,
-          phase: "progress",
-          cardIndex: 0,
-          isCorrect: true,
-        },
-        true,
-      );
-    }
-  }, [onInteraction, saved]);
-
-  return (
-    <View style={styles.screenContent}>
-      <CourseExerciseHeading
-        title={readString(content.title) ?? "One moment, three layers"}
-        instruction={readString(content.instruction) ?? "Tap to zoom in."}
-      />
-      <View style={styles.layers}>
-        {visibleLayers.map((layer, index) => (
-          <View
-            key={layer.kicker}
-            style={[
-              styles.layer,
-              index === 1 && styles.layerMiddle,
-              index >= 2 && styles.layerInner,
-              { marginLeft: index * 12 },
-            ]}
-          >
-            <Text style={[styles.kicker, index > 0 && styles.kickerOlive]}>
-              {layer.kicker}
-            </Text>
-            <Text style={styles.layerTitle}>{layer.title}</Text>
-            <Text style={styles.layerBody}>{layer.body}</Text>
-          </View>
-        ))}
-      </View>
-      {isComplete ? (
-        <View style={styles.insight}>
-          <Text style={styles.insightKicker}>THE IDEA</Text>
-          <Text style={styles.insightBody}>{readString(content.insight)}</Text>
+    if (!content || !response || (saved && hasSameLayerZoomResponse(saved, response))) return;
+    onInteraction(response, true);
+  }, [content, onInteraction, response, saved]);
+  useEffect(() => {
+    if (response) mountedStage.current = response.stageIndex;
+  }, [response]);
+  if (!content || !response) return null;
+  const currentLayer = content.layers[response.stageIndex];
+  const transitionKey = mountedStage.current !== null && mountedStage.current !== response.stageIndex
+    ? `layer-zoom-${response.stageIndex}` : undefined;
+  return <View style={styles.screen}>
+    <CourseExerciseHeading title={content.title} instruction={content.instruction} />
+    <StageProgress stageIndex={response.stageIndex} stageCount={content.layers.length} label="Layer" />
+    <ExerciseWorkspace accessibilityLabel="Layered explanation" transitionKey={transitionKey}>
+      <View style={styles.surface}>
+        {content.layers.slice(0, response.stageIndex).map((layer) => <CompactLayerBand key={layer.id} label={layer.label} title={layer.title} />)}
+        <View accessibilityLiveRegion="polite" style={styles.expandedLayer}>
+          <Text style={styles.label}>{currentLayer.label}</Text><Text style={styles.title}>{currentLayer.title}</Text><Text style={styles.body}>{currentLayer.body}</Text>
         </View>
-      ) : null}
-    </View>
-  );
+        {content.image ? <MicrolearningMedia media={{ kind: "image", ...content.image }} /> : null}
+        {response.phase === "complete" ? <Text style={styles.insight}>{content.insight}</Text> : null}
+      </View>
+    </ExerciseWorkspace>
+  </View>;
 }
 
-function readLayers(value: unknown): ZoomLayer[] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((layerValue) => {
-    const layer = readRecord(layerValue);
-    const kicker = readString(layer?.kicker);
-    const title = readString(layer?.title);
-    const body = readString(layer?.body);
-    return kicker && title && body ? [{ kicker, title, body }] : [];
-  });
+function CompactLayerBand({ label, title }: { label: string; title: string }) {
+  return <View style={styles.compactBand}><Text style={styles.compactLabel}>{label}</Text><Text style={styles.compactTitle}>{title}</Text></View>;
 }
 
 const styles = StyleSheet.create({
-  screenContent: { flex: 1, paddingHorizontal: 8, paddingTop: 6, paddingBottom: 12 },
-  layers: { gap: 10 },
-  layer: { paddingHorizontal: 18, paddingVertical: 15, borderWidth: 1.5, borderColor: COURSE_EXERCISE_COLORS.border, borderRadius: 24, backgroundColor: COURSE_EXERCISE_COLORS.surface, shadowColor: COURSE_EXERCISE_COLORS.shadow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.09, shadowRadius: 4 },
-  layerMiddle: { borderColor: COURSE_EXERCISE_COLORS.accentLight, backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
-  layerInner: { borderColor: COURSE_EXERCISE_COLORS.accent, backgroundColor: COURSE_EXERCISE_COLORS.accentLight },
-  kicker: { marginBottom: 4, color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 10.5, letterSpacing: 0.7 },
-  kickerOlive: { color: COURSE_EXERCISE_COLORS.accentDark },
-  layerTitle: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 15.5, lineHeight: 20 },
-  layerBody: { marginTop: 2, color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 14, lineHeight: 21 },
-  insight: { marginTop: 16, paddingHorizontal: 16, paddingVertical: 14, borderRadius: 20, backgroundColor: COURSE_EXERCISE_COLORS.surface, shadowColor: COURSE_EXERCISE_COLORS.shadow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.09, shadowRadius: 4 },
-  insightKicker: { marginBottom: 4, color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 10.5, letterSpacing: 0.7 },
-  insightBody: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 13.5, lineHeight: 20 },
+  screen: { flex: 1, gap: 14 }, surface: { gap: 12 },
+  compactBand: { gap: 2, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 11, backgroundColor: COURSE_EXERCISE_COLORS.surfaceMuted },
+  compactLabel: { color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 12 },
+  compactTitle: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 14, lineHeight: 19 },
+  expandedLayer: { gap: 6, borderRadius: 16, padding: 18, backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
+  label: { color: COURSE_EXERCISE_COLORS.accentDark, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 12 },
+  title: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 18, lineHeight: 24 },
+  body: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 15, lineHeight: 22 },
+  insight: { color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 14, lineHeight: 21 },
 });

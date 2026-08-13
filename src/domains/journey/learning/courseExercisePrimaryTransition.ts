@@ -8,6 +8,7 @@ import {
   getExplorableModelPrimaryLabel,
   getNextExplorableModelState,
 } from "@/src/domains/journey/learning/explorableModelTransition";
+import { getLayerZoomPrimaryLabel, getNextLayerZoomState } from "@/src/domains/journey/learning/layerZoomTransition";
 
 export type CoursePrimaryTransition =
   | { kind: "check" }
@@ -36,7 +37,7 @@ export function getCoursePrimaryLabel(
     case CourseExerciseCategoryEnum.NameIt:
       return getNameItLabel(response);
     case CourseExerciseCategoryEnum.LayerZoom:
-      return getProgressLabel(exercise.content?.layers, response, "Zoom in");
+      return getLayerZoomPrimaryLabel(exercise, response);
     case CourseExerciseCategoryEnum.Dialogue:
       return getProgressLabel(exercise.content?.messages, response, "Next");
     case CourseExerciseCategoryEnum.StoryWalkthrough:
@@ -71,7 +72,7 @@ export function getCoursePrimaryTransition(
     case CourseExerciseCategoryEnum.NameIt:
       return getNextNameItState(response);
     case CourseExerciseCategoryEnum.LayerZoom:
-      return getNextProgressState(exercise.content?.layers, response);
+      return getNextLayerZoomState(exercise, response) ?? null;
     case CourseExerciseCategoryEnum.Dialogue:
       return getNextProgressState(exercise.content?.messages, response);
     case CourseExerciseCategoryEnum.StoryWalkthrough:
