@@ -42,7 +42,6 @@ export function GuidedDiscoveryTrailCategoryEngine({
   const selectedOption = question?.options.find(
     (option) => option.id === selectedOptionId,
   );
-  const feedbackVisible = phase === "feedback" && Boolean(selectedOption);
   const completedSummaries = questions
     .slice(0, phase === "complete" ? questions.length : stageIndex)
     .map((item) => item.summary);
@@ -101,8 +100,8 @@ export function GuidedDiscoveryTrailCategoryEngine({
               />
             ) : null}
             <InlineFeedback
-              message={feedbackVisible ? selectedOption.response : null}
-              title={feedbackVisible ? selectedOption.label : undefined}
+              message={phase === "feedback" ? (selectedOption?.response ?? null) : null}
+              title={phase === "feedback" ? selectedOption?.label : undefined}
               tone="supported"
             />
           </>
