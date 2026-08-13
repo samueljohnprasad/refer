@@ -961,44 +961,56 @@ WITH curriculum AS (
       "format": "guided_discovery_trail",
       "completionMode": "direct",
       "title": "Follow the evidence gap",
-      "instruction": "Answer each question and read what it changes.",
+      "instruction": "Choose one clue at a time.",
       "questions": [
         {
-          "coach": "A friend has not replied since morning. What is known?",
+          "id": "trail-friend-fact",
+          "prompt": "A friend has not replied since morning. What is known?",
+          "summary": "Only the missing reply is known.",
           "options": [
             {
+              "id": "trail-friend-fact-event",
               "label": "There is no reply yet",
-              "reply": "Yes. This describes the event without deciding what it means."
+              "response": "This describes the event without deciding what it means."
             },
             {
+              "id": "trail-friend-fact-cause",
               "label": "The friend is upset",
-              "reply": "That could be true, but it is a prediction because the reason is unknown."
+              "response": "That could be true, but the reason is still unknown."
             }
           ]
         },
         {
-          "coach": "The mind says, “I must have done something wrong.” What changed?",
+          "id": "trail-thought-gap",
+          "prompt": "The mind says, “I must have done something wrong.” What changed?",
+          "summary": "A prediction filled an evidence gap.",
           "options": [
             {
+              "id": "trail-thought-gap-evidence",
               "label": "New evidence arrived",
-              "reply": "No new evidence arrived. The mind supplied one possible explanation."
+              "response": "No new evidence arrived; the mind supplied one possible explanation."
             },
             {
+              "id": "trail-thought-gap-prediction",
               "label": "One prediction filled the gap",
-              "reply": "Right. Uncertainty became one threatening conclusion."
+              "response": "Uncertainty became one threatening conclusion."
             }
           ]
         },
         {
-          "coach": "What keeps the reading accurate while the reason is unknown?",
+          "id": "trail-accurate-reading",
+          "prompt": "What keeps the reading accurate while the reason is unknown?",
+          "summary": "Event and prediction can stay separate.",
           "options": [
             {
+              "id": "trail-accurate-reading-worst",
               "label": "Treat the worst possibility as preparation",
-              "reply": "Preparation can be useful, but a possibility still does not become a fact."
+              "response": "Preparation can help, but possibility does not become fact."
             },
             {
+              "id": "trail-accurate-reading-separate",
               "label": "Name the event and prediction separately",
-              "reply": "Yes. The concern stays visible without closing the evidence gap."
+              "response": "The concern stays visible without closing the evidence gap."
             }
           ]
         }

@@ -4,16 +4,6 @@ import {
   readStringArray,
 } from "@/src/components/exercise/courseExerciseContent";
 
-export interface DiscoveryOption {
-  label: string;
-  reply: string;
-}
-
-export interface DiscoveryQuestion {
-  coach: string;
-  options: DiscoveryOption[];
-}
-
 export interface TeachBackStep {
   id: string;
   label: string;
@@ -39,16 +29,6 @@ export interface FillBlankVariant {
   correctFeedback: string;
   incorrectFeedback: string;
   workedExample: string;
-}
-
-export function readDiscoveryQuestions(value: unknown): DiscoveryQuestion[] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((item) => {
-    const question = readRecord(item);
-    const coach = readString(question?.coach);
-    const options = readDiscoveryOptions(question?.options);
-    return coach && options.length ? [{ coach, options }] : [];
-  });
 }
 
 export function readTeachBackSteps(value: unknown): TeachBackStep[] {
@@ -112,16 +92,6 @@ export function readFillBlankVariants(value: unknown): FillBlankVariant[] {
           },
         ]
       : [];
-  });
-}
-
-function readDiscoveryOptions(value: unknown): DiscoveryOption[] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((item) => {
-    const option = readRecord(item);
-    const label = readString(option?.label);
-    const reply = readString(option?.reply);
-    return label && reply ? [{ label, reply }] : [];
   });
 }
 

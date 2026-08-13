@@ -116,6 +116,20 @@ export function NodeEngineRouter({
       legacyCompletesDirectly: completesOnPrimaryInteraction(currentExercise),
     });
     if (isMicrolearningExercise) {
+      const courseTransition = getCoursePrimaryTransition(
+        currentExercise,
+        currentResponse,
+      );
+      if (courseTransition?.kind === "response") {
+        dispatch(
+          recordV1LearningInteraction({
+            nodeId,
+            response: courseTransition.response,
+            ready: courseTransition.ready,
+          }),
+        );
+        return;
+      }
       if (completesOnPress) {
         await completeCurrentExercise(
           buildResolvedResponse(currentExercise, currentResponse, attemptCount),

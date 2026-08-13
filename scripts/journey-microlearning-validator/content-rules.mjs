@@ -69,6 +69,80 @@ export function readRequiredPath(root, path, issues) {
   return current;
 }
 
+export function validateGuidedDiscoveryTrail(content, issues) {
+  const questions = validateArrayCount(content, "questions", 3, 4, issues);
+  validateStringBudget(content, "stamp", 24, issues);
+  if (!questions) return;
+
+  const ids = new Set();
+  questions.forEach((question, questionIndex) => {
+    const path = `questions[${questionIndex}]`;
+    if (!hasOnlyKeys(question, ["id", "prompt", "summary", "options"])) {
+      issues.push({ path, message: "Must use only id, prompt, summary, and options." });
+      return;
+    }
+    validateGlobalId(question.id, `${path}.id`, ids, issues);
+    validateText(question.prompt, `${path}.prompt`, 24, issues);
+    validateText(question.summary, `${path}.summary`, 12, issues);
+    const options = readArray(question.options, `${path}.options`, 2, 3, issues);
+    if (!options) return;
+    options.forEach((option, optionIndex) => {
+      const optionPath = `${path}.options[${optionIndex}]`;
+      if (!hasOnlyKeys(option, ["id", "label", "response"])) {
+        issues.push({ path: optionPath, message: "Must use only id, label, and response." });
+        return;
+      }
+      validateGlobalId(option.id, `${optionPath}.id`, ids, issues);
+      validateText(option.label, `${optionPath}.label`, 12, issues);
+      validateText(option.response, `${optionPath}.response`, 24, issues);
+      if (typeof option.response === "string" && !isSingleSentence(option.response)) {
+        issues.push({ path: `${optionPath}.response`, message: "Must be one sentence." });
+      }
+    });
+  });
+}
+
+function readArray(value, path, minimum, maximum, issues) {
+  if (!Array.isArray(value)) {
+    issues.push({ path, message: "Must be an array." });
+    return null;
+  }
+  if (value.length < minimum || value.length > maximum) {
+    issues.push({ path, message: `Must contain ${minimum}–${maximum} items; found ${value.length}.` });
+  }
+  return value;
+}
+
+function validateText(value, path, maxWords, issues) {
+  if (typeof value !== "string" || !value.trim()) {
+    issues.push({ path, message: "Must be a non-empty string." });
+  } else if (countWords(value) > maxWords) {
+    issues.push({ path, message: `Must be ${maxWords} words or fewer; found ${countWords(value)}.` });
+  }
+}
+
+function validateGlobalId(value, path, ids, issues) {
+  if (typeof value !== "string" || !value.trim()) {
+    issues.push({ path, message: "Must be a non-empty string." });
+  } else if (ids.has(value)) {
+    issues.push({ path, message: `Duplicate id \"${value}\".` });
+  } else {
+    ids.add(value);
+  }
+}
+
+function hasOnlyKeys(value, keys) {
+  return (
+    isRecord(value) &&
+    Object.keys(value).every((key) => keys.includes(key)) &&
+    keys.every((key) => key in value)
+  );
+}
+
+function isSingleSentence(value) {
+  return value.trim().split(/[.!?]+/u).filter(Boolean).length === 1;
+}
+
 function isRecord(value) {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }

@@ -7,7 +7,7 @@ import {
 
 export interface CompactHistoryItem {
   id: string;
-  label: string;
+  label?: string;
   value: string;
 }
 
@@ -23,7 +23,7 @@ export function CompactHistory({ items, onEdit }: CompactHistoryProps) {
       {items.map((item) => (
         <View key={item.id} style={styles.row}>
           <View style={styles.copy}>
-            <Text style={styles.label}>{item.label}</Text>
+            {item.label ? <Text style={styles.label}>{item.label}</Text> : null}
             <Text numberOfLines={2} style={styles.value}>
               {item.value}
             </Text>

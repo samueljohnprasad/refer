@@ -257,13 +257,43 @@ exercises:
 
   - id: guided_discovery_trail
     name: "Guided Discovery Trail"
-    description: "Leading questions culminating in a stamp of discovery."
+    description: "Three or four reflective questions with authored summaries and a final conclusion."
     when_to_use: "To mimic Socratic questioning for personal insight."
     content_schema:
-      title: "string"
-      instruction: "string"
-      questions: "{ id: string; prompt: string; options: { id: string; label: string; body?: string; detail?: string; next?: string; feedback?: string; isCorrect?: boolean }[] }[]"
-      stamp: "string"
+      title: "Follow the evidence gap"
+      instruction: "Choose one clue at a time."
+      questions:
+        - id: "trail-fact"
+          prompt: "A reply is delayed. What is known?"
+          summary: "Only the delayed reply is known."
+          options:
+            - id: "trail-fact-event"
+              label: "There is no reply yet"
+              response: "That describes the event without adding a cause."
+            - id: "trail-fact-cause"
+              label: "The friend is upset"
+              response: "That may be possible, but the reason is still unknown."
+        - id: "trail-gap"
+          prompt: "What did the worried thought add?"
+          summary: "A prediction filled an evidence gap."
+          options:
+            - id: "trail-gap-prediction"
+              label: "One possible explanation"
+              response: "A possibility can remain open while information is missing."
+            - id: "trail-gap-fact"
+              label: "A new fact"
+              response: "No new fact arrived; the thought supplied an explanation."
+        - id: "trail-separate"
+          prompt: "What keeps the next step accurate?"
+          summary: "Event and prediction can stay separate."
+          options:
+            - id: "trail-separate-name"
+              label: "Name both separately"
+              response: "This keeps concern visible without making it certain."
+            - id: "trail-separate-worst"
+              label: "Treat the worst as certain"
+              response: "Preparation can help without turning possibility into proof."
+      stamp: "EVENT AND PREDICTION SEPARATED"
 
   - id: teach_back_chain
     name: "Teach-Back Chain"

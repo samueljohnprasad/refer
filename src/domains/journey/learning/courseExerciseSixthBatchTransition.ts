@@ -2,6 +2,12 @@ import {
   readFillBlankVariants,
   readRecallCards,
 } from "@/src/components/exercise/courseExerciseSixthBatchContent";
+import { readGuidedDiscoveryTrailContent } from "@/src/components/exercise/guidedDiscoveryTrailContent";
+import {
+  readMicrolearningPhase,
+  readStageIndex,
+  sanitizeSelectedId,
+} from "@/src/components/exercise/microlearning/microlearningResponse";
 import type { CoursePrimaryTransition } from "@/src/domains/journey/learning/courseExercisePrimaryTransition";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import type { Exercise } from "@/src/types/journeyV5";
@@ -29,6 +35,8 @@ export function getSixthBatchPrimaryTransition(
   response: Record<string, unknown>,
 ): CoursePrimaryTransition | undefined {
   switch (exercise.type) {
+    case CourseExerciseCategoryEnum.GuidedDiscoveryTrail:
+      return getNextTrailState(exercise, response);
     case CourseExerciseCategoryEnum.RecallWarmup:
       return getNextRecallState(exercise, response);
     case CourseExerciseCategoryEnum.FillBlank:
@@ -42,11 +50,56 @@ function getTrailLabel(
   exercise: Exercise,
   response: Record<string, unknown>,
 ): string {
-  const selectedCount = readArray(response.selectedOptionIndexes).length;
-  const questionCount = readArray(exercise.content?.questions).length;
-  return selectedCount >= questionCount
-    ? "Continue"
-    : "Answer above to continue";
+  const trail = readGuidedDiscoveryTrailContent(exercise.content);
+  if (!trail) return "Choose one";
+  if (readMicrolearningPhase(response.phase) === "complete") return "Continue";
+  const stageIndex = readStageIndex(response.stageIndex, trail.questions.length);
+  const question = trail.questions[stageIndex];
+  const selectedOptionId = sanitizeSelectedId(
+    response.selectedOptionId,
+    question.options.map((option) => option.id),
+  );
+  if (readMicrolearningPhase(response.phase) !== "feedback" || !selectedOptionId) {
+    return "Choose one";
+  }
+  return stageIndex === trail.questions.length - 1
+    ? "See the pattern"
+    : "Next clue";
+}
+
+function getNextTrailState(
+  exercise: Exercise,
+  response: Record<string, unknown>,
+): CoursePrimaryTransition | undefined {
+  const trail = readGuidedDiscoveryTrailContent(exercise.content);
+  if (!trail || readMicrolearningPhase(response.phase) !== "feedback") {
+    return undefined;
+  }
+  const stageIndex = readStageIndex(response.stageIndex, trail.questions.length);
+  const question = trail.questions[stageIndex];
+  const selectedOptionId = sanitizeSelectedId(
+    response.selectedOptionId,
+    question.options.map((option) => option.id),
+  );
+  if (!selectedOptionId) return undefined;
+
+  const completedSummaries = trail.questions
+    .slice(0, stageIndex + 1)
+    .map((item) => item.summary);
+  const complete = stageIndex === trail.questions.length - 1;
+  return {
+    kind: "response",
+    ready: complete,
+    response: {
+      ...response,
+      phase: complete ? "complete" : "active",
+      stageIndex: complete ? stageIndex : stageIndex + 1,
+      selectedOptionId: null,
+      feedbackText: null,
+      completedSummaries,
+      isCorrect: true,
+    },
+  };
 }
 
 function getTeachBackLabel(

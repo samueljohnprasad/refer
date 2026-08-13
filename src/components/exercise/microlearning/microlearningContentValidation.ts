@@ -1,4 +1,5 @@
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
+import { validateGuidedDiscoveryTrailContent } from "@/src/components/exercise/guidedDiscoveryTrailContent";
 import type { MicrolearningContentIssue } from "./microlearningTypes";
 
 export const MICROLEARNING_CATEGORIES = [
@@ -36,6 +37,9 @@ export function validateMicrolearningContent(
 
   validateStringBudget(content, "title", 7, issues);
   validateStringBudget(content, "instruction", 12, issues);
+  if (category === CourseExerciseCategoryEnum.GuidedDiscoveryTrail) {
+    validateGuidedDiscoveryTrailContent(content, issues);
+  }
   return issues;
 }
 

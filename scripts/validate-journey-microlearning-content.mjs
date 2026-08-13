@@ -2,7 +2,10 @@
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { validateStringBudget } from "./journey-microlearning-validator/content-rules.mjs";
+import {
+  validateGuidedDiscoveryTrail,
+  validateStringBudget,
+} from "./journey-microlearning-validator/content-rules.mjs";
 import {
   inventorySql,
   inventoryYaml,
@@ -35,6 +38,9 @@ export async function validateJourneyMicrolearningContent(rootDirectory) {
     const contentIssues = [];
     validateStringBudget(item.content, "title", 7, contentIssues);
     validateStringBudget(item.content, "instruction", 12, contentIssues);
+    if (item.category === "guided_discovery_trail") {
+      validateGuidedDiscoveryTrail(item.content, contentIssues);
+    }
     issues.push(
       ...contentIssues.map((issue) => ({
         file: item.file,
