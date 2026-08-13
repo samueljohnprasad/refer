@@ -152,3 +152,85 @@ PASS manifests and lockfiles unchanged
 - Confirmed inventory returns exactly one explicit issue for each malformed recognized occurrence and one item for valid content.
 - Confirmed selection semantics are independent of feedback visual state.
 - Did not address the deferred 2–4 rendering guard or scratch-report hygiene minors.
+
+## Fix round 2: Preserve the public response API
+
+### Product fix
+
+- Restored `isFinalMicrolearningResponse(value: unknown): boolean` as the exact public one-argument phase classifier.
+- Added `isMatchingFinalMicrolearningResponse(value, expectedFormat)` for router/label identity checks.
+- Kept `shouldCompleteOnPrimaryPress` strict for the eleven categories: only matching format plus complete phase can finish; active and feedback still return false, while unrelated direct completion remains unchanged.
+
+### Focused verification commands and output
+
+Public API, matching helper, and node completion matrix:
+
+```sh
+NODE_NO_WARNINGS=1 node --experimental-strip-types --input-type=module <<'NODE'
+import {
+  isFinalMicrolearningResponse,
+  isMatchingFinalMicrolearningResponse,
+  shouldCompleteOnPrimaryPress,
+} from './src/components/exercise/microlearning/microlearningResponse.ts';
+// Runs the two public cases, two matching cases, and five completion cases.
+NODE
+```
+
+```text
+PASS public one-argument complete: true
+PASS public one-argument active: false
+PASS matching helper matching format: true
+PASS matching helper mismatched format: false
+PASS completion mismatched complete: false
+PASS completion matching active: false
+PASS completion matching feedback: false
+PASS completion matching complete: true
+PASS completion unrelated direct: true
+```
+
+Focused TypeScript:
+
+```sh
+node node_modules/typescript/bin/tsc -p /tmp/journey-microlearning-fix2-tsconfig.json
+```
+
+```text
+focused_status=0 lines=0 errors=0
+```
+
+Full TypeScript baseline comparison:
+
+```sh
+node node_modules/typescript/bin/tsc --noEmit --pretty false > /tmp/journey-microlearning-fix2-tsc-full.log 2>&1
+wc -l /tmp/journey-microlearning-fix2-tsc-full.log
+rg -c 'error TS' /tmp/journey-microlearning-fix2-tsc-full.log
+comm -13 <(sort /tmp/journey-microlearning-tsc-before.log) <(sort /tmp/journey-microlearning-fix2-tsc-full.log)
+```
+
+```text
+143 /tmp/journey-microlearning-fix2-tsc-full.log
+104
+(no new diagnostic lines; no touched-path diagnostics)
+```
+
+Content, size, and diff checks:
+
+```sh
+node scripts/validate-journey-microlearning-content.mjs .
+find src/components/exercise/microlearning src/components/node -type f \( -name '*.ts' -o -name '*.tsx' \) -print0 | xargs -0 wc -l | awk '$1 > 300 && $2 != "total"'
+git diff --check
+```
+
+```text
+Scanned 25 SQL/YAML files.
+Validation passed for 37 inventoried objects.
+PASS no component/helper over 300 lines
+PASS git diff --check
+```
+
+### Fix-round self-review
+
+- Confirmed the public barrel continues to export the restored one-argument function without overload or optional-argument ambiguity.
+- Confirmed every format-sensitive call uses the separately named matching helper.
+- Re-ran the previous five completion cases to ensure the stricter router boundary did not regress.
+- Made no seed, dependency, package, compatibility, or deferred-minor changes.

@@ -6,7 +6,7 @@ import {
   type V1CheckStatus,
 } from "@/src/types/journeyLearning";
 import { isMicrolearningCategory } from "@/src/components/exercise/microlearning/microlearningContentValidation";
-import { isFinalMicrolearningResponse } from "@/src/components/exercise/microlearning/microlearningResponse";
+import { isMatchingFinalMicrolearningResponse } from "@/src/components/exercise/microlearning/microlearningResponse";
 
 const ATTEMPTS_BEFORE_EXPLANATION = 2;
 
@@ -113,7 +113,7 @@ export function getDisplayPrimaryLabel(
 ): string {
   if (
     isMicrolearningCategory(exercise.type) &&
-    isFinalMicrolearningResponse(response, exercise.type)
+    isMatchingFinalMicrolearningResponse(response, exercise.type)
   ) {
     return "Continue";
   }
