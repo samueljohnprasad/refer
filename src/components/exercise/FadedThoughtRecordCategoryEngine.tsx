@@ -1,20 +1,32 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Animated, Pressable, Text, View } from "react-native";
+import React, { useEffect } from "react";
+import { Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
+import { readRecord } from "@/src/components/exercise/courseExerciseContent";
 import {
-  readRecord,
-  readString,
-} from "@/src/components/exercise/courseExerciseContent";
-import {
-  readRecordScreens,
-  type RecordOption,
-  type RecordRow,
-  type RecordScreen,
-  type RecordSlot,
+  readFadedThoughtRecordContent,
+  type ThoughtRecordExample,
+  type ThoughtRecordField,
 } from "@/src/components/exercise/fadedThoughtRecordContent";
+import {
+  createFadedThoughtRecordResponse,
+  getFadedThoughtRecordSelectedOption,
+  getFadedThoughtRecordSteps,
+  selectFadedThoughtRecordOption,
+  type FadedThoughtRecordResponse,
+  type FadedThoughtRecordStep,
+} from "@/src/components/exercise/fadedThoughtRecordState";
+import { hasSameFadedThoughtRecordResponse } from "@/src/components/exercise/fadedThoughtRecordResponse";
+import { fadedThoughtRecordStyles as styles } from "@/src/components/exercise/fadedThoughtRecordStyles";
+import {
+  ActivePrompt,
+  ChoiceTray,
+  CompactHistory,
+  ExerciseWorkspace,
+  InlineFeedback,
+  StageProgress,
+} from "@/src/components/exercise/microlearning";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
-import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
 export function FadedThoughtRecordCategoryEngine({
   exercise,
@@ -22,234 +34,145 @@ export function FadedThoughtRecordCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
-  const content = exercise.content ?? {};
+  const content = readFadedThoughtRecordContent(exercise.content);
   const saved = readRecord(savedResponse);
-  const screens = readRecordScreens(content.screens);
-  const screenIndex = readIndex(saved?.screenIndex) ?? 0;
-  const screen = screens[screenIndex];
-  const evidenceIndex = readIndex(saved?.selectedEvidenceIndex);
-  const realisticIndex = readIndex(saved?.selectedRealisticIndex);
-  const coachFeedback = readString(saved?.coachFeedback);
-  const [wrongKey, setWrongKey] = useState<string | null>(null);
-  const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const response = content ? createFadedThoughtRecordResponse(content, saved) : null;
 
   useEffect(() => {
-    if (!saved) onInteraction(createResponse(), true);
-  }, [onInteraction, saved]);
-
-  useEffect(
-    () => () => {
-      if (clearTimer.current) clearTimeout(clearTimer.current);
-    },
-    [],
-  );
-
-  const selectOption = (
-    slot: RecordSlot,
-    optionIndex: number,
-    option: RecordOption,
-  ) => {
-    if (locked || !screen) return;
-    if (!option.isCorrect) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      setWrongKey(`${slot}-${optionIndex}`);
-      onInteraction(
-        createResponse({ ...saved, coachFeedback: option.feedback }),
-        false,
-      );
-      clearTimer.current = setTimeout(() => setWrongKey(null), 420);
+    if (!content || !response || (saved && hasSameFadedThoughtRecordResponse(saved, response))) {
       return;
     }
+    onInteraction(response, isFadedThoughtRecordFooterReady(response));
+  }, [content, onInteraction, response, saved]);
 
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    const nextEvidenceIndex = slot === "evidence" ? optionIndex : evidenceIndex;
-    const nextRealisticIndex =
-      slot === "realistic" ? optionIndex : realisticIndex;
-    const screenComplete =
-      nextEvidenceIndex !== null &&
-      (!screen.realisticOptions.length || nextRealisticIndex !== null);
-    onInteraction(
-      createResponse({
-        ...saved,
-        selectedEvidenceIndex: nextEvidenceIndex,
-        selectedRealisticIndex: nextRealisticIndex,
-        coachFeedback: option.feedback,
-      }),
-      screenComplete,
-    );
+  if (!content || !response) return null;
+  const steps = getFadedThoughtRecordSteps(content);
+  const currentStep = response.phase === "complete" ? null : steps[response.stageIndex];
+  const example = currentStep?.example ?? content.examples[1];
+  const selectedOption = getFadedThoughtRecordSelectedOption(content, response);
+  const showCompletedExample = example.id === content.examples[1].id;
+
+  const selectOption = (optionId: string) => {
+    if (locked || response.phase !== "active" || !currentStep) return;
+    const option = currentStep.task.options.find((item) => item.id === optionId);
+    if (!option) return;
+    if (option.isSupported) void Haptics.selectionAsync();
+    const next = selectFadedThoughtRecordOption(content, response, option.id);
+    onInteraction(next, isFadedThoughtRecordFooterReady(next));
   };
 
-  if (!screen) return null;
-  const activeOptions = getActiveOptions(screen, evidenceIndex, realisticIndex);
-
   return (
-    <View className="flex-1 px-2 pb-3 pt-1.5">
-      <CourseExerciseHeading
-        title={screen.title}
-        instruction={
-          readString(content.instruction) ?? "Watch, then fill the open moves."
-        }
-      />
-
-      <View className="mb-1.5 flex-row justify-center gap-1.5">
-        {screens.map((_, index) => (
-          <View
-            key={index}
-            className={
-              index === screenIndex
-                ? "h-2 w-[22px] rounded-full bg-[#5F7F58]"
-                : index < screenIndex
-                  ? "h-2 w-2 rounded-full bg-[#5F7F58]"
-                  : "h-2 w-2 rounded-full bg-[#DCD3C4]"
-            }
-          />
-        ))}
-      </View>
-      <Text className="happy-font-body-bold mb-2.5 text-center text-[10.5px] tracking-[0.6px] text-[#82796A]">
-        {screen.label}
-      </Text>
-
-      <View className="gap-2">
-        {screen.rows.map((row) => (
-          <RecordRowCard
-            key={row.label}
-            row={row}
-            text={resolveRowText(row, screen, evidenceIndex, realisticIndex)}
-            complete={isRowComplete(row, evidenceIndex, realisticIndex, screen)}
-          />
-        ))}
-      </View>
-
-      {activeOptions ? (
-      <View className="mt-3 gap-2">
-          {activeOptions.options.map((option, index) => (
-            <Pressable
-              key={option.text}
-              accessibilityRole="button"
-              onPress={() => selectOption(activeOptions.slot, index, option)}
-              className={
-                wrongKey === `${activeOptions.slot}-${index}`
-                  ? "min-h-[50px] justify-center rounded-[20px] border-[1.5px] border-[#C86D55] bg-[#FFF0EA] px-4 py-2.5"
-                  : "min-h-[50px] justify-center rounded-[20px] border-[1.5px] border-[#DCD3C4] border-b-[3px] bg-[#F9F4ED] px-4 py-2.5 active:translate-y-0.5 active:border-b-[1.5px]"
-              }
-            >
-              <Text className="happy-font-body-bold text-[13.5px] leading-[19px] text-[#201E1D]">
-                {option.text}
-              </Text>
-            </Pressable>
-          ))}
-      </View>
-      ) : null}
-
-      <Text className="happy-font-body mt-3 px-0.5 italic text-[13px] leading-[19px] text-[#696156]">
-        {coachFeedback ?? screen.coach}
-      </Text>
-    </View>
-  );
-}
-
-function RecordRowCard({
-  row,
-  text,
-  complete,
-}: {
-  row: RecordRow;
-  text: string;
-  complete: boolean;
-}) {
-  const blank = Boolean(row.slot) && !complete;
-  const cardClass = blank
-    ? "rounded-[20px] border-[1.5px] border-dashed border-[#B9AFA0] bg-transparent px-[14px] py-3"
-    : row.kind === "thought"
-      ? "rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[14px] py-3"
-      : complete && row.slot
-        ? "rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[14px] py-3"
-        : "rounded-[20px] border border-[#DCD3C4] bg-[#F9F4ED] px-[14px] py-3";
-  const labelClass =
-    row.kind === "thought"
-      ? "happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]"
-      : row.kind === "against" || row.kind === "realistic"
-        ? "happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]"
-        : "happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#82796A]";
-  return (
-    <View className={cardClass}>
-      <Text className={labelClass}>{row.label}</Text>
-      <Text
-        className={
-          blank
-            ? "happy-font-body mt-1 italic text-[13.5px] leading-5 text-[#82796A]"
-            : "happy-font-body mt-1 text-[13.5px] leading-5 text-[#201E1D]"
-        }
+    <View style={styles.screen}>
+      <CourseExerciseHeading title={content.title} instruction={content.instruction} />
+      <StageProgress stageIndex={response.stageIndex} stageCount={steps.length} label="Field" />
+      <ExerciseWorkspace
+        accessibilityLabel="Thought record notebook"
+        transitionKey="faded-thought-record-notebook"
       >
-        {text}
+        {showCompletedExample ? (
+          <CompactHistory
+            items={[{
+              id: content.examples[0].id,
+              label: content.examples[0].label,
+              value: "Record completed",
+            }]}
+          />
+        ) : null}
+        <View style={styles.exampleHeader}>
+          <Text style={styles.exampleLabel}>{example.label}</Text>
+          <Text style={styles.context}>{example.context}</Text>
+        </View>
+        <View accessibilityLabel={`${example.label} notebook`} style={styles.notebook}>
+          {content.fields.map((field) => (
+            <ThoughtRecordFieldRow
+              key={field.id}
+              example={example}
+              field={field}
+              response={response}
+            />
+          ))}
+          {response.phase === "complete" ? (
+            <Text accessibilityLiveRegion="polite" style={styles.insight}>
+              {content.completionInsight}
+            </Text>
+          ) : null}
+        </View>
+        {currentStep ? (
+          <View style={styles.activeRegion}>
+            <ActivePrompt prompt={currentStep.task.prompt} />
+            {response.phase === "active" ? (
+              <ChoiceTray
+                choices={currentStep.task.options}
+                disabled={locked}
+                onSelect={selectOption}
+              />
+            ) : null}
+            <InlineFeedback
+              message={getFeedbackMessage(currentStep, selectedOption?.feedback, response)}
+              title={response.phase === "feedback"
+                ? response.isCorrect ? "Field complete" : "A clue"
+                : undefined}
+              tone={response.isCorrect ? "supported" : "neutral"}
+            />
+          </View>
+        ) : null}
+      </ExerciseWorkspace>
+    </View>
+  );
+}
+
+function ThoughtRecordFieldRow({
+  example,
+  field,
+  response,
+}: {
+  example: ThoughtRecordExample;
+  field: ThoughtRecordField;
+  response: FadedThoughtRecordResponse;
+}) {
+  const value = getFieldValue(example, field.id, response);
+  const active = response.phase !== "complete" && response.activeFieldId === field.id;
+  const future = !value && !active && example.activeFieldOrder.includes(field.id);
+  const displayValue = value ?? (future ? "Your turn next" : "Choose below");
+  return (
+    <View
+      accessible
+      accessibilityLabel={`${field.label}: ${displayValue}`}
+      style={[styles.fieldRow, active && styles.activeField]}
+    >
+      <Text style={[styles.fieldLabel, active && styles.activeFieldLabel]}>
+        {field.label}
+      </Text>
+      <Text style={[styles.fieldValue, (active || future) && styles.pendingValue]}>
+        {displayValue}
       </Text>
     </View>
   );
 }
 
-function getActiveOptions(
-  screen: RecordScreen,
-  evidenceIndex: number | null,
-  realisticIndex: number | null,
-) {
-  if (screen.evidenceOptions.length && evidenceIndex === null) {
-    return { slot: "evidence" as const, options: screen.evidenceOptions };
-  }
-  if (
-    screen.realisticOptions.length &&
-    evidenceIndex !== null &&
-    realisticIndex === null
-  ) {
-    return { slot: "realistic" as const, options: screen.realisticOptions };
-  }
-  return null;
+function getFieldValue(
+  example: ThoughtRecordExample,
+  fieldId: string,
+  response: FadedThoughtRecordResponse,
+): string | null {
+  const prefill = example.prefills.find((item) => item.fieldId === fieldId);
+  if (prefill) return prefill.value;
+  const optionId = response.answersByExampleId[example.id]?.[fieldId];
+  const task = example.tasks.find((item) => item.fieldId === fieldId);
+  return task?.options.find((option) => option.id === optionId)?.label ?? null;
 }
 
-function resolveRowText(
-  row: RecordRow,
-  screen: RecordScreen,
-  evidenceIndex: number | null,
-  realisticIndex: number | null,
-): string {
-  if (row.slot === "evidence" && evidenceIndex !== null) {
-    return screen.evidenceOptions[evidenceIndex]?.text ?? row.text;
-  }
-  if (row.slot === "realistic" && evidenceIndex !== null) {
-    if (screen.realisticAfter) return screen.realisticAfter;
-    if (realisticIndex !== null) {
-      return screen.realisticOptions[realisticIndex]?.text ?? row.text;
-    }
-  }
-  return row.text;
+function getFeedbackMessage(
+  step: FadedThoughtRecordStep,
+  feedback: string | undefined,
+  response: FadedThoughtRecordResponse,
+): string | null {
+  if (response.phase !== "feedback" || !feedback) return null;
+  return response.isCorrect ? feedback : `${feedback} ${step.task.clue}`;
 }
 
-function isRowComplete(
-  row: RecordRow,
-  evidenceIndex: number | null,
-  realisticIndex: number | null,
-  screen: RecordScreen,
+export function isFadedThoughtRecordFooterReady(
+  response: FadedThoughtRecordResponse,
 ): boolean {
-  if (!row.slot) return true;
-  if (row.slot === "evidence") return evidenceIndex !== null;
-  return (
-    evidenceIndex !== null &&
-    (Boolean(screen.realisticAfter) || realisticIndex !== null)
-  );
-}
-
-function readIndex(value: unknown): number | null {
-  return typeof value === "number" && Number.isFinite(value) ? value : null;
-}
-
-function createResponse(extra: Record<string, unknown> = {}) {
-  return {
-    format: CourseExerciseCategoryEnum.FadedThoughtRecord,
-    phase: "practice",
-    screenIndex: 0,
-    selectedEvidenceIndex: null,
-    selectedRealisticIndex: null,
-    coachFeedback: null,
-    isCorrect: true,
-    ...extra,
-  };
+  return response.phase === "feedback" || response.phase === "complete";
 }

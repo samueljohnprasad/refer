@@ -5,6 +5,10 @@ import {
   hasCompleteReframeSelection,
   readReframeBuilderContent,
 } from "@/src/components/exercise/reframeBuilderContent";
+import {
+  getFadedThoughtRecordPrimaryLabel,
+  getNextFadedThoughtRecordState,
+} from "@/src/domains/journey/learning/fadedThoughtRecordTransition";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import type { Exercise } from "@/src/types/journeyV5";
 
@@ -20,7 +24,7 @@ export function getEleventhBatchPrimaryLabel(
         ? "Continue"
         : "Next move";
     case CourseExerciseCategoryEnum.FadedThoughtRecord:
-      return getFadedRecordLabel(exercise, response);
+      return getFadedThoughtRecordPrimaryLabel(exercise, response);
     case CourseExerciseCategoryEnum.ReframeBuilder:
       return getReframeLabel(exercise, response);
     case CourseExerciseCategoryEnum.SituationLanguage:
@@ -46,7 +50,7 @@ export function getEleventhBatchPrimaryTransition(
         "cardIndex",
       );
     case CourseExerciseCategoryEnum.FadedThoughtRecord:
-      return getNextFadedRecordTransition(exercise, response);
+      return getNextFadedThoughtRecordState(exercise, response);
     case CourseExerciseCategoryEnum.ReframeBuilder:
       return getReframeTransition(exercise, response);
     default:
@@ -94,62 +98,6 @@ function getScenarioTransition(
     };
   }
   return undefined;
-}
-
-function getFadedRecordLabel(
-  exercise: Exercise,
-  response: Record<string, unknown>,
-): string {
-  const screens = readArray(exercise.content?.screens);
-  const screenIndex = readNumber(response.screenIndex);
-  if (screenIndex >= screens.length - 1) {
-    return isFadedScreenComplete(screens[screenIndex], response)
-      ? "Continue"
-      : "Two moves are yours";
-  }
-  return isFadedScreenComplete(screens[screenIndex], response)
-    ? "Next screen"
-    : "Pick the evidence below";
-}
-
-function getNextFadedRecordTransition(
-  exercise: Exercise,
-  response: Record<string, unknown>,
-): CoursePrimaryTransition | undefined {
-  const screens = readArray(exercise.content?.screens);
-  const screenIndex = readNumber(response.screenIndex);
-  if (
-    screenIndex >= screens.length - 1 ||
-    !isFadedScreenComplete(screens[screenIndex], response)
-  ) {
-    return undefined;
-  }
-  return {
-    kind: "response",
-    ready: false,
-    response: {
-      ...response,
-      screenIndex: screenIndex + 1,
-      selectedEvidenceIndex: null,
-      selectedRealisticIndex: null,
-      coachFeedback: null,
-    },
-  };
-}
-
-function isFadedScreenComplete(
-  screenValue: unknown,
-  response: Record<string, unknown>,
-): boolean {
-  const screen = readRecord(screenValue);
-  const evidenceOptions = readArray(screen?.evidenceOptions);
-  const realisticOptions = readArray(screen?.realisticOptions);
-  if (!evidenceOptions.length) return true;
-  if (typeof response.selectedEvidenceIndex !== "number") return false;
-  return (
-    !realisticOptions.length ||
-    typeof response.selectedRealisticIndex === "number"
-  );
 }
 
 function getReframeLabel(
@@ -208,12 +156,6 @@ function getNextIndexedTransition(
 function isLastIndex(itemsValue: unknown, indexValue: unknown): boolean {
   const items = readArray(itemsValue);
   return items.length > 0 && readNumber(indexValue) >= items.length - 1;
-}
-
-function readRecord(value: unknown): Record<string, unknown> | null {
-  return value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : null;
 }
 
 function readArray(value: unknown): unknown[] {
