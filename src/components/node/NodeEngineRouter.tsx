@@ -91,8 +91,7 @@ export function NodeEngineRouter({
     ? readWorkedExplanation(currentExercise)
     : null;
   const showingFeedback = checkStatus !== V1CheckStatusEnum.Idle;
-  const showingSkipAction =
-    !isMicrolearningExercise && !showingFeedback && !ready;
+  const showingSkipAction = !showingFeedback && !ready;
   useV1NodeSessionDraft({
     dispatch,
     exerciseCount: exercises.length,
@@ -239,7 +238,7 @@ export function NodeEngineRouter({
   };
 
   const skipForNow = async () => {
-    if (!currentExercise || isMicrolearningExercise) {
+    if (!currentExercise) {
       return;
     }
 
@@ -308,7 +307,7 @@ export function NodeEngineRouter({
       explanationText={explanationText}
       feedbackText={feedbackText}
       onInteraction={handleInteraction}
-      onSkip={isMicrolearningExercise ? undefined : skipForNow}
+      onSkip={skipForNow}
     />
   );
 }
