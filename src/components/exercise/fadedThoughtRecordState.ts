@@ -11,6 +11,25 @@ import type {
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
 const FORMAT = CourseExerciseCategoryEnum.FadedThoughtRecord;
+
+// ponytail: mirror RESPONSE_KEYS from fadedThoughtRecordResponse to guard state creation
+const KNOWN_RESPONSE_KEYS = new Set([
+  "format",
+  "phase",
+  "stageIndex",
+  "isCorrect",
+  "exampleId",
+  "activeFieldId",
+  "answersByExampleId",
+  "selectedOptionId",
+  "attemptCount",
+]);
+
+function isWellFormedSaved(value: Record<string, unknown> | null): boolean {
+  if (!value) return false;
+  return Object.keys(value).every((k) => KNOWN_RESPONSE_KEYS.has(k));
+}
+
 export interface FadedThoughtRecordResponse
   extends MicrolearningResponseBase,
     Record<string, unknown> {
@@ -62,7 +81,7 @@ export function createFadedThoughtRecordResponse(
   const prefixLength = countAnswers(answersByExampleId);
   const lastIndex = steps.length - 1;
   const attemptCount = clampAttemptCount(source?.attemptCount);
-  if (prefixLength === steps.length && source?.phase === "complete") {
+  if (prefixLength === steps.length && source?.phase === "complete" && isWellFormedSaved(source)) {
     return buildResponse({
       phase: "complete",
       stageIndex: lastIndex,
