@@ -1,101 +1,136 @@
-import React, { useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { View, Text, AccessibilityInfo, Pressable } from "react-native";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
-import {
-  COURSE_EXERCISE_COLORS,
-  COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
-import {
-  readNumber,
-  readRecord,
-  readString,
-} from "@/src/components/exercise/courseExerciseContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
-import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
-
-interface DialogueMessage {
-  id: string;
-  name: string;
-  side: "left" | "right";
-  text: string;
-}
+import { validateDialogueContent } from "@/src/components/exercise/microlearning/microlearningContentValidation";
+import type { DialogueContent, DialogueBeat } from "@/src/components/exercise/dialogueContent";
+import { createDialogueResponse, isPendingDecision, selectDialogueOption } from "@/src/components/exercise/dialogueState";
+import { DIALOGUE_STYLES } from "@/src/components/exercise/dialogueStyles";
+import * as Haptics from "expo-haptics";
+import Animated, { FadeIn, SlideInDown } from "react-native-reanimated";
 
 export function DialogueCategoryEngine({
   exercise,
   savedResponse,
   onInteraction,
 }: V1CategoryEngineProps) {
-  const content = exercise.content ?? {};
-  const saved = readRecord(savedResponse);
-  const messages = readMessages(content.messages);
-  const cardIndex = Math.min(readNumber(saved?.cardIndex) ?? 0, messages.length - 1);
-  const isComplete = cardIndex >= messages.length - 1;
+  // Validate content
+  const content = exercise.content as DialogueContent;
+  const issues = validateDialogueContent(content);
+  if (issues.length > 0) {
+    return null; // ponytail: let NodeExerciseDataError boundary handle it
+  }
 
+  const response = createDialogueResponse(content, savedResponse);
+  const isPending = isPendingDecision(content, response);
+
+  // Initialize once
   useEffect(() => {
-    if (!saved) {
-      onInteraction(
-        {
-          format: CourseExerciseCategoryEnum.Dialogue,
-          phase: "progress",
-          cardIndex: 0,
-          isCorrect: true,
-        },
-        true,
-      );
+    if (!savedResponse) {
+      onInteraction(response, !isPending);
     }
-  }, [onInteraction, saved]);
+  }, [savedResponse, onInteraction, response, isPending]);
+
+  // VoiceOver Announcement on beat transition
+  const prevBeatIndex = useRef(response.beatIndex);
+  useEffect(() => {
+    if (response.beatIndex !== prevBeatIndex.current) {
+      prevBeatIndex.current = response.beatIndex;
+      const currentBeat = content.beats[response.beatIndex];
+      if (currentBeat) {
+        AccessibilityInfo.announceForAccessibility(`${currentBeat.speaker}. ${currentBeat.message}`);
+      }
+    }
+  }, [response.beatIndex, content.beats]);
+
+  // visibleBeats logic
+  let earlierSummary = "";
+  let visibleBeats: DialogueBeat[] = [];
+  
+  if (response.beatIndex <= 1) {
+    visibleBeats = content.beats.slice(0, response.beatIndex + 1);
+  } else {
+    visibleBeats = content.beats.slice(response.beatIndex - 1, response.beatIndex + 1);
+    const collapsedBeats = content.beats.slice(0, response.beatIndex - 1);
+    earlierSummary = collapsedBeats.map(b => b.historySummary).join(" · ");
+  }
+
+  const handleSelectOption = (beatId: string, optionId: string) => {
+    Haptics.selectionAsync();
+    const nextResponse = selectDialogueOption(response, beatId, optionId);
+    onInteraction(nextResponse, true);
+  };
 
   return (
-    <View style={styles.screenContent}>
+    <View style={{ flex: 1 }} className={DIALOGUE_STYLES.container}>
       <CourseExerciseHeading
-        title={readString(content.title) ?? "Same email, two minds"}
-        instruction={readString(content.instruction) ?? "Tap through at your pace."}
+        title={content.title}
+        instruction={content.instruction}
       />
-      <View style={styles.messages}>
-        {messages.slice(0, cardIndex + 1).map((message) => (
-          <View
-            key={message.id}
-            style={message.side === "left" ? styles.messageLeft : styles.messageRight}
-          >
-            <Text style={styles.name}>{message.name}</Text>
-            <View style={[styles.bubble, message.side === "right" && styles.bubbleRight]}>
-              <Text style={styles.messageText}>{message.text}</Text>
+      <View className={DIALOGUE_STYLES.scrollContent}>
+        
+        {earlierSummary ? (
+          <View className={DIALOGUE_STYLES.earlierRow}>
+            <View className={DIALOGUE_STYLES.earlierLine} />
+            <View className={DIALOGUE_STYLES.earlierBadge}>
+              <Text className={DIALOGUE_STYLES.earlierText}>Earlier · {earlierSummary}</Text>
             </View>
+            <View className={DIALOGUE_STYLES.earlierLine} />
           </View>
-        ))}
+        ) : null}
+
+        {visibleBeats.map((beat) => {
+          const isLeft = beat.side === "left";
+          const isDecision = beat.type === "decision";
+          const selectedOptionId = response.selectedOptionIds[beat.id];
+          const selectedOption = isDecision ? (beat as any).options.find((o: any) => o.id === selectedOptionId) : null;
+
+          return (
+            <Animated.View 
+              key={beat.id}
+              entering={FadeIn}
+              className={`${DIALOGUE_STYLES.beatContainer} ${isLeft ? DIALOGUE_STYLES.beatContainerLeft : DIALOGUE_STYLES.beatContainerRight}`}
+            >
+              <View className="flex-col">
+                <Text className={`${DIALOGUE_STYLES.speakerName} ${isLeft ? DIALOGUE_STYLES.speakerLeft : DIALOGUE_STYLES.speakerRight}`}>
+                  {beat.speaker}
+                </Text>
+                
+                <View className={`${DIALOGUE_STYLES.bubble} ${isLeft ? DIALOGUE_STYLES.bubbleLeft : DIALOGUE_STYLES.bubbleRight}`}>
+                  <Text className={DIALOGUE_STYLES.messageText}>{beat.message}</Text>
+                </View>
+
+                {isDecision && !selectedOptionId && (
+                  <View className={`${DIALOGUE_STYLES.decisionOptionsContainer} ${isLeft ? DIALOGUE_STYLES.decisionOptionsLeft : DIALOGUE_STYLES.decisionOptionsRight}`}>
+                    {(beat as any).options.map((opt: any) => (
+                      <Animated.View key={opt.id} entering={SlideInDown}>
+                        <Pressable
+                          onPress={() => handleSelectOption(beat.id, opt.id)}
+                          className={DIALOGUE_STYLES.optionCard}
+                        >
+                          <Text className={DIALOGUE_STYLES.optionLabel}>{opt.label}</Text>
+                        </Pressable>
+                      </Animated.View>
+                    ))}
+                  </View>
+                )}
+
+                {isDecision && selectedOption && (
+                  <Animated.View entering={FadeIn} className={`${DIALOGUE_STYLES.feedbackContainer} ${isLeft ? DIALOGUE_STYLES.feedbackContainerLeft : DIALOGUE_STYLES.feedbackContainerRight}`}>
+                    <Text className={DIALOGUE_STYLES.feedbackText}>{selectedOption.feedback}</Text>
+                  </Animated.View>
+                )}
+              </View>
+            </Animated.View>
+          );
+        })}
+
+        {response.phase === "complete" && (
+          <Animated.View entering={FadeIn} className={DIALOGUE_STYLES.insightContainer}>
+            <Text className={DIALOGUE_STYLES.insightText}>{content.insight}</Text>
+          </Animated.View>
+        )}
       </View>
-      {isComplete ? (
-        <View style={styles.insight}>
-          <Text style={styles.insightKicker}>THE IDEA</Text>
-          <Text style={styles.insightBody}>{readString(content.insight)}</Text>
-        </View>
-      ) : null}
     </View>
   );
 }
-
-function readMessages(value: unknown): DialogueMessage[] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((messageValue, index) => {
-    const message = readRecord(messageValue);
-    const name = readString(message?.name);
-    const text = readString(message?.text);
-    return name && text
-      ? [{ id: readString(message?.id) ?? `message-${index}`, name, text, side: message?.side === "right" ? "right" as const : "left" as const }]
-      : [];
-  });
-}
-
-const styles = StyleSheet.create({
-  screenContent: { flex: 1, paddingHorizontal: 8, paddingTop: 6, paddingBottom: 12 },
-  messages: { gap: 10 },
-  messageLeft: { alignItems: "flex-start" },
-  messageRight: { alignItems: "flex-end" },
-  name: { marginHorizontal: 10, marginBottom: 3, color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 10.5, letterSpacing: 0.5 },
-  bubble: { maxWidth: "82%", paddingHorizontal: 14, paddingVertical: 10, borderWidth: 1.5, borderColor: COURSE_EXERCISE_COLORS.border, borderRadius: 18, borderBottomLeftRadius: 6, backgroundColor: COURSE_EXERCISE_COLORS.surface, shadowColor: COURSE_EXERCISE_COLORS.shadow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 4 },
-  bubbleRight: { borderColor: COURSE_EXERCISE_COLORS.accentLight, borderBottomLeftRadius: 18, borderBottomRightRadius: 6, backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
-  messageText: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 14.5, lineHeight: 21 },
-  insight: { marginTop: 16, paddingHorizontal: 16, paddingVertical: 14, borderRadius: 20, backgroundColor: COURSE_EXERCISE_COLORS.surface, shadowColor: COURSE_EXERCISE_COLORS.shadow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.09, shadowRadius: 4 },
-  insightKicker: { marginBottom: 4, color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 10.5, letterSpacing: 0.7 },
-  insightBody: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 13.5, lineHeight: 20 },
-});

@@ -39,7 +39,7 @@ export function getCoursePrimaryLabel(
     case CourseExerciseCategoryEnum.LayerZoom:
       return getLayerZoomPrimaryLabel(exercise, response);
     case CourseExerciseCategoryEnum.Dialogue:
-      return getProgressLabel(exercise.content?.messages, response, "Next");
+      return getDialogueLabel(exercise, response);
     case CourseExerciseCategoryEnum.StoryWalkthrough:
       return getStoryWalkthroughLabel(exercise, response);
     case CourseExerciseCategoryEnum.CommonTrap:
@@ -74,7 +74,7 @@ export function getCoursePrimaryTransition(
     case CourseExerciseCategoryEnum.LayerZoom:
       return getNextLayerZoomState(exercise, response) ?? null;
     case CourseExerciseCategoryEnum.Dialogue:
-      return getNextProgressState(exercise.content?.messages, response);
+      return getNextDialogueState(exercise, response);
     case CourseExerciseCategoryEnum.StoryWalkthrough:
       return getNextStoryWalkthroughState(exercise, response);
     case CourseExerciseCategoryEnum.CommonTrap:
@@ -249,6 +249,59 @@ function getNextStoryWalkthroughState(
     kind: "response",
     ready: true,
     response: { ...response, cardIndex: cardIndex + 1 },
+  };
+}
+
+function getDialogueLabel(
+  exercise: Exercise,
+  response: Record<string, unknown>,
+): string | null {
+  if (response.phase === "complete") {
+    return "Continue";
+  }
+  
+  if (response.phase === "active") {
+    const beats = readArray(exercise.content?.beats);
+    const beatIndex = readNumber(response.beatIndex);
+    
+    // Hide footer if we are on a decision beat and haven't selected an option
+    const currentBeat = beats[beatIndex] as any;
+    if (currentBeat && currentBeat.type === "decision") {
+      const selected = (response.selectedOptionIds as Record<string, string>)?.[currentBeat.id];
+      if (!selected) {
+        return null;
+      }
+    }
+    
+    return beatIndex >= beats.length - 1 ? "Continue" : "Next message";
+  }
+  
+  return null;
+}
+
+function getNextDialogueState(
+  exercise: Exercise,
+  response: Record<string, unknown>,
+): CoursePrimaryTransition | null {
+  if (response.phase !== "active") {
+    return null;
+  }
+
+  const beats = readArray(exercise.content?.beats);
+  const beatIndex = readNumber(response.beatIndex);
+  
+  if (beatIndex >= beats.length - 1) {
+    return {
+      kind: "response",
+      ready: true,
+      response: { ...response, phase: "complete" },
+    };
+  }
+
+  return {
+    kind: "response",
+    ready: true,
+    response: { ...response, beatIndex: beatIndex + 1 },
   };
 }
 
