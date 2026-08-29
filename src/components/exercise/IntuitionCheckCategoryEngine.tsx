@@ -53,7 +53,7 @@ export function IntuitionCheckCategoryEngine({
     <View style={styles.screenContent}>
       <CourseExerciseHeading
         title={readString(content.title) ?? "What does your gut say?"}
-        instruction={readString(content.instruction) ?? "Tap what feels true."}
+        instruction={readString(content.instruction)}
         prompt={readString(content.prompt)}
       />
 
@@ -71,19 +71,17 @@ export function IntuitionCheckCategoryEngine({
         ))}
       </View>
 
-      <Text style={styles.note}>
-        No wrong answer. It’s a gut check, not a test.
-      </Text>
-
       {selectedOptionId ? (
         <View style={styles.reveal}>
           <View style={styles.revealIcon}>
             <Text style={styles.revealIconLabel}>✓</Text>
           </View>
           <View style={styles.revealCopy}>
-            <Text style={styles.revealTitle}>
-              {readString(content.revealTitle) ?? "What the research finds"}
-            </Text>
+            {readString(content.revealTitle) && (
+              <Text style={styles.revealTitle}>
+                {readString(content.revealTitle)}
+              </Text>
+            )}
             <Text style={styles.revealBody}>{revealText}</Text>
           </View>
         </View>

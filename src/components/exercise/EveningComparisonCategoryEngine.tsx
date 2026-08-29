@@ -40,7 +40,7 @@ export function EveningComparisonCategoryEngine({
     <View className="flex-1 px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Two evenings, one dip"}
-        instruction={readString(content.instruction) ?? "Two paths."}
+        instruction={readString(content.instruction)}
       />
 
       <View className="flex-row items-stretch gap-2.5">
@@ -53,12 +53,16 @@ export function EveningComparisonCategoryEngine({
         ))}
       </View>
 
-      <Text className="happy-font-body mt-3 text-center text-[13.5px] leading-5 text-[#3F3A34]">
-        {readString(content.explanation)}
-      </Text>
-      <Text className="happy-font-body mt-3.5 text-center text-[12.5px] leading-[18px] text-[#82796A]">
-        {readString(content.note)}
-      </Text>
+      {readString(content.explanation) && (
+        <Text className="happy-font-body mt-3 text-center text-[13.5px] leading-5 text-[#3F3A34]">
+          {readString(content.explanation)}
+        </Text>
+      )}
+      {readString(content.note) && (
+        <Text className="happy-font-body mt-3.5 text-center text-[12.5px] leading-[18px] text-[#82796A]">
+          {readString(content.note)}
+        </Text>
+      )}
     </View>
   );
 }

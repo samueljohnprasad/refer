@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { InteractionManager } from "react-native";
 import { courseExerciseCategoryEngineRegistry } from "@/src/components/exercise/courseExerciseCategoryEngineRegistry";
 import type { Exercise } from "@/src/types/journeyV5";
@@ -39,6 +39,7 @@ import {
   validateMicrolearningContent,
 } from "@/src/components/exercise/microlearning/microlearningContentValidation";
 import { shouldCompleteOnPrimaryPress } from "@/src/components/exercise/microlearning/microlearningResponse";
+import { trackMicrolearningEvent } from "@/src/components/exercise/microlearning/microlearningAnalytics";
 interface NodeEngineRouterProps {
   nodeId: string;
   exercises: Exercise[];
@@ -55,6 +56,7 @@ export function NodeEngineRouter({
   onClose,
 }: NodeEngineRouterProps) {
   const dispatch = useAppDispatch();
+  const trackedViewRef = useRef<string | null>(null);
   const [isCompleting, setIsCompleting] = useState(false);
   const session = useAppSelector(
     (state) => state.v1LearningSessions.byNodeId[nodeId],
@@ -101,6 +103,64 @@ export function NodeEngineRouter({
     session,
   });
 
+
+const trackedStartRef = useRef<string | null>(null);
+  const trackedFeedbackRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (isMicrolearningExercise && currentExercise && trackedViewRef.current !== currentExercise.id) {
+      trackedViewRef.current = currentExercise.id;
+      
+      // If we haven't started this exercise yet, fire start
+      if (trackedStartRef.current !== currentExercise.id) {
+        trackedStartRef.current = currentExercise.id;
+        trackMicrolearningEvent({
+          eventName: "exercise_start",
+          category: category as string,
+          exerciseId: currentExercise.id,
+          conceptId: currentExercise.concept ?? null,
+          stageIndex: currentIndex,
+          correctness: null,
+          attemptCount: attemptCount,
+          elapsedSeconds: 0,
+          accessibilityFlags: {}
+        });
+      }
+
+      trackMicrolearningEvent({
+        eventName: "stage_view",
+        category: category as string,
+        exerciseId: currentExercise.id,
+        conceptId: currentExercise.concept ?? null,
+        stageIndex: currentIndex,
+        correctness: null,
+        attemptCount: attemptCount,
+        elapsedSeconds: 0,
+        accessibilityFlags: {}
+      });
+    }
+  }, [currentIndex, isMicrolearningExercise, currentExercise, category, attemptCount]);
+
+  useEffect(() => {
+    if (isMicrolearningExercise && currentExercise && showingFeedback) {
+      const feedbackKey = `${currentExercise.id}-${checkStatus}`;
+      if (trackedFeedbackRef.current !== feedbackKey) {
+        trackedFeedbackRef.current = feedbackKey;
+        trackMicrolearningEvent({
+          eventName: "feedback_shown",
+          category: category as string,
+          exerciseId: currentExercise.id,
+          conceptId: currentExercise.concept ?? null,
+          stageIndex: currentIndex,
+          correctness: checkStatus === V1CheckStatusEnum.Success ? true : (checkStatus === V1CheckStatusEnum.Error ? false : null), // V1CheckStatusEnum.Success = 2, Error = 3
+          attemptCount: attemptCount,
+          elapsedSeconds: 0,
+          accessibilityFlags: {}
+        });
+      }
+    }
+  }, [showingFeedback, checkStatus, isMicrolearningExercise, currentExercise, category, attemptCount, currentIndex]);
+
   const handleInteraction = useV1NodeInteraction(dispatch, nodeId);
 
   const handlePrimaryPress = async () => {
@@ -110,7 +170,7 @@ export function NodeEngineRouter({
 
     const completesOnPress = shouldCompleteOnPrimaryPress({
       response: currentResponse,
-      expectedFormat: currentExercise.type,
+      expectedFormat: category || currentExercise.type,
       isMicrolearning: isMicrolearningExercise,
       legacyCompletesDirectly: completesOnPrimaryInteraction(currentExercise),
     });
@@ -205,6 +265,21 @@ export function NodeEngineRouter({
       return;
     }
 
+    if (isMicrolearningExercise) {
+      trackMicrolearningEvent({
+        eventName: "stage_complete",
+        category: category as string,
+        exerciseId: currentExercise.id,
+        conceptId: currentExercise.concept ?? null,
+        stageIndex: currentIndex,
+        correctness: null,
+        attemptCount: attemptCount,
+        elapsedSeconds: 0,
+        accessibilityFlags: {}
+      });
+    }
+
+
     const nextResponses = {
       ...responses,
       [currentExercise.id]: resolvedResponse,
@@ -225,6 +300,19 @@ export function NodeEngineRouter({
   };
 
   const finishNode = async (nextResponses: Record<string, unknown>) => {
+    if (isMicrolearningExercise && currentExercise) {
+      trackMicrolearningEvent({
+        eventName: "exercise_complete",
+        category: category as string,
+        exerciseId: currentExercise.id,
+        conceptId: currentExercise.concept ?? null,
+        stageIndex: currentIndex,
+        correctness: null,
+        attemptCount: attemptCount,
+        elapsedSeconds: 0,
+        accessibilityFlags: {}
+      });
+    }
     setIsCompleting(true);
     try {
       await clearV1SessionDraft(nodeId);
@@ -241,6 +329,23 @@ export function NodeEngineRouter({
     if (!currentExercise) {
       return;
     }
+
+    if (isMicrolearningExercise) {
+      trackMicrolearningEvent({
+        eventName: "exercise_skipped",
+        category: category as string,
+        exerciseId: currentExercise.id,
+        conceptId: currentExercise.concept ?? null,
+        stageIndex: currentIndex,
+        correctness: null,
+        attemptCount: attemptCount,
+        elapsedSeconds: 0,
+        accessibilityFlags: {}
+      });
+    }
+
+
+
 
     const nextResponses = {
       ...responses,

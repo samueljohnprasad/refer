@@ -15,3 +15,23 @@ export interface V1CategoryEngineProps {
     options?: V1InteractionOptions,
   ) => void;
 }
+
+export interface RecallCard {
+  id: string;
+  conceptId: string;
+  question: string;
+  answer: string;
+}
+
+export interface RecallWarmupContent {
+  type: "recall_warmup";
+  cards: RecallCard[];
+}
+
+export interface RecallWarmupResponse {
+  format: "recall_warmup";
+  phase: "intro" | "card" | "complete";
+  currentCardIndex: number;
+  cardPhase: "question" | "answer";
+  reviewSignals: Record<string, "remembered" | "practice_again">;
+}

@@ -7,6 +7,10 @@ import { validateFadedThoughtRecordContent } from "@/src/components/exercise/fad
 import { validateWorkedRewriteContent } from "@/src/components/exercise/workedRewriteContent";
 import { validateLayerZoomContent } from "@/src/components/exercise/layerZoomContent";
 import { validateDialogueContent } from "@/src/components/exercise/dialogueContent";
+
+import { validateWhatIfContent } from "@/src/components/exercise/whatif/whatIfContentValidation";
+import { validateCheckpointContent } from "@/src/components/exercise/checkpoint/checkpointContentValidation";
+import { validateRecallWarmupContent } from "./recallWarmupContentValidation";
 import type { MicrolearningContentIssue } from "./microlearningTypes";
 
 export const MICROLEARNING_CATEGORIES = [
@@ -59,6 +63,16 @@ export function validateMicrolearningContent(
   if (category === CourseExerciseCategoryEnum.Dialogue) {
     return validateDialogueContent(content);
   }
+  if (category === CourseExerciseCategoryEnum.WhatIfMachine) {
+    return validateWhatIfContent(content);
+  }
+  if (category === CourseExerciseCategoryEnum.CourseCheckpoint) {
+    return validateCheckpointContent(content);
+  }
+  if (category === CourseExerciseCategoryEnum.RecallWarmup) {
+    return validateRecallWarmupContent(content);
+  }
+
 
   validateStringBudget(content, "title", 7, issues);
   validateStringBudget(content, "instruction", 12, issues);

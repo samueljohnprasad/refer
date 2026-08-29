@@ -1,3 +1,5 @@
+import { resolveCourseExerciseCategory } from "@/src/domains/journey/learning/courseExerciseCategoryResolver";
+
 import type { Exercise } from "@/src/types/journeyV5";
 import { getCoursePrimaryLabel } from "@/src/domains/journey/learning/courseExercisePrimaryTransition";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
@@ -105,15 +107,17 @@ export function completesOnPrimaryInteraction(exercise: Exercise): boolean {
   return exercise.content?.completionMode === "direct";
 }
 
+
 export function getDisplayPrimaryLabel(
   exercise: Exercise,
   response: Record<string, unknown> | null,
   ready: boolean,
   defaultLabel: string,
 ): string {
+  const category = resolveCourseExerciseCategory(exercise);
   if (
-    isMicrolearningCategory(exercise.type) &&
-    isMatchingFinalMicrolearningResponse(response, exercise.type)
+    isMicrolearningCategory(category) &&
+    isMatchingFinalMicrolearningResponse(response, category || exercise.type)
   ) {
     return "Continue";
   }

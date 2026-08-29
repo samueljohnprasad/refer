@@ -17,7 +17,7 @@ import { NameItCategoryEngine } from "@/src/components/exercise/NameItCategoryEn
 import { OneLineRevealCategoryEngine } from "@/src/components/exercise/OneLineRevealCategoryEngine";
 import { PanicWaveCommitCategoryEngine } from "@/src/components/exercise/PanicWaveCommitCategoryEngine";
 import { ParadoxCardCategoryEngine } from "@/src/components/exercise/ParadoxCardCategoryEngine";
-import { RecallWarmupCategoryEngine } from "@/src/components/exercise/RecallWarmupCategoryEngine";
+import { RecallWarmupCategoryEngine } from "@/src/components/exercise/microlearning/RecallWarmupCategoryEngine";
 import { SymptomDecoderCategoryEngine } from "@/src/components/exercise/SymptomDecoderCategoryEngine";
 import { StoryWalkthroughCategoryEngine } from "@/src/components/exercise/StoryWalkthroughCategoryEngine";
 import { StorySerialCategoryEngine } from "@/src/components/exercise/StorySerialCategoryEngine";
@@ -26,7 +26,9 @@ import { TeachBackChainCategoryEngine } from "@/src/components/exercise/TeachBac
 import { TermChipCategoryEngine } from "@/src/components/exercise/TermChipCategoryEngine";
 import { TwinCaseCategoryEngine } from "@/src/components/exercise/TwinCaseCategoryEngine";
 import { TwoDialSandboxCategoryEngine } from "@/src/components/exercise/TwoDialSandboxCategoryEngine";
-import { WhatIfMachineCategoryEngine } from "@/src/components/exercise/WhatIfMachineCategoryEngine";
+import { WhatIfCategoryEngine as WhatIfMachineCategoryEngine } from "@/src/components/exercise/whatif/WhatIfCategoryEngine";
+import { CheckpointCategoryEngine as CourseCheckpointCategoryEngine } from "@/src/components/exercise/checkpoint/CheckpointCategoryEngine";
+
 import { WhiteBearExperimentCategoryEngine } from "@/src/components/exercise/WhiteBearExperimentCategoryEngine";
 import { WaveOrderingCategoryEngine } from "@/src/components/exercise/WaveOrderingCategoryEngine";
 import { WaveScrubberCategoryEngine } from "@/src/components/exercise/WaveScrubberCategoryEngine";
@@ -187,10 +189,15 @@ export const courseExerciseCategoryEngineRegistry: Partial<Record<
     goalLabel: "Complete one useful idea about avoidance.",
     unavailableCopy: "This one-line reveal is not available yet.",
   },
+  [CourseExerciseCategoryEnum.CourseCheckpoint]: {
+    category: CourseExerciseCategoryEnum.CourseCheckpoint,
+    formats: [CourseExerciseCategoryEnum.CourseCheckpoint],
+    engine: CourseCheckpointCategoryEngine as any, // Temporary cast until strict typing propagates to registry
+  },
   [CourseExerciseCategoryEnum.WhatIfMachine]: {
     category: CourseExerciseCategoryEnum.WhatIfMachine,
     formats: [CourseExerciseCategoryEnum.WhatIfMachine],
-    engine: WhatIfMachineCategoryEngine,
+    engine: WhatIfMachineCategoryEngine as any,
     goalLabel: "Predict and observe how avoidance teaches fear.",
     unavailableCopy: "This what-if experiment is not available yet.",
   },
@@ -225,7 +232,7 @@ export const courseExerciseCategoryEngineRegistry: Partial<Record<
   [CourseExerciseCategoryEnum.RecallWarmup]: {
     category: CourseExerciseCategoryEnum.RecallWarmup,
     formats: [CourseExerciseCategoryEnum.RecallWarmup],
-    engine: RecallWarmupCategoryEngine,
+    engine: RecallWarmupCategoryEngine as any,
     goalLabel: "Retrieve three core ideas before rereading.",
     unavailableCopy: "This recall warm-up is not available yet.",
   },

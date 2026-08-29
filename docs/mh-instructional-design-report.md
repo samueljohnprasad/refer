@@ -852,3 +852,17 @@ Additionally, completed nodes can decay from Gold → Cracked → Broken state, 
 
 *Note: Sources marked with DOIs from JMIR, Lancet Digital Health, and Frontiers were identified during research but paywalled and could not be directly verified. Evidence attributed to these sources is drawn from known published findings consistent with the research record as of 2026. The Settles & Meeder (2016) HLR claims were independently adversarially verified by 3 separate agents — all others should be treated as well-established practitioner knowledge pending further primary-source verification.*
 
+
+## Part 8: Addendum — UI Redundancy and Cognitive Load (What to Cut)
+Based on Mayer's Coherence and Redundancy Principles, tired and anxious users suffer from cognitive overload when presented with extraneous text. In interactive exercises (like "Gut Checks"), the following elements carry zero instructional weight and must be cut:
+
+1. **Instructional Subtitles (e.g., "Choose what feels more useful"):** 
+   - *Why cut:* The primary question and interactive buttons afford clicking. Extra instructions violate the Coherence Principle.
+2. **Redundant Helper Text (e.g., "It's a gut check, not a test"):** 
+   - *Why cut:* If the screen title is "What does your gut say?", repeating the framing at the bottom violates the Redundancy Principle.
+3. **Decorative Feedback Titles:** 
+   - *Why cut:* When a user selects an answer, a visual indicator (like a green checkmark) is sufficient for state change. Adding a title above the explanatory feedback forces the user to process an extra layer of text before reaching the actual learning takeaway.
+4. **Conversational Filler in Options:** 
+   - *Why cut:* Options should be scannable labels (e.g., "Understanding the sleep system"), not full sentences (e.g., "Understanding how the body's sleep system works"). 
+
+**Implementation Rule:** If an element does not introduce a *new* mental move or actively de-escalate anxiety, delete it.

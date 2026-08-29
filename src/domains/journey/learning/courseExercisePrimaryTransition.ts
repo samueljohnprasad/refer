@@ -18,6 +18,8 @@ export type CoursePrimaryTransition =
       response: Record<string, unknown>;
     };
 
+import { resolveCourseExerciseCategory } from "@/src/domains/journey/learning/courseExerciseCategoryResolver";
+
 export function getCoursePrimaryLabel(
   exercise: Exercise,
   response: Record<string, unknown> | null,
@@ -31,7 +33,14 @@ export function getCoursePrimaryLabel(
     return batchLabel;
   }
 
-  switch (exercise.type) {
+  const category = resolveCourseExerciseCategory(exercise);
+  switch (category) {
+
+    case CourseExerciseCategoryEnum.WhatIfMachine:
+      return getWhatIfLabel(exercise, response);
+    case CourseExerciseCategoryEnum.CourseCheckpoint:
+      return getCheckpointLabel(exercise, response);
+
     case CourseExerciseCategoryEnum.LearnCards:
       return getLearnCardsLabel(exercise, response);
     case CourseExerciseCategoryEnum.NameIt:
@@ -66,7 +75,14 @@ export function getCoursePrimaryTransition(
     return batchTransition;
   }
 
-  switch (exercise.type) {
+  const category = resolveCourseExerciseCategory(exercise);
+  switch (category) {
+
+    case CourseExerciseCategoryEnum.WhatIfMachine:
+      return getNextWhatIfState(exercise, response);
+    case CourseExerciseCategoryEnum.CourseCheckpoint:
+      return getNextCheckpointState(exercise, response);
+
     case CourseExerciseCategoryEnum.LearnCards:
       return getNextLearnCardsState(exercise, response);
     case CourseExerciseCategoryEnum.NameIt:
@@ -311,4 +327,45 @@ function readArray(value: unknown): unknown[] {
 
 function readNumber(value: unknown): number {
   return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+
+function getWhatIfLabel(exercise: Exercise, response: Record<string, unknown>): string | null {
+  const phase = response.phase;
+  if (phase === "prediction") return response.selectedPredictionId ? "Run it" : null;
+  if (phase === "running") {
+    const consequences = readArray(exercise.content?.consequences);
+    return readNumber(response.consequenceIndex) >= consequences.length ? "Continue" : "Next consequence";
+  }
+  return phase === "complete" ? "Continue" : null;
+}
+
+function getNextWhatIfState(exercise: Exercise, response: Record<string, unknown>): CoursePrimaryTransition | null {
+  const phase = response.phase;
+  if (phase === "prediction") {
+    return response.selectedPredictionId ? { kind: "response", ready: true, response: { ...response, phase: "running", consequenceIndex: 1 } } : null;
+  }
+  if (phase === "running") {
+    const consequences = readArray(exercise.content?.consequences);
+    const consequenceIndex = readNumber(response.consequenceIndex);
+    if (consequenceIndex >= consequences.length) {
+      return { kind: "response", ready: true, response: { ...response, phase: "complete" } };
+    }
+    return { kind: "response", ready: true, response: { ...response, consequenceIndex: consequenceIndex + 1 } };
+  }
+  return null;
+}
+
+function getCheckpointLabel(exercise: Exercise, response: Record<string, unknown>): string | null {
+  const phase = response.phase;
+  if (phase === "intro") return "Start check";
+  if (phase === "summary") return "Continue";
+  if (phase === "complete") return "Continue";
+  return null; // For "item" phase, internal buttons handle it
+}
+
+function getNextCheckpointState(exercise: Exercise, response: Record<string, unknown>): CoursePrimaryTransition | null {
+  const phase = response.phase;
+  if (phase === "intro") return { kind: "response", ready: true, response: { ...response, phase: "item", currentItemIndex: 0 } };
+  return null; // Next item transitions happen within the engine
 }

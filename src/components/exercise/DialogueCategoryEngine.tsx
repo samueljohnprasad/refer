@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { View, Text, AccessibilityInfo, Pressable } from "react-native";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
-import { validateDialogueContent } from "@/src/components/exercise/microlearning/microlearningContentValidation";
+import { validateDialogueContent } from "@/src/components/exercise/dialogueContent";
 import type { DialogueContent, DialogueBeat } from "@/src/components/exercise/dialogueContent";
 import { createDialogueResponse, isPendingDecision, selectDialogueOption } from "@/src/components/exercise/dialogueState";
 import { DIALOGUE_STYLES } from "@/src/components/exercise/dialogueStyles";
@@ -24,9 +24,13 @@ export function DialogueCategoryEngine({
   const response = createDialogueResponse(content, savedResponse);
   const isPending = isPendingDecision(content, response);
 
-  // Initialize once
+  // Initialize and repair old state
   useEffect(() => {
-    if (!savedResponse) {
+    if (
+      !savedResponse ||
+      savedResponse.phase !== response.phase ||
+      savedResponse.beatIndex !== response.beatIndex
+    ) {
       onInteraction(response, !isPending);
     }
   }, [savedResponse, onInteraction, response, isPending]);
