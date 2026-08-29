@@ -1,0 +1,4 @@
+interface:
+  display_name: "Refer Microlearning Redesign"
+  short_description: "Redesign one Refer exercise safely"
+  default_prompt: "Use $refer-microlearning-redesign to implement the next approved exercise redesign in the journals branch."

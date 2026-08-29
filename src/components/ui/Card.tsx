@@ -1,5 +1,11 @@
 import React, { useCallback, useRef } from "react";
-import { Pressable, View, type ViewProps } from "react-native";
+import {
+  Pressable,
+  View,
+  type StyleProp,
+  type ViewProps,
+  type ViewStyle,
+} from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -21,20 +27,20 @@ interface VariantConfig {
 
 const VARIANTS: Record<Variant, VariantConfig> = {
   tile: {
-    faceClass: "bg-white border-2 border-gray-100",
-    rimClass: "bg-gray-200",
+    faceClass: "bg-brand-surface border-2 border-brand-border",
+    rimClass: "bg-brand-border",
   },
   answer: {
-    faceClass: "bg-white border-2 border-gray-100",
-    rimClass: "bg-gray-200",
+    faceClass: "bg-brand-surface border-2 border-brand-border",
+    rimClass: "bg-brand-border",
   },
   "answer-selected": {
     faceClass: "bg-sage-50 border-2 border-sage-200",
     rimClass: "bg-sage-300",
   },
   "word-bank": {
-    faceClass: "bg-white border-2 border-gray-100 rounded-full",
-    rimClass: "bg-gray-200 rounded-full",
+    faceClass: "bg-brand-surface border-2 border-brand-border rounded-full",
+    rimClass: "bg-brand-border rounded-full",
   },
   dashed: {
     faceClass: "border-2 border-dashed border-sage-200 bg-brand-surface shadow-none",
@@ -69,8 +75,8 @@ interface CardProps extends ViewProps {
   disabled?: boolean;
   className?: string;
   contentClassName?: string;
-  faceStyle?: any;
-  rimStyle?: any;
+  faceStyle?: StyleProp<ViewStyle>;
+  rimStyle?: StyleProp<ViewStyle>;
   children: React.ReactNode;
 }
 
@@ -147,12 +153,12 @@ export function Card({
     <>
       {showDepth && isInteractive && (
         <Animated.View
-          style={rimStyle}
+          style={[styles.continuousCurve, rimStyle]}
           className={`absolute left-0 right-0 top-[4px] bottom-[-4px] ${config.rimClass} ${radiusClass}`}
         />
       )}
       <Animated.View
-        style={[animatedFaceStyle, faceStyle]}
+        style={[styles.continuousCurve, animatedFaceStyle, faceStyle]}
         className={`${config.faceClass} ${radiusClass}`}
       >
         <View className={`${paddingClass} ${contentClassName}`}>
@@ -191,3 +197,7 @@ export function Card({
     </Pressable>
   );
 }
+
+const styles = {
+  continuousCurve: { borderCurve: "continuous" } as const,
+};

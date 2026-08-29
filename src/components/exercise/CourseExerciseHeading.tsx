@@ -29,17 +29,17 @@ const styles = StyleSheet.create({
   container: { marginBottom: 14 },
   title: {
     color: COURSE_EXERCISE_COLORS.ink,
-    fontFamily: COURSE_EXERCISE_FONTS.heading,
-    fontSize: 24,
-    lineHeight: 28,
+    fontFamily: COURSE_EXERCISE_FONTS.display,
+    fontSize: 28,
+    lineHeight: 32,
     letterSpacing: -0.35,
   },
   instruction: {
     marginTop: 3,
     color: COURSE_EXERCISE_COLORS.inkSoft,
     fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 13.5,
-    lineHeight: 19,
+    fontSize: 15,
+    lineHeight: 21,
   },
   prompt: {
     marginTop: 15,

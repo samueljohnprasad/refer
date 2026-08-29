@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   skipButton: { minHeight: 44, alignItems: "center", justifyContent: "center" },
   skipLabel: {
     color: SAGE[600],
-    fontFamily: COURSE_EXERCISE_FONTS.heading,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 14,
   },
   disabledSkip: { opacity: 0.45 },

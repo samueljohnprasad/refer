@@ -37,6 +37,7 @@ export function shouldHideAssistant(pathname: string | null): boolean {
     path.includes("purchase") ||
     path.includes("exercise-flow") ||
     path.includes("journey") ||
+    path.includes("/home") ||
     path.includes("cbt-step-preview") ||
     path.includes("summary") ||
     path.includes("Summary") ||

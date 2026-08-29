@@ -217,14 +217,14 @@ const styles = StyleSheet.create({
   },
   primaryLabel: {
     color: COURSE_EXERCISE_COLORS.surface,
-    fontFamily: COURSE_EXERCISE_FONTS.heading,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 16,
   },
   disabledLabel: { color: SAGE[700] },
   skipButton: { minHeight: 44, alignItems: "center", justifyContent: "center" },
   skipLabel: {
     color: SAGE[600],
-    fontFamily: COURSE_EXERCISE_FONTS.heading,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 14,
   },
 });

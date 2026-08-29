@@ -1,12 +1,11 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
-import { View, TouchableOpacity } from "react-native";
+import React, { useState, useCallback } from "react";
+import { Text, View, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { SymbolView } from "expo-symbols";
 import { Card } from "@/src/components/ui/Card";
 import BeginButton from "@/src/components/BeginButton";
-import { BRAND_SURFACE, SAGE, INK } from "@/lib/tokens";
-import { StaggeredText, type StaggeredTextRef } from "@/src/animations/everybody-can-cook/components/staggered-text";
-import { useInterval } from "@/src/hooks/useInterval";
+import { BRAND_SURFACE, SAGE } from "@/lib/tokens";
+import { useThemeColor } from "@/lib/useThemeColor";
 import type { QuickJournalPrompt } from "@/src/screens/DiscoveryScreen/QuickJournalSection";
 
 interface FeaturedPromptCardProps {
@@ -22,29 +21,21 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
   prompts,
   onPress,
 }) => {
+  const theme = useThemeColor();
   const [activeIndex, setActiveIndex] = useState(0);
 
   const cyclePrompt = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % prompts.length);
   }, [prompts.length]);
 
-  // Rotate every 1 minute
-  useInterval(cyclePrompt, 60000);
-
   const currentPrompt = prompts[activeIndex];
-  const textRef = useRef<StaggeredTextRef>(null);
-
-  useEffect(() => {
-    textRef.current?.reset();
-    textRef.current?.animate();
-  }, [currentPrompt?.id]);
 
   if (!currentPrompt || prompts.length === 0) return null;
 
   return (
     <Card
       variant="tile"
-      radius="xl"
+      radius="lg"
       showDepth={false}
       haptic="none"
       contentClassName="min-h-[220px] p-5"
@@ -56,22 +47,22 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
           accessibilityLabel="Show next prompt"
           accessibilityRole="button"
         >
-          <Feather name="refresh-cw" size={18} color={SAGE[700]} />
+          <Feather name="refresh-cw" size={18} color={theme.foreground} />
         </TouchableOpacity>
       </View>
 
       <View className="min-h-[112px] pr-10" key={currentPrompt.id}>
-        <StaggeredText
-          ref={textRef}
-          text={currentPrompt.description}
-          fontSize={30}
-          textStyle={{
+        <Text
+          style={{
             fontFamily: "CormorantBold",
-            color: INK,
+            color: theme.foreground,
+            fontSize: 30,
             letterSpacing: -0.5,
             lineHeight: 34,
           }}
-        />
+        >
+          {currentPrompt.description}
+        </Text>
       </View>
 
       <BeginButton
@@ -88,7 +79,12 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
         }
         onPress={() => onPress(currentPrompt)}
         accessibilityLabel={`Start reflection: ${currentPrompt.description}`}
-        style={{ minHeight: 50, marginTop: 20, paddingHorizontal: 24 }}
+        style={{
+          minHeight: 50,
+          marginTop: 20,
+          paddingHorizontal: 24,
+          backgroundColor: SAGE[500],
+        }}
         labelStyle={{ fontFamily: "GeistBold", fontSize: 16 }}
       />
     </Card>

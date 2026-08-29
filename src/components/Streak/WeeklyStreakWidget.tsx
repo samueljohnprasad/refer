@@ -1,20 +1,9 @@
 import React from "react";
-import { View, Text } from "react-native";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Fire02Icon } from "@hugeicons/core-free-icons";
+import { View, Text, useColorScheme } from "react-native";
 import { useStreak } from "@/src/hooks/useStreak";
 import { Card } from "@/src/components/ui/Card";
 import { AnimatedFireIcon, GrayFireIcon } from "@/src/components/ui/AnimatedStatIcon";
-import { GOLD, SAGE } from "@/lib/tokens";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withSequence,
-  withTiming,
-  Easing,
-  withDelay,
-} from "react-native-reanimated";
+import { SAGE } from "@/lib/tokens";
 
 interface WeeklyStreakWidgetProps {
   onPress?: () => void;
@@ -25,23 +14,21 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
   onPress,
   showDepth = true,
 }) => {
+  const isDark = useColorScheme() === "dark";
   const { currentStreak, weeklyProgress, isLoading } = useStreak();
   const streakData = React.useMemo(
     () => ({ currentStreak, weeklyProgress }),
     [currentStreak, weeklyProgress]
   );
 
-  // Heartbeat pulse animation removed per user request
-
-  // Find the index of the most recently completed day
-  const mostRecentCompletedIndex = [...streakData.weeklyProgress.days].findLastIndex(Boolean);
-
   const labels = ["S", "M", "T", "W", "T", "F", "S"];
+  const strongText = isDark ? SAGE[200] : SAGE[700];
+  const secondaryText = isDark ? SAGE[300] : SAGE[600];
 
   return (
     <Card
       variant="tile"
-      radius="xl"
+      radius="lg"
       onPress={onPress}
       haptic="light"
       showDepth={showDepth}
@@ -53,13 +40,13 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
         <View className="items-center justify-center pr-6 min-w-[75px]">
           <Text
             className="text-[46px] leading-tight tracking-tighter"
-            style={{ fontFamily: "GeistBold", color: SAGE[700], fontVariant: ["lining-nums"] }}
+            style={{ fontFamily: "GeistBold", color: strongText, fontVariant: ["lining-nums"] }}
           >
             {isLoading ? "-" : currentStreak}
           </Text>
           <Text
-            className="text-[10px] tracking-[1.5px] uppercase mt-1"
-            style={{ fontFamily: "GeistBold", color: SAGE[500] }}
+            className="text-[12px] tracking-[1.5px] uppercase mt-1"
+            style={{ fontFamily: "GeistBold", color: secondaryText }}
           >
             STREAK
           </Text>
@@ -68,9 +55,6 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
         {/* Right Weekly Grid */}
         <View className="flex-1 flex-row items-center justify-between">
           {streakData.weeklyProgress.days.map((isCompleted, i) => {
-            const isPrevCompleted = i > 0 && streakData.weeklyProgress.days[i - 1];
-            const isNextCompleted = i < 6 && streakData.weeklyProgress.days[i + 1];
-
             return (
               <View key={i} className="flex-1 items-center relative py-1">
                 {/* Center-aligned Connection Pill BGs removed per user request */}
@@ -87,10 +71,10 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
                 </View>
 
                 <Text
-                  className="text-[10px] mt-2"
+                  className="text-[12px] mt-2"
                   style={{
                     fontFamily: isCompleted ? "GeistBold" : "GeistMedium",
-                    color: isCompleted ? SAGE[700] : SAGE[400],
+                    color: isCompleted ? strongText : secondaryText,
                   }}
                 >
                   {labels[i]}

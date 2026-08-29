@@ -1,7 +1,11 @@
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
 // import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { DefaultTheme, ThemeProvider } from "expo-router/react-navigation";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "expo-router/react-navigation";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
@@ -56,7 +60,6 @@ import { usePushNotificationSetup } from "@/src/hooks/data/usePushNotificationSe
 import { ReduxProvider } from "@/src/store/ReduxProvider";
 import { SplashOverlay } from "@/src/components/splash";
 
-const APP_COLOR_MODE = "light";
 const queryClient = new QueryClient();
 const globalPressableHandlers = {
   onPress: (): void => {
@@ -185,6 +188,8 @@ const styles = StyleSheet.create({
 });
 
 function RootLayoutNav() {
+  const isDark = useColorScheme() === "dark";
+
   return (
       <ReduxProvider>
         <PostHogProvider
@@ -206,10 +211,14 @@ function RootLayoutNav() {
                             globalHandlers={globalPressableHandlers}
                             animationType="spring"
                           >
-                            <GluestackUIProvider mode={APP_COLOR_MODE}>
+                            <GluestackUIProvider
+                              mode={isDark ? "dark" : "light"}
+                            >
                               <SystemBackgroundIntegration />
                               <RevenueCatProvider>
-                                <ThemeProvider value={DefaultTheme}>
+                                <ThemeProvider
+                                  value={isDark ? DarkTheme : DefaultTheme}
+                                >
                                   <KeyboardProvider>
                                     <BottomSheetModalProvider>
                                       <StreakModalProvider>

@@ -1,41 +1,21 @@
 import React, { useEffect, useMemo, useCallback, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  withSpring,
-  withRepeat,
-  withSequence,
-  FadeInDown,
-} from "react-native-reanimated";
-import { endOfWeek, startOfWeek } from "date-fns";
+import { View, Text, ScrollView } from "react-native";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
-
-
-import { SafeAreaView } from "@/components/ui/safe-area-view";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Stack, router } from "expo-router";
 import { EmotionLogger } from "@/src/components/EmotionLogger";
 import { FeaturedPromptCard } from "@/src/components/FeaturedPromptCard";
-import { Settings02Icon, Medal01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react-native";
 import { usePostHog } from "posthog-react-native";
 import { UpdateModal } from "@/src/components/modals";
 import { useAppUpdate } from "@/src/hooks/useAppUpdate";
 import { StreakDisplay, WeeklyStreakWidget } from "@/src/components/Streak";
 import { useStreak } from "@/src/hooks/useStreak";
-import { PressableScale } from "@/src/components/ui/PressableScale";
-import { Card } from "@/src/components/ui/Card";
-
 import { QuickJournalPrompt } from "../DiscoveryScreen/QuickJournalSection";
 import { ALL_PROMPTS } from "../AllPromptsScreen/AllPromptsScreen";
-import { recorderOpenAtom } from "../DiscoveryScreen/helpers";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
-import { useAtom, useSetAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
-import { XP_REWARDS, XPActionType } from "@/src/types/xp";
-import { GOLD, SAGE, INK, INK_SOFT, INK_MUTED } from "@/lib/tokens";
+import { SAGE } from "@/lib/tokens";
+import { useThemeColor } from "@/lib/useThemeColor";
 
 // Re-export for backward compat from other files that import from here.
 export { PALETTE } from "@/constants/palette";
@@ -50,13 +30,6 @@ const getGreeting = (hour: number): string => {
   return "Time to wind down";
 };
 
-/** Stagger delay (ms) between each section entrance animation */
-const STAGGER_DELAY_MS = 60 as const;
-const ENTRANCE_DURATION_MS = 300 as const;
-
-// Custom TopBar replaced by Stack.Toolbar natively
-
-// Memoized Greeting component with XP display
 const Greeting = React.memo<{
   displayName?: string;
   isLoading: boolean;
@@ -80,39 +53,8 @@ const Greeting = React.memo<{
   );
 });
 
-/**
- * Shimmering Skeleton Loader
- */
-const ShimmerSkeleton = React.memo<{ height?: number }>(({ height = 240 }) => {
-  const shimmer = useSharedValue(0.4);
-  useEffect(() => {
-    shimmer.value = withRepeat(
-      withSequence(
-        withTiming(0.6, { duration: 800 }),
-        withTiming(0.4, { duration: 800 }),
-      ),
-      -1,
-      true,
-    );
-  }, []);
-  const style = useAnimatedStyle(() => ({ opacity: shimmer.value }));
-  return (
-    <Animated.View style={[style, { height, width: "100%" }]}>
-      <Card
-        variant="tile"
-        radius="xl"
-        haptic="none"
-        className="h-full"
-        contentClassName="h-full p-0"
-      >
-        <View className="h-full" />
-      </Card>
-    </Animated.View>
-  );
-});
-
 export default function JournalCalendarScreen() {
-  const insets = useSafeAreaInsets();
+  const theme = useThemeColor();
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const posthog = usePostHog();
 
@@ -121,7 +63,6 @@ export default function JournalCalendarScreen() {
   const { showUpdateModal, currentVersion, latestVersion, hideModal } =
     useAppUpdate({ autoCheck: true });
 
-  const [, setRecorderOpen] = useAtom(recorderOpenAtom);
   const setStartRecording = useSetAtom(startRecordingAtom);
   const { setPrompt } = useJournalEntry();
 
@@ -146,7 +87,7 @@ export default function JournalCalendarScreen() {
       setStartRecording(true);
       router.push("/tabs/screens/voice-recorder");
     },
-    [setPrompt, setStartRecording, setRecorderOpen],
+    [setPrompt, setStartRecording],
   );
 
 
@@ -170,10 +111,6 @@ export default function JournalCalendarScreen() {
   );
 
   useEffect(() => {
-    return () => {};
-  }, []);
-
-  useEffect(() => {
     posthog.capture("Journal Calendar Screen Visited");
   }, [posthog]);
 
@@ -189,21 +126,21 @@ export default function JournalCalendarScreen() {
         transparent
         style={{
           backgroundColor: 'transparent',
-          color: INK,
+          color: theme.foreground,
           shadowColor: 'transparent',
         }}
       />
-      <Stack.Toolbar placement="right" tintColor={INK}>
+      <Stack.Toolbar placement="right" tintColor={theme.foreground}>
         <Stack.Toolbar.Button
           icon="chart.bar.doc.horizontal"
           title="Timeline"
-          tintColor={INK}
+          tintColor={theme.foreground}
           onPress={handleTimelinePress}
         />
         <Stack.Toolbar.Button
           icon="rosette"
           title="Awards"
-          tintColor={INK}
+          tintColor={theme.foreground}
           onPress={handleAchievementsPress}
         />
         <Stack.Toolbar.Button
@@ -213,7 +150,7 @@ export default function JournalCalendarScreen() {
         />
       </Stack.Toolbar>
       <ScrollView
-        className="flex-1 bg-white"
+        className="flex-1 bg-brand-canvas"
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}
         scrollEventThrottle={16}
@@ -229,21 +166,17 @@ export default function JournalCalendarScreen() {
             />
           </View>
 
-          {/* Streak Widget */}
-          <Animated.View
-            className="mt-6"
-            entering={FadeInDown.duration(400).springify()}
-          >
+          <View className="mt-6">
             <WeeklyStreakWidget
               showDepth={false}
               onPress={() => router.push("/tabs/screens/xp-history")}
             />
-          </Animated.View>
+          </View>
 
           {/* GROUP 2: Journal */}
           <View className="mt-10">
             <View className="mb-3 px-1">
-              <Text className="text-[14px] font-medium tracking-wide text-ink-muted uppercase">Daily reflection</Text>
+              <Text className="text-[14px] font-medium tracking-wide text-ink-soft uppercase">Daily reflection</Text>
             </View>
             <FeaturedPromptCard
               prompts={ALL_PROMPTS}

@@ -128,7 +128,7 @@ export function useDuolingoHeaderViewModel({
       Icon: isStreakActive ? AnimatedFireIcon : GrayFireIcon,
       onPress: openStreakOverlay,
       title: String(streak),
-      textClassName: isStreakActive ? "text-gold" : "text-ink-muted",
+      textClassName: isStreakActive ? "text-ink" : "text-ink-soft",
     },
   ];
 

@@ -20,6 +20,9 @@ import { useChallengesOptional } from "../context/ChallengesContext";
 import { Card } from "@/src/components/ui/Card";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { SAGE } from "@/lib/tokens";
+import { createLogger } from "@/src/lib/logger";
+
+const logger = createLogger("emotion-logger");
 
 const EMOTIONS = [
   { id: 1, name: "Terrible", emoji: terrible },
@@ -110,7 +113,7 @@ const EmotionItem: React.FC<{
           )}
         </Animated.View>
       </PressableScale>
-      <Text variant="chip" color="muted" className="mt-1 text-[11px]">
+      <Text variant="chip" color="soft" className="mt-1 text-[12px]">
         {emotion.name}
       </Text>
     </View>
@@ -152,7 +155,9 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
             challenges?.updateProgress("mood_count");
             onEmotionLogged?.(emotionScore, updated);
           });
-        } catch { }
+        } catch (error) {
+          logger.error("Failed to log mood", error);
+        }
       },
       [
         challenges,
@@ -166,12 +171,12 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
     return (
       <View className="gap-2">
         <View className="flex-row items-center justify-between px-1 mb-2">
-          <Text className="happy-font-body-bold text-[15px] text-ink-muted">Daily mood log</Text>
+          <Text className="happy-font-body-bold text-[15px] text-ink-soft">Daily mood log</Text>
         </View>
 
         <Card
           variant="tile"
-          radius="xl"
+          radius="lg"
           haptic="none"
           showDepth={showDepth}
           contentClassName="p-4"

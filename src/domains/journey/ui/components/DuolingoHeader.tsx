@@ -34,7 +34,7 @@ const HeaderButton = memo(function HeaderButton({
       disabled={!onPress}
       accessibilityRole={onPress ? "button" : "text"}
       accessibilityLabel={accessibilityLabel}
-      className="min-h-8 flex-row items-center gap-1.5 px-2"
+      className="min-h-11 min-w-11 flex-row items-center justify-center gap-1.5 px-2"
     >
       <Icon width={28} height={28} />
       <AnimatedOdometer value={title} textClassName={textClassName} />

@@ -112,7 +112,10 @@ export const JourneyMapView = React.memo(function JourneyMapView({
       />
       <>
         <AmbientTapDust>
-          <Animated.View className="flex-1 bg-white" style={animatedStyle}>
+          <Animated.View
+            className="flex-1 bg-brand-canvas"
+            style={animatedStyle}
+          >
             {courseId && (
               <JourneyMapFlashList
                 courseId={courseId}

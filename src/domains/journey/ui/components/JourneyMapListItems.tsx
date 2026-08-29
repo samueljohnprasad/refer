@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, Text, View } from "react-native";
+import { Text, View, useWindowDimensions } from "react-native";
 
 import { DividerCell } from "./DividerCell";
 import { JourneyNodeCell } from "./JourneyNodeCell";
@@ -7,8 +7,6 @@ import { MascotCell } from "./MascotCell";
 import JourneyLoadingSkeleton from "./JourneyLoadingSkeleton";
 import MochiMascot from "@/src/screens/OnboardingScreen/components/MochiMascot";
 import type { JourneyFlashListItem, PathNodeData } from "@/src/types/journey";
-
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 export const ESTIMATED_ITEM_SIZE = 120;
 export const LIST_BOTTOM_SPACER_HEIGHT = 132;
@@ -30,13 +28,15 @@ export const JourneyMapListItem = React.memo(function JourneyMapListItem({
   courseId,
   onNodePress,
 }: JourneyMapListItemProps): React.JSX.Element {
+  const { width: screenWidth } = useWindowDimensions();
+
   switch (item.itemType) {
     case "node":
       return (
         <JourneyNodeCell
           item={item}
           courseId={courseId}
-          screenWidth={SCREEN_WIDTH}
+          screenWidth={screenWidth}
           activeGlobalIndex={activeGlobalIndex}
           onNodePress={onNodePress}
         />
@@ -45,7 +45,7 @@ export const JourneyMapListItem = React.memo(function JourneyMapListItem({
       return (
         <DividerCell
           item={item}
-          screenWidth={SCREEN_WIDTH}
+          screenWidth={screenWidth}
           activeGlobalIndex={activeGlobalIndex}
         />
       );
