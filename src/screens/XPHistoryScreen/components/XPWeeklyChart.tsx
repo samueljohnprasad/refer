@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Animated, {
@@ -157,14 +158,14 @@ const styles = StyleSheet.create({
   },
   weekLabel: {
     color: '#1F2937', 
-    fontFamily: 'happy-font-body-medium',
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 14,
   },
   label: {
     color: '#1F2937',
     textAlign: 'center',
     marginTop: 8,
-    fontFamily: 'happy-font-body-medium',
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 12,
   },
 });

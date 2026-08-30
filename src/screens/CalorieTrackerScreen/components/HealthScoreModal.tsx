@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from 'react';
 import { View, Text, Modal, TouchableOpacity } from 'react-native';
 import { HugeiconsIcon } from '@hugeicons/react-native';
@@ -49,7 +50,7 @@ export const HealthScoreModal: React.FC<HealthScoreModalProps> = ({
         {/* Title Row */}
         <View className="flex-row justify-between items-center mb-4">
           <Text
-            style={{ fontSize: 22, fontFamily: 'CormorantSemiBold', color: '#1f2937' }}
+            style={{ fontSize: 22, fontFamily: APP_FONT_FAMILIES.semiBold, color: '#1f2937' }}
           >
             Health Score Analysis
           </Text>

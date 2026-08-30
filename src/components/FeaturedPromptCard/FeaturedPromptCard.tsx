@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useState, useCallback } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
@@ -54,7 +55,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
       <View className="min-h-[112px] pr-10" key={currentPrompt.id}>
         <Text
           style={{
-            fontFamily: "CormorantBold",
+            fontFamily: APP_FONT_FAMILIES.extraBold,
             color: theme.foreground,
             fontSize: 30,
             letterSpacing: -0.5,
@@ -85,7 +86,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
           paddingHorizontal: 24,
           backgroundColor: SAGE[500],
         }}
-        labelStyle={{ fontFamily: "GeistBold", fontSize: 16 }}
+        labelStyle={{ fontFamily: APP_FONT_FAMILIES.bold, fontSize: 16 }}
       />
     </Card>
   );

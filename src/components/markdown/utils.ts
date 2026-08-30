@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import type { Node, Parent } from "mdast";
 import type { Extension } from "mdast-util-from-markdown";
 import {
@@ -73,20 +74,20 @@ const defaultStyles: StyleMap = {
     fontSize: 14,
     ...Platform.select({
       ios: {
-        fontFamily: "ui-monospace",
+        fontFamily: APP_FONT_FAMILIES.regular,
       },
       android: {
-        fontFamily: "monospace",
+        fontFamily: APP_FONT_FAMILIES.regular,
       },
     }),
   },
   inlineCode: {
     ...Platform.select({
       ios: {
-        fontFamily: "ui-monospace",
+        fontFamily: APP_FONT_FAMILIES.regular,
       },
       android: {
-        fontFamily: "monospace",
+        fontFamily: APP_FONT_FAMILIES.regular,
       },
     }),
     backgroundColor: "#f0f0f0",

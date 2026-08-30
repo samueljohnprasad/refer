@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { StyleSheet } from "react-native";
 import { BADGE_ROTATION, BADGE_TAIL_ROTATION, CARD_ROTATION, COLORS } from "./constants";
 
@@ -14,7 +15,7 @@ export const progressGraphVictoryStyles = StyleSheet.create({
     },
     title: {
         color: COLORS.text,
-        fontFamily: "CormorantBold",
+        fontFamily: APP_FONT_FAMILIES.extraBold,
         fontSize: 30,
         lineHeight: 36,
         letterSpacing: -0.5,

@@ -39,6 +39,7 @@ interface NodeExerciseScreenProps {
 
 export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
   const insets = useSafeAreaInsets();
+  const allowsSkip = props.exercise.content?.hideSkipAction !== true;
   const courseContentOffset = {
     marginTop: -Math.max(insets.top - COURSE_CONTENT_TOP_PADDING, 0),
   };
@@ -83,7 +84,7 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
           primaryDisabled={!props.ready}
           primaryLoading={props.primaryLoading}
           onPrimaryPress={props.onPrimaryPress}
-          onSkip={props.onSkip}
+          onSkip={allowsSkip ? props.onSkip : undefined}
         />
       </View>
     );

@@ -1,10 +1,8 @@
 import { matchFont } from '@shopify/react-native-skia';
-import { Platform } from 'react-native';
+import { APP_FONT_FAMILIES } from '@/src/theme/typography';
 
-// I was lazy and decided to use the default font provided by Skia 😅
-const fontFamily = Platform.select({ ios: 'Helvetica', default: 'serif' });
 const fontStyle = {
-  fontFamily,
+  fontFamily: APP_FONT_FAMILIES.bold,
   fontSize: 13,
   fontStyle: 'normal',
   fontWeight: 'bold',

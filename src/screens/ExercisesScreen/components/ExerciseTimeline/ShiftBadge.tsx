@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 /**
  * ShiftBadge
  *
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     height: 10,
   },
   text: {
-    fontFamily: "GeistSemiBold",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 11,
     lineHeight: 14,
   },

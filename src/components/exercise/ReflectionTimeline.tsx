@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { View } from "react-native";
 
@@ -54,7 +55,7 @@ export function ReflectionTimelineItem({
         style={{ borderColor: SAGE[200] }}
       />
       <Text
-        style={{ fontFamily: "GeistMedium", color: INK_SOFT }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK_SOFT }}
         className="mb-1.5 text-[13px] leading-[18px]"
       >
         {label}
@@ -78,7 +79,7 @@ export function ReflectionBulletList({
             style={{ backgroundColor: accentColor }}
           />
           <Text
-            style={{ fontFamily: "GeistRegular", color: textColor }}
+            style={{ fontFamily: APP_FONT_FAMILIES.regular, color: textColor }}
             className="flex-1 text-[15px] leading-[22px]"
           >
             {item}
@@ -101,13 +102,13 @@ export function ReflectionScoreShift({
       <View className="flex-row items-center">
         <View className="min-w-[48px] items-center">
           <Text
-            style={{ fontFamily: "CormorantSemiBold", color: INK }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
             className="text-[32px] leading-[32px]"
           >
             {before}
           </Text>
           <Text
-            style={{ fontFamily: "GeistMedium", color: INK_SOFT }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK_SOFT }}
             className="mt-1 text-[11px] leading-[15px]"
           >
             before /10
@@ -121,13 +122,13 @@ export function ReflectionScoreShift({
 
         <View className="min-w-[48px] items-center">
           <Text
-            style={{ fontFamily: "CormorantSemiBold", color: accentColor }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: accentColor }}
             className="text-[32px] leading-[32px]"
           >
             {after}
           </Text>
           <Text
-            style={{ fontFamily: "GeistMedium", color: accentColor }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: accentColor }}
             className="mt-1 text-[11px] leading-[15px]"
           >
             after /10
@@ -135,7 +136,7 @@ export function ReflectionScoreShift({
         </View>
 
         <Text
-          style={{ fontFamily: "GeistSemiBold", color: accentColor }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: accentColor }}
           className="ml-4 flex-1 text-[14px] leading-[20px]"
         >
           {label}
@@ -144,7 +145,7 @@ export function ReflectionScoreShift({
 
       {detail ? (
         <Text
-          style={{ fontFamily: "GeistRegular", color: INK_SOFT }}
+          style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
           className="mt-3 text-[14px] leading-[20px]"
         >
           {detail}

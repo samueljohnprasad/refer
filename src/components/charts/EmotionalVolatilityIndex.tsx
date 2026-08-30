@@ -17,6 +17,7 @@ import { Circle, useFont } from "@shopify/react-native-skia";
 import { format, parseISO } from "date-fns";
 import { EmotionalVolatilityData } from "@/src/network/genAi";
 import { Platform } from "react-native";
+import { APP_FONT_ASSETS } from "@/src/theme/typography";
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -45,7 +46,7 @@ export const EmotionalVolatilityIndex: React.FC<
   EmotionalVolatilityIndexProps
 > = ({ data, insight, loading = false, premium = false }) => {
   // Load font for axis labels
-  const font = useFont(require("@/assets/fonts/SpaceMono-Regular.ttf"), 10);
+  const font = useFont(APP_FONT_ASSETS.regular, 10);
   // Process data for visualization
   const chartData = useMemo(() => {
     if (!data || data.length === 0) return [];

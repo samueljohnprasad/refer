@@ -9,6 +9,15 @@ import {
   getNextExplorableModelState,
 } from "@/src/domains/journey/learning/explorableModelTransition";
 import { getLayerZoomPrimaryLabel, getNextLayerZoomState } from "@/src/domains/journey/learning/layerZoomTransition";
+import {
+  getLearnCardsLabel,
+  getNameItLabel,
+  getNextLearnCardsState,
+  getNextNameItState,
+  getNextWhiteBearState,
+  getStorySerialLabel,
+  getWhiteBearLabel,
+} from "@/src/domains/journey/learning/courseExerciseSimpleTransitions";
 
 export type CoursePrimaryTransition =
   | { kind: "check" }
@@ -42,7 +51,7 @@ export function getCoursePrimaryLabel(
       return getCheckpointLabel(exercise, response);
 
     case CourseExerciseCategoryEnum.LearnCards:
-      return getLearnCardsLabel(exercise, response);
+      return getLearnCardsLabel(response);
     case CourseExerciseCategoryEnum.NameIt:
       return getNameItLabel(response);
     case CourseExerciseCategoryEnum.LayerZoom:
@@ -108,96 +117,6 @@ export function getCoursePrimaryTransition(
     default:
       return null;
   }
-}
-
-function getStorySerialLabel(response: Record<string, unknown>): string {
-  if (response.selectedReflectionId) {
-    return "Continue";
-  }
-  return response.selectedBranchIndex == null
-    ? "Choose for Sam above"
-    : "Follow the story above";
-}
-
-function getWhiteBearLabel(response: Record<string, unknown>): string {
-  if (response.started !== true) {
-    return "Start the 10 seconds";
-  }
-  if (readNumber(response.secondsRemaining) > 0) {
-    return "Don’t think about it…";
-  }
-  return response.selectedOptionId ? "Continue" : "So, what happened?";
-}
-
-function getNextWhiteBearState(
-  response: Record<string, unknown>,
-): CoursePrimaryTransition | null {
-  if (response.started === true) {
-    return null;
-  }
-  return {
-    kind: "response",
-    ready: false,
-    response: { ...response, started: true, secondsRemaining: 10 },
-  };
-}
-
-function getLearnCardsLabel(
-  exercise: Exercise,
-  response: Record<string, unknown>,
-): string | null {
-  if (response.phase !== "cards") {
-    return null;
-  }
-
-  const cards = readArray(exercise.content?.cards);
-  const cardIndex = readNumber(response.cardIndex);
-  return cardIndex >= cards.length - 1 ? "Quick recall" : "Next card";
-}
-
-function getNextLearnCardsState(
-  exercise: Exercise,
-  response: Record<string, unknown>,
-): CoursePrimaryTransition | null {
-  if (response.phase !== "cards") {
-    return null;
-  }
-
-  const cardIndex = readNumber(response.cardIndex);
-  const isLastCard = cardIndex >= readArray(exercise.content?.cards).length - 1;
-  return {
-    kind: "response",
-    ready: !isLastCard,
-    response: {
-      ...response,
-      phase: isLastCard ? "recall" : "cards",
-      cardIndex: isLastCard ? cardIndex : cardIndex + 1,
-    },
-  };
-}
-
-function getNameItLabel(response: Record<string, unknown>): string | null {
-  if (response.phase === "family") {
-    return "Tap the closest family";
-  }
-  if (response.phase === "word") {
-    return response.selectedWord ? "That’s the one" : "Tap the closest word";
-  }
-  return response.phase === "intensity" ? "Done. One line for you" : null;
-}
-
-function getNextNameItState(
-  response: Record<string, unknown>,
-): CoursePrimaryTransition | null {
-  if (response.phase === "word" && response.selectedWord) {
-    return {
-      kind: "response",
-      ready: true,
-      response: { ...response, phase: "intensity", intensity: 5 },
-    };
-  }
-
-  return response.phase === "intensity" ? { kind: "check" } : null;
 }
 
 function getProgressLabel(

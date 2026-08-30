@@ -7,7 +7,6 @@ import React, {
   type ReactNode,
 } from "react";
 import {
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,6 +16,7 @@ import {
 } from "react-native";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { githubGist, irBlack } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 
 type HighlighterStyleSheet = { [key: string]: TextStyle };
 type ReactStyle = { [key: string]: CSSProperties };
@@ -191,6 +191,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14,
     lineHeight: 20,
-    fontFamily: Platform.select({ ios: "monospace-ui", default: "monospace" }),
+    fontFamily: APP_FONT_FAMILIES.regular,
   },
 });

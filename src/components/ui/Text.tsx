@@ -1,13 +1,15 @@
 import React from "react";
 import { Text as RNText, type TextProps as RNTextProps } from "react-native";
 import { tv, type VariantProps } from "@/lib/tv";
+import { GOLD, MACAW_PURPLE, SAGE, TERRACOTTA } from "@/lib/tokens";
+import { useThemeColor } from "@/lib/useThemeColor";
 
 /**
  * Text — typography system mapped to the Duolingo type scale.
  *
  * Variant guide
  * ─────────────
- * display        Largest voice. 36px bold Cormorant. One instance per screen max.
+ * display        Largest voice. 36px extra-bold Nunito. One instance per screen max.
  *                Lesson-complete headline, streak milestone number, onboarding hero.
  *
  * h1             Screen title. 28px. Anchors the user spatially — every major screen
@@ -20,14 +22,14 @@ import { tv, type VariantProps } from "@/lib/tv";
  *                Card titles, lesson names, achievement titles, challenge names.
  *
  * display-italic / h1-italic / h2-italic
- *                Expressive serif italics. Hero pull quotes, celebratory moments,
+ *                Expressive Nunito italics. Hero pull quotes, celebratory moments,
  *                onboarding emotional beats. Use sparingly — one per screen.
  *
- * body-bold      17px bold Geist. Interactive text — anything the user reads before
+ * body-bold      17px bold Nunito. Interactive text — anything the user reads before
  *                making a decision. Answer option text, key instructions, form labels
  *                that precede a tap target.
  *
- * body           17px regular Geist. Informational / non-interactive copy. Explanation
+ * body           17px regular Nunito. Informational / non-interactive copy. Explanation
  *                after a correct/incorrect answer, tips, help text, descriptions.
  *                Default color is ink-soft to signal "context, not a prompt to act."
  *
@@ -57,7 +59,7 @@ import { tv, type VariantProps } from "@/lib/tv";
  *                XP labels, duration labels, filter counts — anything inside a
  *                rounded-full container. Inherits ink-soft by default.
  *
- * counter        36px bold Cormorant with tabular numerals. Streak count, XP total,
+ * counter        36px extra-bold Nunito with tabular numerals. Streak count, XP total,
  *                hearts remaining. Tabular numerals prevent layout shift during
  *                count-up animations. Pair with eyebrow above and caption below.
  *
@@ -74,7 +76,7 @@ const textTv = tv({
   base: "",
   variants: {
     variant: {
-      // ── Heading family (Cormorant) ──────────────────────────────────────────
+      // ── Heading weights (Nunito) ────────────────────────────────────────────
       // §3 Display — 36px, -0.02em tracking, one instance per screen max
       display:
         "happy-font-heading-bold text-[36px] leading-[39px] tracking-[-0.02em] text-ink",
@@ -92,7 +94,7 @@ const textTv = tv({
       "h2-italic":
         "happy-font-heading-medium-italic text-[22px] leading-[26px] text-ink",
 
-      // ── Body family (Geist) ────────────────────────────────────────────────
+      // ── Body weights (Nunito) ──────────────────────────────────────────────
       // §3 Body Bold — 17px, line-height 1.29 — interactive text, answer options
       "body-bold": "happy-font-body-bold text-[17px] leading-[22px] text-ink",
       // §3 Body Regular — 17px, line-height 1.41 — explanatory / non-interactive
@@ -150,16 +152,46 @@ export function Text({
   className,
   allowFontScaling = true,
   children,
+  style,
   ...rest
 }: TextProps) {
+  const theme = useThemeColor();
+  const resolvedColor = resolveTextColor(color, variant, theme);
+
   return (
     <RNText
       className={textTv({ variant, color, class: className })}
       allowFontScaling={allowFontScaling}
       maxFontSizeMultiplier={1.5}
+      style={[{ color: resolvedColor }, style]}
       {...rest}
     >
       {children}
     </RNText>
   );
+}
+
+function resolveTextColor(
+  color: TextVariants["color"],
+  variant: TextVariants["variant"],
+  theme: ReturnType<typeof useThemeColor>,
+): string {
+  if (color === "surface") return "#FFFFFF";
+  if (color === "sage" || variant === "eyebrow") return SAGE[500];
+  if (color === "danger") return TERRACOTTA;
+  if (color === "streak") return GOLD;
+  if (color === "premium") return MACAW_PURPLE;
+  if (color === "soft" || isSoftVariant(variant)) return theme.mutedForeground;
+  if (
+    color === "muted" ||
+    variant === "caption-muted" ||
+    variant === "overline"
+  ) {
+    return theme.mutedForeground;
+  }
+  return theme.foreground;
+}
+
+function isSoftVariant(variant: TextVariants["variant"]): boolean {
+  return variant === "body" || variant === "caption" || variant === "chip";
 }

@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useMemo, useRef } from "react";
-import { View, StyleSheet, Platform } from "react-native";
+import { View, StyleSheet } from "react-native";
 import {
   Canvas,
   Text as SkiaText,
@@ -35,6 +35,10 @@ import {
   DEFAULT_EXIT_FROM,
   DEFAULT_EXIT_TO,
 } from "./const";
+import {
+  APP_FONT_ASSETS,
+  APP_FONT_FAMILIES,
+} from "@/src/theme/typography";
 
 const CharRenderer: React.FC<ICharacterRenderer<SkFont>> &
   React.FunctionComponent<ICharacterRenderer<SkFont>> = memo<
@@ -310,15 +314,13 @@ export const StaggeredText: React.FC<IStaggeredText> &
 
     const height = heightProp ?? fontSize * 2;
 
-    const loadedFont = useFont(fontPath ?? null, fontSize);
+    const loadedFont = useFont(fontPath ?? APP_FONT_ASSETS.regular, fontSize);
 
     const systemFont = useMemo(() => {
-      const fontFamily = Platform.select({
-        ios: "Helvetica",
-        android: "sans-serif",
-        default: "System",
-      }) as string;
-      return matchFont({ fontFamily, fontSize });
+      return matchFont({
+        fontFamily: APP_FONT_FAMILIES.regular,
+        fontSize,
+      });
     }, [fontSize]);
 
     const font = loadedFont ?? systemFont;

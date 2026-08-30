@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 // @ts-nocheck
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
@@ -114,7 +115,7 @@ const QuickWinMoodStep: React.FC<QuickWinMoodStepProps> = ({
                 <Text
                     className="text-center text-gray-900 dark:text-white mb-3"
                     style={{
-                        fontFamily: "CormorantBold",
+                        fontFamily: APP_FONT_FAMILIES.extraBold,
                         fontSize: 30,
                         lineHeight: 36,
                         letterSpacing: -0.5,

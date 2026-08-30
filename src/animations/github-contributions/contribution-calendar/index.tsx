@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { eachDayOfInterval, endOfWeek, format, startOfWeek } from 'date-fns';
 import React, {
   forwardRef,
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
     width: 25,
     marginBottom: 3,
-    fontFamily: 'regular',
+    fontFamily: APP_FONT_FAMILIES.regular,
   },
   gridContainer: {
     flexDirection: 'row',

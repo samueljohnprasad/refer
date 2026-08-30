@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { forwardRef } from 'react';
 import { View, Text } from 'react-native';
 import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
@@ -82,7 +83,7 @@ export const MicronutrientSheet = forwardRef<BottomSheetModal, MicronutrientShee
           <Text
             style={{
               fontSize: 22,
-              fontFamily: 'CormorantSemiBold',
+              fontFamily: APP_FONT_FAMILIES.semiBold,
               color: '#1f2937',
               marginBottom: 12,
             }}

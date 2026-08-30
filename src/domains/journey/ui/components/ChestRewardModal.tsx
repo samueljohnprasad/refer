@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { Text as RNText, View } from "react-native";
 import {
@@ -68,7 +69,7 @@ function ChestRewardContent({
             <RNText
               style={{
                 color: "#FFFFFF",
-                fontFamily: "GeistSemiBold",
+                fontFamily: APP_FONT_FAMILIES.semiBold,
                 fontSize: 16,
               }}
             >

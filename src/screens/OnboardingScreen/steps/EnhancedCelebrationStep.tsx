@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useEffect } from "react";
 import { View, Text, ScrollView } from "react-native";
 import Animated, {
@@ -90,7 +91,7 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                 <Text
                     className="text-center text-gray-900 dark:text-white mb-3"
                     style={{
-                        fontFamily: "CormorantBold",
+                        fontFamily: APP_FONT_FAMILIES.extraBold,
                         fontSize: 32,
                         lineHeight: 38,
                         letterSpacing: -0.5,
@@ -101,7 +102,7 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                 <Text
                     className="text-center text-gray-900 dark:text-gray-100"
                     style={{
-                        fontFamily: "CormorantSemiBold",
+                        fontFamily: APP_FONT_FAMILIES.semiBold,
                         fontSize: 24,
                         lineHeight: 30,
                     }}

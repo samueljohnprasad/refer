@@ -39,7 +39,7 @@ export function ConceptCardCategoryEngine({
     <View style={styles.screenContent}>
       <CourseExerciseHeading
         title={readString(content.title) ?? "One idea to keep"}
-        instruction={readString(content.instruction) ?? "Just read."}
+        instruction={readString(content.instruction)}
       />
 
       {variant === "myth" ? (
@@ -152,11 +152,9 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   rulePanel: {
-    minHeight: 200,
-    justifyContent: "center",
     gap: 12,
-    paddingHorizontal: 26,
-    paddingVertical: 30,
+    paddingHorizontal: 22,
+    paddingVertical: 24,
     borderWidth: 1,
     borderColor: COURSE_EXERCISE_COLORS.border,
     borderRadius: 16,
@@ -165,15 +163,15 @@ const styles = StyleSheet.create({
   },
   ruleText: {
     color: COURSE_EXERCISE_COLORS.ink,
-    fontFamily: COURSE_EXERCISE_FONTS.display,
-    fontSize: 27,
-    lineHeight: 32,
+    fontFamily: COURSE_EXERCISE_FONTS.heading,
+    fontSize: 23,
+    lineHeight: 28,
   },
   explanation: {
     color: COURSE_EXERCISE_COLORS.ink,
     fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 14.5,
-    lineHeight: 22,
+    fontSize: 17,
+    lineHeight: 24,
   },
   note: {
     marginTop: 14,

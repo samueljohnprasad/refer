@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Animated, {
@@ -40,37 +41,37 @@ const COLORS = {
 
 const TYPOGRAPHY = {
   number: {
-    fontFamily: 'CormorantSemiBold',
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 64,
     lineHeight: 68,
     color: COLORS.ink,
   },
   dayStreak: {
-    fontFamily: 'GeistSemiBold',
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 17,
     lineHeight: 22,
     color: COLORS.ink,
   },
   weekLabel: {
-    fontFamily: 'GeistSemiBold',
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 12,
     lineHeight: 16,
     color: COLORS.inkSoft,
   },
   supporting: {
-    fontFamily: 'GeistRegular',
+    fontFamily: APP_FONT_FAMILIES.regular,
     fontSize: 15,
     lineHeight: 21,
     color: COLORS.inkSoft,
   },
   cta: {
-    fontFamily: 'GeistSemiBold',
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 16,
     lineHeight: 20,
     color: COLORS.canvas,
   },
   close: {
-    fontFamily: 'GeistMedium',
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 15,
     color: COLORS.inkSoft,
   }

@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useCallback } from "react";
 import {
   View,
@@ -167,13 +168,13 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
       {...props}
       textStyle={{
         left: {
-          fontFamily: "GeistRegular",
+          fontFamily: APP_FONT_FAMILIES.regular,
           color: INK,
           fontSize: 16,
           lineHeight: 24,
         },
         right: {
-          fontFamily: "GeistRegular",
+          fontFamily: APP_FONT_FAMILIES.regular,
           color: BRAND_SURFACE,
           fontSize: 16,
           lineHeight: 24,
@@ -196,7 +197,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
       }}
       textStyle={{
         color: BRAND_SURFACE,
-        fontFamily: "GeistMedium",
+        fontFamily: APP_FONT_FAMILIES.semiBold,
         fontSize: 12,
         fontWeight: "600",
       }}
@@ -209,13 +210,13 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
       timeTextStyle={{
         left: {
           color: INK_MUTED,
-          fontFamily: "GeistRegular",
+          fontFamily: APP_FONT_FAMILIES.regular,
           fontSize: 11,
         },
         right: {
           color: BRAND_SURFACE,
           opacity: 0.8,
-          fontFamily: "GeistRegular",
+          fontFamily: APP_FONT_FAMILIES.regular,
           fontSize: 11,
         },
       }}
@@ -294,7 +295,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
           }}
           quickReplyTextStyle={{
             color: SAGE[800],
-            fontFamily: "GeistMedium",
+            fontFamily: APP_FONT_FAMILIES.semiBold,
             fontSize: 14,
           }}
           

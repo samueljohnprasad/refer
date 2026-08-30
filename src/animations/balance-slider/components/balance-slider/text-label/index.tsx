@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { useMemo } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import Animated, {
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontFamily: 'FiraCodeMedium',
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     textTransform: 'uppercase',
     height: 20,
     textAlign: 'center',
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
   },
   labelPercentage: {
     fontSize: 16,
-    fontFamily: 'FiraCodeMedium',
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     textTransform: 'uppercase',
     height: 20,
     marginBottom: 4,

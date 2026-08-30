@@ -26,6 +26,7 @@ export function CourseChoiceCategoryEngine({
   const selectedOptionId = readString(
     readRecord(savedResponse)?.selectedOptionId,
   );
+  const selectedOption = options.find((item) => item.id === selectedOptionId);
 
   const selectOption = (optionId: string) => {
     if (locked) return;
@@ -63,6 +64,13 @@ export function CourseChoiceCategoryEngine({
             label={option.label}
             selected={selectedOptionId === option.id}
             showConfirmationIcon={false}
+            result={
+              locked && selectedOptionId === option.id
+                ? selectedOption?.isCorrect
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
             disabled={locked}
             onPress={() => selectOption(option.id)}
           />

@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Animated, {
   useAnimatedRef,
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
   },
   label: {
     color: 'white',
-    fontFamily: 'FiraCode-Regular',
+    fontFamily: APP_FONT_FAMILIES.regular,
     fontSize: 16,
   },
 });

@@ -57,7 +57,7 @@ export function getEleventhBatchPrimaryTransition(
 }
 
 function getScenarioLabel(response: Record<string, unknown>): string {
-  if (response.phase !== "feedback") return "Check answer";
+  if (response.phase !== "feedback") return "Choose an answer";
   if (response.isCorrect === true) return "Continue";
   return readNumber(response.attempts) >= 3
     ? "Try a changed example"
@@ -67,18 +67,6 @@ function getScenarioLabel(response: Record<string, unknown>): string {
 function getScenarioTransition(
   response: Record<string, unknown>,
 ): CoursePrimaryTransition | undefined {
-  if (response.phase === "selection" && response.selectedOptionId) {
-    const attempts = readNumber(response.attempts);
-    return {
-      kind: "response",
-      ready: true,
-      response: {
-        ...response,
-        phase: "feedback",
-        attempts: response.isCorrect === true ? attempts : attempts + 1,
-      },
-    };
-  }
   if (response.phase === "feedback" && response.isCorrect !== true) {
     const changedExample = readNumber(response.attempts) >= 3;
     return {

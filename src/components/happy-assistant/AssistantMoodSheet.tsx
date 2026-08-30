@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { useMemo, type ReactElement } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -80,6 +81,6 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   title: {
-    fontFamily: "CormorantSemiBold",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
   },
 });

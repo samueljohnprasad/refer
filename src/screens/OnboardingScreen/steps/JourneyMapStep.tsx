@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { Text, View, ScrollView } from "react-native";
 import { useHeaderHeight } from "expo-router/react-navigation";
@@ -32,13 +33,13 @@ const JourneyMapStep: React.FC<JourneyMapStepProps> = ({
         <View className="flex-row items-center justify-between">
           <View className="flex-1 pr-4">
             <Text
-              style={{ fontFamily: "CormorantSemiBold" }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="text-[28px] leading-[1.1] text-ink"
             >
               Your first course
             </Text>
             <Text
-              style={{ fontFamily: "GeistSemiBold" }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="mt-1 text-[15px] text-sage-700"
             >
               {course.title}
@@ -46,7 +47,7 @@ const JourneyMapStep: React.FC<JourneyMapStepProps> = ({
           </View>
           <View className="rounded-full bg-sage-100 px-3 py-1.5">
             <Text
-              style={{ fontFamily: "GeistSemiBold" }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="text-xs text-sage-700"
             >
               {course.durationLessons} lessons
@@ -54,7 +55,7 @@ const JourneyMapStep: React.FC<JourneyMapStepProps> = ({
           </View>
         </View>
         <Text
-          style={{ fontFamily: "GeistRegular" }}
+          style={{ fontFamily: APP_FONT_FAMILIES.regular }}
           className="mt-3 text-[15px] leading-[22px] text-ink-soft"
         >
           {course.tagline} Each lesson pairs a short concept with a guided CBT
@@ -68,7 +69,7 @@ const JourneyMapStep: React.FC<JourneyMapStepProps> = ({
         className="mt-7"
       >
         <Text
-          style={{ fontFamily: "GeistSemiBold" }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
           className="mb-4 text-[13px] text-ink-soft"
         >
           Start here. Later lessons unlock as you progress.

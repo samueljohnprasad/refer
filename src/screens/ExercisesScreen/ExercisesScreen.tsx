@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import {
   memo,
   useCallback,
@@ -1161,7 +1162,7 @@ export default function ExercisesScreen(): ReactElement {
           <Text style={{ fontSize: 16, marginRight: 8 }}>✨</Text>
           <Text
             style={{
-              fontFamily: "Nunito-SemiBold",
+              fontFamily: APP_FONT_FAMILIES.semiBold,
               fontSize: 13,
               color: "#2C4A2E",
               flex: 1,

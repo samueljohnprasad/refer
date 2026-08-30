@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { Pressable, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
@@ -28,7 +29,7 @@ export function ReflectionContextBlock({
         </Text>
         <Text
           className="text-[17px] leading-[25px] text-ink"
-          style={{ fontFamily: "CormorantMediumItalic" }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBoldItalic }}
         >
           "{text.trim()}"
         </Text>

@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { Text, View, Modal, Pressable } from "react-native";
 import Animated, { FadeIn, SlideInDown } from "react-native-reanimated";
@@ -29,19 +30,19 @@ const DiscountInterceptModal: React.FC<DiscountInterceptModalProps> = ({
           <View className="items-center">
             <MochiMascot expression="happy" size={80} animate={false} />
             <Text
-              style={{ fontFamily: "GeistBold" }}
+              style={{ fontFamily: APP_FONT_FAMILIES.bold }}
               className="mt-2 text-xs font-bold uppercase tracking-widest text-sage-500"
             >
               Wait, one more thing
             </Text>
             <Text
-              style={{ fontFamily: "CormorantSemiBold" }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="mt-2 text-center text-2xl text-ink"
             >
               Try Happy Plus for $4.99
             </Text>
             <Text
-              style={{ fontFamily: "GeistRegular" }}
+              style={{ fontFamily: APP_FONT_FAMILIES.regular }}
               className="mt-2 text-center text-sm text-ink-soft"
             >
               A first month, on us, almost. No pressure. No catch.
@@ -51,20 +52,20 @@ const DiscountInterceptModal: React.FC<DiscountInterceptModalProps> = ({
           <View className="mt-5 rounded-2xl bg-sage-50 p-4">
             <View className="flex-row items-center justify-between">
               <Text
-                style={{ fontFamily: "CormorantSemiBold" }}
+                style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                 className="text-xl text-sage-700"
               >
                 $4.99
               </Text>
               <Text
-                style={{ fontFamily: "GeistRegular" }}
+                style={{ fontFamily: APP_FONT_FAMILIES.regular }}
                 className="text-sm text-ink-muted line-through"
               >
                 $14.99
               </Text>
             </View>
             <Text
-              style={{ fontFamily: "GeistRegular" }}
+              style={{ fontFamily: APP_FONT_FAMILIES.regular }}
               className="mt-1 text-xs text-ink-muted"
             >
               After month 1: continues at $14.99/mo · Cancel anytime
@@ -83,7 +84,7 @@ const DiscountInterceptModal: React.FC<DiscountInterceptModalProps> = ({
             />
             <Pressable onPress={onDismiss} className="mt-3 items-center py-2">
               <Text
-                style={{ fontFamily: "GeistMedium" }}
+                style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                 className="text-sm text-ink-muted"
               >
                 No thanks, continue with free

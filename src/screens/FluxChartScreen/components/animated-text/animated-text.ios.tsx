@@ -10,6 +10,7 @@ import {
 import React from "react";
 import { StyleSheet } from "react-native";
 import { AnimatedTextProps } from "../../types";
+import { APP_FONT_FAMILY } from "@/src/theme/typography";
 
 function formatValue(value: number): string {
   return value.toLocaleString("en-US");
@@ -36,7 +37,7 @@ export default function AnimatedText({
       <Text
         modifiers={[
           foregroundStyle("#000000"),
-          font({ size: fontSize, weight, design: "monospaced" }),
+          font({ family: APP_FONT_FAMILY, size: fontSize, weight }),
           contentTransition("numericText"),
           animation(
             Animation.spring({ response: 0.4, dampingFraction: 0.6 }),

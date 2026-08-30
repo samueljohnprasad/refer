@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { Ionicons } from '@expo/vector-icons';
 import {
   Platform,
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     marginRight: 12,
     marginTop: 24,
-    fontFamily: 'AddingtonCF-Light',
+    fontFamily: APP_FONT_FAMILIES.regular,
     textAlignVertical: 'top',
   },
 });

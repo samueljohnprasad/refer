@@ -7,9 +7,10 @@ import {
   SAGE,
   THEME,
 } from "@/lib/tokens";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 
 function adaptiveColor(light: string, dark: string) {
-  return DynamicColorIOS({ light, dark });
+  return DynamicColorIOS({ light, dark }) as unknown as string;
 }
 
 export const COURSE_EXERCISE_COLORS = {
@@ -29,9 +30,9 @@ export const COURSE_EXERCISE_COLORS = {
 } as const;
 
 export const COURSE_EXERCISE_FONTS = {
-  body: "GeistRegular",
-  bodyMedium: "GeistMedium",
-  bodyBold: "GeistBold",
-  heading: "GeistBold",
-  display: "CormorantBold",
+  body: APP_FONT_FAMILIES.regular,
+  bodyMedium: APP_FONT_FAMILIES.semiBold,
+  bodyBold: APP_FONT_FAMILIES.bold,
+  heading: APP_FONT_FAMILIES.extraBold,
+  display: APP_FONT_FAMILIES.extraBold,
 } as const;

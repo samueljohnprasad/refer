@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { View } from "react-native";
 
@@ -45,13 +46,13 @@ function ScoreSnapshot({
   return (
     <View className="flex-row items-end">
       <Text
-        style={{ fontFamily: "CormorantSemiBold", color: INK }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
         className="text-[34px] leading-[34px]"
       >
         {score}
       </Text>
       <Text
-        style={{ fontFamily: "GeistMedium", color: INK_SOFT }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK_SOFT }}
         className="ml-2 text-[12px] leading-[18px]"
       >
         /10
@@ -71,7 +72,7 @@ function RealityPill({
       style={{ backgroundColor: SAGE[50] }}
     >
       <Text
-        style={{ fontFamily: "GeistSemiBold", color: SAGE[700] }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[700] }}
         className="text-[13px] leading-[18px]"
       >
         {label}
@@ -104,8 +105,8 @@ function RecapSectionContent({
 
   const style =
     section.tone === "serif"
-      ? { fontFamily: "CormorantMedium", color: INK }
-      : { fontFamily: "GeistRegular", color: section.tone === "muted" ? INK_SOFT : INK };
+      ? { fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }
+      : { fontFamily: APP_FONT_FAMILIES.regular, color: section.tone === "muted" ? INK_SOFT : INK };
   const className =
     section.tone === "serif"
       ? "text-[22px] leading-[30px]"
@@ -163,13 +164,13 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
         <View className="items-center pb-6 pt-2">
           {showMascot ? <Mascot state={mascotState} size={72} /> : null}
           <Text
-            style={{ fontFamily: "CormorantSemiBold", color: INK }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
             className={`${showMascot ? "mt-3" : ""} text-center text-[34px] leading-[37px] tracking-[-0.01em]`}
           >
             {title}
           </Text>
           <Text
-            style={{ fontFamily: "GeistRegular", color: INK_SOFT }}
+            style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
             className="mt-2 text-center text-[15px] leading-[22px]"
           >
             {subtitle}
@@ -187,14 +188,14 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
           >
             {highlightLabel ? (
               <Text
-                style={{ fontFamily: "GeistMedium", color: SAGE[600] }}
+                style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }}
                 className="text-[13px] leading-[18px]"
               >
                 {highlightLabel}
               </Text>
             ) : null}
             <Text
-              style={{ fontFamily: "CormorantMedium", color: INK }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
               className="mt-1.5 text-[25px] leading-[33px]"
             >
               {highlightText}
@@ -244,7 +245,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
                   }
                 >
                   <Text
-                    style={{ fontFamily: "GeistRegular", color: INK }}
+                    style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK }}
                     className="text-[16px] leading-[24px]"
                   >
                     {situation}
@@ -258,7 +259,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
                   isLast={!hasScore && !hasReality && !hasBalancedThought}
                 >
                   <Text
-                    style={{ fontFamily: "CormorantMediumItalic", color: INK }}
+                    style={{ fontFamily: APP_FONT_FAMILIES.semiBoldItalic, color: INK }}
                     className="text-[25px] leading-[33px]"
                   >
                     "{automaticThought?.trim()}"
@@ -296,7 +297,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
               {hasThoughtRecordTimeline && hasBalancedThought ? (
                 <ReflectionTimelineItem label="Balanced thought" isLast>
                   <Text
-                    style={{ fontFamily: "GeistRegular", color: INK }}
+                    style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK }}
                     className="text-[16px] leading-[24px]"
                   >
                     {balancedThought?.trim()}

@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useState, useMemo } from 'react';
 import { View, Text } from 'react-native';
 import { useToast } from 'heroui-native';
@@ -95,8 +96,8 @@ export const WeeksTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     if (!isTimelineEmpty) return null;
     return (
       <View className="px-6 pb-6 pt-2 items-center opacity-80">
-        <Text className="text-center text-[15px] leading-6 tracking-[0.2px] text-[#767676]" style={{ fontFamily: 'Geist-Regular' }}>
-          <Text style={{ fontFamily: 'Geist-Medium', color: '#142414' }}>Sample Data</Text>
+        <Text className="text-center text-[15px] leading-6 tracking-[0.2px] text-[#767676]" style={{ fontFamily: APP_FONT_FAMILIES.regular }}>
+          <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: '#142414' }}>Sample Data</Text>
           {'\n'}Your insights will look like this once generated.
         </Text>
       </View>

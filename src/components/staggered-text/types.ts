@@ -83,7 +83,7 @@ interface IStaggeredText {
   readonly activeIndex?: number;
   readonly fontSize?: number;
   readonly color?: string;
-  readonly fontPath?: ReturnType<typeof require>;
+  readonly fontPath?: number;
   readonly height?: number;
   readonly staggerFrom?: TStaggerFrom;
   readonly letterSpacing?: number;

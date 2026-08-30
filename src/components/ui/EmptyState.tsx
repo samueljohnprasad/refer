@@ -6,6 +6,7 @@ import { Mascot, MascotState } from "./Mascot";
 import { Button } from "@/src/components/ui/Button";
 import { BRAND_SURFACE, INK, SAGE } from "@/lib/tokens";
 import { StaggeredText } from "@/src/components/staggered-text";
+import { APP_FONT_ASSETS } from "@/src/theme/typography";
 
 interface EmptyStateProps {
   mascotState: MascotState;
@@ -63,7 +64,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             activeIndex={activeIndex}
             fontSize={28}
             color={SAGE[700]}
-            fontPath={require("@expo-google-fonts/cormorant-garamond/600SemiBold/CormorantGaramond_600SemiBold.ttf")}
+            fontPath={APP_FONT_ASSETS.extraBold}
             staggerFrom="leading"
             height={40}
             animationConfig={{

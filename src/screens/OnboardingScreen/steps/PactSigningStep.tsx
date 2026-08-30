@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "expo-router/react-navigation";
@@ -48,13 +49,13 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
 
           <Animated.View entering={FadeIn.duration(180).delay(140)}>
             <Text
-              style={{ fontFamily: "CormorantSemiBold" }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="mt-2 text-[30px] leading-[1.1] text-ink"
             >
               A small{" "}
               <Text
                 style={{
-                  fontFamily: "CormorantRegularItalic",
+                  fontFamily: APP_FONT_FAMILIES.regularItalic,
                   color: SAGE[500],
                 }}
               >
@@ -69,14 +70,14 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
             className="mt-5 w-full rounded-[24px] border-2 border-sage-100 bg-warm-white px-6 py-7"
           >
             <Text
-              style={{ fontFamily: "CormorantMedium" }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="text-left text-[18px] leading-[26px] text-ink"
             >
               For the next 7 days, I&apos;ll show up for myself, even if
               it&apos;s just for {dailyGoal} minutes.
             </Text>
             <Text
-              style={{ fontFamily: "CormorantMedium" }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="mt-6 text-left text-[18px] leading-[26px] text-ink"
             >
               I&apos;ll be honest. I&apos;ll be patient. I&apos;m worth the
@@ -96,13 +97,13 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
               />
               <View className="mt-5 flex-row items-baseline justify-between">
                 <Text
-                  style={{ fontFamily: "GeistMedium" }}
+                  style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                   className="text-[11px] uppercase tracking-[0.1em] text-ink-muted"
                 >
                   Signed
                 </Text>
                 <Text
-                  style={{ fontFamily: "CormorantRegularItalic" }}
+                  style={{ fontFamily: APP_FONT_FAMILIES.regularItalic }}
                   className="text-[22px] tracking-[-0.01em] text-sage-600"
                 >
                   You, today
@@ -119,7 +120,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
         style={{ paddingBottom: Math.max(insets.bottom + 8, 32) }}
       >
         <Text
-          style={{ fontFamily: "GeistRegular" }}
+          style={{ fontFamily: APP_FONT_FAMILIES.regular }}
           className="mb-3 text-center text-[13px] text-ink-muted"
         >
           Hold to make it official.
@@ -171,7 +172,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
             />
           </View>
           <Text
-            style={{ fontFamily: "GeistBold" }}
+            style={{ fontFamily: APP_FONT_FAMILIES.bold }}
             className="text-center text-[17px] font-bold uppercase tracking-[0.02em] text-white z-10"
           >
             {committed

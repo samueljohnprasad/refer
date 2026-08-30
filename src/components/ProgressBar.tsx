@@ -8,6 +8,7 @@ import {
   ViewStyle,
 } from "react-native";
 import Svg, { ClipPath, Defs, Rect } from "react-native-svg";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 
 type ProgressBarProps = {
   progress: number; // 0..1
@@ -21,7 +22,6 @@ type ProgressBarProps = {
   value?: string;
   valueColor?: string;
   valueFontSize?: number;
-  valueFontFamily?: string;
   valueFontWeight?: TextStyle["fontWeight"];
   valueStyle?: StyleProp<TextStyle>;
 };
@@ -40,7 +40,6 @@ export const ProgressBar = ({
   value,
   valueColor = "#FFFFFF",
   valueFontSize = 12,
-  valueFontFamily,
   valueFontWeight = "700",
   valueStyle,
 }: ProgressBarProps) => {
@@ -108,7 +107,7 @@ export const ProgressBar = ({
               {
                 color: valueColor,
                 fontSize: valueFontSize,
-                fontFamily: valueFontFamily,
+                fontFamily: APP_FONT_FAMILIES.bold,
                 fontWeight: valueFontWeight,
               },
               valueStyle,

@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useEffect, useState, useRef } from "react";
 import { View, Text, TouchableOpacity, DeviceEventEmitter } from "react-native";
 import { HStack } from "@/components/ui/hstack";
@@ -308,7 +309,7 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
           <Text
             style={{
               fontSize: 22,
-              fontFamily: "CormorantSemiBold",
+              fontFamily: APP_FONT_FAMILIES.semiBold,
               color: "#1f2937",
               marginBottom: 12,
             }}

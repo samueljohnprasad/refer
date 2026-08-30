@@ -1,8 +1,9 @@
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
-import { Linking, Platform, StyleSheet, Text, View } from "react-native";
+import { Linking, StyleSheet, Text, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 import Markdown from "./markdown";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 
 const VAR_NAMES = [
   "--app-foreground",
@@ -50,10 +51,10 @@ export function ChatMarkdown({ children }: { children: string }) {
     codeText: {
       fontSize: isWeb ? 12 : 14,
       color: text,
-      fontFamily: Platform.select({ ios: "ui-monospace", default: "monospace" }),
+      fontFamily: APP_FONT_FAMILIES.regular,
     },
     inlineCode: {
-      fontFamily: Platform.select({ ios: "ui-monospace", default: "monospace" }),
+      fontFamily: APP_FONT_FAMILIES.regular,
       paddingHorizontal: 4,
       fontSize: isWeb ? 12 : 15,
       color: text,
@@ -113,7 +114,7 @@ export function ChatMarkdown({ children }: { children: string }) {
 
 const fullStyles = StyleSheet.create({
   orderedBullet: {
-    fontFamily: Platform.select({ ios: "ui-monospace", default: "monospace" }),
+    fontFamily: APP_FONT_FAMILIES.regular,
     fontWeight: "normal",
   },
   unorderedBullet: {

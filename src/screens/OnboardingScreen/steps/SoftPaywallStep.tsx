@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useState } from 'react';
 import { Text, View, ScrollView, Pressable } from 'react-native';
 import { BlurView } from 'expo-blur';
@@ -64,7 +65,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
         >
           <View className="mb-2 flex-row items-center gap-1.5 rounded-full border border-sage-200 bg-sage-50 px-3.5 py-1.5">
             <Text
-              style={{ fontFamily: 'GeistSemiBold' }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="text-[12px] text-sage-800"
             >
               App of the Day
@@ -72,18 +73,18 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           </View>
           <MochiMascot expression="happy" size={84} delay={200} />
           <Text
-            style={{ fontFamily: 'CormorantSemiBold' }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="mt-3 text-center text-[26px] leading-[1.15] tracking-[-0.02em] text-ink"
           >
             Become someone who doesn&apos;t run from{' '}
             <Text
-              style={{ fontFamily: 'CormorantRegularItalic', color: '#5F7F58' }}
+              style={{ fontFamily: APP_FONT_FAMILIES.regularItalic, color: '#5F7F58' }}
             >
               how they feel.
             </Text>
           </Text>
           <Text
-            style={{ fontFamily: 'GeistRegular' }}
+            style={{ fontFamily: APP_FONT_FAMILIES.regular }}
             className="mt-1.5 text-center text-[13px] text-ink-soft"
           >
             12 journeys · 800+ exercises · Unlimited AI insights
@@ -103,7 +104,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
 
         <Animated.View entering={FadeIn.duration(180).delay(220)} className="mt-3.5">
           <Text
-            style={{ fontFamily: 'GeistSemiBold' }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="mb-2.5 text-[13px] text-sage-800"
           >
             Your next 3 lessons (locked without Plus)
@@ -117,7 +118,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
                 <View className="flex-1 flex-row items-center gap-3 opacity-90">
                   <View className="h-8 w-8 items-center justify-center rounded-lg bg-sage-100">
                     <Text
-                      style={{ fontFamily: 'CormorantSemiBold' }}
+                      style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                       className="text-sm text-ink-muted"
                     >
                       {lesson.day}
@@ -125,13 +126,13 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
                   </View>
                   <View className="flex-1">
                     <Text
-                      style={{ fontFamily: 'GeistSemiBold' }}
+                      style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                       className="text-[13px] text-ink"
                     >
                       {lesson.title}
                     </Text>
                     <Text
-                      style={{ fontFamily: 'GeistRegular' }}
+                      style={{ fontFamily: APP_FONT_FAMILIES.regular }}
                       className="mt-0.5 text-[11px] text-ink-muted"
                     >
                       {lesson.meta}
@@ -157,7 +158,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
               </View>
             ))}
           <Text
-            style={{ fontFamily: 'CormorantRegularItalic' }}
+            style={{ fontFamily: APP_FONT_FAMILIES.regularItalic }}
             className="mt-2 text-center text-[13px] text-ink-muted"
           >
             Continue your journey or restart from Day 1.
@@ -196,24 +197,24 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           className="mt-5 flex-row items-center justify-center gap-4 border-t border-sage-100 pt-3"
         >
           <View className="items-center">
-            <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
+            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }} className="text-base text-sage-600">
               3 in 4
             </Text>
-            <Text style={{ fontFamily: 'GeistMedium' }} className="text-[11.5px] text-ink-soft">
+            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }} className="text-[11.5px] text-ink-soft">
               sleep better by Day 14
             </Text>
           </View>
           <View className="items-center">
-            <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
+            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }} className="text-base text-sage-600">
               ★ 4.9
             </Text>
-            <Text style={{ fontFamily: 'GeistMedium' }} className="text-[11.5px] text-ink-soft">12k reviews</Text>
+            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }} className="text-[11.5px] text-ink-soft">12k reviews</Text>
           </View>
           <View className="items-center">
-            <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
+            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }} className="text-base text-sage-600">
               220k
             </Text>
-            <Text style={{ fontFamily: 'GeistMedium' }} className="text-[11.5px] text-ink-soft">in the Grove</Text>
+            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }} className="text-[11.5px] text-ink-soft">in the Grove</Text>
           </View>
         </Animated.View>
 

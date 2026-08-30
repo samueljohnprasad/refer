@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { StyleSheet, View } from 'react-native';
 import { useRef } from 'react';
 
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
-    fontFamily: 'Honk-Regular', // Custom font for the animated text
+    fontFamily: APP_FONT_FAMILIES.regular, // Custom font for the animated text
   },
 });
 

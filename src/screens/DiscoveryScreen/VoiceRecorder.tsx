@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import MicControlContainer from "./MicControlContainer";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -214,7 +215,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
                 text={currentPrompt}
                 fontSize={28}
                 textStyle={{
-                  fontFamily: "CormorantBold",
+                  fontFamily: APP_FONT_FAMILIES.extraBold,
                   color: INK,
                   lineHeight: 36,
                   textAlign: "center"

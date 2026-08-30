@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "expo-router/react-navigation";
@@ -49,7 +50,7 @@ const MascotGreetingStep: React.FC = () => {
           className="mt-8 w-full rounded-2xl border border-sage-200/70 bg-sage-50/40 px-5 py-4"
         >
           <Text
-            style={{ fontFamily: "CormorantSemiBold" }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="text-center text-[15px] italic leading-6 text-ink"
           >
             &ldquo;The smallest practice, done daily, is more powerful than the

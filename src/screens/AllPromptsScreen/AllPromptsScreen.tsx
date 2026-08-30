@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useCallback } from "react";
 import {
   View,
@@ -141,14 +142,14 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
       >
         <View className="flex-1">
           <Text
-            style={{ fontFamily: "CormorantSemiBold" }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="text-[16px] text-ink mb-1.5"
             numberOfLines={1}
           >
             {prompt.title} <Text className="text-[15px]">{prompt.emoji}</Text>
           </Text>
           <Text
-            style={{ fontFamily: "GeistMedium" }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="text-[13px] leading-[1.45] text-ink-soft mb-3"
             numberOfLines={2}
           >
@@ -159,7 +160,7 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
         <View className="flex-row items-center gap-2 mt-auto">
           <View className="bg-white/90 px-2.5 py-1 rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
             <Text
-              style={{ fontFamily: "GeistMedium" }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="text-[10px] text-ink-soft uppercase tracking-wider"
             >
               Today
@@ -176,7 +177,7 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
             }}
           >
             <Text
-              style={{ fontFamily: "GeistBold", color: prompt.categoryColor }}
+              style={{ fontFamily: APP_FONT_FAMILIES.bold, color: prompt.categoryColor }}
               className="text-[10px] uppercase tracking-wider"
             >
               {prompt.category}

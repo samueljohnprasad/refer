@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { Text, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -23,7 +24,7 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
         className="mt-6 items-center"
       >
         <Text
-          style={{ fontFamily: "CormorantSemiBold" }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
           className="text-center text-2xl text-ink"
         >
           Building your journey...

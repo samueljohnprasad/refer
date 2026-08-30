@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -28,7 +29,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
           className="mt-12 px-6"
         >
           <Text
-            style={{ fontFamily: "Cormorant", fontStyle: "italic" }}
+            style={{ fontFamily: APP_FONT_FAMILIES.regular, fontStyle: "italic" }}
             className="text-center text-xl leading-relaxed text-ink-soft"
           >
             &ldquo;Consistency over perfection.&rdquo;

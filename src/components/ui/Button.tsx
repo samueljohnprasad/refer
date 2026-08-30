@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { type ReactElement } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
@@ -223,7 +224,7 @@ export function Button({
             {leftIcon}
             <Text
               style={{
-                fontFamily: "GeistBold",
+                fontFamily: APP_FONT_FAMILIES.bold,
                 fontSize: sizeConfig.labelSize,
                 color: INK_SOFT,
               }}
@@ -302,7 +303,7 @@ export function Button({
             {leftIcon}
             <Text
               style={{
-                fontFamily: "GeistBold",
+                fontFamily: APP_FONT_FAMILIES.bold,
                 fontSize: sizeConfig.labelSize,
                 letterSpacing: 0.01 * sizeConfig.labelSize,
                 color: labelColor,

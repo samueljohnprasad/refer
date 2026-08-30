@@ -12,6 +12,7 @@ These rules apply to both frontend (React Native/React)
 - always write logic in resuable hooks, composable, maintainable, readable, extensionable
 - strictly use typescript everywhere, for every variable assignment, function params , function return, explicitly write the types.
 dont use any type.
+- function should have single responsibility
 
 #write code in such a way that i should be easily extendable, easy to integrate , plugin and plugout .
 ## 1. SOLID Principles

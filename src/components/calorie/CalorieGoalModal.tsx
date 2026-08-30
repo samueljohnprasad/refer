@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
@@ -437,7 +438,7 @@ const CalorieGoalModal: React.FC<CalorieGoalModalProps> = ({
           <Text
             style={{
               fontSize: 22,
-              fontFamily: "CormorantSemiBold",
+              fontFamily: APP_FONT_FAMILIES.semiBold,
               color: "#1f2937",
             }}
           >

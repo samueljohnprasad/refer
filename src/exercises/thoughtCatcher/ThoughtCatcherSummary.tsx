@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useCallback, useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 import * as Haptics from "expo-haptics";
@@ -59,7 +60,7 @@ function FollowupLink({
       className="min-h-11 flex-row items-center justify-center py-2 active:opacity-70"
     >
       <Text
-        style={{ fontFamily: "GeistSemiBold", color: SAGE[600] }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }}
         className="text-[14px] leading-[20px]"
       >
         {label}
@@ -111,7 +112,7 @@ function SaveCopingCardAction({
           strokeWidth={2}
         />
         <Text
-          style={{ fontFamily: "GeistSemiBold", color: SAGE[700] }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[700] }}
           className="ml-2 text-[14px] leading-[20px]"
         >
           {cardSaved
@@ -124,7 +125,7 @@ function SaveCopingCardAction({
 
       {error ? (
         <Text
-          style={{ fontFamily: "GeistMedium", color: DANGER }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: DANGER }}
           className="mt-2 text-[13px] leading-[18px]"
         >
           {error}

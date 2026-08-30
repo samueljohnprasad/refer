@@ -1,6 +1,10 @@
 import { useCallback } from "react";
 import type { AppDispatch } from "@/src/store/store";
-import type { V1InteractionOptions } from "@/src/domains/journey/learning/v1LearningEngineTypes";
+import { courseExerciseCategoryEngineRegistry } from "@/src/components/exercise/courseExerciseCategoryEngineRegistry";
+import {
+  shouldSubmitExerciseResponseImmediately,
+  type CourseExerciseCategoryConfig,
+} from "@/src/components/exercise/courseExerciseCategoryConfig";
 import {
   checkV1LearningAnswer,
   recordV1LearningInteraction,
@@ -11,7 +15,6 @@ export function useV1NodeInteraction(dispatch: AppDispatch, nodeId: string) {
     (
       response: Record<string, unknown>,
       isFooterActionEnabled = true,
-      options?: V1InteractionOptions,
     ) => {
       dispatch(
         recordV1LearningInteraction({
@@ -20,10 +23,28 @@ export function useV1NodeInteraction(dispatch: AppDispatch, nodeId: string) {
           ready: isFooterActionEnabled,
         }),
       );
-      if (options?.revealImmediately) {
+      const categoryConfig = findCategoryConfig(response.format);
+      if (
+        shouldSubmitExerciseResponseImmediately(
+          categoryConfig?.interaction,
+          response,
+        )
+      ) {
         dispatch(checkV1LearningAnswer({ nodeId }));
       }
     },
     [dispatch, nodeId],
+  );
+}
+
+function findCategoryConfig(
+  format: unknown,
+): CourseExerciseCategoryConfig | undefined {
+  if (typeof format !== "string") {
+    return undefined;
+  }
+
+  return Object.values(courseExerciseCategoryEngineRegistry).find((config) =>
+    config?.formats.includes(format),
   );
 }

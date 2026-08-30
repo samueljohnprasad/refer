@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useCallback, useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 import { useRouter } from "expo-router";
@@ -61,7 +62,7 @@ function SaveCopingCardAction({
           strokeWidth={2}
         />
         <Text
-          style={{ fontFamily: "GeistSemiBold", color: SAGE[700] }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[700] }}
           className="ml-2 text-[14px] leading-[20px]"
         >
           {cardSaved
@@ -74,7 +75,7 @@ function SaveCopingCardAction({
 
       {error ? (
         <Text
-          style={{ fontFamily: "GeistMedium", color: DANGER }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: DANGER }}
           className="mt-2 text-[13px] leading-[18px]"
         >
           {error}
@@ -99,7 +100,7 @@ function FollowupLink({
       className="mt-2 min-h-11 flex-row items-center self-start py-2 active:opacity-60"
     >
       <Text
-        style={{ fontFamily: "GeistSemiBold", color: SAGE[600] }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }}
         className="text-[14px] leading-[20px]"
       >
         {label}
@@ -217,7 +218,7 @@ export function ABCSummaryStep({
             className="min-h-11 self-start py-2 active:opacity-60"
           >
             <Text
-              style={{ fontFamily: "GeistSemiBold", color: SAGE[600] }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }}
               className="text-[14px] leading-[20px]"
             >
               Edit answers

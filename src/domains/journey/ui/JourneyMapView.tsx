@@ -1,4 +1,5 @@
 import React from "react";
+import { useColorScheme } from "react-native";
 import { Stack } from "expo-router";
 import Animated from "react-native-reanimated";
 import { AmbientTapDust } from "@/src/components/ui/AmbientTapDust";
@@ -16,6 +17,7 @@ import type {
   JourneyMapViewModel,
   JourneyMapActions,
 } from "./hooks/useJourneyMapViewModel";
+import { BRAND_DARK, THEME } from "@/lib/tokens";
 
 export interface JourneyMapViewProps {
   model: JourneyMapViewModel;
@@ -33,6 +35,8 @@ export const JourneyMapView = React.memo(function JourneyMapView({
   actions,
   isOnboarding,
 }: JourneyMapViewProps): React.JSX.Element {
+  const isDark = useColorScheme() === "dark";
+
   if (model.isPreparing) {
     return (
       <>
@@ -114,7 +118,14 @@ export const JourneyMapView = React.memo(function JourneyMapView({
         <AmbientTapDust>
           <Animated.View
             className="flex-1 bg-brand-canvas"
-            style={animatedStyle}
+            style={[
+              {
+                backgroundColor: isDark
+                  ? BRAND_DARK.canvas
+                  : THEME.backgroundPrimary,
+              },
+              animatedStyle,
+            ]}
           >
             {courseId && (
               <JourneyMapFlashList

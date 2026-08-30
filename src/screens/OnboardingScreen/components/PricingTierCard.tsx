@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useEffect } from "react";
 import { Text, View, Pressable } from "react-native";
 import Animated, {
@@ -75,7 +76,7 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
       {plan.badge && (
         <View className="absolute -top-2.5 right-3 rounded-full bg-gold px-3 py-0.5 shadow-sm">
           <Text
-            style={{ fontFamily: 'GeistSemiBold' }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="text-[11.5px] tracking-[0.01em] text-sage-900"
           >
             {plan.badge}
@@ -101,7 +102,7 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
                 {plan.savings ? (
                   <View className="rounded bg-terracotta px-1.5 py-0.5">
                     <Text
-                      style={{ fontFamily: 'GeistSemiBold' }}
+                      style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                       className="text-[10.5px] tracking-[0.01em] text-white"
                     >
                       {plan.savings}

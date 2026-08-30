@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { Stack } from "expo-router";
 import { useCSSVariable } from "uniwind";
@@ -44,7 +45,7 @@ export default function GamificationGroupLayout() {
           headerStyle: { backgroundColor: "#FFFFFF" },
           headerShadowVisible: false,
           headerTitleStyle: {
-            fontFamily: "happy-font-heading-bold",
+            fontFamily: APP_FONT_FAMILIES.extraBold,
             fontSize: 20,
           },
         }}

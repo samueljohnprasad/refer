@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useState, useCallback } from "react";
 import { ScrollView, KeyboardAvoidingView, Platform, View, Alert, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -313,11 +314,11 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
             if (reflectionText) {
               return (
                 <View className="mt-8 mb-4">
-                  <Text style={{ fontFamily: "CormorantGaramond-SemiBold", fontSize: 22, color: INK, marginBottom: 12 }}>
+                  <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, fontSize: 22, color: INK, marginBottom: 12 }}>
                     Reflection
                   </Text>
                   <View className="bg-white p-5 rounded-2xl" style={{ borderWidth: 1, borderColor: BRAND_BORDER }}>
-                    <Text style={{ fontFamily: "Geist-Regular", fontSize: 16, color: INK, lineHeight: 24 }}>
+                    <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, fontSize: 16, color: INK, lineHeight: 24 }}>
                       {reflectionText}
                     </Text>
                   </View>

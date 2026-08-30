@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useEffect } from "react";
 import { View, Text } from "react-native";
 import Animated, {
@@ -9,11 +10,12 @@ import Animated, {
 interface TickProps {
   digit: string;
   textClassName: string;
+  color?: string;
 }
 
 const LINE_HEIGHT = 22; // Hardcoded based on text-base
 
-function Tick({ digit, textClassName }: TickProps) {
+function Tick({ digit, textClassName, color }: TickProps) {
   const parsed = parseInt(digit, 10);
   const isNumber = !isNaN(parsed);
   
@@ -39,7 +41,7 @@ function Tick({ digit, textClassName }: TickProps) {
     return (
       <Text
         className={`text-base ${textClassName}`}
-        style={{ fontFamily: "GeistBold", height: LINE_HEIGHT, lineHeight: LINE_HEIGHT }}
+        style={{ fontFamily: APP_FONT_FAMILIES.bold, height: LINE_HEIGHT, lineHeight: LINE_HEIGHT, color }}
       >
         {digit}
       </Text>
@@ -53,7 +55,7 @@ function Tick({ digit, textClassName }: TickProps) {
           <Text
             key={num}
             className={`text-base ${textClassName}`}
-            style={{ fontFamily: "GeistBold", height: LINE_HEIGHT, lineHeight: LINE_HEIGHT }}
+            style={{ fontFamily: APP_FONT_FAMILIES.bold, height: LINE_HEIGHT, lineHeight: LINE_HEIGHT, color }}
           >
             {num}
           </Text>
@@ -66,9 +68,10 @@ function Tick({ digit, textClassName }: TickProps) {
 interface AnimatedOdometerProps {
   value: string;
   textClassName: string;
+  color?: string;
 }
 
-export function AnimatedOdometer({ value, textClassName }: AnimatedOdometerProps) {
+export function AnimatedOdometer({ value, textClassName, color }: AnimatedOdometerProps) {
   const chars = value.split("");
 
   return (
@@ -78,6 +81,7 @@ export function AnimatedOdometer({ value, textClassName }: AnimatedOdometerProps
           key={`${chars.length}-${index}`}
           digit={char}
           textClassName={textClassName}
+          color={color}
         />
       ))}
     </View>

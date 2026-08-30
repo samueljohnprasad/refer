@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useEffect } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -163,7 +164,7 @@ const EmotionAnalysisLoadingScreen: React.FC<
         {/* Date */}
         <Text
           style={{
-            fontFamily: "GeistMedium",
+            fontFamily: APP_FONT_FAMILIES.semiBold,
             color: "rgba(255, 255, 255, 0.8)",
             fontSize: 14,
             textAlign: "center",
@@ -175,7 +176,7 @@ const EmotionAnalysisLoadingScreen: React.FC<
         {/* Processing phase text */}
         <Text
           style={{
-            fontFamily: "CormorantBold",
+            fontFamily: APP_FONT_FAMILIES.extraBold,
             color: "#FFFFFF",
             fontSize: 32,
             textAlign: "center",
@@ -192,7 +193,7 @@ const EmotionAnalysisLoadingScreen: React.FC<
         {/* Subtle hint text */}
         <Text
           style={{
-            fontFamily: "GeistMedium",
+            fontFamily: APP_FONT_FAMILIES.semiBold,
             color: "rgba(255, 255, 255, 0.85)",
             fontSize: 15,
             textAlign: "center",

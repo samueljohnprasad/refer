@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
@@ -164,7 +165,7 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
                 {unit ? (
                   <Text
                     className="mt-1 text-[24px] leading-[28px] text-sage-400"
-                    style={{ fontFamily: "CormorantMedium" }}
+                    style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                   >
                     {unit}
                   </Text>

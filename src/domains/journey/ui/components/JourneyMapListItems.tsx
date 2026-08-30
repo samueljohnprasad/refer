@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { Text, View, useWindowDimensions } from "react-native";
 
@@ -75,7 +76,7 @@ export function JourneyMapEmptyState(): React.JSX.Element {
     <View className="flex-1 items-center justify-center px-8 pb-16">
       <MochiMascot expression="concentrating" size={100} delay={0} />
       <Text
-        style={{ fontFamily: "CormorantSemiBold" }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
         className="mt-5 text-center text-[24px] leading-tight text-ink"
         adjustsFontSizeToFit
         numberOfLines={2}
@@ -83,7 +84,7 @@ export function JourneyMapEmptyState(): React.JSX.Element {
         Your journey is being prepared
       </Text>
       <Text
-        style={{ fontFamily: "GeistMedium" }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
         className="mt-2.5 text-center text-[15px] leading-relaxed text-ink-soft"
       >
         Check back shortly. Your personalized path will be ready soon.

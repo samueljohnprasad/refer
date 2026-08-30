@@ -148,7 +148,7 @@ export function CourseExercisePrimaryButton({
       >
         {loading ? (
           <ActivityIndicator
-            color={COURSE_EXERCISE_COLORS.surface}
+            color="#FFFFFF"
             size="small"
           />
         ) : (
@@ -178,8 +178,8 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   closeButton: {
-    width: 40,
-    height: 40,
+    width: 48,
+    height: 48,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -216,14 +216,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   primaryLabel: {
-    color: COURSE_EXERCISE_COLORS.surface,
+    color: "#FFFFFF",
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 16,
   },
   disabledLabel: { color: SAGE[700] },
-  skipButton: { minHeight: 44, alignItems: "center", justifyContent: "center" },
+  skipButton: { minHeight: 48, alignItems: "center", justifyContent: "center" },
   skipLabel: {
-    color: SAGE[600],
+    color: COURSE_EXERCISE_COLORS.accentDark,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 14,
   },

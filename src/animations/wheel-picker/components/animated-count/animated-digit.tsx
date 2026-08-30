@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useCallback } from 'react';
@@ -219,7 +220,7 @@ const AnimatedDigit: React.FC<AnimatedDigitProps> = React.memo(
                   height,
                   textAlign: 'center',
                   textAlignVertical: 'center',
-                  fontFamily: 'SF-Pro-Rounded-Bold',
+                  fontFamily: APP_FONT_FAMILIES.bold,
                 }}>
                 {textIndex}
               </Text>

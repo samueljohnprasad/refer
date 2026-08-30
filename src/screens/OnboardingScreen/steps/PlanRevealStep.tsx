@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useEffect } from "react";
 import * as Haptics from "expo-haptics";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -213,7 +214,7 @@ const ProjectionGraph: React.FC = () => {
             }}
           />
           <Text
-            style={{ fontFamily: "GeistMedium" }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="text-[11px] text-ink-muted"
           >
             With Happy
@@ -232,7 +233,7 @@ const ProjectionGraph: React.FC = () => {
             }}
           />
           <Text
-            style={{ fontFamily: "GeistMedium" }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="text-[11px] text-ink-muted"
           >
             Without journaling
@@ -241,11 +242,11 @@ const ProjectionGraph: React.FC = () => {
       </View>
 
       <Text
-        style={{ fontFamily: "GeistRegular" }}
+        style={{ fontFamily: APP_FONT_FAMILIES.regular }}
         className="mt-2 text-[10px] italic leading-[1.4] text-ink-muted"
       >
         Based on self-reported clarity scores from{" "}
-        <Text style={{ fontFamily: "GeistSemiBold" }}>3,847 Happy users</Text>{" "}
+        <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}>3,847 Happy users</Text>{" "}
         over their first 30 days. Individual results vary.
       </Text>
     </View>
@@ -279,7 +280,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
       <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <View className="flex-row items-center">
           <Text
-            style={{ fontFamily: "GeistSemiBold" }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta"
           >
             Built around your goal
@@ -289,13 +290,13 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
           </View>
         </View>
         <Text
-          style={{ fontFamily: "CormorantRegular" }}
+          style={{ fontFamily: APP_FONT_FAMILIES.regular }}
           className="mt-3 text-[28px] leading-[1.08] text-ink"
         >
           Your first course:{"\n"}
           <Text
             style={{
-              fontFamily: "CormorantRegularItalic",
+              fontFamily: APP_FONT_FAMILIES.regularItalic,
               color: "#5F7F58",
             }}
           >
@@ -319,13 +320,13 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
           }}
         >
           <Text
-            style={{ fontFamily: "GeistMedium" }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="text-[15px] text-gold/90"
           >
             7-Day Foundation Course
           </Text>
           <Text
-            style={{ fontFamily: "CormorantRegular" }}
+            style={{ fontFamily: APP_FONT_FAMILIES.regular }}
             className="mt-2 text-[26px] leading-[1.15] text-white"
           >
             {planMeta.subtitle}
@@ -335,7 +336,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
             {PLAN_STATS.map((stat) => (
               <View key={stat.label} className="mb-4 w-1/2 pr-3">
                 <Text
-                  style={{ fontFamily: "CormorantSemiBold" }}
+                  style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                   className="text-2xl text-gold"
                 >
                   {stat.value}
@@ -344,7 +345,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
                   numberOfLines={1}
                   adjustsFontSizeToFit
                   minimumFontScale={0.85}
-                  style={{ fontFamily: "GeistMedium" }}
+                  style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                   className="mt-0.5 text-[11px] uppercase tracking-[0.05em] text-white/70"
                 >
                   {stat.label}
@@ -360,19 +361,19 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
         className="mt-3 rounded-2xl border-2 border-sage-200 bg-cream px-[18px] py-5"
       >
         <Text
-          style={{ fontFamily: "CormorantSemiBold" }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
           className="mb-2 text-[20px] leading-[1.3] text-ink"
         >
           Projected path
         </Text>
         <Text
-          style={{ fontFamily: "CormorantRegular" }}
+          style={{ fontFamily: APP_FONT_FAMILIES.regular }}
           className="text-[17px] leading-[1.35] text-ink"
         >
           Your projected{" "}
           <Text
             style={{
-              fontFamily: "CormorantRegularItalic",
+              fontFamily: APP_FONT_FAMILIES.regularItalic,
               color: "#5F7F58",
             }}
           >
@@ -401,20 +402,20 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
             className="bg-sage-600 px-2.5 py-1"
           >
             <Text
-              style={{ fontFamily: "GeistSemiBold" }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="text-[11px] uppercase tracking-[0.05em] text-white"
             >
               New · AI Companion
             </Text>
           </View>
           <Text
-            style={{ fontFamily: "CormorantSemiBold" }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="mt-3 text-[18px] leading-[1.3] text-ink"
           >
             Mochi learns your patterns & reflects them back.
           </Text>
           <Text
-            style={{ fontFamily: "GeistRegular" }}
+            style={{ fontFamily: APP_FONT_FAMILIES.regular }}
             className="mt-1.5 text-[13px] leading-[1.45] text-ink-muted"
           >
             After every journal entry, get an AI insight written just for you.

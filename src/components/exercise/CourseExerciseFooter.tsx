@@ -1,7 +1,6 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { SAGE } from "@/lib/tokens";
 import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 import {
   COURSE_EXERCISE_COLORS,
@@ -69,9 +68,9 @@ const styles = StyleSheet.create({
     paddingTop: 14,
     backgroundColor: COURSE_EXERCISE_COLORS.background,
   },
-  skipButton: { minHeight: 44, alignItems: "center", justifyContent: "center" },
+  skipButton: { minHeight: 48, alignItems: "center", justifyContent: "center" },
   skipLabel: {
-    color: SAGE[600],
+    color: COURSE_EXERCISE_COLORS.accentDark,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 14,
   },

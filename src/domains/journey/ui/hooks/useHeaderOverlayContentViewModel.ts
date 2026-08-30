@@ -10,6 +10,7 @@ import {
 } from "react-native-reanimated";
 import type { CourseHeaderSummary, EnrolledCourseListItem } from "@/src/types/journeyV5";
 import { resolveCourseAccentColor } from "@/src/domains/journey/model/courseVisuals";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 
 export const PALETTE = {
   warmWhite: "#FFFFFF",
@@ -20,10 +21,10 @@ export const PALETTE = {
 } as const;
 
 export const FONTS = {
-  body: "GeistRegular",
-  bodyMedium: "GeistMedium",
-  bodyBold: "GeistBold",
-  heading: "CormorantSemiBold",
+  body: APP_FONT_FAMILIES.regular,
+  bodyMedium: APP_FONT_FAMILIES.semiBold,
+  bodyBold: APP_FONT_FAMILIES.bold,
+  heading: APP_FONT_FAMILIES.extraBold,
 } as const;
 
 export type HeaderOverlayContentProps = {

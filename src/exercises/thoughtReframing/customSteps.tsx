@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 /**
  * Custom step components for Thought Reframing exercise.
  *
@@ -1455,13 +1456,13 @@ export function TRBalancedThoughtStep({
         style={{ borderBottomWidth: 1, borderBottomColor: BRAND_BORDER }}
       >
         <Text
-          style={{ fontFamily: "GeistSemiBold" }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
           className="mb-2 text-[13px] leading-[18px] text-sage-700"
         >
           The thought you are testing
         </Text>
         <Text
-          style={{ fontFamily: "CormorantMediumItalic" }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBoldItalic }}
           className="text-[20px] leading-[27px] text-ink"
         >
           {response.automaticThought}
@@ -1469,7 +1470,7 @@ export function TRBalancedThoughtStep({
       </View>
 
       <Text
-        style={{ fontFamily: "GeistSemiBold" }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
         className="mb-2 text-[14px] leading-[20px] text-ink"
       >
         Your balanced thought
@@ -1518,7 +1519,7 @@ export function TRBalancedThoughtStep({
           >
             <View className="flex-1 pr-4">
               <Text
-                style={{ fontFamily: "GeistSemiBold" }}
+                style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                 className="text-[14px] leading-[20px] text-sage-700"
               >
                 Need a starting point?
@@ -1557,13 +1558,13 @@ export function TRBalancedThoughtStep({
                     >
                       <View className="flex-row items-start">
                         <Text
-                          style={{ fontFamily: "CormorantMedium" }}
+                          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                           className="flex-1 pr-4 text-[18px] leading-[25px] text-ink"
                         >
                           {suggestion.text}
                         </Text>
                         <Text
-                          style={{ fontFamily: "GeistSemiBold" }}
+                          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                           className="text-[13px] leading-[20px] text-sage-700"
                         >
                           Use

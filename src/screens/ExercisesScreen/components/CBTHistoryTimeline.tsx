@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useMemo } from "react";
 import { ActivityIndicator, StyleSheet, Text, View, FlatList, Pressable } from "react-native";
 import dayjs from "dayjs";
@@ -248,13 +249,13 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   dayText: {
-    fontFamily: "Nunito-Bold",
+    fontFamily: APP_FONT_FAMILIES.bold,
     fontSize: 18,
     color: "#2C2C2E",
     lineHeight: 22,
   },
   monthText: {
-    fontFamily: "Nunito-Bold",
+    fontFamily: APP_FONT_FAMILIES.bold,
     fontSize: 11,
     color: "#8E8E93",
     lineHeight: 14,
@@ -326,13 +327,13 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   cardTitle: {
-    fontFamily: "Nunito-Bold",
+    fontFamily: APP_FONT_FAMILIES.bold,
     fontSize: 16,
     color: "#2C2C2E",
     marginBottom: 4,
   },
   cardSubtitle: {
-    fontFamily: "Nunito-SemiBold",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 13,
     color: "#166534",
   },

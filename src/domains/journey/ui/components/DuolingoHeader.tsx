@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, View, useColorScheme } from "react-native";
 import Animated, { FadeOut } from "react-native-reanimated";
 import { FullWindowOverlay } from "react-native-screens";
 import HeaderOverlayContent from "./header-overlay-content";
@@ -10,6 +10,7 @@ import {
   type DuolingoHeaderProps,
   type DuolingoHeaderStats,
 } from "../hooks/useDuolingoHeaderViewModel";
+import { BRAND_DARK, INK } from "@/lib/tokens";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -28,6 +29,8 @@ const HeaderButton = memo(function HeaderButton({
   title,
   textClassName,
 }: HeaderButtonProps): React.JSX.Element {
+  const isDark = useColorScheme() === "dark";
+
   return (
     <Pressable
       onPress={onPress}
@@ -36,8 +39,16 @@ const HeaderButton = memo(function HeaderButton({
       accessibilityLabel={accessibilityLabel}
       className="min-h-11 min-w-11 flex-row items-center justify-center gap-1.5 px-2"
     >
-      <Icon width={28} height={28} />
-      <AnimatedOdometer value={title} textClassName={textClassName} />
+      <Icon
+        width={28}
+        height={28}
+        color={isDark ? BRAND_DARK.ink : INK}
+      />
+      <AnimatedOdometer
+        value={title}
+        textClassName={textClassName}
+        color={isDark ? BRAND_DARK.ink : INK}
+      />
     </Pressable>
   );
 });

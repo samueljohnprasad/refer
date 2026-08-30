@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": [
+    ".agents/**",
+    ".claude/**",
+    ".expo/**",
+    ".temp/**",
+    "coverage/**",
+    "dist/**",
+    "graphify-out/**",
+    "node_modules/**",
+    "supabase/.temp/**"
+  ],
+  "rules": {
+    "complexity": [
+      "warn",
+      {
+        "max": 2,
+        "variant": "modified"
+      }
+    ]
+  }
+}

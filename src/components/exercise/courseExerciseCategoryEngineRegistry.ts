@@ -1,4 +1,3 @@
-import type { ComponentType } from "react";
 import { GuessRevealCategoryEngine } from "@/src/components/exercise/GuessRevealCategoryEngine";
 import { CourseChoiceCategoryEngine } from "@/src/components/exercise/CourseChoiceCategoryEngine";
 import { CuriosityBetCategoryEngine } from "@/src/components/exercise/CuriosityBetCategoryEngine";
@@ -27,8 +26,6 @@ import { TermChipCategoryEngine } from "@/src/components/exercise/TermChipCatego
 import { TwinCaseCategoryEngine } from "@/src/components/exercise/TwinCaseCategoryEngine";
 import { TwoDialSandboxCategoryEngine } from "@/src/components/exercise/TwoDialSandboxCategoryEngine";
 import { WhatIfCategoryEngine as WhatIfMachineCategoryEngine } from "@/src/components/exercise/whatif/WhatIfCategoryEngine";
-import { CheckpointCategoryEngine as CourseCheckpointCategoryEngine } from "@/src/components/exercise/checkpoint/CheckpointCategoryEngine";
-
 import { WhiteBearExperimentCategoryEngine } from "@/src/components/exercise/WhiteBearExperimentCategoryEngine";
 import { WaveOrderingCategoryEngine } from "@/src/components/exercise/WaveOrderingCategoryEngine";
 import { WaveScrubberCategoryEngine } from "@/src/components/exercise/WaveScrubberCategoryEngine";
@@ -38,24 +35,23 @@ import { ELEVENTH_BATCH_CATEGORY_CONFIGS } from "@/src/components/exercise/cours
 import { FINAL_BATCH_CATEGORY_CONFIGS } from "@/src/components/exercise/courseExerciseFinalBatchRegistry";
 import { NINTH_BATCH_CATEGORY_CONFIGS } from "@/src/components/exercise/courseExerciseNinthBatchRegistry";
 import { TENTH_BATCH_CATEGORY_CONFIGS } from "@/src/components/exercise/courseExerciseTenthBatchRegistry";
-import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
+import {
+  IMMEDIATE_OPTION_SELECTION,
+  type CourseExerciseCategoryConfig,
+} from "@/src/components/exercise/courseExerciseCategoryConfig";
+import { LEGACY_V1_CATEGORY_CONFIGS } from "@/src/components/exercise/courseExerciseLegacyCategoryRegistry";
 import {
   CourseExerciseCategoryEnum,
   type RenderableExerciseCategory,
 } from "@/src/types/courseExercises";
 
-export interface CourseExerciseCategoryConfig {
-  category: RenderableExerciseCategory;
-  formats: string[];
-  engine: ComponentType<V1CategoryEngineProps>;
-  goalLabel: string;
-  unavailableCopy: string;
-}
+export type { CourseExerciseCategoryConfig } from "@/src/components/exercise/courseExerciseCategoryConfig";
 
 export const courseExerciseCategoryEngineRegistry: Partial<Record<
   RenderableExerciseCategory,
   CourseExerciseCategoryConfig
 >> = {
+  ...LEGACY_V1_CATEGORY_CONFIGS,
   [CourseExerciseCategoryEnum.GuessReveal]: {
     category: CourseExerciseCategoryEnum.GuessReveal,
     formats: [CourseExerciseCategoryEnum.GuessReveal],
@@ -76,6 +72,13 @@ export const courseExerciseCategoryEngineRegistry: Partial<Record<
     engine: LearnCardsCategoryEngine,
     goalLabel: "Learn one idea, then recall it.",
     unavailableCopy: "These learning cards are not available yet.",
+    interaction: {
+      submissionMode: "immediate",
+      submissionRequirement: {
+        fields: ["selectedOptionId"],
+        values: { phase: "recall" },
+      },
+    },
   },
   [CourseExerciseCategoryEnum.TwinCase]: {
     category: CourseExerciseCategoryEnum.TwinCase,
@@ -90,6 +93,7 @@ export const courseExerciseCategoryEngineRegistry: Partial<Record<
     engine: IntuitionCheckCategoryEngine,
     goalLabel: "Commit to an intuition before learning the rule.",
     unavailableCopy: "This intuition check is not available yet.",
+    interaction: IMMEDIATE_OPTION_SELECTION,
   },
   [CourseExerciseCategoryEnum.NameIt]: {
     category: CourseExerciseCategoryEnum.NameIt,
@@ -104,6 +108,7 @@ export const courseExerciseCategoryEngineRegistry: Partial<Record<
     engine: CourseChoiceCategoryEngine,
     goalLabel: "Apply the stress model to a familiar situation.",
     unavailableCopy: "This quick check is not available yet.",
+    interaction: IMMEDIATE_OPTION_SELECTION,
   },
   [CourseExerciseCategoryEnum.InventFirst]: {
     category: CourseExerciseCategoryEnum.InventFirst,
@@ -111,6 +116,7 @@ export const courseExerciseCategoryEngineRegistry: Partial<Record<
     engine: InventFirstCategoryEngine,
     goalLabel: "Invent the thought-feeling rule from contrasting cases.",
     unavailableCopy: "This rule lab is not available yet.",
+    interaction: IMMEDIATE_OPTION_SELECTION,
   },
   [CourseExerciseCategoryEnum.LayerZoom]: {
     category: CourseExerciseCategoryEnum.LayerZoom,
@@ -188,11 +194,6 @@ export const courseExerciseCategoryEngineRegistry: Partial<Record<
     engine: OneLineRevealCategoryEngine,
     goalLabel: "Complete one useful idea about avoidance.",
     unavailableCopy: "This one-line reveal is not available yet.",
-  },
-  [CourseExerciseCategoryEnum.CourseCheckpoint]: {
-    category: CourseExerciseCategoryEnum.CourseCheckpoint,
-    formats: [CourseExerciseCategoryEnum.CourseCheckpoint],
-    engine: CourseCheckpointCategoryEngine as any, // Temporary cast until strict typing propagates to registry
   },
   [CourseExerciseCategoryEnum.WhatIfMachine]: {
     category: CourseExerciseCategoryEnum.WhatIfMachine,

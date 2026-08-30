@@ -45,7 +45,6 @@ export function IntuitionCheckCategoryEngine({
         isCorrect: true,
       },
       true,
-      { revealImmediately: true },
     );
   };
 

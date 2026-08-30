@@ -293,54 +293,50 @@
    TYPOGRAPHY UTILITIES
    ═══════════════════════════════════════════════════════════════════════════
 
-   Two type families:
-     Cormorant  Expressive serif. Screen titles, large headings, hero text.
-     Geist     Clean sans-serif. All body copy, labels, UI text.
-
-   Pairing rule: Cormorant for display moments, Geist for everything else. */
+   One-family rule: Nunito everywhere. Hierarchy comes from weight and size. */
 
 @utility happy-font-heading {
-  font-family: "CormorantSemiBold";
+  font-family: "NunitoExtraBold";
 }
 
 @utility happy-font-heading-bold {
-  font-family: "CormorantBold";
+  font-family: "NunitoExtraBold";
 }
 
 @utility happy-font-heading-medium {
-  font-family: "CormorantMedium";
+  font-family: "NunitoBold";
 }
 
 @utility happy-font-heading-regular {
-  font-family: "CormorantRegular";
+  font-family: "NunitoSemiBold";
 }
 
 @utility happy-font-heading-italic {
-  font-family: "CormorantRegularItalic";
+  font-family: "NunitoRegularItalic";
 }
 
 @utility happy-font-heading-semibold-italic {
-  font-family: "CormorantSemiBoldItalic";
+  font-family: "NunitoSemiBoldItalic";
 }
 
 @utility happy-font-heading-medium-italic {
-  font-family: "CormorantMediumItalic";
+  font-family: "NunitoSemiBoldItalic";
 }
 
 @utility happy-font-body {
-  font-family: "GeistRegular";
+  font-family: "NunitoRegular";
 }
 
 @utility happy-font-body-medium {
-  font-family: "GeistMedium";
+  font-family: "NunitoSemiBold";
 }
 
 @utility happy-font-body-semibold {
-  font-family: "GeistSemiBold";
+  font-family: "NunitoSemiBold";
 }
 
 @utility happy-font-body-bold {
-  font-family: "GeistBold";
+  font-family: "NunitoBold";
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

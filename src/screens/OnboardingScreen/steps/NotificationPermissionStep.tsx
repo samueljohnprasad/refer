@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "expo-router/react-navigation";
@@ -46,7 +47,7 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
     >
       <Animated.View entering={FadeIn.duration(180).delay(80)} className="px-6">
         <Text
-          style={{ fontFamily: "CormorantSemiBold" }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
           className="text-[26px] leading-[1.1] text-ink"
         >
           Daily Reminders

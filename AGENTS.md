@@ -31,7 +31,7 @@ This repo currently has multiple lockfiles (`package-lock.json`, `yarn.lock`, `b
 - TypeScript is strict. Keep new code typed and avoid widening with `any` unless matching an existing boundary.
 - React components are functional components.
 - No React component, hook, or helper file may exceed 300 lines. If a touched component/hook/helper is already over 300 lines, split it before adding behavior.
-- Keep components, hooks, and helpers single-purpose. Extract named helpers/components instead of growing mixed-responsibility files.
+- Function should have single responsibility. Keep components, hooks, and helpers single-purpose. Extract named helpers/components instead of growing mixed-responsibility files.
 - Keep changes scoped to the requested behavior. Avoid broad refactors while fixing local UI or flow issues.
 - Use haptics and motion intentionally; this app already uses `expo-haptics`, `pressto`, `react-native-reanimated`, `moti`, `react-native-pulsar`, and `react-native-keyboard-controller`.
 - Preserve existing user work. The worktree may be dirty; do not revert or reformat unrelated files.
@@ -39,7 +39,7 @@ This repo currently has multiple lockfiles (`package-lock.json`, `yarn.lock`, `b
 ## UI Direction
 
 - Follow `DESIGN.md`: sage/white/dark green ink, quiet tonal layering, strong typography, and restrained surfaces.
-- Use Cormorant for reflective titles and completion moments; use Geist for labels, controls, body copy, and operational UI.
+- Use Nunito throughout. Build hierarchy with weight, size, spacing, and color: 800 for primary prompts, 700 for actions, 600 for choices and labels, and 400 for supporting content.
 - Inputs are the primary object on exercise screens. Optional suggestions, AI, and voice controls should feel secondary.
 - Avoid generic gradients, decorative ghost cards, sparkle/assistant decoration, oversized arbitrary radii, and monotonous card stacks.
 - Keep tap targets large, text readable, and mobile layouts stable across keyboard and safe-area states.

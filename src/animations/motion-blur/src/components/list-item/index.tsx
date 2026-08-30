@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { StyleSheet, Text, View } from 'react-native';
 
 import type { Item } from '../../utils/generate-random-item';
@@ -54,13 +55,13 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: 'bold',
     letterSpacing: 1,
-    fontFamily: 'Honk-Bold',
+    fontFamily: APP_FONT_FAMILIES.bold,
   },
   address: {
     fontSize: 14,
     color: 'black',
     opacity: 0.3,
-    fontFamily: 'Honk-Regular',
+    fontFamily: APP_FONT_FAMILIES.regular,
     marginTop: 5,
   },
 });

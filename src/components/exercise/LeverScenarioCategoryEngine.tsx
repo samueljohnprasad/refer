@@ -44,10 +44,7 @@ export function LeverScenarioCategoryEngine({
   );
   const attempts = readNumber(saved?.attempts) ?? 0;
   const showingFeedback = saved?.phase === "feedback";
-  const visibleOptions =
-    attempts >= 2
-      ? (variant?.options.slice(0, 2) ?? [])
-      : (variant?.options ?? []);
+  const visibleOptions = variant?.options ?? [];
 
   useEffect(() => {
     if (!saved) onInteraction(createResponse(), false);
@@ -59,8 +56,10 @@ export function LeverScenarioCategoryEngine({
     onInteraction(
       createResponse({
         ...saved,
+        phase: "feedback",
         selectedOptionId: option.id,
         isCorrect: option.isCorrect,
+        attempts: option.isCorrect ? attempts : attempts + 1,
       }),
       true,
     );
@@ -92,6 +91,8 @@ export function LeverScenarioCategoryEngine({
       <View className="gap-2.5">
         {visibleOptions.map((option) => {
           const selected = selectedOptionId === option.id;
+          const selectedCorrect = selected && option.isCorrect;
+          const selectedIncorrect = selected && !option.isCorrect;
           return (
             <Pressable
               key={option.id}
@@ -100,23 +101,27 @@ export function LeverScenarioCategoryEngine({
               disabled={locked || showingFeedback}
               onPress={() => selectOption(option)}
               className={
-                selected
+                selectedCorrect
                   ? "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#7E9874] border-b-[3px] bg-[#F2F8EF] px-4 py-3"
+                  : selectedIncorrect
+                    ? "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#A84432] border-b-[3px] bg-[#FFF0EA] px-4 py-3"
                   : showingFeedback
-                    ? "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border border-[#DCD3C4] bg-[#F9F4ED] px-4 py-3 opacity-50"
+                    ? "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border border-[#DCD3C4] bg-[#F9F4ED] px-4 py-3"
                     : "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#DCD3C4] border-b-[3px] bg-[#F9F4ED] px-4 py-3 active:translate-y-0.5 active:border-b-[1.5px]"
               }
             >
               <View
                 className={
-                  selected
+                  selectedCorrect
                     ? "h-5 w-5 items-center justify-center rounded-full border-2 border-[#5F7F58] bg-[#5F7F58]"
+                    : selectedIncorrect
+                      ? "h-5 w-5 items-center justify-center rounded-full border-2 border-[#A84432] bg-[#A84432]"
                     : "h-5 w-5 rounded-full border-2 border-[#B6AB9B]"
                 }
               >
                 {selected ? (
                   <Text className="happy-font-body-bold text-[11px] text-white">
-                    ✓
+                    {option.isCorrect ? "✓" : "✕"}
                   </Text>
                 ) : null}
               </View>
@@ -152,9 +157,7 @@ export function LeverScenarioCategoryEngine({
 function getFeedbackTitle(correct: boolean, attempts: number): string {
   if (correct) return "Why it fits";
   if (attempts >= 3) return "Here’s the thinking";
-  return attempts >= 2
-    ? "Let’s make it simpler"
-    : "A tempting model. Not this one.";
+  return "Not quite";
 }
 
 function readVariants(value: unknown): LeverScenario[] {

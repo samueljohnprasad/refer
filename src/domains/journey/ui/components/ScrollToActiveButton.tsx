@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import {
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   text: {
-    fontFamily: "GeistBold",
+    fontFamily: APP_FONT_FAMILIES.bold,
     fontSize: 14,
     color: "#1A1D1E",
     letterSpacing: -0.2,

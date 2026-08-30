@@ -7,7 +7,7 @@ import {
 
 interface CourseExerciseHeadingProps {
   title: string;
-  instruction: string;
+  instruction?: string | null;
   prompt?: string | null;
 }
 
@@ -19,7 +19,9 @@ export function CourseExerciseHeading({
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.instruction}>{instruction}</Text>
+      {instruction ? (
+        <Text style={styles.instruction}>{instruction}</Text>
+      ) : null}
       {prompt ? <Text style={styles.prompt}>{prompt}</Text> : null}
     </View>
   );

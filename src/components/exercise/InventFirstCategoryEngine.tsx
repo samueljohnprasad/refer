@@ -49,7 +49,6 @@ export function InventFirstCategoryEngine({
         isCorrect,
       },
       isCorrect,
-      isCorrect ? { revealImmediately: true } : undefined,
     );
   };
 

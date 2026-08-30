@@ -30,22 +30,9 @@ import { FloatingHappyAssistant } from "@/src/components/happy-assistant/Floatin
 import { TransitionOverlay } from "@/src/components/TransitionOverlay";
 import UpdateAvailableBanner from "@/src/components/UpdateAvailableBanner";
 import {
-  CormorantGaramond_300Light,
-  CormorantGaramond_400Regular,
-  CormorantGaramond_400Regular_Italic,
-  CormorantGaramond_500Medium,
-  CormorantGaramond_500Medium_Italic,
-  CormorantGaramond_600SemiBold,
-  CormorantGaramond_600SemiBold_Italic,
-  CormorantGaramond_700Bold,
-} from "@expo-google-fonts/cormorant-garamond";
-import {
-  Geist_300Light,
-  Geist_400Regular,
-  Geist_500Medium,
-  Geist_600SemiBold,
-  Geist_700Bold,
-} from "@expo-google-fonts/geist";
+  APP_FONT_SOURCES,
+  APP_NAVIGATION_FONTS,
+} from "@/src/theme/typography";
 import { PostHogProvider } from "posthog-react-native";
 import { XPProvider } from "@/src/context/XPContext";
 import { LevelProvider } from "@/src/context/LevelContext";
@@ -92,23 +79,7 @@ Notifications.setNotificationHandler({
 });
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    // SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-    // ...FontAwesome.font,
-    CormorantLight: CormorantGaramond_300Light,
-    CormorantRegular: CormorantGaramond_400Regular,
-    CormorantRegularItalic: CormorantGaramond_400Regular_Italic,
-    CormorantMedium: CormorantGaramond_500Medium,
-    CormorantMediumItalic: CormorantGaramond_500Medium_Italic,
-    CormorantSemiBold: CormorantGaramond_600SemiBold,
-    CormorantSemiBoldItalic: CormorantGaramond_600SemiBold_Italic,
-    CormorantBold: CormorantGaramond_700Bold,
-    GeistLight: Geist_300Light,
-    GeistRegular: Geist_400Regular,
-    GeistMedium: Geist_500Medium,
-    GeistSemiBold: Geist_600SemiBold,
-    GeistBold: Geist_700Bold,
-  });
+  const [loaded, error] = useFonts(APP_FONT_SOURCES);
   const fontsReady = loaded || Boolean(error);
   const dark = useColorScheme() === "dark";
   const [splashDone, setSplashDone] = useState(false);
@@ -189,6 +160,9 @@ const styles = StyleSheet.create({
 
 function RootLayoutNav() {
   const isDark = useColorScheme() === "dark";
+  const navigationTheme = isDark
+    ? { ...DarkTheme, fonts: APP_NAVIGATION_FONTS }
+    : { ...DefaultTheme, fonts: APP_NAVIGATION_FONTS };
 
   return (
       <ReduxProvider>
@@ -216,9 +190,7 @@ function RootLayoutNav() {
                             >
                               <SystemBackgroundIntegration />
                               <RevenueCatProvider>
-                                <ThemeProvider
-                                  value={isDark ? DarkTheme : DefaultTheme}
-                                >
+                                <ThemeProvider value={navigationTheme}>
                                   <KeyboardProvider>
                                     <BottomSheetModalProvider>
                                       <StreakModalProvider>

@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { Toast, type useToast } from "heroui-native";
 import { INK } from "@/lib/tokens";
@@ -21,13 +22,13 @@ export function showAppToast(
   toast.show({
     component: (props) => (
       <Toast variant={variant} {...props}>
-        <Toast.Title style={{ fontFamily: "GeistSemiBold", fontSize: 14 }}>
+        <Toast.Title style={{ fontFamily: APP_FONT_FAMILIES.semiBold, fontSize: 14 }}>
           {title}
         </Toast.Title>
         {description ? (
           <Toast.Description
             style={{
-              fontFamily: "GeistMedium",
+              fontFamily: APP_FONT_FAMILIES.semiBold,
               fontSize: 13,
               color: INK, // High-contrast ink token (WCAG AAA compliant on white)
               opacity: 1,

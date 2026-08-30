@@ -19,6 +19,7 @@ import {
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import * as Haptics from 'expo-haptics';
+import { APP_FONT_FAMILIES } from '@/src/theme/typography';
 
 
 export type IconType = 'apple' | 'google' | 'phone' | 'facebook';
@@ -80,11 +81,6 @@ const COLORS = {
     WHITE_PRIMARY: '#FFFFFF',
     TEXT_PRIMARY: '#1A1A1A',
 } as const;
-
-const FONTS = {
-    figtreeSemiBold: isIOS ? 'Figtree-SemiBold' : 'figtree_semibold',
-} as const;
-
 
 // Spacer component for icon gap fallback
 const Spacer = ({ width }: { width: number }) => <View style={{ width }} />;
@@ -294,7 +290,7 @@ const AnimatedButton = forwardRef<View, AnimatedButtonProps>((props, ref) => {
                                         <Text
                                             style={[
                                                 styles.textBase,
-                                                { color: textColor, fontSize: normalize(18), fontFamily: FONTS.figtreeSemiBold },
+                                                { color: textColor, fontSize: normalize(18), fontFamily: APP_FONT_FAMILIES.semiBold },
                                                 textStyle,
                                             ]}
                                             numberOfLines={1}

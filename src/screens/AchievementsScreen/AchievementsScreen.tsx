@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   View,
@@ -309,8 +310,8 @@ export const AchievementsScreen: React.FC = () => {
           title: "Achievements",
           headerShadowVisible: false,
           headerStyle: { backgroundColor: "transparent" },
-          headerLargeTitleStyle: { fontFamily: "GeistBold" },
-          headerTitleStyle: { fontFamily: "GeistBold" },
+          headerLargeTitleStyle: { fontFamily: APP_FONT_FAMILIES.bold },
+          headerTitleStyle: { fontFamily: APP_FONT_FAMILIES.bold },
           headerTintColor: SAGE[600],
           headerBackButtonDisplayMode: "minimal",
           headerLeft: () => null,

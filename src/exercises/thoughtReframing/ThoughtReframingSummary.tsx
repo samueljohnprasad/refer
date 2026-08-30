@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useCallback, useMemo, useState } from "react";
 import { Alert, Pressable, View } from "react-native";
 import * as Haptics from "expo-haptics";
@@ -150,13 +151,13 @@ export const ThoughtReframingSummary: React.FC<
     <View className="px-3" style={{ paddingBottom: 40 }}>
       <View className="pb-6 pt-2">
         <Text
-          style={{ fontFamily: "CormorantSemiBold", color: INK }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
           className="text-[34px] leading-[37px] tracking-[-0.01em]"
         >
           Thought reframed
         </Text>
         <Text
-          style={{ fontFamily: "GeistRegular", color: INK_SOFT }}
+          style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
           className="mt-2 max-w-[330px] text-[15px] leading-[22px]"
         >
           You separated what happened from what the thought predicted.
@@ -173,14 +174,14 @@ export const ThoughtReframingSummary: React.FC<
           }}
         >
           <Text
-            style={{ fontFamily: "GeistMedium", color: SAGE[600] }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }}
             className="text-[13px] leading-[18px]"
           >
             The reframe you are carrying forward
           </Text>
           <Text
             accessibilityRole="summary"
-            style={{ fontFamily: "CormorantMedium", color: INK }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
             className="mt-1.5 text-[25px] leading-[33px]"
           >
             {response.balancedThought}
@@ -211,7 +212,7 @@ export const ThoughtReframingSummary: React.FC<
                 strokeWidth={2}
               />
               <Text
-                style={{ fontFamily: "GeistSemiBold", color: SAGE[700] }}
+                style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[700] }}
                 className="ml-2 text-[14px] leading-[20px]"
               >
                 {cardSaved
@@ -225,7 +226,7 @@ export const ThoughtReframingSummary: React.FC<
 
           {cardSaveError ? (
             <Text
-              style={{ fontFamily: "GeistMedium", color: DANGER }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: DANGER }}
               className="mt-2 text-[13px] leading-[18px]"
             >
               {cardSaveError}
@@ -249,7 +250,7 @@ export const ThoughtReframingSummary: React.FC<
                 }
               >
                 <Text
-                  style={{ fontFamily: "GeistRegular", color: INK }}
+                  style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK }}
                   className="text-[16px] leading-[24px]"
                 >
                   {response.situation}
@@ -268,7 +269,7 @@ export const ThoughtReframingSummary: React.FC<
                 }
               >
                 <Text
-                  style={{ fontFamily: "CormorantMediumItalic", color: INK }}
+                  style={{ fontFamily: APP_FONT_FAMILIES.semiBoldItalic, color: INK }}
                   className="text-[21px] leading-[28px]"
                 >
                   {response.automaticThought}
@@ -288,7 +289,7 @@ export const ThoughtReframingSummary: React.FC<
                         {emotion.emoji}
                       </Text>
                       <Text
-                        style={{ fontFamily: "GeistMedium", color: INK }}
+                        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
                         className="text-[14px] leading-[20px]"
                       >
                         {emotion.label}
@@ -308,13 +309,13 @@ export const ThoughtReframingSummary: React.FC<
                   {distortions.map((distortion) => (
                     <View key={distortion.key}>
                       <Text
-                        style={{ fontFamily: "GeistSemiBold", color: INK }}
+                        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
                         className="text-[15px] leading-[21px]"
                       >
                         {distortion.label}
                       </Text>
                       <Text
-                        style={{ fontFamily: "GeistRegular", color: INK_SOFT }}
+                        style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
                         className="mt-0.5 text-[13px] leading-[19px]"
                       >
                         {distortion.description}
@@ -365,7 +366,7 @@ export const ThoughtReframingSummary: React.FC<
       ) : null}
 
       <Text
-        style={{ fontFamily: "GeistRegular", color: INK_SOFT }}
+        style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
         className="mb-2 mt-10 px-5 text-center text-[13px] leading-[20px]"
       >
         Completing saves this reflection to your exercise history.

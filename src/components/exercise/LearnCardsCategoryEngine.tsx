@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Feather } from "@expo/vector-icons";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import { CourseExerciseOptionButton } from "@/src/components/exercise/CourseExerciseOptionButton";
 import {
@@ -18,7 +17,6 @@ import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
 interface LearningCard {
   id: string;
-  kicker: string;
   title: string;
   body: string;
 }
@@ -61,37 +59,12 @@ export function LearnCardsCategoryEngine({
     <View style={styles.screenContent}>
       <CourseExerciseHeading
         title={readString(content.title) ?? "Learn the idea"}
-        instruction={readString(content.instruction) ?? "Read each short card."}
+        instruction={readString(content.instruction)}
       />
 
       <View style={styles.card}>
-        <View style={styles.iconCircle}>
-          <Feather
-            name="zap"
-            size={34}
-            color={COURSE_EXERCISE_COLORS.accentDark}
-          />
-        </View>
-        <Text style={styles.kicker}>{card?.kicker}</Text>
         <Text style={styles.cardTitle}>{card?.title}</Text>
         <Text style={styles.cardBody}>{card?.body}</Text>
-      </View>
-
-      <View style={styles.dots}>
-        {cards.map((item, index) => (
-          <View
-            key={item.id}
-            style={{
-              height: 8,
-              borderRadius: 4,
-              width: index === cardIndex ? 24 : 8,
-              backgroundColor:
-                index === cardIndex
-                  ? COURSE_EXERCISE_COLORS.accent
-                  : COURSE_EXERCISE_COLORS.border,
-            }}
-          />
-        ))}
       </View>
     </View>
   );
@@ -135,6 +108,13 @@ function RecallPrompt({
             key={option.id}
             label={option.label}
             selected={selectedOptionId === option.id}
+            result={
+              locked && selectedOptionId === option.id
+                ? option.id === correctOptionId
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
             disabled={locked}
             onPress={() =>
               onInteraction(
@@ -163,51 +143,28 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   card: {
-    minHeight: 338,
-    paddingHorizontal: 24,
-    paddingVertical: 26,
-    borderRadius: 28,
+    gap: 12,
+    paddingHorizontal: 22,
+    paddingVertical: 24,
+    borderRadius: 16,
+    borderCurve: "continuous",
     backgroundColor: COURSE_EXERCISE_COLORS.surface,
     shadowColor: COURSE_EXERCISE_COLORS.shadow,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
   },
-  iconCircle: {
-    width: 82,
-    height: 82,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 41,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentLight,
-  },
-  kicker: {
-    marginTop: 18,
-    color: COURSE_EXERCISE_COLORS.accentDark,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 11,
-    letterSpacing: 1,
-    textTransform: "uppercase",
-  },
   cardTitle: {
-    marginTop: 10,
     color: COURSE_EXERCISE_COLORS.ink,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 22,
     lineHeight: 27,
   },
   cardBody: {
-    marginTop: 12,
     color: COURSE_EXERCISE_COLORS.ink,
     fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 15.5,
+    fontSize: 17,
     lineHeight: 24,
-  },
-  dots: {
-    marginTop: 14,
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 6,
   },
   options: { gap: 9 },
 });
@@ -222,7 +179,6 @@ function readCards(value: unknown): LearningCard[] {
     .filter((card): card is Record<string, unknown> => Boolean(card))
     .map((card, index) => ({
       id: readString(card.id) ?? `card-${index}`,
-      kicker: readString(card.kicker) ?? `Card ${index + 1}`,
       title: readString(card.title) ?? "",
       body: readString(card.body) ?? "",
     }))

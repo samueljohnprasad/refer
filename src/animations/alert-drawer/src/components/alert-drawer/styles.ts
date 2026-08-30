@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { Dimensions, StyleSheet } from 'react-native';
 
 // Constants
@@ -42,7 +43,7 @@ export const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
-    fontFamily: 'Honk-Regular',
+    fontFamily: APP_FONT_FAMILIES.regular,
   },
   cardContentWrapper: {
     flex: 1,
@@ -76,14 +77,14 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     letterSpacing: 0.5,
     fontWeight: 'bold',
-    fontFamily: 'Honk-Regular',
+    fontFamily: APP_FONT_FAMILIES.regular,
   },
   description: {
     marginTop: 8,
     fontSize: 15,
     letterSpacing: 0.5,
     color: '#999999',
-    fontFamily: 'Honk-Regular',
+    fontFamily: APP_FONT_FAMILIES.regular,
   },
   cancelButton: {
     backgroundColor: '#dfdfdf',

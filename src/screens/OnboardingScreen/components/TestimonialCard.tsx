@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { Text, View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -52,7 +53,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
             className="h-9 w-9 items-center justify-center rounded-full"
           >
             <Text
-              style={{ fontFamily: "CormorantBold", color: colors.text }}
+              style={{ fontFamily: APP_FONT_FAMILIES.extraBold, color: colors.text }}
               className="text-[14px]"
             >
               {initial}
@@ -60,14 +61,14 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
           </View>
           <View>
             <Text
-              style={{ fontFamily: "GeistBold" }}
+              style={{ fontFamily: APP_FONT_FAMILIES.bold }}
               className="text-[13px] text-ink"
             >
               {name}, {age}
             </Text>
             {metaLabel && (
               <Text
-                style={{ fontFamily: "GeistRegular" }}
+                style={{ fontFamily: APP_FONT_FAMILIES.regular }}
                 className="text-[10px] text-ink-muted uppercase tracking-[0.05em]"
               >
                 {metaLabel}
@@ -97,7 +98,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
       {/* Editorial Italic Quote Text */}
       <View className="relative pl-1">
         <Text
-          style={{ fontFamily: "CormorantRegularItalic" }}
+          style={{ fontFamily: APP_FONT_FAMILIES.regularItalic }}
           className="text-[16px] leading-[1.55] text-ink-soft"
         >
           {quote}

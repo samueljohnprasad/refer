@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { View, Text, useColorScheme } from "react-native";
 import { useStreak } from "@/src/hooks/useStreak";
@@ -40,13 +41,13 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
         <View className="items-center justify-center pr-6 min-w-[75px]">
           <Text
             className="text-[46px] leading-tight tracking-tighter"
-            style={{ fontFamily: "GeistBold", color: strongText, fontVariant: ["lining-nums"] }}
+            style={{ fontFamily: APP_FONT_FAMILIES.bold, color: strongText, fontVariant: ["lining-nums"] }}
           >
             {isLoading ? "-" : currentStreak}
           </Text>
           <Text
             className="text-[12px] tracking-[1.5px] uppercase mt-1"
-            style={{ fontFamily: "GeistBold", color: secondaryText }}
+            style={{ fontFamily: APP_FONT_FAMILIES.bold, color: secondaryText }}
           >
             STREAK
           </Text>
@@ -73,7 +74,9 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
                 <Text
                   className="text-[12px] mt-2"
                   style={{
-                    fontFamily: isCompleted ? "GeistBold" : "GeistMedium",
+                    fontFamily: isCompleted
+                      ? APP_FONT_FAMILIES.bold
+                      : APP_FONT_FAMILIES.semiBold,
                     color: isCompleted ? strongText : secondaryText,
                   }}
                 >

@@ -33,7 +33,7 @@ export function CourseExerciseTeachingPanel({
         </Text>
         {capability ? (
           <Text className="happy-font-body-bold mt-2 text-[12.5px] leading-[18px] text-[#29452A]">
-            New capability: {capability}
+            Takeaway: {capability}
           </Text>
         ) : null}
       </View>

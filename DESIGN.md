@@ -24,34 +24,34 @@ colors:
   macaw-purple: "#CE82FF"
 typography:
   display:
-    fontFamily: "Cormorant, CormorantGaramond, CormorantRegular, CormorantMedium, CormorantSemiBold, CormorantBold, Georgia, serif"
+    fontFamily: "Nunito"
     fontSize: "36px"
-    fontWeight: 700
+    fontWeight: 800
     lineHeight: "39px"
     letterSpacing: "-0.02em"
   headline:
-    fontFamily: "Cormorant, CormorantGaramond, CormorantRegular, CormorantMedium, CormorantSemiBold, CormorantBold, Georgia, serif"
+    fontFamily: "Nunito"
     fontSize: "28px"
-    fontWeight: 400
+    fontWeight: 800
     lineHeight: "32px"
     letterSpacing: "-0.01em"
   title:
-    fontFamily: "Cormorant, CormorantGaramond, CormorantRegular, CormorantMedium, CormorantSemiBold, CormorantBold, Georgia, serif"
+    fontFamily: "Nunito"
     fontSize: "22px"
-    fontWeight: 400
+    fontWeight: 700
     lineHeight: "26px"
   body:
-    fontFamily: "Geist, GeistRegular, GeistMedium, GeistSemiBold, GeistBold, system-ui, sans-serif"
+    fontFamily: "Nunito"
     fontSize: "17px"
     fontWeight: 400
     lineHeight: "24px"
   label:
-    fontFamily: "Geist, GeistRegular, GeistMedium, GeistSemiBold, GeistBold, system-ui, sans-serif"
+    fontFamily: "Nunito"
     fontSize: "14px"
     fontWeight: 600
     lineHeight: "20px"
   caption:
-    fontFamily: "Geist, GeistRegular, GeistMedium, GeistSemiBold, GeistBold, system-ui, sans-serif"
+    fontFamily: "Nunito"
     fontSize: "13px"
     fontWeight: 500
     lineHeight: "19px"
@@ -110,7 +110,7 @@ components:
 
 Happy Journals should feel like a quiet therapy notebook: structured, private, calm, and more precise than decorative. The interface serves vulnerable CBT work, so the user’s own words and next action must lead the hierarchy. Suggestions, examples, voice input, and AI assistance are secondary supports, never the hero.
 
-The visual system is restrained product UI with an editorial edge: sage-tinted structure, white writing surfaces, dark botanical ink, Cormorant headings used sparingly, and Geist for all operational text. Avoid anything that makes the app feel generated, performative, or over-coached.
+The visual system is restrained product UI with a playful learning edge: sage-tinted structure, white writing surfaces, dark botanical ink, and Nunito across every text role. Avoid anything that makes the app feel generated, performative, or over-coached.
 
 ## Colors
 
@@ -120,7 +120,7 @@ Semantic accents should be rare and functional. `danger` and `terracotta` are fo
 
 ## Typography
 
-Use Cormorant for page titles, reflective completion moments, and occasional emotional emphasis. Do not use it for labels, buttons, form controls, validation, chips, or dense instructions. Product copy and all interactive labels use Geist.
+Use Nunito throughout the app. Create hierarchy with weight, size, spacing, and color: 800 for primary learning prompts, 700 for primary actions, 600 for choices and labels, and 400 for supporting content. Do not add another font family unless Nunito cannot serve a specific functional need.
 
 The default screen hierarchy is title, short helper sentence, primary input, then optional assistance. Keep instructional copy short and concrete. Avoid tracked uppercase eyebrows except where an existing component genuinely needs a compact label.
 

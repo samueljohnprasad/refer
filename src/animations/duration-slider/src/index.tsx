@@ -1,9 +1,6 @@
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useFont } from '@shopify/react-native-skia';
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import sfProRoundedBold from '../../../../assets/fonts/SF-Pro-Rounded-Bold.otf';
+import { APP_FONT_ASSETS } from '@/src/theme/typography';
 
 import { CircularSlider } from './components/circular-slider';
 
@@ -11,7 +8,7 @@ const App = () => {
   const { width: windowWidth } = useWindowDimensions();
   const size = windowWidth * 0.8;
 
-  const font = useFont(sfProRoundedBold, 100);
+  const font = useFont(APP_FONT_ASSETS.bold, 100);
 
   return (
     <View style={styles.container}>

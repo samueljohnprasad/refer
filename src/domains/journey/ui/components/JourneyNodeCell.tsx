@@ -1,13 +1,12 @@
 import React from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
-import { GlassView } from "expo-glass-effect";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Link } from "expo-router";
+import { SAGE } from "@/lib/tokens";
 import { Text } from "@/src/components/ui/Text";
-import { NodeStatus, NodeType } from "@/src/types/journey";
+import { NodeType } from "@/src/types/journey";
 import { DuolingoSvgNodeButton } from "./DuolingoSvgNodeButton";
 import {
   useJourneyNodeCellViewModel,
@@ -35,79 +34,53 @@ const FONTAWESOME_MAP: Record<string, string> = {
   lock: "lock",
 };
 
-const AnimatedPath = Animated.createAnimatedComponent(Path);
-
-function BouncingTooltip({
+function CurrentNodeLabel({
   label,
-  accentColor,
+  nodeSize,
 }: {
   label?: string;
-  accentColor: string;
+  nodeSize: number;
 }) {
   if (!label) return null;
 
   return (
-    <Animated.View
+    <View
       className="absolute z-10 items-center justify-center"
-      style={[{ top: -46, width: 200, alignSelf: "center" }]}
-      pointerEvents="auto"
+      style={{
+        top: -50,
+        left: (nodeSize - 104) / 2,
+        width: 104,
+      }}
+      pointerEvents="none"
       accessibilityRole="text"
       accessibilityLabel={`Current task: ${label}`}
     >
       <View
         style={{
-          shadowColor: accentColor,
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.3,
-          shadowRadius: 8,
-          elevation: 5,
-          alignItems: "center",
+          borderRadius: 12,
+          borderCurve: "continuous",
+          backgroundColor: SAGE[700],
+          paddingHorizontal: 14,
+          paddingVertical: 7,
         }}
       >
-        <View
-          className="absolute -bottom-1 w-3 h-3"
-          style={{
-            transform: [{ rotate: "45deg" }],
-            backgroundColor: accentColor,
-            opacity: 0.75,
-            borderRadius: 2,
-          }}
-        />
-
-        <View
-          style={{
-            borderRadius: 14,
-            overflow: "hidden",
-          }}
+        <Text
+          variant="body-bold"
+          style={{ color: "#FFFFFF" }}
+          numberOfLines={1}
         >
-          <View
-            style={{
-              backgroundColor: accentColor,
-              opacity: 0.75,
-              position: "absolute",
-              width: "100%",
-              height: "100%",
-            }}
-          />
-          <GlassView
-            glassEffectStyle="clear"
-            style={{
-              borderRadius: 14,
-              paddingHorizontal: 16,
-              paddingVertical: 8,
-            }}
-          >
-            <Text
-              variant="body-bold"
-              className="text-ink text-[13px]"
-              numberOfLines={1}
-            >
-              {label}
-            </Text>
-          </GlassView>
-        </View>
+          {label}
+        </Text>
       </View>
-    </Animated.View>
+      <View
+        className="-mt-1 h-3 w-3"
+        style={{
+          transform: [{ rotate: "45deg" }],
+          backgroundColor: SAGE[700],
+          borderRadius: 2,
+        }}
+      />
+    </View>
   );
 }
 
@@ -115,23 +88,18 @@ export interface JourneyNodeCellViewProps extends ReturnType<
   typeof useJourneyNodeCellViewModel
 > {}
 
-/**
- * Presentational View component for JourneyNodeCell.
- * Strictly contains JSX code without internal hooks.
- */
 export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
   item,
   courseId,
   screenWidth,
   pathStrokeWidth,
   settings,
-  theme,
   segmentColor,
-  animatedPathProps,
   nodePosition,
   faceColor,
   rimColor,
   iconColor,
+  iconName,
   size,
   hugeiconSize,
   halfSize,
@@ -139,22 +107,42 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
   showProgressRing,
   showTooltip,
   handlePress,
-  activeScaleStyle,
   ringSize,
   ringOffset,
   dashedConfig,
   progressPercent,
-  iconObj,
+  ringBackgroundColor,
 }: JourneyNodeCellViewProps): React.JSX.Element {
+  const accessibilityLabel = `${item.label ?? "Lesson"} ${item.status}`;
+  const nodeIcon = (
+    <FontAwesome5
+      name={FONTAWESOME_MAP[iconName] ?? "star"}
+      size={hugeiconSize * 0.6}
+      color={iconColor}
+    />
+  );
+  const button = (
+    <DuolingoSvgNodeButton
+      size={size}
+      onPress={handlePress}
+      disabled={!isInteractive}
+      faceColor={faceColor}
+      rimColor={rimColor}
+      icon={nodeIcon}
+      iconSize={hugeiconSize}
+      accessibilityLabel={accessibilityLabel}
+    />
+  );
+
   return (
-    <Animated.View
+    <View
       style={{
         height: item.cellHeight,
         width: screenWidth,
         zIndex: 1000 - item.globalIndex,
       }}
     >
-      {item.segmentD.length > 0 && (
+      {item.segmentD.length > 0 ? (
         <Svg
           width={screenWidth}
           height={item.cellHeight}
@@ -171,9 +159,10 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
             strokeDasharray="0 28"
           />
         </Svg>
-      )}
+      ) : null}
 
       <View
+        className="items-center justify-center"
         style={{
           position: "absolute",
           left: nodePosition.x - halfSize,
@@ -181,14 +170,12 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
           width: size,
           height: size,
         }}
-        className="items-center justify-center"
       >
-        <BouncingTooltip
+        <CurrentNodeLabel
           label={showTooltip ? item.label : undefined}
-          accentColor={faceColor}
+          nodeSize={size}
         />
-
-        {showProgressRing && (
+        {showProgressRing ? (
           <View
             className="absolute items-center justify-center"
             style={{
@@ -202,71 +189,33 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
               size={ringSize}
               width={settings.progressRingStroke}
               fill={progressPercent}
-              tintColor={theme.pathActiveColor || faceColor}
-              backgroundColor="#E2E8F0"
+              tintColor={faceColor}
+              backgroundColor={ringBackgroundColor}
               rotation={0}
               lineCap="round"
               dashedBackground={dashedConfig}
               dashedTint={dashedConfig}
             />
           </View>
-        )}
+        ) : null}
 
-        <Animated.View
-          style={
-            item.status === NodeStatus.ACTIVE ? activeScaleStyle : undefined
-          }
-        >
-          {isInteractive && item.type !== NodeType.CHEST ? (
-            <Link
-              href={{
-                pathname: "/tabs/screens/journey-flow",
-                params: { courseId, nodeId: item.id },
-              }}
-              asChild
-            >
-              <Link.Trigger>
-                <Link.AppleZoom>
-                  <DuolingoSvgNodeButton
-                    size={size}
-                    onPress={handlePress}
-                    disabled={!isInteractive}
-                    faceColor={faceColor}
-                    rimColor={rimColor}
-                    icon={
-                      <FontAwesome5
-                        name={FONTAWESOME_MAP[item.icon || "star"] ?? "star"}
-                        size={hugeiconSize * 0.6}
-                        color={iconColor}
-                      />
-                    }
-                    iconSize={hugeiconSize}
-                    accessibilityLabel={`${item.label} ${item.status}`}
-                  />
-                </Link.AppleZoom>
-              </Link.Trigger>
-            </Link>
-          ) : (
-            <DuolingoSvgNodeButton
-              size={size}
-              onPress={handlePress}
-              disabled={!isInteractive}
-              faceColor={faceColor}
-              rimColor={rimColor}
-              icon={
-                <FontAwesome5
-                  name={FONTAWESOME_MAP[item.icon || "star"] ?? "star"}
-                  size={hugeiconSize * 0.6}
-                  color={iconColor}
-                />
-              }
-              iconSize={hugeiconSize}
-              accessibilityLabel={`${item.label} ${item.status}`}
-            />
-          )}
-        </Animated.View>
+        {isInteractive && item.type !== NodeType.CHEST ? (
+          <Link
+            href={{
+              pathname: "/tabs/screens/journey-flow",
+              params: { courseId, nodeId: item.id },
+            }}
+            asChild
+          >
+            <Link.Trigger>
+              <Link.AppleZoom>{button}</Link.AppleZoom>
+            </Link.Trigger>
+          </Link>
+        ) : (
+          button
+        )}
       </View>
-    </Animated.View>
+    </View>
   );
 });
 
@@ -277,15 +226,12 @@ function JourneyNodeCellInner(props: JourneyNodeCellProps): React.JSX.Element {
 
 export const JourneyNodeCell = React.memo(
   JourneyNodeCellInner,
-  (prev: JourneyNodeCellProps, next: JourneyNodeCellProps): boolean => {
-    return (
-      prev.item.id === next.item.id &&
-      prev.item.status === next.item.status &&
-      prev.item.progress === next.item.progress &&
-      prev.activeGlobalIndex === next.activeGlobalIndex &&
-      prev.screenWidth === next.screenWidth
-    );
-  },
+  (previous: JourneyNodeCellProps, next: JourneyNodeCellProps): boolean =>
+    previous.item.id === next.item.id &&
+    previous.item.status === next.item.status &&
+    previous.item.progress === next.item.progress &&
+    previous.activeGlobalIndex === next.activeGlobalIndex &&
+    previous.screenWidth === next.screenWidth,
 );
 
 export default JourneyNodeCell;

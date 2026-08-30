@@ -33,6 +33,7 @@ export function ScenarioCategoryEngine({
   const showingReasonStep = Boolean(selectedSituationId);
 
   const emit = (nextSituationId: string | null, nextReasonId: string | null) => {
+    const isComplete = Boolean(nextSituationId && nextReasonId);
     onInteraction(
       {
         format: V1LearningFormatEnum.ScenarioWhy,
@@ -43,7 +44,7 @@ export function ScenarioCategoryEngine({
           nextSituationId === correctSituationId &&
           nextReasonId === correctReasonId,
       },
-      Boolean(nextSituationId && nextReasonId),
+      isComplete,
     );
   };
 

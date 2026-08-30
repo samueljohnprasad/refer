@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRef } from 'react';
@@ -49,12 +50,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontFamily: 'AddingtonCF-Light',
+    fontFamily: APP_FONT_FAMILIES.regular,
     fontSize: 28,
     letterSpacing: -0.5,
   },
   subtitle: {
-    fontFamily: 'AddingtonCF-Light',
+    fontFamily: APP_FONT_FAMILIES.regular,
     fontSize: 18,
     letterSpacing: -0.5,
     color: '#6c6c6c',

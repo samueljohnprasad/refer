@@ -2,9 +2,8 @@ import React, { useCallback, useRef } from "react";
 import {
   Pressable,
   View,
-  type StyleProp,
   type ViewProps,
-  type ViewStyle,
+  useColorScheme,
 } from "react-native";
 import Animated, {
   useSharedValue,
@@ -13,6 +12,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
+import { BRAND_BORDER, BRAND_DARK, BRAND_SURFACE } from "@/lib/tokens";
 import { SPRING_BOUNCY } from "@/src/utils/motionTokens";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 
@@ -75,8 +75,8 @@ interface CardProps extends ViewProps {
   disabled?: boolean;
   className?: string;
   contentClassName?: string;
-  faceStyle?: StyleProp<ViewStyle>;
-  rimStyle?: StyleProp<ViewStyle>;
+  faceStyle?: React.ComponentProps<typeof Animated.View>["style"];
+  rimStyle?: React.ComponentProps<typeof Animated.View>["style"];
   children: React.ReactNode;
 }
 
@@ -101,6 +101,7 @@ export function Card({
   ...rest
 }: CardProps) {
   const config = VARIANTS[variant];
+  const isDark = useColorScheme() === "dark";
   const radiusClass = RADIUS_CLASS[radius];
   const isInteractive = Boolean(onPress) && !disabled;
 
@@ -153,12 +154,24 @@ export function Card({
     <>
       {showDepth && isInteractive && (
         <Animated.View
-          style={[styles.continuousCurve, rimStyle]}
+          style={[
+            styles.continuousCurve,
+            { backgroundColor: isDark ? BRAND_DARK.border : BRAND_BORDER },
+            rimStyle,
+          ]}
           className={`absolute left-0 right-0 top-[4px] bottom-[-4px] ${config.rimClass} ${radiusClass}`}
         />
       )}
       <Animated.View
-        style={[styles.continuousCurve, animatedFaceStyle, faceStyle]}
+        style={[
+          styles.continuousCurve,
+          variant !== "solid" && {
+            backgroundColor: isDark ? BRAND_DARK.surface : BRAND_SURFACE,
+            borderColor: isDark ? BRAND_DARK.border : BRAND_BORDER,
+          },
+          animatedFaceStyle,
+          faceStyle,
+        ]}
         className={`${config.faceClass} ${radiusClass}`}
       >
         <View className={`${paddingClass} ${contentClassName}`}>

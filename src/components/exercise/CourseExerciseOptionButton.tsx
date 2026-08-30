@@ -11,6 +11,7 @@ interface CourseExerciseOptionButtonProps {
   disabled?: boolean;
   align?: "left" | "center";
   showConfirmationIcon?: boolean;
+  result?: "correct" | "incorrect";
   onPress: () => void;
 }
 
@@ -20,9 +21,12 @@ export function CourseExerciseOptionButton({
   disabled = false,
   align = "left",
   showConfirmationIcon = true,
+  result,
   onPress,
 }: CourseExerciseOptionButtonProps) {
   const isConfirmed = selected && disabled && showConfirmationIcon;
+  const isCorrect = selected && result === "correct";
+  const isIncorrect = selected && result === "incorrect";
 
   return (
     <Pressable
@@ -33,14 +37,15 @@ export function CourseExerciseOptionButton({
       style={({ pressed }) => [
         styles.button,
         selected && styles.selected,
-        isConfirmed && styles.confirmed,
+        (isConfirmed || isCorrect) && styles.confirmed,
+        isIncorrect && styles.incorrect,
         disabled && !selected && styles.disabled,
         pressed && !disabled && styles.pressed,
       ]}
     >
-      {isConfirmed ? (
-        <View style={styles.checkCircle}>
-          <Text style={styles.checkLabel}>✓</Text>
+      {isConfirmed || isCorrect || isIncorrect ? (
+        <View style={[styles.checkCircle, isIncorrect && styles.errorCircle]}>
+          <Text style={styles.checkLabel}>{isIncorrect ? "✕" : "✓"}</Text>
         </View>
       ) : null}
       <Text style={[styles.label, { textAlign: align }]}>{label}</Text>
@@ -71,6 +76,10 @@ const styles = StyleSheet.create({
     borderColor: COURSE_EXERCISE_COLORS.accent,
     backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
   },
+  incorrect: {
+    borderColor: COURSE_EXERCISE_COLORS.error,
+    backgroundColor: COURSE_EXERCISE_COLORS.errorTint,
+  },
   disabled: { borderBottomWidth: 1, opacity: 0.55 },
   pressed: { transform: [{ translateY: 2 }], borderBottomWidth: 2 },
   label: {
@@ -88,6 +97,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: COURSE_EXERCISE_COLORS.accent,
   },
+  errorCircle: { backgroundColor: COURSE_EXERCISE_COLORS.error },
   checkLabel: {
     color: COURSE_EXERCISE_COLORS.surface,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,

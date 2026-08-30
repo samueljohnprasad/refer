@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
@@ -98,13 +99,13 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
     <View className="px-3" style={{ paddingBottom: 40 }}>
       <View className="pb-6 pt-2">
         <Text
-          style={{ fontFamily: "CormorantSemiBold", color: INK }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
           className="text-[34px] leading-[37px] tracking-[-0.01em]"
         >
           {title}
         </Text>
         <Text
-          style={{ fontFamily: "GeistRegular", color: INK_SOFT }}
+          style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
           className="mt-2 max-w-[330px] text-[15px] leading-[22px]"
         >
           You took a moment to check in with yourself.
@@ -121,14 +122,14 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
           }}
         >
           <Text
-            style={{ fontFamily: "GeistMedium", color: SAGE[600] }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }}
             className="text-[13px] leading-[18px]"
           >
             {keyTakeawayLabel}
           </Text>
           <Text
             accessibilityRole="summary"
-            style={{ fontFamily: "CormorantMedium", color: INK }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
             className="mt-1.5 text-[25px] leading-[33px]"
           >
             {keyTakeaway}
@@ -154,7 +155,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
                 strokeWidth={2}
               />
               <Text
-                style={{ fontFamily: "GeistSemiBold", color: SAGE[700] }}
+                style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[700] }}
                 className="ml-2 text-[14px] leading-[20px]"
               >
                 {cardSaved
@@ -206,7 +207,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
                   style={{ backgroundColor: SAGE[50] }}
                 >
                   <Text
-                    style={{ fontFamily: "GeistSemiBold", color: SAGE[700] }}
+                    style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[700] }}
                     className="text-[14px] leading-[20px]"
                   >
                     Apply it → {nextExerciseLabel}
@@ -225,7 +226,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
       ) : null}
 
       <Text
-        style={{ fontFamily: "GeistRegular", color: INK_SOFT }}
+        style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
         className="mb-2 mt-10 px-5 text-center text-[13px] leading-[20px]"
       >
         Completing saves this to your history.

@@ -28,12 +28,51 @@ export const THOUGHT_REFRAMING_INITIAL: ThoughtReframingResponse = {
   postIntensity: undefined,
 };
 
+function scaleBeliefScore(value: number): number {
+  if (value > 10) return Math.round(value / 10);
+  return Math.round(value);
+}
+
 function normalizeBeliefScore(value: number | undefined): number | undefined {
   if (typeof value !== "number") return undefined;
-  if (value > 10) {
-    return Math.min(Math.max(Math.round(value / 10), 0), 10);
+  return Math.min(Math.max(scaleBeliefScore(value), 0), 10);
+}
+
+function applyV2Migration(migrated: any, fromVersion: number) {
+  if (fromVersion < 2) migrated.postIntensity = undefined;
+}
+
+function extractSeed(context: any): number | undefined {
+  if (!context) return undefined;
+  return context.seed;
+}
+
+function getSeed(context: any): number {
+  const seed = extractSeed(context);
+  if (seed === undefined) return Math.random();
+  return seed;
+}
+
+function formatEvidenceFor(evidence: string[]): string {
+  if (evidence.length > 0) return evidence.map((e, i) => `${i + 1}. ${e}`).join("\n");
+  return "None provided";
+}
+
+function formatEvidenceAgainst(evidence: string[]): string {
+  if (evidence.length > 0) return evidence.map((e, i) => `${i + 1}. ${e}`).join("\n");
+  return "None provided";
+}
+
+function getDefaultIntensity(intensity: number | undefined): number {
+  if (intensity === undefined) return THOUGHT_REFRAMING_INITIAL.intensity;
+  return intensity;
+}
+
+function applyV4Migration(migrated: any, fromVersion: number) {
+  if (fromVersion < 4) {
+    migrated.intensity = getDefaultIntensity(normalizeBeliefScore(migrated.intensity));
+    migrated.postIntensity = normalizeBeliefScore(migrated.postIntensity);
   }
-  return Math.min(Math.max(Math.round(value), 0), 10);
 }
 
 export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
@@ -49,22 +88,9 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
     schemaVersion: 4,
     initialResponse: THOUGHT_REFRAMING_INITIAL,
     migrate: (old, fromVersion) => {
-      const migrated = {
-        ...THOUGHT_REFRAMING_INITIAL,
-        ...old,
-      };
-
-      if (fromVersion < 2) {
-        migrated.postIntensity = undefined;
-      }
-
-      if (fromVersion < 4) {
-        migrated.intensity =
-          normalizeBeliefScore(migrated.intensity) ??
-          THOUGHT_REFRAMING_INITIAL.intensity;
-        migrated.postIntensity = normalizeBeliefScore(migrated.postIntensity);
-      }
-
+      const migrated = { ...THOUGHT_REFRAMING_INITIAL, ...old };
+      applyV2Migration(migrated, fromVersion);
+      applyV4Migration(migrated, fromVersion);
       return migrated;
     },
 
@@ -99,7 +125,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
         validate: (r) => r.situation.trim().length >= 5,
         ai: {
           promptBuilder: (r, context) =>
-            `You are a CBT therapist assistant. Generate 3 common, relatable everyday situations for the first step of a CBT thought record. Each item must be an observable fact a camera could capture or a calendar/message log could verify. Do NOT include emotions, interpretations, predictions, or phrases like "I feel", "I'm scared", "bad day", "they dislike me", or "this will go wrong". Keep each item brief, realistic, and in the first person.\n\nGood examples:\n- "I have a doctor appointment at 3 PM."\n- "I sent a message and have not received a reply yet."\n- "My manager gave me feedback this morning."\n\nRandom seed: ${context?.seed ?? Math.random()}`,
+            `You are a CBT therapist assistant. Generate 3 common, relatable everyday situations for the first step of a CBT thought record. Each item must be an observable fact a camera could capture or a calendar/message log could verify. Do NOT include emotions, interpretations, predictions, or phrases like "I feel", "I'm scared", "bad day", "they dislike me", or "this will go wrong". Keep each item brief, realistic, and in the first person.\n\nGood examples:\n- "I have a doctor appointment at 3 PM."\n- "I sent a message and have not received a reply yet."\n- "My manager gave me feedback this morning."\n\nRandom seed: ${getSeed(context)}`,
           responseSchema: {
             type: "array",
             items: {
@@ -273,14 +299,8 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
         validate: (r) => r.balancedThought.trim().length >= 5,
         ai: {
           promptBuilder: (r) => {
-            const ef =
-              r.evidenceFor.length > 0
-                ? r.evidenceFor.map((e, i) => `${i + 1}. ${e}`).join("\n")
-                : "None provided";
-            const ea =
-              r.evidenceAgainst.length > 0
-                ? r.evidenceAgainst.map((e, i) => `${i + 1}. ${e}`).join("\n")
-                : "None provided";
+            const ef = formatEvidenceFor(r.evidenceFor);
+            const ea = formatEvidenceAgainst(r.evidenceAgainst);
             return `You are a CBT therapist assistant. Help the user reframe their automatic thought into a more balanced perspective.\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nEvidence supporting the thought:\n${ef}\n\nEvidence against the thought:\n${ea}\n\nGenerate 3 alternative balanced thoughts. Each must be meaningfully different from the automatic thought, realistic, based on the evidence, written in first person, and concise (1-2 sentences). Do not repeat, lightly paraphrase, validate, or intensify the automatic thought. Each option must acknowledge uncertainty or include at least one concrete counterpoint from the evidence against it. For each, provide a brief rationale. CRITICAL: Write the rationale addressing the user directly in the second person (e.g., "This reminds you that..."). Do NOT use third-person language.`;
           },
           responseSchema: {

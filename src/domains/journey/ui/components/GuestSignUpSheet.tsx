@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { forwardRef } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -43,7 +44,7 @@ export const GuestSignUpSheetView = React.memo(function GuestSignUpSheetView({
           <Text
             className="text-ink mb-1"
             style={{
-              fontFamily: "CormorantSemiBold",
+              fontFamily: APP_FONT_FAMILIES.semiBold,
               fontSize: 26,
               lineHeight: 32,
             }}

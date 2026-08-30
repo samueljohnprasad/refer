@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useCallback } from "react";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -52,12 +53,12 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
 
       <Animated.Text
         entering={FadeIn.duration(180).delay(TITLE_ENTER_DELAY_MS)}
-        style={{ fontFamily: "CormorantSemiBold" }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
         className="mt-2 text-[30px] leading-[1.1] text-ink"
       >
         What brings you here,{" "}
         <Text
-          style={{ fontFamily: "CormorantMedium" }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
           className="italic text-sage-500"
         >
           friend?

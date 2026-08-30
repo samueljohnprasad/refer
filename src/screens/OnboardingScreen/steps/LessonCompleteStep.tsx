@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useState, useEffect } from "react";
 import { Text, View, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -50,13 +51,13 @@ const LessonCompleteStep: React.FC = () => {
           className="items-center px-2"
         >
           <Text
-            style={{ fontFamily: "CormorantSemiBold" }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="text-center text-[34px] leading-[1.05] tracking-[-0.01em] text-ink"
           >
             You did it.{" "}
             <Text
               style={{
-                fontFamily: "Cormorant",
+                fontFamily: APP_FONT_FAMILIES.regular,
                 fontStyle: "italic",
                 color: SAGE[500],
               }}

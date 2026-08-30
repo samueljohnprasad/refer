@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 /**
  * ExerciseTimelineCard
  *
@@ -5,7 +6,7 @@
  *
  * Layout:
  *  ┌──────────────────────────────┐
- *  │  Title (Nunito-Bold 14)      │
+ *  │  Title (bold 14)            │
  *  │  Category (Nunito-Semi 12)   │
  *  │  [ShiftBadge] (conditional)  │
  *  └──────────────────────────────┘
@@ -284,7 +285,7 @@ const styles = StyleSheet.create({
     borderColor: BRAND_BORDER,
   },
   title: {
-    fontFamily: "GeistSemiBold",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 15,
     color: INK,
     lineHeight: 20,
@@ -298,7 +299,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   category: {
-    fontFamily: "GeistMedium",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 11,
     color: SAGE[700],
     lineHeight: 15,
@@ -313,7 +314,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   timestamp: {
-    fontFamily: "GeistMedium",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 11,
     color: INK_SOFT,
     letterSpacing: 0.2,
@@ -331,7 +332,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   previewText: {
-    fontFamily: "GeistRegular",
+    fontFamily: APP_FONT_FAMILIES.regular,
     fontStyle: "italic",
     fontSize: 13,
     color: INK_SOFT,
@@ -345,14 +346,14 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   previewTextExpanded: {
-    fontFamily: "GeistMedium",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 14,
     color: INK,
     marginBottom: 0,
     lineHeight: 20,
   },
   expandedText: {
-    fontFamily: "GeistMedium",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 14,
     color: INK,
     lineHeight: 20,
@@ -370,7 +371,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   tagText: {
-    fontFamily: "GeistSemiBold",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 11,
     color: SAGE[800],
   },
@@ -380,12 +381,12 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   viewDetailsText: {
-    fontFamily: "GeistSemiBold",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 13,
     color: SAGE[700],
   },
   inlineTagsText: {
-    fontFamily: "GeistMedium",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 13,
     color: INK_SOFT,
   },
@@ -395,13 +396,13 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionLabel: {
-    fontFamily: "GeistSemiBold",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 13,
     color: INK_SOFT,
     marginBottom: 6,
   },
   previewLabel: {
-    fontFamily: "GeistSemiBold",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 14,
     color: INK,
     marginBottom: 4,
@@ -415,7 +416,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   emotionText: {
-    fontFamily: "GeistMedium",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 12,
     color: INK,
     width: 60,
@@ -434,7 +435,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   emotionIntensity: {
-    fontFamily: "GeistMedium",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 11,
     color: INK_MUTED,
     width: 24,
@@ -458,7 +459,7 @@ const styles = StyleSheet.create({
   },
   gratitudeText: {
     flex: 1,
-    fontFamily: "GeistMedium",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 13,
     color: INK,
     lineHeight: 18,
@@ -481,7 +482,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   reframeLabel: {
-    fontFamily: "GeistSemiBold",
+    fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 12,
     color: SAGE[700],
   },

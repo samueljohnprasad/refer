@@ -10,6 +10,7 @@ import {
 } from 'react-native-reanimated';
 
 import { SelectableSquareContainer } from './selectable-square';
+import { APP_FONT_ASSETS } from '@/src/theme/typography';
 
 const SQUARE_SIZE = 35;
 
@@ -89,7 +90,7 @@ const ThemeScreen = () => {
   );
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const font = useFont(require('../../../assets/fonts/outfit.ttf'), 40);
+  const font = useFont(APP_FONT_ASSETS.bold, 40);
 
   const textY = useDerivedValue(() => {
     return canvasHeight / 2 - 65;

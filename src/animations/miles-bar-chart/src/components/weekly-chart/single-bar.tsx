@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { StyleSheet, Text, View } from 'react-native';
 import type { SharedValue } from 'react-native-reanimated';
 import Animated, {
@@ -73,6 +74,6 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     marginTop: 8,
-    fontFamily: 'FiraCode-Regular',
+    fontFamily: APP_FONT_FAMILIES.regular,
   },
 });

@@ -1,3 +1,4 @@
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from 'react';
 import { View, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
@@ -77,7 +78,7 @@ export const OptionButton = ({
             fontSize: 14,
             lineHeight: 19,
             color: labelColor,
-            fontFamily: "GeistBold",
+            fontFamily: APP_FONT_FAMILIES.bold,
             letterSpacing: 0.08
           }}
         >
