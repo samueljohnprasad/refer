@@ -24,10 +24,8 @@ import Animated, {
   Easing,
   cancelAnimation,
 } from "react-native-reanimated";
-import {
-  BRAND_SURFACE,
-  SAGE,
-} from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 // Animated Sound Wave Bar Component
 interface WaveBarProps {
@@ -90,7 +88,7 @@ interface SoundWaveIconProps {
 const SoundWaveIcon = ({ isActive, size = 20 }: SoundWaveIconProps) => {
   const barHeights = [size * 0.5, size * 0.8, size, size * 0.8, size * 0.5];
   const delays = [0, 50, 100, 150, 200];
-  const color = BRAND_SURFACE; // Always white for contrast against the 3D sage background
+  const color = SEMANTIC_COLORS.surface.primary; // Always white for contrast against the 3D sage background
 
   return (
     <View
@@ -141,7 +139,7 @@ const SpeakButton = ({
       width={140}
       leftIcon={
         isLoading ? (
-          <ActivityIndicator size="small" color={BRAND_SURFACE} />
+          <ActivityIndicator size="small" color={SEMANTIC_COLORS.surface.primary} />
         ) : (
           <SoundWaveIcon isActive={isActive} size={18} />
         )

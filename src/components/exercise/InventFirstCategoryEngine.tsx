@@ -4,9 +4,8 @@ import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import { CourseExerciseOptionButton } from "@/src/components/exercise/CourseExerciseOptionButton";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import {
   readCourseExerciseOptions,
   readRecord,
@@ -121,19 +120,19 @@ function readCases(value: unknown): InventCase[] {
 const styles = StyleSheet.create({
   screenContent: { flex: 1, paddingHorizontal: 8, paddingTop: 6, paddingBottom: 12 },
   caseList: { gap: 8, marginBottom: 12 },
-  caseCard: { flexDirection: "row", alignItems: "center", gap: 11, paddingHorizontal: 14, paddingVertical: 11, borderRadius: 20, backgroundColor: COURSE_EXERCISE_COLORS.surface, shadowColor: COURSE_EXERCISE_COLORS.shadow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.09, shadowRadius: 4 },
-  avatar: { width: 38, height: 38, alignItems: "center", justifyContent: "center", borderRadius: 19, backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
-  avatarOlive: { backgroundColor: COURSE_EXERCISE_COLORS.accentLight },
-  avatarNeutral: { backgroundColor: COURSE_EXERCISE_COLORS.surfaceMuted },
-  avatarLabel: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.heading, fontSize: 17 },
-  caseReading: { flex: 1, color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 13, lineHeight: 19 },
-  caseName: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.bodyBold },
-  outcome: { width: 88, color: COURSE_EXERCISE_COLORS.accent, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 11.5, lineHeight: 16, textAlign: "right" },
-  outcomeCalm: { color: COURSE_EXERCISE_COLORS.accentDark },
+  caseCard: { flexDirection: "row", alignItems: "center", gap: 11, paddingHorizontal: 14, paddingVertical: 11, borderRadius: 20, backgroundColor: SEMANTIC_COLORS.surface.primary, shadowColor: SEMANTIC_COLORS.shadow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.09, shadowRadius: 4 },
+  avatar: { width: 38, height: 38, alignItems: "center", justifyContent: "center", borderRadius: 19, backgroundColor: SEMANTIC_COLORS.brand.soft },
+  avatarOlive: { backgroundColor: SEMANTIC_COLORS.brand.primaryLight },
+  avatarNeutral: { backgroundColor: SEMANTIC_COLORS.surface.secondary },
+  avatarLabel: { color: SEMANTIC_COLORS.text.primary, fontFamily: COURSE_EXERCISE_FONTS.heading, fontSize: 17 },
+  caseReading: { flex: 1, color: SEMANTIC_COLORS.text.secondary, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 13, lineHeight: 19 },
+  caseName: { color: SEMANTIC_COLORS.text.primary, fontFamily: COURSE_EXERCISE_FONTS.bodyBold },
+  outcome: { width: 88, color: SEMANTIC_COLORS.brand.primary, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 11.5, lineHeight: 16, textAlign: "right" },
+  outcomeCalm: { color: SEMANTIC_COLORS.brand.pressed },
   options: { gap: 10 },
-  coach: { marginHorizontal: 2, marginTop: 12, color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 13, fontStyle: "italic", lineHeight: 20 },
-  reveal: { marginTop: 12, gap: 8, paddingHorizontal: 22, paddingVertical: 20, borderRadius: 28, backgroundColor: COURSE_EXERCISE_COLORS.surface, shadowColor: COURSE_EXERCISE_COLORS.shadow, shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.14, shadowRadius: 8 },
-  revealTitle: { color: COURSE_EXERCISE_COLORS.accentDark, fontFamily: COURSE_EXERCISE_FONTS.heading, fontSize: 20, lineHeight: 26 },
-  revealBody: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 14, lineHeight: 22 },
-  revealNext: { color: COURSE_EXERCISE_COLORS.accentDark, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 13, lineHeight: 19 },
+  coach: { marginHorizontal: 2, marginTop: 12, color: SEMANTIC_COLORS.text.secondary, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 13, fontStyle: "italic", lineHeight: 20 },
+  reveal: { marginTop: 12, gap: 8, paddingHorizontal: 22, paddingVertical: 20, borderRadius: 28, backgroundColor: SEMANTIC_COLORS.surface.primary, shadowColor: SEMANTIC_COLORS.shadow, shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.14, shadowRadius: 8 },
+  revealTitle: { color: SEMANTIC_COLORS.brand.pressed, fontFamily: COURSE_EXERCISE_FONTS.heading, fontSize: 20, lineHeight: 26 },
+  revealBody: { color: SEMANTIC_COLORS.text.primary, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 14, lineHeight: 22 },
+  revealNext: { color: SEMANTIC_COLORS.brand.pressed, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 13, lineHeight: 19 },
 });

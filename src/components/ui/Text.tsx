@@ -1,8 +1,9 @@
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import React from "react";
 import { Text as RNText, type TextProps as RNTextProps } from "react-native";
 import { tv, type VariantProps } from "@/lib/tv";
-import { GOLD, MACAW_PURPLE, SAGE, TERRACOTTA } from "@/lib/tokens";
-import { useThemeColor } from "@/lib/useThemeColor";
+
+
 
 /**
  * Text — typography system mapped to the Duolingo type scale.
@@ -155,8 +156,8 @@ export function Text({
   style,
   ...rest
 }: TextProps) {
-  const theme = useThemeColor();
-  const resolvedColor = resolveTextColor(color, variant, theme);
+  
+  const resolvedColor = resolveTextColor(color, variant);
 
   return (
     <RNText
@@ -174,22 +175,21 @@ export function Text({
 function resolveTextColor(
   color: TextVariants["color"],
   variant: TextVariants["variant"],
-  theme: ReturnType<typeof useThemeColor>,
-): string {
+): string | import("react-native").OpaqueColorValue {
   if (color === "surface") return "#FFFFFF";
-  if (color === "sage" || variant === "eyebrow") return SAGE[500];
-  if (color === "danger") return TERRACOTTA;
-  if (color === "streak") return GOLD;
-  if (color === "premium") return MACAW_PURPLE;
-  if (color === "soft" || isSoftVariant(variant)) return theme.mutedForeground;
+  if (color === "sage" || variant === "eyebrow") return SEMANTIC_COLORS.brand.primary;
+  if (color === "danger") return SEMANTIC_COLORS.error.foreground;
+  if (color === "streak") return SEMANTIC_COLORS.warning.foreground;
+  if (color === "premium") return SEMANTIC_COLORS.brand.soft;
+  if (color === "soft" || isSoftVariant(variant)) return SEMANTIC_COLORS.text.secondary;
   if (
     color === "muted" ||
     variant === "caption-muted" ||
     variant === "overline"
   ) {
-    return theme.mutedForeground;
+    return SEMANTIC_COLORS.text.secondary;
   }
-  return theme.foreground;
+  return SEMANTIC_COLORS.text.primary;
 }
 
 function isSoftVariant(variant: TextVariants["variant"]): boolean {

@@ -11,7 +11,8 @@ import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { useXP } from "@/src/context/XPContext";
 import { router, Stack } from "expo-router";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import * as Haptics from "expo-haptics";
 
 import { XPHistorySummary } from "./components/XPHistorySummary";
@@ -78,7 +79,7 @@ export const XPHistoryScreen: React.FC = () => {
       <SafeAreaView
         style={[styles.screen, styles.loadingScreen]}
       >
-        <ActivityIndicator size="large" color={SAGE[500]} />
+        <ActivityIndicator size="large" color={SEMANTIC_COLORS.brand.primary} />
         <Text className="happy-font-body-medium text-ink-muted mt-4">
           Loading XP...
         </Text>

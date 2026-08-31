@@ -16,7 +16,8 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 import { router } from "expo-router";
 import { useChallenges } from "@/hooks/data/useChallenges";
 import { ChallengeCard } from "./ChallengeCard";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface ChallengesSectionProps {
   maxItems?: number;

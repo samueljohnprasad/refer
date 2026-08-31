@@ -3,9 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 import Slider from "@react-native-community/slider";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import {
   readNumber,
   readRecord,
@@ -71,9 +70,9 @@ export function GuessRevealCategoryEngine({
           step={1}
           value={guess}
           disabled={locked}
-          minimumTrackTintColor={COURSE_EXERCISE_COLORS.accent}
-          maximumTrackTintColor={COURSE_EXERCISE_COLORS.border}
-          thumbTintColor={COURSE_EXERCISE_COLORS.accent}
+          minimumTrackTintColor={SEMANTIC_COLORS.brand.primary}
+          maximumTrackTintColor={SEMANTIC_COLORS.border.default}
+          thumbTintColor={SEMANTIC_COLORS.brand.primary}
           accessibilityLabel="Your guess, from 0 to 10 adults"
           accessibilityValue={{ min: 0, max: 10, now: guess }}
           onValueChange={setGuess}
@@ -114,14 +113,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 28,
     borderRadius: 28,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
-    shadowColor: COURSE_EXERCISE_COLORS.shadow,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
+    shadowColor: SEMANTIC_COLORS.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.12,
     shadowRadius: 5,
   },
   counter: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 34,
     lineHeight: 40,
@@ -130,18 +129,18 @@ const styles = StyleSheet.create({
   dot: { width: 20, height: 20, borderRadius: 10, borderWidth: 2.5 },
   dotGuess: {
     borderColor: "transparent",
-    backgroundColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: SEMANTIC_COLORS.brand.primary,
   },
   dotActual: {
     borderColor: "transparent",
-    backgroundColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: SEMANTIC_COLORS.brand.primary,
   },
   dotEmpty: {
     borderColor: "transparent",
-    backgroundColor: COURSE_EXERCISE_COLORS.surfaceMuted,
+    backgroundColor: SEMANTIC_COLORS.surface.secondary,
   },
   dotGuessOutline: {
-    borderColor: COURSE_EXERCISE_COLORS.accent,
+    borderColor: SEMANTIC_COLORS.brand.primary,
   },
   slider: { width: "100%", height: 52, marginTop: 12 },
   scaleLabels: {
@@ -150,13 +149,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   scaleLabel: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 12,
   },
   note: {
     marginTop: 14,
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 13,
     textAlign: "center",

@@ -1,10 +1,10 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
 import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Leaf01Icon } from "@hugeicons/core-free-icons";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
-import { SAGE } from "@/lib/tokens";
 
 interface ValidationMessageProps {
   message: string;
@@ -26,7 +26,7 @@ export const ValidationMessage: React.FC<ValidationMessageProps> = ({
           <HugeiconsIcon
             icon={Leaf01Icon}
             size={16}
-            color={SAGE[500]}
+            color={SEMANTIC_COLORS.brand.primary}
             strokeWidth={2}
           />
         </View>

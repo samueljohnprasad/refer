@@ -10,7 +10,8 @@ import Animated, {
 import dayjs from "dayjs";
 import { Host, DatePicker } from "@expo/ui/swift-ui";
 import type { ReminderItem } from "./types";
-import { BRAND_SURFACE, INK, INK_MUTED, SAGE, TRANSPARENT } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import * as Haptics from "expo-haptics";
 
 type ReminderCardProps = {
@@ -64,7 +65,7 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
             <SymbolView
               name={icon as SymbolViewProps["name"]}
               size={22}
-              tintColor={isSelected ? SAGE[600] : INK_MUTED}
+              tintColor={isSelected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.text.tertiary}
               type="hierarchical"
             />
           </View>
@@ -107,8 +108,8 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
             <View
               className="w-7 h-7 rounded-full items-center justify-center border-2"
               style={{
-                borderColor: isSelected ? SAGE[500] : "#e4e4e7",
-                backgroundColor: isSelected ? SAGE[500] : TRANSPARENT,
+                borderColor: isSelected ? SEMANTIC_COLORS.brand.primary : "#e4e4e7",
+                backgroundColor: isSelected ? SEMANTIC_COLORS.brand.primary : "transparent",
               }}
             >
               {isSelected && (
@@ -116,7 +117,7 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
                   style={toggleAnimatedStyle}
                   className="items-center justify-center"
                 >
-                  <SymbolView name="checkmark" size={14} tintColor={BRAND_SURFACE} weight="bold" />
+                  <SymbolView name="checkmark" size={14} tintColor={SEMANTIC_COLORS.surface.primary} weight="bold" />
                 </Animated.View>
               )}
             </View>

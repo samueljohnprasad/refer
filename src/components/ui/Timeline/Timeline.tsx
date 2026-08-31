@@ -21,7 +21,8 @@ import { View, ActivityIndicator } from "react-native";
 import { LegendList } from "@legendapp/list";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { TimelineSectionHeader } from "./TimelineSectionHeader";
 import { TimelineDot } from "./TimelineDot";
 import { TimelineStemLine } from "./TimelineStemLine";
@@ -34,7 +35,7 @@ const LoadingFooter: React.FC<{ visible: boolean }> = React.memo(
     if (!visible) return null;
     return (
       <View className="py-4 items-center">
-        <ActivityIndicator size="small" color={SAGE[500]} />
+        <ActivityIndicator size="small" color={SEMANTIC_COLORS.brand.primary} />
       </View>
     );
   },

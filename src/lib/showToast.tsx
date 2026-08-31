@@ -1,7 +1,7 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { Toast, type useToast } from "heroui-native";
-import { INK } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
 export interface ShowToastOptions {
   variant?: "danger" | "success" | "warning" | "accent" | "default";
@@ -30,7 +30,7 @@ export function showAppToast(
             style={{
               fontFamily: APP_FONT_FAMILIES.semiBold,
               fontSize: 13,
-              color: INK, // High-contrast ink token (WCAG AAA compliant on white)
+              color: SEMANTIC_COLORS.text.primary, // High-contrast ink token (WCAG AAA compliant on white)
               opacity: 1,
               marginTop: 2,
             }}

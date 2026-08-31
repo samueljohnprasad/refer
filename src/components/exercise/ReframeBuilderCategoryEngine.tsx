@@ -19,9 +19,8 @@ import {
   readReframeBuilderContent,
 } from "@/src/components/exercise/reframeBuilderContent";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 
 export function ReframeBuilderCategoryEngine({
@@ -160,29 +159,29 @@ const styles = StyleSheet.create({
   hotThought: {
     gap: 3,
     borderLeftWidth: 3,
-    borderLeftColor: COURSE_EXERCISE_COLORS.accentLight,
+    borderLeftColor: SEMANTIC_COLORS.border.selected,
     paddingLeft: 12,
   },
   hotThoughtLabel: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 12,
   },
   hotThoughtText: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 14,
     lineHeight: 20,
   },
   future: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
     fontSize: 13,
     lineHeight: 19,
   },
   ready: { paddingVertical: 16 },
   readyText: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
     fontSize: 16,
     lineHeight: 22,

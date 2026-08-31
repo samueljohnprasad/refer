@@ -1,31 +1,121 @@
 import type { CourseExerciseCategoryConfig } from "@/src/components/exercise/courseExerciseCategoryEngineRegistry";
 import { CourseCheckpointCategoryEngine } from "@/src/components/exercise/CourseCheckpointCategoryEngine";
-import { IfThenPlanCategoryEngine } from "@/src/components/exercise/IfThenPlanCategoryEngine";
-import { SectionMilestoneCategoryEngine } from "@/src/components/exercise/SectionMilestoneCategoryEngine";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
+import { IfThenPlanConfig } from "@/src/exercises/IfThenPlan/config";
+import { SectionMilestoneConfig } from "@/src/exercises/SectionMilestone/config";
+import type { Exercise } from "@/src/types/journeyV5";
+import type { CoursePrimaryTransition } from "@/src/domains/journey/learning/courseExercisePrimaryTransition";
 
-export const FINAL_BATCH_CATEGORY_CONFIGS = {
-  [CourseExerciseCategoryEnum.IfThenPlan]: createConfig(
-    CourseExerciseCategoryEnum.IfThenPlan,
-    IfThenPlanCategoryEngine,
-    "Pair a precise cue with one rehearsable response.",
-    "This if-then plan is not available yet.",
-  ),
-  [CourseExerciseCategoryEnum.CourseCheckpoint]: createConfig(
-    CourseExerciseCategoryEnum.CourseCheckpoint,
-    CourseCheckpointCategoryEngine,
-    "Review the alarm system and coping loops without score pressure.",
-    "This checkpoint is not available yet.",
-  ),
-  [CourseExerciseCategoryEnum.SectionMilestone]: createConfig(
-    CourseExerciseCategoryEnum.SectionMilestone,
-    SectionMilestoneCategoryEngine,
-    "Recognize the skills completed in this section.",
-    "This section milestone is not available yet.",
-  ),
-} satisfies Partial<
-  Record<CourseExerciseCategoryEnum, CourseExerciseCategoryConfig>
->;
+function getCheckpointLabel(response: Record<string, unknown>): string {
+  const phase = response.phase;
+  if (phase === "intro") return "Start review";
+  if (phase === "summary") return "Continue";
+  if (phase === "feedback") {
+    return response.isCorrect === true || readNumber(response.attempts) >= 3
+      ? "Continue"
+      : "Try again";
+  }
+  return isIndex(response.selectedOptionIndex)
+    ? "Check answer"
+    : "Choose an answer";
+}
+
+function getCheckpointTransition(
+  exercise: Exercise,
+  response: Record<string, unknown>,
+): CoursePrimaryTransition | undefined {
+  if (response.phase === "intro") {
+    return {
+      kind: "response",
+      ready: false,
+      response: { ...response, phase: "question" },
+    };
+  }
+  if (response.phase === "question" && isIndex(response.selectedOptionIndex)) {
+    const attempts = readNumber(response.attempts);
+    return {
+      kind: "response",
+      ready: true,
+      response: {
+        ...response,
+        phase: "feedback",
+        attempts: response.isCorrect === true ? attempts : attempts + 1,
+      },
+    };
+  }
+  if (response.phase !== "feedback") return undefined;
+  if (response.isCorrect !== true && readNumber(response.attempts) < 3) {
+    return {
+      kind: "response",
+      ready: false,
+      response: {
+        ...response,
+        phase: "question",
+        selectedOptionIndex: null,
+        isCorrect: false,
+      },
+    };
+  }
+  return advanceCheckpoint(exercise, response);
+}
+
+function advanceCheckpoint(
+  exercise: Exercise,
+  response: Record<string, unknown>,
+): CoursePrimaryTransition {
+  const itemIndex = readNumber(response.itemIndex);
+  const itemCount = readArray(exercise.content?.items).length;
+  const results = readBooleanArray(response.results);
+  results[itemIndex] = response.isCorrect === true;
+  const isLastItem = itemIndex >= itemCount - 1;
+  return {
+    kind: "response",
+    ready: isLastItem,
+    response: {
+      ...response,
+      phase: isLastItem ? "summary" : "question",
+      itemIndex: isLastItem ? itemIndex : itemIndex + 1,
+      selectedOptionIndex: null,
+      attempts: 0,
+      results,
+      isCorrect: false,
+    },
+  };
+}
+
+function isIndex(value: unknown): boolean {
+  return typeof value === "number" && value >= 0;
+}
+
+function readArray(value: unknown): unknown[] {
+  return Array.isArray(value) ? value : [];
+}
+
+function readBooleanArray(value: unknown): boolean[] {
+  return Array.isArray(value) ? value.map((item) => item === true) : [];
+}
+
+function readNumber(value: unknown): number {
+  return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+export const FINAL_BATCH_CATEGORY_CONFIGS: Partial<Record<CourseExerciseCategoryEnum, CourseExerciseCategoryConfig>> = {
+  [CourseExerciseCategoryEnum.IfThenPlan]: IfThenPlanConfig,
+  [CourseExerciseCategoryEnum.CourseCheckpoint]: {
+    ...createConfig(
+      CourseExerciseCategoryEnum.CourseCheckpoint,
+      CourseCheckpointCategoryEngine,
+      "Review the alarm system and coping loops without score pressure.",
+      "This checkpoint is not available yet."
+    ),
+    interaction: {
+      submissionMode: "explicit",
+      getPrimaryLabel: (exercise, response) => getCheckpointLabel(response),
+      getPrimaryTransition: (exercise, response) => getCheckpointTransition(exercise, response) ?? null,
+    }
+  },
+  [CourseExerciseCategoryEnum.SectionMilestone]: SectionMilestoneConfig,
+};
 
 function createConfig(
   category: CourseExerciseCategoryEnum,

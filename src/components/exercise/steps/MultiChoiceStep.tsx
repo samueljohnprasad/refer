@@ -1,3 +1,4 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
 import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
@@ -6,7 +7,6 @@ import { StepLayout } from "./StepLayout";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { getContentIcon } from "@/src/data/contentIconRegistry";
-import { SAGE, BRAND_BORDER, BRAND_SURFACE, INK, INK_SOFT } from "@/lib/tokens";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
 export interface MultiChoiceOption {
@@ -134,9 +134,9 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
                   isCbtReflection ? "px-4 py-3" : "px-4 py-2.5"
                 }`}
                 style={{
-                  backgroundColor: isSelected ? SAGE.selected : BRAND_SURFACE,
+                  backgroundColor: isSelected ? SEMANTIC_COLORS.brand.soft : SEMANTIC_COLORS.surface.primary,
                   borderWidth: 2,
-                  borderColor: isSelected ? SAGE[500] : BRAND_BORDER,
+                  borderColor: isSelected ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.border.default,
                   opacity: isDisabled || readOnly ? 0.5 : 1,
                 }}
               >
@@ -145,7 +145,7 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
                     <HugeiconsIcon
                       icon={getContentIcon(opt.iconKey)!}
                       size={16}
-                      color={isSelected ? SAGE[700] : INK_SOFT}
+                      color={isSelected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.text.secondary}
                       strokeWidth={1.6}
                     />
                   </View>
@@ -155,7 +155,7 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
                 <Text
                   className={isCbtReflection ? "text-sm font-semibold" : "text-sm font-bold"}
                   style={{
-                    color: isSelected ? SAGE[700] : INK,
+                    color: isSelected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.text.primary,
                   }}
                 >
                   {opt.label}

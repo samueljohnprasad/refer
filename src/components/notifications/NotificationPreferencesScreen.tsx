@@ -7,7 +7,8 @@ import {
   Switch,
   ActivityIndicator,
 } from "react-native";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Bell, Flame, Smile, CheckCircle2, Trophy } from "lucide-react-native";
 import type { LucideIcon } from "lucide-react-native";
 
@@ -18,7 +19,7 @@ export default function NotificationPreferencesScreen() {
   if (isLoading) {
     return (
       <View className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color={SAGE[600]} />
+        <ActivityIndicator size="large" color={SEMANTIC_COLORS.brand.pressed} />
       </View>
     );
   }

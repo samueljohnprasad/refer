@@ -1,3 +1,4 @@
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useState, useCallback } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
@@ -5,8 +6,8 @@ import { Feather } from "@expo/vector-icons";
 import { SymbolView } from "expo-symbols";
 import { Card } from "@/src/components/ui/Card";
 import BeginButton from "@/src/components/BeginButton";
-import { BRAND_SURFACE, SAGE } from "@/lib/tokens";
-import { useThemeColor } from "@/lib/useThemeColor";
+
+
 import type { QuickJournalPrompt } from "@/src/screens/DiscoveryScreen/QuickJournalSection";
 
 interface FeaturedPromptCardProps {
@@ -22,7 +23,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
   prompts,
   onPress,
 }) => {
-  const theme = useThemeColor();
+  
   const [activeIndex, setActiveIndex] = useState(0);
 
   const cyclePrompt = useCallback(() => {
@@ -48,7 +49,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
           accessibilityLabel="Show next prompt"
           accessibilityRole="button"
         >
-          <Feather name="refresh-cw" size={18} color={theme.foreground} />
+          <Feather name="refresh-cw" size={18} color={SEMANTIC_COLORS.text.primary} />
         </TouchableOpacity>
       </View>
 
@@ -56,7 +57,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
         <Text
           style={{
             fontFamily: APP_FONT_FAMILIES.extraBold,
-            color: theme.foreground,
+            color: SEMANTIC_COLORS.text.primary,
             fontSize: 30,
             letterSpacing: -0.5,
             lineHeight: 34,
@@ -73,7 +74,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
           <SymbolView
             name="mic"
             size={18}
-            tintColor={BRAND_SURFACE}
+            tintColor={SEMANTIC_COLORS.surface.primary}
             weight="medium"
             style={{ width: 18, height: 18 }}
           />
@@ -84,7 +85,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
           minHeight: 50,
           marginTop: 20,
           paddingHorizontal: 24,
-          backgroundColor: SAGE[500],
+          backgroundColor: SEMANTIC_COLORS.brand.primary,
         }}
         labelStyle={{ fontFamily: APP_FONT_FAMILIES.bold, fontSize: 16 }}
       />

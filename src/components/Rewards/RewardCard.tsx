@@ -3,7 +3,8 @@ import { View, Text, Pressable } from "react-native";
 import { Reward } from "@/src/types/rewards";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Coins01Icon, CheckmarkBadge01Icon } from "@hugeicons/core-free-icons";
-import { GOLD, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface RewardCardProps {
   reward: Reward;
@@ -52,7 +53,7 @@ export const RewardCard: React.FC<RewardCardProps> = ({
             <HugeiconsIcon
               icon={CheckmarkBadge01Icon}
               size={13}
-              color={SAGE[600]}
+              color={SEMANTIC_COLORS.brand.pressed}
               strokeWidth={2}
             />
             <Text className="happy-font-body-bold text-xs text-sage-600">
@@ -69,7 +70,7 @@ export const RewardCard: React.FC<RewardCardProps> = ({
               <HugeiconsIcon
                 icon={Coins01Icon}
                 size={13}
-                color={canAfford ? GOLD : SAGE[300]}
+                color={canAfford ? SEMANTIC_COLORS.warning.foreground : SEMANTIC_COLORS.border.selected}
                 strokeWidth={1.8}
               />
               <Text

@@ -1,10 +1,10 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { Pressable, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import { Text } from "@/src/components/ui/Text";
-import { BRAND_BORDER, INK, SAGE } from "@/lib/tokens";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
 export function ReflectionContextBlock({
@@ -40,7 +40,7 @@ export function ReflectionContextBlock({
   return (
     <View
       className="mb-5 border-l-2 pl-3"
-      style={{ borderColor: BRAND_BORDER }}
+      style={{ borderColor: SEMANTIC_COLORS.border.default }}
     >
       <Text variant="caption" className="mb-1 text-[12px] text-sage-700">
         {label}
@@ -81,7 +81,7 @@ export function ReflectionDisclosure({
         <Feather
           name={expanded ? "chevron-up" : "chevron-down"}
           size={18}
-          color={SAGE[600]}
+          color={SEMANTIC_COLORS.text.secondary}
         />
       </Pressable>
 
@@ -127,7 +127,7 @@ export function ReflectionHint({
   text: string;
 }) {
   return (
-    <View className="mt-4 border-l-2 py-1 pl-3" style={{ borderColor: SAGE[300] }}>
+    <View className="mt-4 border-l-2 py-1 pl-3" style={{ borderColor: SEMANTIC_COLORS.text.muted }}>
       <Text variant="caption" className="text-sage-800">
         {text}
       </Text>

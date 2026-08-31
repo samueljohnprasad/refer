@@ -4,7 +4,8 @@ import { Text, View, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import Animated, { FadeIn } from "react-native-reanimated";
-import { SAGE, TERRACOTTA } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { StreakProgressGraphic } from "@/src/components/Streak/StreakCelebration";
 import { useStreak } from "@/src/hooks/useStreak";
 
@@ -59,7 +60,7 @@ const LessonCompleteStep: React.FC = () => {
               style={{
                 fontFamily: APP_FONT_FAMILIES.regular,
                 fontStyle: "italic",
-                color: SAGE[500],
+                color: SEMANTIC_COLORS.brand.primary,
               }}
             >
               Truly.

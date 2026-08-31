@@ -18,7 +18,8 @@ import {
   getActiveCategories,
   TIME_CATEGORY_CONFIG,
 } from "@/src/utils/habitCategories";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 
 interface HabitsSectionProps {
@@ -138,7 +139,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
             style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
           >
             <View className="h-10 w-10 items-center justify-center rounded-full bg-sage-50 mr-3">
-              <HugeiconsIcon icon={Add01Icon} size={18} color={SAGE[600]} />
+              <HugeiconsIcon icon={Add01Icon} size={18} color={SEMANTIC_COLORS.brand.pressed} />
             </View>
             <Text className="happy-font-body-bold text-[16px] text-sage-700">
               Add Habit

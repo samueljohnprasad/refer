@@ -1,9 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 
 interface InlineFeedbackProps {
   message: string | null;
@@ -42,12 +41,12 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   title: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 13,
   },
   message: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 15,
     lineHeight: 21,
@@ -55,7 +54,7 @@ const styles = StyleSheet.create({
 });
 
 const toneStyles = StyleSheet.create({
-  neutral: { backgroundColor: COURSE_EXERCISE_COLORS.surfaceMuted },
-  supported: { backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
-  unsupported: { backgroundColor: COURSE_EXERCISE_COLORS.errorTint },
+  neutral: { backgroundColor: SEMANTIC_COLORS.surface.secondary },
+  supported: { backgroundColor: SEMANTIC_COLORS.brand.soft },
+  unsupported: { backgroundColor: SEMANTIC_COLORS.error.soft },
 });

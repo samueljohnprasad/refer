@@ -1,3 +1,5 @@
+import { courseExerciseCategoryEngineRegistry } from '@/src/components/exercise/courseExerciseCategoryEngineRegistry';
+import { FINAL_BATCH_CATEGORY_CONFIGS } from '@/src/components/exercise/courseExerciseFinalBatchRegistry';
 import { resolveCourseExerciseCategory } from "@/src/domains/journey/learning/courseExerciseCategoryResolver";
 
 import type { Exercise } from "@/src/types/journeyV5";
@@ -55,27 +57,13 @@ function getSelectedOptionFeedback(
   exercise: Exercise | undefined,
   response?: Record<string, unknown> | null,
 ): string | null {
-  if (exercise?.type !== CourseExerciseCategoryEnum.CourseChoice) {
-    return null;
+  if (!exercise) return null;
+  const category = resolveCourseExerciseCategory(exercise);
+  const config = category ? (courseExerciseCategoryEngineRegistry[category] || FINAL_BATCH_CATEGORY_CONFIGS[category as keyof typeof FINAL_BATCH_CATEGORY_CONFIGS]) : null;
+  if (config?.feedback?.getSelectedOptionFeedback) {
+    return config.feedback.getSelectedOptionFeedback(exercise, response);
   }
-
-  const selectedOptionId = readString(response?.selectedOptionId);
-  const options = exercise?.content?.options;
-  if (!selectedOptionId || !Array.isArray(options)) {
-    return null;
-  }
-
-  const selectedOption = options.find((option) => {
-    return (
-      option &&
-      typeof option === "object" &&
-      !Array.isArray(option) &&
-      readString((option as Record<string, unknown>).id) === selectedOptionId
-    );
-  });
-  return selectedOption && typeof selectedOption === "object"
-    ? readString((selectedOption as Record<string, unknown>).feedback)
-    : null;
+  return null;
 }
 
 export function getPrimaryLabel({
@@ -137,6 +125,12 @@ export function buildRetryResponse(
   exercise: Exercise,
   response: Record<string, unknown>,
 ): Record<string, unknown> | null {
+  const category = resolveCourseExerciseCategory(exercise);
+  const config = category ? (courseExerciseCategoryEngineRegistry[category] || FINAL_BATCH_CATEGORY_CONFIGS[category as keyof typeof FINAL_BATCH_CATEGORY_CONFIGS]) : null;
+  if (config?.interaction?.buildRetryResponse) {
+    return config.interaction.buildRetryResponse(exercise, response);
+  }
+
   const retryPhase = exercise.content?.retryPhase;
   if (typeof retryPhase !== "string") {
     return null;
@@ -149,10 +143,7 @@ export function buildRetryResponse(
     isCorrect: false,
     feedbackText: null,
   };
-
-  return exercise.type === CourseExerciseCategoryEnum.GuidedRecallChips
-    ? { ...baseResponse, selectedChips: [] }
-    : baseResponse;
+  return baseResponse;
 }
 
 export function readWorkedExplanation(

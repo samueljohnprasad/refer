@@ -1,9 +1,8 @@
 import React, { type ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 
 interface ActivePromptProps {
   prompt: string;
@@ -26,13 +25,13 @@ export function ActivePrompt({ prompt, context, children }: ActivePromptProps) {
 const styles = StyleSheet.create({
   container: { gap: 10 },
   context: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 15,
     lineHeight: 22,
   },
   prompt: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 24,
     lineHeight: 30,

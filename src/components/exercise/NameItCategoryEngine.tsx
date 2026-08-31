@@ -4,9 +4,8 @@ import Slider from "@react-native-community/slider";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import {
   readNumber,
   readRecord,
@@ -146,9 +145,9 @@ export function NameItCategoryEngine({
             step={1}
             value={intensity}
             disabled={locked}
-            minimumTrackTintColor={COURSE_EXERCISE_COLORS.accent}
-            maximumTrackTintColor={COURSE_EXERCISE_COLORS.border}
-            thumbTintColor={COURSE_EXERCISE_COLORS.accent}
+            minimumTrackTintColor={SEMANTIC_COLORS.brand.primary}
+            maximumTrackTintColor={SEMANTIC_COLORS.border.default}
+            thumbTintColor={SEMANTIC_COLORS.brand.primary}
             accessibilityLabel="Feeling intensity, 0 to 10"
             accessibilityValue={{ min: 0, max: 10, now: intensity }}
             onValueChange={setIntensity}
@@ -203,23 +202,23 @@ function readFamilies(value: unknown): FeelingFamily[] {
 const styles = StyleSheet.create({
   screenContent: { flex: 1, paddingHorizontal: 8, paddingTop: 6, paddingBottom: 12 },
   familyGrid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 10, paddingTop: 4 },
-  family: { minHeight: 54, justifyContent: "center", paddingHorizontal: 24, borderWidth: 1, borderBottomWidth: 4, borderColor: COURSE_EXERCISE_COLORS.border, borderRadius: 27, backgroundColor: COURSE_EXERCISE_COLORS.surface },
-  familyLabel: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 16 },
+  family: { minHeight: 54, justifyContent: "center", paddingHorizontal: 24, borderWidth: 1, borderBottomWidth: 4, borderColor: SEMANTIC_COLORS.border.default, borderRadius: 27, backgroundColor: SEMANTIC_COLORS.surface.primary },
+  familyLabel: { color: SEMANTIC_COLORS.text.primary, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 16 },
   pressed: { transform: [{ translateY: 2 }], opacity: 0.8 },
-  changeFamily: { alignSelf: "flex-start", minHeight: 40, justifyContent: "center", marginBottom: 12, paddingHorizontal: 16, borderWidth: 1.5, borderColor: COURSE_EXERCISE_COLORS.accent, borderRadius: 20, backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
-  changeFamilyLabel: { color: COURSE_EXERCISE_COLORS.accentDark, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 13 },
+  changeFamily: { alignSelf: "flex-start", minHeight: 40, justifyContent: "center", marginBottom: 12, paddingHorizontal: 16, borderWidth: 1.5, borderColor: SEMANTIC_COLORS.brand.primary, borderRadius: 20, backgroundColor: SEMANTIC_COLORS.brand.soft },
+  changeFamilyLabel: { color: SEMANTIC_COLORS.brand.pressed, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 13 },
   wordList: { gap: 9 },
-  word: { minHeight: 56, paddingHorizontal: 16, paddingVertical: 11, borderWidth: 1, borderBottomWidth: 4, borderColor: COURSE_EXERCISE_COLORS.border, borderRadius: 22, backgroundColor: COURSE_EXERCISE_COLORS.surface },
-  wordSelected: { borderColor: COURSE_EXERCISE_COLORS.accent, backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
-  wordLabel: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 15 },
-  wordDescription: { marginTop: 3, color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 12.5, lineHeight: 17 },
-  intensityCard: { alignItems: "center", gap: 16, paddingHorizontal: 22, paddingVertical: 24, borderRadius: 28, backgroundColor: COURSE_EXERCISE_COLORS.surface, shadowColor: COURSE_EXERCISE_COLORS.shadow, shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.14, shadowRadius: 8 },
-  wordPill: { paddingHorizontal: 22, paddingVertical: 9, borderRadius: 22, overflow: "hidden", color: COURSE_EXERCISE_COLORS.surface, backgroundColor: COURSE_EXERCISE_COLORS.accent, fontFamily: COURSE_EXERCISE_FONTS.heading, fontSize: 21 },
-  intensityLabel: { color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 12, letterSpacing: 0.6 },
+  word: { minHeight: 56, paddingHorizontal: 16, paddingVertical: 11, borderWidth: 1, borderBottomWidth: 4, borderColor: SEMANTIC_COLORS.border.default, borderRadius: 22, backgroundColor: SEMANTIC_COLORS.surface.primary },
+  wordSelected: { borderColor: SEMANTIC_COLORS.brand.primary, backgroundColor: SEMANTIC_COLORS.brand.soft },
+  wordLabel: { color: SEMANTIC_COLORS.text.primary, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 15 },
+  wordDescription: { marginTop: 3, color: SEMANTIC_COLORS.text.secondary, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 12.5, lineHeight: 17 },
+  intensityCard: { alignItems: "center", gap: 16, paddingHorizontal: 22, paddingVertical: 24, borderRadius: 28, backgroundColor: SEMANTIC_COLORS.surface.primary, shadowColor: SEMANTIC_COLORS.shadow, shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.14, shadowRadius: 8 },
+  wordPill: { paddingHorizontal: 22, paddingVertical: 9, borderRadius: 22, overflow: "hidden", color: SEMANTIC_COLORS.surface.primary, backgroundColor: SEMANTIC_COLORS.brand.primary, fontFamily: COURSE_EXERCISE_FONTS.heading, fontSize: 21 },
+  intensityLabel: { color: SEMANTIC_COLORS.text.secondary, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 12, letterSpacing: 0.6 },
   slider: { width: "100%", height: 44 },
   scaleLabels: { width: "100%", flexDirection: "row", justifyContent: "space-between" },
-  scaleLabel: { color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 12 },
-  feedback: { marginTop: 16, paddingHorizontal: 17, paddingVertical: 15, borderWidth: 1.5, borderColor: COURSE_EXERCISE_COLORS.accent, borderRadius: 24, backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
-  feedbackTitle: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.heading, fontSize: 16 },
-  feedbackBody: { marginTop: 5, color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 13.5, lineHeight: 20 },
+  scaleLabel: { color: SEMANTIC_COLORS.text.secondary, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 12 },
+  feedback: { marginTop: 16, paddingHorizontal: 17, paddingVertical: 15, borderWidth: 1.5, borderColor: SEMANTIC_COLORS.brand.primary, borderRadius: 24, backgroundColor: SEMANTIC_COLORS.brand.soft },
+  feedbackTitle: { color: SEMANTIC_COLORS.text.primary, fontFamily: COURSE_EXERCISE_FONTS.heading, fontSize: 16 },
+  feedbackBody: { marginTop: 5, color: SEMANTIC_COLORS.text.primary, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 13.5, lineHeight: 20 },
 });

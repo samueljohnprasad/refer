@@ -29,7 +29,8 @@ import {
 } from "@hugeicons/core-free-icons";
 import { Grayscale } from "react-native-color-matrix-image-filters";
 
-import { GOLD, INK_MUTED, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import type {
   Achievement,
   AchievementConditionType,
@@ -97,7 +98,7 @@ const BadgeArtwork: React.FC<{ item: AchievementProgressItem }> = ({
       ) : isNumberIcon ? (
         <Text
           className="happy-font-heading-bold text-[42px]"
-          style={{ color: isUnlocked ? achievement.color : INK_MUTED }}
+          style={{ color: isUnlocked ? achievement.color : SEMANTIC_COLORS.text.tertiary }}
         >
           {achievement.icon}
         </Text>
@@ -177,7 +178,7 @@ export const AchievementBadgeDetailSheet: React.FC<
                     className="mt-3 rounded-full px-4 py-2"
                     style={{
                       backgroundColor: isUnlocked
-                        ? SAGE.selected
+                        ? SEMANTIC_COLORS.selection.surface
                         : "rgba(212,169,67,0.14)",
                     }}
                   >
@@ -185,12 +186,12 @@ export const AchievementBadgeDetailSheet: React.FC<
                       <HugeiconsIcon
                         icon={isUnlocked ? CheckmarkCircle02Icon : Medal01Icon}
                         size={16}
-                        color={isUnlocked ? SAGE[600] : GOLD}
+                        color={isUnlocked ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.warning.foreground}
                         strokeWidth={2}
                       />
                       <Text
                         className="happy-font-body-bold text-sm"
-                        style={{ color: isUnlocked ? SAGE[600] : GOLD }}
+                        style={{ color: isUnlocked ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.warning.foreground }}
                       >
                         {isUnlocked ? "Unlocked" : "In progress"}
                       </Text>
@@ -237,7 +238,7 @@ export const AchievementBadgeDetailSheet: React.FC<
                 <View className="mt-8 flex-row justify-center gap-12 border-t border-sage-100/60 pt-6">
                   <View className="items-center">
                     <View className="mb-1.5 flex-row items-center gap-1.5">
-                      <HugeiconsIcon icon={StarsIcon} size={14} color={GOLD} strokeWidth={2.5} />
+                      <HugeiconsIcon icon={StarsIcon} size={14} color={SEMANTIC_COLORS.warning.foreground} strokeWidth={2.5} />
                       <Text className="happy-font-body-bold text-[11px] text-ink-muted uppercase tracking-wider">
                         Reward
                       </Text>

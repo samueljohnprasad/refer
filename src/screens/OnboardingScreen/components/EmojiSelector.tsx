@@ -21,7 +21,8 @@ import {
   SleepingIcon,
   HandPrayerIcon,
 } from "@hugeicons/core-free-icons";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -109,7 +110,7 @@ const EmojiButton: React.FC<{
           <HugeiconsIcon
             icon={getFeelingIcon(option.id)}
             size={28}
-            color={isSelected ? SAGE[600] : SAGE[500]}
+            color={isSelected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.brand.primary}
           />
         </Animated.View>
       </AnimatedPressable>

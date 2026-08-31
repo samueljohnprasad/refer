@@ -4,7 +4,8 @@ import { View, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { Text } from '@/src/components/ui/Text';
-import { BRAND_SURFACE, BRAND_BORDER_STRONG, INK_SOFT, OTTER_BLUE_TINT, OTTER_BLUE } from '@/lib/tokens';
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -29,9 +30,9 @@ export const OptionButton = ({
 }: OptionButtonProps) => {
   const pressY = useSharedValue(0);
   
-  const faceColor = isSelected ? OTTER_BLUE_TINT : BRAND_SURFACE;
-  const rimColor = isSelected ? OTTER_BLUE : BRAND_BORDER_STRONG;
-  const labelColor = isSelected ? '#0A7DB8' : INK_SOFT;
+  const faceColor = isSelected ? SEMANTIC_COLORS.info.surface : SEMANTIC_COLORS.surface.primary;
+  const rimColor = isSelected ? SEMANTIC_COLORS.info.indicator : SEMANTIC_COLORS.border.strong;
+  const labelColor = isSelected ? '#0A7DB8' : SEMANTIC_COLORS.text.secondary;
 
   const handlePressIn = () => {
     Haptics.selectionAsync();

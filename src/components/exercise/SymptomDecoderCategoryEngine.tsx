@@ -4,9 +4,8 @@ import { Feather } from "@expo/vector-icons";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import { CourseExerciseOptionButton } from "@/src/components/exercise/CourseExerciseOptionButton";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import {
   readCourseExerciseOptions,
   readRecord,
@@ -78,7 +77,7 @@ export function SymptomDecoderCategoryEngine({
       ) : null}
 
       <View style={styles.privateNote}>
-        <Feather name="lock" size={14} color={COURSE_EXERCISE_COLORS.inkSoft} />
+        <Feather name="lock" size={14} color={SEMANTIC_COLORS.text.secondary} />
         <Text style={styles.privateNoteText}>
           Private. Your choice quietly shapes which lessons come first.
         </Text>
@@ -100,26 +99,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 17,
     borderWidth: 1,
-    borderColor: COURSE_EXERCISE_COLORS.border,
+    borderColor: SEMANTIC_COLORS.border.default,
     borderRadius: 24,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
   revealTitle: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 18,
     lineHeight: 23,
   },
   revealBody: {
     marginTop: 7,
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 15,
     lineHeight: 22,
   },
   next: {
     marginTop: 10,
-    color: COURSE_EXERCISE_COLORS.accent,
+    color: SEMANTIC_COLORS.brand.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 13,
     lineHeight: 18,
@@ -132,7 +131,7 @@ const styles = StyleSheet.create({
   },
   privateNoteText: {
     flex: 1,
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 13,
     lineHeight: 18,

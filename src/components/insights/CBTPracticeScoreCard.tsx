@@ -1,3 +1,4 @@
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Text } from "react-native";
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   description: {
-    color: "#1E293B", // INK-800
+    color: "#1E293B", // SEMANTIC_COLORS.text.primary-800
     fontSize: 18,
     fontWeight: "600",
     lineHeight: 24,
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   sectionEyebrow: {
-    color: "#94A3B8", // INK-muted
+    color: "#94A3B8", // SEMANTIC_COLORS.text.primary-muted
     fontSize: 12,
     fontWeight: "700",
     letterSpacing: 1,
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
   todayHeading: {
     fontSize: 42,
     fontWeight: "800",
-    color: "#0F172A", // INK-900
+    color: "#0F172A", // SEMANTIC_COLORS.text.primary-900
     letterSpacing: -1,
     marginBottom: 8,
     lineHeight: 48,
@@ -162,13 +163,13 @@ const styles = StyleSheet.create({
   averageHeading: {
     fontSize: 48,
     fontWeight: "800",
-    color: "#0F172A", // INK-900
+    color: "#0F172A", // SEMANTIC_COLORS.text.primary-900
     letterSpacing: -1,
     lineHeight: 56,
   },
   subtext: {
     fontSize: 15,
-    color: "#64748B", // INK-500
+    color: "#64748B", // SEMANTIC_COLORS.text.primary-500
     lineHeight: 22,
   },
 });

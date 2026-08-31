@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
+  SEMANTIC_COLORS,
 } from "@/src/components/exercise/courseExerciseTheme";
 import {
   V1CheckStatusEnum,
@@ -72,64 +72,64 @@ export function CourseExerciseFeedbackPanel({
 const styles = StyleSheet.create({
   wrapper: { gap: 10, paddingHorizontal: 8, paddingBottom: 12 },
   panel: {
-    borderWidth: 1.5,
+    borderWidth: 0,
     borderRadius: 24,
     paddingHorizontal: 17,
     paddingVertical: 15,
   },
   success: {
-    borderColor: COURSE_EXERCISE_COLORS.accent,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    borderColor: SEMANTIC_COLORS.success.primary,
+    backgroundColor: SEMANTIC_COLORS.success.soft,
   },
   retry: {
-    borderColor: COURSE_EXERCISE_COLORS.error,
-    backgroundColor: COURSE_EXERCISE_COLORS.errorTint,
+    borderColor: SEMANTIC_COLORS.error.primary,
+    backgroundColor: SEMANTIC_COLORS.error.soft,
   },
   review: {
-    borderColor: COURSE_EXERCISE_COLORS.border,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
+    borderColor: SEMANTIC_COLORS.border.default,
+    backgroundColor: SEMANTIC_COLORS.surface.secondary,
   },
   title: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
-    fontSize: 16,
-    lineHeight: 20,
+    fontSize: 17,
+    lineHeight: 22,
   },
   titleRow: { flexDirection: "row", alignItems: "flex-start", gap: 11 },
   feedbackCopy: { flex: 1 },
   successIcon: {
-    width: 28,
-    height: 28,
+    width: 19,
+    height: 19,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 14,
-    backgroundColor: COURSE_EXERCISE_COLORS.accent,
+    borderRadius: 9.5,
+    backgroundColor: SEMANTIC_COLORS.success.primary,
   },
   successIconLabel: {
-    color: COURSE_EXERCISE_COLORS.surface,
+    color: SEMANTIC_COLORS.text.inverse,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 14,
+    fontSize: 9.5,
   },
   kicker: {
     marginBottom: 5,
-    color: COURSE_EXERCISE_COLORS.accent,
+    color: SEMANTIC_COLORS.brand.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 11,
     letterSpacing: 1,
   },
   body: {
-    marginTop: 7,
-    color: COURSE_EXERCISE_COLORS.ink,
+    marginTop: 5,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 13.5,
-    lineHeight: 20,
+    fontSize: 17,
+    lineHeight: 24,
   },
   takeaway: {
     marginTop: 9,
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 15,
+    lineHeight: 20,
   },
   takeawayLabel: { fontFamily: COURSE_EXERCISE_FONTS.bodyBold },
 });

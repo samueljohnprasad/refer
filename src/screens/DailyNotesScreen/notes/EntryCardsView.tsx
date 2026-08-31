@@ -33,7 +33,8 @@ import { ConfirmationModal } from "@/src/components/modals/ConfirmationModal";
 import { useRouter, Link } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { EmptyState } from "@/src/components/ui/EmptyState";
-import { BRAND_SURFACE, GOLD, INK_MUTED, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Card } from "@/src/components/ui/Card";
 import { JournalTabSkeleton } from "./JournalSkeletons";
 
@@ -282,7 +283,7 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
                   <HugeiconsIcon
                     size={12}
                     icon={getEntryTypeIcon(entry.input_type)}
-                    color={INK_MUTED}
+                    color={SEMANTIC_COLORS.text.tertiary}
                   />
                   {!!entry.duration_seconds && (
                     <Text variant="caption" className="ml-1">

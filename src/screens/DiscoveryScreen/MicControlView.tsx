@@ -12,7 +12,8 @@ import {
   PauseIcon,
 } from "@hugeicons/core-free-icons";
 import * as Haptics from "expo-haptics";
-import { BRAND_SURFACE, INK_SOFT } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Button } from "@/src/components/ui/Button";
 
 // Props interface for the presenter component
@@ -58,7 +59,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
               <Feather
                 name={isPaused ? "trash-2" : "x"}
                 size={22}
-                color={INK_SOFT}
+                color={SEMANTIC_COLORS.text.secondary}
               />
             }
             onPress={() => {
@@ -100,13 +101,13 @@ const MicControlView: React.FC<MicControlViewProps> = ({
               <HugeiconsIcon
                 icon={PauseIcon}
                 size={36}
-                color={BRAND_SURFACE}
+                color={SEMANTIC_COLORS.surface.primary}
               />
             ) : (
               <HugeiconsIcon
                 icon={AiMicIcon}
                 size={36}
-                color={BRAND_SURFACE}
+                color={SEMANTIC_COLORS.surface.primary}
               />
             )
           }
@@ -129,7 +130,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
               <HugeiconsIcon
                 icon={Tick01Icon}
                 size={22}
-                color={BRAND_SURFACE}
+                color={SEMANTIC_COLORS.surface.primary}
               />
             }
             onPress={() => {

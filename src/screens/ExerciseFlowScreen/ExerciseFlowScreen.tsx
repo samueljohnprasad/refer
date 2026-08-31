@@ -122,7 +122,8 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
 };
 
 import { LessonScreen } from "@/src/components/ui/LessonScreen";
-import { BRAND_SURFACE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
 import { useXPOptional } from "@/src/context/XPContext";
@@ -377,7 +378,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       primaryLoading={isSaving}
       primaryRightIcon={
         isFinalStep && !isSaving ? (
-          <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} color={BRAND_SURFACE} strokeWidth={2} />
+          <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} color={SEMANTIC_COLORS.surface.primary} strokeWidth={2} />
         ) : undefined
       }
       secondaryLabel={readOnly ? undefined : isFinalStep ? (currentStep?.secondaryLabel || "Edit answers") : (flow.canGoBack ? "Back" : undefined)}

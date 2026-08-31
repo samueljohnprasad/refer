@@ -1,3 +1,4 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import { View, Pressable, ScrollView } from "react-native";
 import * as Haptics from "expo-haptics";
@@ -5,7 +6,6 @@ import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
 import { CircularProgressTimer } from "@/src/components/ui/CircularProgressTimer";
 import type { StepProps } from "@/src/types/exerciseFlow";
-import { SAGE, INK, INK_MUTED } from "@/lib/tokens";
 
 export interface PMRAreaConfig {
   value: string;
@@ -229,7 +229,7 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
             progress={timerProgress}
             size={210}
             strokeWidth={8}
-            color={SAGE[500]}
+            color={SEMANTIC_COLORS.brand.primary}
             trackColor="rgba(0,0,0,0.06)"
           >
             <View className="items-center justify-center">

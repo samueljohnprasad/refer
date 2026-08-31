@@ -6,7 +6,8 @@ import {
   Cancel01Icon,
 } from "@hugeicons/core-free-icons";
 import { Text } from "@/src/components/ui/Text";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface CourseSheetHeaderProps {
   onBack?: () => void;
@@ -26,7 +27,7 @@ export function CourseSheetHeader({
           accessibilityRole="button"
           accessibilityLabel="Back to journeys"
         >
-          <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color={SAGE[600]} />
+          <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color={SEMANTIC_COLORS.brand.pressed} />
           <Text variant="label-bold" color="sage">
             Journeys
           </Text>
@@ -41,7 +42,7 @@ export function CourseSheetHeader({
         accessibilityRole="button"
         accessibilityLabel="Close course catalog"
       >
-        <HugeiconsIcon icon={Cancel01Icon} size={20} color={SAGE[600]} />
+        <HugeiconsIcon icon={Cancel01Icon} size={20} color={SEMANTIC_COLORS.brand.pressed} />
       </Pressable>
     </View>
   );

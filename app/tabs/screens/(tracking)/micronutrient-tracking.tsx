@@ -20,7 +20,8 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MicronutrientTrackingScreen from "@/src/screens/MicronutrientTrackingScreen/MicronutrientTrackingScreen";
 import { MICRONUTRIENTS_CONFIG } from "@/src/config/micronutrients";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 import Animated, {
   useSharedValue,
@@ -98,7 +99,7 @@ const MicronutrientHeader: React.FC = () => {
           activeOpacity={0.7}
           onPress={() => router.back()}
         >
-          <HugeiconsIcon icon={ArrowLeft02Icon} size={21} color={SAGE[600]} />
+          <HugeiconsIcon icon={ArrowLeft02Icon} size={21} color={SEMANTIC_COLORS.brand.pressed} />
         </TouchableOpacity>
       )}
       {isLiquidGlass && (
@@ -109,7 +110,7 @@ const MicronutrientHeader: React.FC = () => {
               labelStyle("iconOnly"),
               buttonStyle("glassProminent"),
               controlSize("regular"),
-              tint(SAGE[600]),
+              tint(SEMANTIC_COLORS.brand.pressed),
             ]}
             systemImage="chevron.left"
           />

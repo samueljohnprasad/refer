@@ -11,7 +11,8 @@ import {
   getCourseMonogram,
   resolveCourseAccentColor,
 } from "@/src/domains/journey/model/courseVisuals";
-import { INK_MUTED } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { CourseSheetHeader } from "./CourseSheetHeader";
 
 interface CourseCatalogListProps {
@@ -124,7 +125,7 @@ function CourseCatalogRow({
         ) : null}
       </View>
 
-      <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={INK_MUTED} />
+      <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={SEMANTIC_COLORS.text.tertiary} />
     </Pressable>
   );
 }

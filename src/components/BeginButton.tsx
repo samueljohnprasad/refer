@@ -10,7 +10,8 @@ import {
 } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowRight02Icon } from "@hugeicons/core-free-icons";
-import { INK_SOFT } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 type BeginButtonProps = {
   onPress: () => void;
@@ -62,7 +63,7 @@ export default function BeginButton({
           <HugeiconsIcon
             icon={ArrowRight02Icon}
             size={24}
-            color={disabled ? INK_SOFT : "#FFFFFF"}
+            color={disabled ? SEMANTIC_COLORS.text.secondary : "#FFFFFF"}
           />
         ) : null}
       </View>
@@ -93,6 +94,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   disabledLabel: {
-    color: INK_SOFT,
+    color: SEMANTIC_COLORS.text.secondary,
   },
 });

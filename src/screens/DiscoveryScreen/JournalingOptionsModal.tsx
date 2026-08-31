@@ -13,7 +13,8 @@ import {
   presentationDetents,
   presentationDragIndicator,
 } from "@expo/ui/swift-ui/modifiers";
-import { BRAND_SURFACE, SAGE, SAGE_OVERLAY } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface JournalingOptionsModalProps {
   visible: boolean;
@@ -81,7 +82,7 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
                       <HugeiconsIcon
                         icon={PencilEdit02Icon}
                         size={24}
-                        color={SAGE[600]}
+                        color={SEMANTIC_COLORS.brand.pressed}
                       />
                     </View>
                     <View className="flex-1">
@@ -106,7 +107,7 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
                       <HugeiconsIcon
                         icon={Camera01Icon}
                         size={24}
-                        color={SAGE[600]}
+                        color={SEMANTIC_COLORS.brand.pressed}
                       />
                     </View>
                     <View className="flex-1">
@@ -151,12 +152,12 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
                         {isSelected && (
                           <View
                             className="ml-3 rounded-xl p-1.5"
-                            style={{ backgroundColor: SAGE_OVERLAY.whiteTint }}
+                            style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
                           >
                             <HugeiconsIcon
                               icon={Tick02Icon}
                               size={18}
-                              color={BRAND_SURFACE}
+                              color={SEMANTIC_COLORS.surface.primary}
                             />
                           </View>
                         )}

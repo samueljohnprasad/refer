@@ -1,9 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 
 interface StageProgressProps {
   stageIndex: number;
@@ -28,7 +27,7 @@ export function StageProgress({ stageIndex, stageCount, label }: StageProgressPr
 const styles = StyleSheet.create({
   container: { gap: 7 },
   label: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 12,
   },
@@ -36,11 +35,11 @@ const styles = StyleSheet.create({
     height: 6,
     overflow: "hidden",
     borderRadius: 999,
-    backgroundColor: COURSE_EXERCISE_COLORS.surfaceMuted,
+    backgroundColor: SEMANTIC_COLORS.surface.secondary,
   },
   fill: {
     height: "100%",
     borderRadius: 999,
-    backgroundColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: SEMANTIC_COLORS.brand.primary,
   },
 });

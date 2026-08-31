@@ -1,9 +1,7 @@
+import { courseExerciseCategoryEngineRegistry } from '@/src/components/exercise/courseExerciseCategoryEngineRegistry';
+import { FINAL_BATCH_CATEGORY_CONFIGS } from '@/src/components/exercise/courseExerciseFinalBatchRegistry';
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import type { Exercise } from "@/src/types/journeyV5";
-import {
-  getBatchPrimaryLabel,
-  getBatchPrimaryTransition,
-} from "@/src/domains/journey/learning/courseExerciseBatchTransitions";
 import {
   getExplorableModelPrimaryLabel,
   getNextExplorableModelState,
@@ -37,89 +35,28 @@ export function getCoursePrimaryLabel(
     return null;
   }
 
-  const batchLabel = getBatchPrimaryLabel(exercise, response);
-  if (batchLabel !== undefined) {
-    return batchLabel;
-  }
-
   const category = resolveCourseExerciseCategory(exercise);
-  switch (category) {
-
-    case CourseExerciseCategoryEnum.WhatIfMachine:
-      return getWhatIfLabel(exercise, response);
-    case CourseExerciseCategoryEnum.CourseCheckpoint:
-      return getCheckpointLabel(exercise, response);
-
-    case CourseExerciseCategoryEnum.LearnCards:
-      return getLearnCardsLabel(response);
-    case CourseExerciseCategoryEnum.NameIt:
-      return getNameItLabel(response);
-    case CourseExerciseCategoryEnum.LayerZoom:
-      return getLayerZoomPrimaryLabel(exercise, response);
-    case CourseExerciseCategoryEnum.Dialogue:
-      return getDialogueLabel(exercise, response);
-    case CourseExerciseCategoryEnum.StoryWalkthrough:
-      return getStoryWalkthroughLabel(exercise, response);
-    case CourseExerciseCategoryEnum.CommonTrap:
-      return response.revealed === true ? "Continue" : "And then what happens?";
-    case CourseExerciseCategoryEnum.StorySerial:
-      return getStorySerialLabel(response);
-    case CourseExerciseCategoryEnum.ExplorableModel:
-      return getExplorableModelPrimaryLabel(exercise, response);
-    case CourseExerciseCategoryEnum.WhiteBearExperiment:
-      return getWhiteBearLabel(response);
-    case CourseExerciseCategoryEnum.InventFirst:
-      return response.selectedOptionId ? "Look again. What differs?" : null;
-    default:
-      return null;
+  const config = category ? (courseExerciseCategoryEngineRegistry[category] || FINAL_BATCH_CATEGORY_CONFIGS[category as keyof typeof FINAL_BATCH_CATEGORY_CONFIGS]) : null;
+  if (config?.interaction?.getPrimaryLabel) {
+    return config.interaction.getPrimaryLabel(exercise, response);
   }
+  return null;
 }
 
 export function getCoursePrimaryTransition(
   exercise: Exercise,
   response: Record<string, unknown>,
 ): CoursePrimaryTransition | null {
-  const batchTransition = getBatchPrimaryTransition(exercise, response);
-  if (batchTransition !== undefined) {
-    return batchTransition;
-  }
 
   const category = resolveCourseExerciseCategory(exercise);
-  switch (category) {
-
-    case CourseExerciseCategoryEnum.WhatIfMachine:
-      return getNextWhatIfState(exercise, response);
-    case CourseExerciseCategoryEnum.CourseCheckpoint:
-      return getNextCheckpointState(exercise, response);
-
-    case CourseExerciseCategoryEnum.LearnCards:
-      return getNextLearnCardsState(exercise, response);
-    case CourseExerciseCategoryEnum.NameIt:
-      return getNextNameItState(response);
-    case CourseExerciseCategoryEnum.LayerZoom:
-      return getNextLayerZoomState(exercise, response) ?? null;
-    case CourseExerciseCategoryEnum.Dialogue:
-      return getNextDialogueState(exercise, response);
-    case CourseExerciseCategoryEnum.StoryWalkthrough:
-      return getNextStoryWalkthroughState(exercise, response);
-    case CourseExerciseCategoryEnum.CommonTrap:
-      return response.revealed === true
-        ? null
-        : {
-            kind: "response",
-            ready: true,
-            response: { ...response, revealed: true },
-          };
-    case CourseExerciseCategoryEnum.ExplorableModel:
-      return getNextExplorableModelState(exercise, response) ?? null;
-    case CourseExerciseCategoryEnum.WhiteBearExperiment:
-      return getNextWhiteBearState(response);
-    default:
-      return null;
+  const config = category ? (courseExerciseCategoryEngineRegistry[category] || FINAL_BATCH_CATEGORY_CONFIGS[category as keyof typeof FINAL_BATCH_CATEGORY_CONFIGS]) : null;
+  if (config?.interaction?.getPrimaryTransition) {
+    return config.interaction.getPrimaryTransition(exercise, response);
   }
+  return null;
 }
 
-function getProgressLabel(
+export function getProgressLabel(
   itemsValue: unknown,
   response: Record<string, unknown>,
   nextLabel: string,
@@ -133,7 +70,7 @@ function getProgressLabel(
     : nextLabel;
 }
 
-function getNextProgressState(
+export function getNextProgressState(
   itemsValue: unknown,
   response: Record<string, unknown>,
 ): CoursePrimaryTransition | null {
@@ -153,7 +90,7 @@ function getNextProgressState(
   };
 }
 
-function getStoryWalkthroughLabel(
+export function getStoryWalkthroughLabel(
   exercise: Exercise,
   response: Record<string, unknown>,
 ): string | null {
@@ -167,7 +104,7 @@ function getStoryWalkthroughLabel(
     : "Next";
 }
 
-function getNextStoryWalkthroughState(
+export function getNextStoryWalkthroughState(
   exercise: Exercise,
   response: Record<string, unknown>,
 ): CoursePrimaryTransition | null {
@@ -187,7 +124,7 @@ function getNextStoryWalkthroughState(
   };
 }
 
-function getDialogueLabel(
+export function getDialogueLabel(
   exercise: Exercise,
   response: Record<string, unknown>,
 ): string | null {
@@ -214,7 +151,7 @@ function getDialogueLabel(
   return null;
 }
 
-function getNextDialogueState(
+export function getNextDialogueState(
   exercise: Exercise,
   response: Record<string, unknown>,
 ): CoursePrimaryTransition | null {
@@ -249,7 +186,7 @@ function readNumber(value: unknown): number {
 }
 
 
-function getWhatIfLabel(exercise: Exercise, response: Record<string, unknown>): string | null {
+export function getWhatIfLabel(exercise: Exercise, response: Record<string, unknown>): string | null {
   const phase = response.phase;
   if (phase === "prediction") return response.selectedPredictionId ? "Run it" : null;
   if (phase === "running") {
@@ -259,7 +196,7 @@ function getWhatIfLabel(exercise: Exercise, response: Record<string, unknown>): 
   return phase === "complete" ? "Continue" : null;
 }
 
-function getNextWhatIfState(exercise: Exercise, response: Record<string, unknown>): CoursePrimaryTransition | null {
+export function getNextWhatIfState(exercise: Exercise, response: Record<string, unknown>): CoursePrimaryTransition | null {
   const phase = response.phase;
   if (phase === "prediction") {
     return response.selectedPredictionId ? { kind: "response", ready: true, response: { ...response, phase: "running", consequenceIndex: 1 } } : null;
@@ -275,7 +212,7 @@ function getNextWhatIfState(exercise: Exercise, response: Record<string, unknown
   return null;
 }
 
-function getCheckpointLabel(exercise: Exercise, response: Record<string, unknown>): string | null {
+export function getCheckpointLabel(exercise: Exercise, response: Record<string, unknown>): string | null {
   const phase = response.phase;
   if (phase === "intro") return "Start check";
   if (phase === "summary") return "Continue";
@@ -283,8 +220,28 @@ function getCheckpointLabel(exercise: Exercise, response: Record<string, unknown
   return null; // For "item" phase, internal buttons handle it
 }
 
-function getNextCheckpointState(exercise: Exercise, response: Record<string, unknown>): CoursePrimaryTransition | null {
+export function getNextCheckpointState(exercise: Exercise, response: Record<string, unknown>): CoursePrimaryTransition | null {
   const phase = response.phase;
   if (phase === "intro") return { kind: "response", ready: true, response: { ...response, phase: "item", currentItemIndex: 0 } };
   return null; // Next item transitions happen within the engine
 }
+
+export {
+  getExplorableModelPrimaryLabel,
+  getNextExplorableModelState,
+} from "@/src/domains/journey/learning/explorableModelTransition";
+
+export {
+  getLayerZoomPrimaryLabel,
+  getNextLayerZoomState,
+} from "@/src/domains/journey/learning/layerZoomTransition";
+
+export {
+  getLearnCardsLabel,
+  getNameItLabel,
+  getNextLearnCardsState,
+  getNextNameItState,
+  getNextWhiteBearState,
+  getStorySerialLabel,
+  getWhiteBearLabel,
+} from "@/src/domains/journey/learning/courseExerciseSimpleTransitions";

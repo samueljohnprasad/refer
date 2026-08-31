@@ -1,9 +1,9 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LessonHeader } from "@/src/components/ui/LessonHeader";
-import { COURSE_EXERCISE_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 
 interface CourseExerciseHeaderProps {
   progress: number;
@@ -30,10 +30,10 @@ export function CourseExerciseHeader({
               progress={progress}
               trailingLabel={trailingLabel}
               onClose={onClose}
-              progressFillColor={COURSE_EXERCISE_COLORS.accent}
-              progressTrackColor={COURSE_EXERCISE_COLORS.surfaceMuted}
-              iconColor={COURSE_EXERCISE_COLORS.inkSoft}
-              trailingLabelColor={COURSE_EXERCISE_COLORS.inkSoft}
+              progressFillColor={SEMANTIC_COLORS.brand.primary}
+              progressTrackColor={SEMANTIC_COLORS.surface.secondary}
+              iconColor={SEMANTIC_COLORS.text.secondary}
+              trailingLabelColor={SEMANTIC_COLORS.text.secondary}
             />
           </View>
         ),
@@ -43,5 +43,5 @@ export function CourseExerciseHeader({
 }
 
 const styles = StyleSheet.create({
-  header: { backgroundColor: COURSE_EXERCISE_COLORS.background },
+  header: { backgroundColor: SEMANTIC_COLORS.surface.primary },
 });

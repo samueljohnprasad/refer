@@ -1,7 +1,8 @@
 import React, { useMemo } from "react";
 import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
 import { pickerStyle, tag, tint } from "@expo/ui/swift-ui/modifiers";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { TIME_RANGES, type TimeRange } from "@/src/constants/insights";
 
 interface TimeRangeSelectorProps {
@@ -27,7 +28,7 @@ export function TimeRangeSelector({ value, onChange }: TimeRangeSelectorProps) {
   return (
     <Host style={{ width: 140, height: 32 }}>
       <Picker
-        modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
+        modifiers={[pickerStyle("segmented"), tint(SEMANTIC_COLORS.brand.pressed)]}
         label="Time Range"
         selection={selectedLabel}
         onSelectionChange={handleSelectionChange}

@@ -3,7 +3,8 @@ import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { JourneyUnitIcon } from "./JourneyUnitIcon";
-import { INK } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import {
   useHomeMainButtonViewModel,
   type HomeMainButtonProps,
@@ -37,10 +38,10 @@ export const HomeMainButtonView = React.memo(function HomeMainButtonView({
         contentClassName="flex-row items-center justify-between px-5 py-4"
       >
         <View className="flex-1 mr-4">
-          <Text variant="eyebrow" className="mb-1" style={{ color: INK }}>
+          <Text variant="eyebrow" className="mb-1" style={{ color: SEMANTIC_COLORS.text.primary }}>
             {unitLabel}
           </Text>
-          <Text variant="h3" style={{ color: INK }} numberOfLines={2}>
+          <Text variant="h3" style={{ color: SEMANTIC_COLORS.text.primary }} numberOfLines={2}>
             {unitTitle}
           </Text>
         </View>
@@ -48,7 +49,7 @@ export const HomeMainButtonView = React.memo(function HomeMainButtonView({
           className="w-12 h-12 items-center justify-center rounded-full mr-2"
           style={{ backgroundColor: "rgba(20, 36, 20, 0.10)" }}
         >
-          <JourneyUnitIcon iconKey={unitIconKey} size={24} color={INK} />
+          <JourneyUnitIcon iconKey={unitIconKey} size={24} color={SEMANTIC_COLORS.text.primary} />
         </View>
       </Card>
     </View>

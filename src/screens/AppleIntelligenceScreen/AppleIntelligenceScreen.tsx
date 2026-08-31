@@ -12,7 +12,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { Card } from "@/src/components/ui/Card";
 import { useLocalAI, LocalAIStatus } from "@/src/hooks/useAppleIntelligence";
-import { SAGE, INK, INK_SOFT, INK_MUTED, BRAND_SURFACE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   SparklesIcon,
@@ -27,10 +28,10 @@ const KEYBOARD_VERTICAL_OFFSET = 100;
 const MIN_BOTTOM_PADDING = 12;
 
 const ERROR_COLOR = "#e7000b";
-const CURSOR_COLOR = SAGE[400];
-const SEND_ACTIVE_COLOR = SAGE[600];
-const SEND_INACTIVE_BG = SAGE[100];
-const INPUT_BORDER_COLOR = SAGE[100];
+const CURSOR_COLOR = SEMANTIC_COLORS.brand.primary;
+const SEND_ACTIVE_COLOR = SEMANTIC_COLORS.brand.pressed;
+const SEND_INACTIVE_BG = SEMANTIC_COLORS.brand.soft;
+const INPUT_BORDER_COLOR = SEMANTIC_COLORS.brand.soft;
 const SEND_BTN_SIZE = 36;
 
 // ─── Preset Prompts ──────────────────────────────────────────────────────────
@@ -95,9 +96,9 @@ const STATUS_LABELS: Record<LocalAIStatus, string> = {
 function resolveStatusDotColor(status: LocalAIStatus): string {
   if (status === LocalAIStatus.ERROR || status === LocalAIStatus.UNAVAILABLE)
     return ERROR_COLOR;
-  if (status === LocalAIStatus.DOWNLOADING) return SAGE[400];
-  if (status === LocalAIStatus.DONE) return SAGE[500];
-  return SAGE[400];
+  if (status === LocalAIStatus.DOWNLOADING) return SEMANTIC_COLORS.brand.primary;
+  if (status === LocalAIStatus.DONE) return SEMANTIC_COLORS.brand.primary;
+  return SEMANTIC_COLORS.brand.primary;
 }
 
 const StatusIndicator: React.FC<{
@@ -128,7 +129,7 @@ const StatusIndicator: React.FC<{
       />
       <Text
         className="happy-font-body text-[12px]"
-        style={{ color: INK_MUTED }}
+        style={{ color: SEMANTIC_COLORS.text.tertiary }}
       >
         {label}
       </Text>
@@ -159,11 +160,11 @@ const PresetChip: React.FC<{
         </View>
         <Text
           className="happy-font-body-bold text-[15px] flex-1"
-          style={{ color: SAGE[700] }}
+          style={{ color: SEMANTIC_COLORS.brand.onSoft }}
         >
           {preset.label}
         </Text>
-        <HugeiconsIcon icon={ArrowRight01Icon} size={16} color={SAGE[400]} />
+        <HugeiconsIcon icon={ArrowRight01Icon} size={16} color={SEMANTIC_COLORS.brand.primary} />
       </View>
     </PressableScale>
   );
@@ -177,13 +178,13 @@ const UnavailableBanner: React.FC = React.memo(() => (
       <Text className="text-[40px]">🍎</Text>
       <Text
         className="happy-font-body-bold text-[16px] text-center"
-        style={{ color: INK }}
+        style={{ color: SEMANTIC_COLORS.text.primary }}
       >
         Apple Intelligence Required
       </Text>
       <Text
         className="happy-font-body text-[14px] text-center leading-5"
-        style={{ color: INK_SOFT }}
+        style={{ color: SEMANTIC_COLORS.text.secondary }}
       >
         This feature requires an iPhone with Apple Intelligence enabled and iOS
         26 or later.
@@ -205,7 +206,7 @@ const ResponseCard: React.FC<{
       <StatusIndicator status={status} downloadProgress={downloadProgress} />
       <Text
         className="happy-font-body text-[16px] leading-7 mt-1"
-        style={{ color: SAGE[800] }}
+        style={{ color: SEMANTIC_COLORS.brand.onSoft }}
         selectable
       >
         {response}
@@ -224,7 +225,7 @@ const ResponseCard: React.FC<{
           <View className="rounded-full bg-sage-pill px-6 py-3 border border-sage-200">
             <Text
               className="happy-font-body-bold text-[14px]"
-              style={{ color: SAGE[700] }}
+              style={{ color: SEMANTIC_COLORS.brand.onSoft }}
             >
               New conversation
             </Text>
@@ -279,8 +280,8 @@ const InputBar: React.FC<InputBarProps> = React.memo(
           className="flex-row items-end gap-2 rounded-[24px] px-4 py-2 bg-white"
           style={{
             borderWidth: 1.5,
-            borderColor: SAGE[200],
-            shadowColor: SAGE[800],
+            borderColor: SEMANTIC_COLORS.selection.foreground,
+            shadowColor: SEMANTIC_COLORS.brand.onSoft,
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.05,
             shadowRadius: 12,
@@ -291,12 +292,12 @@ const InputBar: React.FC<InputBarProps> = React.memo(
             value={value}
             onChangeText={onChangeText}
             placeholder="Ask Sage anything…"
-            placeholderTextColor={SAGE[400]}
+            placeholderTextColor={SEMANTIC_COLORS.brand.primary}
             multiline
             maxLength={MAX_INPUT_LENGTH}
             editable={!isProcessing}
             className="flex-1 happy-font-body text-[16px] py-2.5 max-h-24"
-            style={{ color: SAGE[800] }}
+            style={{ color: SEMANTIC_COLORS.brand.onSoft }}
             returnKeyType="send"
             blurOnSubmit={false}
             onSubmitEditing={onSubmit}
@@ -313,13 +314,13 @@ const InputBar: React.FC<InputBarProps> = React.memo(
               style={{
                 width: SEND_BTN_SIZE,
                 height: SEND_BTN_SIZE,
-                backgroundColor: isDisabled ? SAGE[100] : SAGE[600],
+                backgroundColor: isDisabled ? SEMANTIC_COLORS.brand.soft : SEMANTIC_COLORS.brand.pressed,
               }}
             >
               <HugeiconsIcon
                 icon={ArrowUp01Icon}
                 size={20}
-                color={isDisabled ? SAGE[300] : "#ffffff"}
+                color={isDisabled ? SEMANTIC_COLORS.border.selected : "#ffffff"}
               />
             </View>
           </PressableScale>
@@ -395,26 +396,26 @@ const AppleIntelligencePresentation: React.FC<AppleIntelligencePresentationProps
                 <View
                   className="h-16 w-16 rounded-full items-center justify-center mb-4"
                   style={{
-                    backgroundColor: SAGE[100],
+                    backgroundColor: SEMANTIC_COLORS.brand.soft,
                     borderWidth: 4,
-                    borderColor: SAGE[50],
+                    borderColor: SEMANTIC_COLORS.selection.surface,
                   }}
                 >
                   <HugeiconsIcon
                     icon={SparklesIcon}
                     size={32}
-                    color={SAGE[600]}
+                    color={SEMANTIC_COLORS.brand.pressed}
                   />
                 </View>
                 <Text
                   className="happy-font-body-bold text-[24px] text-center tracking-tight"
-                  style={{ color: SAGE[800] }}
+                  style={{ color: SEMANTIC_COLORS.brand.onSoft }}
                 >
                   Hi, I'm Sage.
                 </Text>
                 <Text
                   className="happy-font-body text-[15px] text-center mt-2 px-6 leading-6"
-                  style={{ color: SAGE[600] }}
+                  style={{ color: SEMANTIC_COLORS.brand.pressed }}
                 >
                   I'm your on-device intelligence companion. Private, secure,
                   and ready to help.

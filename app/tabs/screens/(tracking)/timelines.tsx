@@ -17,7 +17,8 @@ import {
   presentationDetents,
   presentationDragIndicator,
 } from "@expo/ui/swift-ui/modifiers";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { IMessageStack } from "@/src/animations/imessage-stack";
 
 import { DaysTimelineTab } from "@/src/domains/timeline/ui/tabs/DaysTimelineTab";
@@ -57,7 +58,7 @@ export default function TimelinesScreen() {
             <View className="items-center justify-center pt-2">
               <Host style={{ width: 220, height: 32 }}>
                 <Picker
-                  modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
+                  modifiers={[pickerStyle("segmented"), tint(SEMANTIC_COLORS.brand.pressed)]}
                   selection={selectedLabel}
                   onSelectionChange={handleSelectionChange}
                 >

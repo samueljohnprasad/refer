@@ -1,10 +1,7 @@
 import React from "react";
 import { Pressable, Text, View } from "react-native";
 import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
-import {
-  COURSE_EXERCISE_COLORS,
-  COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+import { SEMANTIC_COLORS, COURSE_EXERCISE_FONTS } from "@/src/components/exercise/courseExerciseTheme";
 import { Skeleton, SkeletonCard } from "@/src/components/ui/Skeleton";
 import type { Exercise } from "@/src/types/journeyV5";
 import {
@@ -194,24 +191,24 @@ const styles = {
     borderRadius: 999,
     paddingHorizontal: 11,
     paddingVertical: 7,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   sourceLabelText: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 10,
     letterSpacing: 0.8,
   },
   title: {
     marginTop: 14,
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 30,
     lineHeight: 35,
   },
   description: {
     marginTop: 5,
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 15,
     lineHeight: 22,
@@ -220,10 +217,10 @@ const styles = {
     marginTop: 18,
     borderRadius: 16,
     padding: 16,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
   emptyText: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 14,
     lineHeight: 20,
@@ -232,7 +229,7 @@ const styles = {
   loading: { gap: 20, paddingTop: 24 },
   dataState: { gap: 20, paddingVertical: 28 },
   dataStateTitle: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 24,
     lineHeight: 30,
@@ -240,16 +237,16 @@ const styles = {
   shelfWrap: { marginTop: 24 },
   shelfTitle: {
     marginBottom: 8,
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 13,
   },
   shelf: {
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: COURSE_EXERCISE_COLORS.border,
+    borderColor: SEMANTIC_COLORS.border.default,
     borderRadius: 20,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
   row: {
     minHeight: 76,
@@ -260,7 +257,7 @@ const styles = {
   },
   rowBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: COURSE_EXERCISE_COLORS.border,
+    borderBottomColor: SEMANTIC_COLORS.border.default,
   },
   pressed: { opacity: 0.7 },
   index: {
@@ -269,31 +266,31 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 999,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
-  completeIndex: { backgroundColor: COURSE_EXERCISE_COLORS.accent },
+  completeIndex: { backgroundColor: SEMANTIC_COLORS.brand.primary },
   indexText: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 14,
   },
-  completeIndexText: { color: COURSE_EXERCISE_COLORS.surface },
+  completeIndexText: { color: SEMANTIC_COLORS.surface.primary },
   rowCopy: { flex: 1 },
   rowTitle: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 14,
     lineHeight: 19,
   },
   format: {
     marginTop: 2,
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 12,
     textTransform: "capitalize",
   },
   testLabel: {
-    color: COURSE_EXERCISE_COLORS.error,
+    color: SEMANTIC_COLORS.error.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 13,
   },

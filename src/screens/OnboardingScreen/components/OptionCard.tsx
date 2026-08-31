@@ -20,7 +20,8 @@ import {
   MoonCloudIcon,
   BedIcon,
 } from "@hugeicons/core-free-icons";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 export function getQuizIcon(id: string) {
   switch (id) {
@@ -103,7 +104,7 @@ function OptionCardInner<T extends string>({
           <HugeiconsIcon
             icon={getQuizIcon(option.id)}
             size={22}
-            color={isSelected ? "#FFFFFF" : SAGE[600]}
+            color={isSelected ? "#FFFFFF" : SEMANTIC_COLORS.brand.pressed}
           />
         </View>
         <View className="flex-1">

@@ -13,7 +13,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 
-import { GOLD, SAGE, TERRACOTTA, INK_SOFT } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Button } from "@/src/components/ui/Button";
 import { Text } from "@/src/components/ui/Text";
 
@@ -86,7 +87,7 @@ export const EraseDataConfirmationModal: React.FC<
             >
               <View className="items-center w-full">
                 <View className="mb-6">
-                  <HugeiconsIcon icon={Delete02Icon} size={36} color={TERRACOTTA} />
+                  <HugeiconsIcon icon={Delete02Icon} size={36} color={SEMANTIC_COLORS.error.foreground} />
                 </View>
 
                 <Text className="happy-font-body-bold mb-2 text-center text-[30px] leading-9 text-ink">
@@ -109,7 +110,7 @@ export const EraseDataConfirmationModal: React.FC<
                   <HugeiconsIcon
                     icon={AlertCircleIcon}
                     size={16}
-                    color={TERRACOTTA}
+                    color={SEMANTIC_COLORS.error.foreground}
                   />
                   <Text className="text-sm text-terracotta font-medium">
                     You'll be logged out. This cannot be undone.

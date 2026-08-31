@@ -8,7 +8,8 @@ import {
   BookmarkCheck01Icon,
   Archive01Icon,
 } from "@hugeicons/core-free-icons";
-import { SAGE, INK, INK_SOFT, INK_MUTED, BRAND_BORDER_STRONG } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import type { CopingCard } from "@/src/types/exerciseFlow";
 import dayjs from "dayjs";
 import { getExerciseIcon } from "@/src/data/exerciseIconRegistry";
@@ -68,7 +69,7 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
         {/* Quiet metadata header */}
         <View className="flex-row items-center justify-between mb-3.5">
           <View className="flex-row items-center gap-1.5">
-            <ExerciseIcon type={card.exercise_type} size={15} color={INK_SOFT} />
+            <ExerciseIcon type={card.exercise_type} size={15} color={SEMANTIC_COLORS.text.secondary} />
             <Text className="text-[12px] font-semibold text-ink-soft tracking-wide">
               {exerciseLabel}
             </Text>

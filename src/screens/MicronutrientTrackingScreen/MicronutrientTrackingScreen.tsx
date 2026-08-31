@@ -18,7 +18,8 @@ import { Button } from "@/src/components/ui/Button";
 import { Text } from "@/src/components/ui/Text";
 import { SectionHeader } from "@/src/components/ui/SectionHeader";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
-import { SAGE, OTTER_BLUE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 // ─── Presentational Layer ───────────────────────────────────────────────────
 
@@ -178,7 +179,7 @@ const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
               icon={WellnessIcon}
               count={`${trackedVitaminsCount} / ${vitamins.length}`}
               iconBgClass="bg-sage-50"
-              iconColor={SAGE[500]}
+              iconColor={SEMANTIC_COLORS.brand.primary}
               className="mb-4"
             />
           </FadeInItem>
@@ -195,7 +196,7 @@ const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
               icon={SparklesIcon}
               count={`${trackedMineralsCount} / ${minerals.length}`}
               iconBgClass="bg-otter-blue/10"
-              iconColor={OTTER_BLUE}
+              iconColor={SEMANTIC_COLORS.info.indicator}
               className="mb-4"
             />
           </FadeInItem>

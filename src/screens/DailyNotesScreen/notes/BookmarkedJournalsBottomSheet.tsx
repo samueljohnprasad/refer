@@ -11,7 +11,8 @@ import {
   presentationDetents,
   presentationDragIndicator,
 } from "@expo/ui/swift-ui/modifiers";
-import { BRAND_SURFACE, INK_MUTED, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { SkeletonList } from "@/src/components/ui/Skeleton";
 
 interface BookmarkedJournalsBottomSheetProps {
@@ -99,7 +100,7 @@ export const BookmarkedJournalsBottomSheet: React.FC<
                         ListFooterComponent={
                           <View className="items-center py-6">
                             {isFetchingNextPage ? (
-                              <ActivityIndicator size="small" color={SAGE[400]} />
+                              <ActivityIndicator size="small" color={SEMANTIC_COLORS.brand.primary} />
                             ) : !hasNextPage && bookmarkedJournals.length > 0 ? (
                               <>
                                 <View className="mb-3 h-px w-full bg-sage-100" />
@@ -115,7 +116,7 @@ export const BookmarkedJournalsBottomSheet: React.FC<
                   ) : (
                     <View className="items-center justify-center py-24">
                       <View className="mb-6">
-                        <Feather name="bookmark" size={32} color={INK_MUTED} />
+                        <Feather name="bookmark" size={32} color={SEMANTIC_COLORS.text.tertiary} />
                       </View>
                       <Text className="happy-font-heading-bold mb-3 text-[22px] text-ink">
                         No Pinned Notes

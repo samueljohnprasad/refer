@@ -3,18 +3,8 @@ import React, { type ReactElement } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
-import {
-  SAGE,
-  BRAND_BORDER_STRONG,
-  BRAND_SURFACE,
-  OTTER_BLUE,
-  OTTER_BLUE_TINT,
-  TERRACOTTA,
-  TERRACOTTA_TINT,
-  GOLD,
-  INK,
-  INK_SOFT,
-} from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 // ─── Variant config ──────────────────────────────────────────────────────────
 
@@ -45,68 +35,68 @@ interface VariantConfig {
 
 const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
   primary: {
-    faceColor: SAGE[500],
-    rimColor: SAGE[700],
-    labelColor: BRAND_SURFACE,
+    faceColor: SEMANTIC_COLORS.brand.primary,
+    rimColor: SEMANTIC_COLORS.brand.onSoft,
+    labelColor: SEMANTIC_COLORS.surface.primary,
     disabledFaceColor: "#F3F6FA",
     disabledRimColor: "#E9EEF5",
     disabledLabelColor: "#64748B",
   },
   secondary: {
-    faceColor: BRAND_SURFACE,
-    rimColor: BRAND_BORDER_STRONG,
-    labelColor: INK,
-    faceStrokeColor: BRAND_BORDER_STRONG,
+    faceColor: SEMANTIC_COLORS.surface.primary,
+    rimColor: SEMANTIC_COLORS.border.strong,
+    labelColor: SEMANTIC_COLORS.text.primary,
+    faceStrokeColor: SEMANTIC_COLORS.border.strong,
     faceStrokeWidth: 4,
     disabledFaceColor: "#F7F7F7",
     disabledRimColor: "#E5E5E5",
   },
   correct: {
-    faceColor: OTTER_BLUE_TINT,
-    rimColor: OTTER_BLUE,
+    faceColor: SEMANTIC_COLORS.info.surface,
+    rimColor: SEMANTIC_COLORS.info.indicator,
     labelColor: "#0A7DB8",
     disabledFaceColor: "#F0F9FF",
     disabledRimColor: "#A0D8F8",
   },
   incorrect: {
-    faceColor: TERRACOTTA_TINT,
-    rimColor: TERRACOTTA,
+    faceColor: SEMANTIC_COLORS.error.surface,
+    rimColor: SEMANTIC_COLORS.error.foreground,
     labelColor: "#D10000",
     disabledFaceColor: "#FFF0F0",
     disabledRimColor: "#FFA0A0",
   },
   destructive: {
-    faceColor: BRAND_SURFACE,
-    rimColor: TERRACOTTA,
-    labelColor: TERRACOTTA,
+    faceColor: SEMANTIC_COLORS.surface.primary,
+    rimColor: SEMANTIC_COLORS.error.foreground,
+    labelColor: SEMANTIC_COLORS.error.foreground,
     disabledFaceColor: "#F7F7F7",
     disabledRimColor: "#FFA0A0",
   },
   danger: {
-    faceColor: TERRACOTTA,
+    faceColor: SEMANTIC_COLORS.error.foreground,
     rimColor: "#C1272D",
-    labelColor: BRAND_SURFACE,
+    labelColor: SEMANTIC_COLORS.surface.primary,
     disabledFaceColor: "#FFF0F0",
     disabledRimColor: "#FFA0A0",
   },
   premium: {
     faceColor: "#9B59B6",
     rimColor: "#7B3AAD",
-    labelColor: BRAND_SURFACE,
+    labelColor: SEMANTIC_COLORS.surface.primary,
     disabledFaceColor: "#E8D4FF",
     disabledRimColor: "#B880D8",
   },
   streak: {
-    faceColor: GOLD,
+    faceColor: SEMANTIC_COLORS.warning.foreground,
     rimColor: "#C89400",
-    labelColor: INK,
+    labelColor: SEMANTIC_COLORS.text.primary,
     disabledFaceColor: "#FFF5D6",
     disabledRimColor: "#E0C060",
   },
   pill: {
-    faceColor: BRAND_SURFACE,
-    rimColor: BRAND_BORDER_STRONG,
-    labelColor: INK,
+    faceColor: SEMANTIC_COLORS.surface.primary,
+    rimColor: SEMANTIC_COLORS.border.strong,
+    labelColor: SEMANTIC_COLORS.text.primary,
     disabledFaceColor: "#F7F7F7",
     disabledRimColor: "#E5E5E5",
   },
@@ -218,7 +208,7 @@ export function Button({
         }}
       >
         {loading ? (
-          <ActivityIndicator size="small" color={INK_SOFT} />
+          <ActivityIndicator size="small" color={SEMANTIC_COLORS.text.secondary} />
         ) : label ? (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
             {leftIcon}
@@ -226,7 +216,7 @@ export function Button({
               style={{
                 fontFamily: APP_FONT_FAMILIES.bold,
                 fontSize: sizeConfig.labelSize,
-                color: INK_SOFT,
+                color: SEMANTIC_COLORS.text.secondary,
               }}
             >
               {label}

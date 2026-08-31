@@ -22,7 +22,7 @@ export const THOUGHT_CATCHER_INITIAL: ThoughtCatcherResponse = {
 };
 
 function normalizeBeliefScore(value: number | undefined): number | undefined {
-  if (typeof value !== "number") return undefined;
+  if (typeof value !== "number") return null;
   if (value > 10) {
     return Math.min(Math.max(Math.round(value / 10), 0), 10);
   }
@@ -201,7 +201,7 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
       validate: () => true,
       next: (r) => {
         if (r.isTrue !== null && r.isTrue !== undefined) return "is_true";
-        return undefined;
+        return null;
       },
     },
     {

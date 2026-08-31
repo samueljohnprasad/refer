@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
-import { BRAND_BORDER, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Text } from "@/src/components/ui/Text";
 import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import { Skeleton } from "@/src/components/ui/Skeleton";
@@ -87,8 +88,8 @@ export function FeedbackPanel({
       <View
         className="rounded-2xl border px-5 py-5"
         style={{
-          backgroundColor: isSuccess ? SAGE.selected : SAGE[50],
-          borderColor: isSuccess ? SAGE[200] : BRAND_BORDER,
+          backgroundColor: isSuccess ? SEMANTIC_COLORS.selection.surface : SEMANTIC_COLORS.selection.surface,
+          borderColor: isSuccess ? SEMANTIC_COLORS.selection.foreground : SEMANTIC_COLORS.border.default,
         }}
       >
         <Text variant="label-bold" color={isSuccess ? "sage" : "soft"}>
@@ -101,7 +102,7 @@ export function FeedbackPanel({
       {helperText ? (
         <View
           className="mt-3 rounded-2xl border px-4 py-3"
-          style={{ backgroundColor: SAGE.selected, borderColor: SAGE[200] }}
+          style={{ backgroundColor: SEMANTIC_COLORS.selection.surface, borderColor: SEMANTIC_COLORS.selection.foreground }}
         >
           <Text variant="caption" color="sage" className="mb-1">
             Review this

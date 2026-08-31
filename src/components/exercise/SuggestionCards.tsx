@@ -1,8 +1,8 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Skeleton } from "@/src/components/ui/Skeleton";
-import { SAGE } from "@/lib/tokens";
 import { Feather } from "@expo/vector-icons";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
@@ -104,7 +104,7 @@ export function SuggestionCards({
             <Text
               className="text-[14.5px] flex-1 leading-relaxed pr-3"
               style={{
-                color: isSelected ? SAGE[800] : SAGE[700],
+                color: isSelected ? SEMANTIC_COLORS.shadow : SEMANTIC_COLORS.brand.pressed,
                 fontWeight: isSelected ? "500" : "400",
               }}
             >
@@ -112,7 +112,7 @@ export function SuggestionCards({
             </Text>
             {isSelected ? (
               <View className="mt-0.5">
-                <Feather name="check" size={18} color={SAGE[600]} />
+                <Feather name="check" size={18} color={SEMANTIC_COLORS.text.secondary} />
               </View>
             ) : (
               <View

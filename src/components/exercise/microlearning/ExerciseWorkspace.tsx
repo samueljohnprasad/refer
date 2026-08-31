@@ -1,7 +1,7 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React, { type ReactNode, useEffect, useRef } from "react";
 import { Animated, StyleSheet } from "react-native";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
-import { COURSE_EXERCISE_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 
 interface ExerciseWorkspaceProps {
   children: ReactNode;
@@ -47,6 +47,6 @@ const styles = StyleSheet.create({
     gap: 18,
     borderRadius: 20,
     padding: 20,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
 });

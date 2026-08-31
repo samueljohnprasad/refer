@@ -19,7 +19,8 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import useAudioRecording from "@/hooks/useAudioRecording";
 import * as Haptics from "expo-haptics";
-import { SAGE, INK_SOFT, INK } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Feather } from "@expo/vector-icons";
 import { createLogger } from "@/src/lib/logger";
 import { StaggeredText, type StaggeredTextRef } from "@/src/animations/everybody-can-cook/components/staggered-text";
@@ -216,7 +217,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
                 fontSize={28}
                 textStyle={{
                   fontFamily: APP_FONT_FAMILIES.extraBold,
-                  color: INK,
+                  color: SEMANTIC_COLORS.text.primary,
                   lineHeight: 36,
                   textAlign: "center"
                 }}
@@ -232,7 +233,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
               activeOpacity={0.7}
             >
               <Animated.View style={rotateStyle}>
-                <HugeiconsIcon icon={ReloadIcon} size={16} color={INK_SOFT} />
+                <HugeiconsIcon icon={ReloadIcon} size={16} color={SEMANTIC_COLORS.text.secondary} />
               </Animated.View>
               <Text className="text-ink-soft text-sm happy-font-body-semibold">
                 Shuffle prompt

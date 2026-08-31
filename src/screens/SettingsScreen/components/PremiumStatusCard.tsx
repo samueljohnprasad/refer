@@ -6,7 +6,8 @@ import {
   CrownIcon,
 } from "@hugeicons/core-free-icons";
 import type { CustomerInfo } from "react-native-purchases";
-import { GOLD, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Card } from "@/src/components/ui/Card";
 
 let SwiftUIImage: any = null;
@@ -75,7 +76,7 @@ export const PremiumStatusCard: React.FC<PremiumStatusCardProps> = ({
             <HugeiconsIcon
               icon={CrownIcon}
               size={25}
-              color={GOLD}
+              color={SEMANTIC_COLORS.warning.foreground}
               strokeWidth={1.8}
             />
           )}
@@ -87,12 +88,12 @@ export const PremiumStatusCard: React.FC<PremiumStatusCardProps> = ({
               Premium Active
             </Text>
             {isLoading ? (
-              <ActivityIndicator size="small" color={SAGE[600]} />
+              <ActivityIndicator size="small" color={SEMANTIC_COLORS.brand.pressed} />
             ) : (
               <HugeiconsIcon
                 icon={CheckmarkCircle02Icon}
                 size={18}
-                color={SAGE[600]}
+                color={SEMANTIC_COLORS.brand.pressed}
                 strokeWidth={2}
               />
             )}

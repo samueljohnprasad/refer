@@ -1,9 +1,9 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { View } from "react-native";
 
 import { Text } from "@/src/components/ui/Text";
-import { INK, INK_SOFT, SAGE } from "@/lib/tokens";
 
 interface ReflectionTimelineProps {
   children: React.ReactNode;
@@ -35,7 +35,7 @@ export function ReflectionTimeline({ children }: ReflectionTimelineProps) {
       <View
         pointerEvents="none"
         className="absolute bottom-[7px] left-[7px] top-[7px] w-px"
-        style={{ backgroundColor: SAGE[100] }}
+        style={{ backgroundColor: SEMANTIC_COLORS.surface.secondary }}
       />
       {children}
     </View>
@@ -52,10 +52,10 @@ export function ReflectionTimelineItem({
       <View
         pointerEvents="none"
         className="absolute left-0 top-1 h-[15px] w-[15px] rounded-full border bg-white"
-        style={{ borderColor: SAGE[200] }}
+        style={{ borderColor: SEMANTIC_COLORS.border.default }}
       />
       <Text
-        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK_SOFT }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.secondary }}
         className="mb-1.5 text-[13px] leading-[18px]"
       >
         {label}
@@ -67,8 +67,8 @@ export function ReflectionTimelineItem({
 
 export function ReflectionBulletList({
   items,
-  accentColor = SAGE[600],
-  textColor = INK_SOFT,
+  accentColor = SEMANTIC_COLORS.text.secondary,
+  textColor = SEMANTIC_COLORS.text.secondary,
 }: ReflectionBulletListProps) {
   return (
     <View className="gap-2.5">
@@ -95,20 +95,20 @@ export function ReflectionScoreShift({
   after,
   label,
   detail,
-  accentColor = SAGE[700],
+  accentColor = SEMANTIC_COLORS.brand.pressed,
 }: ReflectionScoreShiftProps) {
   return (
     <View>
       <View className="flex-row items-center">
         <View className="min-w-[48px] items-center">
           <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
             className="text-[32px] leading-[32px]"
           >
             {before}
           </Text>
           <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK_SOFT }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.secondary }}
             className="mt-1 text-[11px] leading-[15px]"
           >
             before /10
@@ -117,7 +117,7 @@ export function ReflectionScoreShift({
 
         <View
           className="mx-3 h-px w-8"
-          style={{ backgroundColor: SAGE[100] }}
+          style={{ backgroundColor: SEMANTIC_COLORS.surface.secondary }}
         />
 
         <View className="min-w-[48px] items-center">
@@ -145,7 +145,7 @@ export function ReflectionScoreShift({
 
       {detail ? (
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
+          style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
           className="mt-3 text-[14px] leading-[20px]"
         >
           {detail}

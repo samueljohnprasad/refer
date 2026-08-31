@@ -1,8 +1,8 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
 import Slider from "@react-native-community/slider";
 import type { ExplorableControl } from "@/src/components/exercise/explorableModelContent";
-import { COURSE_EXERCISE_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import { explorableModelStyles as styles } from "@/src/components/exercise/explorableModelStyles";
 
 interface ExplorableModelControlProps {
@@ -41,9 +41,9 @@ export function ExplorableModelControl({
           maximumValue={control.max}
           step={control.step}
           value={sliderValue}
-          minimumTrackTintColor={COURSE_EXERCISE_COLORS.accent}
-          maximumTrackTintColor={COURSE_EXERCISE_COLORS.border}
-          thumbTintColor={COURSE_EXERCISE_COLORS.accent}
+          minimumTrackTintColor={SEMANTIC_COLORS.brand.primary}
+          maximumTrackTintColor={SEMANTIC_COLORS.border.default}
+          thumbTintColor={SEMANTIC_COLORS.brand.primary}
           onValueChange={onSliderDraft}
           onSlidingComplete={onSliderSettle}
           style={styles.slider}

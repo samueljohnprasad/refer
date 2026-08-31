@@ -13,7 +13,8 @@ import {
   Download02Icon,
 } from "@hugeicons/core-free-icons";
 import { format } from "date-fns";
-import { INK_MUTED, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Card } from "@/src/components/ui/Card";
 import { Button } from "@/src/components/ui/Button";
 import StageProgressBar from "@/src/components/ui/StageProgressBar";
@@ -71,7 +72,7 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
                 <HugeiconsIcon
                   icon={Download02Icon}
                   size={18}
-                  color={SAGE[600]}
+                  color={SEMANTIC_COLORS.brand.pressed}
                   strokeWidth={1.8}
                 />
               </View>
@@ -94,7 +95,7 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
                 <HugeiconsIcon
                   icon={Calendar01Icon}
                   size={18}
-                  color={SAGE[600]}
+                  color={SEMANTIC_COLORS.brand.pressed}
                   strokeWidth={1.8}
                 />
                 <Text className="happy-font-body-medium text-base text-ink">
@@ -117,7 +118,7 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
                 onChangeText={setImportDaysCount}
                 keyboardType="number-pad"
                 placeholder="20"
-                placeholderTextColor={INK_MUTED}
+                placeholderTextColor={SEMANTIC_COLORS.text.tertiary}
                 maxLength={2}
                 editable={!importing}
                 accessibilityLabel="Number of days to import"
@@ -132,7 +133,7 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
             {/* Progress bar instead of just ActivityIndicator + text */}
             {importing && (
               <View className="mb-4 items-center">
-                <ActivityIndicator size="small" color={SAGE[600]} />
+                <ActivityIndicator size="small" color={SEMANTIC_COLORS.brand.pressed} />
                 <Text className="happy-font-body-medium text-[13px] text-ink-muted mt-2 mb-2">
                   Importing {progress.current} of {progress.total}...
                 </Text>
@@ -140,7 +141,7 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
                 <StageProgressBar
                   progress={progressPercent}
                   height={8}
-                  fillColor={SAGE[500]}
+                  fillColor={SEMANTIC_COLORS.brand.primary}
                   className="w-full"
                 />
                 <Text className="happy-font-body-bold text-[11px] text-sage-600 mt-1">

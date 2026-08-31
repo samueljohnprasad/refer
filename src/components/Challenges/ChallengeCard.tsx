@@ -28,7 +28,8 @@ import {
   StarsIcon,
   Coins01Icon,
 } from "@hugeicons/core-free-icons";
-import { GOLD, SAGE, TERRACOTTA } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface ChallengeCardProps {
   challenge: ActiveChallenge;
@@ -37,26 +38,26 @@ interface ChallengeCardProps {
 
 /** Map challenge emoji icon to a Happy Sage icon treatment. */
 const ICON_MAP: Record<string, { icon: any; bgClassName: string; color: string }> = {
-  "😊": { icon: SmileDizzyIcon, bgClassName: "bg-gold/15", color: GOLD },
-  "📝": { icon: NoteIcon, bgClassName: "bg-sage-50", color: SAGE[600] },
-  "✅": { icon: TaskAdd01Icon, bgClassName: "bg-sage-pill", color: SAGE[600] },
-  "🍎": { icon: HealthIcon, bgClassName: "bg-terracotta-light/15", color: TERRACOTTA },
-  "🧘": { icon: StarsIcon, bgClassName: "bg-sage-50", color: SAGE[500] },
-  "🎙️": { icon: Mic01Icon, bgClassName: "bg-sage-50", color: SAGE[500] },
-  "☀️": { icon: Sun01Icon, bgClassName: "bg-gold/15", color: GOLD },
-  "🌙": { icon: MoonIcon, bgClassName: "bg-sage-50", color: SAGE[500] },
-  "📚": { icon: BookOpen01Icon, bgClassName: "bg-sage-50", color: SAGE[600] },
-  "💡": { icon: BulbIcon, bgClassName: "bg-gold/15", color: GOLD },
-  "📷": { icon: Camera01Icon, bgClassName: "bg-sage-50", color: SAGE[500] },
-  "🥗": { icon: HealthIcon, bgClassName: "bg-sage-pill", color: SAGE[600] },
-  "🔥": { icon: Fire02Icon, bgClassName: "bg-terracotta-light/15", color: TERRACOTTA },
-  "🏆": { icon: Medal01Icon, bgClassName: "bg-gold/15", color: GOLD },
+  "😊": { icon: SmileDizzyIcon, bgClassName: "bg-gold/15", color: SEMANTIC_COLORS.warning.foreground },
+  "📝": { icon: NoteIcon, bgClassName: "bg-sage-50", color: SEMANTIC_COLORS.brand.pressed },
+  "✅": { icon: TaskAdd01Icon, bgClassName: "bg-sage-pill", color: SEMANTIC_COLORS.brand.pressed },
+  "🍎": { icon: HealthIcon, bgClassName: "bg-terracotta-light/15", color: SEMANTIC_COLORS.error.foreground },
+  "🧘": { icon: StarsIcon, bgClassName: "bg-sage-50", color: SEMANTIC_COLORS.brand.primary },
+  "🎙️": { icon: Mic01Icon, bgClassName: "bg-sage-50", color: SEMANTIC_COLORS.brand.primary },
+  "☀️": { icon: Sun01Icon, bgClassName: "bg-gold/15", color: SEMANTIC_COLORS.warning.foreground },
+  "🌙": { icon: MoonIcon, bgClassName: "bg-sage-50", color: SEMANTIC_COLORS.brand.primary },
+  "📚": { icon: BookOpen01Icon, bgClassName: "bg-sage-50", color: SEMANTIC_COLORS.brand.pressed },
+  "💡": { icon: BulbIcon, bgClassName: "bg-gold/15", color: SEMANTIC_COLORS.warning.foreground },
+  "📷": { icon: Camera01Icon, bgClassName: "bg-sage-50", color: SEMANTIC_COLORS.brand.primary },
+  "🥗": { icon: HealthIcon, bgClassName: "bg-sage-pill", color: SEMANTIC_COLORS.brand.pressed },
+  "🔥": { icon: Fire02Icon, bgClassName: "bg-terracotta-light/15", color: SEMANTIC_COLORS.error.foreground },
+  "🏆": { icon: Medal01Icon, bgClassName: "bg-gold/15", color: SEMANTIC_COLORS.warning.foreground },
 };
 
 const DEFAULT_ICON = {
   icon: StarsIcon,
   bgClassName: "bg-sage-50",
-  color: SAGE[500],
+  color: SEMANTIC_COLORS.brand.primary,
 };
 
 const ChallengeIconBubble: React.FC<{
@@ -143,7 +144,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
                     <HugeiconsIcon
                       icon={CheckmarkBadge01Icon}
                       size={10}
-                      color={SAGE[600]}
+                      color={SEMANTIC_COLORS.brand.pressed}
                       strokeWidth={2.5}
                     />
                     <Text variant="eyebrow" className="text-[10px]">Done</Text>
@@ -202,7 +203,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
                 <HugeiconsIcon
                   icon={CheckmarkBadge01Icon}
                   size={12}
-                  color={SAGE[600]}
+                  color={SEMANTIC_COLORS.brand.pressed}
                   strokeWidth={2.5}
                 />
                 <Text variant="chip" color="sage">Done</Text>
@@ -238,7 +239,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
             <HugeiconsIcon
               icon={StarsIcon}
               size={12}
-              color={GOLD}
+              color={SEMANTIC_COLORS.warning.foreground}
               strokeWidth={1.8}
             />
             <Text variant="chip" color="soft">

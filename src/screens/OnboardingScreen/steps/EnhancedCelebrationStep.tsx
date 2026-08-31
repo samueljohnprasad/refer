@@ -15,7 +15,8 @@ import {
   Idea01Icon,
   Mic01Icon,
 } from "@hugeicons/core-free-icons";
-import { SAGE, OTTER_BLUE, MACAW_PURPLE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import type { HugeIconObject } from "@/src/data/journey/hugeiconsRegistry";
 
 interface EnhancedCelebrationStepProps {
@@ -118,7 +119,7 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                 >
                     <View className="flex-row items-center">
                         <View className="mr-3 bg-purple-200 p-2 rounded-xl">
-                            <HugeiconsIcon icon={StarIcon} size={20} color={MACAW_PURPLE} />
+                            <HugeiconsIcon icon={StarIcon} size={20} color={SEMANTIC_COLORS.info.indicator} />
                         </View>
                         <View className="flex-1">
                             <Text className="text-purple-800 text-sm font-bold">
@@ -196,7 +197,7 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                             <Text className="text-gray-600 dark:text-gray-300 text-sm font-medium leading-5">
                                 Try voice journaling, just talk it out
                             </Text>
-                            <HugeiconsIcon icon={Mic01Icon} size={14} color={SAGE[600]} />
+                            <HugeiconsIcon icon={Mic01Icon} size={14} color={SEMANTIC_COLORS.brand.pressed} />
                         </View>
                     </View>
                     <View className="flex-row items-start">

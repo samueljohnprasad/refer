@@ -24,7 +24,8 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { BookmarkAdd01Icon } from "@hugeicons/core-free-icons";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
-import { SAGE, BRAND_SURFACE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { CopingCardItem } from "./CopingCardItem";
 import { useHeaderHeight } from "expo-router/react-navigation";
 
@@ -101,7 +102,7 @@ export const CopingCardsScreen: React.FC = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: BRAND_SURFACE }}
+      style={{ flex: 1, backgroundColor: SEMANTIC_COLORS.surface.primary }}
       edges={["bottom", "left", "right"]}
     >
       <Stack.Screen
@@ -122,7 +123,7 @@ export const CopingCardsScreen: React.FC = () => {
           <View className="px-5 mb-4" style={{ paddingTop: headerHeight + 8 }}>
             <Host style={{ height: 32, width: 220 }}>
               <Picker
-                modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
+                modifiers={[pickerStyle("segmented"), tint(SEMANTIC_COLORS.brand.pressed)]}
                 selection={viewMode === "active" ? "Active" : "Archived"}
                 onSelectionChange={(selection) => {
                   if (selection === "Active") setViewMode("active");
@@ -190,7 +191,7 @@ export const CopingCardsScreen: React.FC = () => {
             
             const rowModifiers = [
               listRowBackground(
-                item.archived ? "#F9FAF9" : item.starred ? SAGE[50] : "#ffffff"
+                item.archived ? "#F9FAF9" : item.starred ? SEMANTIC_COLORS.selection.surface : "#ffffff"
               )
             ];
             
@@ -215,7 +216,7 @@ export const CopingCardsScreen: React.FC = () => {
                         ? handleUnarchive(item.id)
                         : handleArchive(item.id)
                     }
-                    modifiers={[tint(item.archived ? SAGE[600] : "#F87171")]}
+                    modifiers={[tint(item.archived ? SEMANTIC_COLORS.brand.pressed : "#F87171")]}
                     systemImage={item.archived ? "tray.and.arrow.up.fill" : "archivebox.fill"}
                     label={item.archived ? "Restore" : "Archive"}
                   />
@@ -223,7 +224,7 @@ export const CopingCardsScreen: React.FC = () => {
                 <SwipeActions.Actions edge="leading" allowsFullSwipe={true}>
                 <Button
                   onPress={() => handleToggleStar(item.id)}
-                  modifiers={[tint(SAGE[400])]}
+                  modifiers={[tint(SEMANTIC_COLORS.brand.primary)]}
                   systemImage={item.starred ? "star.slash.fill" : "star.fill"}
                   label={item.starred ? "Unstar" : "Star"}
                 />
@@ -279,7 +280,7 @@ function EmptyState() {
         <HugeiconsIcon
           icon={BookmarkAdd01Icon}
           size={36}
-          color={SAGE[400]}
+          color={SEMANTIC_COLORS.brand.primary}
           strokeWidth={1.5}
         />
       </View>

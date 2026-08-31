@@ -1,9 +1,8 @@
 import React from "react";
 import Svg, { Line, Polyline, Text as SvgText } from "react-native-svg";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import type { ExplorableValues } from "@/src/components/exercise/explorableModelContent";
 import { getMayaAlarmLevel } from "@/src/components/exercise/mayaAlarmModel";
 
@@ -39,22 +38,22 @@ export function MayaAlarmChart({
       width="100%"
     >
       <Line x1={12} y1={BASELINE_Y} x2={292} y2={BASELINE_Y}
-        stroke={COURSE_EXERCISE_COLORS.border} strokeWidth={2} strokeLinecap="round" />
+        stroke={SEMANTIC_COLORS.border.default} strokeWidth={2} strokeLinecap="round" />
       <Line x1={bedtimeX} y1={16} x2={bedtimeX} y2={132}
-        stroke={COURSE_EXERCISE_COLORS.accentLight} strokeWidth={2} strokeDasharray="4 4" />
-      <SvgText x={bedtimeX} y={11} fill={COURSE_EXERCISE_COLORS.accentDark}
+        stroke={SEMANTIC_COLORS.brand.primaryLight} strokeWidth={2} strokeDasharray="4 4" />
+      <SvgText x={bedtimeX} y={11} fill={SEMANTIC_COLORS.brand.pressed}
         fontFamily={COURSE_EXERCISE_FONTS.bodyBold} fontSize={9} textAnchor="middle">
         11pm
       </SvgText>
       <Line x1={12} y1={thresholdY} x2={292} y2={thresholdY}
-        stroke={COURSE_EXERCISE_COLORS.accent} strokeWidth={2}
+        stroke={SEMANTIC_COLORS.brand.primary} strokeWidth={2}
         strokeDasharray="3 5" strokeLinecap="round" />
-      <SvgText x={290} y={thresholdY - 5} fill={COURSE_EXERCISE_COLORS.accentDark}
+      <SvgText x={290} y={thresholdY - 5} fill={SEMANTIC_COLORS.brand.pressed}
         fontFamily={COURSE_EXERCISE_FONTS.bodyBold} fontSize={9} textAnchor="end">
         switch-off line
       </SvgText>
       <Polyline points={points.join(" ")} fill="none"
-        stroke={COURSE_EXERCISE_COLORS.accent} strokeWidth={3.5}
+        stroke={SEMANTIC_COLORS.brand.primary} strokeWidth={3.5}
         strokeLinecap="round" strokeLinejoin="round" />
       <AxisLabel x={12} anchor="start">7am</AxisLabel>
       <AxisLabel x={152} anchor="middle">4pm</AxisLabel>
@@ -69,7 +68,7 @@ function AxisLabel({ x, anchor, children }: {
   children: string;
 }) {
   return (
-    <SvgText x={x} y={144} fill={COURSE_EXERCISE_COLORS.inkSoft}
+    <SvgText x={x} y={144} fill={SEMANTIC_COLORS.text.secondary}
       fontFamily={COURSE_EXERCISE_FONTS.bodyBold} fontSize={9} textAnchor={anchor}>
       {children}
     </SvgText>

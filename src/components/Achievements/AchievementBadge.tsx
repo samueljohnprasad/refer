@@ -2,7 +2,8 @@ import React from "react";
 import { View, Text, Pressable, Image } from "react-native";
 import type { Achievement } from "@/src/types/achievements";
 // FIX #28: Removed unused Svg and Polygon imports (dead code)
-import { INK_MUTED } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 
 // Helper to tint achievement colors for badge backgrounds

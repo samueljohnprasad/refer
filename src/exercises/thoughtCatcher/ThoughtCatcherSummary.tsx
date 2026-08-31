@@ -13,7 +13,7 @@ import { ThoughtRecordRecap } from "@/src/components/exercise/ThoughtRecordRecap
 import { Text } from "@/src/components/ui/Text";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
 import { EXERCISE_LINKING_MAP } from "@/src/data/exerciseLinkingMap";
-import { DANGER, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import type {
   ExerciseType,
   StepProps,
@@ -60,7 +60,7 @@ function FollowupLink({
       className="min-h-11 flex-row items-center justify-center py-2 active:opacity-70"
     >
       <Text
-        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.pressed }}
         className="text-[14px] leading-[20px]"
       >
         {label}
@@ -68,7 +68,7 @@ function FollowupLink({
       <HugeiconsIcon
         icon={ArrowRight01Icon}
         size={16}
-        color={SAGE[500]}
+        color={SEMANTIC_COLORS.brand.primary}
         strokeWidth={2}
       />
     </Pressable>
@@ -108,11 +108,11 @@ function SaveCopingCardAction({
         <HugeiconsIcon
           icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon}
           size={18}
-          color={SAGE[700]}
+          color={SEMANTIC_COLORS.brand.onSoft}
           strokeWidth={2}
         />
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[700] }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.onSoft }}
           className="ml-2 text-[14px] leading-[20px]"
         >
           {cardSaved
@@ -125,7 +125,7 @@ function SaveCopingCardAction({
 
       {error ? (
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: DANGER }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.error.indicator }}
           className="mt-2 text-[13px] leading-[18px]"
         >
           {error}

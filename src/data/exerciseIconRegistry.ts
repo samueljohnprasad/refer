@@ -52,7 +52,7 @@ import {
 
 import type { HugeIconObject } from "@/src/data/journey/hugeiconsRegistry";
 import type { ExerciseType, ExerciseCategory } from "@/src/types/exerciseFlow";
-import { SAGE, OTTER_BLUE, GOLD, MACAW_PURPLE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
 // ─── Exercise Type → Icon ────────────────────────────────────────────────────
 
@@ -96,10 +96,10 @@ export interface CategoryTint {
 }
 
 export const CATEGORY_TINT: Record<ExerciseCategory, CategoryTint> = {
-  cbt_core: { iconBg: "bg-sage-50", iconColor: SAGE[600], eyebrowColor: "text-sage-500" },
-  mindfulness: { iconBg: "bg-otter-blue/10", iconColor: OTTER_BLUE, eyebrowColor: "text-otter-blue" },
-  anxiety: { iconBg: "bg-gold/10", iconColor: GOLD, eyebrowColor: "text-bee-yellow" },
-  overthinking: { iconBg: "bg-macaw-purple/10", iconColor: MACAW_PURPLE, eyebrowColor: "text-macaw-purple" },
+  cbt_core: { iconBg: "bg-surface-secondary", iconColor: SEMANTIC_COLORS.brand.primary as string, eyebrowColor: "text-brand-primary" },
+  mindfulness: { iconBg: "bg-surface-secondary", iconColor: SEMANTIC_COLORS.info.indicator as string, eyebrowColor: "text-info-indicator" },
+  anxiety: { iconBg: "bg-surface-secondary", iconColor: SEMANTIC_COLORS.warning.indicator as string, eyebrowColor: "text-warning-indicator" },
+  overthinking: { iconBg: "bg-surface-secondary", iconColor: SEMANTIC_COLORS.error.indicator as string, eyebrowColor: "text-error-indicator" },
 };
 
 export function getCategoryTint(category: string): CategoryTint {

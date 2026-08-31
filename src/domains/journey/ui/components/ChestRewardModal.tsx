@@ -18,7 +18,8 @@ import {
   presentationDetents,
   presentationDragIndicator,
 } from "@expo/ui/swift-ui/modifiers";
-import { GOLD, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { SvgAppButton } from "@/src/domains/journey/ui/components/svg-app-button";
 import type { PathNodeData } from "@/src/types/journey/node";
 
@@ -39,7 +40,7 @@ function ChestRewardContent({
       spacing={18}
       modifiers={[padding({ horizontal: 24, vertical: 20 })]}
     >
-      <Image systemName="gift.fill" size={30} color={GOLD} />
+      <Image systemName="gift.fill" size={30} color={SEMANTIC_COLORS.warning.foreground} />
       <VStack alignment="center" spacing={4}>
         <Text modifiers={[font({ size: 24, weight: "semibold" })]}>
           Treasure Chest!
@@ -53,8 +54,8 @@ function ChestRewardContent({
           <SvgAppButton
             width={280}
             height={54}
-            color={isClaiming ? SAGE[300] : SAGE[500]}
-            backgroundColor={SAGE[700]}
+            color={isClaiming ? SEMANTIC_COLORS.border.selected : SEMANTIC_COLORS.brand.primary}
+            backgroundColor={SEMANTIC_COLORS.brand.onSoft}
             leftRadius={14}
             rightRadius={14}
             disabled={isClaiming}

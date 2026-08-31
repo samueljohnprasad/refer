@@ -9,7 +9,8 @@ import {
 import { Text } from "@/components/Themed";
 import useTodayPillAnimation from "@/hooks/animations/useTodayPillAnimation";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 export interface TodayPillProps {
   visible: boolean;
@@ -29,8 +30,8 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
     label = "Today",
     onPress,
     containerStyle,
-    backgroundColor = SAGE.selected,
-    textColor = SAGE[600],
+    backgroundColor = SEMANTIC_COLORS.selection.surface,
+    textColor = SEMANTIC_COLORS.brand.pressed,
     durationMs,
     offsetX,
     scaleFrom,

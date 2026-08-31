@@ -1,9 +1,8 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import type {
   ChoiceVisualState,
   MicrolearningChoice,
@@ -63,14 +62,14 @@ const styles = StyleSheet.create({
     minHeight: 48,
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: COURSE_EXERCISE_COLORS.border,
+    borderColor: SEMANTIC_COLORS.border.default,
     borderRadius: 16,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: COURSE_EXERCISE_COLORS.background,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
   label: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
     fontSize: 16,
     lineHeight: 22,
@@ -81,24 +80,24 @@ const styles = StyleSheet.create({
 const choiceStyles = StyleSheet.create({
   idle: {},
   selected: {
-    borderColor: COURSE_EXERCISE_COLORS.accent,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    borderColor: SEMANTIC_COLORS.brand.primary,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   supported: {
-    borderColor: COURSE_EXERCISE_COLORS.accent,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    borderColor: SEMANTIC_COLORS.brand.primary,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   unsupported: {
-    borderColor: COURSE_EXERCISE_COLORS.error,
-    backgroundColor: COURSE_EXERCISE_COLORS.errorTint,
+    borderColor: SEMANTIC_COLORS.error.primary,
+    backgroundColor: SEMANTIC_COLORS.error.soft,
   },
   disabled: { opacity: 0.5 },
 });
 
 const labelStyles = StyleSheet.create({
   idle: {},
-  selected: { color: COURSE_EXERCISE_COLORS.accentDark },
-  supported: { color: COURSE_EXERCISE_COLORS.accentDark },
-  unsupported: { color: COURSE_EXERCISE_COLORS.error },
-  disabled: { color: COURSE_EXERCISE_COLORS.inkSoft },
+  selected: { color: SEMANTIC_COLORS.brand.pressed },
+  supported: { color: SEMANTIC_COLORS.brand.pressed },
+  unsupported: { color: SEMANTIC_COLORS.error.primary },
+  disabled: { color: SEMANTIC_COLORS.text.secondary },
 });

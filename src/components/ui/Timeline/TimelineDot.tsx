@@ -1,6 +1,7 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface TimelineDotProps {
   readonly status: "completed" | "in_progress" | "draft";
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   haloCompleted: {
-    backgroundColor: "rgba(95, 127, 88, 0.15)", // SAGE[600] with 15% opacity
+    backgroundColor: "rgba(95, 127, 88, 0.15)", // SEMANTIC_COLORS.brand.pressed with 15% opacity
   },
   haloNeutral: {
     backgroundColor: "transparent",
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   innerCompleted: {
-    backgroundColor: SAGE[600],
+    backgroundColor: SEMANTIC_COLORS.brand.pressed,
     borderColor: "#FFFFFF",
   },
   innerNeutral: {

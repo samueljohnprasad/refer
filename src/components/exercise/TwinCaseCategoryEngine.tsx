@@ -7,9 +7,8 @@ import {
   type TwinCasePair,
 } from "@/src/components/exercise/CourseExerciseTwinColumn";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import {
   readRecord,
   readString,
@@ -167,7 +166,7 @@ const styles = StyleSheet.create({
   columns: { flexDirection: "row", gap: 10 },
   status: {
     marginTop: 12,
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 13,
     textAlign: "center",
@@ -177,28 +176,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     paddingVertical: 20,
     borderRadius: 28,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
-    shadowColor: COURSE_EXERCISE_COLORS.shadow,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
+    shadowColor: SEMANTIC_COLORS.shadow,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.14,
     shadowRadius: 8,
   },
   revealTitle: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 19,
     lineHeight: 24,
   },
   revealBody: {
     marginTop: 7,
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 13.5,
     lineHeight: 20,
   },
   next: {
     marginTop: 10,
-    color: COURSE_EXERCISE_COLORS.accent,
+    color: SEMANTIC_COLORS.brand.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 13,
     lineHeight: 18,

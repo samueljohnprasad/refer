@@ -1,11 +1,12 @@
 import { useCallback } from "react";
 import { useColorScheme } from "react-native";
 import * as Haptics from "expo-haptics";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import type { JourneyNode, PathNodeData, NodePosition } from "@/src/types/journey";
 import { NodeIcon, NodeStatus } from "@/src/types/journey";
 import { useHighContrast } from "@/src/hooks/useHighContrast";
-import { darkenHex } from "@/src/utils/colorUtils";
+
 import { useJourneySettings } from "@/src/context/JourneyConfigContext";
 
 export const NODE_VERTICAL_POSITION_RATIO = 0.85;
@@ -16,7 +17,7 @@ export interface JourneyNodeCellProps {
   courseId: string;
   screenWidth: number;
   activeGlobalIndex: number;
-  onNodePress: (node: PathNodeData, event?: any, color?: string) => void;
+  onNodePress: (node: PathNodeData, event?: any, color?: string | import("react-native").OpaqueColorValue) => void;
 }
 
 export function toPathNodeData(item: JourneyNode): PathNodeData {
@@ -55,27 +56,28 @@ export function useJourneyNodeCellViewModel({
   };
   const pathNodeData = toPathNodeData(item);
 
-  let faceColor: string = isDark ? SAGE[800] : SAGE[100];
-  let iconColor: string = isDark ? SAGE[300] : SAGE[600];
+  let faceColor: string | import("react-native").OpaqueColorValue = isDark ? SEMANTIC_COLORS.brand.onSoft : SEMANTIC_COLORS.brand.soft;
+  let rimColor: string | import("react-native").OpaqueColorValue = isDark ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.brand.pressed;
+  let iconColor: string | import("react-native").OpaqueColorValue = isDark ? SEMANTIC_COLORS.border.selected : SEMANTIC_COLORS.brand.pressed;
   let iconName = item.icon || "star";
   let isInteractive = false;
   let showProgressRing = false;
   let showTooltip = false;
 
   if (item.status === NodeStatus.COMPLETED) {
-    faceColor = isDark ? SAGE[700] : SAGE[200];
-    iconColor = isDark ? SAGE[100] : SAGE[700];
+    faceColor = isDark ? SEMANTIC_COLORS.brand.onSoft : SEMANTIC_COLORS.selection.foreground;
+    rimColor = isDark ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.brand.pressed;
+    iconColor = isDark ? SEMANTIC_COLORS.brand.soft : SEMANTIC_COLORS.brand.onSoft;
     iconName = NodeIcon.CHECKPOINT;
     isInteractive = true;
   } else if (item.status === NodeStatus.ACTIVE) {
-    faceColor = SAGE[500];
+    faceColor = SEMANTIC_COLORS.brand.primary;
+    rimColor = SEMANTIC_COLORS.brand.pressed;
     iconColor = "#FFFFFF";
     isInteractive = true;
     showProgressRing = true;
     showTooltip = true;
   }
-
-  const rimColor = darkenHex(faceColor, 0.22);
   const size = settings.defaultNodeSize;
   const hugeiconSize = size * HUGEICON_SIZE_RATIO;
   const halfSize = size / 2;
@@ -119,6 +121,6 @@ export function useJourneyNodeCellViewModel({
     ringOffset,
     dashedConfig: { width: dashWidth, gap: dashGap },
     progressPercent: (item.progress ?? 0) * 100,
-    ringBackgroundColor: isDark ? SAGE[800] : SAGE[200],
+    ringBackgroundColor: isDark ? SEMANTIC_COLORS.brand.onSoft : SEMANTIC_COLORS.selection.foreground,
   };
 }

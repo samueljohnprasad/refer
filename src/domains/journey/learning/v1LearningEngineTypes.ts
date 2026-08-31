@@ -1,9 +1,11 @@
 import type { Exercise } from "@/src/types/journeyV5";
+import type { CourseExerciseCategoryConfig } from "@/src/components/exercise/courseExerciseCategoryConfig";
 
 export interface V1CategoryEngineProps {
   exercise: Exercise;
   savedResponse?: unknown;
   locked?: boolean;
+  config?: CourseExerciseCategoryConfig;
   onInteraction: (
     response: Record<string, unknown>,
     /** Whether the current persistent-footer action is enabled. */
@@ -23,7 +25,7 @@ export interface RecallWarmupContent {
   cards: RecallCard[];
 }
 
-export interface RecallWarmupResponse {
+export interface RecallWarmupResponse extends Record<string, unknown> {
   format: "recall_warmup";
   phase: "intro" | "card" | "complete";
   currentCardIndex: number;

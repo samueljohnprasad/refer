@@ -1,3 +1,4 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -28,17 +29,16 @@ import * as Haptics from "expo-haptics";
 import useAudioRecording from "@/hooks/useAudioRecording";
 import { useTranscribeAudio } from "@/hooks/useTranscribeAudio";
 import { Text } from "@/src/components/ui/Text";
-import { BRAND_SURFACE, INK, INK_MUTED, INK_SOFT, SAGE } from "@/lib/tokens";
 
 const canvasPadding = 50;
 const borderRadius = 20;
 const glowHeightExpansion = 10;
 const actionSize = 44;
 
-const glowGradientColors = [SAGE[200], SAGE[50], SAGE[200]];
+const glowGradientColors = [SEMANTIC_COLORS.border.default, SEMANTIC_COLORS.surface.elevated, SEMANTIC_COLORS.border.default];
 const glowPositions = [0, 0.5, 1];
 
-const travelingColors = ["transparent", SAGE[400], SAGE[500], "transparent"];
+const travelingColors = ["transparent", SEMANTIC_COLORS.border.selected, SEMANTIC_COLORS.brand.primary, "transparent"];
 const travelingPositions = [0.3, 0.75, 0.4, 1];
 
 type BaseComposerProps = {
@@ -106,7 +106,7 @@ const WaveBar = ({ delay }: { delay: number }) => {
       style={[
         {
           width: 2.5,
-          backgroundColor: INK,
+          backgroundColor: SEMANTIC_COLORS.text.primary,
           borderRadius: 2,
           marginHorizontal: 1,
         },
@@ -176,7 +176,7 @@ function ComposerShell({
             value={value}
             onChangeText={onChange}
             placeholder={placeholder}
-            placeholderTextColor={INK_SOFT}
+            placeholderTextColor={SEMANTIC_COLORS.text.secondary}
             onSubmitEditing={onSubmitEditing}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
@@ -389,7 +389,7 @@ function VoiceButton({
       accessibilityLabel={isRecording ? "Stop voice input" : "Start voice input"}
     >
       {isTranscribing ? (
-        <ActivityIndicator size="small" color={SAGE[600]} />
+        <ActivityIndicator size="small" color={SEMANTIC_COLORS.text.secondary} />
       ) : isRecording ? (
         <View style={{ flexDirection: "row", alignItems: "center", height: 16 }}>
           {[0, 150, 75, 200].map((delay, index) => (
@@ -397,7 +397,7 @@ function VoiceButton({
           ))}
         </View>
       ) : (
-        <HugeiconsIcon icon={AudioWave01Icon} size={16} color={SAGE[600]} />
+        <HugeiconsIcon icon={AudioWave01Icon} size={16} color={SEMANTIC_COLORS.text.secondary} />
       )}
     </Pressable>
   );
@@ -516,7 +516,7 @@ function ListComposer(props: ListComposerProps) {
             >
               <View
                 className="mr-3 mt-2 h-2 w-2 rounded-full"
-                style={{ backgroundColor: SAGE[400] }}
+                style={{ backgroundColor: SEMANTIC_COLORS.border.selected }}
               />
               <Text className="flex-1 pr-2 text-[15px] leading-[21px] text-ink">
                 {item}
@@ -531,7 +531,7 @@ function ListComposer(props: ListComposerProps) {
                   <HugeiconsIcon
                     icon={Cancel01Icon}
                     size={16}
-                    color={SAGE[500]}
+                    color={SEMANTIC_COLORS.brand.primary}
                   />
                 </Pressable>
               ) : null}
@@ -577,12 +577,12 @@ function ListComposer(props: ListComposerProps) {
                   ]}
                 >
                   {isTranscribing ? (
-                    <ActivityIndicator size="small" color={SAGE[600]} />
+                    <ActivityIndicator size="small" color={SEMANTIC_COLORS.text.secondary} />
                   ) : (
                     <HugeiconsIcon
                       icon={isRecording ? StopCircleIcon : AudioWave01Icon}
                       size={20}
-                      color={isRecording ? BRAND_SURFACE : SAGE[600]}
+                      color={isRecording ? SEMANTIC_COLORS.surface.primary : SEMANTIC_COLORS.text.secondary}
                       strokeWidth={2}
                     />
                   )}
@@ -597,8 +597,8 @@ function ListComposer(props: ListComposerProps) {
                   style={({ pressed }) => [
                     styles.inlineActionButton,
                     {
-                      backgroundColor: canAdd && !isRecording ? SAGE[500] : SAGE[50],
-                      borderColor: canAdd && !isRecording ? SAGE[500] : SAGE[100],
+                      backgroundColor: canAdd && !isRecording ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.surface.elevated,
+                      borderColor: canAdd && !isRecording ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.surface.secondary,
                       opacity: canAdd && !isRecording ? 1 : 0.62,
                     },
                     pressed && styles.pressed,
@@ -607,13 +607,13 @@ function ListComposer(props: ListComposerProps) {
                   <HugeiconsIcon
                     icon={Add01Icon}
                     size={18}
-                    color={canAdd && !isRecording ? BRAND_SURFACE : SAGE[500]}
+                    color={canAdd && !isRecording ? SEMANTIC_COLORS.surface.primary : SEMANTIC_COLORS.brand.primary}
                     strokeWidth={2}
                   />
                   <Text
                     className="ml-2 text-[14px] font-bold"
                     style={{
-                      color: canAdd && !isRecording ? BRAND_SURFACE : SAGE[500],
+                      color: canAdd && !isRecording ? SEMANTIC_COLORS.surface.primary : SEMANTIC_COLORS.brand.primary,
                     }}
                   >
                     {addLabel}
@@ -661,15 +661,15 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius,
     borderWidth: 1,
-    borderColor: SAGE[200],
-    backgroundColor: BRAND_SURFACE,
+    borderColor: SEMANTIC_COLORS.border.default,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
   inputWrapperFocused: {
-    borderColor: SAGE[500],
+    borderColor: SEMANTIC_COLORS.brand.primary,
   },
   inputWrapperRecording: {
-    borderColor: SAGE[600],
-    backgroundColor: SAGE[50],
+    borderColor: SEMANTIC_COLORS.text.secondary,
+    backgroundColor: SEMANTIC_COLORS.surface.elevated,
   },
   inputContainer: {
     backgroundColor: "transparent",
@@ -681,7 +681,7 @@ const styles = StyleSheet.create({
   input: {
     fontSize: 16,
     lineHeight: 23,
-    color: INK,
+    color: SEMANTIC_COLORS.text.primary,
     textAlignVertical: "top",
     paddingTop: 0,
     paddingBottom: 0,
@@ -716,15 +716,15 @@ const styles = StyleSheet.create({
     width: actionSize,
     height: actionSize,
     borderRadius: actionSize / 2,
-    backgroundColor: SAGE[50],
+    backgroundColor: SEMANTIC_COLORS.surface.elevated,
     borderWidth: 1,
-    borderColor: SAGE[100],
+    borderColor: SEMANTIC_COLORS.surface.secondary,
     justifyContent: "center",
     alignItems: "center",
   },
   waveButtonRecording: {
-    backgroundColor: SAGE[100],
-    borderColor: SAGE[300],
+    backgroundColor: SEMANTIC_COLORS.surface.secondary,
+    borderColor: SEMANTIC_COLORS.text.muted,
   },
   inlineActionButton: {
     height: actionSize,

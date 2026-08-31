@@ -16,9 +16,8 @@ import {
 } from "@/src/components/exercise/microlearning";
 import { readGuidedDiscoveryTrailContent } from "@/src/components/exercise/guidedDiscoveryTrailContent";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
@@ -152,12 +151,12 @@ const styles = StyleSheet.create({
   screen: { flex: 1, gap: 16, paddingHorizontal: 10, paddingBottom: 12, paddingTop: 6 },
   conclusion: { flex: 1, justifyContent: "center", gap: 8 },
   conclusionLabel: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 13,
   },
   conclusionText: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 28,
     lineHeight: 34,

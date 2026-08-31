@@ -8,7 +8,8 @@ import {
   usePersonalEffectiveness,
   type EffectivenessScore,
 } from "@/src/hooks/insights/usePersonalEffectiveness";
-import { SAGE, INK_MUTED } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { getExerciseIcon } from "@/src/data/exerciseIconRegistry";
 import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
 
@@ -37,7 +38,7 @@ function EffectivenessRow({
     >
       <Text className="text-lg w-8">{MEDALS[rank] ?? `${rank + 1}.`}</Text>
       <View className="h-9 w-9 rounded-xl bg-sage-50 items-center justify-center mr-3">
-        <ExerciseIcon type={score.exerciseType} size={18} color={SAGE[600]} />
+        <ExerciseIcon type={score.exerciseType} size={18} color={SEMANTIC_COLORS.brand.pressed} />
       </View>
       <View className="flex-1 min-w-0">
         <Text className="text-[15px] font-bold text-ink" numberOfLines={1}>

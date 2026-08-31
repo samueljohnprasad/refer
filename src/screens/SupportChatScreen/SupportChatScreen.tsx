@@ -48,14 +48,8 @@ import { GlassContainer } from "expo-glass-effect";
 
 import { useAuth } from "@/src/context/AuthContext";
 import { useSupportMessages } from "@/hooks/data/useSupportMessages";
-import {
-  BRAND_SURFACE,
-  BRAND_CANVAS,
-  INK,
-  INK_MUTED,
-  SAGE,
-  DANGER,
-} from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface SupportChatScreenProps {
   onClose?: () => void;
@@ -111,7 +105,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
             width: 36,
             height: 36,
             borderRadius: 18,
-            backgroundColor: isSupport ? SAGE[500] : SAGE.pill,
+            backgroundColor: isSupport ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.selection.surface,
             justifyContent: "center",
             alignItems: "center",
             marginBottom: 4,
@@ -119,7 +113,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
         >
           <Text
             style={{
-              color: isSupport ? BRAND_SURFACE : INK_MUTED,
+              color: isSupport ? SEMANTIC_COLORS.surface.primary : SEMANTIC_COLORS.text.tertiary,
               fontSize: 16,
               fontWeight: "600",
             }}
@@ -131,7 +125,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
           <Text
             style={{
               fontSize: 10,
-              color: INK_MUTED,
+              color: SEMANTIC_COLORS.text.tertiary,
               fontWeight: "500",
             }}
           >
@@ -148,13 +142,13 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
       {...props}
       wrapperStyle={{
         right: {
-          backgroundColor: SAGE[600],
+          backgroundColor: SEMANTIC_COLORS.brand.pressed,
           borderRadius: 20,
           paddingHorizontal: 4,
           paddingVertical: 2,
         },
         left: {
-          backgroundColor: BRAND_CANVAS,
+          backgroundColor: SEMANTIC_COLORS.surface.canvas,
           borderRadius: 20,
           paddingHorizontal: 4,
           paddingVertical: 2,
@@ -169,13 +163,13 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
       textStyle={{
         left: {
           fontFamily: APP_FONT_FAMILIES.regular,
-          color: INK,
+          color: SEMANTIC_COLORS.text.primary,
           fontSize: 16,
           lineHeight: 24,
         },
         right: {
           fontFamily: APP_FONT_FAMILIES.regular,
-          color: BRAND_SURFACE,
+          color: SEMANTIC_COLORS.surface.primary,
           fontSize: 16,
           lineHeight: 24,
         },
@@ -187,7 +181,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
     <Day
       {...props}
       wrapperStyle={{
-        backgroundColor: INK_MUTED,
+        backgroundColor: SEMANTIC_COLORS.text.tertiary,
         borderRadius: 16,
         paddingHorizontal: 16,
         paddingVertical: 6,
@@ -196,7 +190,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
         marginBottom: 8,
       }}
       textStyle={{
-        color: BRAND_SURFACE,
+        color: SEMANTIC_COLORS.surface.primary,
         fontFamily: APP_FONT_FAMILIES.semiBold,
         fontSize: 12,
         fontWeight: "600",
@@ -209,12 +203,12 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
       {...props}
       timeTextStyle={{
         left: {
-          color: INK_MUTED,
+          color: SEMANTIC_COLORS.text.tertiary,
           fontFamily: APP_FONT_FAMILIES.regular,
           fontSize: 11,
         },
         right: {
-          color: BRAND_SURFACE,
+          color: SEMANTIC_COLORS.surface.primary,
           opacity: 0.8,
           fontFamily: APP_FONT_FAMILIES.regular,
           fontSize: 11,
@@ -230,7 +224,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
         paddingHorizontal: 12,
         paddingTop: 8,
         paddingBottom: Math.max(insets.bottom, 12),
-        backgroundColor: BRAND_SURFACE,
+        backgroundColor: SEMANTIC_COLORS.surface.primary,
       }}
     >
       <GlassContainer
@@ -283,8 +277,8 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
           renderTime={renderTime}
           renderInputToolbar={renderInputToolbar}
           quickReplyStyle={{
-            backgroundColor: SAGE.pill,
-            borderColor: SAGE[500],
+            backgroundColor: SEMANTIC_COLORS.selection.surface,
+            borderColor: SEMANTIC_COLORS.brand.primary,
             borderWidth: 1,
             borderRadius: 16,
             paddingHorizontal: 12,
@@ -294,7 +288,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
             marginBottom: 8,
           }}
           quickReplyTextStyle={{
-            color: SAGE[800],
+            color: SEMANTIC_COLORS.brand.onSoft,
             fontFamily: APP_FONT_FAMILIES.semiBold,
             fontSize: 14,
           }}
@@ -305,7 +299,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
             onEndReachedThreshold: 0.5,
           }}
           messagesContainerStyle={{
-            backgroundColor: BRAND_SURFACE,
+            backgroundColor: SEMANTIC_COLORS.surface.primary,
           }}
           keyboardAvoidingViewProps={{ keyboardVerticalOffset }}
         />
@@ -344,7 +338,7 @@ export const SupportChatHeaderLeft: React.FC = () => {
       className="h-11 w-11 items-center justify-center rounded-full bg-sage-pill ml-4"
       activeOpacity={0.7}
     >
-      <HugeiconsIcon icon={ArrowLeft02Icon} size={21} color={SAGE[600]} />
+      <HugeiconsIcon icon={ArrowLeft02Icon} size={21} color={SEMANTIC_COLORS.brand.pressed} />
     </TouchableOpacity>
   );
 };
@@ -406,7 +400,7 @@ export const SupportChatHeaderRight: React.FC = () => {
       className="h-11 w-11 items-center justify-center rounded-full bg-sage-pill mr-4"
       activeOpacity={0.7}
     >
-      <HugeiconsIcon icon={Delete02Icon} size={20} color={SAGE[600]} />
+      <HugeiconsIcon icon={Delete02Icon} size={20} color={SEMANTIC_COLORS.brand.pressed} />
     </TouchableOpacity>
   );
 };

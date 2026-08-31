@@ -4,7 +4,8 @@ import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Mascot, MascotState } from "./Mascot";
 import { Button } from "@/src/components/ui/Button";
-import { BRAND_SURFACE, INK, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { StaggeredText } from "@/src/components/staggered-text";
 import { APP_FONT_ASSETS } from "@/src/theme/typography";
 
@@ -63,7 +64,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             texts={titles}
             activeIndex={activeIndex}
             fontSize={28}
-            color={SAGE[700]}
+            color={SEMANTIC_COLORS.brand.onSoft}
             fontPath={APP_FONT_ASSETS.extraBold}
             staggerFrom="leading"
             height={40}
@@ -96,7 +97,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
                   <HugeiconsIcon
                     icon={buttonIcon}
                     size={18}
-                    color={BRAND_SURFACE}
+                    color={SEMANTIC_COLORS.surface.primary}
                   />
                 ) : undefined
               }
@@ -131,7 +132,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
                 <HugeiconsIcon
                   icon={buttonIcon}
                   size={18}
-                  color={BRAND_SURFACE}
+                  color={SEMANTIC_COLORS.surface.primary}
                 />
               ) : undefined
             }

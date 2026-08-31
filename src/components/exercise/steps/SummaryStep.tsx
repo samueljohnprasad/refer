@@ -1,3 +1,4 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
 import { View, ScrollView } from "react-native";
 import { Text } from "@/src/components/ui/Text";
@@ -10,7 +11,6 @@ import { getExerciseIcon, getCategoryTint } from "@/src/data/exerciseIconRegistr
 import { getExerciseConfig } from "@/src/data/exerciseRegistry";
 import { PostExerciseInsight } from "@/src/components/insights/PostExerciseInsight";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
-import { SAGE } from "@/lib/tokens";
 import type { StepProps, ExerciseType } from "@/src/types/exerciseFlow";
 import { LessonScreen } from "@/src/components/ui/LessonScreen";
 

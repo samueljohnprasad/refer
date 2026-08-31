@@ -26,10 +26,11 @@ export function DialogueCategoryEngine({
 
   // Initialize and repair old state
   useEffect(() => {
+    const prev = savedResponse as any;
     if (
-      !savedResponse ||
-      savedResponse.phase !== response.phase ||
-      savedResponse.beatIndex !== response.beatIndex
+      !prev ||
+      prev.phase !== response.phase ||
+      prev.beatIndex !== response.beatIndex
     ) {
       onInteraction(response, !isPending);
     }

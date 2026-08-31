@@ -1,9 +1,8 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 
 export interface TwinCasePair {
   id: string;
@@ -79,15 +78,15 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   leftHeader: {
-    borderColor: COURSE_EXERCISE_COLORS.accentLight,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    borderColor: SEMANTIC_COLORS.brand.primaryLight,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   rightHeader: {
-    borderColor: COURSE_EXERCISE_COLORS.accentLight,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    borderColor: SEMANTIC_COLORS.brand.primaryLight,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   headerLabel: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 14,
     textAlign: "center",
@@ -100,24 +99,24 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderWidth: 1,
     borderBottomWidth: 4,
-    borderColor: COURSE_EXERCISE_COLORS.border,
+    borderColor: SEMANTIC_COLORS.border.default,
     borderRadius: 22,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
   selected: {
-    borderColor: COURSE_EXERCISE_COLORS.accent,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    borderColor: SEMANTIC_COLORS.brand.primary,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   matched: {
-    borderColor: COURSE_EXERCISE_COLORS.border,
+    borderColor: SEMANTIC_COLORS.border.default,
     borderBottomWidth: 1,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
     opacity: 0.72,
   },
   disabled: { opacity: 0.6 },
   pressed: { transform: [{ translateY: 2 }], borderBottomWidth: 2 },
   pairLabel: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 13,
     lineHeight: 17,

@@ -8,7 +8,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import useNotifications from "@/hooks/data/useNotifications";
 
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { GlassView } from "expo-glass-effect";
 
 import NotificationsUI from "@/src/components/NotificationsUI";

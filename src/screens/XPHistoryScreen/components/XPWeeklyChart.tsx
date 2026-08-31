@@ -30,7 +30,7 @@ const Bar: React.FC<BarProps> = ({ maxHeight, minHeight, width, progress, letter
   const rAnimatedStyle = useAnimatedStyle(() => {
     const height = interpolate(animatedProgress.value, [0, 1], [minHeight, maxHeight]);
     
-    // Highlight the current day using a more saturated brand color (e.g. SAGE[600]) and darker gray when empty
+    // Highlight the current day using a more saturated brand color (e.g. SEMANTIC_COLORS.brand.pressed) and darker gray when empty
     const startColor = isToday ? '#D1D5DB' : '#E5E7EB'; 
     const endColor = isToday ? '#166534' : '#637A65';
 

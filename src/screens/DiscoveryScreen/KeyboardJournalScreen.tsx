@@ -44,7 +44,8 @@ import {
   CircleArrowReload01Icon,
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/src/components/ui/Button";
-import { BRAND_SURFACE, INK_MUTED, INK_SOFT, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface KeyboardJournalScreenProps {
   onSubmit?: (text: string, enableAIInsights?: boolean) => void;
@@ -142,7 +143,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                   labelStyle("iconOnly"),
                   buttonStyle("glass"),
                   controlSize("large"),
-                  tint(INK_SOFT),
+                  tint(SEMANTIC_COLORS.text.secondary),
                 ]}
               />
             </Host>
@@ -167,7 +168,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                   labelStyle("iconOnly"),
                   buttonStyle("glass"),
                   controlSize("large"),
-                  tint(INK_SOFT),
+                  tint(SEMANTIC_COLORS.text.secondary),
                 ]}
               >
                 <SUIToggle
@@ -211,7 +212,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                   <HugeiconsIcon
                     icon={CircleArrowReload01Icon}
                     size={22}
-                    color={SAGE[600]}
+                    color={SEMANTIC_COLORS.brand.pressed}
                   />
                 </Animated.View>
               </Pressable>
@@ -227,7 +228,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                 value={journalText + realtimeResult}
                 onChangeText={setJournalText}
                 placeholder="Start by answering the prompt, or write anything on your mind."
-                placeholderTextColor={INK_MUTED}
+                placeholderTextColor={SEMANTIC_COLORS.text.tertiary}
                 multiline
                 textAlignVertical="top"
                 className="text-ink text-[17px] leading-7 happy-font-body pb-6"
@@ -286,7 +287,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                   fullWidth={false}
                   accessibilityLabel="Submit journal entry"
                   leftIcon={
-                    <HugeiconsIcon icon={Tick01Icon} size={22} color={BRAND_SURFACE} />
+                    <HugeiconsIcon icon={Tick01Icon} size={22} color={SEMANTIC_COLORS.surface.primary} />
                   }
                 />
             </View>

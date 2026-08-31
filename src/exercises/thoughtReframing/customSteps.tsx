@@ -38,13 +38,7 @@ import * as Haptics from "expo-haptics";
 import { EMOTION_OPTIONS } from "@/src/screens/ThoughtReframingScreen/data/emotions";
 import { COGNITIVE_DISTORTIONS } from "@/src/screens/ThoughtReframingScreen/data/cognitiveDistortions";
 
-import {
-  BRAND_BORDER,
-  BRAND_SURFACE_SOFT,
-  INK,
-  INK_MUTED,
-  SAGE,
-} from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import type {
   ThoughtReframingResponse,
   StepProps,
@@ -101,7 +95,7 @@ function InlineFactHint({ text }: { text: string }) {
   return (
     <View className="mb-5 flex-row items-start px-1">
       <View className="mr-3 mt-[2px]">
-        <Feather name="camera" size={15} color={SAGE[600]} />
+        <Feather name="camera" size={15} color={SEMANTIC_COLORS.brand.pressed} />
       </View>
       <Text
         variant="caption"
@@ -117,7 +111,7 @@ function InlineThoughtHint({ text }: { text: string }) {
   return (
     <View className="mb-4 flex-row items-start px-1">
       <View className="mr-3 mt-[2px]">
-        <Feather name="edit-3" size={15} color={SAGE[600]} />
+        <Feather name="edit-3" size={15} color={SEMANTIC_COLORS.brand.pressed} />
       </View>
       <Text
         variant="caption"
@@ -141,7 +135,7 @@ function ExampleDetailRow({
   return (
     <View
       className="py-3"
-      style={{ borderTopWidth: 1, borderTopColor: BRAND_BORDER }}
+      style={{ borderTopWidth: 1, borderTopColor: SEMANTIC_COLORS.border.default }}
     >
       <Text
         variant="caption"
@@ -186,9 +180,9 @@ function LoadingRow({ message }: { message: string }) {
   return (
     <View
       className="flex-row items-center mb-4 rounded-xl px-3 py-2 border"
-      style={{ backgroundColor: BRAND_SURFACE_SOFT, borderColor: BRAND_BORDER }}
+      style={{ backgroundColor: SEMANTIC_COLORS.surface.secondary, borderColor: SEMANTIC_COLORS.border.default }}
     >
-      <ActivityIndicator size="small" color={INK_MUTED} />
+      <ActivityIndicator size="small" color={SEMANTIC_COLORS.text.disabled} />
       <Text className="text-[13px] text-ink-soft ml-2 font-medium">
         {message}
       </Text>
@@ -255,7 +249,7 @@ function MoreOptionsButton({
       <Feather
         name={expanded ? "chevron-up" : "chevron-down"}
         size={16}
-        color={SAGE[600]}
+        color={SEMANTIC_COLORS.brand.pressed}
       />
     </Pressable>
   );
@@ -550,7 +544,7 @@ export function TRAutomaticThoughtStep({
 
       {!!response.situation.trim() && (
         <View className="mb-8 flex-row items-start gap-3 opacity-60">
-          <Feather name="calendar" size={16} color={SAGE[600]} style={{ marginTop: 2 }} />
+          <Feather name="calendar" size={16} color={SEMANTIC_COLORS.brand.pressed} style={{ marginTop: 2 }} />
           <View className="flex-1">
             <Text
               variant="caption"
@@ -610,7 +604,7 @@ export function TRAutomaticThoughtStep({
           <Feather
             name={showThoughtSuggestions ? "chevron-up" : "chevron-down"}
             size={18}
-            color={SAGE[600]}
+            color={SEMANTIC_COLORS.brand.pressed}
           />
         </Pressable>
       )}
@@ -919,7 +913,7 @@ export function TRDistortionsStep({
           <Feather
             name={showPatternHelp ? "chevron-up" : "chevron-down"}
             size={18}
-            color={SAGE[600]}
+            color={SEMANTIC_COLORS.brand.pressed}
           />
         </Pressable>
       )}
@@ -997,7 +991,7 @@ export function TRDistortionsStep({
                       }`}
                     >
                       {isSelected ? (
-                        <Feather name="check" size={18} color={SAGE[600]} />
+                        <Feather name="check" size={18} color={SEMANTIC_COLORS.brand.pressed} />
                       ) : (
                         <Text variant="label-bold" className="text-sage-700">
                           Use
@@ -1155,7 +1149,7 @@ export function TREvidenceForStep({
             title="A Fact"
             body={`"My partner said 'I'm busy right now' when I asked to talk."`}
             icon="check-circle"
-            iconColor={SAGE[500]}
+            iconColor={SEMANTIC_COLORS.brand.primary}
           />
           <ReflectionExampleRow
             title="A Feeling/Opinion"
@@ -1303,13 +1297,13 @@ export function TREvidenceAgainstStep({
             title="Contradicting fact"
             body={`"I've been nervous before and it turned out okay."`}
             icon="check-circle"
-            iconColor={SAGE[500]}
+            iconColor={SEMANTIC_COLORS.brand.primary}
           />
           <ReflectionExampleRow
             title="Another fact"
             body={`"Nobody has ever actually called me incompetent."`}
             icon="check-circle"
-            iconColor={SAGE[500]}
+            iconColor={SEMANTIC_COLORS.brand.primary}
           />
 
           {!isAiLoading && visibleEvidenceSuggestions.length > 0 ? (
@@ -1453,7 +1447,7 @@ export function TRBalancedThoughtStep({
 
       <View
         className="mb-6 pb-5"
-        style={{ borderBottomWidth: 1, borderBottomColor: BRAND_BORDER }}
+        style={{ borderBottomWidth: 1, borderBottomColor: SEMANTIC_COLORS.border.default }}
       >
         <Text
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
@@ -1501,7 +1495,7 @@ export function TRBalancedThoughtStep({
       {!readOnly && (isAiLoading || suggestions.length > 0 || !!aiError) ? (
         <View
           className="mt-5 pt-2"
-          style={{ borderTopWidth: 1, borderTopColor: BRAND_BORDER }}
+          style={{ borderTopWidth: 1, borderTopColor: SEMANTIC_COLORS.border.default }}
         >
           <Pressable
             onPress={() => {
@@ -1531,7 +1525,7 @@ export function TRBalancedThoughtStep({
             <Feather
               name={showBalancedOptions ? "chevron-up" : "chevron-down"}
               size={18}
-              color={SAGE[600]}
+              color={SEMANTIC_COLORS.brand.pressed}
             />
           </Pressable>
 
@@ -1553,7 +1547,7 @@ export function TRBalancedThoughtStep({
                       className="py-4 active:opacity-60"
                       style={{
                         borderTopWidth: 1,
-                        borderTopColor: BRAND_BORDER,
+                        borderTopColor: SEMANTIC_COLORS.border.default,
                       }}
                     >
                       <View className="flex-row items-start">

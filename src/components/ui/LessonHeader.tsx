@@ -1,7 +1,8 @@
 import React from "react";
 import { View, TouchableOpacity, Text as RNText, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { AnimatedProgressBar } from "@/src/components/progress";
-import { SAGE, GOLD_TINT } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowLeft02Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 
@@ -82,7 +83,7 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
           <AnimatedProgressBar
             progress={progress}
             useGradient={true}
-            gradientColors={[GOLD_TINT, SAGE[500]]}
+            gradientColors={[SEMANTIC_COLORS.warning.surface, SEMANTIC_COLORS.brand.primary]}
             pulsate={false}
             trackColor={progressTrackColor}
             height={progressHeight}

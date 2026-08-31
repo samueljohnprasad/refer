@@ -3,9 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import {
   readNumber,
   readRecord,
@@ -63,7 +62,7 @@ export function StoryWalkthroughCategoryEngine({
           <Feather
             name={isInsight ? "check" : currentBeat?.icon ?? "circle"}
             size={38}
-            color={COURSE_EXERCISE_COLORS.accentDark}
+            color={SEMANTIC_COLORS.brand.pressed}
           />
         </View>
         <Text style={styles.kicker}>
@@ -138,36 +137,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 26,
     borderRadius: 28,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
-    shadowColor: COURSE_EXERCISE_COLORS.shadow,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
+    shadowColor: SEMANTIC_COLORS.shadow,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.14,
     shadowRadius: 8,
   },
-  insightCard: { backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
+  insightCard: { backgroundColor: SEMANTIC_COLORS.brand.soft },
   iconCircle: {
     width: 82,
     height: 82,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 41,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentLight,
+    backgroundColor: SEMANTIC_COLORS.border.selected,
   },
   kicker: {
     marginTop: 4,
-    color: COURSE_EXERCISE_COLORS.accent,
+    color: SEMANTIC_COLORS.brand.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 11,
     letterSpacing: 0.75,
   },
   cardTitle: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 22,
     lineHeight: 26,
   },
   cardBody: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 15.5,
     lineHeight: 24,
@@ -179,6 +178,6 @@ const styles = StyleSheet.create({
     marginTop: 14,
   },
   dot: { height: 8, borderRadius: 4 },
-  activeDot: { width: 22, backgroundColor: COURSE_EXERCISE_COLORS.accent },
-  inactiveDot: { width: 8, backgroundColor: COURSE_EXERCISE_COLORS.border },
+  activeDot: { width: 22, backgroundColor: SEMANTIC_COLORS.brand.primary },
+  inactiveDot: { width: 8, backgroundColor: SEMANTIC_COLORS.border.default },
 });

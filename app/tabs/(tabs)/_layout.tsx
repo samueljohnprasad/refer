@@ -5,7 +5,8 @@ import { useColorScheme } from "react-native";
 const Label = NativeTabs.Trigger.Label;
 const Icon = NativeTabs.Trigger.Icon;
 import { useWidgetWeekMoods } from "@/hooks/data/useWidgetWeekMoods";
-import { BRAND_BORDER, BRAND_DARK, INK_SOFT, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 export default function TabLayout() {
   const isDark = useColorScheme() === "dark";
@@ -13,11 +14,11 @@ export default function TabLayout() {
 
   return (
     <NativeTabs
-      tintColor={isDark ? SAGE[300] : SAGE[500]}
+      tintColor={isDark ? SEMANTIC_COLORS.border.selected : SEMANTIC_COLORS.brand.primary}
       backgroundColor={
         isDark ? "rgba(15, 26, 15, 0.92)" : "rgba(255, 255, 255, 0.92)"
       }
-      shadowColor={isDark ? BRAND_DARK.border : BRAND_BORDER}
+      shadowColor={isDark ? SEMANTIC_COLORS.border.default : SEMANTIC_COLORS.border.default}
       blurEffect={
         isDark ? "systemUltraThinMaterialDark" : "systemUltraThinMaterialLight"
       }
@@ -26,7 +27,7 @@ export default function TabLayout() {
       indicatorColor="transparent"
       rippleColor="rgba(93, 126, 87, 0.12)"
       labelStyle={{
-        color: isDark ? BRAND_DARK.inkSoft : INK_SOFT,
+        color: isDark ? SEMANTIC_COLORS.text.secondary : SEMANTIC_COLORS.text.secondary,
       }}
     >
       <NativeTabs.Trigger name="exercises">

@@ -14,7 +14,8 @@ import { Image } from "@/src/components/tw";
 import { PressableOpacity } from "pressto";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Add01Icon } from "@hugeicons/core-free-icons";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 export type MoodBadgeProps = {
   moodscore?: number;
@@ -101,7 +102,7 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
               height: diameter,
               borderRadius: radius,
               borderWidth: 1.5,
-              borderColor: SAGE[200],
+              borderColor: SEMANTIC_COLORS.selection.foreground,
               borderStyle: "dashed",
               alignItems: "center",
               justifyContent: "center",
@@ -112,7 +113,7 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
               <HugeiconsIcon
                 icon={Add01Icon}
                 size={Math.max(10, diameter * 0.5)}
-                color={SAGE[300]}
+                color={SEMANTIC_COLORS.border.selected}
                 strokeWidth={2}
               />
             </Animated.View>

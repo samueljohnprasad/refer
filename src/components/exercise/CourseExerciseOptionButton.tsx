@@ -1,8 +1,8 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
+  SEMANTIC_COLORS,
 } from "@/src/components/exercise/courseExerciseTheme";
 
 interface CourseExerciseOptionButtonProps {
@@ -64,30 +64,29 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: COURSE_EXERCISE_COLORS.border,
-    borderBottomWidth: 4,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
+    borderColor: SEMANTIC_COLORS.border.default,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
   selected: {
-    borderColor: COURSE_EXERCISE_COLORS.accent,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    borderColor: SEMANTIC_COLORS.border.selected,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   confirmed: {
-    borderColor: COURSE_EXERCISE_COLORS.accent,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    borderColor: SEMANTIC_COLORS.success.primary,
+    backgroundColor: SEMANTIC_COLORS.success.soft,
   },
   incorrect: {
-    borderColor: COURSE_EXERCISE_COLORS.error,
-    backgroundColor: COURSE_EXERCISE_COLORS.errorTint,
+    borderColor: SEMANTIC_COLORS.error.primary,
+    backgroundColor: SEMANTIC_COLORS.error.soft,
   },
-  disabled: { borderBottomWidth: 1, opacity: 0.55 },
-  pressed: { transform: [{ translateY: 2 }], borderBottomWidth: 2 },
+  disabled: { opacity: 0.9 },
+  pressed: { opacity: 0.8 },
   label: {
     flex: 1,
-    color: COURSE_EXERCISE_COLORS.ink,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 15,
-    lineHeight: 21,
+    color: SEMANTIC_COLORS.text.primary,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
+    fontSize: 18,
+    lineHeight: 24,
   },
   checkCircle: {
     width: 24,
@@ -95,11 +94,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 12,
-    backgroundColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: SEMANTIC_COLORS.success.primary,
   },
-  errorCircle: { backgroundColor: COURSE_EXERCISE_COLORS.error },
+  errorCircle: { backgroundColor: SEMANTIC_COLORS.error.primary },
   checkLabel: {
-    color: COURSE_EXERCISE_COLORS.surface,
+    color: SEMANTIC_COLORS.text.inverse,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 14,
   },

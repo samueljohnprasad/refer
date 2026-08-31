@@ -1,3 +1,4 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React, { useEffect, useRef } from "react";
 import { AccessibilityInfo, StyleSheet, Text, View } from "react-native";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
@@ -7,7 +8,7 @@ import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1Lea
 import { readLayerZoomContent } from "./layerZoomContent";
 import { hasSameLayerZoomResponse } from "./layerZoomResponse";
 import { createLayerZoomResponse } from "./layerZoomState";
-import { COURSE_EXERCISE_COLORS, COURSE_EXERCISE_FONTS } from "./courseExerciseTheme";
+import { COURSE_EXERCISE_FONTS } from "./courseExerciseTheme";
 
 export function LayerZoomCategoryEngine({ exercise, savedResponse, onInteraction }: V1CategoryEngineProps) {
   const content = readLayerZoomContent(exercise.content);
@@ -59,12 +60,12 @@ function CompactLayerBand({ label, title }: { label: string; title: string }) {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, gap: 14 }, surface: { gap: 12 },
-  compactBand: { gap: 2, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 11, backgroundColor: COURSE_EXERCISE_COLORS.surfaceMuted },
-  compactLabel: { color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 12 },
-  compactTitle: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 14, lineHeight: 19 },
-  expandedLayer: { gap: 6, borderRadius: 16, padding: 18, backgroundColor: COURSE_EXERCISE_COLORS.accentTint },
-  label: { color: COURSE_EXERCISE_COLORS.accentDark, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 12 },
-  title: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 18, lineHeight: 24 },
-  body: { color: COURSE_EXERCISE_COLORS.ink, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 15, lineHeight: 22 },
-  insight: { color: COURSE_EXERCISE_COLORS.inkSoft, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 14, lineHeight: 21 },
+  compactBand: { gap: 2, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 11, backgroundColor: SEMANTIC_COLORS.surface.secondary },
+  compactLabel: { color: SEMANTIC_COLORS.text.secondary, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 12 },
+  compactTitle: { color: SEMANTIC_COLORS.text.primary, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 14, lineHeight: 19 },
+  expandedLayer: { gap: 6, borderRadius: 16, padding: 18, backgroundColor: SEMANTIC_COLORS.brand.soft },
+  label: { color: SEMANTIC_COLORS.brand.pressed, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 12 },
+  title: { color: SEMANTIC_COLORS.text.primary, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 18, lineHeight: 24 },
+  body: { color: SEMANTIC_COLORS.text.primary, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 15, lineHeight: 22 },
+  insight: { color: SEMANTIC_COLORS.text.secondary, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 14, lineHeight: 21 },
 });

@@ -17,7 +17,8 @@ import {
 import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
 import * as Haptics from "expo-haptics";
-import { BRAND_SURFACE, DANGER, INK, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Button } from "@/src/components/ui/Button";
 
 interface ConfirmationModalProps {
@@ -106,7 +107,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                       <HugeiconsIcon
                         icon={isDestructive ? AlertCircleIcon : Tick02Icon}
                         size={22}
-                        color={isDestructive ? DANGER : SAGE[600]}
+                        color={isDestructive ? SEMANTIC_COLORS.error.foreground : SEMANTIC_COLORS.brand.pressed}
                       />
                     </View>
 
@@ -128,7 +129,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                       className="flex-1"
                       onPress={handleCancel}
                       disabled={deleting}
-                      rightIcon={<HugeiconsIcon icon={Cancel01Icon} size={18} color={INK} />}
+                      rightIcon={<HugeiconsIcon icon={Cancel01Icon} size={18} color={SEMANTIC_COLORS.text.primary} />}
                     />
 
                     <Button
@@ -144,7 +145,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                           <HugeiconsIcon
                             icon={isDestructive ? Delete02Icon : Tick02Icon}
                             size={18}
-                            color={BRAND_SURFACE}
+                            color={SEMANTIC_COLORS.surface.primary}
                           />
                         ) : undefined
                       }

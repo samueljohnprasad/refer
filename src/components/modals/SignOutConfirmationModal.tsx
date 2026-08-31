@@ -14,7 +14,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 
-import { INK, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Button } from "@/src/components/ui/Button";
 import { Text } from "@/src/components/ui/Text";
 
@@ -76,7 +77,7 @@ export const SignOutConfirmationModal: React.FC<
               <View className="items-center w-full">
                 {/* Icon Header */}
                 <View className="w-12 h-12 rounded-full bg-sage-pill items-center justify-center mb-4">
-                  <HugeiconsIcon icon={AlertCircleIcon} size={22} color={SAGE[600]} />
+                  <HugeiconsIcon icon={AlertCircleIcon} size={22} color={SEMANTIC_COLORS.brand.pressed} />
                 </View>
 
                 <Text variant="h1" className="text-center text-3xl text-ink mb-2 leading-9 font-bold">
@@ -98,7 +99,7 @@ export const SignOutConfirmationModal: React.FC<
                   onPress={handleCloseCancel}
                   disabled={isLoading}
                   className="flex-1"
-                  rightIcon={<HugeiconsIcon icon={Cancel01Icon} size={16} color={INK} />}
+                  rightIcon={<HugeiconsIcon icon={Cancel01Icon} size={16} color={SEMANTIC_COLORS.text.primary} />}
                 />
                 <Button
                   label={isLoading ? "Signing Out..." : "Sign Out"}

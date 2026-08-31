@@ -5,7 +5,8 @@ import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView, Pressable } from "react-native";
 import Animated, { FadeIn, useAnimatedStyle, interpolate } from "react-native-reanimated";
 import { SvgAppButton } from "@/src/domains/journey/ui/components/svg-app-button";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { useHoldToCommit } from "../hooks/useHoldToCommit";
 import { DailyGoalMinutes } from "../types";
 
@@ -56,7 +57,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
               <Text
                 style={{
                   fontFamily: APP_FONT_FAMILIES.regularItalic,
-                  color: SAGE[500],
+                  color: SEMANTIC_COLORS.brand.primary,
                 }}
               >
                 pact.
@@ -90,7 +91,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
                   width: "100%",
                   height: 1,
                   borderTopWidth: 1,
-                  borderColor: SAGE[200],
+                  borderColor: SEMANTIC_COLORS.selection.foreground,
                   borderStyle: "dashed",
                   opacity: 0.8,
                 }}
@@ -128,8 +129,8 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
         <SvgAppButton
           width="100%"
           height={56}
-          color={SAGE[500]}
-          backgroundColor={SAGE[700]}
+          color={SEMANTIC_COLORS.brand.primary}
+          backgroundColor={SEMANTIC_COLORS.brand.onSoft}
           leftRadius={22}
           rightRadius={22}
           pressDepth={4}
@@ -165,7 +166,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
                   left: 0,
                   top: 0,
                   bottom: 0,
-                  backgroundColor: SAGE[700],
+                  backgroundColor: SEMANTIC_COLORS.brand.onSoft,
                 },
                 commitFillStyle,
               ]}

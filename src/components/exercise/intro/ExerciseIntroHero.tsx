@@ -1,10 +1,10 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
 import { View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { SparklesIcon } from "@hugeicons/core-free-icons";
 import { Mascot, type MascotState } from "@/src/components/ui/Mascot";
 import { Text } from "@/src/components/ui/Text";
-import { BRAND_SURFACE, SAGE } from "@/lib/tokens";
 
 interface ExerciseIntroHeroProps {
   mascotState: MascotState;
@@ -19,21 +19,21 @@ export const ExerciseIntroHero: React.FC<ExerciseIntroHeroProps> = React.memo(
         <View className="relative mb-5">
           <View
             className="h-24 w-24 items-center justify-center rounded-[28px]"
-            style={{ backgroundColor: SAGE[50] }}
+            style={{ backgroundColor: SEMANTIC_COLORS.surface.elevated }}
           >
             <Mascot state={mascotState} size={84} />
           </View>
           <View
             className="absolute -bottom-1 -right-1 h-8 w-8 items-center justify-center rounded-full border-4"
             style={{
-              backgroundColor: SAGE[500],
-              borderColor: BRAND_SURFACE,
+              backgroundColor: SEMANTIC_COLORS.brand.primary,
+              borderColor: SEMANTIC_COLORS.surface.primary,
             }}
           >
             <HugeiconsIcon
               icon={SparklesIcon}
               size={14}
-              color={BRAND_SURFACE}
+              color={SEMANTIC_COLORS.surface.primary}
               strokeWidth={2}
             />
           </View>

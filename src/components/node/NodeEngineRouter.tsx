@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { InteractionManager } from "react-native";
 import { courseExerciseCategoryEngineRegistry } from "@/src/components/exercise/courseExerciseCategoryEngineRegistry";
+import { resolveCourseExerciseConfig } from "@/src/components/exercise/courseExerciseCategoryConfig";
 import type { Exercise } from "@/src/types/journeyV5";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { clearV1SessionDraft } from "@/src/domains/journey/learning/sessionDraftStore";
@@ -387,6 +388,7 @@ const trackedStartRef = useRef<string | null>(null);
       progress={(currentIndex + 1) / exercises.length}
       trailingLabel={`${currentIndex + 1} of ${exercises.length}`}
       onClose={onClose}
+      config={categoryConfig ? resolveCourseExerciseConfig(categoryConfig as any) : null}
       primaryLabel={getDisplayPrimaryLabel(
         currentExercise,
         checkStatus === V1CheckStatusEnum.Idle ? currentResponse : null,

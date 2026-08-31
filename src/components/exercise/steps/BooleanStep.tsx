@@ -1,3 +1,4 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
 import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
@@ -7,7 +8,6 @@ import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCa
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { getContentIcon } from "@/src/data/contentIconRegistry";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
-import { SAGE, BRAND_BORDER, BRAND_SURFACE, INK, INK_SOFT } from "@/lib/tokens";
 
 interface BooleanStepProps extends StepProps {
   title: string;
@@ -97,16 +97,16 @@ export const BooleanStep: React.FC<BooleanStepProps> = React.memo(
                 accessibilityLabel={opt.label}
                 className="h-16 rounded-xl flex-row items-center justify-center active:opacity-90"
                 style={{
-                  backgroundColor: isSelected ? SAGE.selected : BRAND_SURFACE,
+                  backgroundColor: isSelected ? SEMANTIC_COLORS.brand.soft : SEMANTIC_COLORS.surface.primary,
                   borderWidth: 2,
-                  borderColor: isSelected ? SAGE[500] : BRAND_BORDER,
+                  borderColor: isSelected ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.border.default,
                 }}
               >
                 {opt.iconKey && getContentIcon(opt.iconKey) ? (
                   <HugeiconsIcon
                     icon={getContentIcon(opt.iconKey)!}
                     size={20}
-                    color={isSelected ? SAGE[700] : INK_SOFT}
+                    color={isSelected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.text.secondary}
                     strokeWidth={1.6}
                   />
                 ) : (
@@ -115,7 +115,7 @@ export const BooleanStep: React.FC<BooleanStepProps> = React.memo(
                 <View className="w-3" />
                 <Text
                   className="text-lg font-bold"
-                  style={{ color: isSelected ? SAGE[700] : INK }}
+                  style={{ color: isSelected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.text.primary }}
                 >
                   {opt.label}
                 </Text>

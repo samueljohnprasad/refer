@@ -10,7 +10,8 @@ import {
   type DuolingoHeaderProps,
   type DuolingoHeaderStats,
 } from "../hooks/useDuolingoHeaderViewModel";
-import { BRAND_DARK, INK } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -42,12 +43,12 @@ const HeaderButton = memo(function HeaderButton({
       <Icon
         width={28}
         height={28}
-        color={isDark ? BRAND_DARK.ink : INK}
+        color={isDark ? SEMANTIC_COLORS.text.primary : SEMANTIC_COLORS.text.primary}
       />
       <AnimatedOdometer
         value={title}
         textClassName={textClassName}
-        color={isDark ? BRAND_DARK.ink : INK}
+        color={isDark ? SEMANTIC_COLORS.text.primary : SEMANTIC_COLORS.text.primary}
       />
     </Pressable>
   );

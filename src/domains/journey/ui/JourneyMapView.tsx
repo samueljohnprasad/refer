@@ -17,7 +17,8 @@ import type {
   JourneyMapViewModel,
   JourneyMapActions,
 } from "./hooks/useJourneyMapViewModel";
-import { BRAND_DARK, THEME } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 export interface JourneyMapViewProps {
   model: JourneyMapViewModel;
@@ -121,8 +122,8 @@ export const JourneyMapView = React.memo(function JourneyMapView({
             style={[
               {
                 backgroundColor: isDark
-                  ? BRAND_DARK.canvas
-                  : THEME.backgroundPrimary,
+                  ? SEMANTIC_COLORS.surface.primary
+                  : SEMANTIC_COLORS.surface.canvas,
               },
               animatedStyle,
             ]}

@@ -15,7 +15,8 @@ import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Host } from "@expo/ui/swift-ui";
 import { buttonStyle, controlSize, labelStyle, tint } from "@expo/ui/swift-ui/modifiers";
 import * as Haptics from "expo-haptics";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 
 interface SettingsHeaderProps {
@@ -50,7 +51,7 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
           activeOpacity={0.7}
           onPress={() => router.back()}
         >
-          <HugeiconsIcon icon={ArrowLeft02Icon} size={21} color={SAGE[600]} />
+          <HugeiconsIcon icon={ArrowLeft02Icon} size={21} color={SEMANTIC_COLORS.brand.pressed} />
         </TouchableOpacity>
       )}
       {isLiquidGlass && (
@@ -62,7 +63,7 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
               labelStyle('iconOnly'),
               buttonStyle('glassProminent'),
               controlSize('regular'),
-              tint(SAGE[600])
+              tint(SEMANTIC_COLORS.brand.pressed)
             ]}
             systemImage="chevron.left"
           />
@@ -87,7 +88,7 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
           }}
         >
           <Pressable
-            android_ripple={{ color: SAGE[700] }}
+            android_ripple={{ color: SEMANTIC_COLORS.brand.onSoft }}
             onPress={() => {
               void Haptics.selectionAsync().catch(() => {});
               router.push('/paywall');

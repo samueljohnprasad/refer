@@ -1,5 +1,6 @@
 import type { ReminderItem, ReminderColorScheme } from "./types";
-import { GOLD, INK_SOFT, INK_MUTED, SAGE, TERRACOTTA } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 /**
  * Default reminder slots with motivational messages
@@ -42,22 +43,22 @@ export const DEFAULT_REMINDERS: ReminderItem[] = [
  */
 export const REMINDER_COLOR_MAP: Record<string, ReminderColorScheme> = {
   "1": {
-    bg: SAGE.pill,
-    border: SAGE[200],
-    text: SAGE[700],
-    icon: SAGE[600],
+    bg: SEMANTIC_COLORS.selection.surface,
+    border: SEMANTIC_COLORS.selection.foreground,
+    text: SEMANTIC_COLORS.brand.onSoft,
+    icon: SEMANTIC_COLORS.brand.pressed,
   }, // Morning - Amber/Yellow
   "2": {
-    bg: SAGE.selected,
-    border: SAGE[300],
-    text: SAGE[700],
-    icon: SAGE[600],
+    bg: SEMANTIC_COLORS.selection.surface,
+    border: SEMANTIC_COLORS.border.selected,
+    text: SEMANTIC_COLORS.brand.onSoft,
+    icon: SEMANTIC_COLORS.brand.pressed,
   }, // Midday - Green
   "3": {
-    bg: SAGE[50],
-    border: SAGE[200],
-    text: INK_SOFT,
-    icon: TERRACOTTA,
+    bg: SEMANTIC_COLORS.selection.surface,
+    border: SEMANTIC_COLORS.selection.foreground,
+    text: SEMANTIC_COLORS.text.secondary,
+    icon: SEMANTIC_COLORS.error.foreground,
   }, // Evening - Purple
 };
 
@@ -65,8 +66,8 @@ export const REMINDER_COLOR_MAP: Record<string, ReminderColorScheme> = {
  * Default color scheme for unknown reminder IDs
  */
 export const DEFAULT_COLOR_SCHEME: ReminderColorScheme = {
-  bg: SAGE[50],
-  border: SAGE[100],
-  text: INK_MUTED,
-  icon: GOLD,
+  bg: SEMANTIC_COLORS.selection.surface,
+  border: SEMANTIC_COLORS.brand.soft,
+  text: SEMANTIC_COLORS.text.tertiary,
+  icon: SEMANTIC_COLORS.warning.foreground,
 };

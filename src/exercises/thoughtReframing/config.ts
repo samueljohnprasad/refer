@@ -34,7 +34,7 @@ function scaleBeliefScore(value: number): number {
 }
 
 function normalizeBeliefScore(value: number | undefined): number | undefined {
-  if (typeof value !== "number") return undefined;
+  if (typeof value !== "number") return null;
   return Math.min(Math.max(scaleBeliefScore(value), 0), 10);
 }
 
@@ -43,7 +43,7 @@ function applyV2Migration(migrated: any, fromVersion: number) {
 }
 
 function extractSeed(context: any): number | undefined {
-  if (!context) return undefined;
+  if (!context) return null;
   return context.seed;
 }
 

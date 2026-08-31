@@ -1,3 +1,4 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React, { useMemo, useEffect, useCallback } from "react";
 import { View, ActivityIndicator, Platform, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
@@ -5,7 +6,6 @@ import { Card } from "@/src/components/ui/Card";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { StepLayout } from "./StepLayout";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
-import { BRAND_BORDER, INK, INK_SOFT, SAGE } from "@/lib/tokens";
 import { getContentIcon } from "@/src/data/contentIconRegistry";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import type { StepProps } from "@/src/types/exerciseFlow";
@@ -109,7 +109,7 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
         <View className={isAiLoading ? "min-h-[36px] justify-center mb-4" : ""}>
           {isAiLoading && (
             <View className="flex-row items-center">
-              <ActivityIndicator size="small" color={SAGE[400]} />
+              <ActivityIndicator size="small" color={SEMANTIC_COLORS.border.selected} />
               <Text className="text-[11px] text-slate-400 ml-2 uppercase tracking-wider">
                 Finding personalized options…
               </Text>
@@ -134,8 +134,8 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
                     }}
                     className="mb-1 min-h-[84px] flex-row items-center rounded-[24px] border px-5 py-4 active:opacity-80"
                     style={{
-                      backgroundColor: isSelected ? SAGE[50] : "#FFFFFF",
-                      borderColor: isSelected ? SAGE[200] : BRAND_BORDER,
+                      backgroundColor: isSelected ? SEMANTIC_COLORS.surface.elevated : "#FFFFFF",
+                      borderColor: isSelected ? SEMANTIC_COLORS.border.default : SEMANTIC_COLORS.border.default,
                     }}
                     accessibilityRole="radio"
                     accessibilityState={{ selected: isSelected }}
@@ -146,7 +146,7 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
                         <HugeiconsIcon
                           icon={resolvedIcon}
                           size={20}
-                          color={isSelected ? SAGE[700] : INK_SOFT}
+                          color={isSelected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.text.secondary}
                           strokeWidth={2}
                         />
                       </View>
@@ -157,7 +157,7 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
                     <Text
                       variant="body-bold"
                       className="flex-1 text-[17px] leading-[22px]"
-                      style={{ color: isSelected ? INK : INK_SOFT }}
+                      style={{ color: isSelected ? SEMANTIC_COLORS.text.primary : SEMANTIC_COLORS.text.secondary }}
                     >
                       {opt.label}
                     </Text>
@@ -165,8 +165,8 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
                     <View
                       className="ml-4 h-7 w-7 items-center justify-center rounded-full border"
                       style={{
-                        backgroundColor: isSelected ? SAGE[500] : "#FFFFFF",
-                        borderColor: isSelected ? SAGE[600] : BRAND_BORDER,
+                        backgroundColor: isSelected ? SEMANTIC_COLORS.brand.primary : "#FFFFFF",
+                        borderColor: isSelected ? SEMANTIC_COLORS.text.secondary : SEMANTIC_COLORS.border.default,
                       }}
                     >
                       {isSelected ? (
@@ -198,7 +198,7 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
                       <HugeiconsIcon
                         icon={resolvedIcon}
                         size={22}
-                        color={isSelected ? SAGE[600] : INK_SOFT}
+                        color={isSelected ? SEMANTIC_COLORS.text.secondary : SEMANTIC_COLORS.text.secondary}
                         strokeWidth={2}
                       />
                     </View>

@@ -1,3 +1,4 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { View, Pressable } from "react-native";
@@ -8,7 +9,6 @@ import {
   BookmarkAdd01Icon,
   BookmarkCheck01Icon,
 } from "@hugeicons/core-free-icons";
-import { SAGE, INK, INK_SOFT } from "@/lib/tokens";
 import {
   ReflectionTimeline,
   ReflectionTimelineItem,
@@ -49,7 +49,7 @@ function getShiftCopy(pre: number, post: number): {
       label: `${Math.abs(change)} point${Math.abs(change) === 1 ? "" : "s"} stronger`,
       detail:
         "Looking closely can sometimes make a difficult feeling sharper before it settles.",
-      color: INK,
+      color: SEMANTIC_COLORS.text.primary,
     };
   }
 
@@ -58,7 +58,7 @@ function getShiftCopy(pre: number, post: number): {
       label: "No score change",
       detail:
         "Sometimes naming something difficult is enough for today.",
-      color: INK,
+      color: SEMANTIC_COLORS.text.primary,
     };
   }
 
@@ -68,7 +68,7 @@ function getShiftCopy(pre: number, post: number): {
       change >= 4
         ? "The feeling became meaningfully less intense after you practiced."
         : "Even a small shift matters. You made room for a more balanced state.",
-    color: SAGE[700],
+    color: SEMANTIC_COLORS.brand.pressed,
   };
 }
 
@@ -99,13 +99,13 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
     <View className="px-3" style={{ paddingBottom: 40 }}>
       <View className="pb-6 pt-2">
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
           className="text-[34px] leading-[37px] tracking-[-0.01em]"
         >
           {title}
         </Text>
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
+          style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
           className="mt-2 max-w-[330px] text-[15px] leading-[22px]"
         >
           You took a moment to check in with yourself.
@@ -118,18 +118,18 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
           style={{
             marginHorizontal: -28,
             paddingHorizontal: 28,
-            backgroundColor: SAGE[50],
+            backgroundColor: SEMANTIC_COLORS.surface.elevated,
           }}
         >
           <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.secondary }}
             className="text-[13px] leading-[18px]"
           >
             {keyTakeawayLabel}
           </Text>
           <Text
             accessibilityRole="summary"
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
             className="mt-1.5 text-[25px] leading-[33px]"
           >
             {keyTakeaway}
@@ -151,11 +151,11 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
               <HugeiconsIcon
                 icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon}
                 size={18}
-                color={SAGE[700]}
+                color={SEMANTIC_COLORS.brand.pressed}
                 strokeWidth={2}
               />
               <Text
-                style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[700] }}
+                style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.pressed }}
                 className="ml-2 text-[14px] leading-[20px]"
               >
                 {cardSaved
@@ -204,10 +204,10 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
                   accessibilityRole="button"
                   accessibilityLabel={nextExerciseLabel}
                   className="flex-row items-center justify-between rounded-xl px-4 py-3.5 mt-1 active:opacity-70 border border-sage-200/50"
-                  style={{ backgroundColor: SAGE[50] }}
+                  style={{ backgroundColor: SEMANTIC_COLORS.surface.elevated }}
                 >
                   <Text
-                    style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[700] }}
+                    style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.pressed }}
                     className="text-[14px] leading-[20px]"
                   >
                     Apply it → {nextExerciseLabel}
@@ -215,7 +215,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
                   <HugeiconsIcon
                     icon={ArrowRight01Icon}
                     size={18}
-                    color={SAGE[500]}
+                    color={SEMANTIC_COLORS.brand.primary}
                     strokeWidth={2}
                   />
                 </Pressable>
@@ -226,7 +226,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
       ) : null}
 
       <Text
-        style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
+        style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
         className="mb-2 mt-10 px-5 text-center text-[13px] leading-[20px]"
       >
         Completing saves this to your history.

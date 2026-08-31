@@ -1,16 +1,7 @@
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
-import { validateGuidedDiscoveryTrailContent } from "@/src/components/exercise/guidedDiscoveryTrailContent";
-import { validateReframeBuilderContent } from "@/src/components/exercise/reframeBuilderContent";
-import { validateTeachBackChainContent } from "@/src/components/exercise/teachBackChainValidation";
-import { validateExplorableModelContent } from "@/src/components/exercise/explorableModelContent";
-import { validateFadedThoughtRecordContent } from "@/src/components/exercise/fadedThoughtRecordContent";
-import { validateWorkedRewriteContent } from "@/src/components/exercise/workedRewriteContent";
-import { validateLayerZoomContent } from "@/src/components/exercise/layerZoomContent";
-import { validateDialogueContent } from "@/src/components/exercise/dialogueContent";
+import { courseExerciseCategoryEngineRegistry } from "@/src/components/exercise/courseExerciseCategoryEngineRegistry";
+import { resolveCourseExerciseConfig } from "@/src/components/exercise/courseExerciseCategoryConfig";
 
-import { validateWhatIfContent } from "@/src/components/exercise/whatif/whatIfContentValidation";
-import { validateCheckpointContent } from "@/src/components/exercise/checkpoint/checkpointContentValidation";
-import { validateRecallWarmupContent } from "./recallWarmupContentValidation";
 import type { MicrolearningContentIssue } from "./microlearningTypes";
 
 export const MICROLEARNING_CATEGORIES = [
@@ -41,48 +32,18 @@ export function validateMicrolearningContent(
   category: MicrolearningCategory,
   content: unknown,
 ): MicrolearningContentIssue[] {
-  const issues: MicrolearningContentIssue[] = [];
-  if (!isRecord(content)) {
-    return [{ path: "content", message: `${category} content must be an object.` }];
-  }
-  if (category === CourseExerciseCategoryEnum.TeachBackChain) {
-    return validateTeachBackChainContent(content);
-  }
-  if (category === CourseExerciseCategoryEnum.ExplorableModel) {
-    return validateExplorableModelContent(content);
-  }
-  if (category === CourseExerciseCategoryEnum.FadedThoughtRecord) {
-    return validateFadedThoughtRecordContent(content);
-  }
-  if (category === CourseExerciseCategoryEnum.WorkedRewrite) {
-    return validateWorkedRewriteContent(content);
-  }
-  if (category === CourseExerciseCategoryEnum.LayerZoom) {
-    return validateLayerZoomContent(content);
-  }
-  if (category === CourseExerciseCategoryEnum.Dialogue) {
-    return validateDialogueContent(content);
-  }
-  if (category === CourseExerciseCategoryEnum.WhatIfMachine) {
-    return validateWhatIfContent(content);
-  }
-  if (category === CourseExerciseCategoryEnum.CourseCheckpoint) {
-    return validateCheckpointContent(content);
-  }
-  if (category === CourseExerciseCategoryEnum.RecallWarmup) {
-    return validateRecallWarmupContent(content);
+  const baseConfig = courseExerciseCategoryEngineRegistry[category];
+  
+  if (!baseConfig) {
+    return [{ path: "category", message: `Unknown category ${category}` }];
   }
 
+  const config = resolveCourseExerciseConfig(baseConfig as any);
+  if (config.validation) {
+    return config.validation(content);
+  }
 
-  validateStringBudget(content, "title", 7, issues);
-  validateStringBudget(content, "instruction", 12, issues);
-  if (category === CourseExerciseCategoryEnum.GuidedDiscoveryTrail) {
-    validateGuidedDiscoveryTrailContent(content, issues);
-  }
-  if (category === CourseExerciseCategoryEnum.ReframeBuilder) {
-    validateReframeBuilderContent(content, issues);
-  }
-  return issues;
+  return [];
 }
 
 export function validateStringBudget(

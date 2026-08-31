@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import { ScrollView } from "react-native";
 import * as Haptics from "expo-haptics";
 import { Stack } from "expo-router";
-import {
-  COURSE_EXERCISE_COLORS,
-  COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+import { SEMANTIC_COLORS, COURSE_EXERCISE_FONTS } from "@/src/components/exercise/courseExerciseTheme";
 import { NodeEngineRouter } from "@/src/components/node/NodeEngineRouter";
 import {
   useGetCourseCatalogQuery,
@@ -70,7 +67,7 @@ export default function CourseExercisesTestScreen() {
 
   return (
     <ScrollView
-      style={{ backgroundColor: COURSE_EXERCISE_COLORS.background }}
+      style={{ backgroundColor: SEMANTIC_COLORS.surface.primary }}
       contentInsetAdjustmentBehavior="automatic"
       contentContainerClassName="px-[22px] pb-12 pt-[22px]"
       showsVerticalScrollIndicator={false}
@@ -108,9 +105,9 @@ function CourseExercisesHeader(): React.JSX.Element {
         headerTransparent: false,
         headerBackButtonDisplayMode: "minimal",
         title: "Course Exercises",
-        headerStyle: { backgroundColor: COURSE_EXERCISE_COLORS.background },
+        headerStyle: { backgroundColor: SEMANTIC_COLORS.surface.primary },
         headerShadowVisible: false,
-        headerTintColor: COURSE_EXERCISE_COLORS.ink,
+        headerTintColor: SEMANTIC_COLORS.text.primary,
         headerTitleStyle: { fontFamily: COURSE_EXERCISE_FONTS.bodyBold },
       }}
     />

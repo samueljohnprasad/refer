@@ -2,15 +2,8 @@ import { format } from "date-fns/format";
 import { memo } from "react";
 import { Pressable, View, LayoutChangeEvent } from "react-native";
 import { Text } from "@/components/Themed";
-import {
-  BRAND_SURFACE_SOFT,
-  INK,
-  INK_MUTED,
-  INK_SOFT,
-  SAGE,
-  SAGE_OVERLAY,
-  TRANSPARENT,
-} from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 // Simplified Animated Day Button Component - Performance Optimized
 export interface DayButtonProps {
@@ -39,12 +32,12 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
   };
 
   const getTextColor = () => {
-    if (disabled) return SAGE_OVERLAY.disabled;
-    if (isSelected || isToday) return SAGE[600];
-    return INK;
+    if (disabled) return "rgba(20, 36, 20, 0.32)";
+    if (isSelected || isToday) return SEMANTIC_COLORS.brand.pressed;
+    return SEMANTIC_COLORS.text.primary;
   };
 
-  const backgroundColor = TRANSPARENT;
+  const backgroundColor = "transparent";
 
   return (
     <Pressable
@@ -58,7 +51,7 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
         className="items-center px-1 py-1.5 rounded-xl"
         style={{
           backgroundColor,
-          borderColor: isSelected ? TRANSPARENT : TRANSPARENT, // Always transparent if selected to show pill
+          borderColor: isSelected ? "transparent" : "transparent", // Always transparent if selected to show pill
           borderWidth: 1,
         }}
       >
@@ -67,10 +60,10 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
             className="happy-font-body-bold text-[10px] uppercase tracking-widest mb-1"
             style={{
               color: disabled
-                ? INK_MUTED
+                ? SEMANTIC_COLORS.text.tertiary
                 : isSelected
-                ? SAGE[600]
-                : INK,
+                ? SEMANTIC_COLORS.brand.pressed
+                : SEMANTIC_COLORS.text.primary,
               opacity: isSelected || disabled ? 1 : 0.75,
             }}
           >

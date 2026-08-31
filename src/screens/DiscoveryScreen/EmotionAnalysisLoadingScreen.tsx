@@ -18,13 +18,8 @@ import Animated, {
   withSequence,
   withDelay,
 } from "react-native-reanimated";
-import {
-  BRAND_SURFACE,
-  INK,
-  INK_SOFT,
-  SAGE,
-  SAGE_LOADING_GRADIENT,
-} from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Feather } from "@expo/vector-icons";
 
 interface EmotionAnalysisLoadingScreenProps {
@@ -108,7 +103,7 @@ const EmotionAnalysisLoadingScreen: React.FC<
   });
 
   return (
-    <View style={{ flex: 1, backgroundColor: BRAND_SURFACE }}>
+    <View style={{ flex: 1, backgroundColor: SEMANTIC_COLORS.surface.primary }}>
       {/* Vibrant Grainy Gradient Background */}
       <GrainyGradient
         colors={["#E11D48", "#7C3AED", "#4F46E5", "#F97316", "#EC4899"]}

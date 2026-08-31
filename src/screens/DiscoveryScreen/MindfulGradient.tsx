@@ -15,7 +15,8 @@ import {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { SAGE_RECORDING_GRADIENT } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 const { width, height } = Dimensions.get("window");
 
@@ -167,7 +168,7 @@ const MindfulGradient: React.FC<MindfulGradientProps> = ({
           <RadialGradient
             c={center}
             r={animatedRadius}
-            colors={[...SAGE_RECORDING_GRADIENT]}
+            colors={[...["#5f7f58", "#abc0a2", "#d3e0cd", "#f2f8ef", "#ffffff"]]}
           />
 
           <Blur blur={VISUAL_CONFIG.blur} mode={"clamp"} />

@@ -3,9 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import {
   readRecord,
   readString,
@@ -103,7 +102,7 @@ function TrapOutcome({
         <Feather
           name={icon}
           size={14}
-          color={COURSE_EXERCISE_COLORS.surface}
+          color={SEMANTIC_COLORS.surface.primary}
         />
       </View>
       <View style={styles.outcomeCopy}>
@@ -128,26 +127,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     paddingVertical: 22,
     borderRadius: 28,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
-    shadowColor: COURSE_EXERCISE_COLORS.shadow,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
+    shadowColor: SEMANTIC_COLORS.shadow,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.14,
     shadowRadius: 8,
   },
   neutralKicker: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 10.5,
     letterSpacing: 0.5,
   },
   trapTitle: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 21,
     lineHeight: 26,
   },
   trapBody: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 14.5,
     lineHeight: 22,
@@ -164,12 +163,12 @@ const styles = StyleSheet.create({
     borderRadius: 22,
   },
   oliveOutcome: {
-    borderColor: COURSE_EXERCISE_COLORS.accent,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    borderColor: SEMANTIC_COLORS.brand.primary,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   orangeOutcome: {
-    borderColor: COURSE_EXERCISE_COLORS.accentLight,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    borderColor: SEMANTIC_COLORS.brand.primaryLight,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   iconCircle: {
     width: 28,
@@ -178,24 +177,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 14,
   },
-  oliveIcon: { backgroundColor: COURSE_EXERCISE_COLORS.accent },
-  orangeIcon: { backgroundColor: COURSE_EXERCISE_COLORS.accent },
+  oliveIcon: { backgroundColor: SEMANTIC_COLORS.brand.primary },
+  orangeIcon: { backgroundColor: SEMANTIC_COLORS.brand.primary },
   outcomeCopy: { flex: 1 },
   oliveKicker: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 10.5,
     letterSpacing: 0.5,
   },
   orangeKicker: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 10.5,
     letterSpacing: 0.5,
   },
   outcomeBody: {
     marginTop: 3,
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 13.5,
     lineHeight: 20,
@@ -204,8 +203,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 13,
     borderRadius: 22,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
-    shadowColor: COURSE_EXERCISE_COLORS.shadow,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
+    shadowColor: SEMANTIC_COLORS.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,

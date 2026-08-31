@@ -16,7 +16,8 @@ import type {
   CourseOverviewSection,
   CourseOverviewUnit,
 } from "@/src/domains/journey/model/courseOverview";
-import { INK_MUTED, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface CourseOutlineProps {
   sections: CourseOverviewSection[];
@@ -227,7 +228,7 @@ function DisclosureChevron({
 
   return (
     <Animated.View className="h-11 w-8 items-center justify-center" style={animatedStyle}>
-      <HugeiconsIcon icon={ArrowRight01Icon} size={17} color={isExpanded ? SAGE[500] : INK_MUTED} />
+      <HugeiconsIcon icon={ArrowRight01Icon} size={17} color={isExpanded ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.text.tertiary} />
     </Animated.View>
   );
 }

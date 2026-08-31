@@ -73,13 +73,8 @@ import {
 } from "@expo/ui/swift-ui/modifiers";
 import { CARD_SHADOW, ELEVATED_SHADOW } from "@/constants/shadows";
 import { Mascot } from "@/src/components/ui/Mascot";
-import {
-  BRAND_SURFACE,
-  GOLD,
-  INK_SOFT,
-  SAGE,
-  SAGE_DISCOVERY_GRADIENT,
-} from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 // Static imports to avoid Metro bundler React.lazy chunk resolution crashes
 import { JournalingOptionsModal } from "./JournalingOptionsModal";
@@ -373,7 +368,7 @@ function DiscoveryScreen() {
         {/* Prompt card */}
         <View style={cardShadowStyle} className="rounded-2xl flex-1">
           <LinearGradient
-            colors={SAGE_DISCOVERY_GRADIENT}
+            colors={[SEMANTIC_COLORS.surface.primary, SEMANTIC_COLORS.surface.secondary]}
             start={GRADIENT_START}
             end={GRADIENT_END}
             style={{
@@ -384,7 +379,7 @@ function DiscoveryScreen() {
               justifyContent: "space-between",
               flex: 1,
               borderWidth: 2,
-              borderColor: SAGE[100],
+              borderColor: SEMANTIC_COLORS.brand.soft,
             }}
           >
             <PromptCardContent
@@ -413,7 +408,7 @@ function DiscoveryScreen() {
                       <HugeiconsIcon
                         icon={Camera02Icon}
                         size={24}
-                        color={SAGE[600]}
+                        color={SEMANTIC_COLORS.brand.pressed}
                       />
                     </View>
                   </PressableScale>
@@ -431,7 +426,7 @@ function DiscoveryScreen() {
                       <HugeiconsIcon
                         icon={Image02Icon}
                         size={24}
-                        color={SAGE[600]}
+                        color={SEMANTIC_COLORS.brand.pressed}
                       />
                     </View>
                   </PressableScale>
@@ -445,7 +440,7 @@ function DiscoveryScreen() {
                     modifiers={[
                       buttonStyle("glass"),
                       controlSize("extraLarge"),
-                      foregroundStyle(SAGE[600]),
+                      foregroundStyle(SEMANTIC_COLORS.brand.pressed),
                       labelStyle("iconOnly"),
                     ]}
                     systemImage="camera.fill"
@@ -460,13 +455,13 @@ function DiscoveryScreen() {
                   handleOpenRecorder();
                 }}
                 size={108}
-                bg={SAGE[500]}
+                bg={SEMANTIC_COLORS.brand.primary}
                 elevation
                 icon={
                   <HugeiconsIcon
                     icon={AiMicIcon}
                     size={56}
-                    color={BRAND_SURFACE}
+                    color={SEMANTIC_COLORS.surface.primary}
                   />
                 }
                 accessibilityLabel="Start voice recording"
@@ -486,7 +481,7 @@ function DiscoveryScreen() {
                     <HugeiconsIcon
                       icon={KeyboardIcon}
                       size={24}
-                      color={SAGE[600]}
+                      color={SEMANTIC_COLORS.brand.pressed}
                     />
                   </View>
                 </PressableScale>
@@ -499,7 +494,7 @@ function DiscoveryScreen() {
                     modifiers={[
                       buttonStyle("glass"),
                       controlSize("extraLarge"),
-                      foregroundStyle(SAGE[600]),
+                      foregroundStyle(SEMANTIC_COLORS.brand.pressed),
                       labelStyle("iconOnly"),
                     ]}
                     systemImage="keyboard.fill"

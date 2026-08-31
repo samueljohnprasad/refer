@@ -7,7 +7,8 @@ import { Text } from "@/src/components/ui/Text";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import StageProgressBar from "@/src/components/ui/StageProgressBar";
 import type { SectionOverviewItem } from "@/src/types/journey/sectionMap";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import {
   useSectionOverviewViewModel,
   type SectionOverviewSheetProps,
@@ -94,8 +95,8 @@ function SectionCard({
           progress={section.progressPercent}
           height={8}
           showGlow={section.isCurrent}
-          fillColor={section.isCurrent ? SAGE[500] : SAGE[300]}
-          trackColor={SAGE[100]}
+          fillColor={section.isCurrent ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.border.selected}
+          trackColor={SEMANTIC_COLORS.brand.soft}
         />
 
         <View className="flex-row items-center justify-between mt-1">
@@ -106,7 +107,7 @@ function SectionCard({
           {!section.isCurrent ? (
             <View className="flex-row items-center gap-1.5">
               {!section.isUnlocked && (
-                <HugeiconsIcon icon={LockIcon} size={14} color={SAGE[500]} />
+                <HugeiconsIcon icon={LockIcon} size={14} color={SEMANTIC_COLORS.brand.primary} />
               )}
               <Text
                 variant="label-bold"

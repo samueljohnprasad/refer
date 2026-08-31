@@ -1,8 +1,7 @@
 import { StyleSheet } from "react-native";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 
 export const whatIfMachineStyles = StyleSheet.create({
   screenContent: {
@@ -20,7 +19,7 @@ export const whatIfMachineStyles = StyleSheet.create({
     marginBottom: 12,
   },
   betLabel: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 11,
     letterSpacing: 0.45,
@@ -29,12 +28,12 @@ export const whatIfMachineStyles = StyleSheet.create({
     paddingHorizontal: 13,
     paddingVertical: 5,
     borderWidth: 1.5,
-    borderColor: COURSE_EXERCISE_COLORS.accentLight,
+    borderColor: SEMANTIC_COLORS.border.selected,
     borderRadius: 999,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   betText: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
     fontSize: 13,
   },
@@ -46,8 +45,8 @@ export const whatIfMachineStyles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
     borderRadius: 20,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
-    shadowColor: COURSE_EXERCISE_COLORS.shadow,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
+    shadowColor: SEMANTIC_COLORS.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -59,16 +58,16 @@ export const whatIfMachineStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 12,
-    backgroundColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: SEMANTIC_COLORS.brand.primary,
   },
   stepNumberLabel: {
-    color: COURSE_EXERCISE_COLORS.surface,
+    color: SEMANTIC_COLORS.surface.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 12,
   },
   stepText: {
     flex: 1,
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 13.5,
     lineHeight: 20,
@@ -78,21 +77,21 @@ export const whatIfMachineStyles = StyleSheet.create({
     paddingHorizontal: 22,
     paddingVertical: 20,
     borderRadius: 28,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
-    shadowColor: COURSE_EXERCISE_COLORS.shadow,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
+    shadowColor: SEMANTIC_COLORS.shadow,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.12,
     shadowRadius: 7,
   },
   rule: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 20,
     lineHeight: 26,
   },
   takeaway: {
     marginTop: 6,
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 14,
     lineHeight: 22,

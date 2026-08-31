@@ -1,9 +1,9 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React, { useState } from "react";
 import { View, Pressable, TextInput } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
 import type { StepProps } from "@/src/types/exerciseFlow";
-import { SAGE, BRAND_BORDER, BRAND_SURFACE, INK, INK_MUTED } from "@/lib/tokens";
 
 interface TimePickerStepProps extends StepProps {
   title: string;
@@ -70,14 +70,14 @@ export const TimePickerStep: React.FC<TimePickerStepProps> = React.memo(
                   accessibilityState={{ selected }}
                   className="rounded-xl px-4 py-3"
                   style={{
-                    backgroundColor: selected ? SAGE.selected : BRAND_SURFACE,
+                    backgroundColor: selected ? SEMANTIC_COLORS.brand.soft : SEMANTIC_COLORS.surface.primary,
                     borderWidth: 2,
-                    borderColor: selected ? SAGE[500] : BRAND_BORDER,
+                    borderColor: selected ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.border.default,
                   }}
                 >
                   <Text
                     className="text-sm font-medium"
-                    style={{ color: selected ? SAGE[700] : INK }}
+                    style={{ color: selected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.text.primary }}
                   >
                     {preset.label}
                   </Text>
@@ -91,10 +91,10 @@ export const TimePickerStep: React.FC<TimePickerStepProps> = React.memo(
           value={customValue}
           onChangeText={handleCustom}
           placeholder="e.g., 10:30 PM or Tomorrow 3pm"
-          placeholderTextColor={INK_MUTED}
+          placeholderTextColor={SEMANTIC_COLORS.text.muted}
           accessibilityLabel={title}
           className="text-base text-ink bg-white rounded-xl p-4"
-          style={{ borderWidth: 2, borderColor: BRAND_BORDER }}
+          style={{ borderWidth: 2, borderColor: SEMANTIC_COLORS.border.default }}
           editable={!readOnly}
           autoFocus={!readOnly && autoFocus && (!presets || presets.length === 0)}
         />

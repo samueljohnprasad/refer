@@ -1,7 +1,7 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
 import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
-import { BRAND_SURFACE, INK, SAGE } from "@/lib/tokens";
 
 interface ExerciseIntroSequenceProps {
   steps?: string[];
@@ -25,8 +25,8 @@ export const ExerciseIntroSequence: React.FC<ExerciseIntroSequenceProps> =
                 <View
                   className="z-10 h-8 w-8 items-center justify-center rounded-full border-[4px]"
                   style={{
-                    backgroundColor: isFirst ? SAGE[500] : SAGE[200],
-                    borderColor: BRAND_SURFACE,
+                    backgroundColor: isFirst ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.border.default,
+                    borderColor: SEMANTIC_COLORS.surface.primary,
                   }}
                 >
                   <Text
@@ -34,7 +34,7 @@ export const ExerciseIntroSequence: React.FC<ExerciseIntroSequenceProps> =
                     className="text-[11px] font-bold"
                     style={{
                       lineHeight: 12,
-                      color: isFirst ? BRAND_SURFACE : SAGE[600],
+                      color: isFirst ? SEMANTIC_COLORS.surface.primary : SEMANTIC_COLORS.text.secondary,
                     }}
                   >
                     {index + 1}
@@ -43,7 +43,7 @@ export const ExerciseIntroSequence: React.FC<ExerciseIntroSequenceProps> =
                 {!isLast ? (
                   <View
                     className="mt-1 h-6 w-px"
-                    style={{ backgroundColor: SAGE[100] }}
+                    style={{ backgroundColor: SEMANTIC_COLORS.surface.secondary }}
                   />
                 ) : null}
               </View>
@@ -52,7 +52,7 @@ export const ExerciseIntroSequence: React.FC<ExerciseIntroSequenceProps> =
                 <Text
                   variant="body-bold"
                   className="text-[16px] leading-[23px]"
-                  style={{ color: INK }}
+                  style={{ color: SEMANTIC_COLORS.text.primary }}
                 >
                   {step}
                 </Text>

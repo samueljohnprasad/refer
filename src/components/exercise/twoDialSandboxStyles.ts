@@ -1,8 +1,7 @@
 import { StyleSheet } from "react-native";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 
 export const twoDialSandboxStyles = StyleSheet.create({
   screenContent: {
@@ -16,8 +15,8 @@ export const twoDialSandboxStyles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 18,
     borderRadius: 28,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
-    shadowColor: COURSE_EXERCISE_COLORS.shadow,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
+    shadowColor: SEMANTIC_COLORS.shadow,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.12,
     shadowRadius: 7,
@@ -30,19 +29,19 @@ export const twoDialSandboxStyles = StyleSheet.create({
     gap: 8,
   },
   dialTitle: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 14,
   },
   dialCaption: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 11.5,
   },
   slider: { width: "100%", height: 38 },
   rangeLabels: { flexDirection: "row", justifyContent: "space-between" },
   rangeLabel: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 11,
   },
@@ -58,11 +57,11 @@ export const twoDialSandboxStyles = StyleSheet.create({
     justifyContent: "flex-end",
     overflow: "hidden",
     borderWidth: 2,
-    borderColor: COURSE_EXERCISE_COLORS.border,
+    borderColor: SEMANTIC_COLORS.border.default,
     borderRadius: 16,
-    backgroundColor: COURSE_EXERCISE_COLORS.surfaceMuted,
+    backgroundColor: SEMANTIC_COLORS.surface.secondary,
   },
-  tankFill: { width: "100%", backgroundColor: COURSE_EXERCISE_COLORS.accent },
+  tankFill: { width: "100%", backgroundColor: SEMANTIC_COLORS.brand.primary },
   outcome: {
     flex: 1,
     justifyContent: "center",
@@ -72,21 +71,21 @@ export const twoDialSandboxStyles = StyleSheet.create({
     borderRadius: 20,
   },
   warning: {
-    borderColor: COURSE_EXERCISE_COLORS.accentLight,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    borderColor: SEMANTIC_COLORS.border.selected,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   steady: {
-    borderColor: COURSE_EXERCISE_COLORS.accent,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    borderColor: SEMANTIC_COLORS.brand.primary,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   outcomeTitle: {
     marginBottom: 4,
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 15,
   },
   outcomeBody: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 12.5,
     lineHeight: 19,
@@ -99,18 +98,18 @@ export const twoDialSandboxStyles = StyleSheet.create({
     paddingVertical: 8,
     borderWidth: 1.5,
     borderStyle: "dashed",
-    borderColor: COURSE_EXERCISE_COLORS.inkSoft,
+    borderColor: SEMANTIC_COLORS.text.secondary,
     borderRadius: 20,
   },
   presetLabel: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 12,
   },
   pressed: { opacity: 0.65, transform: [{ translateY: 1 }] },
   meta: {
     marginTop: 12,
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 12.5,
     textAlign: "center",

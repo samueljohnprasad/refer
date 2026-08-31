@@ -2,7 +2,8 @@ import React from "react";
 import { Pressable, View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Feather } from "@expo/vector-icons";
-import { BRAND_BORDER, BRAND_SURFACE, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import type { CognitiveDistortion } from "../types";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
@@ -39,7 +40,7 @@ export const DistortionCard: React.FC<DistortionCardProps> = React.memo(
           isDisabled ? "opacity-50" : ""
         }`}
         style={({ pressed }) => ({
-          backgroundColor: isSelected ? SAGE.selected : BRAND_SURFACE,
+          backgroundColor: isSelected ? SEMANTIC_COLORS.selection.surface : SEMANTIC_COLORS.surface.primary,
           minHeight: 72,
           opacity: pressed ? 0.72 : 1,
         })}
@@ -70,12 +71,12 @@ export const DistortionCard: React.FC<DistortionCardProps> = React.memo(
           <View
             className="ml-3 h-6 w-6 items-center justify-center rounded-full border"
             style={{
-              backgroundColor: isSelected ? SAGE[600] : BRAND_SURFACE,
-              borderColor: isSelected ? SAGE[600] : BRAND_BORDER,
+              backgroundColor: isSelected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.surface.primary,
+              borderColor: isSelected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.border.default,
             }}
           >
             {isSelected ? (
-              <Feather name="check" size={14} color={BRAND_SURFACE} />
+              <Feather name="check" size={14} color={SEMANTIC_COLORS.surface.primary} />
             ) : null}
           </View>
         </View>

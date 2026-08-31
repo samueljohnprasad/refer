@@ -7,9 +7,8 @@ import {
   readString,
 } from "@/src/components/exercise/courseExerciseContent";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
@@ -137,8 +136,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     paddingVertical: 24,
     borderRadius: 28,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
-    shadowColor: COURSE_EXERCISE_COLORS.shadow,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
+    shadowColor: SEMANTIC_COLORS.shadow,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.12,
     shadowRadius: 7,
@@ -148,15 +147,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 8,
     borderRadius: 999,
-    backgroundColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: SEMANTIC_COLORS.brand.primary,
   },
   term: {
-    color: COURSE_EXERCISE_COLORS.surface,
+    color: SEMANTIC_COLORS.surface.primary,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 20,
   },
   definition: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 15.5,
     lineHeight: 23,
@@ -169,31 +168,31 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderWidth: 1.5,
     borderBottomWidth: 4,
-    borderColor: COURSE_EXERCISE_COLORS.border,
+    borderColor: SEMANTIC_COLORS.border.default,
     borderRadius: 22,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
   openPanel: {
-    borderColor: COURSE_EXERCISE_COLORS.accent,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    borderColor: SEMANTIC_COLORS.brand.primary,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   pressed: { transform: [{ translateY: 2 }], borderBottomWidth: 2 },
   panelLabel: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 10.5,
     letterSpacing: 0.5,
   },
-  openLabel: { color: COURSE_EXERCISE_COLORS.accentDark },
+  openLabel: { color: SEMANTIC_COLORS.brand.pressed },
   panelBody: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 14,
     lineHeight: 21,
   },
   note: {
     marginTop: 12,
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 12.5,
     lineHeight: 18,

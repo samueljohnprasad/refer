@@ -1,8 +1,7 @@
 import { StyleSheet } from "react-native";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 
 export const explorableModelStyles = StyleSheet.create({
   screen: {
@@ -13,7 +12,7 @@ export const explorableModelStyles = StyleSheet.create({
     paddingTop: 6,
   },
   setup: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 14,
     lineHeight: 20,
@@ -22,7 +21,7 @@ export const explorableModelStyles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 6,
     paddingTop: 6,
-    backgroundColor: COURSE_EXERCISE_COLORS.surfaceMuted,
+    backgroundColor: SEMANTIC_COLORS.surface.secondary,
   },
   delta: {
     minHeight: 48,
@@ -30,10 +29,10 @@ export const explorableModelStyles = StyleSheet.create({
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 10,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   deltaText: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
     fontSize: 14,
     lineHeight: 20,
@@ -46,12 +45,12 @@ export const explorableModelStyles = StyleSheet.create({
     gap: 12,
   },
   controlLabel: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 14,
   },
   controlValue: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 14,
   },
@@ -64,30 +63,30 @@ export const explorableModelStyles = StyleSheet.create({
     gap: 12,
     borderWidth: 1.5,
     borderBottomWidth: 3,
-    borderColor: COURSE_EXERCISE_COLORS.border,
+    borderColor: SEMANTIC_COLORS.border.default,
     borderRadius: 16,
     paddingHorizontal: 16,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
   toggleActive: {
-    borderColor: COURSE_EXERCISE_COLORS.accent,
-    backgroundColor: COURSE_EXERCISE_COLORS.accent,
+    borderColor: SEMANTIC_COLORS.brand.primary,
+    backgroundColor: SEMANTIC_COLORS.brand.primary,
   },
   toggleLabel: {
     flex: 1,
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 14,
   },
   toggleValue: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 13,
   },
-  toggleLabelActive: { color: COURSE_EXERCISE_COLORS.surface },
+  toggleLabelActive: { color: SEMANTIC_COLORS.surface.primary },
   complete: { gap: 10 },
   completeText: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 22,
     lineHeight: 28,
@@ -97,13 +96,13 @@ export const explorableModelStyles = StyleSheet.create({
     alignSelf: "flex-start",
     justifyContent: "center",
     borderWidth: 1.5,
-    borderColor: COURSE_EXERCISE_COLORS.accent,
+    borderColor: SEMANTIC_COLORS.brand.primary,
     borderRadius: 999,
     paddingHorizontal: 18,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
   inlineActionText: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 14,
   },
@@ -116,7 +115,7 @@ export const explorableModelStyles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   resetText: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 14,
   },

@@ -11,7 +11,7 @@ import {
   ReflectionTimelineItem,
 } from "@/src/components/exercise/ReflectionTimeline";
 import { Text } from "@/src/components/ui/Text";
-import { DANGER, INK, INK_SOFT, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
 import type { DecatastrophizingResponse, StepProps } from "@/src/types/exerciseFlow";
 
@@ -21,20 +21,20 @@ function getShiftCopy(pre: number, post: number): { label: string; detail: strin
     return {
       label: `${Math.abs(change)} point${Math.abs(change) === 1 ? "" : "s"} stronger`,
       detail: "Anxiety can sometimes temporarily increase when we focus closely on it.",
-      color: INK,
+      color: SEMANTIC_COLORS.text.primary,
     };
   }
   if (change === 0) {
     return {
       label: "No score change",
       detail: "The score stayed steady, but you still practiced putting the fear in perspective.",
-      color: INK,
+      color: SEMANTIC_COLORS.text.primary,
     };
   }
   return {
     label: `${change} point${change === 1 ? "" : "s"} lighter`,
     detail: "The feared catastrophe became less overwhelming after exploring it objectively.",
-    color: SAGE[700],
+    color: SEMANTIC_COLORS.brand.onSoft,
   };
 }
 
@@ -94,20 +94,20 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
   return (
     <View className="px-3" style={{ paddingBottom: 40 }}>
       <View className="pb-6 pt-2">
-        <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }} className="text-[34px] leading-[37px] tracking-[-0.01em]">
+        <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[34px] leading-[37px] tracking-[-0.01em]">
           Fear put in perspective!
         </Text>
-        <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }} className="mt-2 max-w-[330px] text-[15px] leading-[22px]">
+        <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }} className="mt-2 max-w-[330px] text-[15px] leading-[22px]">
           You carefully examined your worry and built a plan for it.
         </Text>
       </View>
 
       {response.copingPlan?.trim() ? (
-        <View className="py-8" style={{ marginHorizontal: -28, paddingHorizontal: 28, backgroundColor: SAGE[50] }}>
-          <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }} className="text-[13px] leading-[18px]">
+        <View className="py-8" style={{ marginHorizontal: -28, paddingHorizontal: 28, backgroundColor: SEMANTIC_COLORS.selection.surface }}>
+          <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.pressed }} className="text-[13px] leading-[18px]">
             Your coping plan
           </Text>
-          <Text accessibilityRole="summary" style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }} className="mt-1.5 text-[25px] leading-[33px]">
+          <Text accessibilityRole="summary" style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="mt-1.5 text-[25px] leading-[33px]">
             {response.copingPlan}
           </Text>
           {!readOnly ? (
@@ -117,14 +117,14 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
               accessibilityRole="button"
               className="mt-5 min-h-11 flex-row items-center self-start py-2 active:opacity-60"
             >
-              <HugeiconsIcon icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon} size={18} color={SAGE[700]} strokeWidth={2} />
-              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[700] }} className="ml-2 text-[14px] leading-[20px]">
+              <HugeiconsIcon icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon} size={18} color={SEMANTIC_COLORS.brand.onSoft} strokeWidth={2} />
+              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.onSoft }} className="ml-2 text-[14px] leading-[20px]">
                 {cardSaved ? "Saved to coping cards" : isSavingCard ? "Saving..." : "Save for a difficult moment"}
               </Text>
             </Pressable>
           ) : null}
           {cardSaveError ? (
-            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: DANGER }} className="mt-2 text-[13px] leading-[18px]">
+            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.error.indicator }} className="mt-2 text-[13px] leading-[18px]">
               {cardSaveError}
             </Text>
           ) : null}
@@ -136,7 +136,7 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
           <ReflectionTimeline>
             {hasCatastrophe ? (
               <ReflectionTimelineItem label="Feared catastrophe">
-                <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBoldItalic, color: INK }} className="text-[21px] leading-[28px]">
+                <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBoldItalic, color: SEMANTIC_COLORS.text.primary }} className="text-[21px] leading-[28px]">
                   {response.fearedCatastrophe}
                 </Text>
               </ReflectionTimelineItem>
@@ -144,7 +144,7 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
 
             {hasProbability ? (
               <ReflectionTimelineItem label="Probability">
-                <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }} className="text-[16px] leading-[24px]">
+                <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[16px] leading-[24px]">
                   {response.probability}% chance of happening
                 </Text>
               </ReflectionTimelineItem>
@@ -152,7 +152,7 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
 
             {hasMostLikely ? (
               <ReflectionTimelineItem label="Most likely outcome">
-                <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK }} className="text-[16px] leading-[24px]">
+                <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.primary }} className="text-[16px] leading-[24px]">
                   {response.mostLikelyOutcome}
                 </Text>
               </ReflectionTimelineItem>
@@ -163,20 +163,20 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
                 <View className="gap-3">
                   {has1Week && (
                     <View>
-                      <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }} className="text-[14px]">In 1 week</Text>
-                      <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }} className="text-[14px]">{response.perspective1Week}</Text>
+                      <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[14px]">In 1 week</Text>
+                      <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }} className="text-[14px]">{response.perspective1Week}</Text>
                     </View>
                   )}
                   {has1Month && (
                     <View>
-                      <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }} className="text-[14px]">In 1 month</Text>
-                      <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }} className="text-[14px]">{response.perspective1Month}</Text>
+                      <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[14px]">In 1 month</Text>
+                      <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }} className="text-[14px]">{response.perspective1Month}</Text>
                     </View>
                   )}
                   {has1Year && (
                     <View>
-                      <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }} className="text-[14px]">In 1 year</Text>
-                      <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }} className="text-[14px]">{response.perspective1Year}</Text>
+                      <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[14px]">In 1 year</Text>
+                      <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }} className="text-[14px]">{response.perspective1Year}</Text>
                     </View>
                   )}
                 </View>
@@ -198,7 +198,7 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
         </View>
       ) : null}
 
-      <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }} className="mb-2 mt-10 px-5 text-center text-[13px] leading-[20px]">
+      <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }} className="mb-2 mt-10 px-5 text-center text-[13px] leading-[20px]">
         Completing saves this reflection to your exercise history.
       </Text>
     </View>

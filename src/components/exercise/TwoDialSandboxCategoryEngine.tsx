@@ -1,3 +1,4 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React, { useEffect } from "react";
 import { Pressable, Text, View } from "react-native";
 import Slider from "@react-native-community/slider";
@@ -9,7 +10,6 @@ import {
   readString,
   readStringArray,
 } from "@/src/components/exercise/courseExerciseContent";
-import { COURSE_EXERCISE_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import { twoDialSandboxStyles as styles } from "@/src/components/exercise/twoDialSandboxStyles";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
@@ -98,7 +98,7 @@ export function TwoDialSandboxCategoryEngine({
           low="quiet"
           high="everything at once"
           value={load}
-          color={COURSE_EXERCISE_COLORS.accent}
+          color={SEMANTIC_COLORS.brand.primary}
           disabled={locked}
           onChange={(value) => updateDials(value, recovery)}
         />
@@ -108,7 +108,7 @@ export function TwoDialSandboxCategoryEngine({
           low="running dry"
           high="topped up"
           value={recovery}
-          color={COURSE_EXERCISE_COLORS.accent}
+          color={SEMANTIC_COLORS.brand.primary}
           disabled={locked}
           onChange={(value) => updateDials(load, value)}
         />
@@ -182,7 +182,7 @@ function DialControl({
         step={1}
         value={value}
         minimumTrackTintColor={color}
-        maximumTrackTintColor={COURSE_EXERCISE_COLORS.border}
+        maximumTrackTintColor={SEMANTIC_COLORS.border.default}
         thumbTintColor={color}
         onValueChange={onChange}
         style={styles.slider}

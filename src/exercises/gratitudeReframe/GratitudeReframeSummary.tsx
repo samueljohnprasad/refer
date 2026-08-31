@@ -16,7 +16,7 @@ import {
 import { Text } from "@/src/components/ui/Text";
 import { EXERCISE_LINKING_MAP } from "@/src/data/exerciseLinkingMap";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
-import { DANGER, INK_SOFT, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { getGratitudePromptLabel } from "./promptMetadata";
 import type {
   GratitudeReframeResponse,
@@ -69,11 +69,11 @@ function SaveCopingCardAction({
         <HugeiconsIcon
           icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon}
           size={18}
-          color={SAGE[700]}
+          color={SEMANTIC_COLORS.brand.onSoft}
           strokeWidth={2}
         />
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[700] }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.onSoft }}
           className="ml-2 text-[14px] leading-[20px]"
         >
           {cardSaved
@@ -86,7 +86,7 @@ function SaveCopingCardAction({
 
       {error ? (
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: DANGER }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.error.indicator }}
           className="mt-2 text-[13px] leading-[18px]"
         >
           {error}
@@ -111,7 +111,7 @@ function FollowupLink({
       className="mt-2 min-h-11 flex-row items-center self-start py-2 active:opacity-60"
     >
       <Text
-        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.pressed }}
         className="text-[14px] leading-[20px]"
       >
         {label}
@@ -119,7 +119,7 @@ function FollowupLink({
       <HugeiconsIcon
         icon={ArrowRight01Icon}
         size={16}
-        color={SAGE[500]}
+        color={SEMANTIC_COLORS.brand.primary}
         strokeWidth={2}
       />
     </Pressable>
@@ -189,7 +189,7 @@ export function GratitudeReframeSummary({
     return (
       <View>
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
+          style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
           className="text-[14px] leading-[20px]"
         >
           {getMoodShiftInterpretation(

@@ -8,7 +8,8 @@ import {
 import { Host, ProgressView } from "@expo/ui/swift-ui";
 import { progressViewStyle, tint } from "@expo/ui/swift-ui/modifiers";
 
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface RewardsOwnedProgressProps {
   ownedCount: number;
@@ -29,7 +30,7 @@ export const RewardsOwnedProgress: React.FC<RewardsOwnedProgressProps> =
         <Host colorScheme="light" style={styles.nativeHost}>
           <ProgressView
             value={progress}
-            modifiers={[progressViewStyle("linear"), tint(SAGE[500])]}
+            modifiers={[progressViewStyle("linear"), tint(SEMANTIC_COLORS.brand.primary)]}
           />
         </Host>
       );
@@ -48,12 +49,12 @@ RewardsOwnedProgress.displayName = "RewardsOwnedProgress";
 
 const styles = StyleSheet.create({
   fallbackFill: {
-    backgroundColor: SAGE[500],
+    backgroundColor: SEMANTIC_COLORS.brand.primary,
     borderRadius: 999,
     height: "100%",
   },
   fallbackTrack: {
-    backgroundColor: SAGE[100],
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
     borderRadius: 999,
     height: 8,
     overflow: "hidden",

@@ -2,7 +2,8 @@ import React from "react";
 import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { useInsightNarrative } from "@/src/hooks/insights/useInsightNarrative";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import dayjs from "dayjs";
 
 export function InsightNarrativeCard() {

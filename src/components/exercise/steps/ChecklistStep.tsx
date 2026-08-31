@@ -1,10 +1,10 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React, { useState } from "react";
 import { View, Pressable, TextInput } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
-import { SAGE, BRAND_BORDER, INK, INK_MUTED, BRAND_SURFACE } from "@/lib/tokens";
 
 interface ChecklistItem {
   label: string;
@@ -88,16 +88,16 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
               className="flex-row items-center py-3 px-3 mb-1 rounded-xl"
               style={{
                 borderBottomWidth: 1,
-                borderBottomColor: BRAND_BORDER,
-                backgroundColor: isChecked ? SAGE.selected : "transparent",
+                borderBottomColor: SEMANTIC_COLORS.border.default,
+                backgroundColor: isChecked ? SEMANTIC_COLORS.brand.soft : "transparent",
               }}
             >
               <View
                 className="w-6 h-6 rounded-lg items-center justify-center mr-3"
                 style={{
-                  backgroundColor: isChecked ? SAGE[500] : BRAND_SURFACE,
+                  backgroundColor: isChecked ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.surface.primary,
                   borderWidth: 2,
-                  borderColor: isChecked ? SAGE[500] : BRAND_BORDER,
+                  borderColor: isChecked ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.border.default,
                 }}
               >
                 {isChecked && (
@@ -106,7 +106,7 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
               </View>
               <Text
                 className="text-sm flex-1"
-                style={{ color: isChecked ? SAGE[700] : INK }}
+                style={{ color: isChecked ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.text.primary }}
               >
                 {item.label}
               </Text>
@@ -121,11 +121,11 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
               onChangeText={setCustomDraft}
               onSubmitEditing={addCustom}
               placeholder="Add custom item..."
-              placeholderTextColor={INK_MUTED}
+              placeholderTextColor={SEMANTIC_COLORS.text.muted}
               returnKeyType="done"
               accessibilityLabel="Add custom checklist item"
               className="flex-1 text-sm text-ink bg-white rounded-xl p-3 mr-2"
-              style={{ borderWidth: 2, borderColor: BRAND_BORDER }}
+              style={{ borderWidth: 2, borderColor: SEMANTIC_COLORS.border.default }}
               editable={!readOnly}
               autoFocus={!readOnly && autoFocus && presetItems.length === 0}
             />
@@ -135,7 +135,7 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
               accessibilityRole="button"
               className="h-11 w-11 rounded-xl items-center justify-center"
               style={{
-                backgroundColor: customDraft.trim() ? SAGE[500] : BRAND_BORDER,
+                backgroundColor: customDraft.trim() ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.border.default,
               }}
             >
               <Text className="text-white font-bold text-lg">+</Text>

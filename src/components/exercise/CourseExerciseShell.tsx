@@ -11,10 +11,9 @@ import { Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
-import { SAGE } from "@/lib/tokens";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
+  SEMANTIC_COLORS,
 } from "@/src/components/exercise/courseExerciseTheme";
 import { SvgAppButton } from "@/src/domains/journey/ui/components/svg-app-button";
 
@@ -62,7 +61,7 @@ export function CourseExerciseShell({
           <HugeiconsIcon
             icon={Cancel01Icon}
             size={22}
-            color={COURSE_EXERCISE_COLORS.inkSoft}
+            color={SEMANTIC_COLORS.text.secondary}
           />
         </Pressable>
         <View style={styles.progressTrack}>
@@ -139,7 +138,7 @@ export function CourseExercisePrimaryButton({
         height={54}
         leftRadius={27}
         rightRadius={27}
-        pressDepth={5}
+        pressDepth={2}
         color={colors.face}
         backgroundColor={colors.rim}
         disabled={isDisabled}
@@ -163,12 +162,12 @@ export function CourseExercisePrimaryButton({
 
 function getPrimaryButtonColors(disabled: boolean) {
   return disabled
-    ? { face: SAGE[300], rim: SAGE[500] }
-    : { face: SAGE[500], rim: SAGE[700] };
+    ? { face: SEMANTIC_COLORS.text.muted, rim: SEMANTIC_COLORS.text.secondary }
+    : { face: SEMANTIC_COLORS.brand.primary, rim: SEMANTIC_COLORS.brand.pressed };
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: COURSE_EXERCISE_COLORS.background },
+  screen: { flex: 1, backgroundColor: SEMANTIC_COLORS.surface.primary },
   header: {
     minHeight: 64,
     flexDirection: "row",
@@ -190,21 +189,21 @@ const styles = StyleSheet.create({
     flex: 1,
     overflow: "hidden",
     borderRadius: 999,
-    backgroundColor: COURSE_EXERCISE_COLORS.surfaceMuted,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   progressFill: {
     height: "100%",
     borderRadius: 999,
-    backgroundColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: SEMANTIC_COLORS.brand.primary,
   },
   progressLabel: {
     minWidth: 43,
-    color: COURSE_EXERCISE_COLORS.inkSoft,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
+    color: SEMANTIC_COLORS.text.secondary,
+    fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 12,
     textAlign: "right",
   },
-  content: { flexGrow: 1 },
+  content: { flexGrow: 1, paddingTop: 16, paddingBottom: 32 },
   footer: { gap: 2, paddingHorizontal: 22, paddingTop: 10 },
   primaryButton: {
     width: "100%",
@@ -218,13 +217,13 @@ const styles = StyleSheet.create({
   primaryLabel: {
     color: "#FFFFFF",
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 16,
+    fontSize: 18,
   },
-  disabledLabel: { color: SAGE[700] },
+  disabledLabel: { color: SEMANTIC_COLORS.text.inverse },
   skipButton: { minHeight: 48, alignItems: "center", justifyContent: "center" },
   skipLabel: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 14,
+    color: SEMANTIC_COLORS.text.secondary,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
+    fontSize: 15,
   },
 });

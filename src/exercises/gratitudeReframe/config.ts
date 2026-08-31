@@ -19,7 +19,7 @@ export const GRATITUDE_REFRAME_INITIAL: GratitudeReframeResponse = {
 };
 
 function normalizeMoodScore(value: number | undefined): number | undefined {
-  if (typeof value !== "number") return undefined;
+  if (typeof value !== "number") return null;
   if (value > 10) return Math.min(Math.max(Math.round(value / 10), 0), 10);
   return Math.min(Math.max(Math.round(value), 0), 10);
 }

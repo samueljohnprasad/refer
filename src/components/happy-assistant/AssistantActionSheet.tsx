@@ -13,7 +13,8 @@ import {
   type HappyAssistantCommand,
 } from "@/src/store/slices/happyAssistantSlice";
 import type { HappyAssistantActionDescriptor } from "./types";
-import { INK_SOFT, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Text } from "@/src/components/ui/Text";
 
 interface AssistantActionSheetProps {
@@ -65,7 +66,7 @@ export function AssistantActionSheet({
           onPress={handleSettingsPress}
           className="h-11 w-11 items-center justify-center rounded-full active:opacity-80"
         >
-          <HugeiconsIcon icon={Settings02Icon} size={22} color={SAGE[600]} />
+          <HugeiconsIcon icon={Settings02Icon} size={22} color={SEMANTIC_COLORS.brand.pressed} />
         </Pressable>
       </View>
 
@@ -107,7 +108,7 @@ const AssistantActionRow = memo(function AssistantActionRow({
         accessibilityHint={action.description}
       >
         <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-sage-100">
-          <HugeiconsIcon icon={action.icon} size={20} color={SAGE[600]} />
+          <HugeiconsIcon icon={action.icon} size={20} color={SEMANTIC_COLORS.brand.pressed} />
         </View>
         <View className="flex-1">
           <Text variant="body-bold" className="text-[15px]">
@@ -122,7 +123,7 @@ const AssistantActionRow = memo(function AssistantActionRow({
             {action.description}
           </Text>
         </View>
-        <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={SAGE[400]} />
+        <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={SEMANTIC_COLORS.brand.primary} />
       </Pressable>
     );
   }
@@ -136,7 +137,7 @@ const AssistantActionRow = memo(function AssistantActionRow({
       accessibilityHint={action.description}
     >
       <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-white/50">
-        <HugeiconsIcon icon={action.icon} size={20} color={INK_SOFT} />
+        <HugeiconsIcon icon={action.icon} size={20} color={SEMANTIC_COLORS.text.secondary} />
       </View>
       <View className="flex-1">
         <Text variant="body-bold" className="text-[15px]">
@@ -151,7 +152,7 @@ const AssistantActionRow = memo(function AssistantActionRow({
           {action.description}
         </Text>
       </View>
-      <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={INK_SOFT} />
+      <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={SEMANTIC_COLORS.text.secondary} />
     </Pressable>
   );
 });

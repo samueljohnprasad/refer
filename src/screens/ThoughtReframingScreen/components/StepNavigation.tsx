@@ -3,7 +3,8 @@ import { View } from "react-native";
 import { Button } from "@/src/components/ui/Button";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
-import { INK_SOFT } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface StepNavigationProps {
   /** Whether to show the back button */
@@ -56,7 +57,7 @@ export const StepNavigation: React.FC<StepNavigationProps> = React.memo(
               <HugeiconsIcon
                 icon={ArrowLeft01Icon}
                 size={18}
-                color={INK_SOFT}
+                color={SEMANTIC_COLORS.text.secondary}
               />
             }
           />

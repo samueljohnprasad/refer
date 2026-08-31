@@ -8,7 +8,8 @@ import {
   useTriggerClusters,
   type TriggerCluster,
 } from "@/src/hooks/insights/useTriggerClusters";
-import { SAGE, INK_MUTED } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 function ClusterRow({ cluster }: { cluster: TriggerCluster }) {
   const router = useRouter();
@@ -69,7 +70,7 @@ function ClusterRow({ cluster }: { cluster: TriggerCluster }) {
             Best tool: {cluster.bestExercise.label} (−
             {cluster.bestExercise.avgDrop})
           </Text>
-          <HugeiconsIcon icon={ArrowRight01Icon} size={10} color={SAGE[500]} />
+          <HugeiconsIcon icon={ArrowRight01Icon} size={10} color={SEMANTIC_COLORS.brand.primary} />
         </Pressable>
       )}
     </View>

@@ -9,7 +9,8 @@ import {
   type BeliefDataPoint,
 } from "@/src/hooks/insights/useBeliefDecay";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
-import { SAGE, GOLD, INK_MUTED, BRAND_BORDER_STRONG } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 // ─── Mini dot chart ──────────────────────────────────────────────────────────
 
@@ -30,7 +31,7 @@ function BeliefDotChart({ dataPoints }: { dataPoints: BeliefDataPoint[] }) {
               style={{
                 width: 8,
                 height,
-                backgroundColor: isLast ? SAGE[500] : SAGE[300],
+                backgroundColor: isLast ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.border.selected,
               }}
             />
             <Text className="text-[9px] text-ink-muted mt-1">
@@ -93,7 +94,7 @@ function LockedBeliefCard({ onUnlock }: { onUnlock: () => void }) {
       style={{ backgroundColor: "#FFFFFF" }}
     >
       <View className="flex-row items-center gap-2 mb-2">
-        <HugeiconsIcon icon={LockIcon} size={16} color={INK_MUTED} />
+        <HugeiconsIcon icon={LockIcon} size={16} color={SEMANTIC_COLORS.text.tertiary} />
         <Text className="happy-font-body-bold text-[14px] text-ink">
           Belief Tracker
         </Text>

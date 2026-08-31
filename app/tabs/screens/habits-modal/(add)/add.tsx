@@ -17,7 +17,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CreateHabitFormData, PresetHabit } from "@/src/types/habits";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Add01Icon, Tick01Icon } from "@hugeicons/core-free-icons";
-import { INK_MUTED } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Button } from "@/src/components/ui/Button";
 import { Text } from "@/src/components/ui/Text";
 import * as Haptics from "expo-haptics";
@@ -195,7 +196,7 @@ export default function HabitAddScreen(): React.JSX.Element {
               className="flex-row items-center px-5 py-3.5 active:bg-gray-50"
             >
               <View className="h-10 w-10 mr-4 items-center justify-center rounded-full bg-gray-100">
-                <HugeiconsIcon icon={Add01Icon} size={20} color={INK_MUTED} />
+                <HugeiconsIcon icon={Add01Icon} size={20} color={SEMANTIC_COLORS.text.tertiary} />
               </View>
               <RNText className="text-[17px] font-semibold text-black">
                 Create Custom Habit
@@ -237,7 +238,7 @@ export default function HabitAddScreen(): React.JSX.Element {
               value={habitName}
               onChangeText={setHabitName}
               placeholder="e.g., Morning stretch routine"
-              placeholderTextColor={INK_MUTED}
+              placeholderTextColor={SEMANTIC_COLORS.text.tertiary}
               maxLength={50}
               autoFocus
               returnKeyType="next"
@@ -262,7 +263,7 @@ export default function HabitAddScreen(): React.JSX.Element {
               value={habitDescription}
               onChangeText={setHabitDescription}
               placeholder="To feel more energized and focused..."
-              placeholderTextColor={INK_MUTED}
+              placeholderTextColor={SEMANTIC_COLORS.text.tertiary}
               maxLength={200}
               multiline
               numberOfLines={3}

@@ -3,9 +3,8 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 
 interface CourseExerciseFooterProps {
   hidePrimary: boolean;
@@ -66,11 +65,11 @@ const styles = StyleSheet.create({
     gap: 2,
     paddingHorizontal: 24,
     paddingTop: 14,
-    backgroundColor: COURSE_EXERCISE_COLORS.background,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
   skipButton: { minHeight: 48, alignItems: "center", justifyContent: "center" },
   skipLabel: {
-    color: COURSE_EXERCISE_COLORS.accentDark,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 14,
   },

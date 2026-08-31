@@ -18,7 +18,8 @@ import Rive, { AutoBind } from 'rive-react-native';
 import { Button } from '@/src/components/ui/Button';
 import { AnimatedFireIcon, GrayFireIcon } from '@/src/components/ui/AnimatedStatIcon';
 import { useStreak } from '@/src/hooks/useStreak';
-import { SAGE } from '@/lib/tokens';
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 // --- DESIGN TOKENS ---
 const COLORS = {

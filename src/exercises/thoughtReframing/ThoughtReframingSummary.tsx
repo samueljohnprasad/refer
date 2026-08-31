@@ -15,7 +15,7 @@ import {
   ReflectionTimelineItem,
 } from "@/src/components/exercise/ReflectionTimeline";
 import { Text } from "@/src/components/ui/Text";
-import { DANGER, INK, INK_SOFT, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import {
   EMOTION_OPTIONS,
   type EmotionOption,
@@ -44,7 +44,7 @@ function getShiftCopy(pre: number, post: number): {
       label: `${Math.abs(change)} point${Math.abs(change) === 1 ? "" : "s"} stronger`,
       detail:
         "The thought feels more believable right now. Looking closely can sometimes make a difficult thought feel sharper before it settles.",
-      color: INK,
+      color: SEMANTIC_COLORS.text.primary,
     };
   }
 
@@ -53,7 +53,7 @@ function getShiftCopy(pre: number, post: number): {
       label: "No score change",
       detail:
         "The score stayed steady, but you still practiced testing the thought instead of accepting it automatically.",
-      color: INK,
+      color: SEMANTIC_COLORS.text.primary,
     };
   }
 
@@ -63,7 +63,7 @@ function getShiftCopy(pre: number, post: number): {
       change >= 4
         ? "The thought became meaningfully less believable after you reviewed the evidence."
         : "Even a small shift matters. You made room for a more balanced interpretation.",
-    color: SAGE[700],
+    color: SEMANTIC_COLORS.brand.onSoft,
   };
 }
 
@@ -151,13 +151,13 @@ export const ThoughtReframingSummary: React.FC<
     <View className="px-3" style={{ paddingBottom: 40 }}>
       <View className="pb-6 pt-2">
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
           className="text-[34px] leading-[37px] tracking-[-0.01em]"
         >
           Thought reframed
         </Text>
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
+          style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
           className="mt-2 max-w-[330px] text-[15px] leading-[22px]"
         >
           You separated what happened from what the thought predicted.
@@ -170,18 +170,18 @@ export const ThoughtReframingSummary: React.FC<
           style={{
             marginHorizontal: -28,
             paddingHorizontal: 28,
-            backgroundColor: SAGE[50],
+            backgroundColor: SEMANTIC_COLORS.selection.surface,
           }}
         >
           <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.pressed }}
             className="text-[13px] leading-[18px]"
           >
             The reframe you are carrying forward
           </Text>
           <Text
             accessibilityRole="summary"
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
             className="mt-1.5 text-[25px] leading-[33px]"
           >
             {response.balancedThought}
@@ -208,11 +208,11 @@ export const ThoughtReframingSummary: React.FC<
               <HugeiconsIcon
                 icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon}
                 size={18}
-                color={SAGE[700]}
+                color={SEMANTIC_COLORS.brand.onSoft}
                 strokeWidth={2}
               />
               <Text
-                style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[700] }}
+                style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.onSoft }}
                 className="ml-2 text-[14px] leading-[20px]"
               >
                 {cardSaved
@@ -226,7 +226,7 @@ export const ThoughtReframingSummary: React.FC<
 
           {cardSaveError ? (
             <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: DANGER }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.error.indicator }}
               className="mt-2 text-[13px] leading-[18px]"
             >
               {cardSaveError}
@@ -250,7 +250,7 @@ export const ThoughtReframingSummary: React.FC<
                 }
               >
                 <Text
-                  style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK }}
+                  style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.primary }}
                   className="text-[16px] leading-[24px]"
                 >
                   {response.situation}
@@ -269,7 +269,7 @@ export const ThoughtReframingSummary: React.FC<
                 }
               >
                 <Text
-                  style={{ fontFamily: APP_FONT_FAMILIES.semiBoldItalic, color: INK }}
+                  style={{ fontFamily: APP_FONT_FAMILIES.semiBoldItalic, color: SEMANTIC_COLORS.text.primary }}
                   className="text-[21px] leading-[28px]"
                 >
                   {response.automaticThought}
@@ -289,7 +289,7 @@ export const ThoughtReframingSummary: React.FC<
                         {emotion.emoji}
                       </Text>
                       <Text
-                        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
+                        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
                         className="text-[14px] leading-[20px]"
                       >
                         {emotion.label}
@@ -309,13 +309,13 @@ export const ThoughtReframingSummary: React.FC<
                   {distortions.map((distortion) => (
                     <View key={distortion.key}>
                       <Text
-                        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
+                        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
                         className="text-[15px] leading-[21px]"
                       >
                         {distortion.label}
                       </Text>
                       <Text
-                        style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
+                        style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
                         className="mt-0.5 text-[13px] leading-[19px]"
                       >
                         {distortion.description}
@@ -366,7 +366,7 @@ export const ThoughtReframingSummary: React.FC<
       ) : null}
 
       <Text
-        style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
+        style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
         className="mb-2 mt-10 px-5 text-center text-[13px] leading-[20px]"
       >
         Completing saves this reflection to your exercise history.

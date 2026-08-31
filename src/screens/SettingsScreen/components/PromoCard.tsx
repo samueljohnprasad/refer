@@ -2,7 +2,8 @@ import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
-import { GOLD } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface PromoCardProps {
   onLayout: (event: any) => void;
@@ -33,7 +34,7 @@ export const PromoCard: React.FC<PromoCardProps> = ({
       <HugeiconsIcon
         icon={ArrowRight01Icon}
         size={18}
-        color={GOLD}
+        color={SEMANTIC_COLORS.warning.foreground}
         strokeWidth={2}
       />
     </Pressable>

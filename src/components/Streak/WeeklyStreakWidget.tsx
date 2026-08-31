@@ -4,7 +4,8 @@ import { View, Text, useColorScheme } from "react-native";
 import { useStreak } from "@/src/hooks/useStreak";
 import { Card } from "@/src/components/ui/Card";
 import { AnimatedFireIcon, GrayFireIcon } from "@/src/components/ui/AnimatedStatIcon";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface WeeklyStreakWidgetProps {
   onPress?: () => void;
@@ -23,8 +24,8 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
   );
 
   const labels = ["S", "M", "T", "W", "T", "F", "S"];
-  const strongText = isDark ? SAGE[200] : SAGE[700];
-  const secondaryText = isDark ? SAGE[300] : SAGE[600];
+  const strongText = isDark ? SEMANTIC_COLORS.selection.foreground : SEMANTIC_COLORS.brand.onSoft;
+  const secondaryText = isDark ? SEMANTIC_COLORS.border.selected : SEMANTIC_COLORS.brand.pressed;
 
   return (
     <Card

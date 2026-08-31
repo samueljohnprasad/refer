@@ -9,7 +9,8 @@ import {
   type RelapseAlert,
   type WeeklyDataPoint,
 } from "@/src/hooks/insights/useSkillProgression";
-import { SAGE, GOLD, INK_MUTED } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { EXERCISE_LABELS } from "@/src/constants/insights";
 
 // ─── Mini Sparkline ──────────────────────────────────────────────────────────
@@ -27,10 +28,10 @@ function Sparkline({
   const max = Math.max(...values, 1);
   const dotColor =
     trend === "improving"
-      ? SAGE[500]
+      ? SEMANTIC_COLORS.brand.primary
       : trend === "declining"
-        ? GOLD
-        : INK_MUTED;
+        ? SEMANTIC_COLORS.warning.foreground
+        : SEMANTIC_COLORS.text.tertiary;
 
   return (
     <View className="flex-row items-end gap-1 h-5">

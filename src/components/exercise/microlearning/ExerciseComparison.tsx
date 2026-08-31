@@ -1,9 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 
 interface ComparisonSide {
   label: string;
@@ -45,24 +44,24 @@ const styles = StyleSheet.create({
     gap: 14,
     borderRadius: 18,
     padding: 18,
-    backgroundColor: COURSE_EXERCISE_COLORS.surfaceMuted,
+    backgroundColor: SEMANTIC_COLORS.surface.secondary,
   },
   row: { gap: 5 },
   label: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 12,
   },
   value: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 20,
     lineHeight: 26,
   },
-  muted: { color: COURSE_EXERCISE_COLORS.inkSoft },
-  divider: { height: 1, backgroundColor: COURSE_EXERCISE_COLORS.border },
+  muted: { color: SEMANTIC_COLORS.text.secondary },
+  divider: { height: 1, backgroundColor: SEMANTIC_COLORS.border.default },
   caption: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 14,
     lineHeight: 20,

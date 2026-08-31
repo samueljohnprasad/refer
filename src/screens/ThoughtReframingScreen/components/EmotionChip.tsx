@@ -1,7 +1,8 @@
 import React from "react";
 import { Pressable } from "react-native";
 import { Text } from "@/components/ui/Text";
-import { SAGE, BRAND_BORDER, BRAND_SURFACE, INK } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Feather } from "@expo/vector-icons";
 import type { EmotionOption } from "../data/emotions";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
@@ -43,8 +44,8 @@ export const EmotionChip: React.FC<EmotionChipProps> = React.memo(
           isDisabled ? "opacity-45" : ""
         }`}
         style={({ pressed }) => ({
-          borderColor: isSelected ? SAGE[500] : BRAND_BORDER,
-          backgroundColor: isSelected ? SAGE.selected : BRAND_SURFACE,
+          borderColor: isSelected ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.border.default,
+          backgroundColor: isSelected ? SEMANTIC_COLORS.selection.surface : SEMANTIC_COLORS.surface.primary,
           minHeight: 48,
           opacity: pressed ? 0.72 : 1,
         })}
@@ -52,13 +53,13 @@ export const EmotionChip: React.FC<EmotionChipProps> = React.memo(
         <Text className="mr-2 text-[17px] leading-[20px]">{emotion.emoji}</Text>
         <Text
           className="flex-1 text-[15px] font-medium"
-          style={{ color: isSelected ? SAGE[800] : INK }}
+          style={{ color: isSelected ? SEMANTIC_COLORS.brand.onSoft : SEMANTIC_COLORS.text.primary }}
           numberOfLines={1}
         >
           {emotion.label}
         </Text>
         {isSelected ? (
-          <Feather name="check" size={16} color={SAGE[700]} />
+          <Feather name="check" size={16} color={SEMANTIC_COLORS.brand.onSoft} />
         ) : null}
       </Pressable>
     );

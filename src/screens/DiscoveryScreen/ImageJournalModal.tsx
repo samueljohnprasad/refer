@@ -17,7 +17,8 @@ import * as ImagePicker from "expo-image-picker";
 import { extractTextFromImage } from "@/src/network/extractTextFromImage";
 import { callMyFunction } from "@/src/network/transcribeAudio";
 import { InsightsType } from "@/src/network/genAi";
-import { BRAND_SURFACE, INK_SOFT, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Button } from "@/src/components/ui/Button";
 import { Text } from "@/src/components/ui/Text";
 
@@ -213,7 +214,7 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
                         label="Open Camera"
                         variant="primary"
                         onPress={captureImage}
-                        leftIcon={<Feather name="camera" size={20} color={BRAND_SURFACE} />}
+                        leftIcon={<Feather name="camera" size={20} color={SEMANTIC_COLORS.surface.primary} />}
                         className="mb-4"
                       />
 
@@ -221,7 +222,7 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
                         label="Select from Gallery"
                         variant="secondary"
                         onPress={pickImage}
-                        leftIcon={<Feather name="image" size={20} color={INK_SOFT} />}
+                        leftIcon={<Feather name="image" size={20} color={SEMANTIC_COLORS.text.secondary} />}
                       />
                     </View>
                   ) : (
@@ -239,7 +240,7 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
                             {step === "done" ? (
                               <View className="items-center px-8">
                                 <View className="w-16 h-16 rounded-full bg-sage-200 items-center justify-center mb-4">
-                                  <Feather name="check" size={32} color={SAGE[600]} />
+                                  <Feather name="check" size={32} color={SEMANTIC_COLORS.brand.pressed} />
                                 </View>
                                 <Text variant="h2" className="text-center mb-2">Ready</Text>
                                 <Text variant="body" color="soft" className="text-center mb-8">
@@ -258,7 +259,7 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
                               </View>
                             ) : (
                               <View className="items-center w-full">
-                                <ActivityIndicator size="large" color={SAGE[600]} />
+                                <ActivityIndicator size="large" color={SEMANTIC_COLORS.brand.pressed} />
                                 <Text variant="body-bold" className="mt-6 text-center">
                                   {STEP_MESSAGES[step]}
                                 </Text>

@@ -8,7 +8,7 @@ import {
   ReflectionScoreShift 
 } from "@/src/components/exercise/ReflectionTimeline";
 import type { StepProps, WorryDecisionTreeResponse } from "@/src/types/exerciseFlow";
-import { INK, INK_SOFT } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
 interface WorryTreeSummaryStepProps extends StepProps {
   title?: string;
@@ -48,31 +48,31 @@ export const WorryTreeSummaryStep: React.FC<WorryTreeSummaryStepProps> = React.m
         <View className="px-4 py-6">
           <ReflectionTimeline>
             <ReflectionTimelineItem label="The Worry">
-              <Text style={{ color: INK }} className="text-[17px] leading-[24px]">
+              <Text style={{ color: SEMANTIC_COLORS.text.primary }} className="text-[17px] leading-[24px]">
                 {data.worry}
               </Text>
             </ReflectionTimelineItem>
 
             <ReflectionTimelineItem label="The Decision">
-              <Text style={{ color: INK }} className="text-[17px] leading-[24px]">
+              <Text style={{ color: SEMANTIC_COLORS.text.primary }} className="text-[17px] leading-[24px]">
                 {data.canAct === "yes" ? "In my control" : "Out of my hands"}
               </Text>
             </ReflectionTimelineItem>
 
             {data.canAct === "yes" ? (
               <ReflectionTimelineItem label="Action Plan">
-                <Text style={{ color: INK }} className="text-[17px] leading-[24px]">
+                <Text style={{ color: SEMANTIC_COLORS.text.primary }} className="text-[17px] leading-[24px]">
                   {data.actionPlan}
                 </Text>
                 {data.scheduledAction && (
-                  <Text style={{ color: INK_SOFT }} className="text-[15px] leading-[22px] mt-1">
+                  <Text style={{ color: SEMANTIC_COLORS.text.secondary }} className="text-[15px] leading-[22px] mt-1">
                     Scheduled for: {data.scheduledAction}
                   </Text>
                 )}
               </ReflectionTimelineItem>
             ) : (
               <ReflectionTimelineItem label="Acceptance">
-                <Text style={{ color: INK }} className="text-[17px] leading-[24px]">
+                <Text style={{ color: SEMANTIC_COLORS.text.primary }} className="text-[17px] leading-[24px]">
                   {data.acceptanceExercise}
                 </Text>
               </ReflectionTimelineItem>

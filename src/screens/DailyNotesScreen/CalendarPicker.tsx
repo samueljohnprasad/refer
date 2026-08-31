@@ -15,15 +15,8 @@ import useCalendarMonth from "./hooks/useCalendarMonth";
 import MoodBadge from "@/src/components/MoodBadge";
 import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import {
-  BRAND_SURFACE_SOFT,
-  INK,
-  INK_MUTED,
-  SAGE,
-  SAGE_OVERLAY,
-  TRANSPARENT,
-  PARROT_ORANGE,
-} from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 /** Human-readable mood scale shown as a legend below the calendar grid. */
 const MOOD_LEGEND = [
@@ -98,19 +91,19 @@ const DayCell = React.memo<DayCellProps>(
     const dateBgStyle = useMemo(() => {
       if (isSelected) {
         return {
-          backgroundColor: SAGE.selected,
-          borderColor: SAGE[200],
+          backgroundColor: SEMANTIC_COLORS.selection.surface,
+          borderColor: SEMANTIC_COLORS.selection.foreground,
           borderWidth: 1,
         };
       }
       if (isTodayDate) {
         return {
-          backgroundColor: BRAND_SURFACE_SOFT,
-          borderColor: SAGE[100],
+          backgroundColor: SEMANTIC_COLORS.surface.secondary,
+          borderColor: SEMANTIC_COLORS.brand.soft,
           borderWidth: 1,
         };
       }
-      return { borderColor: TRANSPARENT, borderWidth: 1 };
+      return { borderColor: "transparent", borderWidth: 1 };
     }, [isSelected, isTodayDate]);
 
     const moodClassName = useMemo(
@@ -278,7 +271,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
             <HugeiconsIcon
               icon={ArrowLeft01Icon}
               size={20}
-              color={SAGE[600]}
+              color={SEMANTIC_COLORS.brand.pressed}
               strokeWidth={2}
             />
           </Pressable>
@@ -297,7 +290,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
               >
                 <Text
                   variant="label"
-                  style={{ color: PARROT_ORANGE, marginTop: 2 }}
+                  style={{ color: SEMANTIC_COLORS.warning.indicator, marginTop: 2 }}
                 >
                   Today
                 </Text>
@@ -317,7 +310,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
             <HugeiconsIcon
               icon={ArrowRight01Icon}
               size={20}
-              color={canGoNextMonth ? SAGE[600] : SAGE[200]}
+              color={canGoNextMonth ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.selection.foreground}
               strokeWidth={2}
             />
           </Pressable>

@@ -16,7 +16,8 @@ import React from "react";
 import { View, Text, StyleSheet, Platform } from "react-native";
 import { SymbolView } from "expo-symbols";
 import { Feather } from "@expo/vector-icons";
-import { SAGE, INK_SOFT } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface ShiftBadgeProps {
   /** Human label like "Distress", "Calm", "Anxiety" */
@@ -64,7 +65,7 @@ const ShiftBadge: React.FC<ShiftBadgeProps> = React.memo(
                 : ("arrow.right" as any)
             }
             size={9}
-            tintColor={improved ? SAGE[700] : INK_SOFT}
+            tintColor={improved ? SEMANTIC_COLORS.brand.onSoft : SEMANTIC_COLORS.text.secondary}
             weight="semibold"
             style={styles.icon}
           />
@@ -72,7 +73,7 @@ const ShiftBadge: React.FC<ShiftBadgeProps> = React.memo(
           <Feather
             name={improved ? "trending-down" : "minus"}
             size={10}
-            color={improved ? SAGE[700] : INK_SOFT}
+            color={improved ? SEMANTIC_COLORS.brand.onSoft : SEMANTIC_COLORS.text.secondary}
           />
         ) : null}
 
@@ -119,9 +120,9 @@ const styles = StyleSheet.create({
     lineHeight: 14,
   },
   textImproved: {
-    color: SAGE[700],
+    color: SEMANTIC_COLORS.brand.onSoft,
   },
   textNeutral: {
-    color: INK_SOFT,
+    color: SEMANTIC_COLORS.text.secondary,
   },
 });

@@ -1,3 +1,4 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { View } from "react-native";
@@ -10,7 +11,6 @@ import {
 } from "@/src/components/exercise/ReflectionTimeline";
 import { Mascot, type MascotState } from "@/src/components/ui/Mascot";
 import { Text } from "@/src/components/ui/Text";
-import { INK, INK_SOFT, SAGE } from "@/lib/tokens";
 
 export type RecapSection = {
   label: string;
@@ -46,13 +46,13 @@ function ScoreSnapshot({
   return (
     <View className="flex-row items-end">
       <Text
-        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
         className="text-[34px] leading-[34px]"
       >
         {score}
       </Text>
       <Text
-        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK_SOFT }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.secondary }}
         className="ml-2 text-[12px] leading-[18px]"
       >
         /10
@@ -69,10 +69,10 @@ function RealityPill({
   return (
     <View
       className="self-start rounded-full px-3.5 py-2"
-      style={{ backgroundColor: SAGE[50] }}
+      style={{ backgroundColor: SEMANTIC_COLORS.surface.elevated }}
     >
       <Text
-        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[700] }}
+        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.pressed }}
         className="text-[13px] leading-[18px]"
       >
         {label}
@@ -94,7 +94,7 @@ function RecapSectionContent({
     return (
       <ReflectionBulletList
         items={items}
-        textColor={section.tone === "muted" ? INK_SOFT : INK}
+        textColor={section.tone === "muted" ? SEMANTIC_COLORS.text.secondary : SEMANTIC_COLORS.text.primary}
       />
     );
   }
@@ -105,8 +105,8 @@ function RecapSectionContent({
 
   const style =
     section.tone === "serif"
-      ? { fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }
-      : { fontFamily: APP_FONT_FAMILIES.regular, color: section.tone === "muted" ? INK_SOFT : INK };
+      ? { fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }
+      : { fontFamily: APP_FONT_FAMILIES.regular, color: section.tone === "muted" ? SEMANTIC_COLORS.text.secondary : SEMANTIC_COLORS.text.primary };
   const className =
     section.tone === "serif"
       ? "text-[22px] leading-[30px]"
@@ -164,13 +164,13 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
         <View className="items-center pb-6 pt-2">
           {showMascot ? <Mascot state={mascotState} size={72} /> : null}
           <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
             className={`${showMascot ? "mt-3" : ""} text-center text-[34px] leading-[37px] tracking-[-0.01em]`}
           >
             {title}
           </Text>
           <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK_SOFT }}
+            style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
             className="mt-2 text-center text-[15px] leading-[22px]"
           >
             {subtitle}
@@ -183,19 +183,19 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
             style={{
               marginHorizontal: -28,
               paddingHorizontal: 28,
-              backgroundColor: SAGE[50],
+              backgroundColor: SEMANTIC_COLORS.surface.elevated,
             }}
           >
             {highlightLabel ? (
               <Text
-                style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }}
+                style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.secondary }}
                 className="text-[13px] leading-[18px]"
               >
                 {highlightLabel}
               </Text>
             ) : null}
             <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: INK }}
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
               className="mt-1.5 text-[25px] leading-[33px]"
             >
               {highlightText}
@@ -245,7 +245,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
                   }
                 >
                   <Text
-                    style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK }}
+                    style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.primary }}
                     className="text-[16px] leading-[24px]"
                   >
                     {situation}
@@ -259,7 +259,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
                   isLast={!hasScore && !hasReality && !hasBalancedThought}
                 >
                   <Text
-                    style={{ fontFamily: APP_FONT_FAMILIES.semiBoldItalic, color: INK }}
+                    style={{ fontFamily: APP_FONT_FAMILIES.semiBoldItalic, color: SEMANTIC_COLORS.text.primary }}
                     className="text-[25px] leading-[33px]"
                   >
                     "{automaticThought?.trim()}"
@@ -297,7 +297,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
               {hasThoughtRecordTimeline && hasBalancedThought ? (
                 <ReflectionTimelineItem label="Balanced thought" isLast>
                   <Text
-                    style={{ fontFamily: APP_FONT_FAMILIES.regular, color: INK }}
+                    style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.primary }}
                     className="text-[16px] leading-[24px]"
                   >
                     {balancedThought?.trim()}

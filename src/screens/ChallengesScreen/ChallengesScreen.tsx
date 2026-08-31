@@ -12,7 +12,8 @@ import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { router, Stack } from "expo-router";
 import { useChallenges } from "@/hooks/data/useChallenges";
 import { ChallengeCard } from "@/src/components/Challenges";
-import { BRAND_SURFACE, GOLD, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 import { Card } from "@/src/components/ui/Card";
 
@@ -37,7 +38,7 @@ export const ChallengesScreen: React.FC = () => {
       <View className="flex-1 happy-brand-screen">
         <SafeAreaView style={{ flex: 1 }}>
           <View className="flex-1 items-center justify-center">
-            <ActivityIndicator size="large" color={SAGE[600]} />
+            <ActivityIndicator size="large" color={SEMANTIC_COLORS.brand.pressed} />
           </View>
         </SafeAreaView>
       </View>
@@ -54,7 +55,7 @@ export const ChallengesScreen: React.FC = () => {
             activeOpacity={0.7}
             className="absolute left-5 top-2 h-12 w-12 items-center justify-center rounded-full bg-sage-pill"
           >
-            <HugeiconsIcon icon={ArrowLeft02Icon} size={24} color={SAGE[700]} />
+            <HugeiconsIcon icon={ArrowLeft02Icon} size={24} color={SEMANTIC_COLORS.brand.onSoft} />
           </TouchableOpacity>
           <Text className="happy-font-heading-bold text-[34px] text-ink">
             Challenges
@@ -74,7 +75,7 @@ export const ChallengesScreen: React.FC = () => {
               className="w-11 h-11 rounded-full items-center justify-center mb-4"
               style={{ backgroundColor: "rgba(255, 217, 0, 0.15)" }}
             >
-              <HugeiconsIcon icon={StarsIcon} size={22} color={GOLD} />
+              <HugeiconsIcon icon={StarsIcon} size={22} color={SEMANTIC_COLORS.warning.foreground} />
             </View>
             <Text className="happy-font-heading-bold text-[34px] text-ink">
               {totalXP}

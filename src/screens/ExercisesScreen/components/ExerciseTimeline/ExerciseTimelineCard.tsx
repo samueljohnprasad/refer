@@ -34,7 +34,8 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { format } from "date-fns";
-import { SAGE, INK, INK_SOFT, INK_MUTED, BRAND_BORDER } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { ShiftBadge } from "./ShiftBadge";
 import type { ExerciseTimelineItem } from "./types";
 import { Feather } from "@expo/vector-icons";
@@ -148,7 +149,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
             </View>
             {hasAccordion && (
               <Animated.View style={[styles.chevron, chevronStyle]}>
-                <Feather name="chevron-down" size={20} color={INK_SOFT} />
+                <Feather name="chevron-down" size={20} color={SEMANTIC_COLORS.text.secondary} />
               </Animated.View>
             )}
           </View>
@@ -215,7 +216,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
                       <Feather
                         name="heart"
                         size={14}
-                        color={SAGE[500]}
+                        color={SEMANTIC_COLORS.brand.primary}
                         style={styles.gratitudeIcon}
                       />
                       <Text style={styles.gratitudeText}>{entry}</Text>
@@ -228,7 +229,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
               {item.expandedText && (
                 <View style={styles.reframeCard}>
                   <View style={styles.reframeHeader}>
-                    <Feather name="check-circle" size={13} color={SAGE[700]} />
+                    <Feather name="check-circle" size={13} color={SEMANTIC_COLORS.brand.onSoft} />
                     <Text style={styles.reframeLabel}>
                       {item.expandedLabel ?? "Balanced Reframe"}
                     </Text>
@@ -282,16 +283,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderWidth: 1,
-    borderColor: BRAND_BORDER,
+    borderColor: SEMANTIC_COLORS.border.default,
   },
   title: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 15,
-    color: INK,
+    color: SEMANTIC_COLORS.text.primary,
     lineHeight: 20,
   },
   categoryPill: {
-    backgroundColor: SAGE[50],
+    backgroundColor: SEMANTIC_COLORS.selection.surface,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
@@ -301,7 +302,7 @@ const styles = StyleSheet.create({
   category: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 11,
-    color: SAGE[700],
+    color: SEMANTIC_COLORS.brand.onSoft,
     lineHeight: 15,
   },
   cardFooter: {
@@ -316,7 +317,7 @@ const styles = StyleSheet.create({
   timestamp: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 11,
-    color: INK_SOFT,
+    color: SEMANTIC_COLORS.text.secondary,
     letterSpacing: 0.2,
   },
   headerRow: {
@@ -335,27 +336,27 @@ const styles = StyleSheet.create({
     fontFamily: APP_FONT_FAMILIES.regular,
     fontStyle: "italic",
     fontSize: 13,
-    color: INK_SOFT,
+    color: SEMANTIC_COLORS.text.secondary,
     marginTop: 8,
     lineHeight: 18,
   },
   expandedContent: {
     marginTop: 12,
     borderTopWidth: 1,
-    borderTopColor: BRAND_BORDER,
+    borderTopColor: SEMANTIC_COLORS.border.default,
     paddingTop: 12,
   },
   previewTextExpanded: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 14,
-    color: INK,
+    color: SEMANTIC_COLORS.text.primary,
     marginBottom: 0,
     lineHeight: 20,
   },
   expandedText: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 14,
-    color: INK,
+    color: SEMANTIC_COLORS.text.primary,
     lineHeight: 20,
   },
   tagsContainer: {
@@ -365,7 +366,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   tag: {
-    backgroundColor: SAGE[100],
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
@@ -373,7 +374,7 @@ const styles = StyleSheet.create({
   tagText: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 11,
-    color: SAGE[800],
+    color: SEMANTIC_COLORS.brand.onSoft,
   },
   viewDetailsButton: {
     marginTop: 8,
@@ -383,12 +384,12 @@ const styles = StyleSheet.create({
   viewDetailsText: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 13,
-    color: SAGE[700],
+    color: SEMANTIC_COLORS.brand.onSoft,
   },
   inlineTagsText: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 13,
-    color: INK_SOFT,
+    color: SEMANTIC_COLORS.text.secondary,
   },
 
   // New Rich Section Styles
@@ -398,13 +399,13 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 13,
-    color: INK_SOFT,
+    color: SEMANTIC_COLORS.text.secondary,
     marginBottom: 6,
   },
   previewLabel: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 14,
-    color: INK,
+    color: SEMANTIC_COLORS.text.primary,
     marginBottom: 4,
   },
   emotionsContainer: {
@@ -418,26 +419,26 @@ const styles = StyleSheet.create({
   emotionText: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 12,
-    color: INK,
+    color: SEMANTIC_COLORS.text.primary,
     width: 60,
   },
   emotionBarBg: {
     flex: 1,
     height: 6,
-    backgroundColor: SAGE[100],
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
     borderRadius: 3,
     marginHorizontal: 8,
     overflow: "hidden",
   },
   emotionBarFill: {
     height: "100%",
-    backgroundColor: SAGE[400],
+    backgroundColor: SEMANTIC_COLORS.brand.primary,
     borderRadius: 3,
   },
   emotionIntensity: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 11,
-    color: INK_MUTED,
+    color: SEMANTIC_COLORS.text.tertiary,
     width: 24,
     textAlign: "right",
   },
@@ -461,14 +462,14 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 13,
-    color: INK,
+    color: SEMANTIC_COLORS.text.primary,
     lineHeight: 18,
   },
   balancedThoughtContainer: {
     marginBottom: 2,
   },
   reframeCard: {
-    backgroundColor: SAGE[50],
+    backgroundColor: SEMANTIC_COLORS.selection.surface,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -484,6 +485,6 @@ const styles = StyleSheet.create({
   reframeLabel: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 12,
-    color: SAGE[700],
+    color: SEMANTIC_COLORS.brand.onSoft,
   },
 });

@@ -4,7 +4,8 @@ import Svg, { Path } from "react-native-svg";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Link } from "expo-router";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Text } from "@/src/components/ui/Text";
 import { NodeType } from "@/src/types/journey";
 import { DuolingoSvgNodeButton } from "./DuolingoSvgNodeButton";
@@ -59,7 +60,7 @@ function CurrentNodeLabel({
         style={{
           borderRadius: 12,
           borderCurve: "continuous",
-          backgroundColor: SAGE[700],
+          backgroundColor: SEMANTIC_COLORS.brand.onSoft,
           paddingHorizontal: 14,
           paddingVertical: 7,
         }}
@@ -76,7 +77,7 @@ function CurrentNodeLabel({
         className="-mt-1 h-3 w-3"
         style={{
           transform: [{ rotate: "45deg" }],
-          backgroundColor: SAGE[700],
+          backgroundColor: SEMANTIC_COLORS.brand.onSoft,
           borderRadius: 2,
         }}
       />

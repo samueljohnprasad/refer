@@ -2,7 +2,8 @@ import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useMemo } from "react";
 import { ActivityIndicator, StyleSheet, Text, View, FlatList, Pressable } from "react-native";
 import dayjs from "dayjs";
-import { SAGE, GOLD, INK_MUTED } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import type { HistoryLogItem } from "../hooks/useCBTHistory";
 import {
   getExerciseConfig,
@@ -102,7 +103,7 @@ const Footer: React.FC<{ isLoadingMore: boolean }> = ({ isLoadingMore }) => {
   if (!isLoadingMore) return null;
   return (
     <View className="py-4">
-      <ActivityIndicator size="small" color={SAGE[500]} />
+      <ActivityIndicator size="small" color={SEMANTIC_COLORS.brand.primary} />
     </View>
   );
 };

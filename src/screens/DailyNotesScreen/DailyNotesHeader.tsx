@@ -41,7 +41,8 @@ import { isIOS } from "@/src/utils/mood";
 import { DayButton } from "./DayButtonComponent";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import { EmotionDetailsModal } from "@/src/components/modals";
-import { BRAND_SURFACE, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { GlassView, isGlassEffectAPIAvailable } from "expo-glass-effect";
 import { BlurView } from "expo-blur";
 
@@ -270,7 +271,7 @@ const DailyNotesHeader = React.memo(
         transform: [{ translateX: pillX.value }],
         opacity: pillOpacity.value,
         zIndex: 0,
-        borderColor: "rgba(187, 199, 185, 0.4)", // SAGE[200] with some transparency
+        borderColor: "rgba(187, 199, 185, 0.4)", // SEMANTIC_COLORS.selection.foreground with some transparency
         borderWidth: 1,
         borderRadius: 16,
         overflow: "hidden", // Important for BlurView clipping
@@ -362,7 +363,7 @@ const DailyNotesHeader = React.memo(
             className="bg-brand-surface justify-start relative border-b border-brand-border"
             style={[
               headerContainerAnimatedStyle,
-              { backgroundColor: BRAND_SURFACE, marginTop: -25 },
+              { backgroundColor: SEMANTIC_COLORS.surface.primary, marginTop: -25 },
             ]}
           >
             {/* Calendar Header */}
@@ -385,7 +386,7 @@ const DailyNotesHeader = React.memo(
                     <HugeiconsIcon
                       icon={isExpanded ? Cancel01Icon : Calendar01Icon}
                       size={20}
-                      color={SAGE[600]}
+                      color={SEMANTIC_COLORS.brand.pressed}
                       strokeWidth={2}
                     />
                   </Animated.View>
@@ -418,7 +419,7 @@ const DailyNotesHeader = React.memo(
                       <HugeiconsIcon
                         icon={Bookmark03Icon}
                         size={20}
-                        color={SAGE[600]}
+                        color={SEMANTIC_COLORS.brand.pressed}
                         strokeWidth={2}
                       />
                     </Animated.View>
@@ -447,7 +448,7 @@ const DailyNotesHeader = React.memo(
                       style={animatedPillStyle}
                       pointerEvents="none"
                       glassEffectStyle="regular"
-                      tintColor={SAGE.selected}
+                      tintColor={SEMANTIC_COLORS.selection.surface}
                     />
                   ) : Platform.OS === "ios" ? (
                     <AnimatedBlurView
@@ -457,11 +458,11 @@ const DailyNotesHeader = React.memo(
                       tint="light"
                       experimentalBlurMethod="dimezisBlurView"
                     >
-                      <View style={{ flex: 1, backgroundColor: SAGE.selected, opacity: 0.8 }} />
+                      <View style={{ flex: 1, backgroundColor: SEMANTIC_COLORS.selection.surface, opacity: 0.8 }} />
                     </AnimatedBlurView>
                   ) : (
                     <Animated.View
-                      style={[animatedPillStyle, { backgroundColor: SAGE.selected }]}
+                      style={[animatedPillStyle, { backgroundColor: SEMANTIC_COLORS.selection.surface }]}
                       pointerEvents="none"
                     />
                   )}

@@ -19,7 +19,8 @@ import { useRewardsContext } from "../context/RewardsContext";
 import { useChallengesOptional } from "../context/ChallengesContext";
 import { Card } from "@/src/components/ui/Card";
 import { PressableScale } from "@/src/components/ui/PressableScale";
-import { SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { createLogger } from "@/src/lib/logger";
 
 const logger = createLogger("emotion-logger");
@@ -91,7 +92,7 @@ const EmotionItem: React.FC<{
             backgroundColor: interpolateColor(
               highlightProgress.value,
               [0, 1],
-              ["transparent", SAGE.selected],
+              ["transparent", SEMANTIC_COLORS.selection.surface],
             ),
           }))}
         >

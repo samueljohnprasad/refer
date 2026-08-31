@@ -7,7 +7,8 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 
-import { SAGE, SAGE_OVERLAY } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 
 interface StageProgressBarProps {
   /** Progress value: supports both decimal (0 to 1) and percentage (0 to 100) */
@@ -21,8 +22,8 @@ interface StageProgressBarProps {
 
 const StageProgressBar: React.FC<StageProgressBarProps> = ({
   progress,
-  fillColor = SAGE[500],
-  trackColor = SAGE[100],
+  fillColor = SEMANTIC_COLORS.brand.primary,
+  trackColor = SEMANTIC_COLORS.brand.soft,
   height = 12,
   showGlow = true,
   className,
@@ -85,7 +86,7 @@ const StageProgressBar: React.FC<StageProgressBarProps> = ({
                 right: 6,
                 height: Math.max(2, height * 0.25),
                 borderRadius: 999,
-                backgroundColor: SAGE_OVERLAY.whiteTint,
+                backgroundColor: "rgba(255, 255, 255, 0.2)",
               }}
             />
           )}

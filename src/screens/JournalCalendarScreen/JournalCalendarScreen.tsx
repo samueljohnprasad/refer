@@ -14,8 +14,8 @@ import { ALL_PROMPTS } from "../AllPromptsScreen/AllPromptsScreen";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import { useSetAtom } from "jotai";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
-import { BRAND_DARK, SAGE, THEME } from "@/lib/tokens";
-import { useThemeColor } from "@/lib/useThemeColor";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+
 
 // Re-export for backward compat from other files that import from here.
 export { PALETTE } from "@/constants/palette";
@@ -34,7 +34,7 @@ const Greeting = React.memo<{
   displayName?: string;
   isLoading: boolean;
 }>(({ displayName, isLoading }) => {
-  const theme = useThemeColor();
+  
   const greeting = useMemo(() => getGreeting(new Date().getHours()), []);
 
   return (
@@ -43,7 +43,7 @@ const Greeting = React.memo<{
         <View className="flex-row items-center gap-2.5 flex-1 pr-2">
           <Text
             className="text-[28px] font-semibold tracking-tight text-ink"
-            style={{ color: theme.foreground }}
+            style={{ color: SEMANTIC_COLORS.text.primary }}
             numberOfLines={1}
             adjustsFontSizeToFit
           >
@@ -56,7 +56,7 @@ const Greeting = React.memo<{
 });
 
 export default function JournalCalendarScreen() {
-  const theme = useThemeColor();
+  
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const posthog = usePostHog();
 
@@ -128,27 +128,27 @@ export default function JournalCalendarScreen() {
         transparent
         style={{
           backgroundColor: 'transparent',
-          color: theme.foreground,
+          color: SEMANTIC_COLORS.text.primary,
           shadowColor: 'transparent',
         }}
       />
-      <Stack.Toolbar placement="right" tintColor={theme.foreground}>
+      <Stack.Toolbar placement="right" tintColor={SEMANTIC_COLORS.text.primary}>
         <Stack.Toolbar.Button
           icon="chart.bar.doc.horizontal"
           accessibilityLabel="Timeline"
-          tintColor={theme.foreground}
+          tintColor={SEMANTIC_COLORS.text.primary}
           onPress={handleTimelinePress}
         />
         <Stack.Toolbar.Button
           icon="rosette"
           accessibilityLabel="Awards"
-          tintColor={theme.foreground}
+          tintColor={SEMANTIC_COLORS.text.primary}
           onPress={handleAchievementsPress}
         />
         <Stack.Toolbar.Button
           icon="gearshape.fill"
           accessibilityLabel="Settings"
-          tintColor={SAGE[600]}
+          tintColor={SEMANTIC_COLORS.brand.pressed}
           onPress={handleSettingsPress}
         />
       </Stack.Toolbar>
@@ -156,9 +156,9 @@ export default function JournalCalendarScreen() {
         className="flex-1 bg-brand-canvas"
         style={{
           backgroundColor:
-            theme.background === "#0a0a0a"
-              ? BRAND_DARK.canvas
-              : THEME.backgroundPrimary,
+            SEMANTIC_COLORS.surface.primary === "#0a0a0a"
+              ? SEMANTIC_COLORS.surface.canvas
+              : SEMANTIC_COLORS.surface.primary,
         }}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}

@@ -15,7 +15,8 @@ import * as Haptics from "expo-haptics";
 import { format, parse } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { RepeatIcon } from "@hugeicons/core-free-icons";
-import { INK_MUTED, SAGE, TRANSPARENT } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { HabitIcon } from "@/src/utils/habitIconMapper";
 
 interface HabitCardProps {
@@ -119,7 +120,7 @@ export const HabitCard: React.FC<HabitCardProps> = ({
             <View className="flex-row items-center mt-0.5 gap-3 h-[16px]">
                   {/* Repeat Badge */}
                   <View className="flex-row items-center">
-                    <HugeiconsIcon icon={RepeatIcon} size={12} color={INK_MUTED} />
+                    <HugeiconsIcon icon={RepeatIcon} size={12} color={SEMANTIC_COLORS.text.tertiary} />
                     <Text className="happy-font-body-medium ml-1 text-xs text-ink-muted">
                       {getRepeatLabel()}
                     </Text>
@@ -145,7 +146,7 @@ export const HabitCard: React.FC<HabitCardProps> = ({
             <View className="z-10">
               <Checkbox
                 checked={habit.isCompleted}
-                checkmarkColor={SAGE[600]}
+                checkmarkColor={SEMANTIC_COLORS.brand.pressed}
                 size={28}
                 showBorder={true}
                 stroke={5}

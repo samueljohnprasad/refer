@@ -3,7 +3,6 @@ import {
   Pressable,
   View,
   type ViewProps,
-  useColorScheme,
 } from "react-native";
 import Animated, {
   useSharedValue,
@@ -12,7 +11,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import { BRAND_BORDER, BRAND_DARK, BRAND_SURFACE } from "@/lib/tokens";
 import { SPRING_BOUNCY } from "@/src/utils/motionTokens";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 
@@ -27,23 +25,23 @@ interface VariantConfig {
 
 const VARIANTS: Record<Variant, VariantConfig> = {
   tile: {
-    faceClass: "bg-brand-surface border-2 border-brand-border",
-    rimClass: "bg-brand-border",
+    faceClass: "bg-surface-primary border-2 border-border-default",
+    rimClass: "bg-border-default",
   },
   answer: {
-    faceClass: "bg-brand-surface border-2 border-brand-border",
-    rimClass: "bg-brand-border",
+    faceClass: "bg-surface-primary border-2 border-border-default",
+    rimClass: "bg-border-default",
   },
   "answer-selected": {
-    faceClass: "bg-sage-50 border-2 border-sage-200",
-    rimClass: "bg-sage-300",
+    faceClass: "bg-selection-surface border-2 border-selection-border",
+    rimClass: "bg-selection-border",
   },
   "word-bank": {
-    faceClass: "bg-brand-surface border-2 border-brand-border rounded-full",
-    rimClass: "bg-brand-border rounded-full",
+    faceClass: "bg-surface-primary border-2 border-border-default rounded-full",
+    rimClass: "bg-border-default rounded-full",
   },
   dashed: {
-    faceClass: "border-2 border-dashed border-sage-200 bg-brand-surface shadow-none",
+    faceClass: "border-2 border-dashed border-selection-border bg-surface-primary shadow-none",
     rimClass: "bg-transparent",
   },
   solid: {
@@ -81,7 +79,6 @@ interface CardProps extends ViewProps {
 }
 
 const DOUBLE_TAP_GUARD_MS = 250;
-const PRESS_SCALE = 0.98;
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -101,7 +98,6 @@ export function Card({
   ...rest
 }: CardProps) {
   const config = VARIANTS[variant];
-  const isDark = useColorScheme() === "dark";
   const radiusClass = RADIUS_CLASS[radius];
   const isInteractive = Boolean(onPress) && !disabled;
 
@@ -154,24 +150,12 @@ export function Card({
     <>
       {showDepth && isInteractive && (
         <Animated.View
-          style={[
-            styles.continuousCurve,
-            { backgroundColor: isDark ? BRAND_DARK.border : BRAND_BORDER },
-            rimStyle,
-          ]}
+          style={[styles.continuousCurve, rimStyle]}
           className={`absolute left-0 right-0 top-[4px] bottom-[-4px] ${config.rimClass} ${radiusClass}`}
         />
       )}
       <Animated.View
-        style={[
-          styles.continuousCurve,
-          variant !== "solid" && {
-            backgroundColor: isDark ? BRAND_DARK.surface : BRAND_SURFACE,
-            borderColor: isDark ? BRAND_DARK.border : BRAND_BORDER,
-          },
-          animatedFaceStyle,
-          faceStyle,
-        ]}
+        style={[styles.continuousCurve, animatedFaceStyle, faceStyle]}
         className={`${config.faceClass} ${radiusClass}`}
       >
         <View className={`${paddingClass} ${contentClassName}`}>

@@ -1,10 +1,10 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import Slider from "@react-native-community/slider";
 import { StepLayout } from "./StepLayout";
-import { BRAND_BORDER, INK, SAGE } from "@/lib/tokens";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";
@@ -131,7 +131,7 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
               <View
                 className="mb-7 rounded-2xl border px-4 py-3"
                 style={{
-                  borderColor: BRAND_BORDER,
+                  borderColor: SEMANTIC_COLORS.border.default,
                   backgroundColor: "#FFFFFF",
                 }}
               >
@@ -202,9 +202,9 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
                 onValueChange={(v: number) =>
                   onUpdate({ [fieldKey]: v } as Partial<typeof response>)
                 }
-                minimumTrackTintColor={SAGE[500]}
-                maximumTrackTintColor={SAGE[100]}
-                thumbTintColor={SAGE[500]}
+                minimumTrackTintColor={SEMANTIC_COLORS.brand.primary}
+                maximumTrackTintColor={SEMANTIC_COLORS.surface.secondary}
+                thumbTintColor={SEMANTIC_COLORS.brand.primary}
                 accessibilityLabel={title}
                 accessibilityHint={`Adjust from ${minLabel} to ${maxLabel}`}
                 accessibilityValue={{
@@ -224,21 +224,21 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
                 <Text
                   variant="caption"
                   className="flex-1 text-left text-ink-soft"
-                  style={{ color: INK }}
+                  style={{ color: SEMANTIC_COLORS.text.primary }}
                 >
                   {minLabel}
                 </Text>
                 <Text
                   variant="caption"
                   className="flex-1 text-center text-ink-soft"
-                  style={{ color: INK }}
+                  style={{ color: SEMANTIC_COLORS.text.primary }}
                 >
                   {midLabel}
                 </Text>
                 <Text
                   variant="caption"
                   className="flex-1 text-right text-ink-soft"
-                  style={{ color: INK }}
+                  style={{ color: SEMANTIC_COLORS.text.primary }}
                 >
                   {maxLabel}
                 </Text>

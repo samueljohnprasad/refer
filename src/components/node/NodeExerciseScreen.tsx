@@ -5,16 +5,18 @@ import { CourseExerciseFeedbackPanel } from "@/src/components/exercise/CourseExe
 import { CourseExerciseFooter } from "@/src/components/exercise/CourseExerciseFooter";
 import { CourseExerciseHeader } from "@/src/components/exercise/CourseExerciseHeader";
 import { readString } from "@/src/components/exercise/courseExerciseContent";
-import { COURSE_EXERCISE_COLORS } from "@/src/components/exercise/courseExerciseTheme";
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import { ExerciseSkipAction } from "@/src/components/exercise/ExerciseSkipAction";
 import { FeedbackPanel } from "@/src/components/node/NodeEngineRouterPanels";
 import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import type { Exercise } from "@/src/types/journeyV5";
 import type { V1CheckStatus } from "@/src/types/journeyLearning";
+import type { CourseExerciseCategoryConfig } from "@/src/components/exercise/courseExerciseCategoryConfig";
 
 interface NodeExerciseScreenProps {
   Engine: ComponentType<V1CategoryEngineProps>;
+  config?: CourseExerciseCategoryConfig | null;
   exercise: Exercise;
   savedResponse: unknown;
   isCourseExercise: boolean;
@@ -48,6 +50,7 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
       exercise={props.exercise}
       savedResponse={props.savedResponse}
       locked={props.locked}
+      config={props.config ?? undefined}
       onInteraction={props.onInteraction}
     />
   );
@@ -120,7 +123,7 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
 
 const courseScreenStyle = {
   flex: 1,
-  backgroundColor: COURSE_EXERCISE_COLORS.background,
+  backgroundColor: SEMANTIC_COLORS.surface.primary,
 } as const;
 
 const footerSpacer = { height: 132 } as const;

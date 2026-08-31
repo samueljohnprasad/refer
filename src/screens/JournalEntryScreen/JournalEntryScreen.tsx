@@ -22,7 +22,8 @@ import { useColorScheme, Share } from "react-native";
 import { FeelingsType } from "@/src/network/genAi";
 import * as Haptics from "expo-haptics";
 import { Stack, Link } from "expo-router";
-import { INK, BRAND_BORDER } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { format, isToday, isYesterday } from "date-fns";
 import { createLogger } from "@/src/lib/logger";
@@ -186,30 +187,30 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
 
   return (
     <>
-      <Stack.Title style={{ color: INK }}>
+      <Stack.Title style={{ color: SEMANTIC_COLORS.text.primary }}>
         {entry?.selected_date ? `${getRelativeDayTitle(entry.selected_date)} at ${getFormattedTime(entry.selected_date)}` : ""}
       </Stack.Title>
       <Stack.Header
         transparent
-        style={{ backgroundColor: "transparent", color: INK, shadowColor: "transparent" }}
+        style={{ backgroundColor: "transparent", color: SEMANTIC_COLORS.text.primary, shadowColor: "transparent" }}
       />
       <Stack.Screen options={{ headerLeft: () => null }} />
-      <Stack.Toolbar placement="left" tintColor={INK}>
-        <Stack.Toolbar.Button icon="chevron.left" tintColor={INK} onPress={handleClose} />
+      <Stack.Toolbar placement="left" tintColor={SEMANTIC_COLORS.text.primary}>
+        <Stack.Toolbar.Button icon="chevron.left" tintColor={SEMANTIC_COLORS.text.primary} onPress={handleClose} />
       </Stack.Toolbar>
       {isEditing ? (
-        <Stack.Toolbar placement="right" tintColor={INK}>
+        <Stack.Toolbar placement="right" tintColor={SEMANTIC_COLORS.text.primary}>
           <Stack.Toolbar.Button
             icon="checkmark"
-            tintColor={INK}
+            tintColor={SEMANTIC_COLORS.text.primary}
             onPress={handleContinue}
           />
         </Stack.Toolbar>
       ) : (
-        <Stack.Toolbar placement="right" tintColor={INK}>
+        <Stack.Toolbar placement="right" tintColor={SEMANTIC_COLORS.text.primary}>
           <Stack.Toolbar.Button
             icon={isBookmarked ? "bookmark.fill" : "bookmark"}
-            tintColor={INK}
+            tintColor={SEMANTIC_COLORS.text.primary}
             onPress={async () => {
               if (entry?.id) {
                 const newStatus = !isBookmarked;
@@ -236,10 +237,10 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
           />
           <Stack.Toolbar.Button
             icon="square.and.arrow.up"
-            tintColor={INK}
+            tintColor={SEMANTIC_COLORS.text.primary}
             onPress={() => Share.share({ message: entry?.transcripts || "" })}
           />
-          <Stack.Toolbar.Menu icon="ellipsis.circle" tintColor={INK}>
+          <Stack.Toolbar.Menu icon="ellipsis.circle" tintColor={SEMANTIC_COLORS.text.primary}>
             <Stack.Toolbar.MenuAction
               icon="pencil"
               onPress={handleEdit}
@@ -314,11 +315,11 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
             if (reflectionText) {
               return (
                 <View className="mt-8 mb-4">
-                  <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, fontSize: 22, color: INK, marginBottom: 12 }}>
+                  <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, fontSize: 22, color: SEMANTIC_COLORS.text.primary, marginBottom: 12 }}>
                     Reflection
                   </Text>
-                  <View className="bg-white p-5 rounded-2xl" style={{ borderWidth: 1, borderColor: BRAND_BORDER }}>
-                    <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, fontSize: 16, color: INK, lineHeight: 24 }}>
+                  <View className="bg-white p-5 rounded-2xl" style={{ borderWidth: 1, borderColor: SEMANTIC_COLORS.border.default }}>
+                    <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, fontSize: 16, color: SEMANTIC_COLORS.text.primary, lineHeight: 24 }}>
                       {reflectionText}
                     </Text>
                   </View>

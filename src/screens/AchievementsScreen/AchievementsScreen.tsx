@@ -38,7 +38,8 @@ import { RewardsOwnedProgress } from "@/src/components/Rewards";
 import { AchievementBadgeDetailSheet } from "./components/AchievementBadgeDetailSheet";
 import { AchievementProgressItem } from "./components/AchievementBadgeDetailSheet";
 import { AchievementsSkeleton } from "./components/AchievementsSkeleton";
-import { GOLD, SAGE, TERRACOTTA } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import * as Haptics from "expo-haptics";
 import { Card } from "@/src/components/ui/Card";
 import { Stack } from "expo-router";
@@ -312,7 +313,7 @@ export const AchievementsScreen: React.FC = () => {
           headerStyle: { backgroundColor: "transparent" },
           headerLargeTitleStyle: { fontFamily: APP_FONT_FAMILIES.bold },
           headerTitleStyle: { fontFamily: APP_FONT_FAMILIES.bold },
-          headerTintColor: SAGE[600],
+          headerTintColor: SEMANTIC_COLORS.brand.pressed,
           headerBackButtonDisplayMode: "minimal",
           headerLeft: () => null,
         }}
@@ -324,7 +325,7 @@ export const AchievementsScreen: React.FC = () => {
         <Stack.Toolbar.Button
           icon="sparkles"
           onPress={() => router.push("/tabs/screens/xp-history")}
-          tintColor={GOLD}
+          tintColor={SEMANTIC_COLORS.warning.foreground}
         />
       </Stack.Toolbar>
     </>
@@ -389,7 +390,7 @@ export const AchievementsScreen: React.FC = () => {
                   <View>
                     <Text
                       className="happy-font-body-bold text-[18px] text-center"
-                      style={{ color: SAGE[700] }}
+                      style={{ color: SEMANTIC_COLORS.brand.onSoft }}
                     >
                       {totalXPEarned}
                     </Text>
@@ -419,7 +420,7 @@ export const AchievementsScreen: React.FC = () => {
                   <View>
                     <Text
                       className="happy-font-body-bold text-[18px] text-center"
-                      style={{ color: SAGE[600] }}
+                      style={{ color: SEMANTIC_COLORS.brand.pressed }}
                     >
                       {masteredCategoryCount}
                       <Text className="text-[14px] text-ink-muted/50">/5</Text>

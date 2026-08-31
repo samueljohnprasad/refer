@@ -1,8 +1,7 @@
 import { StyleSheet } from "react-native";
 import {
-  COURSE_EXERCISE_COLORS,
   COURSE_EXERCISE_FONTS,
-} from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 
 export const guidedRecallChipsStyles = StyleSheet.create({
   screenContent: {
@@ -18,11 +17,11 @@ export const guidedRecallChipsStyles = StyleSheet.create({
     paddingVertical: 12,
     borderWidth: 1.5,
     borderStyle: "dashed",
-    borderColor: COURSE_EXERCISE_COLORS.inkSoft,
+    borderColor: SEMANTIC_COLORS.text.secondary,
     borderRadius: 24,
   },
   trayHint: {
-    color: COURSE_EXERCISE_COLORS.inkSoft,
+    color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 13,
     textAlign: "center",
@@ -44,13 +43,13 @@ export const guidedRecallChipsStyles = StyleSheet.create({
     paddingVertical: 10,
     borderWidth: 1.5,
     borderBottomWidth: 4,
-    borderColor: COURSE_EXERCISE_COLORS.border,
+    borderColor: SEMANTIC_COLORS.border.default,
     borderRadius: 22,
-    backgroundColor: COURSE_EXERCISE_COLORS.surface,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
   selectedChip: {
-    borderColor: COURSE_EXERCISE_COLORS.accent,
-    backgroundColor: COURSE_EXERCISE_COLORS.accentTint,
+    borderColor: SEMANTIC_COLORS.brand.primary,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   mutedChip: { opacity: 0.28, borderBottomWidth: 1 },
   pressedChip: { transform: [{ translateY: 2 }], borderBottomWidth: 2 },
@@ -60,15 +59,15 @@ export const guidedRecallChipsStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
-    backgroundColor: COURSE_EXERCISE_COLORS.accent,
+    backgroundColor: SEMANTIC_COLORS.brand.primary,
   },
   chipNumberLabel: {
-    color: COURSE_EXERCISE_COLORS.surface,
+    color: SEMANTIC_COLORS.surface.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 11,
   },
   chipLabel: {
-    color: COURSE_EXERCISE_COLORS.ink,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
     fontSize: 14,
   },

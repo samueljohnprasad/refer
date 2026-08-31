@@ -1,9 +1,9 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
 import { View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Timer01Icon } from "@hugeicons/core-free-icons";
 import { Text } from "@/src/components/ui/Text";
-import { SAGE } from "@/lib/tokens";
 
 interface ExerciseIntroDurationPillProps {
   duration: string;
@@ -18,7 +18,7 @@ export const ExerciseIntroDurationPill: React.FC<
         <HugeiconsIcon
           icon={Timer01Icon}
           size={14}
-          color={SAGE[600]}
+          color={SEMANTIC_COLORS.text.secondary}
           strokeWidth={2}
         />
         <Text

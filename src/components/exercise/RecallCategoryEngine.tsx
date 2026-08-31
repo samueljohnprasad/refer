@@ -1,8 +1,8 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React, { useMemo } from "react";
 import { Pressable, View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
-import { BRAND_BORDER, BRAND_SURFACE, INK, SAGE } from "@/lib/tokens";
 import {
   V1LearningFormatEnum,
   V1ResponseModeEnum,
@@ -66,7 +66,7 @@ export function RecallCategoryEngine({
       </Text>
       <View
         className="min-h-[96px] rounded-2xl border px-4 py-4 mb-6"
-        style={{ backgroundColor: BRAND_SURFACE, borderColor: BRAND_BORDER }}
+        style={{ backgroundColor: SEMANTIC_COLORS.surface.primary, borderColor: SEMANTIC_COLORS.border.default }}
       >
         {selectedChips.length > 0 ? (
           <View className="flex-row flex-wrap gap-2">
@@ -123,12 +123,12 @@ function Chip({
       onPress={onPress}
       className="rounded-full px-4 py-3"
       style={{
-        backgroundColor: selected ? SAGE.selected : BRAND_SURFACE,
-        borderColor: selected ? SAGE[500] : BRAND_BORDER,
+        backgroundColor: selected ? SEMANTIC_COLORS.brand.soft : SEMANTIC_COLORS.surface.primary,
+        borderColor: selected ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.border.default,
         borderWidth: 1,
       }}
     >
-      <Text variant="label-bold" style={{ color: selected ? SAGE[700] : INK }}>
+      <Text variant="label-bold" style={{ color: selected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.text.primary }}>
         {label}
       </Text>
     </Pressable>

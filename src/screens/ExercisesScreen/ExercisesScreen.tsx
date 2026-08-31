@@ -86,7 +86,8 @@ import { TimelineSkeleton } from "../../../src/components/ui/Timeline/TimelineSk
 import { ExerciseTimeline } from "./components/ExerciseTimeline";
 import { JumpBackInCard } from "./components/JumpBackInCard";
 import { Card } from "@/src/components/ui/Card";
-import { GOLD, INK_MUTED, SAGE, OTTER_BLUE, MACAW_PURPLE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import { useXPOptional } from "@/src/context/XPContext";
 import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
@@ -485,7 +486,7 @@ function JumpBackInShelf({
             { backgroundColor: "transparent", paddingHorizontal: 0 },
           ]}
         >
-          <Text style={[nutrieStyles.categoryBadgeText, { color: INK_MUTED }]}>
+          <Text style={[nutrieStyles.categoryBadgeText, { color: SEMANTIC_COLORS.text.tertiary }]}>
             Jump Back In
           </Text>
         </View>
@@ -663,7 +664,7 @@ function formatStatus(item: HistoryLogItem): StatusInfo {
     return {
       label: "Completed",
       isComplete: true,
-      badgeIconColor: SAGE[600],
+      badgeIconColor: SEMANTIC_COLORS.brand.pressed,
       badgeClassName: "bg-sage-pill",
       badgeTextClassName: "text-sage-600",
       cardBorderClassName: "border-sage-200 border-b-sage-300",
@@ -675,7 +676,7 @@ function formatStatus(item: HistoryLogItem): StatusInfo {
     return {
       label: "Ready to Reframe",
       isComplete: false,
-      badgeIconColor: GOLD,
+      badgeIconColor: SEMANTIC_COLORS.warning.foreground,
       badgeClassName: "bg-gold/15",
       badgeTextClassName: "text-ink-soft",
       cardBorderClassName: "border-sage-100 border-b-sage-200",
@@ -686,7 +687,7 @@ function formatStatus(item: HistoryLogItem): StatusInfo {
   return {
     label: "Resume",
     isComplete: false,
-    badgeIconColor: INK_MUTED,
+    badgeIconColor: SEMANTIC_COLORS.text.tertiary,
     badgeClassName: "bg-sage-50",
     badgeTextClassName: "text-ink-muted",
     cardBorderClassName: "border-sage-100 border-b-sage-200",
@@ -1082,7 +1083,7 @@ export default function ExercisesScreen(): ReactElement {
                             <HugeiconsIcon
                               icon={ZapIcon}
                               size={16}
-                              color={SAGE[600]}
+                              color={SEMANTIC_COLORS.brand.pressed}
                             />
                             <Text
                               variant="chip"
@@ -1104,7 +1105,7 @@ export default function ExercisesScreen(): ReactElement {
                           <HugeiconsIcon
                             icon={BookmarkAdd01Icon}
                             size={18}
-                            color={SAGE[600]}
+                            color={SEMANTIC_COLORS.brand.pressed}
                             strokeWidth={2}
                           />
                         </Pressable>
@@ -1115,7 +1116,7 @@ export default function ExercisesScreen(): ReactElement {
                   <Animated.View style={tabPillStyle} className="w-full">
                     <Host style={{ width: "100%", height: 36 }}>
                       <Picker
-                        modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
+                        modifiers={[pickerStyle("segmented"), tint(SEMANTIC_COLORS.brand.pressed)]}
                         label="Exercises View"
                         selection={EXERCISE_TAB_LABEL_BY_KEY[activeTab]}
                         onSelectionChange={handleFilterSelectionChange}

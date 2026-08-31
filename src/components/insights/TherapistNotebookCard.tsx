@@ -19,7 +19,8 @@ import {
   type TherapistInsight,
 } from "@/src/hooks/insights/useTherapistNotebook";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
-import { SAGE, INK_MUTED } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import dayjs from "dayjs";
 
 if (
@@ -40,7 +41,7 @@ function LockedNotebookCard({ onUnlock }: { onUnlock: () => void }) {
     >
       <View className="flex-row items-center gap-2 mb-2">
         <Text className="text-[16px]">📓</Text>
-        <HugeiconsIcon icon={LockIcon} size={14} color={INK_MUTED} />
+        <HugeiconsIcon icon={LockIcon} size={14} color={SEMANTIC_COLORS.text.tertiary} />
         <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-0">
           Therapist's Notebook
         </Text>
@@ -120,7 +121,7 @@ function NotebookContent({ insight }: { insight: TherapistInsight }) {
           </Text>
           <View
             className="rounded-xl p-3 border"
-            style={{ backgroundColor: SAGE[50], borderColor: SAGE[200] }}
+            style={{ backgroundColor: SEMANTIC_COLORS.selection.surface, borderColor: SEMANTIC_COLORS.selection.foreground }}
           >
             <Text className="text-[13px] text-sage-800 leading-relaxed italic">
               "{insight.bestEvidence}"
@@ -129,7 +130,7 @@ function NotebookContent({ insight }: { insight: TherapistInsight }) {
               <HugeiconsIcon
                 icon={BookmarkCheck01Icon}
                 size={12}
-                color={SAGE[600]}
+                color={SEMANTIC_COLORS.brand.pressed}
               />
               <Text className="text-[11px] font-semibold text-sage-600">
                 Saved to Coping Cards
@@ -192,7 +193,7 @@ export function TherapistNotebookCard() {
           <HugeiconsIcon
             icon={expanded ? ArrowUp01Icon : ArrowDown01Icon}
             size={16}
-            color={INK_MUTED}
+            color={SEMANTIC_COLORS.text.tertiary}
           />
         </View>
 

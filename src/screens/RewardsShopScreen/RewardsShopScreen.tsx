@@ -25,7 +25,8 @@ import {
   getRewardsByCategory,
 } from "@/src/types/rewards";
 import * as Haptics from "expo-haptics";
-import { GOLD, SAGE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Card } from "@/src/components/ui/Card";
 
 const CATEGORY_TABS: { key: RewardCategory; label: string; emoji: string }[] = [
@@ -105,7 +106,7 @@ export const RewardsShopScreen: React.FC = () => {
         className="happy-brand-screen flex-1 items-center justify-center"
         style={styles.screen}
       >
-        <ActivityIndicator size="large" color={SAGE[500]} />
+        <ActivityIndicator size="large" color={SEMANTIC_COLORS.brand.primary} />
         <Text className="happy-font-body-medium mt-4 text-ink-muted">
           Loading shop...
         </Text>
@@ -128,7 +129,7 @@ export const RewardsShopScreen: React.FC = () => {
           <HugeiconsIcon
             icon={ArrowLeft02Icon}
             size={20}
-            color={SAGE[600]}
+            color={SEMANTIC_COLORS.brand.pressed}
             strokeWidth={2}
           />
         </Pressable>
@@ -166,7 +167,7 @@ export const RewardsShopScreen: React.FC = () => {
                   <HugeiconsIcon
                     icon={Coins01Icon}
                     size={24}
-                    color={GOLD}
+                    color={SEMANTIC_COLORS.warning.foreground}
                     strokeWidth={1.8}
                   />
                 </View>

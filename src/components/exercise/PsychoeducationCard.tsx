@@ -1,6 +1,6 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React, { useState } from "react";
 import { View } from "react-native";
-import { SAGE } from "@/lib/tokens";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 import { Host, Popover, Button, HStack, Text as SwiftUIText, Image as SwiftUIImage } from "@expo/ui/swift-ui";
 import { tint, buttonStyle, padding, frame, foregroundStyle, font } from "@expo/ui/swift-ui/modifiers";
@@ -43,7 +43,7 @@ export const PsychoeducationCard: React.FC<PsychoeducationCardProps> = ({
               <HStack spacing={4}>
                 <SwiftUIText
                   modifiers={[
-                    foregroundStyle(SAGE[600]),
+                    foregroundStyle(SEMANTIC_COLORS.text.secondary),
                     font({ weight: "semibold", size: 13 }),
                   ]}
                 >
@@ -52,7 +52,7 @@ export const PsychoeducationCard: React.FC<PsychoeducationCardProps> = ({
                 <SwiftUIImage
                   systemName={expanded ? "chevron.up" : "chevron.down"}
                   modifiers={[
-                    foregroundStyle(SAGE[600]),
+                    foregroundStyle(SEMANTIC_COLORS.text.secondary),
                     font({ weight: "semibold", size: 10 }),
                   ]}
                 />
@@ -71,13 +71,13 @@ export const PsychoeducationCard: React.FC<PsychoeducationCardProps> = ({
               <SwiftUIImage
                 systemName="lightbulb"
                 modifiers={[
-                  foregroundStyle(SAGE[500]),
+                  foregroundStyle(SEMANTIC_COLORS.brand.primary),
                   font({ size: 14 })
                 ]}
               />
               <SwiftUIText
                 modifiers={[
-                  foregroundStyle(SAGE[700]),
+                  foregroundStyle(SEMANTIC_COLORS.brand.pressed),
                   font({ size: 14 })
                 ]}
               >

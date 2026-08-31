@@ -6,7 +6,8 @@ import { useAuth, type AuthProviderId } from "@/src/context/AuthContext";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { clearGuestProgress } from "@/hooks/data/useGuestProgress";
 import type { CustomerInfo } from "react-native-purchases";
-import { INK, BRAND_SURFACE } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Text } from "@/src/components/ui/Text";
 import { Button } from "@/src/components/ui/Button";
 import { Card } from "@/src/components/ui/Card";
@@ -394,7 +395,7 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
                         loading={busyProvider === "google"}
                         disabled={busyProvider !== null}
                         fullWidth
-                        leftIcon={<FontAwesome name="google" size={18} color={INK} />}
+                        leftIcon={<FontAwesome name="google" size={18} color={SEMANTIC_COLORS.text.primary} />}
                       />
 
                       {showSkipButton ? (

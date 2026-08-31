@@ -23,7 +23,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CreateHabitFormData, PresetHabit } from "@/src/types/habits";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Add01Icon, Tick01Icon } from "@hugeicons/core-free-icons";
-import { INK_MUTED } from "@/lib/tokens";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { RADIUS } from "@/src/theme/radius";
 import { Button } from "@/src/components/ui/Button";
 import { Text } from "@/src/components/ui/Text";
 import * as Haptics from "expo-haptics";
@@ -221,7 +222,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
                       <HugeiconsIcon
                         icon={Add01Icon}
                         size={20}
-                        color={INK_MUTED}
+                        color={SEMANTIC_COLORS.text.tertiary}
                       />
                     </View>
                     <RNText className="text-[17px] font-semibold text-black">
@@ -268,7 +269,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
                         value={habitName}
                         onChangeText={setHabitName}
                         placeholder="e.g., Morning stretch routine"
-                        placeholderTextColor={INK_MUTED}
+                        placeholderTextColor={SEMANTIC_COLORS.text.tertiary}
                         maxLength={50}
                         className="rounded-xl bg-white px-4 py-3 text-[17px] text-black"
                       />
@@ -306,7 +307,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
                         value={habitDescription}
                         onChangeText={setHabitDescription}
                         placeholder="To feel more energized and focused..."
-                        placeholderTextColor={INK_MUTED}
+                        placeholderTextColor={SEMANTIC_COLORS.text.tertiary}
                         maxLength={200}
                         multiline
                         numberOfLines={3}

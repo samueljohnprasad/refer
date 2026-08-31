@@ -1,6 +1,6 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
 import { Pressable, View } from "react-native";
-import { SAGE } from "@/lib/tokens";
 import { Text } from "@/src/components/ui/Text";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
@@ -16,11 +16,11 @@ export function ExerciseSkipAction({ onSkip }: { onSkip: () => void }) {
         accessibilityRole="button"
         className="min-h-11 items-center justify-center rounded-full px-5"
         onPress={handlePress}
-        style={{ backgroundColor: SAGE.selected }}
+        style={{ backgroundColor: SEMANTIC_COLORS.brand.soft }}
       >
         <Text
           variant="label-bold"
-          style={{ color: SAGE[700], fontSize: 15, lineHeight: 20 }}
+          style={{ color: SEMANTIC_COLORS.brand.pressed, fontSize: 15, lineHeight: 20 }}
         >
           Skip for now
         </Text>

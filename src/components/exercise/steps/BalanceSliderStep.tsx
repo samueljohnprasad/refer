@@ -1,3 +1,4 @@
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
 import { View, useWindowDimensions } from "react-native";
 import { StepLayout } from "./StepLayout";
@@ -5,7 +6,6 @@ import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCa
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { BalanceSlider } from "@/src/animations/balance-slider/components/balance-slider";
-import { SAGE, INK, INK_SOFT, BRAND_SURFACE_SOFT } from "@/lib/tokens";
 
 interface ColorScheme {
   box: string;
@@ -32,14 +32,14 @@ interface BalanceSliderStepProps extends StepProps {
 
 const DEFAULT_COLORS = {
   left: {
-    box: BRAND_SURFACE_SOFT,
-    label: INK_SOFT,
-    percentage: INK,
+    box: SEMANTIC_COLORS.surface.secondary,
+    label: SEMANTIC_COLORS.text.secondary,
+    percentage: SEMANTIC_COLORS.text.primary,
   },
   right: {
-    box: SAGE.selected,
-    label: SAGE[600],
-    percentage: SAGE[700],
+    box: SEMANTIC_COLORS.brand.soft,
+    label: SEMANTIC_COLORS.text.secondary,
+    percentage: SEMANTIC_COLORS.brand.pressed,
   },
 };
 
