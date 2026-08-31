@@ -76,6 +76,7 @@ export function CourseExerciseShell({
       </View>
 
       <ScrollView
+        style={{ flex: 1 }}
         contentContainerStyle={styles.content}
         contentInsetAdjustmentBehavior="never"
         keyboardShouldPersistTaps="handled"
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "right",
   },
-  content: { flexGrow: 1, paddingTop: 16, paddingBottom: 32 },
+  content: { flexGrow: 1, paddingTop: 16, paddingBottom: 48 },
   footer: { gap: 2, paddingHorizontal: 22, paddingTop: 10 },
   primaryButton: {
     width: "100%",

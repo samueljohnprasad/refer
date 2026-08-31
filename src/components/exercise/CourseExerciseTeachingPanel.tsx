@@ -21,18 +21,18 @@ export function CourseExerciseTeachingPanel({
       <View
         className={
           correct
-            ? "rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-5 py-5"
-            : "rounded-[20px] border-[1.5px] border-[#C86D55] bg-[#FFF0EA] px-5 py-5"
+            ? "rounded-[20px] bg-success-surface border border-success-border/30 px-5 py-5"
+            : "rounded-[20px] bg-error-surface border border-error-border/30 px-5 py-5"
         }
       >
-        <Text className="happy-font-heading-bold text-[17px] leading-[21px] text-[#201E1D]">
+        <Text className="happy-font-body-bold text-[16px] text-text-primary">
           {title}
         </Text>
-        <Text className="happy-font-body mt-1.5 text-[13.5px] leading-5 text-[#3F3A34]">
+        <Text className="happy-font-body mt-1.5 text-[14px] leading-5 text-text-secondary">
           {body}
         </Text>
         {capability ? (
-          <Text className="happy-font-body-bold mt-2 text-[12.5px] leading-[18px] text-[#29452A]">
+          <Text className="happy-font-body-bold mt-2 text-[12.5px] leading-[18px] text-brand-onSoft">
             Takeaway: {capability}
           </Text>
         ) : null}

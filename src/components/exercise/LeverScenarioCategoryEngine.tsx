@@ -102,12 +102,12 @@ export function LeverScenarioCategoryEngine({
               onPress={() => selectOption(option)}
               className={
                 selectedCorrect
-                  ? "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-[#7E9874] border-b-[4px] bg-[#F2F8EF] px-5 py-3"
+                  ? "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-selection-border border-b-[4px] bg-selection-surface px-5 py-3"
                   : selectedIncorrect
-                    ? "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-[#A84432] border-b-[4px] bg-[#FFF0EA] px-5 py-3"
+                    ? "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-error-border border-b-[4px] bg-error-surface px-5 py-3"
                   : showingFeedback
-                    ? "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-[#DCD3C4] border-b-[4px] bg-[#F9F4ED] px-5 py-3 opacity-60"
-                    : "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-[#DCD3C4] border-b-[4px] bg-[#F9F4ED] px-5 py-3 active:translate-y-[2px] active:border-b-2"
+                    ? "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-border-default border-b-[4px] bg-surface-primary px-5 py-3"
+                    : "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-border-default border-b-[4px] bg-surface-primary px-5 py-3 active:translate-y-[2px] active:border-b-2"
               }
             >
               <View
@@ -125,7 +125,9 @@ export function LeverScenarioCategoryEngine({
                   </Text>
                 ) : null}
               </View>
-              <Text className="happy-font-body-bold flex-1 text-[13.5px] leading-[19px] text-[#201E1D]">
+              <Text className={`happy-font-body-bold flex-1 text-[13.5px] leading-[19px] ${
+                selectedCorrect ? "text-selection-foreground" : selectedIncorrect ? "text-error-foreground" : showingFeedback ? "text-text-secondary" : "text-text-primary"
+              }`}>
                 {option.label}
               </Text>
             </Pressable>

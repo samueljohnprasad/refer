@@ -6,13 +6,10 @@ import { SituationLanguageCategoryEngine } from "@/src/components/exercise/Situa
 import { WorkedRewriteCategoryEngine } from "@/src/components/exercise/WorkedRewriteCategoryEngine";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
+import { LeverScenarioConfig } from "@/src/exercises/LeverScenario/config";
+
 export const ELEVENTH_BATCH_CATEGORY_CONFIGS = {
-  [CourseExerciseCategoryEnum.LeverScenario]: createConfig(
-    CourseExerciseCategoryEnum.LeverScenario,
-    LeverScenarioCategoryEngine,
-    "Choose the right lever in a live moment.",
-    "This lever scenario is not available yet.",
-  ),
+  [CourseExerciseCategoryEnum.LeverScenario]: LeverScenarioConfig,
   [CourseExerciseCategoryEnum.WorkedRewrite]: createConfig(
     CourseExerciseCategoryEnum.WorkedRewrite,
     WorkedRewriteCategoryEngine,
