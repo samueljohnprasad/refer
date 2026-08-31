@@ -91,7 +91,7 @@ export function SocraticDialogueCategoryEngine({
   };
 
   return (
-    <View className="flex-1 px-2 pb-3 pt-1.5">
+    <View className="px-2 pb-3 pt-1.5">
       <View className="flex-row items-start gap-3">
         <View className="flex-1">
           <CourseExerciseHeading

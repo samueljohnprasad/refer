@@ -17,12 +17,12 @@ export function CourseExerciseTeachingPanel({
   workedExample,
 }: CourseExerciseTeachingPanelProps) {
   return (
-    <View className="mt-3 gap-2.5">
+    <View className="mt-6 gap-2.5">
       <View
         className={
           correct
-            ? "rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-4 py-[14px]"
-            : "rounded-[20px] border-[1.5px] border-[#C86D55] bg-[#FFF0EA] px-4 py-[14px]"
+            ? "rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-5 py-5"
+            : "rounded-[20px] border-[1.5px] border-[#C86D55] bg-[#FFF0EA] px-5 py-5"
         }
       >
         <Text className="happy-font-heading-bold text-[17px] leading-[21px] text-[#201E1D]">

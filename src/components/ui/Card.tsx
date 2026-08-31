@@ -148,7 +148,7 @@ export function Card({
 
   const cardLayers = (
     <>
-      {showDepth && isInteractive && (
+      {showDepth && (
         <Animated.View
           style={[styles.continuousCurve, rimStyle]}
           className={`absolute left-0 right-0 top-[4px] bottom-[-4px] ${config.rimClass} ${radiusClass}`}

@@ -38,7 +38,7 @@ export function PrivateCheckCategoryEngine({
   };
 
   return (
-    <View className="flex-1 px-2 pb-3 pt-1.5">
+    <View className="px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Sounds familiar?"}
         instruction={readString(content.instruction) ?? "Tick any that fit or choose none."}

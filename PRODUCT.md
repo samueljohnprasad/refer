@@ -5,13 +5,13 @@
 product
 
 ## Users
-People seeking accessible, effective mental health and CBT exercises. They are often stressed or anxious and need a calm, premium, and trustworthy environment.
+People seeking accessible, effective mental health and CBT exercises. They are often stressed or anxious and need a premium, trustworthy, calm, playful, and engaging environment.
 
 ## Product Purpose
-To provide structured therapeutic exercises (CBT, mindfulness, anxiety relief) in a highly polished, editorial-quality mobile app format.
+To provide structured therapeutic exercises (CBT, mindfulness, anxiety relief) in a highly polished, gamified mobile app format.
 
 ## Brand Personality
-Premium, editorial, confident, calm, intentional. (Think Calm or Headspace).
+Premium, trustworthy, calm, playful, gamified, and highly engaging. (Think Calm meets Duolingo).
 
 ## Anti-references
 - AI-generated UI slop

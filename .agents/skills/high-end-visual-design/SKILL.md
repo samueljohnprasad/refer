@@ -1,3 +1,6 @@
+
+> **PROJECT OVERRIDE:** For this specific project, the global target aesthetic is a hybrid: **Premium, Trustworthy, Calm, Playful, Gamified, and engaging like Duolingo.** It should feel like Calm meets Duolingo. Use high-end typography and restrained premium layouts, but combine them with playful interaction patterns, tactile 3D button depths, thick borders, and bouncy animations.
+
 ---
 name: high-end-visual-design
 description: Teaches the AI to design like a high-end agency. Defines the exact fonts, spacing, shadows, card structures, and animations that make a website feel expensive. Blocks all the common defaults that make AI designs look cheap or generic.

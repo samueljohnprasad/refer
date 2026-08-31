@@ -135,10 +135,10 @@ export function CourseExercisePrimaryButton({
     >
       <SvgAppButton
         width="100%"
-        height={54}
-        leftRadius={27}
-        rightRadius={27}
-        pressDepth={2}
+        height={64}
+        leftRadius={32}
+        rightRadius={32}
+        pressDepth={6}
         color={colors.face}
         backgroundColor={colors.rim}
         disabled={isDisabled}
@@ -162,7 +162,7 @@ export function CourseExercisePrimaryButton({
 
 function getPrimaryButtonColors(disabled: boolean) {
   return disabled
-    ? { face: SEMANTIC_COLORS.text.muted, rim: SEMANTIC_COLORS.text.secondary }
+    ? { face: SEMANTIC_COLORS.disabled.surface, rim: SEMANTIC_COLORS.disabled.border }
     : { face: SEMANTIC_COLORS.brand.primary, rim: SEMANTIC_COLORS.brand.pressed };
 }
 
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   footer: { gap: 2, paddingHorizontal: 22, paddingTop: 10 },
   primaryButton: {
     width: "100%",
-    height: 59,
+    height: 70,
   },
   primaryButtonContent: {
     flex: 1,
@@ -217,9 +217,10 @@ const styles = StyleSheet.create({
   primaryLabel: {
     color: "#FFFFFF",
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 18,
+    fontSize: 19,
+    letterSpacing: 0.5,
   },
-  disabledLabel: { color: SEMANTIC_COLORS.text.inverse },
+  disabledLabel: { color: SEMANTIC_COLORS.text.disabled },
   skipButton: { minHeight: 48, alignItems: "center", justifyContent: "center" },
   skipLabel: {
     color: SEMANTIC_COLORS.text.secondary,

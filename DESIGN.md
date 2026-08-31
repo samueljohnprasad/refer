@@ -1,6 +1,6 @@
 ---
 name: Happy Journals
-description: Calm CBT journaling interface for structured emotional clarity.
+description: Gamified CBT journaling interface for structured emotional clarity.
 colors:
   sage-50: "#f8fbf6"
   sage-100: "#e5ede1"
@@ -108,9 +108,9 @@ components:
 
 ## Overview
 
-Happy Journals should feel like a quiet therapy notebook: structured, private, calm, and more precise than decorative. The interface serves vulnerable CBT work, so the user’s own words and next action must lead the hierarchy. Suggestions, examples, voice input, and AI assistance are secondary supports, never the hero.
+Happy Journals should feel like a hybrid of a quiet therapy notebook and a playful learning game: premium, calm, yet bouncy, gamified, and highly interactive like Duolingo. The interface serves vulnerable CBT work, so the user’s own words and next action must lead the hierarchy. Suggestions, examples, voice input, and AI assistance are secondary supports, never the hero.
 
-The visual system is restrained product UI with a playful learning edge: sage-tinted structure, white writing surfaces, dark botanical ink, and Nunito across every text role. Avoid anything that makes the app feel generated, performative, or over-coached.
+The visual system is a fully gamified UI like Duolingo: bright vibrant colors, physical 3D button depths (face + rim), thick borders, bouncy spring animations, and Nunito across every text role. Avoid anything that makes the app feel generated, performative, or over-coached.
 
 ## Colors
 
@@ -128,11 +128,11 @@ The default screen hierarchy is title, short helper sentence, primary input, the
 
 Prefer tonal layering over shadows. Most surfaces should separate through fill, border, and spacing rather than floating cards. Primary buttons can use a physical rim or press-depth treatment because they behave like tactile controls.
 
-Avoid ghost cards: do not pair a 1px border with a wide soft shadow. Cards, inputs, and instruction boxes should top out at `24px` radius, with full pills reserved for chips and buttons. Focus states should be visible but quiet: sage border, subtle glow, or tonal change.
+Cards, buttons, and inputs should have thick borders, physical 3D depths, and bouncy active states to feel tactile and playful. Avoid quiet or flat interfaces.
 
 ## Components
 
-Primary buttons are sage, pill-like, tactile, and high contrast. Disabled buttons are visually quiet but still legible. Secondary buttons are white with a crisp border and should not compete with the primary action.
+Primary buttons are bright, pill-like, with a distinct 3D rim and face, and bouncy press animations like Duolingo.
 
 Inputs are the main object on exercise screens. They appear before AI suggestions on vulnerable steps, use roomy multiline fields, and show supportive validation only when it explains what is valid. Voice controls are opt-in and need privacy-aware framing when shown.
 
@@ -140,6 +140,6 @@ Guidance notes are concise, factual, and instructional. Suggestion rows are opti
 
 ## Do's and Don'ts
 
-Do lead with the user’s own words, use calm sage structure, keep CTAs physically clear, and make every optional support feel secondary. Do preserve large tap targets, readable contrast, reduced-motion paths, and consistent form-control vocabulary.
+Do use bright vibrant gamified colors, physical 3D buttons, heavy tactile cards, and bouncy animations like Duolingo. Do preserve large tap targets, readable contrast, reduced-motion paths, and consistent form-control vocabulary.
 
 Do not ship AI-generated UI slop, generic gradient backgrounds, arbitrary oversized card radii, decorative ghost cards, monotonous card stacks, or eyebrow tropes. Do not place harsh suggestions above an empty user input. Do not turn therapeutic guidance into blue SaaS callouts, sparkle rows, or verbose assistant copy.

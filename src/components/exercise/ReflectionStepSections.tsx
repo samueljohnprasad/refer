@@ -127,7 +127,7 @@ export function ReflectionHint({
   text: string;
 }) {
   return (
-    <View className="mt-4 border-l-2 py-1 pl-3" style={{ borderColor: SEMANTIC_COLORS.text.muted }}>
+    <View className="mt-4 border-l-2 py-1 pl-3" style={{ borderColor: SEMANTIC_COLORS.text.disabled }}>
       <Text variant="caption" className="text-sage-800">
         {text}
       </Text>

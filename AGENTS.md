@@ -8,7 +8,7 @@ use impeccable skill (`impeccable` — distinctive high-end design intelligence 
 use graphify skill (`graphify` — query/path/explain graph before raw grep/exploration, run `graphify update .` after edits)
 use clean-code skill (`clean-code` — readable names, small functions, single responsibility, clean error handling)
 
-Happy is an Expo Router React Native app for calm CBT journaling and mental health exercises. The product direction is premium, editorial, calm, and trustworthy. Read `PRODUCT.md` and `DESIGN.md` before making user-facing UI changes.
+Happy is an Expo Router React Native app for gamified CBT journaling and mental health exercises. The product direction is premium, trustworthy, calm, playful, gamified, and engaging like Duolingo. Read `PRODUCT.md` and `DESIGN.md` before making user-facing UI changes.
 
 ## Commands
 
@@ -38,7 +38,7 @@ This repo currently has multiple lockfiles (`package-lock.json`, `yarn.lock`, `b
 
 ## UI Direction
 
-- Follow `DESIGN.md`: sage/white/dark green ink, quiet tonal layering, strong typography, and restrained surfaces.
+- Follow `DESIGN.md`: bright gamified colors, physical 3D button depth, bouncy animations, rounded shapes, and playful interaction patterns.
 - Use Nunito throughout. Build hierarchy with weight, size, spacing, and color: 800 for primary prompts, 700 for actions, 600 for choices and labels, and 400 for supporting content.
 - Inputs are the primary object on exercise screens. Optional suggestions, AI, and voice controls should feel secondary.
 - Avoid generic gradients, decorative ghost cards, sparkle/assistant decoration, oversized arbitrary radii, and monotonous card stacks.

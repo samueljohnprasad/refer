@@ -42,7 +42,7 @@ export function IfThenPlanCategoryEngine({
   };
 
   return (
-    <View className="flex-1 px-2 pb-3 pt-1.5">
+    <View className="px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Build this week’s plan"}
         instruction={readString(content.instruction) ?? "One cue, one move."}

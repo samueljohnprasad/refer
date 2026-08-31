@@ -29,7 +29,7 @@ export function EvidenceBiteCategoryEngine({
   };
 
   return (
-    <View className="flex-1 px-2 pb-3 pt-1.5">
+    <View className="px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
         title={readString(content.title) ?? "The science, in one breath"}
         instruction={readString(content.instruction) ?? "One finding."}

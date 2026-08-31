@@ -61,7 +61,7 @@ export function CourseCheckpointCategoryEngine({
   if (!item) return null;
 
   return (
-    <View className="flex-1 px-2 pb-3 pt-1.5">
+    <View className="px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Checkpoint"}
         instruction={`Question ${itemIndex + 1} of ${items.length}`}
@@ -131,7 +131,7 @@ export function CourseCheckpointCategoryEngine({
 
 function CheckpointIntro({ content }: { content: Record<string, unknown> }) {
   return (
-    <View className="flex-1 px-2 pb-3 pt-1.5">
+    <View className="px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Checkpoint"}
         instruction={readString(content.instruction) ?? "A calm mixed review."}
@@ -164,7 +164,7 @@ function CheckpointSummary({
   const solid = items.filter((_, index) => results[index] === true);
   const revisit = items.filter((_, index) => results[index] !== true);
   return (
-    <View className="flex-1 px-2 pb-3 pt-1.5">
+    <View className="px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Checkpoint"}
         instruction="What the review showed."

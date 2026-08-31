@@ -37,7 +37,7 @@ export function EveningComparisonCategoryEngine({
   }, [onInteraction, savedResponse]);
 
   return (
-    <View className="flex-1 px-2 pb-3 pt-1.5">
+    <View className="px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Two evenings, one dip"}
         instruction={readString(content.instruction)}

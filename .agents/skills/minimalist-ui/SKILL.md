@@ -1,3 +1,6 @@
+
+> **PROJECT OVERRIDE:** For this specific project, the global target aesthetic is a hybrid: **Premium, Trustworthy, Calm, Playful, Gamified, and engaging like Duolingo.** It should feel like Calm meets Duolingo. Use high-end typography and restrained premium layouts, but combine them with playful interaction patterns, tactile 3D button depths, thick borders, and bouncy animations.
+
 ---
 name: minimalist-ui
 description: Clean editorial-style interfaces. Warm monochrome palette, typographic contrast, flat bento grids, muted pastels. No gradients, no heavy shadows.

@@ -1,3 +1,6 @@
+
+> **PROJECT OVERRIDE:** For this specific project, the global target aesthetic is a hybrid: **Premium, Trustworthy, Calm, Playful, Gamified, and engaging like Duolingo.** It should feel like Calm meets Duolingo. Use high-end typography and restrained premium layouts, but combine them with playful interaction patterns, tactile 3D button depths, thick borders, and bouncy animations.
+
 ---
 name: appllama-app-design-skill
 description: Build native-feeling, benchmark-quality mobile app screens (Expo / React Native). Use when designing or implementing any mobile UI — screens, flows, onboarding, paywalls, tab bars, sheets, settings, empty states — or when polishing motion, navigation, typography, dark mode, or perceived performance. Enforces Apple HIG fidelity, semantic colors, native controls, anti-slop discipline, navigation semantics (push vs replace, modal vs sheet vs overlay, the one-way doors where back must not exist), purposeful Reanimated motion, a full-motion simulator-verified iteration loop, and a study-real-apps-first workflow (pairs with the Appllama MCP). Trigger on "build a screen", "make this screen better", "design the onboarding", "wire up this flow", "polish the UI", "make it feel native", or any mobile design/implementation task.

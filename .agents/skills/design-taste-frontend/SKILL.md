@@ -1,3 +1,6 @@
+
+> **PROJECT OVERRIDE:** For this specific project, the global target aesthetic is a hybrid: **Premium, Trustworthy, Calm, Playful, Gamified, and engaging like Duolingo.** It should feel like Calm meets Duolingo. Use high-end typography and restrained premium layouts, but combine them with playful interaction patterns, tactile 3D button depths, thick borders, and bouncy animations.
+
 ---
 name: design-taste-frontend
 description: Anti-slop frontend skill for landing pages, portfolios, and redesigns. The agent reads the brief, infers the right design direction, and ships interfaces that do not look templated. Real design systems when applicable, audit-first on redesigns, strict pre-flight check.

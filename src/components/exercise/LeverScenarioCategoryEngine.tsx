@@ -68,7 +68,7 @@ export function LeverScenarioCategoryEngine({
   if (!variant) return null;
 
   return (
-    <View className="flex-1 px-2 pb-3 pt-1.5">
+    <View className="px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Put it to work"}
         instruction={
@@ -76,11 +76,11 @@ export function LeverScenarioCategoryEngine({
         }
       />
 
-      <View className="mb-3.5 rounded-[24px] rounded-bl-md bg-[#F9F4ED] px-[18px] py-4 shadow-sm shadow-black/10">
+      <View className="mb-6 border-l-2 border-[#ABC0A2] pl-4 py-1">
         <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]">
           {variant.sceneLabel}
         </Text>
-        <Text className="happy-font-body mt-1 text-[14.5px] leading-[22px] text-[#201E1D]">
+        <Text className="happy-font-body mt-1.5 text-[15px] leading-[22px] text-[#201E1D]">
           {variant.scene}
         </Text>
       </View>
@@ -102,12 +102,12 @@ export function LeverScenarioCategoryEngine({
               onPress={() => selectOption(option)}
               className={
                 selectedCorrect
-                  ? "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#7E9874] border-b-[3px] bg-[#F2F8EF] px-4 py-3"
+                  ? "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-[#7E9874] border-b-[4px] bg-[#F2F8EF] px-5 py-3"
                   : selectedIncorrect
-                    ? "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#A84432] border-b-[3px] bg-[#FFF0EA] px-4 py-3"
+                    ? "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-[#A84432] border-b-[4px] bg-[#FFF0EA] px-5 py-3"
                   : showingFeedback
-                    ? "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border border-[#DCD3C4] bg-[#F9F4ED] px-4 py-3"
-                    : "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#DCD3C4] border-b-[3px] bg-[#F9F4ED] px-4 py-3 active:translate-y-0.5 active:border-b-[1.5px]"
+                    ? "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-[#DCD3C4] border-b-[4px] bg-[#F9F4ED] px-5 py-3 opacity-60"
+                    : "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-[#DCD3C4] border-b-[4px] bg-[#F9F4ED] px-5 py-3 active:translate-y-[2px] active:border-b-2"
               }
             >
               <View

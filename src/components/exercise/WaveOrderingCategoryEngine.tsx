@@ -59,7 +59,7 @@ export function WaveOrderingCategoryEngine({
   };
 
   return (
-    <View className="flex-1 px-2 pb-3 pt-1.5">
+    <View className="px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Order the wave"}
         instruction={readString(content.instruction) ?? "Build the order."}

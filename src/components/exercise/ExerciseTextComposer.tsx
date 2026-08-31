@@ -724,7 +724,7 @@ const styles = StyleSheet.create({
   },
   waveButtonRecording: {
     backgroundColor: SEMANTIC_COLORS.surface.secondary,
-    borderColor: SEMANTIC_COLORS.text.muted,
+    borderColor: SEMANTIC_COLORS.text.disabled,
   },
   inlineActionButton: {
     height: actionSize,
