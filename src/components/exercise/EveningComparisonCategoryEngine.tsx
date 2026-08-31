@@ -54,12 +54,12 @@ export function EveningComparisonCategoryEngine({
       </View>
 
       {readString(content.explanation) && (
-        <Text className="happy-font-body mt-3 text-center text-[13.5px] leading-5 text-[#3F3A34]">
+        <Text className="happy-font-body mt-5 text-[15px] leading-5 text-[#5E574D]">
           {readString(content.explanation)}
         </Text>
       )}
       {readString(content.note) && (
-        <Text className="happy-font-body mt-3.5 text-center text-[12.5px] leading-[18px] text-[#82796A]">
+        <Text className="happy-font-body mt-3 text-[14px] leading-5 text-[#82796A]">
           {readString(content.note)}
         </Text>
       )}
@@ -80,23 +80,23 @@ function ComparisonColumnCard({
     <View
       className={
         isOlive
-          ? "flex-1 gap-2 rounded-[24px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-4 py-4"
-          : "flex-1 gap-2 rounded-[24px] border-[1.5px] border-[#DCD3C4] bg-[#F9F4ED] px-4 py-4"
+          ? "flex-1 gap-2 rounded-[24px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-4 pb-2.5 pt-4"
+          : "flex-1 gap-2 rounded-[24px] border-[1.5px] border-[#E5E5E5] bg-white px-4 pb-2.5 pt-4"
       }
     >
       <Text
         className={
           isOlive
-            ? "happy-font-body-bold text-[11px] tracking-[0.45px] text-[#29452A]"
-            : "happy-font-body-bold text-[11px] tracking-[0.45px] text-[#82796A]"
+            ? "happy-font-body-semibold text-[14px] text-[#29452A]"
+            : "happy-font-body-semibold text-[14px] text-[#5E574D]"
         }
       >
-        {column.heading}
+        {column.heading}{isOlive ? " ✓" : ""}
       </Text>
       {column.rows.map((row) => (
         <Text
           key={row}
-          className="happy-font-body text-[13.5px] leading-[19px] text-[#201E1D]"
+          className="happy-font-body text-[17px] leading-[24px] text-[#201E1D]"
         >
           {row}
         </Text>
@@ -104,8 +104,8 @@ function ComparisonColumnCard({
       <Text
         className={
           isOlive
-            ? "happy-font-body-bold mt-auto border-t-[1.5px] border-[#ABC0A2] pt-2 text-[12.5px] leading-[18px] text-[#3F4A31]"
-            : "happy-font-body-bold mt-auto border-t-[1.5px] border-[#DCD3C4] pt-2 text-[12.5px] leading-[18px] text-[#5E574D]"
+            ? "happy-font-body-semibold mt-auto pt-1.5 text-[16px] leading-[22px] text-[#3F4A31]"
+            : "happy-font-body-semibold mt-auto pt-1.5 text-[16px] leading-[22px] text-[#5E574D]"
         }
       >
         {column.outcome}

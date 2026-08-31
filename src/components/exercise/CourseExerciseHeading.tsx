@@ -32,9 +32,9 @@ const styles = StyleSheet.create({
   title: {
     color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.display,
-    fontSize: 27,
-    lineHeight: 33,
-    letterSpacing: -0.35,
+    fontSize: 26,
+    lineHeight: 32,
+    letterSpacing: -0.4,
   },
   instruction: {
     marginTop: 3,

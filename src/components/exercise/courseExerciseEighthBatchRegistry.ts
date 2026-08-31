@@ -24,12 +24,30 @@ export const EIGHTH_BATCH_CATEGORY_CONFIGS = {
     "Turn the wave model into one usable instruction.",
     "This concept card is not available yet.",
   ),
-  [CourseExerciseCategoryEnum.BreathingRound]: createConfig(
-    CourseExerciseCategoryEnum.BreathingRound,
-    BreathingRoundCategoryEngine,
-    "Practise one long-exhale breathing round.",
-    "This breathing round is not available yet.",
-  ),
+  [CourseExerciseCategoryEnum.BreathingRound]: {
+    category: CourseExerciseCategoryEnum.BreathingRound,
+    formats: [CourseExerciseCategoryEnum.BreathingRound],
+    engine: BreathingRoundCategoryEngine,
+    goalLabel: "Practise one long-exhale breathing round.",
+    unavailableCopy: "This breathing round is not available yet.",
+    interaction: {
+      getPrimaryLabel: (exercise, response) => {
+        if (response.completedRound) return "Continue";
+        if (response.running) return "Breathe...";
+        return "Start one round";
+      },
+      getPrimaryTransition: (exercise, response) => {
+        if (!response.completedRound && !response.running) {
+          return {
+            kind: "response",
+            ready: false,
+            response: { ...response, running: true },
+          };
+        }
+        return null;
+      },
+    },
+  },
   [CourseExerciseCategoryEnum.WaveFaq]: createConfig(
     CourseExerciseCategoryEnum.WaveFaq,
     ConceptInsightCategoryEngine,

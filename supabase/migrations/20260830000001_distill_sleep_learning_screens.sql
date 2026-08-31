@@ -5,10 +5,11 @@ SET content = $concept$
   "format": "concept_card",
   "completionMode": "direct",
   "hideSkipAction": true,
-  "variant": "rule",
+  "variant": "myth",
   "title": "One waking is not a broken night",
-  "rule": "Brief wakings are normal",
-  "explanation": "Sleep moves through cycles during the night. Waking briefly does not mean your sleep is broken.",
+  "myth": "Waking at 3am means my sleep system has failed.",
+  "reality": "Sleep moves through changing cycles.\n\nLater sleep often has more REM, so vivid dreams and brief wakings can happen without meaning anything is broken.",
+  "note": "A less frightening explanation leaves room for sleep to return.",
   "primaryLabel": "Continue"
 }
 $concept$::jsonb
@@ -28,7 +29,7 @@ SET content = $cards$
     {
       "id": "pressure-builds",
       "title": "The longer you’re awake, the sleepier you become",
-      "body": "Time awake gradually builds your need for sleep. This growing need is called sleep pressure."
+      "body": "Your need for sleep gradually builds while you're awake."
     },
     {
       "id": "sleep-releases",

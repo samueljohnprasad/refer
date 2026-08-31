@@ -17,10 +17,7 @@ import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
 type BreathPhase = "idle" | "inhale" | "exhale" | "done";
 
-interface BreathingStep {
-  number: string;
-  label: string;
-}
+
 
 const INHALE_SECONDS = 4;
 const EXHALE_SECONDS = 8;
@@ -51,10 +48,15 @@ export function BreathingRoundCategoryEngine({
 
   useEffect(() => clearRoundTimers, []);
 
+  useEffect(() => {
+    if (saved?.running && phase === "idle") {
+      startRound();
+    }
+  }, [saved?.running, phase]);
+
   const startRound = () => {
     if (running) return;
     clearRoundTimers();
-    onInteraction(createResponse({ ...saved, completedRound: false }), true);
 
     if (reduceMotion) {
       finishRound();
@@ -101,7 +103,7 @@ export function BreathingRoundCategoryEngine({
     setPhase("done");
     setCount(null);
     scale.value = 0.72;
-    onInteraction(createResponse({ ...saved, completedRound: true }), true);
+    onInteraction(createResponse({ ...saved, completedRound: true, running: false }), true);
   };
 
   function clearRoundTimers() {
@@ -110,118 +112,52 @@ export function BreathingRoundCategoryEngine({
   }
 
   return (
-    <View className="px-2 pb-3 pt-1.5">
+    <View className="px-2 pb-3 pt-6">
       <CourseExerciseHeading
-        title={readString(content.title) ?? "The 4–8 exhale"}
-        instruction={readString(content.instruction) ?? "Try one round."}
+        title={readString(content.title) ?? "One longer exhale"}
+        instruction={readString(content.instruction) ?? "One gentle round to ease alertness."}
       />
 
-      <View className="mb-3 flex-row flex-wrap gap-1.5">
-        <Tag label={readString(content.useFor)} tone="olive" />
-        <Tag label={readString(content.notFor)} tone="orange" />
+      <View className="mt-2 items-center">
+        <Text className="happy-font-body-semibold text-[18px] text-[#201E1D]">
+          {INHALE_SECONDS} in → {EXHALE_SECONDS} out
+        </Text>
+        <Text className="happy-font-body mt-1 text-[14px] text-[#82796A]">
+          1 round · about {ROUND_SECONDS} sec
+        </Text>
       </View>
 
-      <View className="mb-3 flex-row gap-2">
-        {readBreathingSteps(content.steps).map((step) => (
-          <View
-            key={step.label}
-            className="flex-1 items-center rounded-[18px] bg-[#F9F4ED] px-1 py-3 shadow-sm shadow-black/10"
-          >
-            <Text className="happy-font-heading-bold text-[26px] text-[#29452A]">
-              {step.number}
-            </Text>
-            <Text className="happy-font-body-bold mt-0.5 text-center text-[10.5px] tracking-[0.5px] text-[#82796A]">
-              {step.label}
-            </Text>
-          </View>
-        ))}
-      </View>
-
-      <Text className="happy-font-body mb-3.5 text-[13.5px] leading-[21px] text-[#3F3A34]">
-        {readString(content.mechanism)}
-      </Text>
-
-      <View className="items-center gap-3 rounded-[24px] bg-[#F9F4ED] p-[22px] shadow-md shadow-black/10">
-        <View className="h-[118px] items-center justify-center">
+      <View className="mt-8 items-center gap-6">
+        <View className="h-[140px] items-center justify-center">
           <Animated.View
             accessibilityLabel={getPhaseLabel(phase)}
-            className="h-[110px] w-[110px] items-center justify-center rounded-full bg-[#5F7F58] shadow-md shadow-black/10"
+            className="h-[130px] w-[130px] items-center justify-center rounded-full bg-[#ABC0A2] shadow-sm shadow-black/5"
             style={circleStyle}
           >
-            <Text className="happy-font-heading-bold text-[30px] text-[#F9F4ED]">
-              {phase === "done" ? "✓" : count}
+            <Text className="happy-font-heading-bold text-[36px] text-white">
+              {phase === "done" ? "✓" : (count ?? "")}
             </Text>
           </Animated.View>
         </View>
-        <Text className="happy-font-body-bold min-h-[18px] text-center text-[12.5px] tracking-[0.6px] text-[#29452A]">
+        <Text className="happy-font-body-bold min-h-[20px] text-center text-[13px] tracking-[0.5px] text-[#29452A]">
           {getPhaseLabel(phase)}
         </Text>
-        <Pressable
-          accessibilityRole="button"
-          disabled={running}
-          onPress={startRound}
-          className={
-            running
-              ? "min-h-11 w-full items-center justify-center rounded-full bg-[#EBDDC5] px-5 opacity-60"
-              : "min-h-11 w-full items-center justify-center rounded-full border-[1.5px] border-[#DCD3C4] bg-[#F9F4ED] px-5 active:translate-y-0.5"
-          }
-        >
-          <Text className="happy-font-body-bold text-sm text-[#201E1D]">
-            {phase === "done" ? "Try another round" : "Try one round"}
-          </Text>
-        </Pressable>
       </View>
 
-      <Text className="happy-font-body mt-3.5 border-t-[1.5px] border-dashed border-[#DCD3C4] pt-2.5 text-center text-[12.5px] leading-[18px] text-[#82796A]">
-        {readString(content.variation)}
+      <Text className="happy-font-body mt-6 text-center text-[14px] leading-[20px] text-[#82796A]">
+        {phase === "done"
+          ? (readString(content.variation) ?? "The goal is less struggling, not instant sleep.")
+          : "Breathe comfortably. Stop if uncomfortable."}
       </Text>
     </View>
   );
-}
-
-function Tag({
-  label,
-  tone,
-}: {
-  label: string | null;
-  tone: "olive" | "orange";
-}) {
-  return (
-    <View
-      className={
-        tone === "olive"
-          ? "rounded-full border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-3 py-1.5"
-          : "rounded-full border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-3 py-1.5"
-      }
-    >
-      <Text
-        className={
-          tone === "olive"
-            ? "happy-font-body-bold text-xs text-[#29452A]"
-            : "happy-font-body-bold text-xs text-[#29452A]"
-        }
-      >
-        {label}
-      </Text>
-    </View>
-  );
-}
-
-function readBreathingSteps(value: unknown): BreathingStep[] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((item) => {
-    const step = readRecord(item);
-    const number = readString(step?.number);
-    const label = readString(step?.label);
-    return number && label ? [{ number, label }] : [];
-  });
 }
 
 function getPhaseLabel(phase: BreathPhase): string {
-  if (phase === "inhale") return "BREATHE IN THROUGH YOUR NOSE";
+  if (phase === "inhale") return "BREATHE IN";
   if (phase === "exhale") return "BREATHE OUT SLOWLY";
-  if (phase === "done") return "ONE ROUND COMPLETE";
-  return "ONE ROUND · ~12 SECONDS";
+  if (phase === "done") return "ROUND COMPLETE";
+  return "";
 }
 
 function createResponse(extra: Record<string, unknown> = {}) {
