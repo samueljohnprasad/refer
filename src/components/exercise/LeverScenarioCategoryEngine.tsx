@@ -76,11 +76,11 @@ export function LeverScenarioCategoryEngine({
         }
       />
 
-      <View className="mb-6 border-l-2 border-[#ABC0A2] pl-4 py-1">
-        <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]">
+      <View className="mb-6 rounded-[24px] bg-brand-surface-soft p-5 border-2 border-border-default">
+        <Text className="happy-font-body-bold text-[13px] text-brand-primary uppercase tracking-[1px] opacity-80 mb-2">
           {variant.sceneLabel}
         </Text>
-        <Text className="happy-font-body mt-1.5 text-[15px] leading-[22px] text-[#201E1D]">
+        <Text className="happy-font-body text-[16px] leading-[24px] text-text-primary">
           {variant.scene}
         </Text>
       </View>

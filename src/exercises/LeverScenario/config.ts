@@ -15,7 +15,7 @@ export const LeverScenarioConfig: CourseExerciseCategoryConfig = {
   goalLabel: "Choose the right lever in a live moment.",
   unavailableCopy: "This lever scenario is not available yet.",
   interaction: {
-    submissionMode: "immediate",
+    submissionMode: "explicit",
     getPrimaryLabel: (
       exercise: Exercise,
       response: Record<string, unknown>,

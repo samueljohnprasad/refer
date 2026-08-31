@@ -3,11 +3,12 @@ export { SEMANTIC_COLORS, adaptiveColor } from "../../theme/colors";
 export type { SemanticColors } from "../../theme/colors";
 
 export const COURSE_EXERCISE_FONTS = {
-  heading: "CormorantGaramond_600SemiBold",
-  headingLight: "CormorantGaramond_400Regular",
-  headingItalic: "CormorantGaramond_600SemiBold_Italic",
-  body: "Geist_400Regular",
-  bodyMedium: "Geist_500Medium",
-  bodyBold: "Geist_600SemiBold",
-  bodyMono: "GeistMono_400Regular",
+  display: "NunitoExtraBold",
+  heading: "NunitoBold",
+  headingLight: "NunitoRegular",
+  headingItalic: "NunitoSemiBoldItalic",
+  body: "NunitoRegular",
+  bodyMedium: "NunitoSemiBold",
+  bodyBold: "NunitoBold",
+  bodyMono: "NunitoRegular",
 } as const;

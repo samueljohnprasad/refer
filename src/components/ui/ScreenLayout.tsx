@@ -67,6 +67,7 @@ const Content = ({
         },
         contentContainerStyle,
       ]}
+      keyboardShouldPersistTaps="handled"
       {...props}
     >
       {children}
