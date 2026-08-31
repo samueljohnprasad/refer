@@ -97,7 +97,7 @@ export function LeverScenarioCategoryEngine({
             <Pressable
               key={option.id}
               accessibilityRole="radio"
-              accessibilityState={{ selected, disabled: showingFeedback }}
+              accessibilityState={{ selected, disabled: showingFeedback || locked }}
               disabled={locked || showingFeedback}
               onPress={() => selectOption(option)}
               className={
@@ -105,9 +105,9 @@ export function LeverScenarioCategoryEngine({
                   ? "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-selection-border border-b-[4px] bg-selection-surface px-5 py-3"
                   : selectedIncorrect
                     ? "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-error-border border-b-[4px] bg-error-surface px-5 py-3"
-                  : showingFeedback
-                    ? "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-border-default border-b-[4px] bg-surface-primary px-5 py-3"
-                    : "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-border-default border-b-[4px] bg-surface-primary px-5 py-3 active:translate-y-[2px] active:border-b-2"
+                    : showingFeedback || locked
+                      ? "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-border-default border-b-[4px] bg-surface-primary px-5 py-3 opacity-60"
+                      : "min-h-[60px] flex-row items-center gap-3 rounded-[22px] border-2 border-border-default border-b-[4px] bg-surface-primary px-5 py-3 active:translate-y-[2px] active:border-b-2"
               }
             >
               <View

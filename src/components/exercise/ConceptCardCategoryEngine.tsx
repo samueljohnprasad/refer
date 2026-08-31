@@ -38,24 +38,21 @@ export function ConceptCardCategoryEngine({
     <View style={styles.screenContent}>
       <CourseExerciseHeading
         title={readString(content.title) ?? "One idea to keep"}
-        instruction={readString(content.instruction)}
       />
 
       {variant === "myth" ? (
         <MythCard
           myth={readString(content.myth)}
           reality={readString(content.reality)}
+          note={readString(content.note)}
         />
       ) : (
         <RuleCard
           rule={readString(content.rule)}
           explanation={readString(content.explanation)}
+          note={readString(content.note)}
         />
       )}
-
-      {readString(content.note) ? (
-        <Text style={styles.note}>{readString(content.note)}</Text>
-      ) : null}
     </View>
   );
 }
@@ -63,9 +60,11 @@ export function ConceptCardCategoryEngine({
 function MythCard({
   myth,
   reality,
+  note,
 }: {
   myth: string | null;
   reality: string | null;
+  note?: string | null;
 }) {
   return (
     <View style={styles.mythStack}>
@@ -76,6 +75,7 @@ function MythCard({
       <View style={styles.realityPanel}>
         <Text style={styles.oliveKicker}>THE REALITY</Text>
         <Text style={styles.realityText}>{reality}</Text>
+        {note ? <Text style={styles.note}>{note}</Text> : null}
       </View>
     </View>
   );
@@ -84,14 +84,17 @@ function MythCard({
 function RuleCard({
   rule,
   explanation,
+  note,
 }: {
   rule: string | null;
   explanation: string | null;
+  note?: string | null;
 }) {
   return (
     <View style={styles.rulePanel}>
       <Text style={styles.ruleText}>{rule}</Text>
       <Text style={styles.explanation}>{explanation}</Text>
+      {note ? <Text style={styles.note}>{note}</Text> : null}
     </View>
   );
 }
@@ -116,8 +119,6 @@ const styles = StyleSheet.create({
   realityPanel: {
     paddingHorizontal: 20,
     paddingVertical: 18,
-    borderWidth: 1,
-    borderColor: SEMANTIC_COLORS.brand.primary,
     borderRadius: 16,
     borderCurve: "continuous",
     backgroundColor: SEMANTIC_COLORS.brand.soft,
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.45,
   },
   mythText: {
-    color: SEMANTIC_COLORS.text.secondary,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 17,
     lineHeight: 24,
@@ -173,11 +174,10 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   note: {
-    marginTop: 14,
+    marginTop: 12,
     color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 14,
-    lineHeight: 20,
-    textAlign: "center",
+    fontSize: 15,
+    lineHeight: 21,
   },
 });
