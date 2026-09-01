@@ -108,6 +108,7 @@ maintenance.
 - iOS 26+ only. No Android support or fallbacks for iOS < 26.
 - All exercise engines MUST be microlearning-category-registered so content
   validation runs before render.
+- Do not make UI components specific to a single exercise. Always extract and use generic, highly reusable shared components (e.g., standard cards, option buttons) across all exercises so UI updates propagate system-wide.
 - Strict content validators MUST reject malformed content at the
   `NodeExerciseDataError` boundary — never render a broken exercise silently.
 - Feedback MUST be immediate, non-punitive, and replace the active choice

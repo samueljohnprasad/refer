@@ -17,6 +17,7 @@ import { TwoDialSandboxConfig } from "@/src/exercises/TwoDialSandbox/config";
 import { ExplorableModelConfig } from "@/src/exercises/ExplorableModel/config";
 import { WhiteBearExperimentConfig } from "@/src/exercises/WhiteBearExperiment/config";
 import { ParadoxCardConfig } from "@/src/exercises/ParadoxCard/config";
+import { InteractiveReframeConfig } from "@/src/exercises/InteractiveReframe/config";
 import { OneLineRevealConfig } from "@/src/exercises/OneLineReveal/config";
 import { WhatIfMachineConfig } from "@/src/exercises/WhatIfMachine/config";
 import { GuidedRecallChipsConfig } from "@/src/exercises/GuidedRecallChips/config";
@@ -48,6 +49,7 @@ import { NameItCategoryEngine } from "@/src/components/exercise/NameItCategoryEn
 import { OneLineRevealCategoryEngine } from "@/src/components/exercise/OneLineRevealCategoryEngine";
 import { PanicWaveCommitCategoryEngine } from "@/src/components/exercise/PanicWaveCommitCategoryEngine";
 import { ParadoxCardCategoryEngine } from "@/src/components/exercise/ParadoxCardCategoryEngine";
+import { InteractiveReframeCategoryEngine } from "@/src/components/exercise/InteractiveReframeCategoryEngine";
 import { RecallWarmupCategoryEngine } from "@/src/components/exercise/microlearning/RecallWarmupCategoryEngine";
 import { SymptomDecoderCategoryEngine } from "@/src/components/exercise/SymptomDecoderCategoryEngine";
 import { StoryWalkthroughCategoryEngine } from "@/src/components/exercise/StoryWalkthroughCategoryEngine";
@@ -117,6 +119,7 @@ export const courseExerciseCategoryEngineRegistry: Partial<Record<
   [CourseExerciseCategoryEnum.ExplorableModel]: ExplorableModelConfig,
   [CourseExerciseCategoryEnum.WhiteBearExperiment]: WhiteBearExperimentConfig,
   [CourseExerciseCategoryEnum.ParadoxCard]: ParadoxCardConfig,
+  [CourseExerciseCategoryEnum.InteractiveReframe]: InteractiveReframeConfig,
   [CourseExerciseCategoryEnum.OneLineReveal]: OneLineRevealConfig,
   [CourseExerciseCategoryEnum.WhatIfMachine]: WhatIfMachineConfig,
   [CourseExerciseCategoryEnum.GuidedRecallChips]: GuidedRecallChipsConfig,

@@ -92,6 +92,13 @@ export function getPrimaryLabel({
 }
 
 export function completesOnPrimaryInteraction(exercise: Exercise): boolean {
+  if (
+    exercise.type === "toolkit_shelf" ||
+    exercise.type === "same_but_different" ||
+    exercise.type === "surge_timer"
+  ) {
+    return true;
+  }
   return exercise.content?.completionMode === "direct";
 }
 

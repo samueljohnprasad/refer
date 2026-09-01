@@ -26,7 +26,7 @@ export const SameButDifferentConfig: CourseExerciseCategoryConfig = {
         : 0;
       return rowCount > 0 && openedCount >= rowCount
         ? "Continue"
-        : "Tap each row above";
+        : "Find differences above";
     },
     getPrimaryTransition: (_exercise: Exercise, _response: Record<string, unknown>) => null,
   },

@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
   title: {
     color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.display,
-    fontSize: 26,
-    lineHeight: 32,
+    fontSize: 24,
+    lineHeight: 30,
     letterSpacing: -0.4,
   },
   instruction: {

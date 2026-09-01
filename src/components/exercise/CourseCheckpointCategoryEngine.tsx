@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, View, ViewStyle } from "react-native";
 import * as Haptics from "expo-haptics";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { ReloadIcon } from "@hugeicons/core-free-icons";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import { CourseExerciseTeachingPanel } from "@/src/components/exercise/CourseExerciseTeachingPanel";
 import {
@@ -17,6 +15,48 @@ import {
 } from "@/src/components/exercise/courseCheckpointContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
+import { StyleSheet } from "react-native";
+
+const styles = StyleSheet.create({
+  scenarioCard: {
+    marginBottom: 12,
+    borderRadius: 16,
+    backgroundColor: SEMANTIC_COLORS.surface.secondary,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  scenarioText: {
+    fontFamily: "Nunito_400Regular",
+    fontSize: 14,
+    lineHeight: 21,
+    color: SEMANTIC_COLORS.text.primary,
+  },
+  questionText: {
+    fontFamily: "Nunito_700Bold",
+    fontSize: 16,
+    lineHeight: 22,
+    color: SEMANTIC_COLORS.text.primary,
+    marginBottom: 10,
+  },
+  optionText: {
+    flex: 1,
+    fontFamily: "Nunito_600SemiBold",
+    fontSize: 13.5,
+    lineHeight: 19,
+    color: SEMANTIC_COLORS.text.primary,
+  },
+  radioCheck: {
+    fontFamily: "Nunito_700Bold",
+    fontSize: 11,
+    color: SEMANTIC_COLORS.brand.onPrimary,
+  },
+  radioCross: {
+    fontFamily: "Nunito_700Bold",
+    fontSize: 11,
+    color: SEMANTIC_COLORS.error.foreground,
+  },
+});
 
 export function CourseCheckpointCategoryEngine({
   exercise,
@@ -42,13 +82,20 @@ export function CourseCheckpointCategoryEngine({
     if (locked || phase !== "question" || !item) return;
     Haptics.selectionAsync();
     const option = item.options[optionIndex];
+    
+    const newResults = [...readBooleanResults(saved?.results)];
+    newResults[itemIndex] = option.isCorrect;
+
     onInteraction(
-      createResponse({
+      {
         ...saved,
         selectedOptionIndex: optionIndex,
+        attempts: option.isCorrect ? attempts : attempts + 1,
+        results: newResults,
         isCorrect: option.isCorrect,
-      }),
-      true,
+        phase: "feedback",
+      },
+      false,
     );
   };
 
@@ -60,58 +107,61 @@ export function CourseCheckpointCategoryEngine({
   }
   if (!item) return null;
 
-  return (
-    <View className="px-2 pb-3 pt-1.5">
-      <CourseExerciseHeading
-        title={readString(content.title) ?? "Checkpoint"}
-        instruction={`Question ${itemIndex + 1} of ${items.length}`}
-      />
+  const isFeedback = phase === "feedback";
+  const isSelected = (index: number) => selectedOptionIndex === index;
+  const isCorrectOption = (index: number) => item.options[index]?.isCorrect === true;
+  const isIncorrectOption = (index: number) => item.options[index]?.isCorrect === false;
 
+  return (
+    <View className="px-2 pb-3 pt-0">
       {item.context ? (
-        <View className="mb-3 rounded-[20px] bg-[#F9F4ED] px-4 py-[14px] shadow-sm shadow-black/10">
-          <Text className="happy-font-body text-[14px] leading-[21px] text-[#201E1D]">
-            {item.context}
-          </Text>
+        <View style={styles.scenarioCard}>
+          <Text style={styles.scenarioText}>{item.context}</Text>
         </View>
       ) : null}
 
-      <Text className="happy-font-body-bold mb-2.5 text-[16px] leading-[22px] text-[#201E1D]">
-        {item.prompt}
-      </Text>
+      <Text style={styles.questionText}>{item.prompt}</Text>
       <View className="gap-2.5">
         {item.options.map((option, optionIndex) => {
-          const selected = selectedOptionIndex === optionIndex;
+          const selected = isSelected(optionIndex);
+          const correct = isCorrectOption(optionIndex);
+          const incorrect = selected && !correct;
+          const showFeedback = isFeedback && (correct || incorrect);
+
           return (
             <Pressable
               key={option.label}
               accessibilityRole="radio"
-              accessibilityState={{ selected, disabled: phase === "feedback" }}
-              disabled={locked || phase === "feedback"}
+              accessibilityState={{ selected: showFeedback ? correct : selected, disabled: locked || isFeedback }}
+              disabled={locked || isFeedback}
               onPress={() => selectOption(optionIndex)}
-              className={getOptionClassName(selected, phase === "feedback")}
+              style={getOptionStyle(selected, correct, incorrect, showFeedback)}
             >
-              <View
-                className={
-                  selected
-                    ? "h-5 w-5 items-center justify-center rounded-full bg-[#5F7F58]"
-                    : "h-5 w-5 rounded-full border-2 border-[#B6AB9B]"
-                }
-              >
-                {selected ? (
-                  <Text className="happy-font-body-bold text-[11px] text-white">
-                    ✓
-                  </Text>
+              <View style={getRadioStyle(selected, correct, incorrect, showFeedback)}>
+                {showFeedback ? (
+                  correct ? (
+                    <Text style={styles.radioCheck}>✓</Text>
+                  ) : incorrect ? (
+                    <Text style={styles.radioCross}>×</Text>
+                  ) : selected ? (
+                    <Text style={styles.radioCheck}>✓</Text>
+                  ) : null
                 ) : null}
               </View>
-              <Text className="happy-font-body-bold flex-1 text-[13.5px] leading-[19px] text-[#201E1D]">
-                {option.label}
-              </Text>
+              <View className="flex-1">
+                <Text style={styles.optionText}>{option.label}</Text>
+                {showFeedback && selected && incorrect && (
+                  <Text className="happy-font-body-bold text-[11.5px] text-[#A74141] uppercase tracking-[0.5px] mt-1">
+                    Your answer
+                  </Text>
+                )}
+              </View>
             </Pressable>
           );
         })}
       </View>
 
-      {phase === "feedback" && selectedOption ? (
+      {isFeedback && selectedOption ? (
         <CourseExerciseTeachingPanel
           correct={selectedOption.isCorrect}
           title={getFeedbackTitle(selectedOption.isCorrect, attempts)}
@@ -133,18 +183,14 @@ function CheckpointIntro({ content }: { content: Record<string, unknown> }) {
   return (
     <View className="px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
-        title={readString(content.title) ?? "Checkpoint"}
-        instruction={readString(content.instruction) ?? "A calm mixed review."}
+        title={readString(content.title) ?? "Sleep science checkpoint"}
       />
-      <View className="rounded-[24px] bg-[#F9F4ED] px-6 py-6 shadow-sm shadow-black/10">
-        <View className="h-16 w-16 items-center justify-center rounded-full bg-[#D3E0CD]">
-          <HugeiconsIcon icon={ReloadIcon} size={30} color="#29452A" />
-        </View>
-        <Text className="happy-font-heading-bold mt-3 text-[21px] leading-[26px] text-[#201E1D]">
-          {readString(content.introTitle)}
+      <View className="gap-3">
+        <Text className="happy-font-body text-[15px] leading-[22px] text-[#201E1D]">
+          {readString(content.intro) ?? "Four quick questions review the key sleep patterns you just learned."}
         </Text>
-        <Text className="happy-font-body mt-2 text-[14.5px] leading-[22px] text-[#201E1D]">
-          {readString(content.intro)}
+        <Text className="happy-font-body text-[13px] leading-[19px] text-[#82796A]">
+          {readString(content.introSubtitle) ?? "4 questions · Mistakes won't affect your progress"}
         </Text>
       </View>
     </View>
@@ -220,23 +266,129 @@ function SummaryGroup({
     </View>
   );
 }
-
-function getOptionClassName(selected: boolean, feedback: boolean): string {
+ 
+function getOptionStyle(
+  selected: boolean,
+  correct: boolean,
+  incorrect: boolean,
+  showFeedback: boolean
+): ViewStyle {
+  if (showFeedback && correct) {
+    return {
+      minHeight: 56,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      borderRadius: 22,
+      borderWidth: 1.5,
+      borderColor: SEMANTIC_COLORS.success.border,
+      backgroundColor: SEMANTIC_COLORS.success.surface,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    };
+  }
+  if (showFeedback && incorrect) {
+    return {
+      minHeight: 56,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      borderRadius: 22,
+      borderWidth: 1.5,
+      borderColor: SEMANTIC_COLORS.error.border,
+      backgroundColor: SEMANTIC_COLORS.error.surface,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    };
+  }
   if (selected) {
-    return "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#7E9874] border-b-[3px] bg-[#F2F8EF] px-4 py-3";
+    return {
+      minHeight: 56,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      borderRadius: 22,
+      borderWidth: 1.5,
+      borderColor: SEMANTIC_COLORS.border.selected,
+      backgroundColor: SEMANTIC_COLORS.brand.soft,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    };
   }
-  if (feedback) {
-    return "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border border-[#DCD3C4] bg-[#F9F4ED] px-4 py-3 opacity-50";
+  return {
+    minHeight: 56,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    borderRadius: 22,
+    borderWidth: 1.5,
+    borderColor: SEMANTIC_COLORS.border.default,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  };
+}
+
+function getRadioStyle(
+  selected: boolean,
+  correct: boolean,
+  incorrect: boolean,
+  showFeedback: boolean
+): ViewStyle {
+  if (showFeedback && correct) {
+    return {
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: SEMANTIC_COLORS.success.indicator,
+      backgroundColor: SEMANTIC_COLORS.success.indicator,
+      alignItems: "center",
+      justifyContent: "center",
+    };
   }
-  return "min-h-[56px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#DCD3C4] border-b-[3px] bg-[#F9F4ED] px-4 py-3 active:translate-y-0.5 active:border-b-[1.5px]";
+  if (showFeedback && incorrect) {
+    return {
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: SEMANTIC_COLORS.error.indicator,
+      backgroundColor: "transparent",
+      alignItems: "center",
+      justifyContent: "center",
+    };
+  }
+  if (selected) {
+    return {
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: SEMANTIC_COLORS.brand.primary,
+      backgroundColor: SEMANTIC_COLORS.brand.primary,
+      alignItems: "center",
+      justifyContent: "center",
+    };
+  }
+  return {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: SEMANTIC_COLORS.border.default,
+    backgroundColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center",
+  };
 }
 
 function getFeedbackTitle(correct: boolean, attempts: number): string {
-  if (correct) return "Why it fits";
-  if (attempts >= 3) return "Here’s the thinking";
+  if (correct) return "What happened?";
+  if (attempts >= 3) return "Here's the thinking";
   return attempts >= 2
-    ? "Let’s make it simpler"
-    : "A tempting model. Not this one.";
+    ? "Let's make it simpler"
+    : "Not quite";
 }
 
 function createResponse(extra: Record<string, unknown> = {}) {

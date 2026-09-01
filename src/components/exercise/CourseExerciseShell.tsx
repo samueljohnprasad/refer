@@ -204,8 +204,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "right",
   },
-  content: { flexGrow: 1, paddingTop: 16, paddingBottom: 48 },
-  footer: { gap: 2, paddingHorizontal: 22, paddingTop: 10 },
+  content: { flexGrow: 1, paddingTop: 4, paddingBottom: 48 },
+  footer: { gap: 16, paddingHorizontal: 22, paddingTop: 10 },
   primaryButton: {
     width: "100%",
     height: 70,

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
-import * as Haptics from "expo-haptics";
+import { Text, View } from "react-native";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
+import { Card } from "@/src/components/ui/Card";
 import {
   readNumber,
   readRecord,
@@ -30,103 +30,87 @@ export function ToolkitShelfCategoryEngine({
 }: V1CategoryEngineProps) {
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
-  const tools = readTools(content.tools);
   const moments = readMoments(content.moments);
+
+  const phase = readString(saved?.phase) === "review" ? "review" : "selecting_moment";
   const selectedMomentIndex = readNullableNumber(saved?.selectedMomentIndex);
   const selectedMoment =
     selectedMomentIndex === null ? null : moments[selectedMomentIndex];
 
   useEffect(() => {
-    if (!saved) onInteraction(createResponse(), false);
+    if (!saved) {
+      onInteraction(createResponse(), false);
+    }
   }, [onInteraction, saved]);
 
   const selectMoment = (index: number) => {
     if (locked) return;
-    Haptics.selectionAsync();
     onInteraction(
-      createResponse({ ...saved, selectedMomentIndex: index }),
-      true,
+      createResponse({ 
+        ...saved,
+        selectedMomentIndex: index,
+        phase: "review",
+      }),
+      true // Ready for Continue
     );
   };
 
   return (
-    <View className="px-2 pb-3 pt-1.5">
+    <View className="px-2 pb-10">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Right tool, right moment"}
         instruction={readString(content.instruction) ?? "Tap a moment below."}
       />
 
-      <View className="flex-row gap-2">
-        {tools.map((tool, index) => {
-          const selected = selectedMoment?.toolIndex === index;
-          return (
-            <View
-              key={tool.label}
-              className={
-                selected
-                  ? "min-h-[78px] flex-1 -translate-y-1 items-center justify-center rounded-[18px] border-[1.5px] border-[#7E9874] bg-[#F2F8EF] px-2 py-2.5 shadow-md shadow-[#ABC0A2]"
-                  : "min-h-[78px] flex-1 items-center justify-center rounded-[18px] border border-[#DCD3C4] bg-[#F9F4ED] px-2 py-2.5"
-              }
-            >
-              <Text
-                className={
-                  selected
-                    ? "happy-font-heading-bold text-center text-[15px] leading-[18px] text-[#29452A]"
-                    : "happy-font-heading-bold text-center text-[15px] leading-[18px] text-[#201E1D]"
-                }
-              >
-                {tool.label}
-              </Text>
-              <Text className="happy-font-body mt-1 text-center text-[9.5px] leading-[13px] text-[#82796A]">
-                {tool.use}
-              </Text>
-            </View>
-          );
-        })}
-      </View>
-      <View className="mx-3 mt-2 h-[5px] rounded-full bg-[#B9A992]" />
-
-      <Text className="happy-font-body-bold mb-2 mt-4 text-[10.5px] tracking-[0.7px] text-[#82796A]">
-        PICK A MOMENT
-      </Text>
-      <View className="gap-2.5">
+      <View className="gap-2.5 mt-2">
         {moments.map((moment, index) => {
           const selected = selectedMomentIndex === index;
           return (
-            <Pressable
-              key={moment.label}
-              accessibilityRole="button"
-              accessibilityState={{ selected }}
-              disabled={locked}
-              onPress={() => selectMoment(index)}
-              className={
-                selected
-                  ? "min-h-[54px] justify-center rounded-[21px] border-[1.5px] border-[#7E9874] border-b-[3px] bg-[#F2F8EF] px-4 py-3 active:translate-y-0.5"
-                  : "min-h-[54px] justify-center rounded-[21px] border-[1.5px] border-[#DCD3C4] border-b-[3px] bg-[#F9F4ED] px-4 py-3 active:translate-y-0.5 active:border-b-[1.5px]"
-              }
-            >
-              <Text className="happy-font-body-bold text-[13.5px] leading-[19px] text-[#201E1D]">
-                {moment.label}
-              </Text>
-            </Pressable>
+            <React.Fragment key={moment.label}>
+              <Card
+                variant={selected ? "answer-selected" : "answer"}
+                onPress={() => selectMoment(index)}
+                disabled={locked}
+                contentClassName="flex-row items-center justify-center min-h-[48px] py-3 px-4"
+              >
+                <View className="flex-row items-center flex-1">
+                  {selected && (
+                    <View className="w-[22px] h-[22px] rounded-full bg-[#185A37] items-center justify-center absolute left-0 z-10">
+                      <Text className="text-white text-[11px] font-bold">✓</Text>
+                    </View>
+                  )}
+                  <Text
+                    className={
+                      selected
+                        ? "happy-font-body-bold text-[17px] leading-[22px] text-selection-text text-center flex-1 px-7"
+                        : "happy-font-body-medium text-[17px] leading-[22px] text-text-primary text-center flex-1"
+                    }
+                  >
+                    {moment.label}
+                  </Text>
+                </View>
+              </Card>
+
+              {phase === "review" && selected ? (
+                <View className="mb-2 mt-1 rounded-[21px] bg-[#F2F8EF] px-5 py-[16px]">
+                  <Text className="happy-font-body-bold text-[11.5px] tracking-[0.8px] text-[#29452A] mb-1.5 uppercase">
+                    {moment.key}
+                  </Text>
+                  <Text className="happy-font-body text-[15px] leading-[22px] text-[#3F4A31]">
+                    {moment.response}
+                  </Text>
+                </View>
+              ) : null}
+            </React.Fragment>
           );
         })}
       </View>
 
-      {selectedMoment ? (
-        <View className="mt-3 rounded-[21px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-4 py-[14px]">
-          <Text className="happy-font-body-bold text-[10.5px] tracking-[0.6px] text-[#29452A]">
-            {selectedMoment.key}
-          </Text>
-          <Text className="happy-font-body mt-1 text-[13.5px] leading-5 text-[#3F4A31]">
-            {selectedMoment.response}
-          </Text>
-        </View>
+      {content.note ? (
+        <Text className="happy-font-body mt-5 text-center text-xs text-[#82796A]">
+          {readString(content.note)}
+        </Text>
       ) : null}
-
-      <Text className="happy-font-body mt-3 text-center text-xs text-[#82796A]">
-        {readString(content.note)}
-      </Text>
     </View>
   );
 }
@@ -162,7 +146,7 @@ function readNullableNumber(value: unknown): number | null {
 function createResponse(extra: Record<string, unknown> = {}) {
   return {
     format: CourseExerciseCategoryEnum.ToolkitShelf,
-    phase: "toolkit",
+    phase: "selecting_moment",
     selectedMomentIndex: null,
     isCorrect: true,
     ...extra,

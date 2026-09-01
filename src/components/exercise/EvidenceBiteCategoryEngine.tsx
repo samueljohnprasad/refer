@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
   readRecord,
@@ -7,6 +7,8 @@ import {
 } from "@/src/components/exercise/courseExerciseContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
+import { StyleSheet } from "react-native";
 
 export function EvidenceBiteCategoryEngine({
   exercise,
@@ -15,70 +17,74 @@ export function EvidenceBiteCategoryEngine({
 }: V1CategoryEngineProps) {
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
-  const confidenceOpen = saved?.confidenceOpen === true;
 
   useEffect(() => {
     if (!saved) onInteraction(createResponse(), true);
   }, [onInteraction, saved]);
 
-  const toggleConfidence = () => {
-    onInteraction(
-      createResponse({ ...saved, confidenceOpen: !confidenceOpen }),
-      true,
-    );
-  };
-
   return (
     <View className="px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
-        title={readString(content.title) ?? "The science, in one breath"}
-        instruction={readString(content.instruction) ?? "One finding."}
+        title={readString(content.title) ?? "The whole-night finding"}
       />
 
-      <View className="gap-3.5 rounded-[24px] bg-[#F9F4ED] px-[22px] py-6 shadow-md shadow-black/10">
-        <Text className="happy-font-body-bold text-[11px] tracking-[0.55px] text-[#82796A]">
-          THE SCIENCE, IN ONE BREATH
-        </Text>
-        <Text className="happy-font-heading-bold text-[21px] leading-[29px] text-[#201E1D]">
+      <View style={styles.card}>
+        <Text style={styles.finding}>
           {readString(content.finding)}
         </Text>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityState={{ expanded: confidenceOpen }}
-          onPress={toggleConfidence}
-          className={
-            confidenceOpen
-              ? "min-h-10 self-start justify-center rounded-full border-[1.5px] border-[#7E9874] bg-[#D3E0CD] px-4 active:translate-y-0.5"
-              : "min-h-10 self-start justify-center rounded-full border-[1.5px] border-[#7E9874] bg-[#F2F8EF] px-4 active:translate-y-0.5"
-          }
-          style={{
-            shadowColor: "#ABC0A2",
-            shadowOffset: { width: 0, height: 3 },
-          }}
-        >
-          <Text className="happy-font-body-bold text-[13px] text-[#29452A]">
-            How sure are we? · {readString(content.confidence)}
-          </Text>
-        </Pressable>
-        {confidenceOpen ? (
-          <Text className="happy-font-body text-[13.5px] leading-[21px] text-[#3F3A34]">
-            {readString(content.confidenceWhy)}
-          </Text>
-        ) : null}
+        <Text style={styles.evidence}>
+          {readString(content.confidence)?.toLowerCase() ?? "strong"} evidence
+        </Text>
+        <Text style={styles.supporting}>
+          {readString(content.confidenceWhy)}
+        </Text>
+        <Text style={styles.note}>
+          {readString(content.note)}
+        </Text>
       </View>
-
-      <Text className="happy-font-body mt-3 text-center text-[12.5px] text-[#82796A]">
-        {readString(content.note)}
-      </Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    gap: 10,
+    borderRadius: 20,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  finding: {
+    fontFamily: "Nunito_700Bold",
+    fontSize: 19,
+    lineHeight: 26,
+    color: SEMANTIC_COLORS.text.primary,
+  },
+  evidence: {
+    fontFamily: "Nunito_600SemiBold",
+    fontSize: 12,
+    lineHeight: 18,
+    color: SEMANTIC_COLORS.text.secondary,
+  },
+  supporting: {
+    fontFamily: "Nunito_400Regular",
+    fontSize: 13,
+    lineHeight: 20,
+    color: SEMANTIC_COLORS.text.secondary,
+  },
+  note: {
+    marginTop: 8,
+    fontFamily: "Nunito_400Regular",
+    fontSize: 13,
+    lineHeight: 20,
+    color: SEMANTIC_COLORS.text.secondary,
+  },
+});
 
 function createResponse(extra: Record<string, unknown> = {}) {
   return {
     format: CourseExerciseCategoryEnum.EvidenceBite,
     phase: "evidence",
-    confidenceOpen: false,
     isCorrect: true,
     ...extra,
   };

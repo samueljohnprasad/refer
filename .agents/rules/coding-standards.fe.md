@@ -61,6 +61,7 @@ every thing you code should be coded in a resuable way, modular, clean, seperati
 - Keep components small and focused; extract reusable logic to custom hooks.
 - Use TypeScript interfaces for all props.
 - Prefer composition over inheritance.
+- Do not make UI components specific to a single exercise or feature. Always extract and use generic, highly reusable shared components (e.g., standard cards, option buttons) across all exercises so UI updates are centralized.
 - Use React context for global state sparingly; prefer dedicated state management if needed.
 - Use cross-platform compatible components (from `react-native` or `react-native-web`).
 - Avoid platform-specific code unless absolutely necessary; use `Platform.OS` or `Platform.select` for conditional logic.

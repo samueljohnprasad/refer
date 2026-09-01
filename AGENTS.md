@@ -30,6 +30,7 @@ This repo currently has multiple lockfiles (`package-lock.json`, `yarn.lock`, `b
 
 - TypeScript is strict. Keep new code typed and avoid widening with `any` unless matching an existing boundary.
 - React components are functional components.
+- Do not make UI components specific to a single exercise. Always extract and use generic, highly reusable shared components (e.g., standard cards, option buttons) across all exercises so that UI updates only need to be done in one place.
 - No React component, hook, or helper file may exceed 300 lines. If a touched component/hook/helper is already over 300 lines, split it before adding behavior.
 - Function should have single responsibility. Keep components, hooks, and helpers single-purpose. Extract named helpers/components instead of growing mixed-responsibility files.
 - Keep changes scoped to the requested behavior. Avoid broad refactors while fixing local UI or flow issues.

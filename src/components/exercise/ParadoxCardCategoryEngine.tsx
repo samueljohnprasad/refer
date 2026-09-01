@@ -1,20 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
+import Animated, { useAnimatedStyle, withTiming, Easing, FadeInUp, LinearTransition, FadeOutDown } from "react-native-reanimated";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
-import {
-  readNumber,
-  readRecord,
-  readString,
-  readStringArray,
-} from "@/src/components/exercise/courseExerciseContent";
-import { paradoxCardStyles as styles } from "@/src/components/exercise/paradoxCardStyles";
+import { readNumber, readRecord } from "@/src/components/exercise/courseExerciseContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
+import { ParadoxStagger } from "./ParadoxStagger";
+import { ParadoxTakeawayStagger } from "./ParadoxTakeawayStagger";
 
-const STARTING_ALARM = 30;
-const PUSH_AMOUNT = 18;
-const STOPPED_ALARM = 25;
+const STARTING_ALARM = 25;
+const PUSHED_ALARM = 75;
+const STOPPED_ALARM = 50;
 
 export function ParadoxCardCategoryEngine({
   exercise,
@@ -22,25 +19,41 @@ export function ParadoxCardCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
-  const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const alarm = readNumber(saved?.alarm) ?? STARTING_ALARM;
   const pushCount = readNumber(saved?.pushCount) ?? 0;
   const revealed = saved?.revealed === true;
-  const captions = readStringArray(content.captions);
-  const canStop = alarm >= 90;
-
+  
+  // Track if stagger has finished revealing the STOP PUSHING button
+  const [showStopAction, setShowStopAction] = useState(false);
+  // Track if takeaway has finished revealing everything to enable continue
+  const [takeawayDone, setTakeawayDone] = useState(false);
+  
   useEffect(() => {
-    if (!saved) onInteraction(createResponse(), false);
+    if (!saved) {
+      onInteraction(createResponse(), false);
+    }
   }, [onInteraction, saved]);
 
+  useEffect(() => {
+    if (takeawayDone && !locked) {
+      onInteraction(
+        createResponse({
+          ...saved,
+          revealed: true,
+        }),
+        true // Unlocks "Continue"
+      );
+    }
+  }, [takeawayDone]);
+
   const pushHarder = () => {
-    if (locked || canStop || revealed) return;
+    if (locked || revealed) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onInteraction(
       createResponse({
         ...saved,
-        alarm: Math.min(100, alarm + PUSH_AMOUNT),
+        alarm: PUSHED_ALARM,
         pushCount: pushCount + 1,
       }),
       false,
@@ -54,105 +67,98 @@ export function ParadoxCardCategoryEngine({
       createResponse({
         ...saved,
         alarm: STOPPED_ALARM,
+        pushCount,
         revealed: true,
       }),
-      true,
+      false, // We don't unlock Continue until takeaway is done!
     );
   };
 
-  const caption = revealed
-    ? readString(content.stopCaption)
-    : pushCount === 0
-      ? readString(content.openingCaption)
-      : captions[Math.min(pushCount - 1, captions.length - 1)];
+  const alarmStyle = useAnimatedStyle(() => {
+    return {
+      left: withTiming(`${alarm}%`, { duration: 600, easing: Easing.out(Easing.quad) }),
+    };
+  }, [alarm]);
 
   return (
-    <View style={styles.screenContent}>
+    <View className="px-2 pb-16 pt-0">
       <CourseExerciseHeading
-        title={readString(content.title) ?? "Try harder. See what happens."}
-        instruction={readString(content.instruction) ?? "Push and watch."}
+        title="Try harder to sleep"
       />
 
-      <View style={styles.comparisonRow}>
-        <ComparisonCard
-          label="WHAT YOU’D EXPECT"
-          body={readString(content.expectation)}
-          tone="olive"
-        />
-        <ComparisonCard
-          label="WHAT ACTUALLY HAPPENS"
-          body={readString(content.reality)}
-          tone="orange"
-        />
-      </View>
-
-      <View style={styles.alarmLabels}>
-        <Text style={styles.alarmEdge}>calm</Text>
-        <Text style={styles.alarmTitle}>THE ALARM</Text>
-        <Text style={styles.alarmEdge}>wired</Text>
-      </View>
-      <View style={styles.alarmTrack}>
-        <View style={[styles.alarmFill, { width: `${alarm}%` }]} />
-      </View>
-      <Text style={styles.caption}>{caption}</Text>
-
-      <View style={styles.actions}>
-        <Pressable
-          accessibilityRole="button"
-          disabled={locked || canStop || revealed}
-          onPress={pushHarder}
-          style={({ pressed }) => [
-            styles.pushButton,
-            (canStop || revealed) && styles.disabled,
-            pressed && styles.pressed,
-          ]}
-        >
-          <Text style={styles.pushLabel}>TRY HARDER TO CALM DOWN</Text>
-        </Pressable>
-        {canStop || revealed ? (
-          <Pressable
-            accessibilityRole="button"
-            disabled={locked || revealed}
-            onPress={stopPushing}
-            style={({ pressed }) => [
-              styles.stopButton,
-              revealed && styles.disabled,
-              pressed && styles.pressed,
-            ]}
-          >
-            <Text style={styles.stopLabel}>Stop pushing. Let it pass.</Text>
-          </Pressable>
-        ) : null}
-      </View>
-
-      {revealed ? (
-        <View style={styles.revealCard}>
-          <Text style={styles.rule}>{readString(content.rule)}</Text>
-          <Text style={styles.takeaway}>{readString(content.takeaway)}</Text>
+      <Animated.View layout={LinearTransition}>
+        <View className="mt-4 px-2">
+          <Text className="happy-font-body text-[16px] text-[#3F3A34] mb-4">
+            It's 2:17am.{"\n"}You've been awake for a while.
+          </Text>
         </View>
-      ) : null}
-    </View>
-  );
-}
 
-function ComparisonCard({
-  body,
-  label,
-  tone,
-}: {
-  body: string | null;
-  label: string;
-  tone: "olive" | "orange";
-}) {
-  const orange = tone === "orange";
-  return (
-    <View style={[styles.comparisonCard, orange && styles.orangeCard]}>
-      <Text style={[styles.comparisonLabel, orange && styles.orangeLabel]}>
-        {label}
-      </Text>
-      <Text style={[styles.comparisonBody, orange && styles.orangeBody]}>
-        {body}
-      </Text>
+        <View className="mt-6 mb-8 px-2">
+          <Text className="happy-font-body-bold text-[11px] tracking-[1px] text-[#82796A] uppercase mb-3 text-center">
+            The Alarm
+          </Text>
+          <View className="flex-row justify-between items-center w-full relative">
+            <Text className="happy-font-body-bold text-[11px] text-[#82796A] uppercase z-10 bg-[#FDF9F5] pr-3">Calm</Text>
+            
+            <View className="absolute top-1/2 left-0 right-0 h-[2px] bg-[#EBDDC5]" />
+            
+            <Animated.View 
+              style={[
+                { position: 'absolute', top: '50%', width: 14, height: 14, borderRadius: 7, backgroundColor: '#A74141', transform: [{ translateY: -7 }, { translateX: -7 }] },
+                alarmStyle
+              ]} 
+            />
+
+            <Text className="happy-font-body-bold text-[11px] text-[#A74141] uppercase z-10 bg-[#FDF9F5] pl-3">Wired</Text>
+          </View>
+        </View>
+
+        {pushCount === 0 && !revealed && (
+          <Animated.View entering={FadeInUp} exiting={FadeOutDown} layout={LinearTransition} className="mt-6">
+            <Text className="happy-font-body-bold text-[13px] text-[#82796A] mb-3 text-center uppercase tracking-[0.5px]">
+              What happens if you push harder?
+            </Text>
+            <Pressable
+              accessibilityRole="button"
+              disabled={locked}
+              onPress={pushHarder}
+              className="w-full min-h-[56px] items-center justify-center rounded-[28px] bg-[#3F3A34] active:opacity-80"
+            >
+              <Text className="happy-font-heading-bold text-[15px] text-white uppercase tracking-[1px]">
+                Try harder to sleep
+              </Text>
+            </Pressable>
+          </Animated.View>
+        )}
+
+        {pushCount > 0 && (
+          <Animated.View layout={LinearTransition}>
+            {!revealed && <ParadoxStagger onComplete={() => setShowStopAction(true)} />}
+
+            {showStopAction && !revealed && (
+              <Animated.View entering={FadeInUp} layout={LinearTransition} className="items-center mt-8">
+                <Text className="happy-font-body-bold text-[13px] tracking-[1px] text-[#82796A] uppercase mb-3">
+                  Try the opposite
+                </Text>
+                <Pressable
+                  accessibilityRole="button"
+                  disabled={locked}
+                  onPress={stopPushing}
+                  className="w-full min-h-[56px] items-center justify-center rounded-[28px] bg-[#D3E0CD] active:opacity-80"
+                >
+                  <Text className="happy-font-heading-bold text-[15px] text-[#29452A] uppercase tracking-[1px]">
+                    Stop pushing
+                  </Text>
+                </Pressable>
+              </Animated.View>
+            )}
+
+            {revealed && (
+              <ParadoxTakeawayStagger onComplete={() => setTakeawayDone(true)} />
+            )}
+          </Animated.View>
+        )}
+      </Animated.View>
     </View>
   );
 }

@@ -19,6 +19,7 @@ export enum CourseExerciseCategoryEnum {
   ExplorableModel = "explorable_model",
   WhiteBearExperiment = "white_bear_experiment",
   ParadoxCard = "paradox_card",
+  InteractiveReframe = "interactive_reframe",
   OneLineReveal = "one_line_reveal",
   WhatIfMachine = "what_if_machine",
   GuidedRecallChips = "guided_recall_chips",

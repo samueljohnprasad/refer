@@ -12,12 +12,19 @@ export const EIGHTH_BATCH_CATEGORY_CONFIGS = {
     "Read one evidence claim and inspect its confidence.",
     "This evidence bite is not available yet.",
   ),
-  [CourseExerciseCategoryEnum.SurgeTimer]: createConfig(
-    CourseExerciseCategoryEnum.SurgeTimer,
-    SurgeTimerCategoryEngine,
-    "Explore how the surge chemistry clears with time.",
-    "This surge timer is not available yet.",
-  ),
+  [CourseExerciseCategoryEnum.SurgeTimer]: {
+    category: CourseExerciseCategoryEnum.SurgeTimer,
+    formats: [CourseExerciseCategoryEnum.SurgeTimer],
+    engine: SurgeTimerCategoryEngine,
+    goalLabel: "Explore how the surge chemistry clears with time.",
+    unavailableCopy: "This surge timer is not available yet.",
+    interaction: {
+      getPrimaryLabel: (exercise, response) => {
+        const maxReached = response.maxProgressReached;
+        return typeof maxReached === 'number' && maxReached >= 80 ? "Continue" : "Explore the wave";
+      }
+    }
+  },
   [CourseExerciseCategoryEnum.WhyItMatters]: createConfig(
     CourseExerciseCategoryEnum.WhyItMatters,
     ConceptInsightCategoryEngine,

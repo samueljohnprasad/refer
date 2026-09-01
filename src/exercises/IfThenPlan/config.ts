@@ -4,27 +4,23 @@ import { IfThenPlanCategoryEngine } from "@/src/components/exercise/IfThenPlanCa
 import type { CoursePrimaryTransition } from "@/src/domains/journey/learning/courseExercisePrimaryTransition";
 
 function getIfThenLabel(response: Record<string, unknown>): string {
-  if (response.phase === "feedback") return "Continue";
+  if (response.phase === "complete" || response.phase === "feedback") return "Continue";
   return hasPlan(response) ? "Save to My Plans" : "Pick a cue and a move";
 }
 
 function getIfThenTransition(
   response: Record<string, unknown>,
 ): CoursePrimaryTransition | undefined {
-  if (response.phase !== "building" || !hasPlan(response)) return undefined;
+  if (response.phase !== "review" || !hasPlan(response)) return undefined;
   return {
     kind: "response",
     ready: true,
-    response: { ...response, phase: "feedback", isCorrect: true },
+    response: { ...response, phase: "complete", isCorrect: true },
   };
 }
 
 function hasPlan(response: Record<string, unknown>): boolean {
-  return isIndex(response.cueIndex) && isIndex(response.actionIndex);
-}
-
-function isIndex(value: unknown): boolean {
-  return typeof value === "number" && value >= 0;
+  return typeof response.cueId === "string" && typeof response.actionId === "string";
 }
 
 export const IfThenPlanConfig: CourseExerciseCategoryConfig = {

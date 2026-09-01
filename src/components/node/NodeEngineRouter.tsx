@@ -41,6 +41,7 @@ import {
 } from "@/src/components/exercise/microlearning/microlearningContentValidation";
 import { shouldCompleteOnPrimaryPress } from "@/src/components/exercise/microlearning/microlearningResponse";
 import { trackMicrolearningEvent } from "@/src/components/exercise/microlearning/microlearningAnalytics";
+import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 interface NodeEngineRouterProps {
   nodeId: string;
   exercises: Exercise[];
@@ -94,7 +95,10 @@ export function NodeEngineRouter({
     ? readWorkedExplanation(currentExercise)
     : null;
   const showingFeedback = checkStatus !== V1CheckStatusEnum.Idle;
-  const showingSkipAction = !showingFeedback && !ready;
+  const isCheckpoint = category === CourseExerciseCategoryEnum.CourseCheckpoint;
+  const isParadox = category === CourseExerciseCategoryEnum.ParadoxCard;
+  const isReframe = category === CourseExerciseCategoryEnum.InteractiveReframe;
+  const showingSkipAction = !showingFeedback && !ready && !isCheckpoint && !isParadox && !isReframe;
   useV1NodeSessionDraft({
     dispatch,
     exerciseCount: exercises.length,
