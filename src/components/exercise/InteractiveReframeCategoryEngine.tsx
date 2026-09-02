@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Pressable, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
-import Animated, { FadeIn, FadeOut, FadeInUp, FadeOutDown, LinearTransition, Layout } from "react-native-reanimated";
+import Animated, { FadeIn, FadeOut, FadeInUp, FadeOutDown, LinearTransition } from "react-native-reanimated";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
@@ -14,8 +14,8 @@ export function InteractiveReframeCategoryEngine({
   onInteraction,
 }: V1CategoryEngineProps) {
   const [step, setStep] = useState(0);
-  const [step1Done, setStep1Done] = useState(false);
-  const [step3Done, setStep3Done] = useState(false);
+  const [selectedPath, setSelectedPath] = useState<'correct' | 'wrong' | null>(null);
+  const [cascadeDone, setCascadeDone] = useState(false);
 
   useEffect(() => {
     if (!savedResponse) {
@@ -26,32 +26,34 @@ export function InteractiveReframeCategoryEngine({
     }
   }, []);
 
-  const handleTapThought = () => {
+  const handleChoice = (path: 'correct' | 'wrong') => {
     if (step > 0) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setStep(1);
-  };
-
-  const handleReframe = () => {
-    if (step > 1) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setStep(2);
+    setSelectedPath(path);
+    setStep(1);
+    setCascadeDone(false);
   };
 
-  const handleFollowReading = () => {
-    if (step > 2) return;
+  const handleReset = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setStep(3);
+    setStep(0);
+    setSelectedPath(null);
+    setCascadeDone(false);
   };
-  
+
   useEffect(() => {
-    if (step3Done) {
-      onInteraction(
-        { format: CourseExerciseCategoryEnum.InteractiveReframe, phase: "complete", step: 3, isCorrect: true },
-        true
-      );
+    if (cascadeDone && selectedPath === 'correct') {
+      // Automatically transition to final state after correct cascade finishes
+      setTimeout(() => {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        setStep(2);
+        onInteraction(
+          { format: CourseExerciseCategoryEnum.InteractiveReframe, phase: "complete", step: 2, isCorrect: true },
+          true
+        );
+      }, 800);
     }
-  }, [step3Done]);
+  }, [cascadeDone, selectedPath]);
 
   return (
     <View className="px-4 pb-16 pt-0">
@@ -60,10 +62,12 @@ export function InteractiveReframeCategoryEngine({
       <Animated.View layout={LinearTransition} className="mt-8 items-center w-full">
         {/* The Evolving Hero Box */}
         <Animated.View layout={LinearTransition} className="w-full">
-          <Pressable 
-            disabled={step > 0} 
-            onPress={handleTapThought}
-            className={`w-full p-8 rounded-3xl border-2 items-center justify-center ${step === 0 ? "border-[#A74141] bg-[#FDF9F5]" : step === 1 ? "border-[#A74141] bg-[#F8F1E7]" : "border-[#29452A] bg-[#E1EAD9]"}`}
+          <View 
+            className={`w-full p-8 rounded-3xl border-2 items-center justify-center ${
+              step === 0 || selectedPath === 'wrong'
+                ? "border-[#EBDDC5] bg-[#FDF9F5]" 
+                : "border-[#29452A] bg-[#E1EAD9]"
+            }`}
           >
             {step < 2 ? (
               <Animated.Text key="broken" entering={FadeIn} exiting={FadeOut} layout={LinearTransition} className="happy-font-heading-bold text-[24px] text-center text-[#A74141]">
@@ -71,120 +75,107 @@ export function InteractiveReframeCategoryEngine({
               </Animated.Text>
             ) : (
               <Animated.Text key="shifted" entering={FadeIn} exiting={FadeOut} layout={LinearTransition} className="happy-font-heading-bold text-[24px] text-center text-[#29452A]">
-                “A sleep lever may have shifted.”
+                “Something may have shifted.”
               </Animated.Text>
             )}
 
-            {/* Step 1: Implication Cascade inside the box */}
-            {step === 1 && (
+            {/* Cascade inside the box */}
+            {step >= 1 && selectedPath && (
               <InteractiveReframeStagger 
-                stepType={1} 
-                onComplete={() => setStep1Done(true)} 
+                path={selectedPath} 
+                onComplete={() => setCascadeDone(true)} 
               />
             )}
-
-            {/* Step 3: Consequence Cascade inside the box */}
-            {step === 3 && (
-              <InteractiveReframeStagger 
-                stepType={3} 
-                onComplete={() => setStep3Done(true)} 
-              />
-            )}
-          </Pressable>
+          </View>
         </Animated.View>
 
-        {/* Step 0: The CTA underneath the box */}
+        {/* Step 0: The Choices */}
         {step === 0 && (
-          <Animated.View entering={FadeInUp} exiting={FadeOutDown} className="items-center mt-6">
-            <Text className="happy-font-body-bold text-[11px] tracking-[1px] text-[#82796A] uppercase">
-              What is this thought doing?
-            </Text>
-            <Text className="happy-font-body-bold text-[10px] tracking-[1px] text-[#A74141] uppercase text-center mt-2">
-              (Tap the thought)
-            </Text>
-          </Animated.View>
-        )}
-
-        {/* Step 1 Actions (appear after cascade finishes) */}
-        {step === 1 && step1Done && (
-          <Animated.View entering={FadeInUp} layout={LinearTransition} className="items-center mt-8 w-full">
-            <View className="bg-[#F8F1E7] p-4 rounded-2xl w-full mb-8">
-              <Text className="happy-font-body text-[15px] leading-[22px] text-[#3F3A34] text-center uppercase tracking-[0.5px]">
-                This reading turns a bad night into a verdict about you.
-              </Text>
-            </View>
-
-            <Text className="happy-font-body-bold text-[11px] tracking-[1px] text-[#82796A] uppercase mb-4">
-              Can we read the same night differently?
-            </Text>
-
-            <Pressable
-              accessibilityRole="button"
-              onPress={handleReframe}
-              className="w-full min-h-[56px] items-center justify-center rounded-[28px] bg-[#3F3A34] active:opacity-80"
-            >
-              <Text className="happy-font-heading-bold text-[15px] text-white uppercase tracking-[1px]">
-                Reframe It
-              </Text>
-            </Pressable>
-          </Animated.View>
-        )}
-        
-        {/* Step 2: Notice what changed */}
-        {step === 2 && (
-          <Animated.View entering={FadeInUp} layout={LinearTransition} className="items-center mt-8 w-full">
-            <Text className="happy-font-body-bold text-[11px] tracking-[1px] text-[#82796A] uppercase mb-4 text-center">
-              Notice what changed
+          <Animated.View entering={FadeInUp} exiting={FadeOutDown} className="items-center mt-8 w-full">
+            <Text className="happy-font-body-bold text-[12px] tracking-[1px] text-[#82796A] uppercase mb-4 text-center">
+              What should you investigate first?
             </Text>
             
-            <View className="flex-row w-full justify-between mb-8">
-              <View className="flex-1 mr-2 bg-[#F8F1E7] p-4 rounded-2xl border border-[#EBDDC5]">
-                <Text className="happy-font-body-bold text-[11px] tracking-[0.5px] text-[#A74141] uppercase mb-2">
-                  Broken
-                </Text>
-                <Text className="happy-font-body text-[14px] leading-[20px] text-[#3F3A34]">
-                  → sounds permanent
-                </Text>
-              </View>
-              <View className="flex-1 ml-2 bg-[#E1EAD9] p-4 rounded-2xl border border-[#D3E0CD]">
-                <Text className="happy-font-body-bold text-[11px] tracking-[0.5px] text-[#29452A] uppercase mb-2">
-                  Shifted
-                </Text>
-                <Text className="happy-font-body text-[14px] leading-[20px] text-[#3F3A34]">
-                  → sounds changeable
-                </Text>
-              </View>
-            </View>
+            <Pressable
+              disabled={step > 0}
+              onPress={() => handleChoice('correct')}
+              className="w-full min-h-[56px] items-center justify-center rounded-[28px] bg-white border border-[#EBDDC5] mb-3 active:bg-[#F8F1E7]"
+            >
+              <Text className="happy-font-body-bold text-[15px] text-[#3F3A34] text-center">
+                What might have shifted
+              </Text>
+            </Pressable>
 
             <Pressable
-              accessibilityRole="button"
-              onPress={handleFollowReading}
-              className="w-full min-h-[56px] items-center justify-center rounded-[28px] bg-[#3F3A34] active:opacity-80"
+              disabled={step > 0}
+              onPress={() => handleChoice('wrong')}
+              className="w-full min-h-[56px] items-center justify-center rounded-[28px] bg-white border border-[#EBDDC5] active:bg-[#F8F1E7]"
             >
-              <Text className="happy-font-heading-bold text-[15px] text-white uppercase tracking-[1px]">
-                Follow the new reading
+              <Text className="happy-font-body-bold text-[15px] text-[#3F3A34] text-center">
+                Whether I need to try harder
               </Text>
             </Pressable>
           </Animated.View>
         )}
 
-        {/* Step 3: Consequence and Insight (appear after cascade finishes) */}
-        {step === 3 && step3Done && (
-          <Animated.View entering={FadeInUp} layout={LinearTransition} className="items-center mt-8 w-full">
-            <View className="bg-[#D3E0CD] px-4 py-2 rounded-full mb-8">
-              <Text className="happy-font-body-bold text-[11px] tracking-[1px] text-[#29452A] uppercase">
-                ✓ Same night. Different reading.
+        {/* Wrong Path UI */}
+        {step >= 1 && selectedPath === 'wrong' && (
+          <Animated.View entering={FadeInUp} exiting={FadeOutDown} className="items-center mt-8 w-full">
+            <View className="w-full min-h-[56px] items-center justify-center rounded-[28px] bg-[#FDF9F5] border-2 border-[#A74141] mb-8 relative">
+              <View className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#A74141] px-2 py-0.5 rounded-full flex-row items-center">
+                <Text className="happy-font-body-bold text-[10px] text-white tracking-[0.5px]">× YOUR ANSWER</Text>
+              </View>
+              <Text className="happy-font-body-bold text-[15px] text-[#A74141] text-center mt-1">
+                Whether I need to try harder
               </Text>
             </View>
 
-            <View className="w-full bg-[#FDF9F5] p-5 rounded-2xl border border-[#EBDDC5]">
-              <Text className="happy-font-body-bold text-[11px] tracking-[1px] text-[#82796A] uppercase mb-2">
-                Remember This
-              </Text>
-              <Text className="happy-font-body text-[15px] leading-[22px] text-[#3F3A34]">
-                A rough night is information, not a verdict about you.{"\n\n"}Something in the system may have shifted.
+            {cascadeDone && (
+              <Animated.View entering={FadeInUp} className="w-full">
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={handleReset}
+                  className="w-full min-h-[56px] items-center justify-center rounded-[28px] bg-[#3F3A34] active:opacity-80"
+                >
+                  <Text className="happy-font-heading-bold text-[15px] text-white uppercase tracking-[1px]">
+                    Try Another Reading
+                  </Text>
+                </Pressable>
+              </Animated.View>
+            )}
+          </Animated.View>
+        )}
+
+        {/* Correct Path UI */}
+        {step >= 1 && selectedPath === 'correct' && (
+          <Animated.View entering={FadeInUp} exiting={FadeOutDown} className="items-center mt-8 w-full">
+            <View className="w-full min-h-[56px] items-center justify-center rounded-[28px] bg-[#E1EAD9] border-2 border-[#29452A] mb-8 relative">
+              <View className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#29452A] px-2 py-0.5 rounded-full flex-row items-center">
+                <Text className="happy-font-body-bold text-[10px] text-white tracking-[0.5px]">✓ CORRECT</Text>
+              </View>
+              <Text className="happy-font-body-bold text-[15px] text-[#29452A] text-center mt-1">
+                What might have shifted
               </Text>
             </View>
+
+            {step === 2 && (
+              <Animated.View entering={FadeInUp} className="w-full mt-2">
+                <View className="bg-[#D3E0CD] px-4 py-2 rounded-full mb-8 self-center">
+                  <Text className="happy-font-body-bold text-[11px] tracking-[1px] text-[#29452A] uppercase text-center">
+                    ✓ Same night. Different story.
+                  </Text>
+                </View>
+
+                <View className="w-full bg-[#FDF9F5] p-5 rounded-2xl border border-[#EBDDC5]">
+                  <Text className="happy-font-body-bold text-[11px] tracking-[1px] text-[#82796A] uppercase mb-2">
+                    Remember This
+                  </Text>
+                  <Text className="happy-font-body text-[15px] leading-[22px] text-[#3F3A34]">
+                    A rough night is information, not a verdict about you.{"\n\n"}Something in the system may have shifted.
+                  </Text>
+                </View>
+              </Animated.View>
+            )}
           </Animated.View>
         )}
       </Animated.View>

@@ -10,7 +10,7 @@ export const InteractiveReframeConfig: CourseExerciseCategoryConfig = {
   unavailableCopy: "This exercise is not available yet.",
   interaction: {
     submissionMode: "explicit",
-    getPrimaryLabel: (exercise, response) => response.step === 3 ? "Continue" : null,
+    getPrimaryLabel: (exercise, response) => response.step === 2 ? "Continue" : null,
     getPrimaryTransition: (exercise, response) => null,
   },
 };
