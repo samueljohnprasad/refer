@@ -10,8 +10,22 @@ category: CourseExerciseCategoryEnum.ParadoxCard,
     unavailableCopy: "This paradox exercise is not available yet.",
   interaction: {
     submissionMode: "explicit",
-    getPrimaryLabel: (exercise, response) => response.revealed === true ? "Continue" : "Push the button above",
-    getPrimaryTransition: (exercise, response) => null,
+    getPrimaryLabel: (exercise, response) => {
+      const stage = response?.stage || "ready";
+      if (stage === "ready") return "Try harder";
+      if (stage === "result") return "See why";
+      return "Continue";
+    },
+    getPrimaryTransition: (exercise, response) => {
+      const stage = response?.stage || "ready";
+      if (stage === "ready") {
+        return { kind: "response", ready: false, response: { ...response, stage: "result" } };
+      }
+      if (stage === "result") {
+        return { kind: "response", ready: false, response: { ...response, stage: "explanation" } };
+      }
+      return null;
+    },
   },
 
 };

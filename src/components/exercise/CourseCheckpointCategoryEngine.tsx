@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable, Text, View, ViewStyle } from "react-native";
 import * as Haptics from "expo-haptics";
+import Animated, { FadeIn, FadeInUp, LinearTransition } from "react-native-reanimated";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
-import { CourseExerciseTeachingPanel } from "@/src/components/exercise/CourseExerciseTeachingPanel";
 import {
   readRecord,
   readString,
@@ -15,48 +15,6 @@ import {
 } from "@/src/components/exercise/courseCheckpointContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
-import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
-import { StyleSheet } from "react-native";
-
-const styles = StyleSheet.create({
-  scenarioCard: {
-    marginBottom: 12,
-    borderRadius: 16,
-    backgroundColor: SEMANTIC_COLORS.surface.secondary,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  scenarioText: {
-    fontFamily: "Nunito_400Regular",
-    fontSize: 14,
-    lineHeight: 21,
-    color: SEMANTIC_COLORS.text.primary,
-  },
-  questionText: {
-    fontFamily: "Nunito_700Bold",
-    fontSize: 16,
-    lineHeight: 22,
-    color: SEMANTIC_COLORS.text.primary,
-    marginBottom: 10,
-  },
-  optionText: {
-    flex: 1,
-    fontFamily: "Nunito_600SemiBold",
-    fontSize: 13.5,
-    lineHeight: 19,
-    color: SEMANTIC_COLORS.text.primary,
-  },
-  radioCheck: {
-    fontFamily: "Nunito_700Bold",
-    fontSize: 11,
-    color: SEMANTIC_COLORS.brand.onPrimary,
-  },
-  radioCross: {
-    fontFamily: "Nunito_700Bold",
-    fontSize: 11,
-    color: SEMANTIC_COLORS.error.foreground,
-  },
-});
 
 export function CourseCheckpointCategoryEngine({
   exercise,
@@ -72,31 +30,73 @@ export function CourseCheckpointCategoryEngine({
   const item = items[itemIndex];
   const selectedOptionIndex = readResponseIndex(saved?.selectedOptionIndex);
   const selectedOption = item?.options[selectedOptionIndex ?? -1];
-  const attempts = readResponseIndex(saved?.attempts) ?? 0;
+
+  // // ponytail: revealStage 0 = initial, 1 = user selected + causal explanation, 2 = correct revealed + ready for Next
+  const [revealStage, setRevealStage] = useState<number>(0);
 
   useEffect(() => {
-    if (!saved) onInteraction(createResponse(), true);
+    if (!saved) {
+      onInteraction(createResponse(), true);
+    }
   }, [onInteraction, saved]);
 
+  useEffect(() => {
+    if (phase === "question") {
+      setRevealStage(0);
+    } else if (phase === "feedback") {
+      setRevealStage(2);
+    }
+  }, [phase, itemIndex]);
+
   const selectOption = (optionIndex: number) => {
-    if (locked || phase !== "question" || !item) return;
+    if (locked || phase !== "question" || !item || revealStage > 0) return;
     Haptics.selectionAsync();
     const option = item.options[optionIndex];
-    
+
     const newResults = [...readBooleanResults(saved?.results)];
     newResults[itemIndex] = option.isCorrect;
 
-    onInteraction(
-      {
-        ...saved,
-        selectedOptionIndex: optionIndex,
-        attempts: option.isCorrect ? attempts : attempts + 1,
-        results: newResults,
-        isCorrect: option.isCorrect,
-        phase: "feedback",
-      },
-      false,
-    );
+    if (option.isCorrect) {
+      setRevealStage(2);
+      onInteraction(
+        {
+          ...saved,
+          selectedOptionIndex: optionIndex,
+          results: newResults,
+          isCorrect: true,
+          phase: "feedback",
+        },
+        true,
+      );
+    } else {
+      // Step 1: Show user's wrong answer + begin causal reveal
+      setRevealStage(1);
+      onInteraction(
+        {
+          ...saved,
+          selectedOptionIndex: optionIndex,
+          results: newResults,
+          isCorrect: false,
+          phase: "feedback",
+        },
+        false,
+      );
+
+      // Step 2 & 3: Staggered reveal of correct model & enable Next button after explanation
+      setTimeout(() => {
+        setRevealStage(2);
+        onInteraction(
+          {
+            ...saved,
+            selectedOptionIndex: optionIndex,
+            results: newResults,
+            isCorrect: false,
+            phase: "feedback",
+          },
+          true,
+        );
+      }, 700);
+    }
   };
 
   if (phase === "intro") {
@@ -107,52 +107,62 @@ export function CourseCheckpointCategoryEngine({
   }
   if (!item) return null;
 
-  const isFeedback = phase === "feedback";
+  const isFeedback = phase === "feedback" || revealStage > 0;
   const isSelected = (index: number) => selectedOptionIndex === index;
   const isCorrectOption = (index: number) => item.options[index]?.isCorrect === true;
-  const isIncorrectOption = (index: number) => item.options[index]?.isCorrect === false;
+  const showCorrectHighlight = revealStage >= 2;
+
+  // Format causal chain lines from feedback
+  const feedbackLines = selectedOption?.feedback?.split("\n").filter((l) => l.trim().length > 0) ?? [];
 
   return (
-    <View className="px-2 pb-3 pt-0">
+    <View className="px-3 pb-6 pt-0">
+      {/* Scenario Card (Compact, no SCENARIO label) */}
       {item.context ? (
-        <View style={styles.scenarioCard}>
-          <Text style={styles.scenarioText}>{item.context}</Text>
+        <View className="mb-4 rounded-[16px] border border-[#EBDDC5] bg-[#FDF9F5] px-4 py-2.5">
+          <Text className="happy-font-body text-[14px] leading-[20px] text-[#3F3A34]">
+            {item.context}
+          </Text>
         </View>
       ) : null}
 
-      <Text style={styles.questionText}>{item.prompt}</Text>
+      {/* Question Prompt */}
+      <Text className="happy-font-heading-bold mb-3.5 text-[17.5px] leading-[24px] text-[#29452A]">
+        {item.prompt}
+      </Text>
+
+      {/* Options */}
       <View className="gap-2.5">
         {item.options.map((option, optionIndex) => {
           const selected = isSelected(optionIndex);
           const correct = isCorrectOption(optionIndex);
           const incorrect = selected && !correct;
-          const showFeedback = isFeedback && (correct || incorrect);
 
           return (
             <Pressable
               key={option.label}
               accessibilityRole="radio"
-              accessibilityState={{ selected: showFeedback ? correct : selected, disabled: locked || isFeedback }}
+              accessibilityState={{ selected: showCorrectHighlight ? correct : selected, disabled: locked || isFeedback }}
               disabled={locked || isFeedback}
               onPress={() => selectOption(optionIndex)}
-              style={getOptionStyle(selected, correct, incorrect, showFeedback)}
+              style={getOptionStyle(selected, correct, incorrect, isFeedback, showCorrectHighlight)}
             >
-              <View style={getRadioStyle(selected, correct, incorrect, showFeedback)}>
-                {showFeedback ? (
-                  correct ? (
-                    <Text style={styles.radioCheck}>✓</Text>
+              <View style={getRadioStyle(selected, correct, incorrect, isFeedback, showCorrectHighlight)}>
+                {isFeedback ? (
+                  correct && showCorrectHighlight ? (
+                    <Text className="happy-font-body-bold text-[9px] text-white">✓</Text>
                   ) : incorrect ? (
-                    <Text style={styles.radioCross}>×</Text>
-                  ) : selected ? (
-                    <Text style={styles.radioCheck}>✓</Text>
+                    <Text className="happy-font-body-bold text-[9px] text-[#A74141]">×</Text>
                   ) : null
                 ) : null}
               </View>
               <View className="flex-1">
-                <Text style={styles.optionText}>{option.label}</Text>
-                {showFeedback && selected && incorrect && (
-                  <Text className="happy-font-body-bold text-[11.5px] text-[#A74141] uppercase tracking-[0.5px] mt-1">
-                    Your answer
+                <Text className="happy-font-body-bold text-[13.5px] leading-[19px] text-[#3F3A34]">
+                  {option.label}
+                </Text>
+                {isFeedback && incorrect && (
+                  <Text className="mt-1 happy-font-body-bold text-[10px] tracking-[0.5px] text-[#A74141] uppercase">
+                    YOUR ANSWER
                   </Text>
                 )}
               </View>
@@ -161,38 +171,62 @@ export function CourseCheckpointCategoryEngine({
         })}
       </View>
 
+      {/* Causal Explanation Panel (Visual Hero of Feedback) */}
       {isFeedback && selectedOption ? (
-        <CourseExerciseTeachingPanel
-          correct={selectedOption.isCorrect}
-          title={getFeedbackTitle(selectedOption.isCorrect, attempts)}
-          body={selectedOption.feedback}
-          workedExample={
-            !selectedOption.isCorrect && attempts >= 3 ? item.worked : null
-          }
-        />
-      ) : attempts > 0 ? (
-        <Text className="happy-font-body mt-3 text-center text-[12.5px] leading-[18px] text-[#82796A]">
-          {item.clue}
-        </Text>
+        <Animated.View entering={FadeInUp.duration(200)} layout={LinearTransition} className="mt-6 mb-2">
+          <View className="rounded-[16px] border border-[#EBDDC5] bg-[#FDF9F5] p-5">
+            <Text className="happy-font-heading-bold mb-3.5 text-[12px] tracking-[0.8px] text-[#29452A] uppercase">
+              WHAT HAPPENED?
+            </Text>
+            <View className="gap-2">
+              {feedbackLines.map((line, idx) => {
+                const isArrow = line.trim() === "↓" || line.trim() === "->";
+                const delay = idx * 150;
+                if (isArrow) {
+                  return (
+                    <Animated.Text key={idx} entering={FadeInUp.duration(200).delay(delay)} className="happy-font-body-bold text-left text-[14px] text-[#82796A] ml-4">
+                      ↓
+                    </Animated.Text>
+                  );
+                }
+                return (
+                  <Animated.Text key={idx} entering={FadeInUp.duration(200).delay(delay)} className="happy-font-body-bold text-[15px] leading-[21px] text-[#3F3A34]">
+                    {line}
+                  </Animated.Text>
+                );
+              })}
+            </View>
+          </View>
+        </Animated.View>
       ) : null}
     </View>
   );
 }
 
 function CheckpointIntro({ content }: { content: Record<string, unknown> }) {
+  const title = readString(content.title) ?? "Sleep science checkpoint";
+  const introTitle = readString(content.introTitle) ?? "Let’s see what stuck.";
+  const intro = readString(content.intro) ?? "4 quick questions about the sleep system.\nA miss just gives you something to revisit.";
+  const tag = readString(content.introTag) ?? "4 QUESTIONS · ~1 MIN";
+
   return (
-    <View className="px-2 pb-3 pt-1.5">
-      <CourseExerciseHeading
-        title={readString(content.title) ?? "Sleep science checkpoint"}
-      />
-      <View className="gap-3">
-        <Text className="happy-font-body text-[15px] leading-[22px] text-[#201E1D]">
-          {readString(content.intro) ?? "Four quick questions review the key sleep patterns you just learned."}
-        </Text>
-        <Text className="happy-font-body text-[13px] leading-[19px] text-[#82796A]">
-          {readString(content.introSubtitle) ?? "4 questions · Mistakes won't affect your progress"}
-        </Text>
-      </View>
+    <View className="px-3 pb-6 pt-2 items-center">
+      <CourseExerciseHeading title={title} />
+      <Animated.View entering={FadeIn} className="mt-6 w-full items-center">
+        <View className="w-full rounded-[22px] border border-[#EBDDC5] bg-[#FDF9F5] p-5 items-center">
+          <Text className="happy-font-heading-bold text-[20px] text-center text-[#29452A] mb-2.5">
+            {introTitle}
+          </Text>
+          <Text className="happy-font-body text-[14.5px] leading-[22px] text-center text-[#3F3A34] mb-5">
+            {intro}
+          </Text>
+          <View className="rounded-full bg-[#EBDDC5] px-3.5 py-1.5">
+            <Text className="happy-font-body-bold text-[10.5px] tracking-[0.8px] text-[#5C5346] uppercase">
+              {tag}
+            </Text>
+          </View>
+        </View>
+      </Animated.View>
     </View>
   );
 }
@@ -209,19 +243,26 @@ function CheckpointSummary({
   const results = readBooleanResults(saved?.results);
   const solid = items.filter((_, index) => results[index] === true);
   const revisit = items.filter((_, index) => results[index] !== true);
+
   return (
-    <View className="px-2 pb-3 pt-1.5">
+    <View className="px-3 pb-6 pt-2">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Checkpoint"}
         instruction="What the review showed."
       />
-      <SummaryGroup title="FEELS SOLID" items={solid} solid />
-      <SummaryGroup title="WORTH A TWO-MINUTE REVISIT" items={revisit} />
-      <Text className="happy-font-body mt-4 text-[14px] leading-[22px] text-[#3F3A34]">
-        {readString(
-          revisit.length > 0 ? content.revisitMessage : content.solidMessage,
-        )}
-      </Text>
+      <View className="mt-5 gap-4">
+        <SummaryGroup title="FEELS SOLID" items={solid} solid />
+        <SummaryGroup title="WORTH A TWO-MINUTE REVISIT" items={revisit} />
+        <View className="rounded-[18px] border border-[#EBDDC5] bg-[#FDF9F5] p-4 mt-1">
+          <Text className="happy-font-body text-[13.5px] leading-[21px] text-[#3F3A34]">
+            {readString(
+              revisit.length > 0 ? content.revisitMessage : content.solidMessage,
+            ) ?? (revisit.length > 0
+              ? "The marked ideas are worth a short revisit before changing your routine. Nothing is lost."
+              : "The map is holding. Next, use it to run one small experiment and read what changes.")}
+          </Text>
+        </View>
+      </View>
     </View>
   );
 }
@@ -237,12 +278,12 @@ function SummaryGroup({
 }) {
   if (!items.length) return null;
   return (
-    <View className="mb-4">
+    <View>
       <Text
         className={
           solid
-            ? "happy-font-body-bold mb-2 text-[10.5px] tracking-[0.5px] text-[#29452A]"
-            : "happy-font-body-bold mb-2 text-[10.5px] tracking-[0.5px] text-[#82796A]"
+            ? "happy-font-body-bold mb-2 text-[10.5px] tracking-[0.8px] text-[#29452A] uppercase"
+            : "happy-font-body-bold mb-2 text-[10.5px] tracking-[0.8px] text-[#82796A] uppercase"
         }
       >
         {title}
@@ -253,8 +294,8 @@ function SummaryGroup({
             key={item.concept}
             className={
               solid
-                ? "rounded-full bg-[#D3E0CD] px-3.5 py-2"
-                : "rounded-full bg-[#EBDDC5] px-3.5 py-2"
+                ? "rounded-full bg-[#E1EAD9] border border-[#29452A]/20 px-3.5 py-1.5"
+                : "rounded-full bg-[#EBDDC5] border border-[#D8C7AD] px-3.5 py-1.5"
             }
           >
             <Text className="happy-font-body-bold text-[13px] text-[#3F3A34]">
@@ -266,64 +307,65 @@ function SummaryGroup({
     </View>
   );
 }
- 
+
 function getOptionStyle(
   selected: boolean,
   correct: boolean,
   incorrect: boolean,
-  showFeedback: boolean
+  isFeedback: boolean,
+  showCorrectHighlight: boolean
 ): ViewStyle {
-  if (showFeedback && correct) {
+  if (isFeedback && correct && showCorrectHighlight) {
     return {
-      minHeight: 56,
+      minHeight: 52,
       flexDirection: "row",
       alignItems: "center",
       gap: 12,
-      borderRadius: 22,
-      borderWidth: 1.5,
-      borderColor: SEMANTIC_COLORS.success.border,
-      backgroundColor: SEMANTIC_COLORS.success.surface,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: "#29452A",
+      backgroundColor: "#E1EAD9",
       paddingHorizontal: 16,
       paddingVertical: 12,
     };
   }
-  if (showFeedback && incorrect) {
+  if (isFeedback && incorrect) {
     return {
-      minHeight: 56,
+      minHeight: 52,
       flexDirection: "row",
       alignItems: "center",
       gap: 12,
-      borderRadius: 22,
-      borderWidth: 1.5,
-      borderColor: SEMANTIC_COLORS.error.border,
-      backgroundColor: SEMANTIC_COLORS.error.surface,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: "#A74141",
+      backgroundColor: "#FDF9F5",
       paddingHorizontal: 16,
       paddingVertical: 12,
     };
   }
   if (selected) {
     return {
-      minHeight: 56,
+      minHeight: 52,
       flexDirection: "row",
       alignItems: "center",
       gap: 12,
-      borderRadius: 22,
-      borderWidth: 1.5,
-      borderColor: SEMANTIC_COLORS.border.selected,
-      backgroundColor: SEMANTIC_COLORS.brand.soft,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: "#29452A",
+      backgroundColor: "#F8F1E7",
       paddingHorizontal: 16,
       paddingVertical: 12,
     };
   }
   return {
-    minHeight: 56,
+    minHeight: 52,
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    borderRadius: 22,
-    borderWidth: 1.5,
-    borderColor: SEMANTIC_COLORS.border.default,
-    backgroundColor: SEMANTIC_COLORS.surface.primary,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#EBDDC5",
+    backgroundColor: "#FFFFFF",
     paddingHorizontal: 16,
     paddingVertical: 12,
   };
@@ -333,27 +375,28 @@ function getRadioStyle(
   selected: boolean,
   correct: boolean,
   incorrect: boolean,
-  showFeedback: boolean
+  isFeedback: boolean,
+  showCorrectHighlight: boolean
 ): ViewStyle {
-  if (showFeedback && correct) {
+  if (isFeedback && correct && showCorrectHighlight) {
     return {
-      width: 20,
-      height: 20,
-      borderRadius: 10,
-      borderWidth: 2,
-      borderColor: SEMANTIC_COLORS.success.indicator,
-      backgroundColor: SEMANTIC_COLORS.success.indicator,
+      width: 16,
+      height: 16,
+      borderRadius: 8,
+      borderWidth: 1.2,
+      borderColor: "#29452A",
+      backgroundColor: "#29452A",
       alignItems: "center",
       justifyContent: "center",
     };
   }
-  if (showFeedback && incorrect) {
+  if (isFeedback && incorrect) {
     return {
-      width: 20,
-      height: 20,
-      borderRadius: 10,
-      borderWidth: 2,
-      borderColor: SEMANTIC_COLORS.error.indicator,
+      width: 16,
+      height: 16,
+      borderRadius: 8,
+      borderWidth: 1.2,
+      borderColor: "#A74141",
       backgroundColor: "transparent",
       alignItems: "center",
       justifyContent: "center",
@@ -361,34 +404,26 @@ function getRadioStyle(
   }
   if (selected) {
     return {
-      width: 20,
-      height: 20,
-      borderRadius: 10,
-      borderWidth: 2,
-      borderColor: SEMANTIC_COLORS.brand.primary,
-      backgroundColor: SEMANTIC_COLORS.brand.primary,
+      width: 16,
+      height: 16,
+      borderRadius: 8,
+      borderWidth: 1.2,
+      borderColor: "#29452A",
+      backgroundColor: "#29452A",
       alignItems: "center",
       justifyContent: "center",
     };
   }
   return {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: SEMANTIC_COLORS.border.default,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#C5BBAA",
     backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
   };
-}
-
-function getFeedbackTitle(correct: boolean, attempts: number): string {
-  if (correct) return "What happened?";
-  if (attempts >= 3) return "Here's the thinking";
-  return attempts >= 2
-    ? "Let's make it simpler"
-    : "Not quite";
 }
 
 function createResponse(extra: Record<string, unknown> = {}) {

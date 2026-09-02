@@ -6,18 +6,16 @@ import { SectionMilestoneConfig } from "@/src/exercises/SectionMilestone/config"
 import type { Exercise } from "@/src/types/journeyV5";
 import type { CoursePrimaryTransition } from "@/src/domains/journey/learning/courseExercisePrimaryTransition";
 
-function getCheckpointLabel(response: Record<string, unknown>): string {
+function getCheckpointLabel(response: Record<string, unknown>, exercise?: Exercise): string | null {
   const phase = response.phase;
   if (phase === "intro") return "Start review";
   if (phase === "summary") return "Continue";
   if (phase === "feedback") {
-    return response.isCorrect === true || readNumber(response.attempts) >= 3
-      ? "Continue"
-      : "Try again";
+    const itemIndex = readNumber(response.itemIndex);
+    const itemCount = readArray(exercise?.content?.items).length;
+    return itemIndex >= itemCount - 1 ? "See results" : "Next question";
   }
-  return isIndex(response.selectedOptionIndex)
-    ? "Check answer"
-    : "Choose an answer";
+  return null;
 }
 
 function getCheckpointTransition(
@@ -31,32 +29,10 @@ function getCheckpointTransition(
       response: { ...response, phase: "question" },
     };
   }
-  if (response.phase === "question" && isIndex(response.selectedOptionIndex)) {
-    const attempts = readNumber(response.attempts);
-    return {
-      kind: "response",
-      ready: true,
-      response: {
-        ...response,
-        phase: "feedback",
-        attempts: response.isCorrect === true ? attempts : attempts + 1,
-      },
-    };
+  if (response.phase === "feedback") {
+    return advanceCheckpoint(exercise, response);
   }
-  if (response.phase !== "feedback") return undefined;
-  if (response.isCorrect !== true && readNumber(response.attempts) < 3) {
-    return {
-      kind: "response",
-      ready: false,
-      response: {
-        ...response,
-        phase: "question",
-        selectedOptionIndex: null,
-        isCorrect: false,
-      },
-    };
-  }
-  return advanceCheckpoint(exercise, response);
+  return undefined;
 }
 
 function advanceCheckpoint(
@@ -108,9 +84,19 @@ export const FINAL_BATCH_CATEGORY_CONFIGS: Partial<Record<CourseExerciseCategory
       "Review the alarm system and coping loops without score pressure.",
       "This checkpoint is not available yet."
     ),
+    presentation: {
+      hideFooter: (exercise, response, ready) => {
+        // Hide footer before answer selection AND during initial causal animation
+        return response?.phase === "question" || (response?.phase === "feedback" && !ready);
+      },
+      hideSkip: (exercise, response) => {
+        // Suppress "Skip for now" once review has started
+        return response?.phase === "question" || response?.phase === "feedback" || response?.phase === "summary";
+      },
+    },
     interaction: {
       submissionMode: "explicit",
-      getPrimaryLabel: (exercise, response) => getCheckpointLabel(response),
+      getPrimaryLabel: (exercise, response) => getCheckpointLabel(response, exercise),
       getPrimaryTransition: (exercise, response) => getCheckpointTransition(exercise, response) ?? null,
     }
   },

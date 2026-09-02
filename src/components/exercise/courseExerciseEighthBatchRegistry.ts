@@ -6,12 +6,46 @@ import type { CourseExerciseCategoryConfig } from "@/src/components/exercise/cou
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
 export const EIGHTH_BATCH_CATEGORY_CONFIGS = {
-  [CourseExerciseCategoryEnum.EvidenceBite]: createConfig(
-    CourseExerciseCategoryEnum.EvidenceBite,
-    EvidenceBiteCategoryEngine,
-    "Read one evidence claim and inspect its confidence.",
-    "This evidence bite is not available yet.",
-  ),
+  [CourseExerciseCategoryEnum.EvidenceBite]: {
+    category: CourseExerciseCategoryEnum.EvidenceBite,
+    formats: [CourseExerciseCategoryEnum.EvidenceBite],
+    engine: EvidenceBiteCategoryEngine,
+    goalLabel: "Build evidence step by step to find a pattern.",
+    unavailableCopy: "This evidence builder is not available yet.",
+    presentation: {
+      hideSkip: () => true,
+    },
+    interaction: {
+      submissionMode: "explicit",
+      getPrimaryLabel: (exercise, response) => {
+        const defaultSteps = [
+          { actionLabel: "WATCH ANOTHER NIGHT" },
+          { actionLabel: "WHAT DOES THAT TELL ME?" }
+        ];
+        
+        if (!response?.stepIndex) return "WATCH ANOTHER NIGHT";
+        const idx = typeof response.stepIndex === "number" ? response.stepIndex : 0;
+        const steps = Array.isArray(exercise.content?.steps) ? exercise.content?.steps : defaultSteps;
+        const step = steps[idx];
+        if (step?.actionLabel) return step.actionLabel as string;
+        if (idx >= steps.length) return "CONTINUE";
+        return "CONTINUE";
+      },
+      getPrimaryTransition: (exercise, response) => {
+        const defaultSteps = [{}, {}];
+        const idx = typeof response?.stepIndex === "number" ? response.stepIndex : 0;
+        const steps = Array.isArray(exercise.content?.steps) ? exercise.content?.steps : defaultSteps;
+        if (idx < steps.length) {
+          return {
+            kind: "response",
+            ready: true,
+            response: { ...response, stepIndex: idx + 1 },
+          };
+        }
+        return null;
+      },
+    },
+  },
   [CourseExerciseCategoryEnum.SurgeTimer]: {
     category: CourseExerciseCategoryEnum.SurgeTimer,
     formats: [CourseExerciseCategoryEnum.SurgeTimer],
@@ -19,6 +53,7 @@ export const EIGHTH_BATCH_CATEGORY_CONFIGS = {
     goalLabel: "Explore how the surge chemistry clears with time.",
     unavailableCopy: "This surge timer is not available yet.",
     interaction: {
+      submissionMode: "explicit",
       getPrimaryLabel: (exercise, response) => {
         const maxReached = response.maxProgressReached;
         return typeof maxReached === 'number' && maxReached >= 80 ? "Continue" : "Explore the wave";
@@ -38,6 +73,7 @@ export const EIGHTH_BATCH_CATEGORY_CONFIGS = {
     goalLabel: "Practise one long-exhale breathing round.",
     unavailableCopy: "This breathing round is not available yet.",
     interaction: {
+      submissionMode: "explicit",
       getPrimaryLabel: (exercise, response) => {
         if (response.completedRound) return "Continue";
         if (response.running) return "Breathe...";

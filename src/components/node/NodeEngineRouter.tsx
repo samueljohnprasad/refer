@@ -383,14 +383,27 @@ const trackedStartRef = useRef<string | null>(null);
     return <NodeExerciseDataError invalidContent onClose={onClose} />;
   }
 
+  const checkpointResponse = (currentResponse ?? responses[currentExercise.id]) as Record<string, unknown> | null;
+  const isCheckpointActive = isCheckpoint && checkpointResponse?.phase && checkpointResponse?.phase !== "intro";
+  const checkpointItemsCount = Array.isArray(currentExercise.content?.items) ? currentExercise.content.items.length : 1;
+  const checkpointCurrentItemIndex = typeof checkpointResponse?.itemIndex === "number" ? checkpointResponse.itemIndex : 0;
+  
+  const displayProgress = isCheckpointActive
+    ? (checkpointCurrentItemIndex + 1) / checkpointItemsCount
+    : (currentIndex + 1) / exercises.length;
+
+  const displayTrailingLabel = isCheckpointActive
+    ? `${checkpointCurrentItemIndex + 1} of ${checkpointItemsCount}`
+    : `${currentIndex + 1} of ${exercises.length}`;
+
   return (
     <NodeExerciseScreen
       Engine={Engine}
       exercise={currentExercise}
       savedResponse={currentResponse ?? responses[currentExercise.id]}
       isCourseExercise={category !== null && isCourseExerciseCategory(category)}
-      progress={(currentIndex + 1) / exercises.length}
-      trailingLabel={`${currentIndex + 1} of ${exercises.length}`}
+      progress={displayProgress}
+      trailingLabel={displayTrailingLabel}
       onClose={onClose}
       config={categoryConfig ? resolveCourseExerciseConfig(categoryConfig as any) : null}
       primaryLabel={getDisplayPrimaryLabel(
@@ -409,7 +422,8 @@ const trackedStartRef = useRef<string | null>(null);
       ready={ready}
       locked={showingFeedback || isCompleting}
       hideFooter={
-        currentExercise.content?.hideFooterUntilReady === true && !ready
+        (currentExercise.content?.hideFooterUntilReady === true && !ready) ||
+        (categoryConfig?.presentation?.hideFooter?.(currentExercise, (currentResponse ?? responses[currentExercise.id]) as Record<string, unknown> | null, ready) ?? false)
       }
       showingFeedback={showingFeedback}
       showingSkipAction={showingSkipAction}

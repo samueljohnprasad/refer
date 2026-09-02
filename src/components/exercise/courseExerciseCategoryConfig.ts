@@ -36,6 +36,8 @@ export interface CourseExerciseCategoryConfig<TContent = unknown> {
   presentation?: {
     showSubtitle?: boolean;
     showInstruction?: boolean;
+    hideFooter?: (exercise: Exercise, response: Record<string, unknown> | null, ready?: boolean) => boolean;
+    hideSkip?: (exercise: Exercise, response: Record<string, unknown> | null) => boolean;
   };
   layout?: Record<string, unknown>;
   progress?: Record<string, unknown>;

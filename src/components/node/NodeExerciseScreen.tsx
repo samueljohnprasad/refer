@@ -41,7 +41,10 @@ interface NodeExerciseScreenProps {
 
 export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
   const insets = useSafeAreaInsets();
-  const allowsSkip = props.exercise.content?.hideSkipAction !== true;
+  
+  const configHideSkip = props.config?.presentation?.hideSkip?.(props.exercise, props.savedResponse as any) ?? false;
+  const allowsSkip = props.exercise.content?.hideSkipAction !== true && !configHideSkip;
+  
   const courseContentOffset = {
     marginTop: -Math.max(insets.top - COURSE_CONTENT_TOP_PADDING, 0),
   };

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { Canvas, Group, Rect, Skia } from '@shopify/react-native-skia';
 import Animated, { 
@@ -22,9 +22,11 @@ export const TransitionOverlay = () => {
 
   const radius = useSharedValue(0);
   const opacity = useSharedValue(0);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     if (isActive) {
+      setIsVisible(true);
       const activeDuration = duration || 400;
 
       if (isReversing) {
@@ -43,6 +45,7 @@ export const TransitionOverlay = () => {
               // Fade out instantly since the circle is already 0 radius
               opacity.value = 0;
               runOnJS(endTransition)();
+              runOnJS(setIsVisible)(false);
             }
           }
         );
@@ -70,6 +73,7 @@ export const TransitionOverlay = () => {
                     // Reset state so it's ready for the next transition
                     runOnJS(endTransition)();
                     radius.value = 0;
+                    runOnJS(setIsVisible)(false);
                   }
                 })
               );
@@ -86,7 +90,7 @@ export const TransitionOverlay = () => {
     return path;
   }, [cx, cy, radius]);
 
-  if (!isActive && opacity.value === 0) {
+  if (!isActive && !isVisible) {
     return null;
   }
 

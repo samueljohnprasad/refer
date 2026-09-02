@@ -1,5 +1,6 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import Animated, { FadeInUp, FadeOutDown } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 import {
@@ -30,12 +31,14 @@ export function CourseExerciseFooter({
       style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 12) }]}
     >
       {!hidePrimary ? (
-        <CourseExercisePrimaryButton
-          label={primaryLabel}
-          disabled={primaryDisabled}
-          loading={primaryLoading}
-          onPress={onPrimaryPress}
-        />
+        <Animated.View style={{ width: "100%" }} entering={FadeInUp.duration(300)} exiting={FadeOutDown.duration(200)}>
+          <CourseExercisePrimaryButton
+            label={primaryLabel}
+            disabled={primaryDisabled}
+            loading={primaryLoading}
+            onPress={onPrimaryPress}
+          />
+        </Animated.View>
       ) : null}
       {onSkip ? (
         <Pressable
