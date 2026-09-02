@@ -125,39 +125,37 @@ function RecallChip({
   selected?: boolean;
 }) {
   return (
-    <Pressable
-      accessibilityRole="button"
-      disabled={disabled}
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.chip,
-        selected && styles.selectedChip,
-        muted && styles.mutedChip,
-        pressed && styles.pressedChip,
-      ]}
-    >
-      {number ? (
-        <View style={styles.chipNumber}>
-          <Text style={styles.chipNumberLabel}>{number}</Text>
-        </View>
-      ) : null}
-      <Text style={styles.chipLabel}>{label}</Text>
-    </Pressable>
+    <View style={[styles.chipContainer, muted && styles.mutedChip]}>
+      <View style={[styles.chipRim, selected && styles.chipSelectedRim]} />
+      <Pressable
+        accessibilityRole="button"
+        disabled={disabled}
+        onPress={onPress}
+        style={({ pressed }) => [
+          styles.chip,
+          selected && styles.selectedChip,
+          pressed && styles.pressedChip,
+        ]}
+      >
+        {number ? (
+          <View style={styles.chipNumber}>
+            <Text style={styles.chipNumberLabel}>{number}</Text>
+          </View>
+        ) : null}
+        <Text style={[styles.chipLabel, selected && styles.selectedLabel]}>{label}</Text>
+      </Pressable>
+    </View>
   );
 }
 
 function createResponse(extra: Record<string, unknown> = {}) {
   return {
-    format: CourseExerciseCategoryEnum.GuidedRecallChips,
-    phase: "order",
+    category: CourseExerciseCategoryEnum.guided_recall_chips,
     selectedChips: [],
-    isCorrect: false,
     ...extra,
   };
 }
 
-function arraysMatch(left: string[], right: string[]): boolean {
-  return (
-    left.length === right.length && left.every((item, i) => item === right[i])
-  );
+function arraysMatch(a: string[], b: string[]) {
+  return a.length === b.length && a.every((val, index) => val === b[index]);
 }

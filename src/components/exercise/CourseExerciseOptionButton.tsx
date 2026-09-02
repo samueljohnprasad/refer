@@ -36,28 +36,31 @@ export function CourseExerciseOptionButton({
   );
 
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityState={{ disabled: isDisabled, selected }}
-      disabled={isDisabled}
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.button,
-        CONTAINER_STYLES[visualState],
-        PRESS_STYLES[String(pressed)],
-      ]}
-    >
-      <OptionStateIcon state={visualState} />
-      <Text
-        style={[
-          styles.label,
-          LABEL_STYLES[visualState],
-          { textAlign: resolveAlignment(align) },
+    <View style={styles.container}>
+      <View style={[styles.rim, RIM_STYLES[visualState]]} />
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ disabled: isDisabled, selected }}
+        disabled={isDisabled}
+        onPress={onPress}
+        style={({ pressed }) => [
+          styles.face,
+          FACE_STYLES[visualState],
+          pressed && styles.facePressed,
         ]}
       >
-        {label}
-      </Text>
-    </Pressable>
+        <OptionStateIcon state={visualState} />
+        <Text
+          style={[
+            styles.label,
+            LABEL_STYLES[visualState],
+            { textAlign: resolveAlignment(align) },
+          ]}
+        >
+          {label}
+        </Text>
+      </Pressable>
+    </View>
   );
 }
 
@@ -128,8 +131,21 @@ function OptionStateIcon({ state }: { state: OptionVisualState }) {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    minHeight: 64,
+  container: {
+    paddingBottom: 3,
+    alignSelf: "stretch",
+  },
+  rim: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 3,
+    borderRadius: 20,
+    backgroundColor: SEMANTIC_COLORS.border.strong,
+  },
+  face: {
+    minHeight: 61,
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
@@ -138,29 +154,27 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 20,
     borderWidth: 2,
-    borderBottomWidth: 5,
     borderColor: SEMANTIC_COLORS.border.strong,
     backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
-  selected: {
+  faceSelected: {
     borderColor: SEMANTIC_COLORS.selection.border,
     backgroundColor: SEMANTIC_COLORS.selection.surface,
   },
-  confirmed: {
+  faceConfirmed: {
     borderColor: SEMANTIC_COLORS.success.border,
     backgroundColor: SEMANTIC_COLORS.success.surface,
   },
-  incorrect: {
+  faceIncorrect: {
     borderColor: SEMANTIC_COLORS.error.border,
     backgroundColor: SEMANTIC_COLORS.error.surface,
   },
-  disabled: {
+  faceDisabled: {
     borderColor: SEMANTIC_COLORS.disabled.border,
     backgroundColor: SEMANTIC_COLORS.disabled.surface,
   },
-  pressed: {
-    transform: [{ translateY: 2 }],
-    opacity: 0.95,
+  facePressed: {
+    transform: [{ translateY: 3 }],
   },
   label: {
     flex: 1,
@@ -189,13 +203,22 @@ const styles = StyleSheet.create({
   },
 });
 
-const CONTAINER_STYLES = {
+const FACE_STYLES = {
   default: undefined,
-  selected: styles.selected,
-  confirmed: styles.confirmed,
-  correct: styles.confirmed,
-  incorrect: styles.incorrect,
-  disabled: styles.disabled,
+  selected: styles.faceSelected,
+  confirmed: styles.faceConfirmed,
+  correct: styles.faceConfirmed,
+  incorrect: styles.faceIncorrect,
+  disabled: styles.faceDisabled,
+} as const;
+
+const RIM_STYLES = {
+  default: undefined,
+  selected: { backgroundColor: SEMANTIC_COLORS.selection.border },
+  confirmed: { backgroundColor: SEMANTIC_COLORS.success.border },
+  correct: { backgroundColor: SEMANTIC_COLORS.success.border },
+  incorrect: { backgroundColor: SEMANTIC_COLORS.error.border },
+  disabled: { backgroundColor: SEMANTIC_COLORS.disabled.border },
 } as const;
 
 const LABEL_STYLES = {
@@ -206,11 +229,6 @@ const LABEL_STYLES = {
   incorrect: styles.incorrectLabel,
   disabled: styles.disabledLabel,
 } as const;
-
-const PRESS_STYLES: Record<string, typeof styles.pressed | undefined> = {
-  false: undefined,
-  true: styles.pressed,
-};
 
 const STATE_ICONS = {
   default: undefined,

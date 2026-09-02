@@ -51,30 +51,40 @@ export function CourseExerciseTwinColumn({
         const isCorrectPair = showCorrectness && isMatched && correctIds.includes(pair.id);
         const isWrongPair = showCorrectness && isMatched && !correctIds.includes(pair.id);
         return (
-          <Pressable
-            key={pair.id}
-            accessibilityRole="button"
-            accessibilityState={{ selected: isSelected, disabled: effectiveDisabled }}
-            accessibilityLabel={[
-              badge === "✓" ? "Verified correct:" : badge === "!" ? "Incorrect match:" : badge ? `Paired as pair ${badge}:` : "Unpaired:",
-              side === "left" ? pair.left : pair.right,
-            ].join(" ")}
-            disabled={effectiveDisabled}
-            onPress={() => onSelect(pair.id)}
-            style={({ pressed }) => [
-              styles.pair,
-              isSelected && styles.selected,
-              isMatched && styles.matched,
-              effectiveDisabled && !isMatched && styles.disabled,
-              pressed && !effectiveDisabled && styles.pressed,
-              isCorrectPair && styles.correct,
-              isWrongPair && styles.wrong,
-            ]}
-          >
-            <Text style={styles.pairLabel}>
-              {badge ? `${badge} ` : ""}{side === "left" ? pair.left : pair.right}
-            </Text>
-          </Pressable>
+          <View key={pair.id} style={styles.container}>
+            <View
+              style={[
+                styles.rim,
+                isSelected && styles.selectedRim,
+                isMatched && styles.matchedRim,
+                isCorrectPair && styles.correctRim,
+                isWrongPair && styles.wrongRim,
+              ]}
+            />
+            <Pressable
+              accessibilityRole="button"
+              accessibilityState={{ selected: isSelected, disabled: effectiveDisabled }}
+              accessibilityLabel={[
+                badge === "✓" ? "Verified correct:" : badge === "!" ? "Incorrect match:" : badge ? `Paired as pair ${badge}:` : "Unpaired:",
+                side === "left" ? pair.left : pair.right,
+              ].join(" ")}
+              disabled={effectiveDisabled}
+              onPress={() => onSelect(pair.id)}
+              style={({ pressed }) => [
+                styles.pair,
+                isSelected && styles.selected,
+                isMatched && styles.matched,
+                effectiveDisabled && !isMatched && styles.disabled,
+                pressed && !effectiveDisabled && styles.pressed,
+                isCorrectPair && styles.correct,
+                isWrongPair && styles.wrong,
+              ]}
+            >
+              <Text style={styles.pairLabel}>
+                {badge ? `${badge} ` : ""}{side === "left" ? pair.left : pair.right}
+              </Text>
+            </Pressable>
+          </View>
         );
       })}
     </View>
@@ -98,14 +108,30 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
+  container: {
+    paddingBottom: 2,
+    alignSelf: "stretch",
+  },
+  rim: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 2,
+    borderRadius: 22,
+    backgroundColor: SEMANTIC_COLORS.border.default,
+  },
+  selectedRim: { backgroundColor: SEMANTIC_COLORS.brand.primary },
+  matchedRim: { backgroundColor: SEMANTIC_COLORS.brand.primary },
+  correctRim: { backgroundColor: SEMANTIC_COLORS.success.foreground || "#7E9874" },
+  wrongRim: { backgroundColor: SEMANTIC_COLORS.error.foreground || "#C86D55" },
   pair: {
-    minHeight: 61,
+    minHeight: 59,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderWidth: 1,
-    borderBottomWidth: 4,
     borderColor: SEMANTIC_COLORS.border.default,
     borderRadius: 22,
     backgroundColor: SEMANTIC_COLORS.surface.primary,
@@ -116,13 +142,12 @@ const styles = StyleSheet.create({
   },
   matched: {
     borderColor: SEMANTIC_COLORS.brand.primary,
-    borderBottomWidth: 1,
     backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   disabled: {},
   correct: { borderColor: SEMANTIC_COLORS.success.foreground || "#7E9874", backgroundColor: "#F2F8EF" },
   wrong: { borderColor: SEMANTIC_COLORS.error.foreground || "#C86D55", backgroundColor: "#FFF0EA" },
-  pressed: { transform: [{ translateY: 2 }], opacity: 0.92 },
+  pressed: { transform: [{ translateY: 2 }] },
   pairLabel: {
     color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
