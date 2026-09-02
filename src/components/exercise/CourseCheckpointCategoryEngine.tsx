@@ -31,22 +31,11 @@ export function CourseCheckpointCategoryEngine({
   const selectedOptionIndex = readResponseIndex(saved?.selectedOptionIndex);
   const selectedOption = item?.options[selectedOptionIndex ?? -1];
 
-  // // ponytail: revealStage 0 = initial, 1 = user selected + causal explanation, 2 = correct revealed + ready for Next
-  const [revealStage, setRevealStage] = useState<number>(0);
-
   useEffect(() => {
     if (!saved) {
       onInteraction(createResponse(), true);
     }
   }, [onInteraction, saved]);
-
-  useEffect(() => {
-    if (phase === "question") {
-      setRevealStage(0);
-    } else if (phase === "feedback") {
-      setRevealStage(2);
-    }
-  }, [phase, itemIndex]);
 
   const selectOption = (optionIndex: number) => {
     if (locked || phase !== "question" || !item) return;
@@ -56,7 +45,6 @@ export function CourseCheckpointCategoryEngine({
     const newResults = [...readBooleanResults(saved?.results)];
     newResults[itemIndex] = option.isCorrect;
 
-    setRevealStage(2);
     onInteraction(
       {
         ...saved,
@@ -78,10 +66,10 @@ export function CourseCheckpointCategoryEngine({
   }
   if (!item) return null;
 
-  const isFeedback = phase === "feedback" || revealStage > 0;
+  const isFeedback = phase === "feedback";
   const isSelected = (index: number) => selectedOptionIndex === index;
   const isCorrectOption = (index: number) => item.options[index]?.isCorrect === true;
-  const showCorrectHighlight = revealStage >= 2;
+  const showCorrectHighlight = isFeedback;
 
   // Format causal chain lines from feedback
   const feedbackLines = selectedOption?.feedback?.split("\n").filter((l) => l.trim().length > 0) ?? [];
