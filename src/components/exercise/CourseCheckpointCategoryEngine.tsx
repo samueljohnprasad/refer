@@ -49,54 +49,25 @@ export function CourseCheckpointCategoryEngine({
   }, [phase, itemIndex]);
 
   const selectOption = (optionIndex: number) => {
-    if (locked || phase !== "question" || !item || revealStage > 0) return;
+    if (locked || phase !== "question" || !item) return;
     Haptics.selectionAsync();
     const option = item.options[optionIndex];
 
     const newResults = [...readBooleanResults(saved?.results)];
     newResults[itemIndex] = option.isCorrect;
 
-    if (option.isCorrect) {
-      setRevealStage(2);
-      onInteraction(
-        {
-          ...saved,
-          selectedOptionIndex: optionIndex,
-          results: newResults,
-          isCorrect: true,
-          phase: "feedback",
-        },
-        true,
-      );
-    } else {
-      // Step 1: Show user's wrong answer + begin causal reveal
-      setRevealStage(1);
-      onInteraction(
-        {
-          ...saved,
-          selectedOptionIndex: optionIndex,
-          results: newResults,
-          isCorrect: false,
-          phase: "feedback",
-        },
-        false,
-      );
-
-      // Step 2 & 3: Staggered reveal of correct model & enable Next button after explanation
-      setTimeout(() => {
-        setRevealStage(2);
-        onInteraction(
-          {
-            ...saved,
-            selectedOptionIndex: optionIndex,
-            results: newResults,
-            isCorrect: false,
-            phase: "feedback",
-          },
-          true,
-        );
-      }, 700);
-    }
+    setRevealStage(2);
+    onInteraction(
+      {
+        ...saved,
+        itemIndex,
+        selectedOptionIndex: optionIndex,
+        results: newResults,
+        isCorrect: option.isCorrect,
+        phase: "feedback",
+      },
+      true,
+    );
   };
 
   if (phase === "intro") {

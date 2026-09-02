@@ -85,9 +85,9 @@ export const FINAL_BATCH_CATEGORY_CONFIGS: Partial<Record<CourseExerciseCategory
       "This checkpoint is not available yet."
     ),
     presentation: {
-      hideFooter: (exercise, response, ready) => {
-        // Hide footer before answer selection AND during initial causal animation
-        return response?.phase === "question" || (response?.phase === "feedback" && !ready);
+      hideFooter: (exercise, response) => {
+        // Hide footer only before answer selection (in question phase)
+        return response?.phase === "question";
       },
       hideSkip: (exercise, response) => {
         // Suppress "Skip for now" once review has started
