@@ -32,6 +32,13 @@ function getCheckpointTransition(
   if (response.phase === "feedback") {
     return advanceCheckpoint(exercise, response);
   }
+  if (response.phase === "summary") {
+    return {
+      kind: "response",
+      ready: true,
+      response: { ...response, phase: "complete" },
+    };
+  }
   return undefined;
 }
 

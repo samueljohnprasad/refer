@@ -10,7 +10,7 @@ export function readStageIndex(value: unknown, stageCount: number): number {
 }
 
 export function isFinalMicrolearningResponse(value: unknown): boolean {
-  return isRecord(value) && value.phase === "complete";
+  return isRecord(value) && (value.phase === "complete" || value.phase === "summary");
 }
 
 export function isMatchingFinalMicrolearningResponse(
