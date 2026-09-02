@@ -119,7 +119,7 @@ export const paradoxCardStyles = StyleSheet.create({
     fontSize: 13,
   },
   disabled: { opacity: 0.5, borderBottomWidth: 1 },
-  pressed: { transform: [{ translateY: 2 }], borderBottomWidth: 2 },
+  pressed: { transform: [{ translateY: 2 }], opacity: 0.92 },
   revealCard: {
     marginTop: 12,
     paddingHorizontal: 22,

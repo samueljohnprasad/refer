@@ -52,7 +52,7 @@ export const guidedRecallChipsStyles = StyleSheet.create({
     backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   mutedChip: { opacity: 0.28, borderBottomWidth: 1 },
-  pressedChip: { transform: [{ translateY: 2 }], borderBottomWidth: 2 },
+  pressedChip: { transform: [{ translateY: 2 }], opacity: 0.92 },
   chipNumber: {
     width: 19,
     height: 19,

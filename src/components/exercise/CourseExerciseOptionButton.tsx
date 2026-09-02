@@ -159,9 +159,8 @@ const styles = StyleSheet.create({
     backgroundColor: SEMANTIC_COLORS.disabled.surface,
   },
   pressed: {
-    borderBottomWidth: 2,
-    marginBottom: 3,
-    transform: [{ translateY: 3 }],
+    transform: [{ translateY: 2 }],
+    opacity: 0.95,
   },
   label: {
     flex: 1,
