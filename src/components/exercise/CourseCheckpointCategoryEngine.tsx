@@ -34,8 +34,11 @@ export function CourseCheckpointCategoryEngine({
   useEffect(() => {
     if (!saved) {
       onInteraction(createResponse(), true);
+    } else if (saved && phase === "feedback") {
+      // // ponytail: self-heal stale hydrated session draft where ready was saved as false
+      onInteraction(saved, true);
     }
-  }, [onInteraction, saved]);
+  }, []);
 
   const selectOption = (optionIndex: number) => {
     if (locked || phase !== "question" || !item) return;
