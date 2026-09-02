@@ -160,6 +160,7 @@ const styles = StyleSheet.create({
   },
   pressed: {
     borderBottomWidth: 2,
+    marginBottom: 3,
     transform: [{ translateY: 3 }],
   },
   label: {

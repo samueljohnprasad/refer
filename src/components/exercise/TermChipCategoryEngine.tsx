@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     borderColor: SEMANTIC_COLORS.brand.primary,
     backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
-  pressed: { transform: [{ translateY: 2 }], borderBottomWidth: 2 },
+  pressed: { transform: [{ translateY: 2 }], borderBottomWidth: 2, marginBottom: 2 },
   panelLabel: {
     color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,

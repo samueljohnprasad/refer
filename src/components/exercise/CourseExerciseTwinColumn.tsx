@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   disabled: {},
   correct: { borderColor: SEMANTIC_COLORS.success.foreground || "#7E9874", backgroundColor: "#F2F8EF" },
   wrong: { borderColor: SEMANTIC_COLORS.error.foreground || "#C86D55", backgroundColor: "#FFF0EA" },
-  pressed: { transform: [{ translateY: 2 }], borderBottomWidth: 2 },
+  pressed: { transform: [{ translateY: 2 }], borderBottomWidth: 2, marginBottom: 2 },
   pairLabel: {
     color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
