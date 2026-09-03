@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, Stack } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { selectCourse, selectCourseFinaleSeen } from "@/src/domains/journey/state/journeySelectors";
 import { markCourseFinaleSeen } from "@/src/domains/journey/state/journeySlice";
@@ -45,11 +45,14 @@ export default function FinaleRoute() {
   }
 
   return (
-    <CourseFinaleScreen
-      courseTitle={course?.title || "Your Journey"}
-      acknowledgement={acknowledgement}
-      capabilitySummary={capabilitySummary}
-      onDismiss={handleDismiss}
-    />
+    <>
+      <Stack.Screen options={{ headerShown: false, presentation: "fullScreenModal", animation: "fade" }} />
+      <CourseFinaleScreen
+        courseTitle={course?.title || "Your Journey"}
+        acknowledgement={acknowledgement}
+        capabilitySummary={capabilitySummary}
+        onDismiss={handleDismiss}
+      />
+    </>
   );
 }

@@ -31,6 +31,7 @@ export function CourseFinaleScreen({
         duration={1500}
       />
       <ScrollView
+        style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1, padding: 24, justifyContent: "center" }}
         showsVerticalScrollIndicator={false}
       >
