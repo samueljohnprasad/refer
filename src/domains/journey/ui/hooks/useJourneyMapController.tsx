@@ -11,6 +11,7 @@ import {
   setCourseProgress,
   setPreviewSection,
   setPendingCelebration,
+  hydrateCourseFinaleSeen,
 } from "@/src/domains/journey/state/journeySlice";
 import {
   selectCourse,
@@ -87,6 +88,10 @@ export function useJourneyMapController(
   const dispatch = useAppDispatch();
   const { toast } = useToast();
   const { handleCompletionResult } = useCelebrationOrchestrator(courseId);
+
+  useEffect(() => {
+    dispatch(hydrateCourseFinaleSeen(courseId));
+  }, [courseId, dispatch]);
 
   const pendingCelebration = useAppSelector((state) =>
     selectPendingCelebration(state, courseId),

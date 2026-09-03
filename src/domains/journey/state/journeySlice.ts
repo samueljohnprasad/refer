@@ -5,7 +5,7 @@
 // Owns shared journey data plus global/per-course UI state that must survive
 // beyond a single screen render.
 
-import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -254,8 +254,36 @@ const journeySlice = createSlice({
         (err) => console.warn("[rewards] failed to persist finaleSeen", err),
       );
     },
+    /**
+     * Internal action to hydrate the course finale seen flag without writing back to AsyncStorage.
+     */
+    setCourseFinaleSeenHydrated(
+      state,
+      action: PayloadAction<{ courseId: string; seen: boolean }>,
+    ) {
+      const { courseId, seen } = action.payload;
+      state.courseFinaleSeenByCourse[courseId] = seen;
+    },
   },
 });
+
+/**
+ * Hydrates the course finale seen state from AsyncStorage.
+ * Called when the course is first loaded or the journey map is opened.
+ */
+export const hydrateCourseFinaleSeen = createAsyncThunk(
+  "journey/hydrateCourseFinaleSeen",
+  async (courseId: string, { dispatch }) => {
+    try {
+      const value = await AsyncStorage.getItem(`@rewards/finaleSeen/${courseId}`);
+      if (value === "true") {
+        dispatch(journeySlice.actions.setCourseFinaleSeenHydrated({ courseId, seen: true }));
+      }
+    } catch (err) {
+      console.warn("[rewards] failed to hydrate finaleSeen", err);
+    }
+  }
+);
 
 export const {
   setCourseTree,

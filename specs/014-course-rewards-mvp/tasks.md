@@ -147,3 +147,7 @@ Phase 2 (T001–T008)
 | Phase 6: Course Finale | 4 (T021–T024) | US4 |
 | Phase 7: Polish | 4 (T025–T028) | — |
 | **Total** | **29** | |
+
+## Phase 8: Convergence
+
+- [X] T029 Implement AsyncStorage hydration for `courseFinaleSeenByCourse` — add a thunk or initialization logic in `journeySlice.ts` to read `@rewards/finaleSeen/${courseId}` on app load so that the course finale is not shown again after an app restart, per SC-3 and FR-4.8 (missing)
