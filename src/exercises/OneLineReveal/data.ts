@@ -15,8 +15,6 @@ export interface OneLineRevealData {
   title: string;
   instruction: string;
   firstLine: string | null;
-  secondLine: string | null; // Keep for backward compatibility
-  why: string | null; // Keep for backward compatibility
   completionNote?: string;
   whyTitle?: string;
   options: OneLineRevealOption[];
@@ -41,8 +39,6 @@ export function readOneLineRevealData(exercise: Exercise): OneLineRevealData {
     title: readString(content.title) ?? "One idea",
     instruction: readString(content.instruction) ?? "Tap to reveal.",
     firstLine: readString(content.firstLine),
-    secondLine: readString(content.secondLine),
-    why: readString(content.why),
     completionNote: readString(content.completionNote) ?? undefined,
     whyTitle: readString(content.whyTitle) ?? undefined,
     options,

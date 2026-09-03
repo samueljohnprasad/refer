@@ -36,8 +36,8 @@ export function OneLineRevealCategoryEngine({
   }, [onInteraction, saved]);
 
   // Determine what to show for the second line and why block
-  let secondLine = data.secondLine;
-  let whyBody = data.why;
+  let secondLine: string | null = null;
+  let whyBody: string | null = null;
   
   if (data.options.length > 0 && selectedOptionId) {
     const selectedOpt = data.options.find((opt) => opt.id === selectedOptionId);
