@@ -6,6 +6,7 @@ export enum CourseExerciseCategoryEnum {
   LearnCards = "learn_cards",
   TwinCase = "twin_case",
   IntuitionCheck = "intuition_check",
+  ReflectionChoice = "reflection_choice",
   NameIt = "name_it",
   CourseChoice = "course_choice",
   InventFirst = "invent_first",
@@ -57,6 +58,8 @@ export enum CourseExerciseCategoryEnum {
   IfThenPlan = "if_then_plan",
   CourseCheckpoint = "course_checkpoint",
   SectionMilestone = "section_milestone",
+  TimelineRewind = "timeline_rewind",
+  StateSwitch = "state_switch",
 }
 
 export type CourseExerciseCategory = `${CourseExerciseCategoryEnum}`;

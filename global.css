@@ -508,6 +508,16 @@
   @apply border-2 border-b-4 border-terracotta-light border-b-terracotta bg-terracotta-tint text-cardinal-dark;
 }
 
+/* Shared exercise selection surfaces. Keep state semantics centralized so
+   exercise views compose behavior instead of rebuilding visual language. */
+@utility happy-course-selection {
+  @apply border-brand-border bg-brand-surface-soft;
+}
+
+@utility happy-course-selection-active {
+  @apply border-sage-300 bg-sage-selected;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    PROGRESS BAR UTILITIES
    ═══════════════════════════════════════════════════════════════════════════

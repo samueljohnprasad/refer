@@ -1,9 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import {
-  COURSE_EXERCISE_FONTS,
-  SEMANTIC_COLORS,
-} from "@/src/components/exercise/courseExerciseTheme";
+import { Text, View } from "react-native";
 
 interface CourseExerciseHeadingProps {
   title: string;
@@ -17,37 +13,23 @@ export function CourseExerciseHeading({
   prompt,
 }: CourseExerciseHeadingProps) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+    <View className="mb-3.5">
+      <Text
+        accessibilityRole="header"
+        className="happy-font-heading text-2xl leading-[30px] tracking-[-0.4px] text-ink"
+      >
+        {title}
+      </Text>
       {instruction ? (
-        <Text style={styles.instruction}>{instruction}</Text>
+        <Text className="happy-font-body mt-[3px] text-[15px] leading-[21px] text-ink-soft">
+          {instruction}
+        </Text>
       ) : null}
-      {prompt ? <Text style={styles.prompt}>{prompt}</Text> : null}
+      {prompt ? (
+        <Text className="happy-font-body-bold mt-3 text-[21px] leading-[27px] text-ink">
+          {prompt}
+        </Text>
+      ) : null}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { marginBottom: 14 },
-  title: {
-    color: SEMANTIC_COLORS.text.primary,
-    fontFamily: COURSE_EXERCISE_FONTS.display,
-    fontSize: 24,
-    lineHeight: 30,
-    letterSpacing: -0.4,
-  },
-  instruction: {
-    marginTop: 3,
-    color: SEMANTIC_COLORS.text.secondary,
-    fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 15,
-    lineHeight: 21,
-  },
-  prompt: {
-    marginTop: 12,
-    color: SEMANTIC_COLORS.text.primary,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 21,
-    lineHeight: 27,
-  },
-});

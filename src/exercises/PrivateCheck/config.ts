@@ -1,20 +1,20 @@
 import { CourseExerciseCategoryConfig } from "@/src/components/exercise/courseExerciseCategoryConfig";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
-import type { CoursePrimaryTransition } from "@/src/domains/journey/learning/courseExercisePrimaryTransition";
-
 import type { Exercise } from "@/src/types/journeyV5";
 
-import { PrivateCheckCategoryEngine } from "@/src/components/exercise/PrivateCheckCategoryEngine";
+import { PrivateCheckContainer } from "@/src/exercises/PrivateCheck/PrivateCheckContainer";
 
 export const PrivateCheckConfig: CourseExerciseCategoryConfig = {
   category: CourseExerciseCategoryEnum.PrivateCheck,
   formats: [CourseExerciseCategoryEnum.PrivateCheck],
-  engine: PrivateCheckCategoryEngine,
+  engine: PrivateCheckContainer,
   goalLabel: "Notice familiar loops without scoring or judgment.",
   unavailableCopy: "This private check is not available yet.",
+  presentation: {
+    hideSkip: (_exercise, response) => response?.phase === "feedback",
+  },
   interaction: {
     submissionMode: "explicit",
-    getPrimaryLabel: (_exercise: Exercise, _response: Record<string, unknown>) => "Continue",
     getPrimaryTransition: (_exercise: Exercise, response: Record<string, unknown>) => {
       if (response.phase === "feedback") {
         return null;

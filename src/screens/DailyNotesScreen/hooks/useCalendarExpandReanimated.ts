@@ -41,11 +41,20 @@ export function useCalendarExpandReanimated(
   const progress = useSharedValue<number>(options?.initialExpanded ? 1 : 0);
   const start = useSharedValue<number>(options?.initialExpanded ? 1 : 0);
 
+  const finishExpand = (onDone?: () => void) => {
+    setIsExpanded(true);
+    if (onDone) onDone();
+  };
+
+  const finishCollapse = (onDone?: () => void) => {
+    setIsExpanded(false);
+    if (onDone) onDone();
+  };
+
   const expand = (onDone?: () => void): void => {
     progress.value = withTiming(1, { duration: durationMs }, (finished?: boolean) => {
       if (finished) {
-        runOnJS(setIsExpanded)(true);
-        if (onDone) runOnJS(onDone)();
+        runOnJS(finishExpand)(onDone);
       }
     });
   };
@@ -53,8 +62,7 @@ export function useCalendarExpandReanimated(
   const collapse = (onDone?: () => void): void => {
     progress.value = withTiming(0, { duration: durationMs }, (finished?: boolean) => {
       if (finished) {
-        runOnJS(setIsExpanded)(false);
-        if (onDone) runOnJS(onDone)();
+        runOnJS(finishCollapse)(onDone);
       }
     });
   };

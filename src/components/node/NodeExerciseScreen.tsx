@@ -5,7 +5,6 @@ import { CourseExerciseFeedbackPanel } from "@/src/components/exercise/CourseExe
 import { CourseExerciseFooter } from "@/src/components/exercise/CourseExerciseFooter";
 import { CourseExerciseHeader } from "@/src/components/exercise/CourseExerciseHeader";
 import { readString } from "@/src/components/exercise/courseExerciseContent";
-import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import { ExerciseSkipAction } from "@/src/components/exercise/ExerciseSkipAction";
 import { FeedbackPanel } from "@/src/components/node/NodeEngineRouterPanels";
 import { LessonScreen } from "@/src/components/ui/LessonScreen";
@@ -41,10 +40,20 @@ interface NodeExerciseScreenProps {
 
 export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
   const insets = useSafeAreaInsets();
-  
-  const configHideSkip = props.config?.presentation?.hideSkip?.(props.exercise, props.savedResponse as any) ?? false;
-  const allowsSkip = props.exercise.content?.hideSkipAction !== true && !configHideSkip;
-  
+  const usesInlineFeedback =
+    props.config?.presentation?.showsFeedbackInline?.(
+      props.exercise,
+      props.savedResponse as Record<string, unknown> | null,
+    ) ?? false;
+
+  const configHideSkip =
+    props.config?.presentation?.hideSkip?.(
+      props.exercise,
+      props.savedResponse as any,
+    ) ?? false;
+  const allowsSkip =
+    props.exercise.content?.hideSkipAction !== true && !configHideSkip;
+
   const courseContentOffset = {
     marginTop: -Math.max(insets.top - COURSE_CONTENT_TOP_PADDING, 0),
   };
@@ -60,13 +69,13 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
 
   if (props.isCourseExercise) {
     return (
-      <View style={courseScreenStyle}>
+      <View className="flex-1 bg-brand-surface">
         <CourseExerciseHeader
           progress={props.progress}
           trailingLabel={props.trailingLabel}
           onClose={props.onClose}
         />
-        <LessonScreen style={courseScreenStyle} hideHeader hideFooter>
+        <LessonScreen className="flex-1 bg-brand-surface" hideHeader hideFooter>
           <View style={courseContentOffset}>
             {exerciseContent}
             {props.showingFeedback ? (
@@ -74,14 +83,20 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
                 canContinueAfterExplanation={props.canContinueAfterExplanation}
                 checkStatus={props.checkStatus}
                 explanationText={props.explanationText}
-                feedbackText={props.feedbackText}
-                successTitle={readString(props.exercise.content?.feedbackTitle)}
-                successTakeaway={readString(
-                  props.exercise.content?.feedbackTakeaway,
-                )}
+                feedbackText={usesInlineFeedback ? null : props.feedbackText}
+                successTitle={
+                  usesInlineFeedback
+                    ? null
+                    : readString(props.exercise.content?.feedbackTitle)
+                }
+                successTakeaway={
+                  usesInlineFeedback
+                    ? null
+                    : readString(props.exercise.content?.feedbackTakeaway)
+                }
               />
             ) : null}
-            <View style={props.hideFooter ? shortFooterSpacer : footerSpacer} />
+            <View className={props.hideFooter ? "h-16" : "h-[132px]"} />
           </View>
         </LessonScreen>
         <CourseExerciseFooter
@@ -90,6 +105,7 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
           primaryDisabled={!props.ready}
           primaryLoading={props.primaryLoading}
           onPrimaryPress={props.onPrimaryPress}
+          skipLabel={readString(props.exercise.content?.skipLabel) ?? undefined}
           onSkip={allowsSkip ? props.onSkip : undefined}
         />
       </View>
@@ -124,11 +140,4 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
   );
 }
 
-const courseScreenStyle = {
-  flex: 1,
-  backgroundColor: SEMANTIC_COLORS.surface.primary,
-} as const;
-
-const footerSpacer = { height: 132 } as const;
-const shortFooterSpacer = { height: 64 } as const;
 const COURSE_CONTENT_TOP_PADDING = 12;

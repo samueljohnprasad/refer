@@ -42,6 +42,7 @@ import {
 import { shouldCompleteOnPrimaryPress } from "@/src/components/exercise/microlearning/microlearningResponse";
 import { trackMicrolearningEvent } from "@/src/components/exercise/microlearning/microlearningAnalytics";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
+import { getExerciseProgress } from "@/src/components/node/courseExerciseProgress";
 interface NodeEngineRouterProps {
   nodeId: string;
   exercises: Exercise[];
@@ -271,6 +272,10 @@ const trackedStartRef = useRef<string | null>(null);
     }
 
     if (isMicrolearningExercise) {
+      const feedbackValue =
+        typeof resolvedResponse.feedbackValue === "string"
+          ? resolvedResponse.feedbackValue
+          : null;
       trackMicrolearningEvent({
         eventName: "stage_complete",
         category: category as string,
@@ -280,7 +285,8 @@ const trackedStartRef = useRef<string | null>(null);
         correctness: null,
         attemptCount: attemptCount,
         elapsedSeconds: 0,
-        accessibilityFlags: {}
+        accessibilityFlags: {},
+        feedbackValue,
       });
     }
 
@@ -388,13 +394,14 @@ const trackedStartRef = useRef<string | null>(null);
   const checkpointItemsCount = Array.isArray(currentExercise.content?.items) ? currentExercise.content.items.length : 1;
   const checkpointCurrentItemIndex = typeof checkpointResponse?.itemIndex === "number" ? checkpointResponse.itemIndex : 0;
   
+  const exerciseProgress = getExerciseProgress(exercises, currentIndex);
   const displayProgress = isCheckpointActive
     ? (checkpointCurrentItemIndex + 1) / checkpointItemsCount
-    : (currentIndex + 1) / exercises.length;
+    : exerciseProgress.progress;
 
   const displayTrailingLabel = isCheckpointActive
     ? `${checkpointCurrentItemIndex + 1} of ${checkpointItemsCount}`
-    : `${currentIndex + 1} of ${exercises.length}`;
+    : exerciseProgress.trailingLabel;
 
   return (
     <NodeExerciseScreen

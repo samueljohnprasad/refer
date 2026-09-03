@@ -9,7 +9,7 @@ export interface ExerciseResponseRequirement {
 
 
 import type { Exercise } from "@/src/types/journeyV5";
-import type { CoursePrimaryTransition } from "@/src/types/journeyLearning";
+import type { CoursePrimaryTransition } from "@/src/domains/journey/learning/courseExercisePrimaryTransition";
 
 export type ExerciseInteractionConfig = (
   | { submissionMode: "explicit" }
@@ -38,6 +38,7 @@ export interface CourseExerciseCategoryConfig<TContent = unknown> {
     showInstruction?: boolean;
     hideFooter?: (exercise: Exercise, response: Record<string, unknown> | null, ready?: boolean) => boolean;
     hideSkip?: (exercise: Exercise, response: Record<string, unknown> | null) => boolean;
+    showsFeedbackInline?: (exercise: Exercise, response: Record<string, unknown> | null) => boolean;
   };
   layout?: Record<string, unknown>;
   progress?: Record<string, unknown>;

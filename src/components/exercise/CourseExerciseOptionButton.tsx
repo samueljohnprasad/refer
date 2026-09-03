@@ -12,6 +12,7 @@ interface CourseExerciseOptionButtonProps {
   align?: "left" | "center";
   showConfirmationIcon?: boolean;
   result?: "correct" | "incorrect";
+  role?: "button" | "radio";
   onPress: () => void;
 }
 
@@ -25,6 +26,7 @@ export function CourseExerciseOptionButton({
   align,
   showConfirmationIcon,
   result,
+  role = "button",
   onPress,
 }: CourseExerciseOptionButtonProps) {
   const isDisabled = Boolean(disabled);
@@ -39,8 +41,12 @@ export function CourseExerciseOptionButton({
     <View style={styles.container}>
       <View style={[styles.rim, RIM_STYLES[visualState]]} />
       <Pressable
-        accessibilityRole="button"
-        accessibilityState={{ disabled: isDisabled, selected }}
+        accessibilityRole={role}
+        accessibilityState={
+          role === "radio"
+            ? { checked: selected, disabled: isDisabled }
+            : { disabled: isDisabled, selected }
+        }
         disabled={isDisabled}
         onPress={onPress}
         style={({ pressed }) => [

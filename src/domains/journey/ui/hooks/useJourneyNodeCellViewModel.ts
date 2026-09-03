@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useColorScheme } from "react-native";
 import * as Haptics from "expo-haptics";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { SAGE } from "@/src/theme/palette";
 import { RADIUS } from "@/src/theme/radius";
 import type { JourneyNode, PathNodeData, NodePosition } from "@/src/types/journey";
 import { NodeIcon, NodeStatus } from "@/src/types/journey";
@@ -56,23 +56,23 @@ export function useJourneyNodeCellViewModel({
   };
   const pathNodeData = toPathNodeData(item);
 
-  let faceColor: string | import("react-native").OpaqueColorValue = isDark ? SEMANTIC_COLORS.brand.onSoft : SEMANTIC_COLORS.brand.soft;
-  let rimColor: string | import("react-native").OpaqueColorValue = isDark ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.brand.pressed;
-  let iconColor: string | import("react-native").OpaqueColorValue = isDark ? SEMANTIC_COLORS.border.selected : SEMANTIC_COLORS.brand.pressed;
+  let faceColor: string = isDark ? SAGE[300] : SAGE[100];
+  let rimColor: string = isDark ? SAGE[400] : SAGE[600];
+  let iconColor: string = isDark ? SAGE[500] : SAGE[600];
   let iconName = item.icon || "star";
   let isInteractive = false;
   let showProgressRing = false;
   let showTooltip = false;
 
   if (item.status === NodeStatus.COMPLETED) {
-    faceColor = isDark ? SEMANTIC_COLORS.brand.onSoft : SEMANTIC_COLORS.selection.foreground;
-    rimColor = isDark ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.brand.pressed;
-    iconColor = isDark ? SEMANTIC_COLORS.brand.soft : SEMANTIC_COLORS.brand.onSoft;
+    faceColor = isDark ? SAGE[300] : SAGE[700];
+    rimColor = isDark ? SAGE[400] : SAGE[600];
+    iconColor = isDark ? "#142414" : SAGE[700];
     iconName = NodeIcon.CHECKPOINT;
     isInteractive = true;
   } else if (item.status === NodeStatus.ACTIVE) {
-    faceColor = SEMANTIC_COLORS.brand.primary;
-    rimColor = SEMANTIC_COLORS.brand.pressed;
+    faceColor = isDark ? SAGE[400] : SAGE[500];
+    rimColor = isDark ? SAGE[500] : SAGE[600];
     iconColor = "#FFFFFF";
     isInteractive = true;
     showProgressRing = true;
@@ -121,6 +121,6 @@ export function useJourneyNodeCellViewModel({
     ringOffset,
     dashedConfig: { width: dashWidth, gap: dashGap },
     progressPercent: (item.progress ?? 0) * 100,
-    ringBackgroundColor: isDark ? SEMANTIC_COLORS.brand.onSoft : SEMANTIC_COLORS.selection.foreground,
+    ringBackgroundColor: isDark ? SAGE[300] : SAGE[700],
   };
 }

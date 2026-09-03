@@ -1,8 +1,10 @@
 import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useColorScheme } from "react-native";
+import { SAGE } from "@/src/theme/palette";
 import { LessonHeader } from "@/src/components/ui/LessonHeader";
 
 interface CourseExerciseHeaderProps {
@@ -17,6 +19,7 @@ export function CourseExerciseHeader({
   onClose,
 }: CourseExerciseHeaderProps) {
   const insets = useSafeAreaInsets();
+  const isDark = useColorScheme() === "dark";
 
   return (
     <Stack.Screen
@@ -25,15 +28,18 @@ export function CourseExerciseHeader({
         headerTransparent: false,
         headerShadowVisible: false,
         header: () => (
-          <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
+          <View
+            className="bg-brand-surface"
+            style={{ paddingTop: insets.top + 8 }}
+          >
             <LessonHeader
               progress={progress}
               trailingLabel={trailingLabel}
               onClose={onClose}
-              progressFillColor={SEMANTIC_COLORS.brand.primary}
-              progressTrackColor={SEMANTIC_COLORS.surface.secondary}
-              iconColor={SEMANTIC_COLORS.text.secondary}
-              trailingLabelColor={SEMANTIC_COLORS.text.secondary}
+              progressFillColor={isDark ? SAGE[400] : SAGE[500]}
+              progressTrackColor={isDark ? "#2a3a2a" : "#eef2ea"}
+              iconColor={String(SEMANTIC_COLORS.text.secondary)}
+              trailingLabelColor={String(SEMANTIC_COLORS.text.secondary)}
             />
           </View>
         ),
@@ -41,7 +47,3 @@ export function CourseExerciseHeader({
     />
   );
 }
-
-const styles = StyleSheet.create({
-  header: { backgroundColor: SEMANTIC_COLORS.surface.primary },
-});

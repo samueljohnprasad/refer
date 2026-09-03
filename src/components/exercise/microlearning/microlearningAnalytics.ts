@@ -23,6 +23,7 @@ export interface MicrolearningTelemetryEvent {
   attemptCount: number | null;
   elapsedSeconds: number;
   accessibilityFlags: Record<string, boolean>;
+  feedbackValue?: string | null;
 }
 
 export function trackMicrolearningEvent(event: MicrolearningTelemetryEvent): void {

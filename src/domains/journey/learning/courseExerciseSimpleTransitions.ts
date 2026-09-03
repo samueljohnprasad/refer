@@ -32,9 +32,13 @@ export function getNextWhiteBearState(
 }
 
 export function getLearnCardsLabel(
+  exercise: Exercise,
   response: Record<string, unknown>,
 ): string | null {
-  return response.phase === "cards" ? "Continue" : null;
+  if (response.phase !== "cards") return null;
+  const cards = readArray(exercise.content?.cards);
+  const card = readRecord(cards[readNumber(response.cardIndex)]);
+  return readString(card?.primaryLabel) ?? "Continue";
 }
 
 export function getNextLearnCardsState(
@@ -88,4 +92,14 @@ function readArray(value: unknown): unknown[] {
 
 function readNumber(value: unknown): number {
   return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+function readRecord(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : null;
+}
+
+function readString(value: unknown): string | null {
+  return typeof value === "string" && value.trim().length > 0 ? value : null;
 }

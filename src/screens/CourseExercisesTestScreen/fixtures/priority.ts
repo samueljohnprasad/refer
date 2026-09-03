@@ -185,4 +185,40 @@ export const priorityMicrolearningFixtures: readonly Exercise[] = [
       },
     },
   },
+  {
+    id: "fixture-private-check-wired",
+    nodeId: "fixture-private-check-node",
+    orderIndex: 0,
+    type: "private_check",
+    isScored: false,
+    content: {
+      category: "private_check",
+      format: "private_check",
+      title: "When bedtime feels wired",
+      instruction: "Which of these have you noticed at bedtime?\nSelect any that fit.",
+      items: [
+        "Work or tomorrow keeps replaying in my mind",
+        "My heart feels like it's beating faster",
+        "My jaw or shoulders feel tight",
+        "I feel tired and alert at the same time",
+      ],
+      revealItems: [
+        "Work thoughts",
+        "Faster heartbeat",
+        "Tight jaw or shoulders",
+        "Tired + alert",
+      ],
+      noneOptionLabel: "None of these",
+      privacyLabel: "Private to you · Not scored",
+      revealTitle: "Your alert clues",
+      revealBody:
+        "These can show up when your system is leaning toward ALERT rather than SETTLED.",
+      noneRevealTitle: "None of these fit right now",
+      noneRevealBody:
+        "These are only examples — your signals may look different.",
+      primaryLabel: "Continue",
+      feedbackTitle: "Clues, not failures",
+      feedback: "These signals can show that the body is still on guard.",
+    },
+  },
 ];

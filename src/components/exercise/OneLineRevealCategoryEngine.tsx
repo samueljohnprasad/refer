@@ -23,6 +23,7 @@ export function OneLineRevealCategoryEngine({
 
   useEffect(() => {
     if (!saved) {
+      const hasOptions = data.options.length > 0;
       onInteraction(
         {
           format: CourseExerciseCategoryEnum.OneLineReveal,
@@ -30,19 +31,21 @@ export function OneLineRevealCategoryEngine({
           revealed: false,
           isCorrect: true, // Optimistically correct unless prediction fails
         },
-        true,
+        !hasOptions, // Button is disabled (ready: false) if there are options to choose from
       );
     }
-  }, [onInteraction, saved]);
+  }, [onInteraction, saved, data.options.length]);
 
   // Determine what to show for the second line and why block
   let secondLine: string | null = null;
   let whyBody: string | null = null;
+  let isCorrect = true;
   
   if (data.options.length > 0 && selectedOptionId) {
     const selectedOpt = data.options.find((opt) => opt.id === selectedOptionId);
     if (selectedOpt) {
       secondLine = selectedOpt.label;
+      isCorrect = selectedOpt.isCorrect;
       if (selectedOpt.feedback) {
         whyBody = selectedOpt.feedback;
       }
@@ -50,11 +53,13 @@ export function OneLineRevealCategoryEngine({
   }
 
   const handleOptionPress = (optId: string) => {
+    const selectedOpt = data.options.find((opt) => opt.id === optId);
     onInteraction({
       ...saved,
       selectedOptionId: optId,
-      revealed: true, // Automatically reveal when they pick an option
-    });
+      revealed: true,
+      isCorrect: selectedOpt?.isCorrect ?? true,
+    }, true); // Ready is true once an option is selected
   };
 
   return (
@@ -84,13 +89,24 @@ export function OneLineRevealCategoryEngine({
       ) : null}
 
       {revealed && whyBody ? (
-        <View style={styles.whyCard}>
-          <View style={styles.checkCircle}>
-            <Text style={styles.check}>✓</Text>
+        <View style={[
+          styles.whyCard,
+          !isCorrect && { 
+            backgroundColor: SEMANTIC_COLORS.error.surface,
+          }
+        ]}>
+          <View style={[
+            styles.checkCircle,
+            !isCorrect && { backgroundColor: SEMANTIC_COLORS.error.indicator }
+          ]}>
+            <Text style={styles.check}>{isCorrect ? "✓" : "✕"}</Text>
           </View>
           <View style={styles.whyCopy}>
-            <Text style={styles.whyTitle}>
-              {data.whyTitle ?? "Why it matters"}
+            <Text style={[
+              styles.whyTitle,
+              !isCorrect && { color: SEMANTIC_COLORS.error.foreground }
+            ]}>
+              {data.whyTitle ?? (isCorrect ? "Why it matters" : "Not quite")}
             </Text>
             <Text style={styles.whyBody}>{whyBody}</Text>
           </View>
@@ -110,7 +126,8 @@ const styles = StyleSheet.create({
   ideaCard: {
     minHeight: 240,
     justifyContent: "center",
-    gap: 14,
+    alignItems: "center",
+    gap: 6,
     paddingHorizontal: 26,
     paddingVertical: 30,
     borderRadius: 28,
@@ -119,12 +136,14 @@ const styles = StyleSheet.create({
     backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
   firstLine: {
+    textAlign: "center",
     color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 24,
     lineHeight: 31,
   },
   secondLine: {
+    textAlign: "center",
     color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 24,
@@ -141,8 +160,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingHorizontal: 17,
     paddingVertical: 15,
-    borderWidth: 1.5,
-    borderColor: SEMANTIC_COLORS.brand.primary,
     borderRadius: 24,
     backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
@@ -170,7 +187,7 @@ const styles = StyleSheet.create({
     marginTop: 7,
     color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 13.5,
-    lineHeight: 20,
+    fontSize: 15,
+    lineHeight: 22,
   },
 });

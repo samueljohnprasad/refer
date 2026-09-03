@@ -1,8 +1,10 @@
+import { StateSwitchConfig } from "@/src/exercises/StateSwitch/config";
 import type { CourseExerciseCategoryConfig } from "@/src/components/exercise/courseExerciseCategoryEngineRegistry";
 import { CourseCheckpointCategoryEngine } from "@/src/components/exercise/CourseCheckpointCategoryEngine";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import { IfThenPlanConfig } from "@/src/exercises/IfThenPlan/config";
 import { SectionMilestoneConfig } from "@/src/exercises/SectionMilestone/config";
+import { TimelineRewindConfig } from "@/src/exercises/TimelineRewind/config";
 import type { Exercise } from "@/src/types/journeyV5";
 import type { CoursePrimaryTransition } from "@/src/domains/journey/learning/courseExercisePrimaryTransition";
 
@@ -27,7 +29,7 @@ function getCheckpointTransition(
       kind: "response",
       ready: false,
       response: { ...response, phase: "question" },
-    };
+      };
   }
   if (response.phase === "feedback") {
     return advanceCheckpoint(exercise, response);
@@ -84,6 +86,7 @@ function readNumber(value: unknown): number {
 
 export const FINAL_BATCH_CATEGORY_CONFIGS: Partial<Record<CourseExerciseCategoryEnum, CourseExerciseCategoryConfig>> = {
   [CourseExerciseCategoryEnum.IfThenPlan]: IfThenPlanConfig,
+  [CourseExerciseCategoryEnum.TimelineRewind]: TimelineRewindConfig,
   [CourseExerciseCategoryEnum.CourseCheckpoint]: {
     ...createConfig(
       CourseExerciseCategoryEnum.CourseCheckpoint,
@@ -108,6 +111,7 @@ export const FINAL_BATCH_CATEGORY_CONFIGS: Partial<Record<CourseExerciseCategory
     }
   },
   [CourseExerciseCategoryEnum.SectionMilestone]: SectionMilestoneConfig,
+  [CourseExerciseCategoryEnum.StateSwitch]: StateSwitchConfig,
 };
 
 function createConfig(

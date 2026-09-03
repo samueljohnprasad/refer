@@ -23,14 +23,10 @@ function SectionCard({
   section,
   onPress,
 }: SectionCardProps): React.JSX.Element {
-  const unitRangeLabel = `Section ${section.sectionNumber}${
-    section.unitCount > 0
-      ? ` • ${section.unitCount} ${section.unitCount === 1 ? "unit" : "units"}`
-      : ""
-  }`;
+  const unitRangeLabel = `Section ${section.sectionNumber}`;
   const isComplete = section.progressPercent >= 100;
 
-  const cardVariant = section.isCurrent ? "answer-selected" : "answer";
+  const cardVariant = "answer";
   const lockStatusStr = !section.isUnlocked
     ? "Locked"
     : isComplete
@@ -59,9 +55,9 @@ function SectionCard({
             {section.title}
           </Text>
           <Text
-            variant="overline"
+            variant="body"
             color="muted"
-            className="text-xs uppercase tracking-widest"
+            className="text-sm"
           >
             {unitRangeLabel}
           </Text>
@@ -77,16 +73,6 @@ function SectionCard({
               Current
             </Text>
           </View>
-        ) : isComplete ? (
-          <View className="rounded-full bg-sage-100 px-3 py-1">
-            <Text
-              variant="chip"
-              color="sage"
-              className="text-xs uppercase tracking-widest"
-            >
-              Done
-            </Text>
-          </View>
         ) : null}
       </View>
 
@@ -99,11 +85,7 @@ function SectionCard({
           trackColor={SEMANTIC_COLORS.brand.soft}
         />
 
-        <View className="flex-row items-center justify-between mt-1">
-          <Text variant="caption" color="soft">
-            {section.completedNodes}/{section.totalNodes} complete
-          </Text>
-
+        <View className="flex-row items-center justify-end mt-1">
           {!section.isCurrent ? (
             <View className="flex-row items-center gap-1.5">
               {!section.isUnlocked && (
@@ -152,9 +134,6 @@ export const SectionOverviewSheetView = React.memo(
               adjustsFontSizeToFit
             >
               {journeyTitle}
-            </Text>
-            <Text variant="body" color="muted" className="mt-1 text-base">
-              {sections.length} {sections.length === 1 ? "section" : "sections"}
             </Text>
           </View>
         </View>

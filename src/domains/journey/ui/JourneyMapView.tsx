@@ -121,9 +121,7 @@ export const JourneyMapView = React.memo(function JourneyMapView({
             className="flex-1 bg-brand-canvas"
             style={[
               {
-                backgroundColor: isDark
-                  ? SEMANTIC_COLORS.surface.primary
-                  : SEMANTIC_COLORS.surface.canvas,
+                backgroundColor: isDark ? "#1a2a1a" : "#fbfdf8",
               },
               animatedStyle,
             ]}

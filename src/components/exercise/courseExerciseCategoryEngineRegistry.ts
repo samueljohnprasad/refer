@@ -1,9 +1,10 @@
-import { getLearnCardsLabel, getNextLearnCardsState } from '@/src/domains/journey/learning/courseExercisePrimaryTransition';
 import { GuessRevealCategoryEngine } from "@/src/components/exercise/GuessRevealCategoryEngine";
 import { GuessRevealConfig } from "@/src/exercises/GuessReveal/config";
 import { SymptomDecoderConfig } from "@/src/exercises/SymptomDecoder/config";
 import { TwinCaseConfig } from "@/src/exercises/TwinCase/config";
 import { IntuitionCheckConfig } from "@/src/exercises/IntuitionCheck/config";
+import { ReflectionChoiceConfig } from "@/src/exercises/ReflectionChoice/config";
+import { LearnCardsConfig } from "@/src/exercises/LearnCards/config";
 import { NameItConfig } from "@/src/exercises/NameIt/config";
 import { CourseChoiceConfig } from "@/src/exercises/CourseChoice/config";
 import { InventFirstConfig } from "@/src/exercises/InventFirst/config";
@@ -32,7 +33,6 @@ import { PanicWaveCommitConfig } from "@/src/exercises/PanicWaveCommit/config";
 import { WaveSequenceConfig } from "@/src/exercises/WaveSequence/config";
 import { WaveOrderingConfig } from "@/src/exercises/WaveOrdering/config";
 import { WaveScrubberConfig } from "@/src/exercises/WaveScrubber/config";
-import { CourseChoiceCategoryEngine } from "@/src/components/exercise/CourseChoiceCategoryEngine";
 import { CuriosityBetCategoryEngine } from "@/src/components/exercise/CuriosityBetCategoryEngine";
 import { CommonTrapCategoryEngine } from "@/src/components/exercise/CommonTrapCategoryEngine";
 import { ConceptCardCategoryEngine } from "@/src/components/exercise/ConceptCardCategoryEngine";
@@ -44,7 +44,6 @@ import { InventFirstCategoryEngine } from "@/src/components/exercise/InventFirst
 import { IntuitionCheckCategoryEngine } from "@/src/components/exercise/IntuitionCheckCategoryEngine";
 import { GuidedRecallChipsCategoryEngine } from "@/src/components/exercise/GuidedRecallChipsCategoryEngine";
 import { LayerZoomCategoryEngine } from "@/src/components/exercise/LayerZoomCategoryEngine";
-import { LearnCardsCategoryEngine } from "@/src/components/exercise/LearnCardsCategoryEngine";
 import { NameItCategoryEngine } from "@/src/components/exercise/NameItCategoryEngine";
 import { OneLineRevealCategoryEngine } from "@/src/components/exercise/OneLineRevealCategoryEngine";
 import { PanicWaveCommitCategoryEngine } from "@/src/components/exercise/PanicWaveCommitCategoryEngine";
@@ -88,24 +87,10 @@ export const courseExerciseCategoryEngineRegistry: Partial<Record<
   ...LEGACY_V1_CATEGORY_CONFIGS,
   [CourseExerciseCategoryEnum.GuessReveal]: GuessRevealConfig,
   [CourseExerciseCategoryEnum.SymptomDecoder]: SymptomDecoderConfig,
-  [CourseExerciseCategoryEnum.LearnCards]: {
-    category: CourseExerciseCategoryEnum.LearnCards,
-    formats: [CourseExerciseCategoryEnum.LearnCards],
-    engine: LearnCardsCategoryEngine,
-    goalLabel: "Learn one idea, then recall it.",
-    unavailableCopy: "These learning cards are not available yet.",
-    interaction: {
-      submissionMode: "immediate",
-      submissionRequirement: {
-        fields: ["selectedOptionId"],
-        values: { phase: "recall" },
-      },
-      getPrimaryLabel: (exercise, response) => getLearnCardsLabel(response),
-      getPrimaryTransition: (exercise, response) => getNextLearnCardsState(exercise, response),
-    },
-  },
+  [CourseExerciseCategoryEnum.LearnCards]: LearnCardsConfig,
   [CourseExerciseCategoryEnum.TwinCase]: TwinCaseConfig,
   [CourseExerciseCategoryEnum.IntuitionCheck]: IntuitionCheckConfig,
+  [CourseExerciseCategoryEnum.ReflectionChoice]: ReflectionChoiceConfig,
   [CourseExerciseCategoryEnum.NameIt]: NameItConfig,
   [CourseExerciseCategoryEnum.CourseChoice]: CourseChoiceConfig,
   [CourseExerciseCategoryEnum.InventFirst]: InventFirstConfig,

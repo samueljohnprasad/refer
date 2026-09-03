@@ -120,7 +120,6 @@ const DailyNotesHeader = React.memo(
     }));
     const titleAndBookmarkStyle = useAnimatedStyle(() => ({
       opacity: interpolate(progress.value, [0, 1], [1, 0]),
-      pointerEvents: progress.value > 0.5 ? 'none' : 'auto',
     }));
     const headerControlsAnimatedStyle = useAnimatedStyle(() => ({
       zIndex: 30,
