@@ -30,6 +30,7 @@ This repo currently has multiple lockfiles (`package-lock.json`, `yarn.lock`, `b
 
 - TypeScript is strict. Keep new code typed and avoid widening with `any` unless matching an existing boundary.
 - React components are functional components.
+- Use NativeWind/Tailwind classes for static React Native styles. When touching an existing UI file, convert its static `StyleSheet` and inline style declarations to Tailwind. Keep `style` only for runtime-computed values, animated values, or component APIs that cannot accept `className`.
 - Do not make UI components specific to a single exercise. Always extract and use generic, highly reusable shared components (e.g., standard cards, option buttons) across all exercises so that UI updates only need to be done in one place.
 - No React component, hook, or helper file may exceed 300 lines. If a touched component/hook/helper is already over 300 lines, split it before adding behavior.
 - Function should have single responsibility. Keep components, hooks, and helpers single-purpose. Extract named helpers/components instead of growing mixed-responsibility files.
@@ -132,3 +133,4 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+- When making structural changes to exercises or features, make them end-to-end, including updating Supabase schemas, migrations, and seed data.
