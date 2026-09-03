@@ -37,6 +37,8 @@ export const SvgAppButtonView = React.memo(function SvgAppButtonView({
   strokeRightColor,
   pressDepth,
   disabled,
+  accessibilityRole,
+  accessibilityLabel,
   children,
   style,
   contentContainerStyle,
@@ -74,6 +76,8 @@ export const SvgAppButtonView = React.memo(function SvgAppButtonView({
 
           <AnimatedPressable
             disabled={disabled}
+            accessibilityRole={accessibilityRole}
+            accessibilityLabel={accessibilityLabel}
             onPress={onPress}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}

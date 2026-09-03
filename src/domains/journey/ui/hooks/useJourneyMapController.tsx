@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { LegendListRef, ViewToken } from "@legendapp/list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -10,6 +10,7 @@ import { useToast } from "heroui-native";
 import {
   setCourseProgress,
   setPreviewSection,
+  setPendingCelebration,
 } from "@/src/domains/journey/state/journeySlice";
 import {
   selectCourse,
@@ -20,6 +21,9 @@ import {
   selectRenderedJourneyViewForCourse,
   selectRenderedSectionIdForCourse,
   selectSectionOverviewItemsForCourse,
+  selectPendingCelebration,
+  selectCourseProgressForCourse,
+  selectCourseFinaleSeen,
 } from "@/src/domains/journey/state/journeySelectors";
 import {
   type ActiveNodeInitialScrollIndex,
@@ -35,6 +39,9 @@ import type { SectionOverviewItem } from "@/src/types/journey/sectionMap";
 import { journeyApi } from "@/src/domains/journey/data/journeyApi";
 import { LIST_BOTTOM_SPACER_HEIGHT } from "../components/JourneyMapListItems";
 import { getJourneyMapHeaderState } from "../../model/journeyMapHeaderState";
+import { useCelebrationOrchestrator } from "@/src/domains/journey/rewards/useCelebrationOrchestrator";
+import { REWARDS_CONFIG } from "@/src/data/journey/rewardsConfig";
+import type { InsightCardContent } from "@/src/data/journey/rewardsConfig";
 
 type JourneyMapController = {
   activeGlobalIndex: number;
@@ -56,12 +63,15 @@ type JourneyMapController = {
   legendListRef: RefObject<LegendListRef | null>;
   listKey: string;
   rewardNode: PathNodeData | null;
+  insightCard: InsightCardContent | null;
   isClaimingReward: boolean;
   scrollHint: ActiveNodeScrollHint;
   sectionOverviewItems: SectionOverviewItem[];
   setIsSectionSheetOpen: Dispatch<SetStateAction<boolean>>;
   handleClaimReward: () => Promise<void>;
   handleDismissReward: () => void;
+  pendingCelebration: "lesson" | "unit" | "course" | null;
+  dismissCelebration: () => void;
 };
 
 export function useJourneyMapController(
@@ -76,6 +86,11 @@ export function useJourneyMapController(
   const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
   const { toast } = useToast();
+  const { handleCompletionResult } = useCelebrationOrchestrator(courseId);
+
+  const pendingCelebration = useAppSelector((state) =>
+    selectPendingCelebration(state, courseId),
+  );
 
   const currentSectionId = useAppSelector((state) =>
     selectCurrentSectionIdForCourse(state, courseId),
@@ -120,12 +135,34 @@ export function useJourneyMapController(
     dispatch(setPreviewSection({ courseId, sectionId: null }));
   }, [courseId, dispatch]);
 
-  // Reset routing lock when screen regains focus
+  const courseProgress = useAppSelector((state) =>
+    selectCourseProgressForCourse(state, courseId),
+  );
+  const hasSeenFinale = useAppSelector((state) =>
+    selectCourseFinaleSeen(state, courseId),
+  );
+
+  // Reset routing lock when screen regains focus, and restore course finale if needed
   useFocusEffect(
     useCallback(() => {
       isRoutingRef.current = false;
-    }, []),
+      
+      if (courseProgress?.status === "completed" && !hasSeenFinale) {
+        dispatch(setPendingCelebration({ courseId, level: "course" }));
+      }
+    }, [courseProgress?.status, hasSeenFinale, courseId, dispatch]),
   );
+
+  // T024: Wire navigation for course finale
+  useEffect(() => {
+    if (pendingCelebration === "course") {
+      router.push({
+        pathname: "/tabs/screens/(journey)/journey/finale",
+        params: { courseId }
+      });
+      dispatch(setPendingCelebration({ courseId, level: null }));
+    }
+  }, [pendingCelebration, courseId, dispatch]);
 
   const {
     activeNodeInitialScrollIndex,
@@ -172,22 +209,37 @@ export function useJourneyMapController(
         return;
       }
 
+      if (node.type === "trophy") {
+        if (node.status === "completed") {
+          // just show the trophy celebration again
+          dispatch(setPendingCelebration({ courseId, level: "unit" }));
+        }
+        return;
+      }
+
       // Routing for active/completed nodes is handled declaratively by <Link> in JourneyNodeCell
       return;
     },
-    [toast],
+    [toast, dispatch, courseId],
   );
 
   const handleDismissReward = useCallback((): void => {
     if (!isClaimingReward) setRewardNode(null);
   }, [isClaimingReward]);
 
+  const insightCard = useMemo(() => {
+    if (!rewardNode) return null;
+    const item = flashListData.find(i => i.itemType === 'node' && i.id === rewardNode.id) as any;
+    const unitId = item?.unitId;
+    return unitId ? (REWARDS_CONFIG.unitRewards[unitId]?.insightCard ?? null) : null;
+  }, [rewardNode, flashListData]);
+
   const handleClaimReward = useCallback(async (): Promise<void> => {
     if (!rewardNode || isClaimingReward) return;
 
     setIsClaimingReward(true);
     try {
-      await completeNode({ nodeId: rewardNode.id, courseId }).unwrap();
+      const result = await completeNode({ nodeId: rewardNode.id, courseId }).unwrap();
       const progressResult = await dispatch(
         journeyApi.endpoints.getCourseProgress.initiate(courseId, {
           forceRefetch: true,
@@ -197,6 +249,8 @@ export function useJourneyMapController(
         dispatch(setCourseProgress(progressResult.data));
       }
       setRewardNode(null);
+      // Fire orchestrator for any cascading completion (unit/course)
+      handleCompletionResult(result);
     } catch {
       toast.show({
         placement: "top",
@@ -206,7 +260,7 @@ export function useJourneyMapController(
     } finally {
       setIsClaimingReward(false);
     }
-  }, [completeNode, courseId, dispatch, isClaimingReward, rewardNode, toast]);
+  }, [completeNode, courseId, dispatch, isClaimingReward, rewardNode, toast, handleCompletionResult]);
 
   const handleOpenSections = useCallback((): void => {
     if (!canOpenSections) return;
@@ -227,6 +281,10 @@ export function useJourneyMapController(
     [courseId, currentSectionId, dispatch],
   );
 
+  const dismissCelebration = useCallback(() => {
+    dispatch(setPendingCelebration({ courseId, level: null }));
+  }, [courseId, dispatch]);
+
   return {
     activeGlobalIndex,
     activeNodeInitialScrollIndex,
@@ -245,11 +303,14 @@ export function useJourneyMapController(
     legendListRef,
     listKey,
     rewardNode,
+    insightCard,
     isClaimingReward,
     scrollHint,
     sectionOverviewItems,
     setIsSectionSheetOpen,
     handleClaimReward,
     handleDismissReward,
+    pendingCelebration,
+    dismissCelebration,
   };
 }

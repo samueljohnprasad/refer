@@ -43,6 +43,7 @@ The MVP creates a restrained hierarchy in which each significant level has a rec
 ## Clarifications
 
 ### Session 2026-09-03
+- Q: Are chest and trophy nodes generated dynamically by the client or provided by the backend? → A: They are part of the course content, driven by the backend.
 - Q: When restoring a missed course-completion finale after an app closure (FR-4.7), what specific event should trigger the restoration? → A: When the user navigates back to the specific course's journey map.
 - Q: When making the rewards config-driven, how should the application retrieve this configuration? → A: Option A - Bundled locally (e.g., a JSON file in the repo updated via EAS/OTA updates).
 - Q: If the local configuration is missing or malformed for a specific unit's rewards, what should the fallback behavior be? → A: Option A - Gracefully skip/disable the reward for that unit (fail open).
@@ -144,8 +145,8 @@ The MVP creates a restrained hierarchy in which each significant level has a rec
 
 | ID | Requirement |
 |----|-------------|
-| FR-2.1 | Units with four or more required nodes receive exactly one chest by default. Units with fewer than four required nodes receive no chest. |
-| FR-2.2 | Default chest position is after the required node closest to the unit midpoint, with at least one required node before it and one after it, and not immediately before the unit trophy. |
+| FR-2.1 | **(Backend Rule)** Units with four or more required nodes receive exactly one chest by default. Units with fewer than four required nodes receive no chest. The client simply renders what the backend provides. |
+| FR-2.2 | **(Backend Rule)** Default chest position is after the required node closest to the unit midpoint, with at least one required node before it and one after it, and not immediately before the unit trophy. |
 | FR-2.3 | Curriculum authors may explicitly omit the chest or override its position. Invalid positions cause the chest to be omitted with a validation warning logged. |
 | FR-2.4 | The chest must have four distinct persistent states: Locked, Available, Opening (transient), and Claimed. |
 | FR-2.5 | States must not rely on color alone to be distinguishable. |
@@ -238,9 +239,9 @@ Course completion represents completion of education, not completion of treatmen
 | **Lesson / Node** | An atomic learning step with a completion state (first-time vs. replay) and an authored takeaway. |
 | **Unit** | A group of lessons with a completion state, an authored capability statement, and optional chest configuration. |
 | **Course** | An ordered collection of units with canonical completion rules and an authored capability summary. |
-| **Chest** | A single per-unit claimable object with states: Locked / Available / Opening / Claimed. Tied to one authored Insight Card. |
+| **Chest** | A single per-unit claimable object, delivered as a node in the course content by the backend. States: Locked / Available / Opening / Claimed. Tied to one authored Insight Card. |
 | **Insight Card** | Authored reward content: title + body + optional visual. Deterministically linked to the chest. |
-| **Trophy** | A permanent per-unit achievement state earned automatically on unit completion. Carries the capability statement. |
+| **Trophy** | A permanent per-unit achievement state earned automatically on unit completion, delivered as a node in the course content by the backend. Carries the capability statement. |
 | **Celebration Orchestrator** | Minimal logic layer that determines which single celebration surface to display when multiple completion events fire simultaneously. |
 
 ---

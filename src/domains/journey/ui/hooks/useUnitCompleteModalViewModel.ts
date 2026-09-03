@@ -6,57 +6,50 @@ import {
   withSpring,
   withDelay,
   withSequence,
+  useReducedMotion,
 } from "react-native-reanimated";
-import type { UnitData, PathNodeData } from "@/src/types/journey";
-import { NodeType } from "@/src/types/journey";
+import type { UnitData } from "@/src/types/journey";
 import { triggerIfEnabledSync } from "@/lib/haptics/hapticUtils";
-import { HAPTIC_INTENSITIES, HAPTIC_TIMING } from "@/lib/haptics/hapticConfig";
+import { HAPTIC_INTENSITIES } from "@/lib/haptics/hapticConfig";
 
 export interface UnitCompleteModalProps {
   unit: UnitData | null;
-  xpEarned: number;
+  capabilityStatement: string;
   onContinue: () => void;
 }
 
-export function useStatCardViewModel(index: number) {
-  useEffect(() => {
-    const delay =
-      HAPTIC_TIMING.STAT_BASE_DELAY + index * HAPTIC_TIMING.STAT_DELAY_STEP;
-    const timer = setTimeout(() => {
-      void triggerIfEnabledSync("pulse", HAPTIC_INTENSITIES.PULSE_LIGHT);
-    }, delay);
-    return () => clearTimeout(timer);
-  }, [index]);
-
-  return { index };
-}
-
 export function useUnitCompleteModalViewModel(
-  { unit, xpEarned, onContinue }: UnitCompleteModalProps,
+  { unit, capabilityStatement, onContinue }: UnitCompleteModalProps,
   ref: React.ForwardedRef<BottomSheetModal>,
 ) {
   const snapPoints = useMemo(() => ["65%"], []);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const trophyScale = useSharedValue(0);
 
+  const reduceMotion = useReducedMotion();
+
   useEffect(() => {
     if (unit) {
-      const timer = setTimeout(() => setShowConfetti(true), 200);
-      trophyScale.value = withDelay(
-        100,
-        withSequence(
-          withSpring(1.2, {
-            damping: 20,
-            stiffness: 100,
-            overshootClamping: true,
-          }),
-          withSpring(1, {
-            damping: 20,
-            stiffness: 100,
-            overshootClamping: true,
-          }),
-        ),
-      );
+      const timer = setTimeout(() => setShowConfetti(!reduceMotion), 200);
+      if (reduceMotion) {
+        trophyScale.value = 1;
+      } else {
+        trophyScale.value = withDelay(
+          100,
+          withSequence(
+            withSpring(1.2, {
+              damping: 20,
+              stiffness: 100,
+              overshootClamping: true,
+            }),
+            withSpring(1, {
+              damping: 20,
+              stiffness: 100,
+              overshootClamping: true,
+            }),
+          ),
+        );
+      }
       void triggerIfEnabledSync("swell", HAPTIC_INTENSITIES.SWELL);
       const burstTimer = setTimeout(() => {
         void triggerIfEnabledSync(
@@ -72,24 +65,11 @@ export function useUnitCompleteModalViewModel(
       setShowConfetti(false);
       trophyScale.value = 0;
     }
-  }, [unit, trophyScale]);
+  }, [unit, trophyScale, reduceMotion]);
 
   const trophyStyle = useAnimatedStyle(() => ({
     transform: [{ scale: trophyScale.value }],
   }));
-
-  const lessonCount: number = unit
-    ? unit.nodes.filter((n: PathNodeData) => n.type === NodeType.LESSON).length
-    : 0;
-
-  const checkpointCount: number = unit
-    ? unit.nodes.filter((n: PathNodeData) => n.type === NodeType.CHECKPOINT)
-        .length
-    : 0;
-
-  const chestCount: number = unit
-    ? unit.nodes.filter((n: PathNodeData) => n.type === NodeType.CHEST).length
-    : 0;
 
   const handleConfettiComplete = useCallback((): void => {
     setShowConfetti(false);
@@ -107,12 +87,9 @@ export function useUnitCompleteModalViewModel(
     snapPoints,
     showConfetti,
     trophyStyle,
-    lessonCount,
-    checkpointCount,
-    chestCount,
     handleConfettiComplete,
     handleContinue,
     unit,
-    xpEarned,
+    capabilityStatement,
   };
 }

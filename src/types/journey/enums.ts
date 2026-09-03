@@ -16,6 +16,7 @@ export enum NodeType {
   LESSON = "lesson",
   CHECKPOINT = "checkpoint",
   CHEST = "chest",
+  TROPHY = "trophy",
 }
 
 /** Icon displayed inside a path node */

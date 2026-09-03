@@ -20,6 +20,7 @@ export const ChestNodeView = React.memo(function ChestNodeView({
   size,
   halfSize,
   isLocked,
+  isClaimed,
   isInteractive,
   shineStyle,
   shakeStyle,
@@ -29,6 +30,8 @@ export const ChestNodeView = React.memo(function ChestNodeView({
   position,
   node,
 }: ChestNodeViewProps): React.JSX.Element {
+  const isAvailable = !isLocked && !isClaimed;
+
   return (
     <View
       className="absolute items-center justify-center"
@@ -39,7 +42,7 @@ export const ChestNodeView = React.memo(function ChestNodeView({
         height: size,
       }}
     >
-      {!isLocked && (
+      {isAvailable && (
         <Animated.View
           style={[
             shineStyle,
@@ -70,9 +73,11 @@ export const ChestNodeView = React.memo(function ChestNodeView({
           accessibilityLabel={`Treasure chest ${node.index + 1}, ${node.status}`}
           accessibilityState={{ disabled: !isInteractive }}
         >
-          <Text className="text-3xl">{isLocked ? "🔒" : "🎁"}</Text>
+          <Text className="text-3xl">
+            {isLocked ? "🔒" : isClaimed ? "✅" : "🎁"}
+          </Text>
 
-          {!isLocked && (
+          {isAvailable && (
             <View
               className="absolute rounded-sm"
               style={{

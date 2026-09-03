@@ -99,6 +99,14 @@ const NODE_TYPE_MAP: Record<string, MentalHealthNodeMapping> = {
         emoji: '🎁',
         label: 'Treasure Chest',
     },
+    [MentalHealthNodeType.TROPHY]: {
+        variantKey: 'trophy',
+        defaultColorTheme: 'orange',
+        nodeType: NodeType.TROPHY,
+        nodeIcon: NodeIcon.STAR, // We can reuse star icon or create a new one, but trophy uses emoji
+        emoji: '🏆',
+        label: 'Unit Trophy',
+    },
     [MentalHealthNodeType.PRACTICE]: {
         variantKey: 'exercise',
         defaultColorTheme: 'green',

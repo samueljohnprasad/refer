@@ -7,6 +7,7 @@
 
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import type {
   Course,
@@ -53,6 +54,14 @@ export interface JourneyState {
   activeCourseId: string | null;
   previewSectionIdByCourse: Record<string, string | null>;
   activeNodeModalIdByCourse: Record<string, string | null>;
+
+  // Reward UI state — set after completeNode; cleared after the surface is shown.
+  // 'lesson' | 'unit' | 'course' — priority: course > unit > lesson
+  pendingCelebration: Record<string, 'lesson' | 'unit' | 'course' | null>;
+
+  // Tracks whether the full course finale has been shown for a given courseId.
+  // Seeded from AsyncStorage on load; persisted to AsyncStorage on set.
+  courseFinaleSeenByCourse: Record<string, boolean>;
 }
 
 const initialState: JourneyState = {
@@ -75,6 +84,8 @@ const initialState: JourneyState = {
   activeCourseId: null,
   previewSectionIdByCourse: {},
   activeNodeModalIdByCourse: {},
+  pendingCelebration: {},
+  courseFinaleSeenByCourse: {},
 };
 
 // ── Slice ─────────────────────────────────────────────────────────────────────
@@ -212,6 +223,37 @@ const journeySlice = createSlice({
       const { courseId, nodeId } = action.payload;
       state.activeNodeModalIdByCourse[courseId] = nodeId;
     },
+
+    // ── Reward UI state ───────────────────────────────────────────────────────
+
+    /**
+     * Set after a completeNode call returns with completion flags.
+     * Priority enforced by useCelebrationOrchestrator: course > unit > lesson.
+     * Pass level: null to clear after the surface is dismissed.
+     */
+    setPendingCelebration(
+      state,
+      action: PayloadAction<{ courseId: string; level: 'lesson' | 'unit' | 'course' | null }>,
+    ) {
+      const { courseId, level } = action.payload;
+      state.pendingCelebration[courseId] = level;
+    },
+
+    /**
+     * Mark the course finale as seen for a given courseId.
+     * Also persists to AsyncStorage so the flag survives app restarts.
+     */
+    markCourseFinaleSeen(
+      state,
+      action: PayloadAction<{ courseId: string }>,
+    ) {
+      const { courseId } = action.payload;
+      state.courseFinaleSeenByCourse[courseId] = true;
+      // ponytail: fire-and-forget — failure is non-blocking (FR-5.4)
+      AsyncStorage.setItem(`@rewards/finaleSeen/${courseId}`, "true").catch(
+        (err) => console.warn("[rewards] failed to persist finaleSeen", err),
+      );
+    },
   },
 });
 
@@ -225,6 +267,8 @@ export const {
   setActiveCourse,
   setPreviewSection,
   setActiveNodeModal,
+  setPendingCelebration,
+  markCourseFinaleSeen,
 } = journeySlice.actions;
 
 export default journeySlice.reducer;

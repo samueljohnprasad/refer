@@ -9,6 +9,8 @@ import { RADIUS } from "@/src/theme/radius";
 import { Text } from "@/src/components/ui/Text";
 import { NodeType } from "@/src/types/journey";
 import { DuolingoSvgNodeButton } from "./DuolingoSvgNodeButton";
+import ChestNode from "./ChestNode";
+import TrophyNode from "./TrophyNode";
 import {
   useJourneyNodeCellViewModel,
   type JourneyNodeCellProps,
@@ -113,6 +115,7 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
   dashedConfig,
   progressPercent,
   ringBackgroundColor,
+  pathNodeData,
 }: JourneyNodeCellViewProps): React.JSX.Element {
   const accessibilityLabel = `${item.label ?? "Lesson"} ${item.status}`;
   const nodeIcon = (
@@ -162,60 +165,66 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
         </Svg>
       ) : null}
 
-      <View
-        className="items-center justify-center"
-        style={{
-          position: "absolute",
-          left: nodePosition.x - halfSize,
-          top: nodePosition.y - halfSize,
-          width: size,
-          height: size,
-        }}
-      >
-        <CurrentNodeLabel
-          label={showTooltip ? item.label : undefined}
-          nodeSize={size}
-        />
-        {showProgressRing ? (
-          <View
-            className="absolute items-center justify-center"
-            style={{
-              width: ringSize,
-              height: ringSize,
-              left: ringOffset,
-              top: ringOffset,
-            }}
-          >
-            <AnimatedCircularProgress
-              size={ringSize}
-              width={settings.progressRingStroke}
-              fill={progressPercent}
-              tintColor={faceColor}
-              backgroundColor={ringBackgroundColor}
-              rotation={0}
-              lineCap="round"
-              dashedBackground={dashedConfig}
-              dashedTint={dashedConfig}
-            />
-          </View>
-        ) : null}
+      {item.type === NodeType.CHEST ? (
+        <ChestNode node={pathNodeData} position={nodePosition} onPress={handlePress} />
+      ) : item.type === NodeType.TROPHY ? (
+        <TrophyNode node={pathNodeData} position={nodePosition} onPress={handlePress} />
+      ) : (
+        <View
+          className="items-center justify-center"
+          style={{
+            position: "absolute",
+            left: nodePosition.x - halfSize,
+            top: nodePosition.y - halfSize,
+            width: size,
+            height: size,
+          }}
+        >
+          <CurrentNodeLabel
+            label={showTooltip ? item.label : undefined}
+            nodeSize={size}
+          />
+          {showProgressRing ? (
+            <View
+              className="absolute items-center justify-center"
+              style={{
+                width: ringSize,
+                height: ringSize,
+                left: ringOffset,
+                top: ringOffset,
+              }}
+            >
+              <AnimatedCircularProgress
+                size={ringSize}
+                width={settings.progressRingStroke}
+                fill={progressPercent}
+                tintColor={faceColor}
+                backgroundColor={ringBackgroundColor}
+                rotation={0}
+                lineCap="round"
+                dashedBackground={dashedConfig}
+                dashedTint={dashedConfig}
+              />
+            </View>
+          ) : null}
 
-        {isInteractive && item.type !== NodeType.CHEST ? (
-          <Link
-            href={{
-              pathname: "/tabs/screens/journey-flow",
-              params: { courseId, nodeId: item.id },
-            }}
-            asChild
-          >
-            <Link.Trigger>
-              <Link.AppleZoom>{button}</Link.AppleZoom>
-            </Link.Trigger>
-          </Link>
-        ) : (
-          button
-        )}
-      </View>
+          {isInteractive ? (
+            <Link
+              href={{
+                pathname: "/tabs/screens/journey-flow",
+                params: { courseId, nodeId: item.id },
+              }}
+              asChild
+            >
+              <Link.Trigger>
+                <Link.AppleZoom>{button}</Link.AppleZoom>
+              </Link.Trigger>
+            </Link>
+          ) : (
+            button
+          )}
+        </View>
+      )}
     </View>
   );
 });

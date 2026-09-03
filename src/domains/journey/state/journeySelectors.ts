@@ -38,6 +38,8 @@ import {
   selectUnitEntities,
   selectUnitIdParam,
   selectUnitsBySectionIndex,
+  selectPendingCelebrationMap,
+  selectCourseFinaleSeenMap,
 } from "./journeySelectorBase";
 
 interface RenderedUnitView {
@@ -728,4 +730,26 @@ export const selectActiveNodeModalId = createSelector(
     activeCourseId
       ? selectActiveNodeModalIdForCourse(state, activeCourseId)
       : null,
+);
+
+// ── Reward UI selectors ───────────────────────────────────────────────────────
+
+/**
+ * Returns the pending celebration level for a course, or null if none pending.
+ * Used by useJourneyMapController to decide which surface to show.
+ */
+export const selectPendingCelebration = createSelector(
+  [selectPendingCelebrationMap, selectCourseIdParam],
+  (pendingCelebration, courseId): 'lesson' | 'unit' | 'course' | null =>
+    pendingCelebration[courseId] ?? null,
+);
+
+/**
+ * Returns whether the full course finale has been seen for a given courseId.
+ * Used to skip the finale on re-entry after dismissal (FR-4.8).
+ */
+export const selectCourseFinaleSeen = createSelector(
+  [selectCourseFinaleSeenMap, selectCourseIdParam],
+  (courseFinaleSeenByCourse, courseId): boolean =>
+    courseFinaleSeenByCourse[courseId] ?? false,
 );

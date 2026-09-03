@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   useSharedValue,
   useAnimatedStyle,
@@ -35,13 +35,19 @@ export function useChestNodeViewModel({
   const size: number = NODE_SIZE.chest;
   const halfSize: number = size / 2;
   const isLocked: boolean = node.status === NodeStatus.LOCKED;
-  const isInteractive: boolean = !isLocked;
+  const isClaimed: boolean = node.status === NodeStatus.COMPLETED;
+  const isAvailable: boolean = !isLocked && !isClaimed;
+  
+  // opening state is transient (FR-2.4)
+  const [isOpening, setIsOpening] = useState(false);
+  const isInteractive: boolean = !isLocked && !isOpening;
+  
   const reducedMotion: boolean = useReducedMotion();
 
   const shineProgress = useSharedValue(0);
 
   useEffect(() => {
-    if (!isLocked && !reducedMotion) {
+    if (isAvailable && !isOpening && !reducedMotion) {
       shineProgress.value = withRepeat(
         withTiming(1, {
           duration: ANIMATION_TIMING.chestShine,
@@ -56,7 +62,7 @@ export function useChestNodeViewModel({
         void triggerIfEnabledSync("whisper", HAPTIC_INTENSITIES.WHISPER_SUBTLE);
       }
     }
-  }, [isLocked, shineProgress, reducedMotion]);
+  }, [isAvailable, isOpening, isLocked, shineProgress, reducedMotion]);
 
   const shineStyle = useAnimatedStyle(() => {
     const rotation: number = interpolate(shineProgress.value, [0, 1], [0, 360]);
@@ -77,14 +83,28 @@ export function useChestNodeViewModel({
     transform: [{ translateX: shakeX.value }],
   }));
 
-  const bodyColor: string = isLocked ? CHEST_COLORS.locked : CHEST_COLORS.body;
+  // FR-2.6: distinct visual for claimed
+  const bodyColor: string = isLocked
+    ? CHEST_COLORS.locked
+    : isClaimed
+    ? "#F59E0B" // flat gold, no shine
+    : CHEST_COLORS.body;
   const shadowFaceColor: string = darkenHex(bodyColor, 0.25);
 
   const handlePress = useCallback((e?: any) => {
     if (!isInteractive) return;
 
+    if (isClaimed) {
+      // Re-opening an already claimed chest is instant
+      onPress(node, e, bodyColor);
+      return;
+    }
+
+    setIsOpening(true);
+
     if (reducedMotion) {
       onPress(node, e, bodyColor);
+      setIsOpening(false);
       return;
     }
 
@@ -96,16 +116,19 @@ export function useChestNodeViewModel({
       withTiming(3, { duration: d }),
       withTiming(0, { duration: d }, (finished) => {
         if (finished) {
+          runOnJS(setIsOpening)(false);
           runOnJS(onPress)(node, e, bodyColor);
         }
       }),
     );
-  }, [isInteractive, shakeX, reducedMotion, onPress, node, bodyColor]);
+  }, [isInteractive, isClaimed, shakeX, reducedMotion, onPress, node, bodyColor]);
 
   return {
     size,
     halfSize,
     isLocked,
+    isClaimed,
+    isOpening,
     isInteractive,
     shineStyle,
     shakeStyle,

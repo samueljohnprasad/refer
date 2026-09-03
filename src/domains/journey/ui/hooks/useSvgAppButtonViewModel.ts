@@ -36,6 +36,8 @@ export type SvgAppButtonProps = {
   contentContainerStyle?: StyleProp<ViewStyle>;
   onPressIn?: () => void;
   onPressOut?: () => void;
+  accessibilityRole?: import("react-native").AccessibilityRole;
+  accessibilityLabel?: string;
 };
 
 const clampRadius = (value: number, width: number, height: number): number =>
@@ -90,6 +92,8 @@ export function useSvgAppButtonViewModel({
   contentContainerStyle,
   onPressIn,
   onPressOut,
+  accessibilityRole,
+  accessibilityLabel,
 }: SvgAppButtonProps) {
   const internalPressY = useSharedValue(0);
   const pressY = sharedPressY ?? internalPressY;
@@ -181,6 +185,8 @@ export function useSvgAppButtonViewModel({
     strokeRightColor,
     pressDepth,
     disabled,
+    accessibilityRole,
+    accessibilityLabel,
     children,
     style,
     contentContainerStyle,

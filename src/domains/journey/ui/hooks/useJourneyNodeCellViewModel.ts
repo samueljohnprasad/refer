@@ -122,5 +122,6 @@ export function useJourneyNodeCellViewModel({
     dashedConfig: { width: dashWidth, gap: dashGap },
     progressPercent: (item.progress ?? 0) * 100,
     ringBackgroundColor: isDark ? SAGE[300] : SAGE[700],
+    pathNodeData,
   };
 }
