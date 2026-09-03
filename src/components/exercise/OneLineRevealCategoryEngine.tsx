@@ -7,7 +7,8 @@ import {
 } from "@/src/components/exercise/courseExerciseContent";
 import {
   COURSE_EXERCISE_FONTS,
-  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS,
+} from "@/src/components/exercise/courseExerciseTheme";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
@@ -48,16 +49,16 @@ export function OneLineRevealCategoryEngine({
           </Text>
         ) : null}
       </View>
-      <Text style={styles.note}>
-        One idea, one tap. That’s the whole exercise.
-      </Text>
-      {revealed ? (
+      
+      {revealed && readString(content.why) ? (
         <View style={styles.whyCard}>
           <View style={styles.checkCircle}>
             <Text style={styles.check}>✓</Text>
           </View>
           <View style={styles.whyCopy}>
-            <Text style={styles.whyTitle}>Why it matters</Text>
+            <Text style={styles.whyTitle}>
+              {readString(content.whyTitle) ?? "Why it matters"}
+            </Text>
             <Text style={styles.whyBody}>{readString(content.why)}</Text>
           </View>
         </View>
@@ -80,11 +81,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 26,
     paddingVertical: 30,
     borderRadius: 28,
+    borderWidth: 2,
+    borderColor: SEMANTIC_COLORS.border.strong,
     backgroundColor: SEMANTIC_COLORS.surface.primary,
-    shadowColor: SEMANTIC_COLORS.shadow,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.12,
-    shadowRadius: 7,
   },
   firstLine: {
     color: SEMANTIC_COLORS.text.primary,
@@ -93,17 +92,10 @@ const styles = StyleSheet.create({
     lineHeight: 31,
   },
   secondLine: {
-    color: SEMANTIC_COLORS.brand.pressed,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
     fontSize: 24,
     lineHeight: 31,
-  },
-  note: {
-    marginTop: 12,
-    color: SEMANTIC_COLORS.text.secondary,
-    fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 12.5,
-    textAlign: "center",
   },
   whyCard: {
     flexDirection: "row",
