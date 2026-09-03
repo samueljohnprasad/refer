@@ -748,6 +748,8 @@ WITH curriculum AS (
           "instruction": "Tap to complete the idea.",
           "firstLine": "Breathe in gently for 4.",
           "secondLine": "Let the breath out for 6.",
+          "completionNote": "One idea, one tap. That’s the whole exercise.",
+          "whyTitle": "Why it matters",
           "why": "The slightly longer exhale gives you a simple, general-purpose calming cue. Next comes Box Breathing for sharper daytime stress."
         }
       },
