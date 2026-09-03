@@ -1,4 +1,4 @@
-UPDATE learning_nodes
+UPDATE exercises
 SET content = jsonb_set(
   jsonb_set(
     content - 'secondLine' - 'completionNote' - 'whyTitle' - 'why',
@@ -9,7 +9,7 @@ SET content = jsonb_set(
 )
 WHERE type = 'one_line_reveal' AND content->>'title' = 'Keep one rhythm';
 
-UPDATE learning_nodes
+UPDATE exercises
 SET content = jsonb_set(
   jsonb_set(
     content - 'secondLine' - 'why',
