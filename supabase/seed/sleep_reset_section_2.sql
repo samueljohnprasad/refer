@@ -371,33 +371,33 @@ WITH curriculum AS (
             {
               "id": "on-mode",
               "kicker": "MODE 1",
-              "title": "ON keeps you alert",
+              "title": "ALERT keeps you ready",
               "body": "Fight-or-flight helps the body respond to pressure. The heart can race and muscles can tense."
             },
             {
               "id": "off-mode",
               "kicker": "MODE 2",
-              "title": "OFF helps you settle",
+              "title": "SETTLED supports rest",
               "body": "Rest-and-digest supports a calmer body. This is the direction sleep needs."
             },
             {
               "id": "night-switch",
               "kicker": "THE NIGHT CLUE",
-              "title": "Stress can keep the switch on",
+              "title": "Stress can keep you alert",
               "body": "Work thoughts, caffeine, and bright screens can keep the body alert even when you feel tired."
             }
           ],
           "recall": {
-            "prompt": "Which mode helps the body settle for sleep?",
-            "correctOptionId": "off",
+            "prompt": "Which state helps the body settle for sleep?",
+            "correctOptionId": "settled",
             "options": [
-              {"id": "on", "label": "Fight-or-flight — ON"},
-              {"id": "off", "label": "Rest-and-digest — OFF"}
+              {"id": "alert", "label": "ALERT — ready for action"},
+              {"id": "settled", "label": "SETTLED — ready for rest"}
             ]
           },
           "feedback_correct": "Right. Rest-and-digest supports the calmer state sleep needs.",
           "feedback_incorrect": "Fight-or-flight keeps the body ready for action. Rest-and-digest is the calmer direction.",
-          "workedExample": "A racing heart and clenched jaw point to ON. Slower breathing can help the body move toward OFF."
+          "workedExample": "A racing heart and clenched jaw can point to ALERT. Slower breathing can help the body move toward SETTLED."
         }
       },
       {
@@ -414,7 +414,7 @@ WITH curriculum AS (
         "content": {
           "category": "course_choice",
           "format": "course_choice",
-          "title": "Read the ON signal",
+          "title": "Read the alert signal",
           "instruction": "Choose what the body is doing.",
           "prompt": "When fight-or-flight is active, what is most likely?",
           "options": [
@@ -455,31 +455,29 @@ WITH curriculum AS (
         "content": {
           "category": "course_choice",
           "format": "course_choice",
-          "title": "Name the bedtime mode",
-          "instruction": "Follow the body clues.",
-          "context": "It is 11pm. Work stress is replaying. Your heart is racing, your jaw is clenched, and you feel wired.",
-          "prompt": "Which nervous-system direction fits best?",
+          "title": "Read the body clues",
+          "context": "It is 11pm. You feel tired, but work keeps replaying. Your heart is racing and your jaw is tight.",
+          "prompt": "Which state is this body leaning toward?",
+          "hideSkipAction": true,
           "options": [
             {
-              "id": "on",
-              "label": "Fight-or-flight — ON",
+              "id": "alert",
+              "label": "ALERT",
               "isCorrect": true,
-              "feedback": "Exactly. The heart, jaw, and wired feeling all point to a body on guard."
+              "feedback": "Yes — those clues point toward ALERT."
             },
             {
-              "id": "off",
-              "label": "Rest-and-digest — OFF",
-              "feedback": "A calmer heart and softer muscles would fit OFF more closely."
+              "id": "settled",
+              "label": "SETTLED",
+              "feedback": "Feeling tired does not always mean the body is settled. A racing heart and tight jaw point toward ALERT."
             },
             {
-              "id": "both",
-              "label": "There is no useful pattern here",
-              "feedback": "The body clues form a clear pattern: alertness is still high."
+              "id": "not-enough",
+              "label": "Not enough clues yet",
+              "feedback": "One clue can be unclear. Here, three clues point the same way: replaying thoughts, a racing heart, and a tight jaw."
             }
           ],
-          "feedbackTitle": "Follow the body, not blame",
-          "feedbackTakeaway": "You can spot the ON pattern from physical clues.",
-          "workedExample": "The body is acting as if action is needed. A calming cue can send a different signal without forcing sleep.",
+          "workedExample": "The replaying thoughts, racing heart, and tight jaw all point toward ALERT. Tired does not always mean settled.",
           "primaryLabel": "Check answer"
         }
       },
@@ -498,13 +496,26 @@ WITH curriculum AS (
           "category": "private_check",
           "format": "private_check",
           "title": "When bedtime feels wired",
-          "instruction": "Tick any clues you have noticed. Choose none if they do not fit.",
+          "instruction": "Which of these have you noticed at bedtime?\\nSelect any that fit.",
           "items": [
-            "Work or tomorrow keeps replaying",
-            "My heart feels faster",
+            "Work or tomorrow keeps replaying in my mind",
+            "My heart feels like it’s beating faster",
             "My jaw or shoulders feel tight",
             "I feel tired and alert at the same time"
           ],
+          "revealItems": [
+            "Work thoughts",
+            "Faster heartbeat",
+            "Tight jaw or shoulders",
+            "Tired + alert"
+          ],
+          "noneOptionLabel": "None of these",
+          "privacyLabel": "Private to you · Not scored",
+          "revealTitle": "Your alert clues",
+          "revealBody": "These can show up when your system is leaning toward ALERT rather than SETTLED.",
+          "noneRevealTitle": "None of these fit right now",
+          "noneRevealBody": "These are only examples — your signals may look different.",
+          "primaryLabel": "Continue",
           "feedbackTitle": "Clues, not failures",
           "feedback": "These signals can show that the body is still on guard. The next lesson gives you one gentle way to respond."
         }
@@ -513,7 +524,7 @@ WITH curriculum AS (
         "source_id": "u2_l10_clarity_check",
         "node_source_id": "u2_1_breathing-n1",
         "order_index": 4,
-        "type": "intuition_check",
+        "type": "reflection_choice",
         "phase": "cooldown",
         "duration_seconds": 15,
         "scaffold_level": 1,
@@ -521,25 +532,19 @@ WITH curriculum AS (
         "is_scored": false,
         "concept": "stress_response_basics",
         "content": {
-          "category": "intuition_check",
-          "format": "intuition_check",
+          "category": "reflection_choice",
+          "format": "reflection_choice",
           "completionMode": "direct",
-          "title": "Does the switch idea help?",
-          "instruction": "Choose the closest answer. This is not scored.",
-          "prompt": "Does ON and OFF make a wired night easier to understand?",
+          "progressRole": "post_lesson",
+          "progressLabel": "Complete",
+          "title": "Did alert and settled help explain a wired night?",
           "options": [
-            {"id": "not-yet", "label": "Not yet"},
+            {"id": "not-really", "label": "Not really"},
             {"id": "a-little", "label": "A little"},
-            {"id": "somewhat", "label": "Somewhat"},
-            {"id": "clear", "label": "Clear"},
-            {"id": "very-clear", "label": "Very clear"}
+            {"id": "helped", "label": "Yes, it helped"}
           ],
-          "bestOptionId": "very-clear",
-          "revealTitle": "A useful first map",
-          "reveal": "You can now name the alert direction and the calmer direction.",
-          "alternateReveal": "Keep the simple map: racing and tense points toward ON; slower and softer points toward OFF.",
           "primaryLabel": "Continue",
-          "waitingPrimaryLabel": "Choose above"
+          "skipLabel": "Skip reflection"
         }
       },
       {
@@ -556,20 +561,20 @@ WITH curriculum AS (
         "content": {
           "category": "course_choice",
           "format": "course_choice",
-          "title": "Bring the switch back",
+          "title": "Bring the model back",
           "instruction": "Choose the calmer direction.",
-          "prompt": "Which mode tells the body that it can stand down?",
+          "prompt": "Which state tells the body that it can stand down?",
           "options": [
             {
-              "id": "off",
-              "label": "Rest-and-digest — OFF",
+              "id": "settled",
+              "label": "SETTLED — rest-and-digest",
               "isCorrect": true,
               "feedback": "Right. This is the calmer direction belly breathing supports."
             },
             {
-              "id": "on",
-              "label": "Fight-or-flight — ON",
-              "feedback": "ON keeps the body ready for action."
+              "id": "alert",
+              "label": "ALERT — fight-or-flight",
+              "feedback": "ALERT keeps the body ready for action."
             }
           ],
           "feedbackTitle": "The calmer direction",
@@ -592,34 +597,38 @@ WITH curriculum AS (
           "category": "learn_cards",
           "format": "learn_cards",
           "title": "The belly breath",
-          "instruction": "Learn the shape, reason, and rhythm.",
+          "instruction": "Three parts, then try it from memory.",
           "cards": [
             {
               "id": "shape",
-              "kicker": "THE SHAPE",
+              "kicker": "SHAPE",
               "title": "Let the belly expand",
-              "body": "Breathe slowly so the belly moves more than the upper chest. Keep the breath comfortable, not forced."
+              "body": "Breathe slowly so the belly moves more than the upper chest. Keep the breath comfortable, not forced.",
+              "primaryLabel": "See why"
             },
             {
               "id": "reason",
-              "kicker": "THE SIGNAL",
-              "title": "A slower rhythm can feel safer",
-              "body": "Slow breathing can support the rest-and-digest direction and help the body settle."
+              "kicker": "WHY IT HELPS",
+              "title": "A slower rhythm can help you settle",
+              "body": "Slow, comfortable breathing can support the SETTLED direction.",
+              "primaryLabel": "See the rhythm"
             },
             {
               "id": "rhythm",
-              "kicker": "THE RHYTHM",
+              "kicker": "RHYTHM",
               "title": "In for 4, out for 6",
-              "body": "Let the exhale last a little longer than the inhale. Stop or return to normal breathing if you feel uncomfortable."
+              "body": "Let the exhale last a little longer. Return to normal breathing if this feels uncomfortable.",
+              "primaryLabel": "Try from memory"
             }
           ],
           "recall": {
+            "instruction": "Without looking back, choose the best answer.",
             "prompt": "Which rhythm matches this belly breath?",
             "correctOptionId": "four-six",
             "options": [
-              {"id": "four-six", "label": "In for 4, out for 6"},
-              {"id": "fast", "label": "Fast, shallow breaths"},
-              {"id": "hold", "label": "Hold as long as possible"}
+              {"id": "four-six", "label": "In for 4, out for 6", "feedback": "Yes. The exhale lasts a little longer: in for 4, out for 6."},
+              {"id": "six-four", "label": "In for 6, out for 4", "feedback": "That reverses the rhythm. Here, the exhale is the longer part: in for 4, out for 6."},
+              {"id": "four-four", "label": "In for 4, out for 4", "feedback": "That makes both parts equal. This exercise uses a slightly longer exhale: in for 4, out for 6."}
             ]
           },
           "feedback_correct": "Right. The exhale is slightly longer and the breath stays comfortable.",
@@ -745,12 +754,22 @@ WITH curriculum AS (
           "format": "one_line_reveal",
           "completionMode": "direct",
           "title": "Keep one rhythm",
-          "instruction": "Tap to complete the idea.",
+          "instruction": "What should you do next?",
           "firstLine": "Breathe in gently for 4.",
-          "secondLine": "Let the breath out for 6.",
-          "completionNote": "One idea, one tap. That’s the whole exercise.",
-          "whyTitle": "Why it matters",
-          "why": "The slightly longer exhale gives you a simple, general-purpose calming cue. Next comes Box Breathing for sharper daytime stress."
+          "options": [
+            {
+              "id": "opt1",
+              "label": "Let the breath out for 6.",
+              "isCorrect": true,
+              "feedback": "The slightly longer exhale gives you a simple, general-purpose calming cue. Next comes Box Breathing for sharper daytime stress."
+            },
+            {
+              "id": "opt2",
+              "label": "Hold your breath for 4.",
+              "isCorrect": false,
+              "feedback": "Holding comes later in Box Breathing. For basic calming, just focus on a longer exhale."
+            }
+          ]
         }
       },
       {
@@ -1212,10 +1231,22 @@ WITH curriculum AS (
           "format": "one_line_reveal",
           "completionMode": "direct",
           "title": "Keep the difference clear",
-          "instruction": "Tap to complete the idea.",
+          "instruction": "What does the next tool do?",
           "firstLine": "A body scan notices tension.",
-          "secondLine": "The next tool actively releases it.",
-          "why": "Body scan is awareness. Progressive Muscle Relaxation adds deliberate tension and release."
+          "options": [
+            {
+              "id": "opt1",
+              "label": "The next tool actively releases it.",
+              "isCorrect": true,
+              "feedback": "Body scan is awareness. Progressive Muscle Relaxation adds deliberate tension and release."
+            },
+            {
+              "id": "opt2",
+              "label": "The next tool ignores it.",
+              "isCorrect": false,
+              "feedback": "Not quite. We don't ignore tension; we use Progressive Muscle Relaxation to actively release it."
+            }
+          ]
         }
       },
       {
