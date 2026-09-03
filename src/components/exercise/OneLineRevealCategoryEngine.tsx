@@ -50,7 +50,7 @@ export function OneLineRevealCategoryEngine({
         ) : null}
       </View>
       
-      {revealed && readString(content.why) ? (
+      {revealed ? (
         <View style={styles.whyCard}>
           <View style={styles.checkCircle}>
             <Text style={styles.check}>✓</Text>
