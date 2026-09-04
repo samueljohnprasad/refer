@@ -23,8 +23,8 @@ export const TrophyNodeView = React.memo(function TrophyNodeView({
   const size = NODE_SIZE.chest;
   const halfSize = size / 2;
 
-  const handlePress = (e?: any) => {
-    onPress(node, e, TROPHY_BODY_COLOR);
+  const handlePress = () => {
+    onPress(node);
   };
 
   return (

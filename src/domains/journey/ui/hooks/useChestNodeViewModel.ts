@@ -91,19 +91,24 @@ export function useChestNodeViewModel({
     : CHEST_COLORS.body;
   const shadowFaceColor: string = darkenHex(bodyColor, 0.25);
 
-  const handlePress = useCallback((e?: any) => {
+  const handleOpenComplete = useCallback(() => {
+    setIsOpening(false);
+    onPress(node);
+  }, [node, onPress]);
+
+  const handlePress = useCallback(() => {
     if (!isInteractive) return;
 
     if (isClaimed) {
       // Re-opening an already claimed chest is instant
-      onPress(node, e, bodyColor);
+      onPress(node);
       return;
     }
 
     setIsOpening(true);
 
     if (reducedMotion) {
-      onPress(node, e, bodyColor);
+      onPress(node);
       setIsOpening(false);
       return;
     }
@@ -116,12 +121,11 @@ export function useChestNodeViewModel({
       withTiming(3, { duration: d }),
       withTiming(0, { duration: d }, (finished) => {
         if (finished) {
-          runOnJS(setIsOpening)(false);
-          runOnJS(onPress)(node, e, bodyColor);
+          runOnJS(handleOpenComplete)();
         }
       }),
     );
-  }, [isInteractive, isClaimed, shakeX, reducedMotion, onPress, node, bodyColor]);
+  }, [isInteractive, isClaimed, shakeX, reducedMotion, onPress, node, handleOpenComplete]);
 
   return {
     size,

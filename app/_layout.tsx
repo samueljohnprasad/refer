@@ -1,6 +1,15 @@
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
-// import FontAwesome from "@expo/vector-icons/FontAwesome";
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from "react-native-reanimated";
+
+// Disable Reanimated strict mode to prevent warnings from libraries like @gorhom/bottom-sheet
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false,
+});
 import {
   DarkTheme,
   DefaultTheme,
