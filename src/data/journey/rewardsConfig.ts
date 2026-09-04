@@ -200,12 +200,12 @@ export const REWARDS_CONFIG: RewardsConfig = {
     "4684990b-bc14-799c-012a-9766336342f2": {
       courseId: "4684990b-bc14-799c-012a-9766336342f2",
       acknowledgement:
-        "You’ve built a clearer model of sleep — and practical tools you can return to.",
+        "You’ve built a clearer understanding of sleep — and practical tools you can return to.",
       capabilitySummary: [
         "Understand what builds sleep pressure",
         "Notice what can disrupt your sleep rhythm",
         "See how light shifts your body clock",
-        "Build a wind-down routine that works for you",
+        "Build a wind-down routine that fits your life",
       ],
     },
   },
