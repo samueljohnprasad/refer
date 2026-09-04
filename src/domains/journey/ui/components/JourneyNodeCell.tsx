@@ -60,6 +60,7 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
         position={nodePosition}
         size={NODE_DISPLAY_SIZE}
         label={item.label}
+        iconName={item.icon}
         onPress={handlePress}
         accessibilityLabel={nodeA11yLabel(item.type, nodeState)}
       />

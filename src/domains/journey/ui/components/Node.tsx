@@ -29,6 +29,7 @@ export interface NodeProps {
   position: NodePosition;
   size: number;
   label?: string;
+  iconName?: string | null;
   onPress: (node?: any) => void;
   accessibilityLabel: string;
 }
@@ -44,10 +45,11 @@ export const Node = React.memo(function Node({
   position,
   size,
   label,
+  iconName,
   onPress,
   accessibilityLabel,
 }: NodeProps) {
-  const vm = useNodeViewModel(type, state, null);
+  const vm = useNodeViewModel(type, state, iconName ?? null);
   const yOffset = useSharedValue(0);
   const opacity = useSharedValue(1);
   const reduceMotion = useReducedMotion();
@@ -117,6 +119,9 @@ export const Node = React.memo(function Node({
       }
       if (vm.iconName === "award") {
         return <FontAwesome5 name="award" solid size={28} color={vm.iconColor as string} />;
+      }
+      if (vm.iconName === "star") {
+        return <FontAwesome5 name="star" solid size={24} color={vm.iconColor as string} />;
       }
       return <Feather name={vm.iconName as any} size={28} color={vm.iconColor as string} />;
     }
