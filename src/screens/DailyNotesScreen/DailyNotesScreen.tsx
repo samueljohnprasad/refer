@@ -20,7 +20,7 @@ import {
   endOfMonth,
 } from "date-fns";
 import { useAtom, useSetAtom } from "jotai";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "@/components/ui/safe-area-view";
 import * as Haptics from "expo-haptics";
 import Animated, {
   interpolate,

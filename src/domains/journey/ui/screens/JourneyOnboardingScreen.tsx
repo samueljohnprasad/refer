@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Pressable, ScrollView } from "react-native";
 import { Text } from "@/src/components/ui/Text";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { Feather } from "@expo/vector-icons";
 import {
   useJourneyOnboardingViewModel,

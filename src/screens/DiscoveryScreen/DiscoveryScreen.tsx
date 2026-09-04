@@ -18,7 +18,7 @@ import { MaterialCommunityIcons, Feather, Entypo } from "@expo/vector-icons";
 import { Box } from "@/components/ui/box";
 import { AnimatedFireIcon, GrayFireIcon } from "@/src/components/ui/AnimatedStatIcon";
 import { useAtom, useSetAtom } from "jotai";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "@/components/ui/safe-area-view";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,

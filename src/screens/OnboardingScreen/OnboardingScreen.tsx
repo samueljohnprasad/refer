@@ -44,7 +44,7 @@ import JourneyMapContainer from "@/src/domains/journey/ui/JourneyMapContainer";
 import LetterFromFutureStep from "./steps/LetterFromFutureStep";
 import WelcomeToHappyStep from "./steps/WelcomeToHappyStep";
 import RevenueCatUI from "react-native-purchases-ui";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "@/components/ui/safe-area-view";
 import type { RemindersConfig } from "@/src/components/lib/notification-reminders";
 
 interface OnboardingScreenProps {

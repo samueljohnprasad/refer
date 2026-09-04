@@ -1,7 +1,7 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import MicControlContainer from "./MicControlContainer";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import Animated, {

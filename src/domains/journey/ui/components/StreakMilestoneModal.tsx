@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Modal } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "@/components/ui/safe-area-view";
 import Animated from "react-native-reanimated";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { ConfettiExplosion } from "@/src/components/animations/ConfettiExplosion";
