@@ -5,8 +5,6 @@ import { selectCourse, selectCourseFinaleSeen } from "@/src/domains/journey/stat
 import { markCourseFinaleSeen } from "@/src/domains/journey/state/journeySlice";
 import { getCourseRewardContent, FALLBACK_ACKNOWLEDGEMENT } from "@/src/data/journey/rewardsConfig";
 import { CourseFinaleScreen } from "@/src/domains/journey/ui/screens/CourseFinaleScreen";
-import { triggerIfEnabledSync } from "@/lib/haptics/hapticUtils";
-import { HAPTIC_INTENSITIES } from "@/lib/haptics/hapticConfig";
 
 export default function FinaleRoute() {
   const { courseId } = useLocalSearchParams<{ courseId: string }>();
@@ -25,7 +23,6 @@ export default function FinaleRoute() {
   }, [hasSeenFinale]);
 
   const handleDismiss = () => {
-    void triggerIfEnabledSync("bloom", HAPTIC_INTENSITIES.BLOOM_STRONG);
     if (courseId) {
       dispatch(markCourseFinaleSeen({ courseId }));
     }

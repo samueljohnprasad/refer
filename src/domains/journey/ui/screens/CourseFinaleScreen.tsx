@@ -1,14 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, ScrollView } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Text } from "@/src/components/ui/Text";
 import { SafeAreaView } from "@/src/components/tw";
 import { Button } from "@/src/components/ui/Button";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { useReducedMotion } from "react-native-reanimated";
 import { MotiView } from 'moti';
-import { triggerIfEnabledSync } from "@/lib/haptics/hapticUtils";
-import { HAPTIC_INTENSITIES } from "@/lib/haptics/hapticConfig";
 
 export interface CourseFinaleScreenProps {
   courseTitle: string;
@@ -17,22 +14,13 @@ export interface CourseFinaleScreenProps {
   onDismiss: () => void;
 }
 
+// ponytail: remove entrance haptics per user request
 export function CourseFinaleScreen({
   courseTitle,
   acknowledgement,
   capabilitySummary,
   onDismiss,
 }: CourseFinaleScreenProps): React.JSX.Element {
-  const reduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    if (reduceMotion) return;
-    const timer = setTimeout(() => {
-      triggerIfEnabledSync("bloom", HAPTIC_INTENSITIES.BLOOM);
-    }, 450); // Matches the badge settling moment (delay 150 + duration ~300)
-    return () => clearTimeout(timer);
-  }, [reduceMotion]);
-  
   return (
     <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-brand-canvas" accessibilityViewIsModal={true} style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
       <ScrollView
