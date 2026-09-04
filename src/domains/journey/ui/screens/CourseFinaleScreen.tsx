@@ -1,5 +1,6 @@
 import React from "react";
 import { View, ScrollView } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import { Text } from "@/src/components/ui/Text";
 import { SafeAreaView } from "@/src/components/tw";
 import { SvgAppButton } from "@/src/domains/journey/ui/components/svg-app-button";
@@ -44,8 +45,6 @@ export function CourseFinaleScreen({
               backgroundColor: "#FEF3C7",
               alignItems: "center",
               justifyContent: "center",
-              borderWidth: 4,
-              borderColor: "#F59E0B",
               marginBottom: 24,
             }}
           >
@@ -58,7 +57,7 @@ export function CourseFinaleScreen({
           >
             Course Complete
           </Text>
-          <Text className="text-lg font-bold text-brand-strong text-center mb-6">
+          <Text className="text-lg font-semibold text-brand-strong text-center mb-6">
             {courseTitle}
           </Text>
           
@@ -66,15 +65,17 @@ export function CourseFinaleScreen({
             {acknowledgement}
           </Text>
 
-          <View className="w-full bg-brand-soft p-6 rounded-2xl mb-8">
+          <View className="w-full mb-8">
             <Text className="text-base text-ink font-bold mb-4">
               You now have the tools to:
             </Text>
-            <View className="flex-col gap-3">
+            <View className="flex-col gap-4">
               {capabilitySummary.map((item, index) => (
-                <View key={index} className="flex-row items-start pr-4">
-                  <Text className="text-brand-strong mr-3 mt-1 font-extrabold">•</Text>
-                  <Text className="text-base text-ink font-semibold leading-5">{item}</Text>
+                <View key={index} className="flex-row items-start">
+                  <View className="mt-1 mr-3 h-4 w-4 items-center justify-center rounded-full bg-brand-soft">
+                    <Feather name="check" size={10} color={SEMANTIC_COLORS.brand.primary as string} />
+                  </View>
+                  <Text className="text-base text-ink flex-1 leading-6">{item}</Text>
                 </View>
               ))}
             </View>
