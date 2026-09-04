@@ -200,12 +200,12 @@ export const REWARDS_CONFIG: RewardsConfig = {
     "4684990b-bc14-799c-012a-9766336342f2": {
       courseId: "4684990b-bc14-799c-012a-9766336342f2",
       acknowledgement:
-        "You've worked through the core science of sleep. These are skills you can return to any time.",
+        "You’ve built a clearer model of sleep — and practical tools you can return to.",
       capabilitySummary: [
-        "Explain the two-process model of sleep regulation.",
-        "Identify common behaviours that interfere with sleep pressure.",
-        "Describe the role of light in setting your circadian rhythm.",
-        "Apply wind-down strategies based on what you've learned.",
+        "Understand what builds sleep pressure",
+        "Notice what can disrupt your sleep rhythm",
+        "See how light shifts your body clock",
+        "Build a wind-down routine that works for you",
       ],
     },
   },

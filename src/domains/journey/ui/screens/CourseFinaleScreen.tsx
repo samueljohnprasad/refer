@@ -3,11 +3,11 @@ import { View, ScrollView } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Text } from "@/src/components/ui/Text";
 import { SafeAreaView } from "@/src/components/tw";
-import { SvgAppButton } from "@/src/domains/journey/ui/components/svg-app-button";
-import { APP_FONT_FAMILIES } from "@/src/theme/typography";
+import { Button } from "@/src/components/ui/Button";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { ConfettiExplosion } from "@/src/components/animations/ConfettiExplosion";
 import { useReducedMotion } from "react-native-reanimated";
+import { MotiView } from 'moti';
 
 export interface CourseFinaleScreenProps {
   courseTitle: string;
@@ -37,19 +37,22 @@ export function CourseFinaleScreen({
         showsVerticalScrollIndicator={false}
       >
         <View className="items-center mb-8">
-          <View
+          <MotiView
+            from={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: 'spring', damping: 15, delay: 100 }}
             style={{
-              width: 100,
-              height: 100,
-              borderRadius: 50,
-              backgroundColor: "#FEF3C7",
+              width: 80,
+              height: 80,
+              borderRadius: 40,
+              backgroundColor: SEMANTIC_COLORS.brand.soft as string,
               alignItems: "center",
               justifyContent: "center",
               marginBottom: 24,
             }}
           >
-            <Text className="text-5xl">👑</Text>
-          </View>
+            <Feather name="award" size={36} color={SEMANTIC_COLORS.brand.primary as string} />
+          </MotiView>
           
           <Text
             className="text-3xl font-extrabold text-ink text-center mb-2"
@@ -57,7 +60,7 @@ export function CourseFinaleScreen({
           >
             Course Complete
           </Text>
-          <Text className="text-lg font-semibold text-brand-strong text-center mb-6">
+          <Text className="text-base font-medium text-brand-strong text-center mb-6">
             {courseTitle}
           </Text>
           
@@ -66,8 +69,8 @@ export function CourseFinaleScreen({
           </Text>
 
           <View className="w-full mb-8">
-            <Text className="text-base text-ink font-bold mb-4">
-              You now have the tools to:
+            <Text className="text-xs text-ink-muted font-bold tracking-widest uppercase mb-4">
+              WHAT YOU'RE TAKING WITH YOU
             </Text>
             <View className="flex-col gap-4">
               {capabilitySummary.map((item, index) => (
@@ -84,29 +87,12 @@ export function CourseFinaleScreen({
       </ScrollView>
 
       <View className="px-6 pb-6 pt-2">
-        <SvgAppButton
-          width="100%"
-          height={56}
-          color="#45A802"
-          backgroundColor="#58CC02"
+        <Button
+          label="BACK TO JOURNEY"
           onPress={onDismiss}
-          accessibilityRole="button"
-          accessibilityLabel="Done"
-          contentContainerStyle={{
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text
-            style={{
-              color: "#FFFFFF",
-              fontFamily: APP_FONT_FAMILIES.semiBold,
-              fontSize: 18,
-            }}
-          >
-            Done
-          </Text>
-        </SvgAppButton>
+          variant="primary"
+          fullWidth
+        />
       </View>
     </SafeAreaView>
   );
