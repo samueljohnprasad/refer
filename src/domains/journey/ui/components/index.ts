@@ -7,7 +7,6 @@ export { default as JourneyHeader } from "./JourneyHeader";
 export { default as JourneyLoadingSkeleton } from "./JourneyLoadingSkeleton";
 export { default as NodeCompletionModal } from "./NodeCompletionModal";
 export { default as MascotBubble } from "./MascotBubble";
-export { default as ChestNode } from "./ChestNode";
 export { default as ChestRewardModal } from "./ChestRewardModal";
 export { default as UnitCompleteModal } from "./UnitCompleteModal";
 export { default as ScrollToActiveButton } from "./ScrollToActiveButton";
