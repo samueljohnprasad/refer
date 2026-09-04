@@ -4,7 +4,7 @@ import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import * as Updates from "expo-updates";
 import Animated, { FadeInUp, FadeOutUp } from "react-native-reanimated";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 import { HapticManager } from "@/lib/haptics/HapticManager";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { SparklesIcon } from "@hugeicons/core-free-icons";

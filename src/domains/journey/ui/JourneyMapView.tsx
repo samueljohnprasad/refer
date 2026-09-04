@@ -4,7 +4,7 @@ import { Stack } from "expo-router";
 import Animated from "react-native-reanimated";
 import { AmbientTapDust } from "@/src/components/ui/AmbientTapDust";
 import { GlassView } from "expo-glass-effect";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 
 import CourseCatalogSheet from "./components/CourseCatalogSheet";
 import { HomeMainButton } from "./components/home-main-button";

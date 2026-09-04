@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 import { Stack, useRouter } from "expo-router";
 import {
   Host,

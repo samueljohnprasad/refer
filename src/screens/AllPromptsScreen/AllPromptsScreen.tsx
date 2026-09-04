@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 import { router } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import {

@@ -4,7 +4,7 @@ import { Stack, useRouter, useNavigation } from "expo-router";
 import { BlurView } from "expo-blur";
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "@/components/ui/Text";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 import * as Haptics from "expo-haptics";
 import useNotifications from "@/hooks/data/useNotifications";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 
 import { Button } from "@/src/components/ui/Button";
 import { Text } from "@/src/components/ui/Text";

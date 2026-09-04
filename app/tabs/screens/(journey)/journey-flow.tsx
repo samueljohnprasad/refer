@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { View } from "react-native";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { journeyApi } from "@/src/domains/journey/data/journeyApi";

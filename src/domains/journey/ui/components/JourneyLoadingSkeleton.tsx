@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 import Animated from "react-native-reanimated";
 import {
   useSkeletonBoxViewModel,

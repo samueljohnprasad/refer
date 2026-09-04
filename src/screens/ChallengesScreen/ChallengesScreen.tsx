@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowLeft02Icon, Coins01Icon, StarsIcon } from "@hugeicons/core-free-icons";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 import { router, Stack } from "expo-router";
 import { useChallenges } from "@/hooks/data/useChallenges";
 import { ChallengeCard } from "@/src/components/Challenges";

@@ -4,7 +4,7 @@ import { startOfWeek, endOfWeek } from "date-fns";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Text } from "@/components/ui/Text";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 import { router, Stack } from "expo-router";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {

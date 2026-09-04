@@ -8,7 +8,7 @@
 
 import React from "react";
 import { View } from "react-native";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 import { Text } from "@/src/components/ui/Text";
 import { LinearGradient } from "expo-linear-gradient";
 import { UnitData } from "@/src/types/journey/unit";

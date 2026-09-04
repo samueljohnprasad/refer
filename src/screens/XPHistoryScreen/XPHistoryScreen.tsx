@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 import { useXP } from "@/src/context/XPContext";
 import { router, Stack } from "expo-router";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";

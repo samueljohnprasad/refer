@@ -1,7 +1,7 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useEffect } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 import { LinearGradient as ExpoLinearGradient } from "expo-linear-gradient";
 import { GrainyGradient } from "@/src/components/grainy-gradient";
 import useEmotionsAnalysis, {

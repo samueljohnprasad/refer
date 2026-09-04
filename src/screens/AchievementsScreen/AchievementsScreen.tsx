@@ -24,7 +24,7 @@ import {
   Coins01Icon,
   InformationCircleIcon,
 } from "@hugeicons/core-free-icons";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useAchievements } from "@/hooks/data/useAchievements";

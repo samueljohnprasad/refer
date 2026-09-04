@@ -20,7 +20,7 @@ import {
   endOfMonth,
 } from "date-fns";
 import { useAtom, useSetAtom } from "jotai";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 import * as Haptics from "expo-haptics";
 import Animated, {
   interpolate,

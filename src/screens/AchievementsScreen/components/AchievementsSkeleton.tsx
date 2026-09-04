@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
   Easing,
 } from "react-native-reanimated";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 
 // ─── Reusable Animated Skeleton Element ───────────────────────────────────────
 

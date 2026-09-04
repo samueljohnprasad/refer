@@ -1,7 +1,7 @@
 import React from "react";
 import { View, ScrollView } from "react-native";
 import { Text } from "@/src/components/ui/Text";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { SafeAreaView } from "@/src/components/tw";
 import { SvgAppButton } from "@/src/domains/journey/ui/components/svg-app-button";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
@@ -24,7 +24,7 @@ export function CourseFinaleScreen({
   const reduceMotion = useReducedMotion();
   
   return (
-    <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-brand-canvas" accessibilityViewIsModal={true} >
+    <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-brand-canvas" accessibilityViewIsModal={true} style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
       <ConfettiExplosion
         isVisible={!reduceMotion}
         count={50}
