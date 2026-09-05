@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { View, Pressable } from "react-native";
 import { SafeAreaView } from "@/src/components/tw";
 import { Stack, useRouter } from "expo-router";
 import {
@@ -18,7 +18,8 @@ import {
   presentationDragIndicator,
 } from "@expo/ui/swift-ui/modifiers";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
+import { BlurView } from "expo-blur";
+import { ChevronLeft } from "lucide-react-native";
 import { IMessageStack } from "@/src/animations/imessage-stack";
 
 import { DaysTimelineTab } from "@/src/domains/timeline/ui/tabs/DaysTimelineTab";
@@ -52,11 +53,13 @@ export default function TimelinesScreen() {
       <Stack.Screen
         options={{
           headerTransparent: true,
-          headerBackButtonDisplayMode: "minimal",
-          headerLeft: () => null,
+          headerBackground: () => (
+            // A clear, transparent/frosted material that prevents harsh content collision
+            <BlurView intensity={70} tint="light" style={{ flex: 1, backgroundColor: 'rgba(255, 255, 255, 0.4)' }} />
+          ),
           headerTitle: () => (
-            <View className="items-center justify-center pt-2">
-              <Host style={{ width: 220, height: 32 }}>
+            <View className="items-center justify-center">
+              <Host style={{ width: 200, height: 32 }}>
                 <Picker
                   modifiers={[pickerStyle("segmented"), tint(SEMANTIC_COLORS.brand.pressed)]}
                   selection={selectedLabel}
@@ -69,11 +72,15 @@ export default function TimelinesScreen() {
               </Host>
             </View>
           ),
+          headerLeft: () => (
+            // Aligned native back button, small footprint but large hit target (Point 16, 17, 18)
+            <Pressable onPress={() => router.back()} className="px-2 py-2 ml-[-8px]">
+              <ChevronLeft size={24} color="#1A1A1A" strokeWidth={2.5} />
+            </Pressable>
+          ),
+          headerRight: () => null,
         }}
       />
-      <Stack.Toolbar placement="left">
-        <Stack.Toolbar.Button icon="chevron.left" onPress={() => router.back()} />
-      </Stack.Toolbar>
       <View className="flex-1">
         {activeTab === "days" && (
           <DaysTimelineTab onOpenModal={handleOpenModal} />

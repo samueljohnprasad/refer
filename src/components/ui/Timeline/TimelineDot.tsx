@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     borderColor: "#FFFFFF",
   },
   innerNeutral: {
-    backgroundColor: "transparent",
+    backgroundColor: "#FDFDFD",
     borderColor: "#C7C7CC",
   },
 });

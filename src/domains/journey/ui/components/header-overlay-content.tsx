@@ -31,6 +31,7 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
+// ponytail: course card system parity & recede panda illustration
 function CourseAvatar({
   course,
   isActive,
@@ -47,21 +48,19 @@ function CourseAvatar({
     <Card
       variant="tile"
       radius="xl"
-      showDepth={true}
+      showDepth={false}
       className="h-[78px] w-[92px]"
       contentClassName="items-center justify-center h-full w-full"
       faceStyle={{
-        borderColor: isActive ? courseAccentColor : PALETTE.sage100,
+        borderWidth: isActive ? 2 : 1,
+        borderColor: isActive ? PALETTE.sage500 : PALETTE.sage100,
         backgroundColor: isActive
           ? `${courseAccentColor}12`
           : PALETTE.warmWhite,
       }}
-      style={{
-        shadowColor: isActive ? courseAccentColor : "transparent",
-      }}
     >
       <View
-        className="h-[56px] w-[56px] items-center justify-center rounded-[18px]"
+        className="h-[52px] w-[52px] items-center justify-center rounded-[16px]"
         style={
           courseImageSource
             ? undefined
@@ -71,7 +70,7 @@ function CourseAvatar({
         {courseImageSource ? (
           <Image
             source={courseImageSource}
-            style={{ width: 58, height: 58, borderRadius: 18 }}
+            style={{ width: 46, height: 46, borderRadius: 14 }}
             cachePolicy="memory-disk"
             contentFit="contain"
             transition={150}
@@ -81,7 +80,7 @@ function CourseAvatar({
             style={{
               color: courseAccentColor,
               fontFamily: FONTS.heading,
-              fontSize: 29,
+              fontSize: 26,
             }}
           >
             {getCourseMonogram(course.title)}
@@ -114,14 +113,13 @@ export const HeaderOverlayContentView = React.memo(
     totalNodes,
     sectionNumber,
     sectionCount,
-    animatedProgressTextProps,
     onAddCoursePress,
     onCourseSelect,
     activeCourseSummaryTitle,
   }: HeaderOverlayContentViewProps): React.JSX.Element {
     return (
       <Animated.View
-        className="w-full happy-brand-screen pb-4 rounded-b-[32px]"
+        className="w-full happy-brand-screen pb-4 rounded-b-[32px] shadow-xl"
         style={animatedStyle}
       >
         <View
@@ -179,7 +177,7 @@ export const HeaderOverlayContentView = React.memo(
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerClassName="gap-3.5 px-1 pb-1"
+            contentContainerClassName="gap-3.5 px-1 pb-1 pe-6"
           >
             {courses.map((course) => {
               const isActive = course.id === activeCourseId;
@@ -191,7 +189,7 @@ export const HeaderOverlayContentView = React.memo(
                 >
                   <CourseAvatar course={course} isActive={isActive} />
                   <Text
-                    className={`w-full text-center text-base ${
+                    className={`w-full text-center text-sm ${
                       isActive ? "text-ink" : "text-ink-muted"
                     }`}
                     style={{ fontFamily: FONTS.bodyBold }}
@@ -199,16 +197,6 @@ export const HeaderOverlayContentView = React.memo(
                   >
                     {course.title}
                   </Text>
-                  {isActive ? (
-                    <View className="happy-brand-status-chip px-3 py-1">
-                      <Text
-                        className="text-xs uppercase tracking-widest text-sage-600"
-                        style={{ fontFamily: FONTS.bodyBold }}
-                      >
-                        Active
-                      </Text>
-                    </View>
-                  ) : null}
                 </Pressable>
               );
             })}
@@ -224,6 +212,7 @@ export const HeaderOverlayContentView = React.memo(
               </View>
             ) : null}
 
+            {/* ponytail: add course card parity & exact footprint */}
             <Pressable
               className="w-[116px] items-center gap-2.5"
               onPress={onAddCoursePress}
@@ -234,25 +223,32 @@ export const HeaderOverlayContentView = React.memo(
                 showDepth={false}
                 className="h-[78px] w-[92px]"
                 contentClassName="items-center justify-center h-full w-full"
+                faceStyle={{
+                  borderWidth: 1,
+                  borderColor: PALETTE.sage100,
+                  backgroundColor: PALETTE.warmWhite,
+                }}
               >
-                <View className="h-[48px] w-[48px] items-center justify-center rounded-[16px] bg-sage-50">
+                <View className="h-[52px] w-[52px] items-center justify-center rounded-[16px] bg-sage-50">
                   <HugeiconsIcon
                     icon={PlusSignIcon}
-                    size={23}
+                    size={22}
                     color={PALETTE.sage500}
                   />
                 </View>
               </Card>
               <Text
-                className="w-full text-center text-base text-ink"
+                className="w-full text-center text-sm text-ink"
                 style={{ fontFamily: FONTS.bodyBold }}
+                numberOfLines={1}
               >
                 Add course
               </Text>
             </Pressable>
           </ScrollView>
 
-          <View className="mt-6 w-full px-1 gap-3">
+          {/* ponytail: main course anchor & progress */}
+          <View className="mt-4 w-full px-1 gap-3">
             <View className="flex-row items-start justify-between gap-4">
               <View className="flex-1 gap-1">
                 <Text
@@ -273,20 +269,6 @@ export const HeaderOverlayContentView = React.memo(
                 >
                   {completedNodes} of {totalNodes} sessions completed
                 </Text>
-                <AnimatedTextInput
-                  editable={false}
-                  animatedProps={animatedProgressTextProps}
-                  className="text-sm"
-                  style={{
-                    fontFamily: FONTS.bodyBold,
-                    padding: 0,
-                    margin: 0,
-                    color: PALETTE.sage600,
-                    borderWidth: 0,
-                    textAlign: "right",
-                    minWidth: 40,
-                  }}
-                />
               </View>
 
               <View className="w-full">
@@ -300,21 +282,20 @@ export const HeaderOverlayContentView = React.memo(
               </View>
             </View>
 
-            <View className="flex-row items-center justify-between gap-3 mt-4">
-              <View>
+            {/* ponytail: section line consolidated */}
+            <View className="flex-row items-center justify-between gap-3 mt-3">
+              <Text
+                className="text-sm text-ink opacity-70"
+                style={{ fontFamily: FONTS.bodyMedium }}
+              >
+                Section{" "}
                 <Text
-                  className="text-sm text-ink-muted"
-                  style={{ fontFamily: FONTS.bodyMedium }}
-                >
-                  Current section
-                </Text>
-                <Text
-                  className="text-lg text-ink"
+                  className="text-ink opacity-100"
                   style={{ fontFamily: FONTS.bodyBold }}
                 >
                   {sectionNumber} of {sectionCount}
                 </Text>
-              </View>
+              </Text>
             </View>
           </View>
         </View>

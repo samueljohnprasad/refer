@@ -20,8 +20,8 @@ export const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = React
         const yearStr = dayjs(date).format("YYYY");
         return (
           <View className="items-center px-2 py-1">
-            <Text style={{ fontFamily: APP_FONT_FAMILIES.bold, color: "#1A1A1A", fontSize: 13 }}>{monthStr}</Text>
-            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.primary, fontSize: 10, letterSpacing: 1.2 }}>{yearStr}</Text>
+            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#1A1A1A", fontSize: 13 }}>{monthStr}</Text>
+            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#8E8E93", fontSize: 10, letterSpacing: 1.2 }}>{yearStr}</Text>
           </View>
         );
       }
@@ -38,9 +38,9 @@ export const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = React
           const [start, end] = dateRange.split(" - ");
           return (
             <View className="items-center px-2 py-1">
-              <Text style={{ fontFamily: APP_FONT_FAMILIES.bold, color: "#1A1A1A", fontSize: 10, textAlign: 'center' }}>{start}</Text>
-              <Text style={{ fontFamily: APP_FONT_FAMILIES.bold, color: "#1A1A1A", fontSize: 10, textAlign: 'center' }}>{end}</Text>
-              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.primary, fontSize: 9, letterSpacing: 1.2, marginTop: 2 }}>{yearStr}</Text>
+              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#1A1A1A", fontSize: 10, textAlign: 'center' }}>{start}</Text>
+              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#1A1A1A", fontSize: 10, textAlign: 'center' }}>{end}</Text>
+              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#8E8E93", fontSize: 9, letterSpacing: 1.2, marginTop: 2 }}>{yearStr}</Text>
             </View>
           );
         } else {
@@ -50,9 +50,9 @@ export const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = React
           const days = dateRange.substring(spaceIdx + 1);
           return (
             <View className="items-center px-2 py-1">
-              <Text style={{ fontFamily: APP_FONT_FAMILIES.bold, color: "#1A1A1A", fontSize: 11, textAlign: 'center' }}>{month}</Text>
-              <Text style={{ fontFamily: APP_FONT_FAMILIES.bold, color: "#1A1A1A", fontSize: 11, textAlign: 'center' }}>{days}</Text>
-              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.primary, fontSize: 9, letterSpacing: 1.2, marginTop: 2 }}>{yearStr}</Text>
+              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#1A1A1A", fontSize: 11, textAlign: 'center' }}>{month}</Text>
+              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#1A1A1A", fontSize: 11, textAlign: 'center' }}>{days}</Text>
+              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#8E8E93", fontSize: 9, letterSpacing: 1.2, marginTop: 2 }}>{yearStr}</Text>
             </View>
           );
         }
@@ -72,14 +72,14 @@ export const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = React
       const yearStr = dayjs(date).format("YYYY");
       prefix = (
         <View className="items-center">
-          <Text style={{ fontFamily: APP_FONT_FAMILIES.bold, color: "#1A1A1A", fontSize: 11 }}>{monthStr} {dayNum}</Text>
-          <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.primary, fontSize: 10, letterSpacing: 1.2, marginTop: 2 }}>{yearStr}</Text>
+          <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#1A1A1A", fontSize: 11 }}>{monthStr} {dayNum}</Text>
+          <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#8E8E93", fontSize: 10, letterSpacing: 1.2, marginTop: 2 }}>{yearStr}</Text>
         </View>
       );
     }
 
     return (
-      <View className="items-center px-2 py-1">
+      <View className="items-center">
         {prefix}
       </View>
     );

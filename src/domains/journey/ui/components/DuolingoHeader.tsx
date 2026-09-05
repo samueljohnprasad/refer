@@ -43,12 +43,12 @@ const HeaderButton = memo(function HeaderButton({
       <Icon
         width={28}
         height={28}
-        color={isDark ? SEMANTIC_COLORS.text.primary : SEMANTIC_COLORS.text.primary}
+        color={String(isDark ? SEMANTIC_COLORS.text.primary : SEMANTIC_COLORS.text.primary)}
       />
       <AnimatedOdometer
         value={title}
         textClassName={textClassName}
-        color={isDark ? SEMANTIC_COLORS.text.primary : SEMANTIC_COLORS.text.primary}
+        color={String(isDark ? SEMANTIC_COLORS.text.primary : SEMANTIC_COLORS.text.primary)}
       />
     </Pressable>
   );
@@ -106,16 +106,20 @@ export const DuolingoHeaderView = memo(function DuolingoHeaderView({
             }}
           >
             <AnimatedPressable
-              className="absolute inset-0 bg-black/50"
+              className="absolute inset-0 bg-black/60"
               style={animatedOverlayStyle}
               onPress={handleTouchStart}
             />
+            {/* ponytail: dismiss sheet on add course select */}
             <HeaderOverlayContent
               translateY={translateY}
               enrolledCourses={enrolledCourses}
               activeCourseId={activeCourseId}
               activeCourseSummary={activeCourseSummary}
-              onAddCoursePress={onAddCoursePress}
+              onAddCoursePress={() => {
+                handleTouchStart();
+                onAddCoursePress?.();
+              }}
               onCourseSelect={handleCourseSelect}
             />
           </Animated.View>

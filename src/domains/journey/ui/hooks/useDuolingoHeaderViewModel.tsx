@@ -9,9 +9,14 @@ import {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { scheduleOnRN } from "react-native-worklets";
-import { AnimatedFireIcon, GrayFireIcon } from "@/src/components/ui/AnimatedStatIcon";
+import { FireIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react-native";
 import { CourseHeaderIcon } from "@/src/domains/journey/ui/components/CourseHeaderIcon";
 import type { CourseHeaderSummary, EnrolledCourseListItem } from "@/src/types/journeyV5";
+
+const VectorFireIcon = (props: { width?: number; height?: number; color?: string }) => (
+  <HugeiconsIcon icon={FireIcon} size={props.width ?? 28} color={props.color ?? "#9CA3AF"} />
+);
 
 const SHEET_SPRING = { damping: 14, stiffness: 50, mass: 1 } as const;
 
@@ -125,7 +130,7 @@ export function useDuolingoHeaderViewModel({
     {
       accessibilityLabel: `${streak} day streak`,
       name: "Fire",
-      Icon: isStreakActive ? AnimatedFireIcon : GrayFireIcon,
+      Icon: VectorFireIcon,
       onPress: openStreakOverlay,
       title: String(streak),
       textClassName: isStreakActive ? "text-ink" : "text-ink-soft",

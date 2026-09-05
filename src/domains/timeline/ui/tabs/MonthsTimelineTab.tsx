@@ -14,6 +14,7 @@ import { useHeaderHeight } from 'expo-router/react-navigation';
 import type { TimelineSection } from '@/src/components/ui/Timeline/types';
 import type { MonthlyTimelineItem, TimelineTabProps } from '../../model/timeline.types';
 import { MOCK_MONTHS_TIMELINE_DATA } from './mockData';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 
 
 
@@ -91,21 +92,15 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
   const renderTimelineItem = (item: MonthlyTimelineItem) => {
     const isGenerating = generatingDates.has(item.originalDateString);
 
-    if (isGenerating) {
-      return <TimelineShimmer />;
+    if (item.aiInsight && !isGenerating) {
+      return (
+        <Animated.View entering={FadeInUp.duration(400)}>
+          <DailyInsightCard insight={item.aiInsight} onPress={onOpenModal} />
+        </Animated.View>
+      );
     }
     
-    if (item.aiInsight) {
-      return <DailyInsightCard insight={item.aiInsight} onPress={onOpenModal} />;
-    }
-    
-    return (
-      <GenerateInsightCard 
-        title="Generate Monthly Insight" 
-        subtitle="Tap to reflect on this month" 
-        onPress={() => handleGenerate(item.originalDateString)} 
-      />
-    );
+    return <GenerateInsightCard title="Generate Monthly Insight" isGenerating={isGenerating} onPress={() => handleGenerate(item.originalDateString)} />;
   };
 
   if (isLoading) {
@@ -122,7 +117,7 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
       renderItem={renderTimelineItem}
       mode="months"
       isLoadingMore={isFetchingNextPage}
-      ListHeaderComponent={renderHeader()}
+      ListHeaderComponent={renderHeader() || undefined}
       onEndReached={() => {
         if (hasNextPage && !isFetchingNextPage && !isTimelineEmpty) {
           fetchNextPage();

@@ -87,30 +87,40 @@ function TimelineInner<T extends TimelineItemData>({
       const isLastItemInSection: boolean = index === section.data.length - 1;
 
       return (
-        <View className="flex-row items-stretch">
-          {/* ── Stem Column ────────────────────────────────────────── */}
-          <View className="w-[68px] items-center relative">
-            {/* The dotted line */}
+        <View className="flex-row items-stretch px-4">
+          {/* 1. Date Column (fixed width) */}
+          <View className="w-[52px] items-end pt-[11px] pr-2">
+            {isFirstItemInSection && (
+              <TimelineSectionHeader date={section.date} title={section.title} mode={mode} />
+            )}
+          </View>
+
+          {/* 2. Stem Column (fixed width, centered) */}
+          <View className="w-[28px] items-center relative">
+            {/* The dotted line connects ALL dots now (Point 6) */}
             {!(isVeryFirst && isVeryLast) && (
               <TimelineStemLine
-                flex={true}
+                flex={false}
                 style={{
-                  marginTop: isFirstItemInSection ? 48 : 0,
-                  marginBottom: isVeryLast ? 24 : (isLastItemInSection ? 12 : 0),
+                  position: 'absolute',
+                  left: 13,
+                  top: isVeryFirst ? 14 : 0,
+                  bottom: isVeryLast ? undefined : 0,
+                  height: isVeryLast ? 14 : undefined,
                 }}
               />
             )}
 
-            {/* The Date Badge */}
-            {isFirstItemInSection && (
-              <View className="absolute top-0 pt-2 w-full items-center">
-                <TimelineSectionHeader date={section.date} title={section.title} mode={mode} />
-              </View>
-            )}
+            {/* The Dot (aligned with top of content, Point 5) */}
+            <View className="absolute top-[14px] left-[4px] items-center">
+              <TimelineDot status={item.status || "in_progress"} />
+            </View>
           </View>
 
-          {/* ── Card Column ────────────────────────────────────────── */}
-          <View className="flex-1 pl-4 pb-6">{renderItem(item, index)}</View>
+          {/* 3. Content Column (aligned x-position, Point 4) */}
+          <View className="flex-1 pl-2 pb-3 pt-[10px]">
+            {renderItem(item, index)}
+          </View>
         </View>
       );
     },
@@ -134,7 +144,7 @@ function TimelineInner<T extends TimelineItemData>({
       estimatedItemSize={120} // good guess for average card height
       ListHeaderComponent={
         <>
-          <View style={{ height: Math.max(0, headerHeight - insets.top + 16) }} />
+          <View style={{ height: Math.max(0, headerHeight - insets.top) }} />
           {ListHeaderComponent}
         </>
       }
