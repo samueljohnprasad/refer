@@ -1,8 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { InteractionManager } from "react-native";
+import { createLogger } from "@/src/lib/logger";
 import { courseExerciseCategoryEngineRegistry } from "@/src/components/exercise/courseExerciseCategoryEngineRegistry";
 import { resolveCourseExerciseConfig } from "@/src/components/exercise/courseExerciseCategoryConfig";
 import type { Exercise } from "@/src/types/journeyV5";
+
+const logger = createLogger("node-engine-router");
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { clearV1SessionDraft } from "@/src/domains/journey/learning/sessionDraftStore";
 import {
@@ -110,8 +113,19 @@ export function NodeEngineRouter({
   });
 
 
-const trackedStartRef = useRef<string | null>(null);
+  const trackedStartRef = useRef<string | null>(null);
   const trackedFeedbackRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (contentIssues.length > 0 && currentExercise) {
+      logger.error("Validation failed for exercise", {
+        exerciseId: currentExercise.id,
+        category,
+        issues: contentIssues,
+        content: currentExercise.content,
+      });
+    }
+  }, [contentIssues, currentExercise, category]);
 
   useEffect(() => {
     if (isMicrolearningExercise && currentExercise && trackedViewRef.current !== currentExercise.id) {

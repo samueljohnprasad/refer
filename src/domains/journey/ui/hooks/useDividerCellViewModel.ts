@@ -62,19 +62,7 @@ export function useDividerCellViewModel({
     isActiveDividerSegment(item.prevNodeGlobalIndex, activeGlobalIndex);
 
   const dashLength = 20;
-  const dashOffset = useSharedValue(0);
-
-  useEffect(() => {
-    if (isConnectorActive) {
-      dashOffset.value = withRepeat(
-        withTiming(-dashLength, { duration: 1000, easing: Easing.linear }),
-        -1,
-        false,
-      );
-    } else {
-      dashOffset.value = 0;
-    }
-  }, [isConnectorActive, dashOffset]);
+  const dashOffset = useSharedValue(14);
 
   const animatedPathProps = useAnimatedProps(() => ({
     strokeDashoffset: dashOffset.value,

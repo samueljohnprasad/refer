@@ -1,43 +1,49 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { WhatIfContent } from "./whatIfContent";
-import { WhatIfResponse } from "./whatIfResponse";
+import { View, Text, ScrollView } from "react-native";
+import type { WhatIfContent } from "./whatIfContent";
+import type { WhatIfResponse } from "./whatIfResponse";
+import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
+import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
+import { CourseExerciseOptionButton } from "@/src/components/exercise/CourseExerciseOptionButton";
 
-interface Props {
-  content: WhatIfContent;
-  response: WhatIfResponse;
-  onResponse: (response: WhatIfResponse) => void;
-}
-
-export const WhatIfCategoryEngine: React.FC<Props> = ({ content, response, onResponse }) => {
+export const WhatIfCategoryEngine: React.FC<V1CategoryEngineProps> = ({ exercise, savedResponse, onInteraction, locked }) => {
+  const content = exercise.content as WhatIfContent;
+  const response = (savedResponse as WhatIfResponse) || { phase: "prediction", consequenceIndex: 0 };
   const { phase, selectedPredictionId, consequenceIndex } = response;
+  const onResponse = (newResponse: WhatIfResponse) => onInteraction(newResponse as unknown as Record<string, unknown>, true);
+
+  // Complete phase (final comparison)
+  const normalizedOptions = content.options?.map((opt, i) => 
+    typeof opt === 'string' ? { id: `opt-${i}`, label: opt } : { ...opt, label: opt.label || opt.text }
+  ) || [];
+  
+  const normalizedSteps = content.steps?.map(step => 
+    typeof step === 'string' ? { body: step } : step
+  ) || [];
 
   const handleSelectPrediction = (id: string) => {
-    if (phase !== "prediction") return;
+    if (phase !== "prediction" || locked) return;
     onResponse({ ...response, selectedPredictionId: id });
   };
 
+  // Manual progression is handled by the primary button via config.ts getPrimaryTransition
+
   if (phase === "prediction") {
     return (
-      <View className="flex-1 p-6 justify-center">
-        <Text className="text-2xl font-cormorant text-ink mb-8 text-center">
-          What do you think will happen?
-        </Text>
-        <View className="space-y-4">
-          {content.predictions.map((p) => {
+      <View className="flex-1 px-2 pb-3 pt-1.5">
+        <CourseExerciseHeading title={content.title} instruction={content.instruction || "What do you think will happen?"} />
+        <View accessibilityRole="radiogroup" className="gap-2.5 mt-2">
+          {normalizedOptions.map((p) => {
             const isSelected = selectedPredictionId === p.id;
             return (
-              <TouchableOpacity
+              <CourseExerciseOptionButton
                 key={p.id}
+                label={p.label || ""}
+                selected={isSelected}
+                role="radio"
+                disabled={locked}
                 onPress={() => handleSelectPrediction(p.id)}
-                className={`p-4 rounded-xl border ${
-                  isSelected ? "border-ink bg-sage-50" : "border-sage-200"
-                }`}
-              >
-                <Text className={`text-lg font-geist ${isSelected ? "text-ink font-bold" : "text-sage-700"}`}>
-                  {p.text}
-                </Text>
-              </TouchableOpacity>
+              />
             );
           })}
         </View>
@@ -47,20 +53,21 @@ export const WhatIfCategoryEngine: React.FC<Props> = ({ content, response, onRes
 
   if (phase === "running") {
     return (
-      <ScrollView className="flex-1 p-6">
-        <View className="space-y-6 pb-20">
-          {content.consequences.slice(0, consequenceIndex).map((c, idx) => {
+      <ScrollView className="flex-1 px-2 pb-3 pt-1.5">
+        <CourseExerciseHeading title={content.title} instruction="Watch what happens..." />
+        <View className="gap-4 mt-2 pb-20">
+          {normalizedSteps.slice(0, consequenceIndex).map((c, idx) => {
             const isLatest = idx === consequenceIndex - 1;
-            const containerClass = isLatest ? "p-4 bg-white shadow-sm" : "p-3 bg-sage-50 opacity-70";
-            const labelClass = isLatest ? "text-sm text-sage-500 uppercase tracking-wider mb-2" : "text-xs text-sage-400 uppercase tracking-wider mb-1";
-            const textClass = isLatest ? "text-lg text-ink font-bold" : "text-base text-ink line-clamp-1";
+            const containerClass = isLatest ? "p-4 bg-brand-surface rounded-2xl border border-brand-border" : "p-3 bg-brand-surface-soft rounded-2xl border border-brand-border opacity-70";
+            const labelClass = isLatest ? "happy-font-label text-brand-ink-muted uppercase tracking-wider mb-1 text-xs" : "happy-font-label text-brand-ink-muted uppercase tracking-wider mb-1 text-[10px]";
+            const textClass = isLatest ? "happy-font-body-bold text-brand-ink text-[17px] leading-6" : "happy-font-body text-brand-ink text-[15px] leading-5";
             
             return (
-              <View key={c.id} className={`rounded-xl border border-sage-100 ${containerClass}`}>
-                <Text className={`font-geist ${labelClass}`}>
-                  Step {idx + 1}
+              <View key={`step-${idx}`} className={containerClass}>
+                <Text className={labelClass}>
+                  {c.title || `Step ${idx + 1}`}
                 </Text>
-                <Text className={`font-geist ${textClass}`}>{c.text}</Text>
+                <Text className={textClass}>{c.body}</Text>
               </View>
             );
           })}
@@ -70,27 +77,22 @@ export const WhatIfCategoryEngine: React.FC<Props> = ({ content, response, onRes
   }
 
   // Complete phase (final comparison)
-  const userPrediction = content.predictions.find((p) => p.id === selectedPredictionId);
-  const finalConsequence = content.consequences[content.consequences.length - 1];
+  const userPrediction = normalizedOptions.find((p) => p.id === selectedPredictionId);
+  const finalConsequence = normalizedSteps[normalizedSteps.length - 1];
 
   return (
-    <View className="flex-1 p-6 justify-center">
-      <Text className="text-3xl font-cormorant text-ink text-center mb-4">
-        {content.finalComparison.heading}
-      </Text>
-      <Text className="text-lg font-geist text-sage-600 text-center mb-12">
-        {content.finalComparison.description}
-      </Text>
-      <View className="space-y-6">
-        <View className="p-4 rounded-xl bg-sage-50 border border-sage-200">
-          <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider mb-2">You Predicted</Text>
-          <Text className="text-lg font-geist text-ink">{userPrediction?.text}</Text>
+    <ScrollView className="flex-1 px-2 pb-3 pt-1.5">
+      <CourseExerciseHeading title={content.takeaway || "Review"} instruction={content.rule || "Here is how reality compared to your prediction."} />
+      <View className="gap-4 mt-2">
+        <View className="p-4 rounded-2xl bg-brand-surface-soft border border-brand-border">
+          <Text className="happy-font-label text-brand-ink-muted uppercase tracking-wider mb-2 text-xs">You Predicted</Text>
+          <Text className="happy-font-body text-brand-ink text-[17px] leading-6">{userPrediction?.label}</Text>
         </View>
-        <View className="p-4 rounded-xl bg-white border border-sage-200">
-          <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider mb-2">Actual Outcome</Text>
-          <Text className="text-lg font-geist text-ink font-bold">{finalConsequence?.text}</Text>
+        <View className="p-4 rounded-2xl bg-brand-surface border border-brand-border">
+          <Text className="happy-font-label text-brand-ink-muted uppercase tracking-wider mb-2 text-xs">Actual Outcome</Text>
+          <Text className="happy-font-body-bold text-brand-ink text-[17px] leading-6">{finalConsequence?.body}</Text>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };

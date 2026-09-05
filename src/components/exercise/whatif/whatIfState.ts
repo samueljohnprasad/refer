@@ -9,7 +9,7 @@ export function createWhatIfResponse(
   if (existing) {
     return {
       ...existing,
-      consequenceIndex: Math.max(0, Math.min(existing.consequenceIndex ?? 0, content.consequences.length)),
+      consequenceIndex: Math.max(0, Math.min(existing.consequenceIndex ?? 0, content.steps.length)),
     };
   }
   return {

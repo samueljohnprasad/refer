@@ -76,9 +76,10 @@ export const Node = React.memo(React.forwardRef<View, NodeProps>(function Node({
   }, [vm.isInteractive, yOffset, opacity, reduceMotion]);
 
   const handlePress = useCallback((e: any) => {
+    console.log("!!! Node handlePress", { type, state, isInteractive: vm.isInteractive });
     if (!vm.isInteractive) return;
     onPress?.(e);
-  }, [vm.isInteractive, onPress]);
+  }, [vm.isInteractive, onPress, type, state]);
 
   const hSize = size / 2;
 

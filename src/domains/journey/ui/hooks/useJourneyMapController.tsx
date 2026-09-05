@@ -224,7 +224,7 @@ export function useJourneyMapController(
         return;
       }
 
-      if (node.type === "chest") {
+      if (node.type === "chest" || node.type === ("trophy" as any)) {
         setRewardNode(node);
         return;
       }

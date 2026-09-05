@@ -13,8 +13,9 @@ export function useCheckpointSheet() {
   const [sheetData, setSheetData] = useState<CheckpointActionSheetData | null>(null);
 
   const openSheet = useCallback((node: PathNodeData) => {
+    console.log("!!! openSheet called for", node.type);
     // ponytail: simple extraction
-    const isCompleted = node.status === NodeStatus.COMPLETED || node.status === NodeStatus.COMPLETED;
+    const isCompleted = node.status === NodeStatus.COMPLETED || node.status === NodeStatus.CLAIMED;
     
     // In a real app we'd parse node.task, but fallback to sensible defaults
     const questionCount = 5; 

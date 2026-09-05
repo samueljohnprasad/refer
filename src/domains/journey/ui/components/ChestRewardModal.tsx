@@ -33,12 +33,14 @@ export interface ChestRewardModalProps {
 }
 
 function ChestRewardContent({
+  node,
   isClaiming,
   insightCard,
   onClaim,
-}: Omit<ChestRewardModalProps, "node" | "onDismiss">): React.JSX.Element {
-  const title = insightCard?.title || "Treasure Chest!";
-  const body = insightCard?.body || "You've found a chest!";
+}: Omit<ChestRewardModalProps, "onDismiss">): React.JSX.Element {
+  const isTrophy = node?.type === ("trophy" as any);
+  const title = insightCard?.title || (isTrophy ? "Claim Trophy!" : "Treasure Chest!");
+  const body = insightCard?.body || (isTrophy ? "You've finished this unit!" : "You've found a chest!");
 
   return (
     <VStack
@@ -46,7 +48,7 @@ function ChestRewardContent({
       spacing={24}
       modifiers={[padding({ horizontal: 24, vertical: 20 })]}
     >
-      <Image systemName="gift.fill" size={30} color={SEMANTIC_COLORS.warning.foreground} />
+      <Image systemName={isTrophy ? "star.circle.fill" : "gift.fill"} size={48} color={SEMANTIC_COLORS.warning.foreground} />
       <VStack alignment="center" spacing={8}>
         <Text modifiers={[font({ size: 24, weight: "bold" }), multilineTextAlignment("center")]}>
           {title}
@@ -94,6 +96,7 @@ export function ChestRewardModal({
           ]}
         >
           <ChestRewardContent
+            node={node}
             insightCard={insightCard}
             isClaiming={isClaiming}
             onClaim={onClaim}

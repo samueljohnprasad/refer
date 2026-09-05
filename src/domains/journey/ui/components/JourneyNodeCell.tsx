@@ -50,6 +50,7 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeDasharray="0 28"
+            strokeDashoffset={14}
           />
         </Svg>
       ) : null}

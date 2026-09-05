@@ -32,6 +32,7 @@ export function useNodeViewModel(
       shapeKey = "circle";
       break;
     case NodeType.CHECKPOINT:
+    case "trophy" as any:
       shapeKey = "hexagon";
       iconName = "shield";
       break;

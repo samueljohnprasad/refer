@@ -9,6 +9,7 @@ export enum NodeStatus {
   LOCKED = "locked",
   ACTIVE = "active",
   COMPLETED = "completed",
+  CLAIMED = "CLAIMED",
 }
 
 /** Functional type of a path node */
