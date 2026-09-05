@@ -24,13 +24,13 @@
 - Consumes: `SEMANTIC_COLORS`, `HugeiconsIcon`, `Add01Icon`
 - Produces: Updated `MoodBadge` component with quiet empty state (no spinning animation, opacity 0.22 for week, 0.12 for month/displayOnly)
 
-- [ ] **Step 1: Update MoodBadge.tsx**
+- [x] **Step 1: Update MoodBadge.tsx**
 Remove the `plusRotation` Reanimated hook and animation. Update the empty slot rendering to a delicate 1px border ring with a small 10px `Add01Icon` at opacity 0.22 (or 0.12 when `displayOnly` is true).
 
-- [ ] **Step 2: Verify type correctness**
+- [x] **Step 2: Verify type correctness**
 Run `npx tsc --noEmit src/components/MoodBadge.tsx` (or grep `npx tsc --noEmit` log) to ensure no type errors.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 git add src/components/MoodBadge.tsx
 git commit -m "style(journal): soften empty mood slot in MoodBadge"
@@ -46,14 +46,14 @@ git commit -m "style(journal): soften empty mood slot in MoodBadge"
 - Consumes: `Text`, `SEMANTIC_COLORS`
 - Produces: Softer month title header and tighter day button container spacing
 
-- [ ] **Step 1: Update DailyNotesHeader.tsx**
+- [x] **Step 1: Update DailyNotesHeader.tsx**
 Change month title from 28px `variant="h1"` to `variant="h2"` (21px).
 Change day container bottom margin from `mb-3` to `mb-1.5` to bring Journal/Habits content up sooner.
 
-- [ ] **Step 2: Verify type correctness**
+- [x] **Step 2: Verify type correctness**
 Run `npx tsc --noEmit` to ensure no errors in `DailyNotesHeader.tsx`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 git add src/screens/DailyNotesScreen/DailyNotesHeader.tsx
 git commit -m "style(calendar): soften month title and compress week spacing"
@@ -69,14 +69,14 @@ git commit -m "style(calendar): soften month title and compress week spacing"
 - Consumes: `SEMANTIC_COLORS.selection.surface`, `SEMANTIC_COLORS.selection.foreground`
 - Produces: Unified selection appearance across week and month views
 
-- [ ] **Step 1: Update CalendarPicker.tsx**
+- [x] **Step 1: Update CalendarPicker.tsx**
 Ensure selected day circle uses `backgroundColor: SEMANTIC_COLORS.selection.surface` and `borderColor: SEMANTIC_COLORS.selection.foreground`.
 Soften month navigation buttons.
 
-- [ ] **Step 2: Verify type correctness**
+- [x] **Step 2: Verify type correctness**
 Run `npx tsc --noEmit` to ensure no errors in `CalendarPicker.tsx`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 git add src/screens/DailyNotesScreen/CalendarPicker.tsx
 git commit -m "style(calendar): align month selection style to week view"
@@ -93,17 +93,17 @@ git commit -m "style(calendar): align month selection style to week view"
 - Consumes: `Mascot`, `Button`
 - Produces: Better-proportioned empty states with concise copy
 
-- [ ] **Step 1: Update EmptyState.tsx**
+- [x] **Step 1: Update EmptyState.tsx**
 Scale mascot size from 140 to 120 (~15% reduction).
 Tighten gap between mascot and title from `mb-8` to `mb-4`.
 
-- [ ] **Step 2: Update HabitsSection.tsx**
+- [x] **Step 2: Update HabitsSection.tsx**
 Change description to `"Build routines with simple daily tracking."`.
 
-- [ ] **Step 3: Verify type correctness**
+- [x] **Step 3: Verify type correctness**
 Run `npx tsc --noEmit` to ensure zero errors.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 ```bash
 git add src/components/ui/EmptyState.tsx src/components/habits/HabitsSection.tsx
 git commit -m "style(ui): scale down empty state mascot and shorten habits copy"
@@ -115,8 +115,8 @@ git commit -m "style(ui): scale down empty state mascot and shorten habits copy"
 **Files:**
 - No file changes
 
-- [ ] **Step 1: Full TypeScript Verification**
+- [x] **Step 1: Full TypeScript Verification**
 Run `npx tsc --noEmit` and confirm all modified files compile cleanly.
 
-- [ ] **Step 2: Update Knowledge Graph**
+- [x] **Step 2: Update Knowledge Graph**
 Run `graphify update .` to update the AST and relationship graph.
