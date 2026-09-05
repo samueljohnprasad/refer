@@ -5,6 +5,7 @@ export interface AiInsight {
   user_id?: string;
   reflection_date?: string;
   summary: string;
+  timelineSummary?: string;
   personalized_reflection?: any;
   structured_memory?: any;
   confidence?: number;

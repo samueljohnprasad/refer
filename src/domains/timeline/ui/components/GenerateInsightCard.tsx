@@ -1,29 +1,34 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, Pressable, ActivityIndicator } from 'react-native';
 import { Sparkles } from 'lucide-react-native';
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 
 interface GenerateInsightCardProps {
   onPress: () => void;
   title?: string;
   subtitle?: string;
+  isGenerating?: boolean;
 }
 
 export const GenerateInsightCard = ({ 
   onPress, 
-  title = "Generate Insight", 
-  subtitle = "Tap to reflect on this day" 
+  title = "Generate insight", 
+  subtitle, // intentionally ignored to reduce visual noise
+  isGenerating = false,
 }: GenerateInsightCardProps) => {
   return (
-    <TouchableOpacity 
-      activeOpacity={0.7} 
-      onPress={onPress}
-      className="bg-[#F0F2F5] dark:bg-gray-800 rounded-[24px] p-6 flex-row items-center justify-center gap-3 active:scale-[0.98] transition-transform"
+    <Pressable 
+      onPress={isGenerating ? undefined : onPress}
+      className={`flex-row items-center gap-2.5 py-2.5 px-3 -ml-3 rounded-lg ${!isGenerating ? 'active:bg-black/5' : ''}`}
     >
-      <Sparkles size={22} color="#1A1A1A" />
-      <View>
-        <Text className="text-[17px] font-semibold text-[#1A1A1A] dark:text-white tracking-tight">{title}</Text>
-        <Text className="text-[14px] font-medium text-gray-500 dark:text-gray-400 mt-0.5">{subtitle}</Text>
-      </View>
-    </TouchableOpacity>
+      {isGenerating ? (
+        <ActivityIndicator size="small" color="#666666" />
+      ) : (
+        <Sparkles size={12} color="#666666" strokeWidth={2.0} />
+      )}
+      <Text className="text-[14px] text-[#666666]" style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}>
+        {isGenerating ? "Generating..." : title}
+      </Text>
+    </Pressable>
   );
 };

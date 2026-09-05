@@ -6,6 +6,7 @@ export const MOCK_DAYS_TIMELINE_DATA = [
       user_id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
       reflection_date: new Date().toISOString().split('T')[0],
       summary: "Compared to the more relaxed pace of recent days, today was highly productive, as you sustained deep focus on new projects. Although the workload was demanding, pushing through it brought a strong sense of satisfaction and demonstrated your growing capability to handle complex tasks.",
+      timelineSummary: "Compared to the more relaxed pace of recent days, today was highly productive, as you sustained deep focus on new projects.",
       personalized_reflection: { tone: "encouraging", focus_areas: ["productivity", "focus"] },
       structured_memory: {
         themes: ["deep work", "projects"],
@@ -36,6 +37,7 @@ export const MOCK_DAYS_TIMELINE_DATA = [
       user_id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
       reflection_date: new Date(Date.now() - 86400000 * 2).toISOString().split('T')[0],
       summary: "Unlike yesterday's demanding workload, today shifted your attention entirely toward personal connection and recovery. Spending quality time with good friends, followed by evening reading, helped you completely unwind and highlighted the importance of balancing your routine with meaningful downtime.",
+      timelineSummary: "Unlike yesterday's demanding workload, today shifted your attention entirely toward personal connection and recovery.",
       personalized_reflection: { tone: "calm", focus_areas: ["social", "relaxation"] },
       structured_memory: {
         themes: ["friendship", "relaxation", "reading"],
@@ -62,6 +64,7 @@ export const MOCK_DAYS_TIMELINE_DATA = [
       user_id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
       reflection_date: new Date(Date.now() - 86400000 * 3).toISOString().split('T')[0],
       summary: "Following a few days of high energy, this was a much more challenging day where you felt overwhelmed by competing tasks. However, by intentionally prioritizing your workload and logging your meals, you managed to get through the most critical items, proving that your coping strategies can carry you through stressful peaks.",
+      timelineSummary: "Following a few days of high energy, this was a much more challenging day where you felt overwhelmed by competing tasks.",
       personalized_reflection: { tone: "empathetic", focus_areas: ["stress management", "resilience"] },
       structured_memory: {
         themes: ["workload", "resilience", "stress"],
@@ -92,6 +95,7 @@ export const MOCK_DAYS_TIMELINE_DATA = [
       user_id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
       reflection_date: new Date(Date.now() - 86400000 * 5).toISOString().split('T')[0],
       summary: "Building on yesterday's mental clarity, you displayed remarkable energy and motivation today by kickstarting a new workout routine and maintaining healthy eating habits. Taking these deliberate steps to care for your physical health elevated your mood and kept your momentum high throughout the entire day.",
+      timelineSummary: "Building on yesterday's mental clarity, you displayed remarkable energy and motivation today by kickstarting a new workout routine and maintaining healthy eating habits.",
       personalized_reflection: { tone: "energetic", focus_areas: ["health", "motivation"] },
       structured_memory: {
         themes: ["health", "fitness", "motivation"],
@@ -118,6 +122,7 @@ export const MOCK_DAYS_TIMELINE_DATA = [
       user_id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
       reflection_date: new Date(Date.now() - 86400000 * 6).toISOString().split('T')[0],
       summary: "This was a quiet, grounded day dedicated entirely to reflection and preparation. By taking the time to set clear goals and organize your upcoming schedule, you created a sense of mental clarity that leaves you feeling well-equipped to handle the week ahead.",
+      timelineSummary: "This was a quiet, grounded day dedicated entirely to reflection and preparation.",
       personalized_reflection: { tone: "reflective", focus_areas: ["planning", "organization"] },
       structured_memory: {
         themes: ["planning", "organization", "reflection"],
@@ -148,6 +153,7 @@ export const MOCK_DAYS_TIMELINE_DATA = [
       user_id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
       reflection_date: new Date(Date.now() - 86400000 * 8).toISOString().split('T')[0],
       summary: "In contrast to your usual proactive mornings, today felt sluggish and emotionally draining. However, acknowledging this low energy rather than fighting it allowed you to pivot to lighter tasks, demonstrating a healthy adaptability to your mental state.",
+      timelineSummary: "In contrast to your usual proactive mornings, today felt sluggish and emotionally draining.",
       personalized_reflection: { tone: "compassionate", focus_areas: ["self-compassion", "adaptability"] },
       structured_memory: {
         themes: ["low energy", "adaptability"],
@@ -178,6 +184,7 @@ export const MOCK_DAYS_TIMELINE_DATA = [
       user_id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
       reflection_date: new Date(Date.now() - 86400000 * 10).toISOString().split('T')[0],
       summary: "Today was defined by unexpected creative breakthroughs. Stepping away from your desk for a mid-day walk seemed to unlock the solution to a problem you've been stuck on, highlighting the direct link between movement and your creative problem-solving.",
+      timelineSummary: "Today was defined by unexpected creative breakthroughs.",
       personalized_reflection: { tone: "inspiring", focus_areas: ["creativity", "movement"] },
       structured_memory: {
         themes: ["creativity", "problem-solving", "movement"],
@@ -208,6 +215,7 @@ export const MOCK_DAYS_TIMELINE_DATA = [
       user_id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
       reflection_date: new Date(Date.now() - 86400000 * 12).toISOString().split('T')[0],
       summary: "This was a highly social day that left you feeling both connected and slightly drained. While the interactions were overwhelmingly positive, you noted a craving for solitude by the evening, reinforcing your need for quiet time to recharge after extensive socializing.",
+      timelineSummary: "This was a highly social day that left you feeling both connected and slightly drained.",
       personalized_reflection: { tone: "observant", focus_areas: ["social battery", "boundaries"] },
       structured_memory: {
         themes: ["socializing", "energy management"],
