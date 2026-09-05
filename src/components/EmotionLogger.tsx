@@ -17,7 +17,6 @@ import { useXPOptional } from "../context/XPContext";
 import { XPActionType } from "../types/xp";
 import { useRewardsContext } from "../context/RewardsContext";
 import { useChallengesOptional } from "../context/ChallengesContext";
-import { Card } from "@/src/components/ui/Card";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
@@ -171,31 +170,24 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
     );
     return (
       <View className="gap-2">
-        <View className="flex-row items-center justify-between px-1 mb-2">
-          <Text className="happy-font-body-bold text-[15px] text-ink-soft">Daily mood log</Text>
+        <View className="flex-row items-center justify-between px-1 mb-1">
+          <Text className="happy-font-body-bold text-[15px] text-ink-soft">How are you feeling?</Text>
         </View>
 
-        <Card
-          variant="tile"
-          radius="lg"
-          haptic="none"
-          showDepth={showDepth}
-          contentClassName="p-4"
-        >
-          <View className="flex-row justify-between px-2 pt-1 pb-1">
-            {EMOTIONS.map((emotion) => (
-              <MemoizedEmotionItem
-                key={emotion.id}
-                emotion={emotion}
-                count={emotionCounts.get(emotion.id) || 0}
-                onPress={() => {
-                  handleLogEmotion(emotion.id);
-                }}
-                isLoading={isLoggingEmotion}
-              />
-            ))}
-          </View>
-        </Card>
+        {/* ponytail: remove outer card and use whitespace grouping for mood */}
+        <View className="flex-row justify-between px-1 py-1">
+          {EMOTIONS.map((emotion) => (
+            <MemoizedEmotionItem
+              key={emotion.id}
+              emotion={emotion}
+              count={emotionCounts.get(emotion.id) || 0}
+              onPress={() => {
+                handleLogEmotion(emotion.id);
+              }}
+              isLoading={isLoggingEmotion}
+            />
+          ))}
+        </View>
       </View>
     );
   },
