@@ -35,32 +35,33 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
   if (!currentPrompt || prompts.length === 0) return null;
 
   return (
+    // ponytail: tighter hero reflection card height
     <Card
       variant="tile"
       radius="lg"
       showDepth={false}
       haptic="none"
-      contentClassName="min-h-[220px] p-5"
+      contentClassName="min-h-[160px] p-5 pt-4 pb-5"
     >
       <View className="absolute right-2 top-2 z-10">
         <TouchableOpacity
           onPress={cyclePrompt}
           className="h-11 w-11 items-center justify-center"
-          accessibilityLabel="Show next prompt"
+          accessibilityLabel="New prompt"
           accessibilityRole="button"
         >
           <Feather name="refresh-cw" size={18} color={SEMANTIC_COLORS.text.primary} />
         </TouchableOpacity>
       </View>
 
-      <View className="min-h-[112px] pr-10" key={currentPrompt.id}>
+      <View className="min-h-[64px] pr-10" key={currentPrompt.id}>
         <Text
           style={{
             fontFamily: APP_FONT_FAMILIES.extraBold,
             color: SEMANTIC_COLORS.text.primary,
-            fontSize: 30,
-            letterSpacing: -0.5,
-            lineHeight: 34,
+            fontSize: 24,
+            letterSpacing: -0.4,
+            lineHeight: 28,
           }}
         >
           {currentPrompt.description}
@@ -83,7 +84,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
         accessibilityLabel={`Start reflection: ${currentPrompt.description}`}
         style={{
           minHeight: 50,
-          marginTop: 20,
+          marginTop: 14,
           paddingHorizontal: 24,
           backgroundColor: SEMANTIC_COLORS.brand.primary,
         }}
