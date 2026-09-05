@@ -137,7 +137,7 @@ export const Node = React.memo(function Node({
           left: position.x - hSize,
           top: position.y - hSize,
           width: size,
-          height: size + DEPTH,
+          height: type === NodeType.LESSON ? size : size + DEPTH,
           alignItems: "center",
           justifyContent: "center",
         },
@@ -151,7 +151,7 @@ export const Node = React.memo(function Node({
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         onPress={handlePress}
-        style={{ width: size, height: size + DEPTH }}
+        style={{ width: size, height: type === NodeType.LESSON ? size : size + DEPTH }}
       >
         <NodeSilhouette
           type={type}
@@ -200,49 +200,58 @@ export const Node = React.memo(function Node({
       </Pressable>
 
       {label && state === NodeState.CURRENT && (
-        <Animated.View
+        <View
           pointerEvents="none"
-          style={[
-            {
-              position: "absolute",
-              top: -40,
-              paddingHorizontal: 12,
-              paddingVertical: 6,
-              backgroundColor: "white",
-              borderRadius: 16,
-              borderWidth: 2,
-              borderColor: "#E5E5E5",
-              shadowColor: "#000",
-              minWidth: 80,
-              alignItems: "center",
-              justifyContent: "center",
-              alignSelf: "center",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 4,
-              elevation: 2,
-            },
-            iconAnimatedStyle,
-          ]}
+          style={{
+            position: "absolute",
+            top: -40,
+            left: 0,
+            right: 0,
+            alignItems: "center",
+            zIndex: 20,
+            elevation: 20,
+          }}
         >
-          <Text style={{ fontFamily: "Nunito-Bold", fontSize: 14, color: "#4B4B4B" }}>
-            {label}
-          </Text>
-          <View
-            style={{
-              position: "absolute",
-              bottom: -6,
-              alignSelf: "center",
-              width: 10,
-              height: 10,
-              backgroundColor: "white",
-              borderBottomWidth: 2,
-              borderRightWidth: 2,
-              borderColor: "#E5E5E5",
-              transform: [{ rotate: "45deg" }],
-            }}
-          />
-        </Animated.View>
+          <Animated.View
+            style={[
+              {
+                paddingHorizontal: 12,
+                paddingVertical: 6,
+                backgroundColor: "white",
+                borderRadius: 16,
+                borderWidth: 2,
+                borderColor: "#E5E5E5",
+                shadowColor: "#000",
+                minWidth: 80,
+                alignItems: "center",
+                justifyContent: "center",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 2,
+              },
+              iconAnimatedStyle,
+            ]}
+          >
+            <Text style={{ fontFamily: "Nunito-Bold", fontSize: 14, color: "#4B4B4B" }}>
+              {label}
+            </Text>
+            <View
+              style={{
+                position: "absolute",
+                bottom: -6,
+                alignSelf: "center",
+                width: 10,
+                height: 10,
+                backgroundColor: "white",
+                borderBottomWidth: 2,
+                borderRightWidth: 2,
+                borderColor: "#E5E5E5",
+                transform: [{ rotate: "45deg" }],
+              }}
+            />
+          </Animated.View>
+        </View>
       )}
     </Animated.View>
   );
