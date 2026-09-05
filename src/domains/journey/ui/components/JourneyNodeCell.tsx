@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { NODE_SIZE } from "@/src/data/journey/constants";
+import { Link } from "expo-router";
 import { Node } from "./Node";
 import { nodeA11yLabel } from "../utils/nodeA11yLabel";
 import {
@@ -24,6 +25,7 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
   pathStrokeWidth,
   handlePress,
   screenWidth,
+  courseId,
 }: JourneyNodeCellViewProps): React.JSX.Element {
   return (
     <View
@@ -52,18 +54,45 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
         </Svg>
       ) : null}
 
-      <Node
-        type={item.type}
-        state={nodeState}
-        id={item.id}
-        index={item.globalIndex}
-        position={nodePosition}
-        size={NODE_DISPLAY_SIZE}
-        label={item.label}
-        iconName={item.icon}
-        onPress={handlePress}
-        accessibilityLabel={nodeA11yLabel(item.type, nodeState)}
-      />
+      {(item.type === "lesson" || item.type === "milestone") && (nodeState === "current" || nodeState === "completed" || nodeState === "available") ? (
+        <Link
+          href={{
+            pathname: "/tabs/screens/journey-flow",
+            params: { courseId: courseId, nodeId: item.id },
+          }}
+          asChild
+        >
+          <Link.Trigger>
+            <Link.AppleZoom>
+              <Node
+                type={item.type}
+                state={nodeState}
+                id={item.id}
+                index={item.globalIndex}
+                position={nodePosition}
+                size={NODE_DISPLAY_SIZE}
+                label={item.label}
+                iconName={item.icon}
+                onPress={handlePress}
+                accessibilityLabel={nodeA11yLabel(item.type, nodeState)}
+              />
+            </Link.AppleZoom>
+          </Link.Trigger>
+        </Link>
+      ) : (
+        <Node
+          type={item.type}
+          state={nodeState}
+          id={item.id}
+          index={item.globalIndex}
+          position={nodePosition}
+          size={NODE_DISPLAY_SIZE}
+          label={item.label}
+          iconName={item.icon}
+          onPress={handlePress}
+          accessibilityLabel={nodeA11yLabel(item.type, nodeState)}
+        />
+      )}
     </View>
   );
 });

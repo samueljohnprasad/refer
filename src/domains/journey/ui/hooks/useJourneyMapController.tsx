@@ -242,11 +242,8 @@ export function useJourneyMapController(
         return;
       }
 
-      // Imperative routing since <Link> was removed in unification
-      router.push({
-        pathname: "/tabs/screens/journey-flow",
-        params: { courseId, nodeId: node.id },
-      });
+      // Routing for active/completed nodes is handled declaratively by <Link> in JourneyNodeCell
+      return;
     },
     [toast, dispatch, courseId],
   );

@@ -30,14 +30,14 @@ export interface NodeProps {
   size: number;
   label?: string;
   iconName?: string | null;
-  onPress: (node?: any) => void;
+  onPress?: (e?: any) => void;
   accessibilityLabel: string;
 }
 
 const PRESS_SPRING = { damping: 14, stiffness: 400 };
 const DEPTH = 6;
 
-export const Node = React.memo(function Node({
+export const Node = React.memo(React.forwardRef<View, NodeProps>(function Node({
   type,
   state,
   id,
@@ -48,7 +48,7 @@ export const Node = React.memo(function Node({
   iconName,
   onPress,
   accessibilityLabel,
-}: NodeProps) {
+}: NodeProps, ref) {
   const vm = useNodeViewModel(type, state, iconName ?? null);
   const yOffset = useSharedValue(0);
   const opacity = useSharedValue(1);
@@ -75,11 +75,10 @@ export const Node = React.memo(function Node({
     }
   }, [vm.isInteractive, yOffset, opacity, reduceMotion]);
 
-  const handlePress = useCallback(() => {
+  const handlePress = useCallback((e: any) => {
     if (!vm.isInteractive) return;
-    // We pass node object as requested by contract, though typically caller wraps it anyway.
-    onPress({ id, index, type, state, position, size, label });
-  }, [vm.isInteractive, onPress, id, index, type, state, position, size, label]);
+    onPress?.(e);
+  }, [vm.isInteractive, onPress]);
 
   const hSize = size / 2;
 
@@ -134,6 +133,7 @@ export const Node = React.memo(function Node({
 
   return (
     <Animated.View
+      ref={ref}
       style={[
         {
           position: "absolute",
@@ -241,4 +241,4 @@ export const Node = React.memo(function Node({
       )}
     </Animated.View>
   );
-});
+}));
