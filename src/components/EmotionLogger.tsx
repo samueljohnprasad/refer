@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import Animated, {
@@ -10,8 +10,7 @@ import Animated, {
   interpolate,
   interpolateColor,
 } from "react-native-reanimated";
-import { Image } from "@/components/ui/image";
-import { terrible, bad, fine, good, great } from "@/assets/emojis";
+import { MoodIcon, type MoodKey } from "@/src/components/MoodIcon";
 import { useEmotionLogger } from "@/hooks/data/useEmotionLogger";
 import { useXPOptional } from "../context/XPContext";
 import { XPActionType } from "../types/xp";
@@ -25,11 +24,11 @@ import { createLogger } from "@/src/lib/logger";
 const logger = createLogger("emotion-logger");
 
 const EMOTIONS = [
-  { id: 1, name: "Terrible", emoji: terrible },
-  { id: 2, name: "Bad", emoji: bad },
-  { id: 3, name: "Okay", emoji: fine },
-  { id: 4, name: "Good", emoji: good },
-  { id: 5, name: "Great", emoji: great },
+  { id: 1, name: "Terrible", moodKey: "terrible" as MoodKey },
+  { id: 2, name: "Bad", moodKey: "bad" as MoodKey },
+  { id: 3, name: "Okay", moodKey: "okay" as MoodKey },
+  { id: 4, name: "Good", moodKey: "good" as MoodKey },
+  { id: 5, name: "Great", moodKey: "great" as MoodKey },
 ] as const;
 
 interface EmotionLoggerProps {
@@ -41,9 +40,10 @@ interface EmotionLoggerProps {
 const EmotionItem: React.FC<{
   emotion: (typeof EMOTIONS)[number];
   count: number;
+  isSelected: boolean;
   onPress: () => void;
   isLoading: boolean;
-}> = ({ emotion, count, onPress, isLoading }) => {
+}> = ({ emotion, count, isSelected, onPress, isLoading }) => {
   const countScale = useSharedValue(1);
   const highlightProgress = useSharedValue(0);
 
@@ -95,12 +95,7 @@ const EmotionItem: React.FC<{
             ),
           }))}
         >
-          <Image
-            source={emotion.emoji}
-            alt={emotion.name}
-            className="w-10 h-10"
-            resizeMode="contain"
-          />
+          <MoodIcon mood={emotion.moodKey} isSelected={isSelected} size={38} />
           {count > 0 && (
             <Animated.View
               className="absolute -right-[2px] -top-[2px] h-[18px] min-w-[18px] items-center justify-center rounded-full border-[1.5px] border-brand-surface bg-sage-pill px-1"
@@ -113,7 +108,17 @@ const EmotionItem: React.FC<{
           )}
         </Animated.View>
       </PressableScale>
-      <Text variant="chip" color="soft" className="mt-1 text-[12px]">
+      <Text
+        variant="chip"
+        className={`mt-1.5 text-[12px] font-semibold ${
+          isSelected ? "text-brand-primary" : "text-ink-soft"
+        }`}
+        style={{
+          color: isSelected
+            ? SEMANTIC_COLORS.brand.primary
+            : SEMANTIC_COLORS.text.tertiary,
+        }}
+      >
         {emotion.name}
       </Text>
     </View>
@@ -134,10 +139,26 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
     const { earnCoinsForAction } = useRewardsContext();
     const challenges = useChallengesOptional();
 
+    // ponytail: vector mood icon with active selection feedback
+    const [selectedMoodId, setSelectedMoodId] = useState<number | null>(null);
+
+    // Initial check: if emotionCounts has any entry > 0, set selectedMoodId to that emotion id if selectedMoodId === null
+    useEffect(() => {
+      if (selectedMoodId === null && emotionCounts.size > 0) {
+        for (const [id, count] of emotionCounts.entries()) {
+          if (count > 0) {
+            setSelectedMoodId(id);
+            break;
+          }
+        }
+      }
+    }, [emotionCounts, selectedMoodId]);
+
     // Memoize the callback to prevent recreation on every render
     const handleLogEmotion = useCallback(
       async (emotionScore: number): Promise<void> => {
         if (isLoggingEmotion) return;
+        setSelectedMoodId(emotionScore);
 
         try {
           await logEmotionToSupabase(emotionScore, (updated) => {
@@ -181,6 +202,7 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
               key={emotion.id}
               emotion={emotion}
               count={emotionCounts.get(emotion.id) || 0}
+              isSelected={selectedMoodId === emotion.id}
               onPress={() => {
                 handleLogEmotion(emotion.id);
               }}
