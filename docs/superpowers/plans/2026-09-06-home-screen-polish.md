@@ -27,7 +27,7 @@
 - Consumes: `react-native-svg`, `SEMANTIC_COLORS`
 - Produces: `MoodIcon` component and `MoodKey` type (`"terrible" | "bad" | "okay" | "good" | "great"`).
 
-- [ ] **Step 1: Create MoodIcon.tsx**
+- [x] **Step 1: Create MoodIcon.tsx**
 Implement 5 expressive faces using SVG lines and arcs with unified 2pt stroke and 38×38pt circle:
 ```tsx
 import React from "react";
@@ -115,15 +115,15 @@ export const MoodIcon: React.FC<MoodIconProps> = ({
 };
 ```
 
-- [ ] **Step 2: Create index.ts export**
+- [x] **Step 2: Create index.ts export**
 ```typescript
 export * from "./MoodIcon";
 ```
 
-- [ ] **Step 3: Verify TypeScript correctness**
+- [x] **Step 3: Verify TypeScript correctness**
 Run `npx tsc --noEmit` on `MoodIcon.tsx`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 ```bash
 git add src/components/MoodIcon
 git commit -m "feat(ui): add cohesive vector MoodIcon family"
@@ -139,7 +139,7 @@ git commit -m "feat(ui): add cohesive vector MoodIcon family"
 - Consumes: `MoodIcon`, `useEmotionLogger`, `PressableScale`
 - Produces: Polished mood check-in with selection feedback and consistent visual weight.
 
-- [ ] **Step 1: Update EmotionLogger.tsx**
+- [x] **Step 1: Update EmotionLogger.tsx**
 1. Replace raster imports with `MoodIcon` and `MoodKey`.
 2. Map `EMOTIONS` array to include `moodKey`:
    ```typescript
@@ -156,10 +156,10 @@ git commit -m "feat(ui): add cohesive vector MoodIcon family"
 5. Update label typography: `text-[12px] font-semibold`, colored `text-brand-primary` if selected, `text-ink-soft` if unselected.
 6. Add `// ponytail: vector mood icon with active selection feedback`.
 
-- [ ] **Step 2: Verify TypeScript correctness**
+- [x] **Step 2: Verify TypeScript correctness**
 Run `npx tsc --noEmit` on `EmotionLogger.tsx`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 git add src/components/EmotionLogger.tsx
 git commit -m "style(mood): integrate custom vector MoodIcon and active selection state"
@@ -175,7 +175,7 @@ git commit -m "style(mood): integrate custom vector MoodIcon and active selectio
 - Consumes: `useStreak`, `SEMANTIC_COLORS`, `APP_FONT_FAMILIES`, `AnimatedFireIcon`
 - Produces: Aligned, high-contrast streak counter with 7-column status dots.
 
-- [ ] **Step 1: Update WeeklyStreakWidget.tsx**
+- [x] **Step 1: Update WeeklyStreakWidget.tsx**
 1. Left side: `🔥 {currentStreak} day streak` in `text-[16px] font-bold text-ink`.
 2. Right side: 7 vertical columns (`gap-3`):
    - Day initial `S M T W T F S` in `text-[11px] font-bold text-ink-soft` (darker contrast).
@@ -184,10 +184,10 @@ git commit -m "style(mood): integrate custom vector MoodIcon and active selectio
      - Incomplete: hollow circle (`w-2 h-2 rounded-full border-[1.5px] border-border-default bg-transparent`).
 3. Add `// ponytail: aligned streak row with clean status dots`.
 
-- [ ] **Step 2: Verify TypeScript correctness**
+- [x] **Step 2: Verify TypeScript correctness**
 Run `npx tsc --noEmit` on `WeeklyStreakWidget.tsx`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 git add src/components/Streak/WeeklyStreakWidget.tsx
 git commit -m "style(streak): align streak row and use clean status dots"
@@ -203,16 +203,16 @@ git commit -m "style(streak): align streak row and use clean status dots"
 - Consumes: `Card`, `BeginButton`, `Feather`, `SEMANTIC_COLORS`
 - Produces: Proportioned reflection hero card with comfortable insets.
 
-- [ ] **Step 1: Update FeaturedPromptCard.tsx**
+- [x] **Step 1: Update FeaturedPromptCard.tsx**
 1. Refresh button container: change `right-2 top-2` to `right-3.5 top-3.5`.
 2. Card content padding: `contentClassName="min-h-[150px] p-4 pt-3.5 pb-4"`.
 3. BeginButton top margin: change from `marginTop: 14` to `marginTop: 10`.
 4. Add `// ponytail: inset prompt refresh button and tighten card vertical whitespace`.
 
-- [ ] **Step 2: Verify TypeScript correctness**
+- [x] **Step 2: Verify TypeScript correctness**
 Run `npx tsc --noEmit` on `FeaturedPromptCard.tsx`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 git add src/components/FeaturedPromptCard/FeaturedPromptCard.tsx
 git commit -m "style(hero): inset prompt refresh button and tighten card padding"
@@ -228,17 +228,17 @@ git commit -m "style(hero): inset prompt refresh button and tighten card padding
 - Consumes: `Greeting`, `FeaturedPromptCard`, `EmotionLogger`, `WeeklyStreakWidget`
 - Produces: Calibrated typography hierarchy where prompt question is the clear hero.
 
-- [ ] **Step 1: Update JournalCalendarScreen.tsx**
+- [x] **Step 1: Update JournalCalendarScreen.tsx**
 1. Update `Greeting` component text:
    Change `text-[28px] font-semibold tracking-tight text-ink` to `text-[22px] font-bold tracking-tight text-ink`.
 2. Update eyebrow text:
    Change `text-[13px] font-bold tracking-wider text-ink-soft uppercase` to `text-[12px] font-bold tracking-wider text-ink-soft uppercase`.
 3. Add `// ponytail: calibrated greeting scale to emphasize prompt hero`.
 
-- [ ] **Step 2: Verify TypeScript correctness**
+- [x] **Step 2: Verify TypeScript correctness**
 Run `npx tsc --noEmit` on `JournalCalendarScreen.tsx`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 git add src/screens/JournalCalendarScreen/JournalCalendarScreen.tsx
 git commit -m "style(home): refine greeting typography hierarchy"
@@ -250,11 +250,11 @@ git commit -m "style(home): refine greeting typography hierarchy"
 **Files:**
 - No file changes
 
-- [ ] **Step 1: Full TypeScript verification**
+- [x] **Step 1: Full TypeScript verification**
 Verify clean compilation of all files.
 
-- [ ] **Step 2: iOS Simulator Screenshot**
+- [x] **Step 2: iOS Simulator Screenshot**
 Capture screenshot via `argent` MCP tool to verify visual polish in live app.
 
-- [ ] **Step 3: Update Knowledge Graph**
+- [x] **Step 3: Update Knowledge Graph**
 Run `graphify update .` to sync AST knowledge graph.
