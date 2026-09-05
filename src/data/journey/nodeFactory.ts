@@ -21,6 +21,13 @@ const DEFAULT_CHECKPOINT_REWARDS: JourneyReward[] = [
   { type: JourneyRewardType.GEMS, amount: 5, icon: "💎" },
 ];
 
+
+/** Default rewards for a milestone node */
+const DEFAULT_MILESTONE_REWARDS: JourneyReward[] = [
+  { type: JourneyRewardType.XP, amount: 100, icon: "⚡" },
+  { type: JourneyRewardType.GEMS, amount: 50, icon: "💎" },
+];
+
 /** Default rewards for a chest node */
 const DEFAULT_CHEST_REWARDS: JourneyReward[] = [
   { type: JourneyRewardType.XP, amount: 50, icon: "⚡" },
@@ -33,12 +40,13 @@ const COMPLETED_ICON_MAP: Record<NodeType, NodeIcon> = {
   [NodeType.LESSON]: NodeIcon.CHECKMARK,
   [NodeType.CHECKPOINT]: NodeIcon.CHECKMARK,
   [NodeType.CHEST]: NodeIcon.CHEST,
+  [NodeType.MILESTONE]: NodeIcon.STAR,
 };
 
 /** Map node type to its default icon when active */
 const ACTIVE_ICON_MAP: Record<NodeType, NodeIcon> = {
-  [NodeType.LESSON]: NodeIcon.STAR,
-  [NodeType.CHECKPOINT]: NodeIcon.BOOK,
+  [NodeType.LESSON]: NodeIcon.BOOK,
+  [NodeType.CHECKPOINT]: NodeIcon.CHECKPOINT,
   [NodeType.CHEST]: NodeIcon.CHEST,
 };
 
@@ -47,6 +55,7 @@ const REWARD_MAP: Record<NodeType, JourneyReward[]> = {
   [NodeType.LESSON]: DEFAULT_LESSON_REWARDS,
   [NodeType.CHECKPOINT]: DEFAULT_CHECKPOINT_REWARDS,
   [NodeType.CHEST]: DEFAULT_CHEST_REWARDS,
+  [NodeType.MILESTONE]: DEFAULT_MILESTONE_REWARDS,
 };
 
 /** Derive the correct icon based on node type and status */

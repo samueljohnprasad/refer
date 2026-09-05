@@ -27,8 +27,8 @@ export const UNIT_GRADIENTS: Record<string, readonly [string, string]> = {
 
 /** Node sizing constants (dp) */
 export const NODE_SIZE = {
-  regular: 64,
-  chest: 80,
+  regular: 72,
+  chest: 84,
   progressRingGap: 4,
   progressRingStroke: 6,
 } as const;
@@ -124,3 +124,9 @@ export const MASCOT_MESSAGES: readonly string[] = [
   "Consistency is your superpower.",
   "Take a breath. You're doing well.",
 ] as const;
+
+export const NODE_SHAPES = {
+  hexagon: "M50 0 L93 25 L93 75 L50 100 L7 75 L7 25 Z",
+  shield: "M10 10 H90 V55 C90 75 50 95 50 95 C50 95 10 75 10 55 Z",
+  rosette: "M 50 5 C 60 5 65 15 75 15 C 85 15 90 25 90 35 C 90 45 95 50 95 50 C 95 50 90 55 90 65 C 90 75 85 85 75 85 C 65 85 60 95 50 95 C 40 95 35 85 25 85 C 15 85 10 75 10 65 C 10 55 5 50 5 50 C 5 50 10 45 10 35 C 10 25 15 15 25 15 C 35 15 40 5 50 5 Z"
+};

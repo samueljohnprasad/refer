@@ -123,6 +123,9 @@ export const Node = React.memo(function Node({
       if (vm.iconName === "star") {
         return <FontAwesome5 name="star" solid size={24} color={vm.iconColor as string} />;
       }
+      if (vm.iconName === "box") {
+        return <FontAwesome5 name="box" solid size={28} color={vm.iconColor as string} />;
+      }
       return <Feather name={vm.iconName as any} size={28} color={vm.iconColor as string} />;
     }
     

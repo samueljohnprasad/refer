@@ -37,7 +37,7 @@ export function useNodeViewModel(
       break;
     case NodeType.CHEST:
       shapeKey = "chest";
-      iconName = "gift";
+      iconName = "box";
       break;
     case NodeType.MILESTONE:
       shapeKey = "rosette";
@@ -52,7 +52,7 @@ export function useNodeViewModel(
       rimColor = SAGE[200];
       iconColor = SAGE[400];
       isInteractive = false;
-      indicator = "lock";
+      indicator = "none";
       break;
     case NodeState.AVAILABLE:
       faceColor = SAGE[300];
