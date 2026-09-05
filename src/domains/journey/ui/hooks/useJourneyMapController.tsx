@@ -43,6 +43,8 @@ import { getJourneyMapHeaderState } from "../../model/journeyMapHeaderState";
 import { useCelebrationOrchestrator } from "@/src/domains/journey/rewards/useCelebrationOrchestrator";
 import { REWARDS_CONFIG } from "@/src/data/journey/rewardsConfig";
 import type { InsightCardContent } from "@/src/data/journey/rewardsConfig";
+import { useCheckpointSheet } from "./useCheckpointSheet";
+import type { CheckpointActionSheetData } from "./useCheckpointSheet";
 
 type JourneyMapController = {
   activeGlobalIndex: number;
@@ -73,6 +75,10 @@ type JourneyMapController = {
   handleDismissReward: () => void;
   pendingCelebration: "lesson" | "unit" | "course" | null;
   dismissCelebration: () => void;
+  isCheckpointSheetOpen: boolean;
+  setIsCheckpointSheetOpen: Dispatch<SetStateAction<boolean>>;
+  checkpointSheetData: CheckpointActionSheetData | null;
+  closeCheckpointSheet: () => void;
 };
 
 export function useJourneyMapController(
@@ -88,6 +94,15 @@ export function useJourneyMapController(
   const dispatch = useAppDispatch();
   const { toast } = useToast();
   const { handleCompletionResult } = useCelebrationOrchestrator(courseId);
+
+  // Checkpoint Sheet (T018)
+  const {
+    isOpen: isCheckpointSheetOpen,
+    setIsOpen: setIsCheckpointSheetOpen,
+    sheetData: checkpointSheetData,
+    openSheet: openCheckpointSheet,
+    closeSheet: closeCheckpointSheet,
+  } = useCheckpointSheet();
 
   useEffect(() => {
     dispatch(hydrateCourseFinaleSeen(courseId));
@@ -214,7 +229,12 @@ export function useJourneyMapController(
         return;
       }
 
-      if (node.type === "trophy") {
+      if (node.type === "checkpoint") {
+        openCheckpointSheet(node);
+        return;
+      }
+
+      if (node.type === "milestone") {
         if (node.status === "completed") {
           // just show the trophy celebration again
           dispatch(setPendingCelebration({ courseId, level: "unit" }));
@@ -222,8 +242,11 @@ export function useJourneyMapController(
         return;
       }
 
-      // Routing for active/completed nodes is handled declaratively by <Link> in JourneyNodeCell
-      return;
+      // Imperative routing since <Link> was removed in unification
+      router.push({
+        pathname: "/tabs/screens/journey-flow",
+        params: { courseId, nodeId: node.id },
+      });
     },
     [toast, dispatch, courseId],
   );
@@ -317,5 +340,10 @@ export function useJourneyMapController(
     handleDismissReward,
     pendingCelebration,
     dismissCelebration,
+    // Checkpoint sheet
+    isCheckpointSheetOpen,
+    setIsCheckpointSheetOpen,
+    checkpointSheetData,
+    closeCheckpointSheet,
   };
 }
