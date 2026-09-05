@@ -9,7 +9,7 @@ import {
   type ReactElement,
 } from "react";
 import { ScrollView, View, Pressable } from "react-native";
-import { Stack } from "expo-router";
+import { Stack, useFocusEffect } from "expo-router";
 import { Text } from "@/src/components/ui/Text";
 import {
   format,
@@ -97,13 +97,15 @@ function DailyNotesScreenComponent(): ReactElement {
     (tabFilter === "journal" && journalCount === 0) ||
     (tabFilter === "habits" && habitsCount === 0);
 
-  // ponytail: hide floating assistant when screen displays empty state mascot
-  useEffect(() => {
-    dispatch(setVisible(!isEmptyState));
-    return () => {
-      dispatch(setVisible(true));
-    };
-  }, [dispatch, isEmptyState]);
+  // ponytail: hide floating assistant when screen displays empty state mascot; restore on tab blur
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(setVisible(!isEmptyState));
+      return () => {
+        dispatch(setVisible(true));
+      };
+    }, [dispatch, isEmptyState]),
+  );
 
   // State for current week view (independent of selected date)
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
