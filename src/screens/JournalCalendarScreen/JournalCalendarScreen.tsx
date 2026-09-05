@@ -37,12 +37,13 @@ const Greeting = React.memo<{
   
   const greeting = useMemo(() => getGreeting(new Date().getHours()), []);
 
+  // ponytail: calibrated greeting scale to emphasize prompt hero
   return (
     <View>
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-2.5 flex-1 pr-2">
           <Text
-            className="text-[28px] font-semibold tracking-tight text-ink"
+            className="text-[22px] font-bold tracking-tight text-ink"
             style={{ color: SEMANTIC_COLORS.text.primary }}
             numberOfLines={1}
             adjustsFontSizeToFit
@@ -160,7 +161,7 @@ export default function JournalCalendarScreen() {
           {/* Hero: Today's Reflection */}
           <View className="mt-6">
             <View className="mb-2 px-1">
-              <Text className="text-[13px] font-bold tracking-wider text-ink-soft uppercase">
+              <Text className="text-[12px] font-bold tracking-wider text-ink-soft uppercase">
                 Today's reflection
               </Text>
             </View>
