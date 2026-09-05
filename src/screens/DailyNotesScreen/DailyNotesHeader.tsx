@@ -391,12 +391,13 @@ const DailyNotesHeader = React.memo(
                   </Animated.View>
                 </Pressable>
 
+                {/* ponytail: softer month title and compressed week row spacing */}
                 <Animated.View 
                   style={[titleAndBookmarkStyle, { position: 'absolute', left: 100, right: 100, top: 0, bottom: 0, zIndex: -1 }]} 
                   className="flex-row items-center justify-center pointer-events-none"
                   pointerEvents="none"
                 >
-                  <Text variant="h1" className="text-[28px] text-center" adjustsFontSizeToFit numberOfLines={1} minimumFontScale={0.7}>
+                  <Text variant="h2" className="text-[21px] text-center" adjustsFontSizeToFit numberOfLines={1} minimumFontScale={0.7}>
                     {currentMonthView || ""}
                   </Text>
                 </Animated.View>
@@ -467,7 +468,7 @@ const DailyNotesHeader = React.memo(
                   )}
 
                   {weekDaysData.map((dayData, index) => (
-                    <View className="flex-1 gap-1 mb-3" key={dayData.dayStr}>
+                    <View className="flex-1 gap-1 mb-1.5" key={dayData.dayStr}>
                       <DayButton
                         day={dayData.day}
                         dayName={dayData.dayName}
