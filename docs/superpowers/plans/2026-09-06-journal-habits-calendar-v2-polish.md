@@ -28,21 +28,21 @@
 - Consumes: `SEMANTIC_COLORS`, `isAfter`, `startOfDay`
 - Produces: `MoodBadge` with `hideEmptySlot?: boolean` prop that preserves layout dimensions without rendering a visible empty border/plus on future dates.
 
-- [ ] **Step 1: Update MoodBadge.tsx**
+- [x] **Step 1: Update MoodBadge.tsx**
 Add optional `hideEmptySlot?: boolean` to `MoodBadgeProps`.
 When `!moodscore` and `hideEmptySlot` is true, render an empty `<View style={{ width: diameter, height: diameter }} />` (or return early with an invisible box matching dimensions) so that cells retain vertical alignment without visual clutter.
 Add `// ponytail: suppress empty mood affordance when hideEmptySlot is active`.
 
-- [ ] **Step 2: Update DailyNotesHeader.tsx**
+- [x] **Step 2: Update DailyNotesHeader.tsx**
 Pass `hideEmptySlot={dayData.disabled && dayData.mood === undefined}` to `<MoodBadge />` in the week row so future dates show clean date numbers without `+`.
 
-- [ ] **Step 3: Update CalendarPicker.tsx**
+- [x] **Step 3: Update CalendarPicker.tsx**
 In `DayCell`: When `disabled` (future date) and `mood === undefined`, pass `hideEmptySlot` to `MoodBadge` (or skip rendering the visible empty placeholder).
 
-- [ ] **Step 4: Verify type correctness**
+- [x] **Step 4: Verify type correctness**
 Run `npx tsc --noEmit` on modified files to ensure zero type errors.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 ```bash
 git add src/components/MoodBadge.tsx src/screens/DailyNotesScreen/DailyNotesHeader.tsx src/screens/DailyNotesScreen/CalendarPicker.tsx
 git commit -m "style(calendar): suppress empty mood slots on future dates"
@@ -58,7 +58,7 @@ git commit -m "style(calendar): suppress empty mood slots on future dates"
 - Consumes: `isSameWeek`, `isToday`, `isSelectedDateValid`, `selectedDate`, `currentWeekViewSafe`
 - Produces: Clean, predictable `showTodayPill` boolean.
 
-- [ ] **Step 1: Update DailyNotesHeader.tsx showTodayPill**
+- [x] **Step 1: Update DailyNotesHeader.tsx showTodayPill**
 Update `showTodayPill` memo in `DailyNotesHeader.tsx`:
 ```typescript
 const showTodayPill = useMemo(() => {
@@ -71,10 +71,10 @@ const showTodayPill = useMemo(() => {
 }, [currentWeekViewSafe, isSelectedDateValid, selectedDate]);
 ```
 
-- [ ] **Step 2: Verify type correctness**
+- [x] **Step 2: Verify type correctness**
 Run `npx tsc --noEmit` to confirm clean compilation.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 git add src/screens/DailyNotesScreen/DailyNotesHeader.tsx
 git commit -m "fix(calendar): show today button only when navigated away"
@@ -90,14 +90,14 @@ git commit -m "fix(calendar): show today button only when navigated away"
 - Consumes: `SEMANTIC_COLORS.selection.surface`, `SEMANTIC_COLORS.selection.foreground`, `SEMANTIC_COLORS.brand.pressed`
 - Produces: Harmonized month day selected state matching week day selection.
 
-- [ ] **Step 1: Update CalendarPicker.tsx DayCell styling**
+- [x] **Step 1: Update CalendarPicker.tsx DayCell styling**
 Ensure `textColorVariant` or text styling for `isSelected` in `DayCell` uses `SEMANTIC_COLORS.brand.pressed` (or color variant `"sage"` matching brand pressed token), with `variant="body-bold"` for emphasis.
 Add `// ponytail: align month selected day text style with week view`.
 
-- [ ] **Step 2: Verify type correctness**
+- [x] **Step 2: Verify type correctness**
 Run `npx tsc --noEmit` to verify zero errors in `CalendarPicker.tsx`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 git add src/screens/DailyNotesScreen/CalendarPicker.tsx
 git commit -m "style(calendar): unify month selected day text style with week view"
@@ -114,7 +114,7 @@ git commit -m "style(calendar): unify month selected day text style with week vi
 - Consumes: `useAppDispatch`, `setVisible` from `happyAssistantSlice`
 - Produces: Dual-panda conflict resolution and tighter vertical grouping.
 
-- [ ] **Step 1: Update DailyNotesScreen.tsx**
+- [x] **Step 1: Update DailyNotesScreen.tsx**
 Import `useAppDispatch` and `setVisible` from `@/src/store/slices/happyAssistantSlice`.
 Determine if current screen is in empty state:
 ```typescript
@@ -133,16 +133,16 @@ useEffect(() => {
 }, [dispatch, isEmptyState]);
 ```
 
-- [ ] **Step 2: Update EmptyState.tsx Spacing**
+- [x] **Step 2: Update EmptyState.tsx Spacing**
 In `src/components/ui/EmptyState.tsx`:
 Tighten mascot container margin from `mb-4` to `mb-3`.
 Tighten title container margin from `mb-2` to `mb-1.5`.
 Add `// ponytail: tighten vertical rhythm between mascot and text`.
 
-- [ ] **Step 3: Verify type correctness**
+- [x] **Step 3: Verify type correctness**
 Run `npx tsc --noEmit` on touched files.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 ```bash
 git add src/screens/DailyNotesScreen/DailyNotesScreen.tsx src/components/ui/EmptyState.tsx
 git commit -m "style(journal): hide floating panda during empty states and tighten spacing"
@@ -154,8 +154,8 @@ git commit -m "style(journal): hide floating panda during empty states and tight
 **Files:**
 - No file changes
 
-- [ ] **Step 1: Full TypeScript Verification**
+- [x] **Step 1: Full TypeScript Verification**
 Run `npx tsc --noEmit` to confirm no new errors in any touched files.
 
-- [ ] **Step 2: Update Knowledge Graph**
+- [x] **Step 2: Update Knowledge Graph**
 Run `graphify update .` to update code graph.
