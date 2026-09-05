@@ -82,13 +82,13 @@ const DayCell = React.memo<DayCellProps>(
       return "body";
     }, [isTodayDate, isSelected]);
 
+    // ponytail: align month selected day text style with week view
     const textColorVariant = useMemo(() => {
       if (disabled) return "muted";
-      if (isSelected) return "sage";
+      if (isSelected) return undefined;
       return isTodayDate ? "ink" : "muted";
     }, [disabled, isSelected, isTodayDate]);
 
-    // ponytail: quiet month navigation buttons and align selection style
     const dateBgStyle = useMemo(() => {
       if (isSelected) {
         return {
@@ -133,7 +133,11 @@ const DayCell = React.memo<DayCellProps>(
       >
         <View className="w-full h-full flex justify-center items-center gap-1">
           <View className="w-[34px] h-[34px] rounded-full justify-center items-center" style={dateBgStyle}>
-            <Text variant={textVariant as any} color={textColorVariant as any}>
+            <Text
+              variant={textVariant as any}
+              color={textColorVariant as any}
+              style={{ color: isSelected ? SEMANTIC_COLORS.brand.pressed : undefined }}
+            >
               {dayLabel}
             </Text>
           </View>
