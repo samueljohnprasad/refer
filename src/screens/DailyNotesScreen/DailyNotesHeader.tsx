@@ -485,6 +485,7 @@ const DailyNotesHeader = React.memo(
                           active={dayData.isSelectedDay}
                           size={24}
                           onPress={() => onEmojiPress(dayData.day, dayData.mood)}
+                          hideEmptySlot={dayData.disabled && dayData.mood === undefined}
                         />
                       </View>
                     </View>

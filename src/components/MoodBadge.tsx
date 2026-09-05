@@ -27,6 +27,7 @@ export type MoodBadgeProps = {
    * This lets the parent provide a full-cell 44pt touch target.
    */
   displayOnly?: boolean;
+  hideEmptySlot?: boolean;
 };
 
 /** Human-readable label for each mood score (used in accessibilityLabel). */
@@ -47,7 +48,15 @@ const moodEmojiMap = {
 };
 
 export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
-  ({ moodscore, size = 32, onPress, disabled, active = true, displayOnly = false }) => {
+  ({
+    moodscore,
+    size = 32,
+    onPress,
+    disabled,
+    active = true,
+    displayOnly = false,
+    hideEmptySlot = false,
+  }) => {
     const diameter = size;
     const radius = diameter / 2;
     const moodEmoji = moodscore
@@ -68,6 +77,9 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
             alt={moodLabel}
             style={{ width: diameter, height: diameter }}
           />
+        ) : hideEmptySlot ? (
+          // ponytail: suppress empty mood affordance when hideEmptySlot is active
+          <View style={{ width: diameter, height: diameter }} />
         ) : (
           // ponytail: static subtle placeholder replaces reanimated spin loop
           <View

@@ -148,6 +148,7 @@ const DayCell = React.memo<DayCellProps>(
                 // Press handling is owned by the parent Pressable (full-cell
                 // target), so the badge itself is display-only.
                 displayOnly
+                hideEmptySlot={disabled && mood === undefined}
               />
             </View>
           )}
