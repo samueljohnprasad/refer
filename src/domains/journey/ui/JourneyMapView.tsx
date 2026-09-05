@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { useColorScheme } from "react-native";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import Animated from "react-native-reanimated";
 import { AmbientTapDust } from "@/src/components/ui/AmbientTapDust";
 import { GlassView } from "expo-glass-effect";
@@ -15,7 +15,9 @@ import JourneyUnavailableState from "./components/JourneyUnavailableState";
 import { ChestRewardModal } from "./components";
 import LessonCompleteSheet from "./components/LessonCompleteSheet";
 import UnitCompleteModal from "./components/UnitCompleteModal";
+import { CheckpointActionSheet } from "./components/CheckpointActionSheet";
 import { getLessonTakeaway, getUnitRewardContent } from "@/src/data/journey/rewardsConfig";
+import * as Haptics from "expo-haptics";
 import type {
   JourneyMapViewModel,
   JourneyMapActions,
@@ -195,6 +197,30 @@ export const JourneyMapView = React.memo(function JourneyMapView({
           onContinue={controller.dismissCelebration}
         />
       )}
+
+      {/* T019: Checkpoint Sheet */}
+      <CheckpointActionSheet
+        isPresented={controller.isCheckpointSheetOpen}
+        onIsPresentedChange={controller.setIsCheckpointSheetOpen}
+        data={controller.checkpointSheetData}
+        onStart={() => {
+          if (!controller.checkpointSheetData?.node) return;
+          void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          controller.closeCheckpointSheet();
+          router.push({
+            pathname: "/tabs/screens/journey-flow",
+            params: { courseId, nodeId: controller.checkpointSheetData.node.id },
+          });
+        }}
+        onReview={() => {
+          if (!controller.checkpointSheetData?.node) return;
+          controller.closeCheckpointSheet();
+          router.push({
+            pathname: "/tabs/screens/journey-flow",
+            params: { courseId, nodeId: controller.checkpointSheetData.node.id },
+          });
+        }}
+      />
     </>
   );
 });

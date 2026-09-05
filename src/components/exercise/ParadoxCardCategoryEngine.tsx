@@ -26,10 +26,14 @@ export function ParadoxCardCategoryEngine({
           stage: "ready",
           isCorrect: true,
         },
-        false
+        true
       );
+    } else {
+      // ponytail: force ready true for stuck users
+      onInteraction(saved, true);
     }
-  }, [onInteraction, saved]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount to avoid loop
 
   const alarmValue = stage === "ready" ? 25 : 75;
 

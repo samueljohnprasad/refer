@@ -38,7 +38,7 @@ export interface ServerNodeData extends PathNodeData {
   /** Estimated minutes to complete */
   estimatedMinutes: number;
   /** True if this is the last node in the section (trophy/checkpoint) */
-  isTrophy: boolean;
+  isMilestone: boolean;
 }
 
 // ---------------------------------------------------------------------------

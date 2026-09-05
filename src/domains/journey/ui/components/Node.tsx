@@ -186,8 +186,10 @@ export const Node = React.memo(React.forwardRef<View, NodeProps>(function Node({
       </Pressable>
 
       {label && state === NodeState.CURRENT && (
-        <View
-          pointerEvents="none"
+        <Pressable
+          onPress={handlePress}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
           style={{
             position: "absolute",
             top: -40,
@@ -237,7 +239,7 @@ export const Node = React.memo(React.forwardRef<View, NodeProps>(function Node({
               }}
             />
           </Animated.View>
-        </View>
+        </Pressable>
       )}
     </Animated.View>
   );

@@ -20,7 +20,7 @@ import {
   multilineTextAlignment,
 } from "@expo/ui/swift-ui/modifiers";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { SvgAppButton } from "@/src/domains/journey/ui/components/svg-app-button";
+import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 import type { PathNodeData } from "@/src/types/journey/node";
 import type { InsightCardContent } from "@/src/data/journey/rewardsConfig";
 
@@ -57,34 +57,14 @@ function ChestRewardContent({
       </VStack>
       <RNHostView matchContents>
         <View style={{ width: 280 }}>
-          <SvgAppButton
-            width={280}
-            height={54}
-            color={isClaiming ? (SEMANTIC_COLORS.border.selected as string) : (SEMANTIC_COLORS.brand.primary as string)}
-            backgroundColor={SEMANTIC_COLORS.brand.onSoft as string}
-            leftRadius={14}
-            rightRadius={14}
+          <CourseExercisePrimaryButton
+            label={isClaiming ? "Claiming…" : "Claim Rewards"}
+            loading={isClaiming}
             disabled={isClaiming}
-            accessibilityRole="button"
-            accessibilityLabel={isClaiming ? "Claiming" : "Claim Rewards"}
             onPress={() => {
               void onClaim();
             }}
-            contentContainerStyle={{
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <RNText
-              style={{
-                color: "#FFFFFF",
-                fontFamily: APP_FONT_FAMILIES.semiBold,
-                fontSize: 16,
-              }}
-            >
-              {isClaiming ? "Claiming…" : "Claim Rewards"}
-            </RNText>
-          </SvgAppButton>
+          />
         </View>
       </RNHostView>
     </VStack>

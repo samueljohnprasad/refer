@@ -99,6 +99,13 @@ export function completesOnPrimaryInteraction(exercise: Exercise): boolean {
   ) {
     return true;
   }
+  
+  // ponytail: learn_cards without recall completes directly
+  const category = resolveCourseExerciseCategory(exercise);
+  if (category === CourseExerciseCategoryEnum.LearnCards && !exercise.content?.recall) {
+    return true;
+  }
+
   return exercise.content?.completionMode === "direct";
 }
 

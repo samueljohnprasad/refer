@@ -9,8 +9,13 @@ export function LearnCardsContainer({ exercise, savedResponse, locked = false, o
   const response = readLearnCardsResponse(savedResponse);
 
   useEffect(() => {
-    if (!savedResponse) onInteraction(createCardResponse(0), true);
-  }, [onInteraction, savedResponse]);
+    if (!savedResponse) {
+      onInteraction(createCardResponse(0), true);
+    } else if (response.phase === "recall" && !data.recall) {
+      // ponytail: recover stuck users who reached recall phase without recall data
+      onInteraction(createCardResponse(response.cardIndex), true);
+    }
+  }, [onInteraction, savedResponse, response.phase, response.cardIndex, data.recall]);
 
   const selectRecallOption = (optionId: string) => {
     if (locked || !data.recall) return;

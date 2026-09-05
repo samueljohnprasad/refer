@@ -281,7 +281,7 @@ export enum MentalHealthNodeType {
   CHECKPOINT = "checkpoint",
   PRACTICE = "practice",
   AI_INSIGHT = "ai_insight",
-  TROPHY = "trophy",
+  MILESTONE = "milestone",
   /** Legacy types from existing journey system */
   LESSON = "lesson",
 }

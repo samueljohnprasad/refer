@@ -56,7 +56,7 @@ export const EIGHTH_BATCH_CATEGORY_CONFIGS = {
       submissionMode: "explicit",
       getPrimaryLabel: (exercise, response) => {
         const maxReached = response.maxProgressReached;
-        return typeof maxReached === 'number' && maxReached >= 80 ? "Continue" : "Explore the wave";
+        return typeof maxReached === 'number' && maxReached >= 80 ? "Continue" : "Drag slider to explore";
       }
     }
   },

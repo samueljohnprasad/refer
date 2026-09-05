@@ -16,7 +16,16 @@ export enum NodeType {
   LESSON = "lesson",
   CHECKPOINT = "checkpoint",
   CHEST = "chest",
-  TROPHY = "trophy",
+  MILESTONE = "milestone",
+}
+
+/** Visual and interaction state of a unified path node */
+export enum NodeState {
+  LOCKED = "locked",
+  AVAILABLE = "available",
+  CURRENT = "current",
+  COMPLETED = "completed",
+  CLAIMED = "claimed",
 }
 
 /** Icon displayed inside a path node */

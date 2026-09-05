@@ -5,6 +5,7 @@
 
 export {
   NodeStatus,
+  NodeState,
   NodeType,
   NodeIcon,
   JourneyRewardType,

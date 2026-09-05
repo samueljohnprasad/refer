@@ -54,7 +54,7 @@ export function getNextLearnCardsState(
 
   return {
     kind: "response",
-    ready: !isLastCard,
+    ready: true,
     response: {
       ...response,
       phase: isLastCard ? "recall" : "cards",

@@ -6,7 +6,7 @@
 // ── Status types ────────────────────────────────────────────────────────────
 
 /** All possible statuses a node can have. 'locked' is client-only — never stored in DB. */
-export type NodeStatus = "locked" | "in_progress" | "attempted" | "completed";
+export type NodeStatus = "locked" | "in_progress" | "attempted" | "completed" | "claimed";
 
 /**
  * Visual status used by the journey map renderer.

@@ -19,10 +19,10 @@ category: CourseExerciseCategoryEnum.ParadoxCard,
     getPrimaryTransition: (exercise, response) => {
       const stage = response?.stage || "ready";
       if (stage === "ready") {
-        return { kind: "response", ready: false, response: { ...response, stage: "result" } };
+        return { kind: "response", ready: true, response: { ...response, stage: "result" } };
       }
       if (stage === "result") {
-        return { kind: "response", ready: false, response: { ...response, stage: "explanation" } };
+        return { kind: "response", ready: true, response: { ...response, stage: "explanation" } };
       }
       return null;
     },

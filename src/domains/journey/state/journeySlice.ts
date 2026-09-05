@@ -8,6 +8,7 @@
 import { createEntityAdapter, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { supabase } from "@/src/network/auth/supabase";
 
 import type {
   Course,
@@ -281,6 +282,30 @@ export const hydrateCourseFinaleSeen = createAsyncThunk(
       }
     } catch (err) {
       console.warn("[rewards] failed to hydrate finaleSeen", err);
+    }
+  }
+);
+
+export const claimChest = createAsyncThunk(
+  "journey/claimChest",
+  async (nodeId: string, { dispatch, getState }) => {
+    // @ts-ignore
+    const state = getState() as { journey: JourneyState };
+    const prevStatus = state.journey.nodeProgress[nodeId]?.status;
+
+    // 1. Optimistic update
+    dispatch(journeySlice.actions.optimisticSetNodeStatus({ nodeId, status: 'claimed' }));
+    
+    // 2. Network sync
+    // @ts-ignore
+    const { data, error } = await supabase.from('user_node_progress').upsert({ node_id: nodeId, status: 'claimed', updated_at: new Date().toISOString() }).select();
+    
+    // 3. Rollback on failure
+    if (error || !data || data.length === 0) {
+      console.warn("[journey] Failed to claim chest, rolling back", error);
+      if (prevStatus) {
+         dispatch(journeySlice.actions.optimisticSetNodeStatus({ nodeId, status: prevStatus }));
+      }
     }
   }
 );

@@ -1,12 +1,17 @@
 const fs = require('fs');
-const file = 'src/components/exercise/StateSwitchCategoryEngine.tsx';
-let code = fs.readFileSync(file, 'utf8');
-code = code.replace(
-  /const meterIndicatorStyle = useAnimatedStyle\(\(\) => \{\n\s*return \{\n\s*left: withSpring\(`\$\{meterValue\}%`, \{ damping: 20, stiffness: 90 \}\)\n\s*\};\n\s*\}\);/,
-  `// Replaced useAnimatedStyle to prevent Reanimated crashes with string percentages\n  const meterIndicatorStyle = { left: \`\${meterValue}%\` };`
-);
-code = code.replace(
-  /<Animated\.View style=\\{\[styles\.meterIndicator, meterIndicatorStyle\]\\} \/>/,
-  `<Animated.View layout={LinearTransition.springify().damping(20).stiffness(90)} style={[styles.meterIndicator, meterIndicatorStyle]} />`
-);
-fs.writeFileSync(file, code);
+const file = 'src/data/journey/nodeFactory.ts';
+let content = fs.readFileSync(file, 'utf8');
+
+const defaultMilestoneRewards = `
+/** Default rewards for a milestone node */
+const DEFAULT_MILESTONE_REWARDS: JourneyReward[] = [
+  { type: JourneyRewardType.XP, amount: 100, icon: "⚡" },
+  { type: JourneyRewardType.GEMS, amount: 50, icon: "💎" },
+];
+`;
+content = content.replace('/** Default rewards for a chest node */', defaultMilestoneRewards + '\n/** Default rewards for a chest node */');
+
+content = content.replace('[NodeType.CHEST]: NodeIcon.CHEST,', '[NodeType.CHEST]: NodeIcon.CHEST,\n  [NodeType.MILESTONE]: NodeIcon.STAR,');
+content = content.replace('[NodeType.CHEST]: DEFAULT_CHEST_REWARDS,', '[NodeType.CHEST]: DEFAULT_CHEST_REWARDS,\n  [NodeType.MILESTONE]: DEFAULT_MILESTONE_REWARDS,');
+
+fs.writeFileSync(file, content);
