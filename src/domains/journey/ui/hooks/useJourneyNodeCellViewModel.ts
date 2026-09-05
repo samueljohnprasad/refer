@@ -1,10 +1,8 @@
 import { useCallback } from "react";
 import { useColorScheme } from "react-native";
 import * as Haptics from "expo-haptics";
-import { SAGE } from "@/src/theme/palette";
-import { RADIUS } from "@/src/theme/radius";
 import type { JourneyNode, PathNodeData, NodePosition } from "@/src/types/journey";
-import { NodeIcon, NodeStatus } from "@/src/types/journey";
+import { NodeIcon, NodeStatus, NodeState, NodeType } from "@/src/types/journey";
 import { useHighContrast } from "@/src/hooks/useHighContrast";
 
 import { useJourneySettings } from "@/src/context/JourneyConfigContext";
@@ -17,7 +15,7 @@ export interface JourneyNodeCellProps {
   courseId: string;
   screenWidth: number;
   activeGlobalIndex: number;
-  onNodePress: (node: PathNodeData, event?: any, color?: string | import("react-native").OpaqueColorValue) => void;
+  onNodePress: (node: PathNodeData, event?: any, color?: string) => void;
 }
 
 export function toPathNodeData(item: JourneyNode): PathNodeData {
@@ -56,72 +54,35 @@ export function useJourneyNodeCellViewModel({
   };
   const pathNodeData = toPathNodeData(item);
 
-  let faceColor: string = isDark ? SAGE[300] : SAGE[100];
-  let rimColor: string = isDark ? SAGE[400] : SAGE[600];
-  let iconColor: string = isDark ? SAGE[500] : SAGE[600];
-  let iconName = item.icon || "star";
-  let isInteractive = false;
-  let showProgressRing = false;
-  let showTooltip = false;
-
-  if (item.status === NodeStatus.COMPLETED) {
-    faceColor = isDark ? SAGE[300] : SAGE[700];
-    rimColor = isDark ? SAGE[400] : SAGE[600];
-    iconColor = isDark ? "#142414" : SAGE[700];
-    iconName = NodeIcon.CHECKPOINT;
-    isInteractive = true;
-  } else if (item.status === NodeStatus.ACTIVE) {
-    faceColor = isDark ? SAGE[400] : SAGE[500];
-    rimColor = isDark ? SAGE[500] : SAGE[600];
-    iconColor = "#FFFFFF";
-    isInteractive = true;
-    showProgressRing = true;
-    showTooltip = true;
+  // Map existing NodeStatus to NodeState
+  let nodeState = NodeState.LOCKED;
+  if (item.status === NodeStatus.ACTIVE) {
+    nodeState = NodeState.CURRENT;
+  } else if (item.status === NodeStatus.COMPLETED) {
+    if (item.type === NodeType.CHEST) {
+      nodeState = NodeState.CLAIMED;
+    } else {
+      nodeState = NodeState.COMPLETED;
+    }
   }
-  const size = settings.defaultNodeSize;
-  const hugeiconSize = size * HUGEICON_SIZE_RATIO;
-  const halfSize = size / 2;
+
   const handlePress = useCallback(
     (event?: any) => {
-      if (!isInteractive) return;
-      void Haptics.selectionAsync().catch(() => {});
-      onNodePress(pathNodeData, event, faceColor);
+      // Pass faceColor as undefined, letting the new system handle it
+      onNodePress(pathNodeData, event, undefined);
     },
-    [faceColor, isInteractive, onNodePress, pathNodeData],
+    [onNodePress, pathNodeData]
   );
-  const ringSize =
-    size + settings.progressRingGap * 2 + settings.progressRingStroke * 2;
-  const ringOffset = -(ringSize - size) / 2;
-  const ringRadius = (ringSize - settings.progressRingStroke) / 2;
-  const circumference = 2 * Math.PI * ringRadius;
-  const segmentsCount = 8;
-  const dashGap = 8 + settings.progressRingStroke;
-  const dashWidth = (circumference - dashGap * segmentsCount) / segmentsCount;
 
   return {
     item,
     courseId,
-    screenWidth,
-    pathStrokeWidth,
-    settings,
-    segmentColor,
-    nodePosition,
-    faceColor,
-    rimColor,
-    iconColor,
-    iconName,
-    size,
-    hugeiconSize,
-    halfSize,
-    isInteractive,
-    showProgressRing,
-    showTooltip,
-    handlePress,
-    ringSize,
-    ringOffset,
-    dashedConfig: { width: dashWidth, gap: dashGap },
-    progressPercent: (item.progress ?? 0) * 100,
-    ringBackgroundColor: isDark ? SAGE[300] : SAGE[700],
+    nodeState,
     pathNodeData,
+    nodePosition,
+    segmentColor,
+    handlePress,
+    pathStrokeWidth,
+    showConnector: item.globalIndex > 0,
   };
 }
