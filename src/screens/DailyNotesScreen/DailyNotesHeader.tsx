@@ -307,16 +307,14 @@ const DailyNotesHeader = React.memo(
       }
     }, [animateToWeekOf, currentWeekView, selectDate, setCurrentWeekView]);
 
+    // ponytail: show today recovery shortcut only when navigated away
     const showTodayPill = useMemo(() => {
-      const isSameW = isSameWeek(currentWeekViewSafe, new Date(), {
+      const isCurrentWeek = isSameWeek(currentWeekViewSafe, new Date(), {
         weekStartsOn: 0,
       });
-      if (!isSameW) {
-        return true;
-      }
-
-      return isSelectedDateValid ? !isToday(selectedDate) : false;
-    }, [currentWeekViewSafe]);
+      const isTodaySelected = isSelectedDateValid && isToday(selectedDate);
+      return !isCurrentWeek || !isTodaySelected;
+    }, [currentWeekViewSafe, isSelectedDateValid, selectedDate]);
 
     const onEmojiPress = (day: Date, moodScore?: number) => {
       if (moodScore) {
