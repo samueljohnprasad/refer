@@ -22,52 +22,55 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
   const labels = ["S", "M", "T", "W", "T", "F", "S"];
 
   return (
-    // ponytail: compact lightweight streak strip replaces heavy card
+    // ponytail: aligned streak row with clean status dots
     <Pressable
       onPress={onPress}
       hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       accessibilityRole="button"
       accessibilityLabel={`Current streak: ${currentStreak} days`}
-      className="w-full flex-row items-center justify-between py-2 px-1"
+      className="w-full min-h-[44px] flex-row items-center justify-between py-2 px-1"
     >
       {/* Left: Streak label */}
       <View className="flex-row items-center gap-1.5 pr-4">
         <AnimatedFireIcon width={22} height={22} />
         <Text
-          className="text-[16px] text-ink"
+          className="text-[16px] font-bold text-ink"
           style={{ fontFamily: APP_FONT_FAMILIES.bold }}
         >
           {isLoading ? "-" : currentStreak} day streak
         </Text>
       </View>
 
-      {/* Right: Compact 7-day indicators */}
-      <View className="flex-row items-center gap-2">
-        {streakData.weeklyProgress.days.map((isCompleted, i) => (
-          <View key={i} className="items-center gap-0.5">
-            <View className="w-5 h-5 items-center justify-center">
-              {isCompleted ? (
-                <AnimatedFireIcon width={18} height={18} />
-              ) : (
-                <View
-                  className="w-2.5 h-2.5 rounded-full"
-                  style={{ backgroundColor: SEMANTIC_COLORS.border.default }}
-                />
-              )}
-            </View>
+      {/* Right: 7-day indicators with shared baseline grid */}
+      {/* ponytail: aligned streak row with clean status dots */}
+      <View className="flex-row items-center gap-2.5">
+        {streakData.weeklyProgress.days.map((isCompleted: boolean, i: number) => (
+          <View key={i} className="items-center gap-1.5">
             <Text
-              className="text-[10px]"
+              className="text-[11px]"
               style={{
-                fontFamily: isCompleted
-                  ? APP_FONT_FAMILIES.bold
-                  : APP_FONT_FAMILIES.medium,
-                color: isCompleted
-                  ? SEMANTIC_COLORS.brand.pressed
-                  : SEMANTIC_COLORS.text.tertiary,
+                fontFamily: APP_FONT_FAMILIES.bold,
+                color: SEMANTIC_COLORS.text.secondary,
               }}
             >
               {labels[i]}
             </Text>
+            <View className="w-4 h-4 items-center justify-center">
+              {isCompleted ? (
+                <View
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: SEMANTIC_COLORS.brand.primary }}
+                />
+              ) : (
+                <View
+                  className="w-2 h-2 rounded-full border-[1.5px]"
+                  style={{
+                    borderColor: SEMANTIC_COLORS.border.default,
+                    backgroundColor: "transparent",
+                  }}
+                />
+              )}
+            </View>
           </View>
         ))}
       </View>

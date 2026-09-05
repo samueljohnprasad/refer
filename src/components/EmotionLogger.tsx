@@ -91,11 +91,11 @@ const EmotionItem: React.FC<{
             backgroundColor: interpolateColor(
               highlightProgress.value,
               [0, 1],
-              ["transparent", SEMANTIC_COLORS.selection.surface],
+              ["transparent", SEMANTIC_COLORS.selection.surface as string],
             ),
           }))}
         >
-          <MoodIcon mood={emotion.moodKey} isSelected={isSelected} size={38} />
+          <MoodIcon mood={emotion.moodKey} isSelected={isSelected} size={40} />
           {count > 0 && (
             <Animated.View
               className="absolute -right-[2px] -top-[2px] h-[18px] min-w-[18px] items-center justify-center rounded-full border-[1.5px] border-brand-surface bg-sage-pill px-1"
@@ -113,11 +113,6 @@ const EmotionItem: React.FC<{
         className={`mt-1.5 text-[12px] font-semibold ${
           isSelected ? "text-brand-primary" : "text-ink-soft"
         }`}
-        style={{
-          color: isSelected
-            ? SEMANTIC_COLORS.brand.primary
-            : SEMANTIC_COLORS.text.tertiary,
-        }}
       >
         {emotion.name}
       </Text>
