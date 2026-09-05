@@ -4,18 +4,12 @@ import {
   type StyleProp,
   type ViewStyle,
 } from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-} from "react-native-reanimated";
 import { bad, fine, good, great, terrible } from "@/assets/emojis";
 import { Image } from "@/src/components/tw";
 import { PressableOpacity } from "pressto";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Add01Icon } from "@hugeicons/core-free-icons";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 
 export type MoodBadgeProps = {
   moodscore?: number;
@@ -62,23 +56,6 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
 
     const moodLabel = moodscore ? MOOD_SCORE_LABELS[moodscore] ?? String(moodscore) : "Not set";
 
-    const plusRotation = useSharedValue(active ? 0 : -360);
-
-    React.useEffect(() => {
-      if (!moodEmoji) {
-        if (active) {
-          plusRotation.value = -360;
-          plusRotation.value = withTiming(0, { duration: 400 });
-        } else {
-          plusRotation.value = -360;
-        }
-      }
-    }, [active, moodEmoji, plusRotation]);
-
-    const plusAnimatedStyle = useAnimatedStyle(() => ({
-      transform: [{ rotate: `${plusRotation.value}deg` }],
-    }));
-
     // --- Render core badge content (display-only, no press handling here) ---
     const badgeContent = (
       <View
@@ -90,33 +67,28 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
             source={moodEmoji}
             alt={moodLabel}
             style={{ width: diameter, height: diameter }}
-            width={diameter}
-            height={diameter}
-            progressiveRenderingEnabled={true}
           />
         ) : (
-          // Empty-slot affordance: dotted ring with + inside
+          // ponytail: static subtle placeholder replaces reanimated spin loop
           <View
             style={{
               width: diameter,
               height: diameter,
               borderRadius: radius,
-              borderWidth: 1.5,
+              borderWidth: 1,
               borderColor: SEMANTIC_COLORS.selection.foreground,
-              borderStyle: "dashed",
+              borderStyle: "solid",
               alignItems: "center",
               justifyContent: "center",
-              opacity: 0.4,
+              opacity: displayOnly ? 0.12 : 0.22,
             }}
           >
-            <Animated.View style={[plusAnimatedStyle, { width: diameter * 0.55, height: diameter * 0.55, justifyContent: "center", alignItems: "center" }]}>
-              <HugeiconsIcon
-                icon={Add01Icon}
-                size={Math.max(10, diameter * 0.5)}
-                color={SEMANTIC_COLORS.border.selected}
-                strokeWidth={2}
-              />
-            </Animated.View>
+            <HugeiconsIcon
+              icon={Add01Icon}
+              size={Math.max(10, diameter * 0.35)}
+              color={SEMANTIC_COLORS.border.selected}
+              strokeWidth={1.5}
+            />
           </View>
         )}
       </View>
