@@ -47,6 +47,9 @@ import { HabitsSection } from "@/src/components/habits/HabitsSection";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 import { useMentalHealthData } from "@/hooks/data/useMentalHealthData";
+import { useHabits } from "@/hooks/data/useHabits";
+import { useAppDispatch } from "@/src/store/hooks";
+import { setVisible } from "@/src/store/slices/happyAssistantSlice";
 import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
 import { pickerStyle, tag, badge } from "@expo/ui/swift-ui/modifiers";
 
@@ -86,6 +89,21 @@ function DailyNotesScreenComponent(): ReactElement {
   // Fetch journal entries to get the count
   const { data: insightsResponse } = useMentalHealthData(selectedDate);
   const journalCount = insightsResponse?.length || 0;
+
+  const dispatch = useAppDispatch();
+  const { habits } = useHabits();
+  const habitsCount = habits?.length || 0;
+  const isEmptyState =
+    (tabFilter === "journal" && journalCount === 0) ||
+    (tabFilter === "habits" && habitsCount === 0);
+
+  // ponytail: hide floating assistant when screen displays empty state mascot
+  useEffect(() => {
+    dispatch(setVisible(!isEmptyState));
+    return () => {
+      dispatch(setVisible(true));
+    };
+  }, [dispatch, isEmptyState]);
 
   // State for current week view (independent of selected date)
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);

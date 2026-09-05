@@ -54,13 +54,13 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     <View
       className={`flex-1 items-center justify-center py-8 min-h-[400px] ${containerClassName}`}
     >
-      {/* ponytail: right-size mascot and tighten vertical rhythm */}
-      <View className="mb-4 items-center justify-center">
+      {/* ponytail: tighten vertical rhythm between mascot and text */}
+      <View className="mb-3 items-center justify-center">
         <Mascot state={mascotState} size={120} />
       </View>
 
       {titles.length > 0 && (
-        <View className="mb-2 w-full justify-center items-center h-[40px]">
+        <View className="mb-1.5 w-full justify-center items-center h-[40px]">
           <StaggeredText
             texts={titles}
             activeIndex={activeIndex}
