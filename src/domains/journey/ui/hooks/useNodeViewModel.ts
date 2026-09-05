@@ -49,7 +49,7 @@ export function useNodeViewModel(
   switch (state) {
     case NodeState.LOCKED:
       faceColor = SAGE[100];
-      rimColor = SAGE[400];
+      rimColor = SAGE[200];
       iconColor = SAGE[400];
       isInteractive = false;
       indicator = "lock";

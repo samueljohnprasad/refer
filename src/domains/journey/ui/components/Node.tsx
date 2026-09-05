@@ -180,23 +180,6 @@ export const Node = React.memo(function Node({
         >
           {renderIcon()}
         </Animated.View>
-
-        {vm.indicator === "pulse" && (
-          <Animated.View
-            pointerEvents="none"
-            style={{
-              position: "absolute",
-              top: -8,
-              left: -8,
-              right: -8,
-              bottom: DEPTH - 8,
-              borderWidth: 2,
-              borderColor: vm.faceColor,
-              borderRadius: size,
-              opacity: 0.5,
-            }}
-          />
-        )}
       </Pressable>
 
       {label && state === NodeState.CURRENT && (
