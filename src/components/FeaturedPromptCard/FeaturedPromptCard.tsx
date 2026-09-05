@@ -35,15 +35,15 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
   if (!currentPrompt || prompts.length === 0) return null;
 
   return (
-    // ponytail: tighter hero reflection card height
+    // ponytail: inset prompt refresh button and tighten card vertical whitespace
     <Card
       variant="tile"
       radius="lg"
       showDepth={false}
       haptic="none"
-      contentClassName="min-h-[160px] p-5 pt-4 pb-5"
+      contentClassName="min-h-[150px] p-4 pt-3.5 pb-4"
     >
-      <View className="absolute right-2 top-2 z-10">
+      <View className="absolute right-3.5 top-3.5 z-10">
         <TouchableOpacity
           onPress={cyclePrompt}
           className="h-11 w-11 items-center justify-center"
@@ -84,7 +84,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
         accessibilityLabel={`Start reflection: ${currentPrompt.description}`}
         style={{
           minHeight: 50,
-          marginTop: 14,
+          marginTop: 10,
           paddingHorizontal: 24,
           backgroundColor: SEMANTIC_COLORS.brand.primary,
         }}
