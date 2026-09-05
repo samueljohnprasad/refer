@@ -156,17 +156,13 @@ export default function JournalCalendarScreen() {
             />
           </View>
 
+          {/* ponytail: action-first home screen hierarchy */}
+          {/* Hero: Today's Reflection */}
           <View className="mt-6">
-            <WeeklyStreakWidget
-              showDepth={false}
-              onPress={() => router.push("/tabs/screens/xp-history")}
-            />
-          </View>
-
-          {/* GROUP 2: Journal */}
-          <View className="mt-10">
-            <View className="mb-3 px-1">
-              <Text className="text-[14px] font-medium tracking-wide text-ink-soft uppercase">Daily reflection</Text>
+            <View className="mb-2 px-1">
+              <Text className="text-[13px] font-bold tracking-wider text-ink-soft uppercase">
+                Today's reflection
+              </Text>
             </View>
             <FeaturedPromptCard
               prompts={ALL_PROMPTS}
@@ -176,10 +172,8 @@ export default function JournalCalendarScreen() {
             />
           </View>
 
-
-
-          {/* ── GROUP 3: Track ── */}
-          <View className="mt-10">
+          {/* Secondary: Mood Check-in */}
+          <View className="mt-8">
             <EmotionLogger
               selectedDate={selectedEmotionDate}
               onEmotionLogged={handleEmotionLogged}
@@ -187,7 +181,13 @@ export default function JournalCalendarScreen() {
             />
           </View>
 
-
+          {/* Reinforcement: Compact Streak */}
+          <View className="mt-8">
+            <WeeklyStreakWidget
+              showDepth={false}
+              onPress={() => router.push("/tabs/screens/xp-history")}
+            />
+          </View>
         </View>
       </ScrollView>
 
