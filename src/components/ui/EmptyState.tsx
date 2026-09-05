@@ -54,8 +54,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     <View
       className={`flex-1 items-center justify-center py-8 min-h-[400px] ${containerClassName}`}
     >
-      <View className="mb-8 items-center justify-center">
-        <Mascot state={mascotState} size={140} />
+      {/* ponytail: right-size mascot and tighten vertical rhythm */}
+      <View className="mb-4 items-center justify-center">
+        <Mascot state={mascotState} size={120} />
       </View>
 
       {titles.length > 0 && (

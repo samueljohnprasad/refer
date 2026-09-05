@@ -95,7 +95,8 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
             "Track Daily Progress",
             "Stay Consistent"
           ]}
-          description="Build healthy routines with daily tracking and streaks."
+          // ponytail: concise habit empty-state copy
+          description="Build routines with simple daily tracking."
           buttonText="Add Habit"
           onButtonPress={() => router.push("/tabs/screens/habits-modal/add" as never)}
           buttonIcon={Add01Icon}
