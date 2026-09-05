@@ -88,6 +88,7 @@ const DayCell = React.memo<DayCellProps>(
       return isTodayDate ? "ink" : "muted";
     }, [disabled, isSelected, isTodayDate]);
 
+    // ponytail: quiet month navigation buttons and align selection style
     const dateBgStyle = useMemo(() => {
       if (isSelected) {
         return {
@@ -262,15 +263,16 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
         <View className="flex-row items-center mb-3 py-2">
           {/* Back arrow — offset by ml-10 to prevent overlap with top-left close (X) icon */}
           <Pressable
-            className="h-10 w-10 items-center justify-center rounded-full bg-sage-50 ml-10"
+            className="h-9 w-9 items-center justify-center rounded-full bg-sage-50/60 ml-10"
             onPress={goToPreviousMonth}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             accessibilityRole="button"
             accessibilityLabel="Previous month"
             accessibilityHint="Navigates calendar to the previous month"
           >
             <HugeiconsIcon
               icon={ArrowLeft01Icon}
-              size={20}
+              size={18}
               color={SEMANTIC_COLORS.brand.pressed}
               strokeWidth={2}
             />
@@ -300,16 +302,17 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
 
           {/* Forward arrow — right edge; grayed when at current month */}
           <Pressable
-            className="h-10 w-10 items-center justify-center rounded-full bg-sage-50"
+            className="h-9 w-9 items-center justify-center rounded-full bg-sage-50/60"
             onPress={goToNextMonth}
             disabled={!canGoNextMonth}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             accessibilityRole="button"
             accessibilityLabel="Next month"
             accessibilityHint="Navigates calendar to the next month"
           >
             <HugeiconsIcon
               icon={ArrowRight01Icon}
-              size={20}
+              size={18}
               color={canGoNextMonth ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.selection.foreground}
               strokeWidth={2}
             />
