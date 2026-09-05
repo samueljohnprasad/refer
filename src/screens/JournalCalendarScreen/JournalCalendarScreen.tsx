@@ -71,16 +71,8 @@ export default function JournalCalendarScreen() {
   // State declarations moved above callbacks that reference them
   const [showStreakModal, setShowStreakModal] = useState(false);
 
-  const handleAchievementsPress = useCallback(() => {
-    router.push("/tabs/screens/achievements");
-  }, []);
-
   const handleSettingsPress = useCallback(() => {
     router.push("/tabs/screens/settings");
-  }, []);
-
-  const handleTimelinePress = useCallback(() => {
-    router.push("/tabs/screens/timelines");
   }, []);
 
   const handleQuickJournalPress = useCallback(
@@ -132,19 +124,8 @@ export default function JournalCalendarScreen() {
           shadowColor: 'transparent',
         }}
       />
+      {/* ponytail: single settings action in header toolbar */}
       <Stack.Toolbar placement="right" tintColor={SEMANTIC_COLORS.text.primary}>
-        <Stack.Toolbar.Button
-          icon="chart.bar.doc.horizontal"
-          accessibilityLabel="Timeline"
-          tintColor={SEMANTIC_COLORS.text.primary}
-          onPress={handleTimelinePress}
-        />
-        <Stack.Toolbar.Button
-          icon="rosette"
-          accessibilityLabel="Awards"
-          tintColor={SEMANTIC_COLORS.text.primary}
-          onPress={handleAchievementsPress}
-        />
         <Stack.Toolbar.Button
           icon="gearshape.fill"
           accessibilityLabel="Settings"
