@@ -33,10 +33,16 @@ import MoodBadge from "@/src/components/MoodBadge";
 import { useWeekNavigation } from "./hooks/useWeekNavigation";
 import { useFetchMoodsMonthly } from "@/hooks/data/useFetchMoods";
 import useCalendarExpandReanimated from "./hooks/useCalendarExpandReanimated";
+import * as Haptics from "expo-haptics";
 import TodayPill from "@/src/components/TodayPill";
 import { router } from "expo-router";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Bookmark03Icon, Calendar01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import {
+  Bookmark03Icon,
+  Calendar01Icon,
+  Cancel01Icon,
+  BarChartHorizontalIcon,
+} from "@hugeicons/core-free-icons";
 import { isIOS } from "@/src/utils/mood";
 import { DayButton } from "./DayButtonComponent";
 import SuspensLoader from "@/src/components/SuspensLoader";
@@ -345,6 +351,12 @@ const DailyNotesHeader = React.memo(
       onBookmarksPress?.();
     }, [onBookmarksPress, bookmarkWobble]);
 
+    // ponytail: direct navigation to continuous AI timeline review
+    const handleTimelinePress = useCallback(() => {
+      Haptics.selectionAsync();
+      router.push("/tabs/screens/timelines");
+    }, []);
+
     const bookmarkIconStyle = useAnimatedStyle(() => ({
       transform: [{ rotateZ: `${bookmarkWobble.value}deg` }],
       transformOrigin: 'top center' as any
@@ -406,6 +418,22 @@ const DailyNotesHeader = React.memo(
                   pointerEvents={isExpanded ? "none" : "auto"}
                 >
                   <TodayPill visible={showTodayPill} onPress={handleGoToToday} offsetX={0} />
+                  {/* ponytail: direct navigation to continuous AI timeline review */}
+                  <Pressable
+                    className="min-h-[44px] min-w-[44px] justify-center items-center rounded-full"
+                    onPress={handleTimelinePress}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    accessibilityRole="button"
+                    accessibilityLabel="Timeline & AI Insights"
+                    accessibilityHint="Opens continuous reflection timeline across days, weeks, and months"
+                  >
+                    <HugeiconsIcon
+                      icon={BarChartHorizontalIcon}
+                      size={20}
+                      color={SEMANTIC_COLORS.brand.pressed}
+                      strokeWidth={2}
+                    />
+                  </Pressable>
                   <Pressable
                     className="min-h-[44px] min-w-[44px] justify-center items-center rounded-full"
                     onPress={handleBookmarkPressInternal}
@@ -446,7 +474,7 @@ const DailyNotesHeader = React.memo(
                       style={animatedPillStyle}
                       pointerEvents="none"
                       glassEffectStyle="regular"
-                      tintColor={SEMANTIC_COLORS.selection.surface}
+                      tintColor={SEMANTIC_COLORS.selection.surface as string}
                     />
                   ) : Platform.OS === "ios" ? (
                     <AnimatedBlurView
