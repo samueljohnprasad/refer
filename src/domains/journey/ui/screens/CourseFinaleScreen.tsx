@@ -1,127 +1,102 @@
 import React from "react";
-import { View, ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { Text } from "@/src/components/ui/Text";
 import { SafeAreaView } from "@/src/components/tw";
 import { Button } from "@/src/components/ui/Button";
+import { Text } from "@/src/components/ui/Text";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { MotiView } from 'moti';
+import type { CourseRewardContent } from "@/src/types/journeyV5";
 
-export interface CourseFinaleScreenProps {
+interface CourseFinaleScreenProps {
   courseTitle: string;
-  acknowledgement: string;
-  capabilitySummary: string[];
+  content: CourseRewardContent;
+  isDismissing: boolean;
+  onReview: () => void;
   onDismiss: () => void;
 }
 
-// ponytail: remove entrance haptics per user request
 export function CourseFinaleScreen({
   courseTitle,
-  acknowledgement,
-  capabilitySummary,
+  content,
+  isDismissing,
+  onReview,
   onDismiss,
 }: CourseFinaleScreenProps): React.JSX.Element {
   return (
-    <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-brand-canvas" accessibilityViewIsModal={true} style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+    <SafeAreaView
+      edges={["top", "bottom"]}
+      className="flex-1 bg-brand-canvas"
+      accessibilityViewIsModal
+    >
       <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ flexGrow: 1, padding: 24, paddingTop: 64, justifyContent: "flex-start" }}
+        className="flex-1"
+        contentContainerClassName="grow px-6 pb-8 pt-14"
         showsVerticalScrollIndicator={false}
       >
-        <View className="items-center mb-8 mt-4">
-          <MotiView
-            from={{ opacity: 0, scale: 0.88 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: 'spring', damping: 20, stiffness: 200, delay: 150 }}
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: 40,
-              backgroundColor: SEMANTIC_COLORS.brand.soft as string,
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: 16, // Proximity: groups with Course Complete
-            }}
+        <View className="items-center">
+          <View className="mb-5 h-24 w-24 items-center justify-center rounded-full bg-brand-soft">
+            <Feather
+              name="award"
+              size={44}
+              color={SEMANTIC_COLORS.brand.primary as string}
+              accessibilityElementsHidden
+            />
+          </View>
+          <Text
+            className="text-center text-3xl font-extrabold text-ink"
+            accessibilityRole="header"
           >
-            <Feather name="award" size={36} color={SEMANTIC_COLORS.brand.primary as string} />
-          </MotiView>
-          
-          <MotiView
-            from={{ opacity: 0, translateY: 8 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: 'timing', duration: 300, delay: 350 }}
-          >
-            <Text
-              className="text-3xl font-extrabold text-ink text-center mb-1"
-              accessibilityRole="header"
-            >
-              Course Complete
-            </Text>
-          </MotiView>
+            {content.title}
+          </Text>
+          <Text className="mt-1 text-center text-lg font-bold text-brand-strong">
+            {courseTitle}
+          </Text>
+          <Text className="mt-8 text-center text-base leading-6 text-ink">
+            {content.acknowledgement}
+          </Text>
+        </View>
 
-          <MotiView
-            from={{ opacity: 0, translateY: 6 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: 'timing', duration: 300, delay: 500 }}
-          >
-            <Text className="text-base font-medium text-brand-strong text-center mb-8">
-              {courseTitle}
-            </Text>
-          </MotiView>
-          
-          <MotiView
-            from={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ type: 'timing', duration: 300, delay: 650 }}
-          >
-            <Text className="text-base text-ink text-center leading-6 mb-12">
-              {acknowledgement}
-            </Text>
-          </MotiView>
-
-          <View className="w-full mb-8">
-            <MotiView
-              from={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ type: 'timing', duration: 300, delay: 800 }}
-            >
-              <Text className="text-xs text-ink-muted font-bold tracking-wider uppercase mb-5">
-                WHAT YOU'RE TAKING WITH YOU
-              </Text>
-            </MotiView>
-            <View className="flex-col gap-5">
-              {capabilitySummary.map((item, index) => (
-                <MotiView
-                  key={index}
-                  from={{ opacity: 0, translateY: 4 }}
-                  animate={{ opacity: 1, translateY: 0 }}
-                  transition={{ type: 'timing', duration: 300, delay: 860 + (index * 60) }}
-                  className="flex-row items-start"
-                >
-                  <View className="mt-1 mr-3 h-5 w-5 items-center justify-center rounded-full bg-[#d3e0cd]">
-                    <Feather name="check" size={12} color={SEMANTIC_COLORS.brand.primary as string} />
-                  </View>
-                  <Text className="text-base text-ink flex-1 leading-6">{item}</Text>
-                </MotiView>
-              ))}
-            </View>
+        <View className="my-10 rounded-3xl bg-white p-6">
+          <Text className="mb-5 text-sm font-extrabold uppercase tracking-wider text-ink-muted">
+            {content.capabilityHeading}
+          </Text>
+          <View className="gap-5">
+            {content.capabilitySummary.map((capability) => (
+              <View key={capability} className="flex-row items-start">
+                <View className="mr-3 mt-0.5 h-6 w-6 items-center justify-center rounded-full bg-brand-soft">
+                  <Feather
+                    name="check"
+                    size={14}
+                    color={SEMANTIC_COLORS.brand.primary as string}
+                    accessibilityElementsHidden
+                  />
+                </View>
+                <Text className="flex-1 text-base leading-6 text-ink">
+                  {capability}
+                </Text>
+              </View>
+            ))}
           </View>
         </View>
       </ScrollView>
 
-      <MotiView
-        from={{ opacity: 0, translateY: 8 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ type: 'timing', duration: 300, delay: 1100 }}
-        className="px-6 pb-6 pt-2"
-      >
+      <View className="gap-3 px-6 pb-4">
         <Button
-          label="Back to Journey"
-          onPress={onDismiss}
-          variant="primary"
+          label={content.reviewActionLabel}
+          onPress={onReview}
+          variant="secondary"
+          disabled={isDismissing}
           fullWidth
         />
-      </MotiView>
+        <Button
+          label={content.doneActionLabel}
+          onPress={onDismiss}
+          variant="primary"
+          loading={isDismissing}
+          disabled={isDismissing}
+          fullWidth
+        />
+      </View>
     </SafeAreaView>
   );
 }

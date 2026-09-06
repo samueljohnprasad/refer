@@ -136,7 +136,7 @@ export function ConfigurableGlassMenu({ config }: ConfigurableGlassMenuProps) {
               {showChevron ? (
                 <SUIImage
                   systemName="chevron.down"
-                  size={10}
+                  size={12}
                   color={headerFg}
                 />
               ) : null}

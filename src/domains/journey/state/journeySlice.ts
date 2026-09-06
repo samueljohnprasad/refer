@@ -5,10 +5,8 @@
 // Owns shared journey data plus global/per-course UI state that must survive
 // beyond a single screen render.
 
-import { createEntityAdapter, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { supabase } from "@/src/network/auth/supabase";
 
 import type {
   Course,
@@ -19,6 +17,7 @@ import type {
   UserNodeProgress,
   GetCourseTreeResponse,
   GetCourseProgressResponse,
+  RewardCelebration,
 } from "@/src/types/journeyV5";
 
 // ── Entity adapters ───────────────────────────────────────────────────────────
@@ -56,13 +55,7 @@ export interface JourneyState {
   previewSectionIdByCourse: Record<string, string | null>;
   activeNodeModalIdByCourse: Record<string, string | null>;
 
-  // Reward UI state — set after completeNode; cleared after the surface is shown.
-  // 'lesson' | 'unit' | 'course' — priority: course > unit > lesson
-  pendingCelebration: Record<string, 'lesson' | 'unit' | 'course' | null>;
-
-  // Tracks whether the full course finale has been shown for a given courseId.
-  // Seeded from AsyncStorage on load; persisted to AsyncStorage on set.
-  courseFinaleSeenByCourse: Record<string, boolean>;
+  pendingCelebration: Record<string, RewardCelebration | null>;
 }
 
 const initialState: JourneyState = {
@@ -86,7 +79,6 @@ const initialState: JourneyState = {
   previewSectionIdByCourse: {},
   activeNodeModalIdByCourse: {},
   pendingCelebration: {},
-  courseFinaleSeenByCourse: {},
 };
 
 // ── Slice ─────────────────────────────────────────────────────────────────────
@@ -234,81 +226,16 @@ const journeySlice = createSlice({
      */
     setPendingCelebration(
       state,
-      action: PayloadAction<{ courseId: string; level: 'lesson' | 'unit' | 'course' | null }>,
+      action: PayloadAction<{
+        courseId: string;
+        celebration: RewardCelebration | null;
+      }>,
     ) {
-      const { courseId, level } = action.payload;
-      state.pendingCelebration[courseId] = level;
-    },
-
-    /**
-     * Mark the course finale as seen for a given courseId.
-     * Also persists to AsyncStorage so the flag survives app restarts.
-     */
-    markCourseFinaleSeen(
-      state,
-      action: PayloadAction<{ courseId: string }>,
-    ) {
-      const { courseId } = action.payload;
-      state.courseFinaleSeenByCourse[courseId] = true;
-      // ponytail: fire-and-forget — failure is non-blocking (FR-5.4)
-      AsyncStorage.setItem(`@rewards/finaleSeen/${courseId}`, "true").catch(
-        (err) => console.warn("[rewards] failed to persist finaleSeen", err),
-      );
-    },
-    /**
-     * Internal action to hydrate the course finale seen flag without writing back to AsyncStorage.
-     */
-    setCourseFinaleSeenHydrated(
-      state,
-      action: PayloadAction<{ courseId: string; seen: boolean }>,
-    ) {
-      const { courseId, seen } = action.payload;
-      state.courseFinaleSeenByCourse[courseId] = seen;
+      const { courseId, celebration } = action.payload;
+      state.pendingCelebration[courseId] = celebration;
     },
   },
 });
-
-/**
- * Hydrates the course finale seen state from AsyncStorage.
- * Called when the course is first loaded or the journey map is opened.
- */
-export const hydrateCourseFinaleSeen = createAsyncThunk(
-  "journey/hydrateCourseFinaleSeen",
-  async (courseId: string, { dispatch }) => {
-    try {
-      const value = await AsyncStorage.getItem(`@rewards/finaleSeen/${courseId}`);
-      if (value === "true") {
-        dispatch(journeySlice.actions.setCourseFinaleSeenHydrated({ courseId, seen: true }));
-      }
-    } catch (err) {
-      console.warn("[rewards] failed to hydrate finaleSeen", err);
-    }
-  }
-);
-
-export const claimChest = createAsyncThunk(
-  "journey/claimChest",
-  async (nodeId: string, { dispatch, getState }) => {
-    // @ts-ignore
-    const state = getState() as { journey: JourneyState };
-    const prevStatus = state.journey.nodeProgress[nodeId]?.status;
-
-    // 1. Optimistic update
-    dispatch(journeySlice.actions.optimisticSetNodeStatus({ nodeId, status: 'claimed' }));
-    
-    // 2. Network sync
-    // @ts-ignore
-    const { data, error } = await supabase.from('user_node_progress').upsert({ node_id: nodeId, status: 'claimed', updated_at: new Date().toISOString() }).select();
-    
-    // 3. Rollback on failure
-    if (error || !data || data.length === 0) {
-      console.warn("[journey] Failed to claim chest, rolling back", error);
-      if (prevStatus) {
-         dispatch(journeySlice.actions.optimisticSetNodeStatus({ nodeId, status: prevStatus }));
-      }
-    }
-  }
-);
 
 export const {
   setCourseTree,
@@ -321,7 +248,6 @@ export const {
   setPreviewSection,
   setActiveNodeModal,
   setPendingCelebration,
-  markCourseFinaleSeen,
 } = journeySlice.actions;
 
 export default journeySlice.reducer;

@@ -63,9 +63,9 @@ export function CourseCatalogList({
 
 function CourseCatalogHeading(): React.JSX.Element {
   return (
-    <View className="mb-8 gap-2 px-1">
+    <View className="mb-5 gap-1.5 px-1">
       <Text variant="display">Explore Journeys</Text>
-      <Text variant="body">Choose a journey to see its complete course.</Text>
+      <Text variant="body">Choose a journey to explore.</Text>
     </View>
   );
 }
@@ -78,25 +78,27 @@ function CourseCatalogRow({
   course: CourseCatalogListItem;
   isEnrolled: boolean;
   onPress: (courseId: string) => void;
-}): React.JSX.Element {
+  }): React.JSX.Element {
   const accentColor = resolveCourseAccentColor(course.colorHex);
   const imageSource = getCourseImageSource(course.iconUrl);
+  const desc = course.description;
 
   return (
     <Pressable
       onPress={() => onPress(course.id)}
-      className="min-h-20 flex-row items-center gap-3 py-4 active:opacity-70"
+      className="flex-row items-center gap-3.5 rounded-2xl px-2 py-3.5 active:bg-black/[0.03]"
       accessibilityRole="button"
       accessibilityLabel={`View ${course.title} course details`}
     >
+      {/* Artwork Column - Standardized Footprint */}
       <View
-        className="h-16 w-16 items-center justify-center rounded-xl"
+        className="h-14 w-14 items-center justify-center rounded-2xl bg-sage-50/70"
         style={imageSource ? undefined : { backgroundColor: `${accentColor}14` }}
       >
         {imageSource ? (
           <Image
             source={imageSource}
-            style={{ width: 62, height: 62 }}
+            style={{ width: 48, height: 48 }}
             cachePolicy="memory-disk"
             contentFit="contain"
           />
@@ -107,39 +109,46 @@ function CourseCatalogRow({
         )}
       </View>
 
-      <View className="flex-1 gap-1">
-        <View className="flex-row items-center gap-2">
-          <Text variant="body-bold" className="flex-shrink text-base">
+      {/* Content Column */}
+      <View className="flex-1 justify-center gap-0.5">
+        <View className="flex-row items-center gap-2 flex-wrap">
+          <Text variant="body-bold" className="text-[17px] leading-[22px] text-ink">
             {course.title}
           </Text>
           {isEnrolled ? (
-            <Text variant="chip" color="sage">
+            <Text className="happy-font-body-medium text-[13px] leading-[18px] text-sage-600">
               Enrolled
             </Text>
           ) : null}
         </View>
-        {course.description ? (
-          <Text variant="caption" numberOfLines={1}>
-            {course.description}
+        {desc ? (
+          <Text
+            className="happy-font-body text-[13.5px] leading-[19px] text-ink-soft"
+            numberOfLines={2}
+          >
+            {desc}
           </Text>
         ) : null}
       </View>
 
-      <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={SEMANTIC_COLORS.text.tertiary} />
+      {/* Disclosure Column */}
+      <View className="w-5 items-end justify-center">
+        <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={SEMANTIC_COLORS.text.secondary} />
+      </View>
     </Pressable>
   );
 }
 
 function CourseRowSeparator(): React.JSX.Element {
-  return <View className="h-px bg-slate-100" />;
+  return <View className="h-px bg-black/[0.06] mx-2" />;
 }
 
 function CourseCatalogSkeleton(): React.JSX.Element {
   return (
     <View className="gap-5 py-4" accessibilityLabel="Loading journeys">
       {Array.from({ length: 2 }).map((_, index) => (
-        <View key={index} className="flex-row items-center gap-3">
-          <Skeleton width={64} height={64} radius={12} />
+        <View key={index} className="flex-row items-center gap-3.5 px-2 py-3.5">
+          <Skeleton width={56} height={56} radius={16} />
           <View className="flex-1 gap-2">
             <Skeleton width="58%" height={16} radius={6} />
             <Skeleton width="78%" height={12} radius={5} />

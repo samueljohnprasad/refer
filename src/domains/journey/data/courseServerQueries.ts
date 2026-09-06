@@ -66,6 +66,17 @@ export async function fetchEnrolledCourseIds(): Promise<string[]> {
   return (data ?? []).map((row: { course_id: string }) => row.course_id);
 }
 
+export async function markServerCourseFinaleSeen(
+  courseId: string,
+): Promise<void> {
+  const { error } = await database
+    .from("user_course_progress")
+    .update({ finale_seen_at: new Date().toISOString() })
+    .eq("course_id", courseId);
+
+  if (error) throw new Error(error.message);
+}
+
 export async function fetchEnrolledCourses(): Promise<
   EnrolledCourseListItem[]
 > {

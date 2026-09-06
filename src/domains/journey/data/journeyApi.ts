@@ -4,6 +4,7 @@ import {
   fetchCourseExercises,
   fetchEnrolledCourseIds,
   fetchEnrolledCourses,
+  markServerCourseFinaleSeen,
   startServerLearningSession,
 } from "@/src/domains/journey/data/courseServerQueries";
 import {
@@ -211,6 +212,18 @@ export const journeyApi = createApi({
           },
         ),
     }),
+
+    markCourseFinaleSeen: builder.mutation<void, string>({
+      invalidatesTags: (_, __, courseId) => [
+        { type: "CourseProgress", id: courseId },
+      ],
+      queryFn: (courseId) =>
+        runServerQuery(
+          "mark_course_finale_seen",
+          () => markServerCourseFinaleSeen(courseId),
+          { courseId },
+        ),
+    }),
   }),
 });
 
@@ -224,4 +237,5 @@ export const {
   useStartLearningSessionQuery,
   useStartCourseMutation,
   useCompleteNodeMutation,
+  useMarkCourseFinaleSeenMutation,
 } = journeyApi;

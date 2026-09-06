@@ -81,7 +81,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   );
 
   return (
-    <View className={habitsWithStatus.length === 0 && !habitsLoading && !completionsLoading ? "flex-1" : "pb-48"}>
+    <View className={habitsWithStatus.length === 0 && !habitsLoading && !completionsLoading ? "flex-1" : "pb-32"}>
       {habitsLoading || completionsLoading ? (
         <>
           <HabitCategorySkeleton />
@@ -103,17 +103,17 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
         />
       ) : (
         <>
-          {/* Category Sections */}
+          {/* Category Sections — 32pt gap between sections, compact within */}
           {activeCategories.map((category, i) => (
-            <View key={category} className={i > 0 ? "mt-4" : ""}>
-              {/* Category Header */}
-              <View className="px-5 mb-2 mt-2">
-                <Text className="happy-font-body-bold text-[14px] text-ink-muted">
+            <View key={category} className={i > 0 ? "mt-8" : ""}>
+              {/* Section header — quiet, small, uppercase label */}
+              <View className="px-5 mb-1">
+                <Text className="happy-font-body-bold text-[11px] tracking-widest uppercase text-ink-muted/50">
                   {TIME_CATEGORY_CONFIG[category].label}
                 </Text>
               </View>
 
-              {/* Habits List */}
+              {/* Habits — compact rhythm within section */}
               <View className="px-5">
                 {categorizedHabits[category].map((habit) => (
                   <HabitCard
@@ -133,16 +133,18 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
             </View>
           ))}
 
-          {/* Add Habit Button */}
+          {/* Add Habit — quiet final row, full row tappable */}
           <Pressable
             onPress={handleAddHabitPress}
-            className="flex-row items-center px-5 mt-2 py-3"
+            className="flex-row items-center px-5 mt-8 py-3 min-h-[44px]"
             style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+            accessibilityRole="button"
+            accessibilityLabel="Add a new habit"
           >
-            <View className="h-10 w-10 items-center justify-center rounded-full bg-sage-50 mr-3">
-              <HugeiconsIcon icon={Add01Icon} size={18} color={SEMANTIC_COLORS.brand.pressed} />
+            <View className="h-9 w-9 items-center justify-center rounded-full bg-sage-50 mr-3">
+              <HugeiconsIcon icon={Add01Icon} size={16} color={SEMANTIC_COLORS.brand.pressed} />
             </View>
-            <Text className="happy-font-body-bold text-[16px] text-sage-700">
+            <Text className="happy-font-body text-[15px] text-ink-muted">
               Add Habit
             </Text>
           </Pressable>

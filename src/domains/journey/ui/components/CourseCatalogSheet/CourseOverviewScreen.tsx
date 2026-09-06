@@ -52,7 +52,7 @@ export function CourseOverviewScreen({
       <ScrollView
         className="flex-1"
         contentContainerClassName="px-5 pt-4"
-        contentContainerStyle={{ paddingBottom: 116 + insets.bottom }}
+        contentContainerStyle={{ paddingBottom: 136 + insets.bottom }}
         showsVerticalScrollIndicator={false}
       >
         {isLoading ? <CourseOverviewSkeleton /> : null}
@@ -100,15 +100,15 @@ function CourseOverviewContent({
 
   return (
     <View>
-      <View className="flex-row items-center gap-4">
+      <View className="flex-row items-center gap-3.5">
         <View
-          className="h-14 w-14 items-center justify-center rounded-xl"
+          className="h-14 w-14 items-center justify-center rounded-2xl bg-sage-50/70"
           style={imageSource ? undefined : { backgroundColor: `${accentColor}14` }}
         >
           {imageSource ? (
             <Image
               source={imageSource}
-              style={{ width: 54, height: 54 }}
+              style={{ width: 48, height: 48 }}
               cachePolicy="memory-disk"
               contentFit="contain"
             />
@@ -124,12 +124,12 @@ function CourseOverviewContent({
       </View>
 
       {overview.description ? (
-        <Text variant="body" className="mt-5">
+        <Text variant="body" className="mt-4">
           {overview.description}
         </Text>
       ) : null}
 
-      <Text variant="label" className="mt-5">
+      <Text variant="label" className="mt-4 text-ink-soft">
         {formatCount(overview.sectionCount, "section")}
         {" · "}
         {formatCount(overview.unitCount, "unit")}
@@ -138,7 +138,7 @@ function CourseOverviewContent({
       </Text>
       <CourseSchedule overview={overview} />
 
-      <Text variant="h2" className="mb-2 mt-10">
+      <Text variant="h2" className="mb-2 mt-8">
         Course outline
       </Text>
       {overview.lessonCount > 0 ? (

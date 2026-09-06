@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import {
+  ArrowDown01Icon,
+  Award01Icon,
+  CheckmarkBadge01Icon,
+  Idea01Icon,
+} from "@hugeicons/core-free-icons";
 import Animated, {
   Easing,
   FadeIn,
@@ -17,7 +22,6 @@ import type {
   CourseOverviewUnit,
 } from "@/src/domains/journey/model/courseOverview";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 
 interface CourseOutlineProps {
   sections: CourseOverviewSection[];
@@ -26,12 +30,12 @@ interface CourseOutlineProps {
 export function CourseOutline({
   sections,
 }: CourseOutlineProps): React.JSX.Element {
-  const [expandedSectionId, setExpandedSectionId] = useState<string | null>(
-    sections[0]?.id ?? null,
-  );
+  // Start with all sections collapsed for clean progressive disclosure
+  const [expandedSectionId, setExpandedSectionId] = useState<string | null>(null);
   const [expandedUnitId, setExpandedUnitId] = useState<string | null>(null);
   const isReducedMotion = useReducedMotion();
 
+  // Keep only one section open at a time
   const handleSectionPress = (sectionId: string) => {
     setExpandedSectionId((currentId) =>
       currentId === sectionId ? null : sectionId,
@@ -39,6 +43,7 @@ export function CourseOutline({
     setExpandedUnitId(null);
   };
 
+  // Keep only one unit open within the section
   const handleUnitPress = (unitId: string) => {
     setExpandedUnitId((currentId) =>
       currentId === unitId ? null : unitId,
@@ -68,7 +73,7 @@ export function CourseOutline({
             {isExpanded ? (
               <Animated.View
                 entering={isReducedMotion ? undefined : FadeIn.duration(160)}
-                className="pb-3 pl-10"
+                className="pb-3 pl-8"
               >
                 {section.units.map((unit) => (
                   <UnitDisclosure
@@ -102,19 +107,19 @@ function SectionRow({
   return (
     <Pressable
       onPress={() => onPress(section.id)}
-      className="min-h-16 flex-row gap-3 py-4 active:opacity-70"
+      className="min-h-16 flex-row items-center gap-3 py-3.5 active:opacity-70"
       accessibilityRole="button"
       accessibilityState={{ expanded: isExpanded }}
       accessibilityLabel={`${section.title}, ${section.units.length} units, ${section.lessonCount} lessons`}
     >
       <Text
         variant="h3"
-        className="w-7 pt-0.5 text-center"
+        className="w-5 text-left font-bold"
         color={isExpanded ? "sage" : "muted"}
       >
         {section.orderIndex}
       </Text>
-      <View className="flex-1 gap-1">
+      <View className="flex-1 gap-0.5">
         <Text variant="h3" color={isExpanded ? "sage" : "ink"}>
           {section.title}
         </Text>
@@ -158,7 +163,7 @@ function UnitDisclosure({
     >
       <Pressable
         onPress={() => onPress(unit.id)}
-        className={`min-h-12 flex-row items-center gap-3 rounded-lg px-3 py-2 active:opacity-70 ${
+        className={`min-h-12 flex-row items-center gap-3 rounded-xl px-3 py-2 active:opacity-70 ${
           isExpanded ? "bg-sage-50" : ""
         }`}
         accessibilityRole="button"
@@ -182,28 +187,63 @@ function UnitDisclosure({
       {isExpanded ? (
         <Animated.View
           entering={isReducedMotion ? undefined : FadeIn.duration(160)}
-          className="pb-2 pl-4"
+          className="pb-2 pl-3 pr-2 pt-0.5"
         >
-          {unit.lessons.map((lesson) => (
-            <View
-              key={lesson.id}
-              className="min-h-11 flex-row items-center gap-3 py-2 pr-3"
-            >
-              <View className="h-1.5 w-1.5 rounded-full bg-sage-300" />
-              <Text variant="label" className="flex-1">
-                {lesson.title}
-              </Text>
-              {lesson.estimatedMinutes > 0 ? (
-                <Text variant="caption-muted">
-                  {lesson.estimatedMinutes} min
-                </Text>
-              ) : null}
-            </View>
-          ))}
+          {unit.lessons.map((lesson) => {
+            const badge = getLessonBadge(lesson.type);
+            return (
+              <View
+                key={lesson.id}
+                className="min-h-9 flex-row items-center justify-between gap-2.5 py-1"
+              >
+                <View className="flex-1 flex-row items-center gap-2">
+                  {badge === "trophy" ? (
+                    <View className="h-5 w-5 items-center justify-center">
+                      <HugeiconsIcon
+                        icon={Award01Icon}
+                        size={16}
+                        color={SEMANTIC_COLORS.brand.primary}
+                      />
+                    </View>
+                  ) : badge === "insight" ? (
+                    <View className="h-5 w-5 items-center justify-center">
+                      <HugeiconsIcon
+                        icon={Idea01Icon}
+                        size={16}
+                        color={SEMANTIC_COLORS.brand.primary}
+                      />
+                    </View>
+                  ) : badge === "checkpoint" ? (
+                    <View className="h-5 w-5 items-center justify-center">
+                      <HugeiconsIcon
+                        icon={CheckmarkBadge01Icon}
+                        size={16}
+                        color={SEMANTIC_COLORS.brand.primary}
+                      />
+                    </View>
+                  ) : null}
+                  <Text variant="label" className="flex-1 text-[14px] leading-[19px] text-ink">
+                    {lesson.title}
+                  </Text>
+                </View>
+                {lesson.estimatedMinutes > 0 ? (
+                  <Text variant="caption-muted" className="text-[12.5px]">
+                    {lesson.estimatedMinutes} min
+                  </Text>
+                ) : null}
+              </View>
+            );
+          })}
         </Animated.View>
       ) : null}
     </Animated.View>
   );
+}
+
+function getLessonBadge(type: string): "trophy" | "insight" | "checkpoint" | null {
+  if (type === "checkpoint") return "checkpoint";
+  if (type === "chest" || type === "ai_insight") return "insight";
+  return null;
 }
 
 function DisclosureChevron({
@@ -223,12 +263,16 @@ function DisclosureChevron({
   }, [isExpanded, isReducedMotion, rotation]);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${rotation.value * 90}deg` }],
+    transform: [{ rotate: `${rotation.value * 180}deg` }],
   }));
 
   return (
-    <Animated.View className="h-11 w-8 items-center justify-center" style={animatedStyle}>
-      <HugeiconsIcon icon={ArrowRight01Icon} size={17} color={isExpanded ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.text.tertiary} />
+    <Animated.View className="h-10 w-8 items-center justify-center" style={animatedStyle}>
+      <HugeiconsIcon
+        icon={ArrowDown01Icon}
+        size={17}
+        color={isExpanded ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.text.secondary}
+      />
     </Animated.View>
   );
 }

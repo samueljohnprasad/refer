@@ -60,9 +60,9 @@ Build foundational infrastructure first (config + Redux + orchestrator), then im
 > **Independent test:** Tap available chest → Opening animation plays → Insight card sheet shows authored title + body → dismiss → chest renders as Claimed (flat gold, no glow). Force-quit and reopen → chest still Claimed. Tap claimed chest → same card reopens, no new claim fires.
 
 
-- [ ] T015 [US2] Upgrade `ChestRewardModal.tsx` at `src/domains/journey/ui/components/ChestRewardModal.tsx` — add `insightCard: InsightCardContent | null` prop; when non-null, display `insightCard.title` and `insightCard.body` in place of hardcoded "Treasure Chest!" / "You've found a chest!" text; when null, show fallback text and log `[rewards] missing insightCard for unit`; when `node.status === 'completed'`, hide Claim button and show "Back to path" only (read-only revisit mode)
+- [x] T015 [US2] Upgrade `ChestRewardModal.tsx` — insight card and action labels are supplied by the backend node reward content; claimed chests are read-only.
 
-- [ ] T016 [US2] Wire insight card into `useJourneyMapController.tsx` at `src/domains/journey/ui/hooks/useJourneyMapController.tsx` — when `rewardNode` is set, look up `REWARDS_CONFIG.unitRewards[unitId]?.insightCard ?? null` (using `rewardNode.unitId`) and expose as `activeInsightCard`; pass to `ChestRewardModal`
+- [x] T016 [US2] Wire insight card into `useJourneyMapController.tsx` — reads the backend node reward content and routes chest claims through `complete-node`.
 
 ---
 

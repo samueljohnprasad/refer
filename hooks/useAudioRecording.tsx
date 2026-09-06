@@ -6,7 +6,7 @@ import {
   useAudioRecorder,
   useAudioRecorderState,
 } from "expo-audio";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Alert, Linking, Platform } from "react-native";
 import { useToast } from "heroui-native";
 import { recorderOpenAtom } from "@/src/screens/DiscoveryScreen/helpers";
@@ -22,7 +22,7 @@ const useAudioRecording = () => {
   const [recordingCurrentState, setRecordingCurrentState] =
     useState<recordStatus>("initial");
   const [totalDuration, setTotalDuration] = useState(0);
-  const [timerInterval, setTimerInterval] = useState<number>();
+  const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioRecorder = useAudioRecorder(
     RecordingPresets.HIGH_QUALITY,
     (status) => {
@@ -53,7 +53,7 @@ const useAudioRecording = () => {
 
     // Cleanup on unmount
     return () => {
-      clearInterval(timerInterval);
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
       // Reset audio mode
       setAudioModeAsync({
         playsInSilentMode: false,
@@ -92,11 +92,10 @@ const useAudioRecording = () => {
       });
       setRecordingCurrentState("recording");
       // Start timer
-      const interval = setInterval(() => {
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = setInterval(() => {
         setTotalDuration((prev) => prev + 1000); // +1 sec
       }, 1000);
-
-      setTimerInterval(interval);
     } catch (error) {
       console.error("Recording error:", error);
       toast.show({
@@ -111,7 +110,7 @@ const useAudioRecording = () => {
     try {
       await audioRecorder.stop();
       setRecordingCurrentState("stopped");
-      clearInterval(timerInterval);
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
       return recorderState;
     } catch (error) {
       console.error("Error stopping recording:", error);
@@ -122,7 +121,7 @@ const useAudioRecording = () => {
     try {
       audioRecorder.pause();
       setRecordingCurrentState("paused");
-      clearInterval(timerInterval);
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     } catch (error) {
       console.error("Error pausing recording:", error);
     }

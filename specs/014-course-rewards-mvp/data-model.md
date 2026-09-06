@@ -3,6 +3,10 @@
 **Feature:** `specs/014-course-rewards-mvp`
 **Branch:** `014-course-rewards-mvp`
 
+## Implemented persistence
+
+Reward content is stored in `courses.reward_content`, `units.reward_content`, and `nodes.reward_content` as validated JSON objects and is served by `get-course-tree`. Completion remains in `user_course_node_progress`; the Edge Function awards trophy nodes automatically and claims chest nodes idempotently. Finale acknowledgement is stored in `user_course_progress.finale_seen_at`. No reward state is stored in AsyncStorage and no client reward-copy config is used.
+
 ---
 
 ## Overview
@@ -109,11 +113,11 @@ export interface RewardsConfig {
 ## 2. Chest Position Algorithm
 
 ```
-Given: requiredNodes = nodes of this unit where node.type !== 'chest'
-If requiredNodes.length < 4 → no chest
+Given: learningNodes = nodes of this unit where node.type NOT IN ('chest', 'trophy')
+If learningNodes.length < 4 → no chest
 
-midIndex = Math.floor((requiredNodes.length - 1) / 2)
-chestIndex = midIndex (0-based position within requiredNodes, inserted after this node)
+midIndex = Math.floor((learningNodes.length - 1) / 2)
+chestIndex = midIndex (0-based position within learningNodes, inserted after this node)
 
 Constraints:
   - At least 1 required node before the chest
@@ -124,6 +128,8 @@ Override: use chestPositionOverride if valid, else omit and warn.
 ```
 
 The computed position determines where a `chest`-type node is inserted in the journey layout. **The chest node already exists in the DB** — position is set when the course is authored. The algorithm is used to validate the authored position client-side and for future tooling.
+
+Once authored, the chest is a claimable progression node. It becomes current after the preceding learning node completes and must be claimed before the following learning node unlocks. Trophy nodes are awarded automatically and never block progression.
 
 ---
 

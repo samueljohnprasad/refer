@@ -15,6 +15,7 @@ import type {
 } from "@/src/types/journeyV5";
 import {
   findCurrentNodeIdInCourse,
+  isProgressionNode,
   resolveDerivedStatusFromNodeIds,
 } from "@/src/lib/journey/journeyProgress";
 import {
@@ -39,7 +40,6 @@ import {
   selectUnitIdParam,
   selectUnitsBySectionIndex,
   selectPendingCelebrationMap,
-  selectCourseFinaleSeenMap,
 } from "./journeySelectorBase";
 
 interface RenderedUnitView {
@@ -187,6 +187,7 @@ export const selectUnitStatus = createSelector(
     selectUnitsBySectionIndex,
     selectNodesByUnitIndex,
     selectNodeProgressMap,
+    selectNodeEntities,
   ],
   (
     unitId,
@@ -197,6 +198,7 @@ export const selectUnitStatus = createSelector(
     unitsBySection,
     nodesByUnit,
     nodeProgress,
+    nodeEntities,
   ): DerivedStatus => {
     const unit = unitEntities[unitId];
     if (!unit) {
@@ -213,12 +215,14 @@ export const selectUnitStatus = createSelector(
       unitsBySection,
       nodesByUnit,
       nodeProgress,
+      nodeEntities,
     );
 
     return resolveDerivedStatusFromNodeIds(
       nodeIds,
       currentNodeId,
       nodeProgress,
+      nodeEntities,
     );
   },
 );
@@ -235,6 +239,7 @@ export const selectSectionStatus = createSelector(
     selectNodesByUnitIndex,
     selectUnitsBySectionIndex,
     selectNodeProgressMap,
+    selectNodeEntities,
   ],
   (
     sectionId,
@@ -243,6 +248,7 @@ export const selectSectionStatus = createSelector(
     nodesByUnit,
     unitsBySection,
     nodeProgress,
+    nodeEntities,
   ): DerivedStatus => {
     const section = sectionEntities[sectionId];
     if (!section) {
@@ -256,12 +262,14 @@ export const selectSectionStatus = createSelector(
       unitsBySection,
       nodesByUnit,
       nodeProgress,
+      nodeEntities,
     );
 
     return resolveDerivedStatusFromNodeIds(
       nodeIds,
       currentNodeId,
       nodeProgress,
+      nodeEntities,
     );
   },
 );
@@ -283,13 +291,21 @@ export const selectCurrentNodeIdForCourse = createSelector(
     selectUnitsBySectionIndex,
     selectNodesByUnitIndex,
     selectNodeProgressMap,
+    selectNodeEntities,
   ],
-  (sectionIds, unitsBySection, nodesByUnit, nodeProgress): string | null =>
+  (
+    sectionIds,
+    unitsBySection,
+    nodesByUnit,
+    nodeProgress,
+    nodeEntities,
+  ): string | null =>
     findCurrentNodeIdInCourse(
       sectionIds,
       unitsBySection,
       nodesByUnit,
       nodeProgress,
+      nodeEntities,
     ),
 );
 
@@ -511,6 +527,7 @@ export const selectSectionOverviewItemsForCourse = createSelector(
     selectUnitEntities,
     selectNodesByUnitIndex,
     selectNodeProgressMap,
+    selectNodeEntities,
     selectCurrentSectionNumberForCourse,
   ],
   (
@@ -520,6 +537,7 @@ export const selectSectionOverviewItemsForCourse = createSelector(
     unitEntities,
     nodesByUnit,
     nodeProgress,
+    nodeEntities,
     currentSectionNumber,
   ): SectionOverviewItem[] => {
     let globalUnitNumber = 0;
@@ -553,7 +571,9 @@ export const selectSectionOverviewItemsForCourse = createSelector(
           unitTitles.push(unit.title);
           unitIconKeys.push(unit.iconKey);
 
-          const nodeIds = nodesByUnit[unitId] ?? [];
+          const nodeIds = (nodesByUnit[unitId] ?? []).filter((nodeId) =>
+            isProgressionNode(nodeEntities[nodeId]),
+          );
           totalNodes += nodeIds.length;
           completedNodes += nodeIds.filter(
             (nodeId) => nodeProgress[nodeId]?.status === "completed",
@@ -593,14 +613,16 @@ export const selectCourseNodeCountsForCourse = createSelector(
     selectUnitsBySectionIndex,
     selectNodesByUnitIndex,
     selectNodeProgressMap,
+    selectNodeEntities,
   ],
-  (sectionIds, unitsBySection, nodesByUnit, nodeProgress) => {
+  (sectionIds, unitsBySection, nodesByUnit, nodeProgress, nodeEntities) => {
     let totalNodes = 0;
     let completedNodes = 0;
 
     for (const sectionId of sectionIds) {
       for (const unitId of unitsBySection[sectionId] ?? []) {
         for (const nodeId of nodesByUnit[unitId] ?? []) {
+          if (!isProgressionNode(nodeEntities[nodeId])) continue;
           totalNodes += 1;
           if (nodeProgress[nodeId]?.status === "completed") {
             completedNodes += 1;
@@ -611,6 +633,11 @@ export const selectCourseNodeCountsForCourse = createSelector(
 
     return { completedNodes, totalNodes };
   },
+);
+
+export const selectIsCourseCompleteForCourse = createSelector(
+  [selectCourseNodeCountsForCourse],
+  ({ completedNodes, totalNodes }) => totalNodes > 0 && completedNodes === totalNodes,
 );
 
 /**
@@ -740,16 +767,5 @@ export const selectActiveNodeModalId = createSelector(
  */
 export const selectPendingCelebration = createSelector(
   [selectPendingCelebrationMap, selectCourseIdParam],
-  (pendingCelebration, courseId): 'lesson' | 'unit' | 'course' | null =>
-    pendingCelebration[courseId] ?? null,
-);
-
-/**
- * Returns whether the full course finale has been seen for a given courseId.
- * Used to skip the finale on re-entry after dismissal (FR-4.8).
- */
-export const selectCourseFinaleSeen = createSelector(
-  [selectCourseFinaleSeenMap, selectCourseIdParam],
-  (courseFinaleSeenByCourse, courseId): boolean =>
-    courseFinaleSeenByCourse[courseId] ?? false,
+  (pendingCelebration, courseId) => pendingCelebration[courseId] ?? null,
 );

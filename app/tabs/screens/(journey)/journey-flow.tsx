@@ -17,6 +17,7 @@ import { Text } from "@/src/components/ui/Text";
 import { updateUserStreak } from "@/src/lib/api/mentalHealthJourneyApi";
 import { useQueryClient } from "@tanstack/react-query";
 import { createLogger } from "@/src/lib/logger";
+import { useCelebrationOrchestrator } from "@/src/domains/journey/rewards/useCelebrationOrchestrator";
 
 const log = createLogger("JourneyFlow");
 
@@ -27,6 +28,7 @@ export default function JourneyFlowRoute() {
   }>();
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
+  const { handleCompletionResult } = useCelebrationOrchestrator(courseId || "");
 
   const [completeNode] = journeyApi.useCompleteNodeMutation();
   const node = useAppSelector((state) => selectNode(state, nodeId || ""));
@@ -52,7 +54,11 @@ export default function JourneyFlowRoute() {
       });
 
       try {
-        await completeNode({ nodeId, courseId, responses }).unwrap();
+        const completion = await completeNode({
+          nodeId,
+          courseId,
+          responses,
+        }).unwrap();
         await updateUserStreak();
         await queryClient.invalidateQueries({ queryKey: ["streak"] });
         dispatch(
@@ -70,11 +76,13 @@ export default function JourneyFlowRoute() {
         if ("data" in progressResult && progressResult.data) {
           dispatch(setCourseProgress(progressResult.data));
         }
+        handleCompletionResult(completion);
         log.info("node_completion_succeeded", {
           courseId,
           nodeId,
           durationMs: Date.now() - startedAt,
         });
+        handleDismiss();
       } catch (e) {
         log.error("node_completion_failed", {
           courseId,
@@ -82,11 +90,17 @@ export default function JourneyFlowRoute() {
           error: e instanceof Error ? e.message : String(e),
           durationMs: Date.now() - startedAt,
         });
-      } finally {
-        handleDismiss();
       }
     },
-    [nodeId, courseId, completeNode, dispatch, handleDismiss, queryClient],
+    [
+      nodeId,
+      courseId,
+      completeNode,
+      dispatch,
+      handleCompletionResult,
+      handleDismiss,
+      queryClient,
+    ],
   );
 
   if (isLoading) {

@@ -20,11 +20,11 @@ import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import useAudioRecording from "@/hooks/useAudioRecording";
 import * as Haptics from "expo-haptics";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
-import { Feather } from "@expo/vector-icons";
 import { createLogger } from "@/src/lib/logger";
 import { StaggeredText, type StaggeredTextRef } from "@/src/animations/everybody-can-cook/components/staggered-text";
 import { useInterval } from "@/src/hooks/useInterval";
+import { useAppDispatch } from "@/src/store/hooks";
+import { setVisible as setAssistantVisible } from "@/src/store/slices/happyAssistantSlice";
 
 const log = createLogger("VoiceRecorder");
 
@@ -33,19 +33,25 @@ interface VoiceRecorderProps {
   onClose: () => void;
 }
 
+// ponytail: subtle pulse on recording dot (1 -> 0.4 -> 1 across ~1.3s)
 const RecordingStatus = () => {
-  const opacity = useSharedValue(0.4);
+  const opacity = useSharedValue(1);
   useEffect(() => {
-    opacity.value = withRepeat(withTiming(1, { duration: 1000 }), -1, true);
-  }, []);
-  
+    opacity.value = withRepeat(withTiming(0.4, { duration: 650 }), -1, true);
+  }, [opacity]);
+
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
   }));
 
   return (
-    <View className="flex-row items-center justify-center mt-3 gap-2">
-      <Animated.View style={[{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#059669' }, animatedStyle]} />
+    <View className="flex-row items-center justify-center mt-2 gap-2">
+      <Animated.View
+        style={[
+          { width: 6, height: 6, borderRadius: 3, backgroundColor: "#059669" },
+          animatedStyle,
+        ]}
+      />
       <Text className="text-emerald-600 text-sm happy-font-body-semibold">
         Recording
       </Text>
@@ -60,14 +66,23 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
   const [startRecording, setStartRecording] = useAtom(startRecordingAtom);
   const [enableAIInsights] = useState<boolean>(true);
   const textRef = useRef<StaggeredTextRef>(null);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     textRef.current?.reset();
     textRef.current?.animate();
   }, [currentPrompt]);
 
+  // ponytail: hide floating panda assistant during voice recording
   useEffect(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    dispatch(setAssistantVisible(false));
+    return () => {
+      dispatch(setAssistantVisible(true));
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     log.info("VoiceRecorder mounted");
   }, []);
 
@@ -76,19 +91,21 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
   const handleShufflePrompt = useCallback(() => {
     const now = Date.now();
     if (now - lastShuffleTime.current > 300) {
-      Haptics.selectionAsync();
+      void Haptics.selectionAsync();
       lastShuffleTime.current = now;
     }
-    rotation.value = withSpring(rotation.value + 360, { damping: 20, stiffness: 100, overshootClamping: true });
+    rotation.value = withSpring(rotation.value + 360, {
+      damping: 20,
+      stiffness: 100,
+      overshootClamping: true,
+    });
     shufflePrompt();
     log.debug("Prompt shuffled");
   }, [shufflePrompt, rotation]);
 
-  const rotateStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ rotate: `${rotation.value}deg` }],
-    };
-  });
+  const rotateStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value}deg` }],
+  }));
 
   const {
     recorderState,
@@ -99,22 +116,19 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
     totalDuration,
   } = useAudioRecording();
 
-  useInterval(
-    () => {
-      if (recordingCurrentState === "initial" && totalDuration === 0) {
-        handleShufflePrompt();
-      }
-    },
-    30000
-  );
+  useInterval(() => {
+    if (recordingCurrentState === "initial" && totalDuration === 0) {
+      handleShufflePrompt();
+    }
+  }, 30000);
 
+  const isRecording = recordingCurrentState === "recording";
+  const isPaused = recordingCurrentState === "paused";
   const isStopped = recordingCurrentState === "stopped";
+  const hasStarted = isRecording || isPaused || totalDuration > 0;
 
   const handleStopRecording = async () => {
-    if (
-      recordingCurrentState === "recording" ||
-      recordingCurrentState === "paused"
-    ) {
+    if (isRecording || isPaused) {
       log.info("Stopping audio recording...", { totalDuration });
       const pathState = await stopRecording();
       if (!pathState?.url) return;
@@ -123,17 +137,14 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
   };
 
   const handlePauseRecording = async () => {
-    if (recordingCurrentState === "recording") {
+    if (isRecording) {
       log.info("Pausing audio recording...");
       await pauseRecording();
     }
   };
 
   const handleStartRecording = async (): Promise<void> => {
-    if (
-      recordingCurrentState === "initial" ||
-      recordingCurrentState === "paused"
-    ) {
+    if (recordingCurrentState === "initial" || isPaused) {
       log.info("Starting audio recording...");
       await record();
     }
@@ -142,10 +153,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
   const handleDiscardRecording = useCallback(async () => {
     log.info("Discarding audio recording...");
     try {
-      if (
-        recordingCurrentState === "recording" ||
-        recordingCurrentState === "paused"
-      ) {
+      if (isRecording || isPaused) {
         await stopRecording();
       }
     } catch (error) {
@@ -153,11 +161,11 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
     } finally {
       onClose();
     }
-  }, [recordingCurrentState, stopRecording, onClose]);
+  }, [isRecording, isPaused, stopRecording, onClose]);
 
   useEffect(() => {
     if (startRecording) {
-      handleStartRecording();
+      void handleStartRecording();
     }
     return () => {
       setStartRecording(false);
@@ -165,25 +173,24 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
   }, [startRecording]);
 
   useEffect(() => {
-    if (isStopped) {
-      if (!recorderState?.url) return;
+    if (isStopped && recorderState?.url) {
       onStop(recorderState.url, enableAIInsights);
     }
-  }, [isStopped]);
+  }, [isStopped, recorderState?.url]);
 
   const handleCloseRecorder = useCallback(() => {
-    if (totalDuration > 0) {
+    if (hasStarted) {
       Alert.alert(
         "Discard recording?",
-        "This will permanently delete your current audio and cannot be undone.",
+        "This recording will be permanently deleted.",
         [
           { text: "Keep Recording", style: "cancel" },
           {
             text: "Discard",
             style: "destructive",
             onPress: () => {
-              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-              handleDiscardRecording();
+              void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+              void handleDiscardRecording();
             },
           },
         ]
@@ -191,68 +198,72 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
     } else {
       onClose();
     }
-  }, [totalDuration, handleDiscardRecording, onClose]);
-
-  const isRecording = recordingCurrentState === "recording";
-  const isPaused = recordingCurrentState === "paused";
+  }, [hasStarted, handleDiscardRecording, onClose]);
 
   return (
     <View className="flex-1 bg-sage-50">
       <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom"]}>
-
-        <View className="flex-1 justify-between px-6 py-6">
-          {/* Top Header Row */}
-          <View className="items-center justify-center h-12">
-            <Text className="text-ink-soft text-sm happy-font-body-semibold">
+        <View className="flex-1 justify-between px-6 py-5">
+          {/* Top Header Row - Quieter metadata contrast */}
+          <View className="items-center justify-center h-10">
+            <Text className="text-ink-muted text-xs happy-font-body-semibold">
               {formattedDateTime(selectedDate)}
             </Text>
           </View>
 
-          {/* Center Section: Prompt Text & Shuffle */}
-          <View className="flex-1 justify-center items-center py-8">
-            <View key={currentPrompt} className="px-4 mb-5 w-full">
+          {/* Center Section: Prompt Text & Optional Shuffle */}
+          <View className="flex-1 justify-center items-center py-4">
+            <View key={currentPrompt} className="px-4 mb-3 w-full">
               <StaggeredText
                 ref={textRef}
                 text={currentPrompt}
-                fontSize={28}
+                fontSize={hasStarted ? 23 : 26}
                 textStyle={{
-                  fontFamily: APP_FONT_FAMILIES.extraBold,
+                  fontFamily: APP_FONT_FAMILIES.bold,
                   color: SEMANTIC_COLORS.text.primary,
-                  lineHeight: 36,
-                  textAlign: "center"
+                  lineHeight: hasStarted ? 30 : 34,
+                  textAlign: "center",
                 }}
                 containerStyle={{
-                  justifyContent: 'center',
+                  justifyContent: "center",
                 }}
               />
             </View>
-            
-            <TouchableOpacity
-              onPress={handleShufflePrompt}
-              className="py-2 flex-row items-center gap-2 active:opacity-60"
-              activeOpacity={0.7}
-            >
-              <Animated.View style={rotateStyle}>
-                <HugeiconsIcon icon={ReloadIcon} size={16} color={SEMANTIC_COLORS.text.secondary} />
-              </Animated.View>
-              <Text className="text-ink-soft text-sm happy-font-body-semibold">
-                Shuffle prompt
-              </Text>
-            </TouchableOpacity>
+
+            {/* ponytail: shuffle button hidden once recording starts to prevent accidental context loss */}
+            {!hasStarted && (
+              <TouchableOpacity
+                onPress={handleShufflePrompt}
+                className="py-2 px-3 flex-row items-center gap-2 active:opacity-60"
+                activeOpacity={0.7}
+                accessibilityLabel="Try another prompt"
+              >
+                <Animated.View style={rotateStyle}>
+                  <HugeiconsIcon
+                    icon={ReloadIcon}
+                    size={16}
+                    color={SEMANTIC_COLORS.text.secondary}
+                  />
+                </Animated.View>
+                <Text className="text-ink-soft text-sm happy-font-body-semibold">
+                  Shuffle prompt
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
 
-          {/* Bottom Section: Timer Display and Controls */}
-          <View className="items-center gap-6 pb-4">
+          {/* Bottom Section: Timer Display (reduced 20%, tabular) and Controls */}
+          <View className="items-center gap-5 pb-3">
             <View className="items-center">
-              <Text 
-                className="text-ink-soft text-5xl tracking-tight happy-font-body-bold"
-                style={{ fontVariant: ['tabular-nums'] }}
+              <Text
+                className="text-ink-soft text-[38px] leading-[44px] tracking-tight happy-font-body-bold"
+                style={{ fontVariant: ["tabular-nums"] }}
               >
                 {formatTime(totalDuration)}
               </Text>
               {isRecording && <RecordingStatus />}
               {isPaused && (
-                <Text className="text-ink-soft text-sm mt-3 happy-font-body-semibold">
+                <Text className="text-ink-muted text-sm mt-2 happy-font-body-semibold">
                   Paused
                 </Text>
               )}
@@ -264,7 +275,6 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
               isStopped={isStopped}
               durationSeconds={recorderState.durationMillis / 1000}
               onToggleRecord={() => {
-                Haptics.selectionAsync();
                 if (isRecording) {
                   return handlePauseRecording();
                 }

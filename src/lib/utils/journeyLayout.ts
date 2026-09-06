@@ -9,11 +9,9 @@ import type {
   JourneyFlashListItem,
   UnitData,
 } from "@/src/types/journey";
-import {
-  NodeIcon,
-  NodeStatus as JourneyNodeStatus,
-} from "@/src/types/journey/enums";
+import { NodeStatus as JourneyNodeStatus } from "@/src/types/journey/enums";
 import type {
+  InsightRewardContent,
   NodeVisualStatus,
   Section,
   Unit,
@@ -24,6 +22,7 @@ import { PATH_LAYOUT, DIVIDER_LAYOUT } from "@/src/data/journey/constants";
 import { DEFAULT_JOURNEY_CONFIG } from "@/src/data/journey/journeyConfig";
 import {
   findCurrentNodeIdInCourse,
+  isProgressionNode,
   resolveNodeVisualStatus,
 } from "@/src/lib/journey/journeyProgress";
 import { resolveNodeIcon } from "@/src/lib/journey/mentalHealthNodeMapping";
@@ -32,9 +31,6 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-/** Where the node circle sits within its cell (matches JourneyNodeCell) */
-const NODE_VERTICAL_POSITION_RATIO = 0.85;
-const DEFAULT_NODE_ICON = NodeIcon.STAR;
 type UnitPathNode = UnitData["nodes"][number];
 
 /**
@@ -49,6 +45,8 @@ const NODE_TYPE_TO_VARIANT: Record<string, string> = {
   practice: "practice",
   challenge: "challenge",
   boss: "boss",
+  chest: "chest",
+  trophy: "trophy",
 };
 const DEFAULT_VARIANT = "learn";
 
@@ -133,7 +131,9 @@ function createDividerItem(
   previousNodeGlobalIndex: number | undefined,
   colorThemeKey: string,
 ): JourneyDividerItem {
-  const theme = DEFAULT_JOURNEY_CONFIG.colorThemes[colorThemeKey] ?? DEFAULT_JOURNEY_CONFIG.colorThemes.green;
+  const theme =
+    DEFAULT_JOURNEY_CONFIG.colorThemes[colorThemeKey] ??
+    DEFAULT_JOURNEY_CONFIG.colorThemes.green;
   const accentColor = theme.headerGradient[1];
   return {
     id: `divider-${unit.id}`,
@@ -143,7 +143,9 @@ function createDividerItem(
     accentColor,
     connectorLaneX: resolveDividerConnectorLaneX(entryX, exitX),
     segmentD: buildDividerSegmentD(entryX, exitX, DIVIDER_LAYOUT.cellHeight),
-    isConnectorActive: previousNodeVisualStatus === "completed",
+    isConnectorActive:
+      previousNodeVisualStatus === "completed" ||
+      previousNodeVisualStatus === "claimed",
     prevNodeGlobalIndex: previousNodeGlobalIndex,
   };
 }
@@ -154,6 +156,12 @@ function toJourneyNodeStatus(
   switch (visualStatus) {
     case "active":
       return JourneyNodeStatus.ACTIVE;
+    case "available":
+      return JourneyNodeStatus.AVAILABLE;
+    case "opening":
+      return JourneyNodeStatus.OPENING;
+    case "claimed":
+      return JourneyNodeStatus.CLAIMED;
     case "completed":
       return JourneyNodeStatus.COMPLETED;
     case "locked":
@@ -164,6 +172,17 @@ function toJourneyNodeStatus(
 
 function resolveVariantKey(nodeType: Node["type"]): string {
   return NODE_TYPE_TO_VARIANT[nodeType] ?? DEFAULT_VARIANT;
+}
+
+function resolveNodeLabel(node: Node, visualStatus: NodeVisualStatus) {
+  if (
+    node.type === "chest" &&
+    (visualStatus === "active" || visualStatus === "available")
+  ) {
+    const content = node.rewardContent as InsightRewardContent | null;
+    return content?.claimActionLabel;
+  }
+  return visualStatus === "active" ? "START" : undefined;
 }
 
 function resolveNodeSegmentStartX(
@@ -203,9 +222,11 @@ function createPathNodeData(
     index: globalIndex,
     type: node.type as UnitPathNode["type"],
     status: toJourneyNodeStatus(visualStatus),
-    icon: (node.icon as any) || resolveNodeIcon(node.type),
+    icon: (node.icon as JourneyNode["icon"]) || resolveNodeIcon(node.type),
+    label: resolveNodeLabel(node, visualStatus),
     taskId: node.contentId ?? node.id,
     rewards: [],
+    rewardContent: node.rewardContent,
   };
 }
 
@@ -222,7 +243,7 @@ function createJourneyNodeItem(
     id: node.id,
     itemType: "node",
     globalIndex,
-    label: visualStatus === "active" ? "START" : undefined,
+    label: resolveNodeLabel(node, visualStatus),
     x: nodeX,
     y: PATH_LAYOUT.topPadding + globalIndex * cellHeight,
     cellHeight,
@@ -234,8 +255,9 @@ function createJourneyNodeItem(
     taskId: node.contentId ?? node.id,
     taskType: node.type,
     type: node.type as JourneyNode["type"],
-    icon: (node.icon as any) || resolveNodeIcon(node.type),
+    icon: (node.icon as JourneyNode["icon"]) || resolveNodeIcon(node.type),
     rewards: [],
+    rewardContent: node.rewardContent,
     unitId: node.unitId,
     prevX: segmentStartX,
   };
@@ -301,6 +323,7 @@ export function buildJourneyFlashListData(
     unitsBySection,
     nodesByUnit,
     nodeProgress,
+    nodeEntities,
   );
 
   const cellHeight = PATH_LAYOUT.verticalGap;
@@ -351,10 +374,18 @@ export function buildJourneyFlashListData(
       const pathNodeDataList: UnitPathNode[] = [];
 
       for (const [nodeIndex, node] of unitNodes.entries()) {
+        const previousRequiredNode = [...unitNodes]
+          .slice(0, nodeIndex)
+          .reverse()
+          .find(
+            (candidate) =>
+              isProgressionNode(candidate),
+          );
         const visualStatus = resolveNodeVisualStatus(
-          node.id,
+          node,
           currentNodeId,
           nodeProgress,
+          previousRequiredNode?.id ?? null,
         );
         const nodeX = computeNodeX(globalIndex);
         const segmentStartX = resolveNodeSegmentStartX(
@@ -380,7 +411,9 @@ export function buildJourneyFlashListData(
             visualStatus,
           ),
         );
-        pathNodeDataList.push(createPathNodeData(node, globalIndex, visualStatus));
+        pathNodeDataList.push(
+          createPathNodeData(node, globalIndex, visualStatus),
+        );
 
         previousNodeX = nodeX;
         previousNodeVisualStatus = visualStatus;
@@ -399,5 +432,10 @@ export function buildJourneyFlashListData(
     }
   }
 
-  return { flashListData, activeGlobalIndex, activeListIndex, units: unitsData };
+  return {
+    flashListData,
+    activeGlobalIndex,
+    activeListIndex,
+    units: unitsData,
+  };
 }

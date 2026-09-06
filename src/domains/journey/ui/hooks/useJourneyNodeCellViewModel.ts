@@ -1,11 +1,11 @@
 import { useCallback } from "react";
-import { useColorScheme } from "react-native";
-import * as Haptics from "expo-haptics";
-import type { JourneyNode, PathNodeData, NodePosition } from "@/src/types/journey";
-import { NodeIcon, NodeStatus, NodeState, NodeType } from "@/src/types/journey";
+import type {
+  JourneyNode,
+  PathNodeData,
+  NodePosition,
+} from "@/src/types/journey";
+import { NodeStatus, NodeState } from "@/src/types/journey";
 import { useHighContrast } from "@/src/hooks/useHighContrast";
-
-import { useJourneySettings } from "@/src/context/JourneyConfigContext";
 
 export const NODE_VERTICAL_POSITION_RATIO = 0.85;
 export const HUGEICON_SIZE_RATIO = 0.6;
@@ -26,22 +26,21 @@ export function toPathNodeData(item: JourneyNode): PathNodeData {
     status: item.status,
     icon: item.icon,
     progress: item.progress,
-    label: item.status === NodeStatus.ACTIVE ? item.label : undefined,
+    label: item.label,
     taskId: item.taskId,
     rewards: item.rewards,
+    rewardContent: item.rewardContent,
   };
 }
 
 export function useJourneyNodeCellViewModel({
   item,
   courseId,
-  screenWidth,
+  screenWidth: _screenWidth,
   activeGlobalIndex,
   onNodePress,
 }: JourneyNodeCellProps) {
   const { pathColors, pathStrokeWidth } = useHighContrast();
-  const settings = useJourneySettings();
-  const isDark = useColorScheme() === "dark";
   const isProgressSegment =
     item.status === NodeStatus.COMPLETED ||
     (activeGlobalIndex >= 0 && item.globalIndex <= activeGlobalIndex);
@@ -58,12 +57,12 @@ export function useJourneyNodeCellViewModel({
   let nodeState = NodeState.LOCKED;
   if (item.status === NodeStatus.ACTIVE) {
     nodeState = NodeState.CURRENT;
+  } else if (item.status === NodeStatus.AVAILABLE) {
+    nodeState = NodeState.AVAILABLE;
   } else if (item.status === NodeStatus.COMPLETED) {
-    if (item.type === NodeType.CHEST) {
-      nodeState = NodeState.CLAIMED;
-    } else {
-      nodeState = NodeState.COMPLETED;
-    }
+    nodeState = NodeState.COMPLETED;
+  } else if (item.status === NodeStatus.CLAIMED) {
+    nodeState = NodeState.CLAIMED;
   }
 
   const handlePress = useCallback(
@@ -71,7 +70,7 @@ export function useJourneyNodeCellViewModel({
       // Pass faceColor as undefined, letting the new system handle it
       onNodePress(pathNodeData, event, undefined);
     },
-    [onNodePress, pathNodeData]
+    [onNodePress, pathNodeData],
   );
 
   return {

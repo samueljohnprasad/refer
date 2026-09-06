@@ -17,7 +17,7 @@ export interface TimelineItemData {
   /** Epoch-ms timestamp used for sorting & grouping */
   readonly date: number;
   /** Visual status — drives the dot indicator on the stem */
-  readonly status: "completed" | "in_progress" | "draft";
+  readonly status: "completed" | "in_progress" | "draft" | "challenge" | "milestone";
 }
 
 // ─── Section ────────────────────────────────────────────────────────────

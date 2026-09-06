@@ -4,11 +4,13 @@
  * Avoids repetitive object construction in mock data and future API mappers.
  */
 
-import { JourneyRewardType, NodeIcon, NodeStatus, NodeType } from "@/src/types/journey/enums";
+import {
+  JourneyRewardType,
+  NodeIcon,
+  NodeStatus,
+  NodeType,
+} from "@/src/types/journey/enums";
 import { JourneyReward, PathNodeData } from "@/src/types/journey/node";
-
-
-
 
 /** Default rewards for a completed lesson node */
 const DEFAULT_LESSON_REWARDS: JourneyReward[] = [
@@ -20,7 +22,6 @@ const DEFAULT_CHECKPOINT_REWARDS: JourneyReward[] = [
   { type: JourneyRewardType.XP, amount: 25, icon: "⚡" },
   { type: JourneyRewardType.GEMS, amount: 5, icon: "💎" },
 ];
-
 
 /** Default rewards for a milestone node */
 const DEFAULT_MILESTONE_REWARDS: JourneyReward[] = [
@@ -41,6 +42,7 @@ const COMPLETED_ICON_MAP: Record<NodeType, NodeIcon> = {
   [NodeType.CHECKPOINT]: NodeIcon.CHECKMARK,
   [NodeType.CHEST]: NodeIcon.CHEST,
   [NodeType.MILESTONE]: NodeIcon.STAR,
+  [NodeType.TROPHY]: NodeIcon.STAR,
 };
 
 /** Map node type to its default icon when active */
@@ -48,6 +50,8 @@ const ACTIVE_ICON_MAP: Record<NodeType, NodeIcon> = {
   [NodeType.LESSON]: NodeIcon.BOOK,
   [NodeType.CHECKPOINT]: NodeIcon.CHECKPOINT,
   [NodeType.CHEST]: NodeIcon.CHEST,
+  [NodeType.MILESTONE]: NodeIcon.STAR,
+  [NodeType.TROPHY]: NodeIcon.STAR,
 };
 
 /** Map node type to its default rewards */
@@ -56,6 +60,7 @@ const REWARD_MAP: Record<NodeType, JourneyReward[]> = {
   [NodeType.CHECKPOINT]: DEFAULT_CHECKPOINT_REWARDS,
   [NodeType.CHEST]: DEFAULT_CHEST_REWARDS,
   [NodeType.MILESTONE]: DEFAULT_MILESTONE_REWARDS,
+  [NodeType.TROPHY]: DEFAULT_MILESTONE_REWARDS,
 };
 
 /** Derive the correct icon based on node type and status */
@@ -124,7 +129,9 @@ export function createNodeSequence(
     return createNode(index, config.type, status, {
       ...config.overrides,
       // Auto-add "START" label to the active node
-      label: config.overrides?.label ?? (index === completedCount ? "START" : undefined),
+      label:
+        config.overrides?.label ??
+        (index === completedCount ? "START" : undefined),
       // Set default progress for active node
       progress:
         index === completedCount

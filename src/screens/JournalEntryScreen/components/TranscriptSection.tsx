@@ -41,12 +41,13 @@ export const TranscriptSection = React.memo<TranscriptSectionProps>(({
           </View>
         </View>
       ) : (
-        <View className="py-2">
+        <View className="mb-2">
           <Text
             variant="body"
-            className="text-ink text-[17px] leading-[28px]"
+            color="ink"
+            className="happy-font-body text-ink text-[17px] leading-[27px]"
             accessibilityRole="text"
-            accessibilityLabel={`Transcript: ${text}`}
+            accessibilityLabel={`Journal entry: ${text}`}
           >
             {text}
           </Text>

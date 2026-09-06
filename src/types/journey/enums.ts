@@ -8,8 +8,10 @@
 export enum NodeStatus {
   LOCKED = "locked",
   ACTIVE = "active",
+  AVAILABLE = "available",
+  OPENING = "opening",
   COMPLETED = "completed",
-  CLAIMED = "CLAIMED",
+  CLAIMED = "claimed",
 }
 
 /** Functional type of a path node */
@@ -18,6 +20,7 @@ export enum NodeType {
   CHECKPOINT = "checkpoint",
   CHEST = "chest",
   MILESTONE = "milestone",
+  TROPHY = "trophy",
 }
 
 /** Visual and interaction state of a unified path node */

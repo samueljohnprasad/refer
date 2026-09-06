@@ -8,7 +8,6 @@ export interface NodeViewModel {
   rimColor: ColorValue;
   iconColor: ColorValue;
   iconName: string | null;
-  shapeKey: "circle" | "hexagon" | "chest" | "rosette";
   isInteractive: boolean;
   indicator: "none" | "lock" | "check" | "pulse" | "open-chest";
 }
@@ -24,24 +23,21 @@ export function useNodeViewModel(
   let isInteractive = true;
   let indicator: NodeViewModel["indicator"] = "none";
   let iconName = baseIcon;
-  let shapeKey: NodeViewModel["shapeKey"] = "circle";
 
-  // 1. Determine shape
+  // 1. Determine icon (shape is handled by NodeShapes.tsx)
   switch (type) {
     case NodeType.LESSON:
-      shapeKey = "circle";
       break;
     case NodeType.CHECKPOINT:
-    case "trophy" as any:
-      shapeKey = "hexagon";
       iconName = "shield";
       break;
+    case NodeType.TROPHY:
+      iconName = "star";
+      break;
     case NodeType.CHEST:
-      shapeKey = "chest";
       iconName = "box";
       break;
     case NodeType.MILESTONE:
-      shapeKey = "rosette";
       iconName = "award";
       break;
   }
@@ -85,7 +81,6 @@ export function useNodeViewModel(
     rimColor,
     iconColor,
     iconName,
-    shapeKey,
     isInteractive,
     indicator,
   };

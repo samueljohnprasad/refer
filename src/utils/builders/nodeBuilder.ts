@@ -27,6 +27,7 @@ const COMPLETED_ICON_MAP: Record<string, NodeIcon> = {
   [NodeType.LESSON]: NodeIcon.CHECKMARK,
   [NodeType.CHECKPOINT]: NodeIcon.CHECKMARK,
   [NodeType.CHEST]: NodeIcon.CHEST,
+  [NodeType.TROPHY]: NodeIcon.STAR,
 };
 
 const ACTIVE_ICON_MAP: Record<string, NodeIcon> = {
@@ -38,6 +39,9 @@ const ACTIVE_ICON_MAP: Record<string, NodeIcon> = {
 function resolveIcon(nodeType: NodeType, status: NodeStatus): NodeIcon {
   if (status === NodeStatus.COMPLETED) {
     return COMPLETED_ICON_MAP[nodeType] ?? NodeIcon.CHECKMARK;
+  }
+  if (status === NodeStatus.CLAIMED) {
+    return NodeIcon.CHEST;
   }
   return ACTIVE_ICON_MAP[nodeType] ?? NodeIcon.STAR;
 }

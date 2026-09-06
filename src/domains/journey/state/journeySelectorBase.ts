@@ -57,9 +57,6 @@ export const selectActiveNodeModalIdByCourseMap = (state: RootState) =>
 export const selectPendingCelebrationMap = (state: RootState) =>
   selectJourneyState(state).pendingCelebration;
 
-export const selectCourseFinaleSeenMap = (state: RootState) =>
-  selectJourneyState(state).courseFinaleSeenByCourse;
-
 export const selectCourseIdParam = (_: RootState, courseId: string) => courseId;
 
 export const selectSectionIdParam = (_: RootState, sectionId: string) =>

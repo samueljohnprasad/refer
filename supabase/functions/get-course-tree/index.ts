@@ -37,7 +37,7 @@ Deno.serve(async (req: Request) => {
   const { data: course, error: courseError } = await database
     .from("courses")
     .select(
-      "id, title, description, icon_url, color_hex, order_index, is_published, domain, target_audience, total_lessons, total_duration_weeks, sessions_per_week, session_duration_minutes",
+      "id, title, description, icon_url, color_hex, order_index, is_published, domain, target_audience, total_lessons, total_duration_weeks, sessions_per_week, session_duration_minutes, reward_content",
     )
     .eq("id", courseId)
     .eq("is_published", true)
@@ -63,7 +63,7 @@ Deno.serve(async (req: Request) => {
   if (sectionIds.length > 0) {
     const { data: unitsData, error: unitsError } = await database
       .from("units")
-      .select("id, section_id, title, icon_key, order_index")
+      .select("id, section_id, title, icon_key, order_index, reward_content")
       .in("section_id", sectionIds)
       .order("order_index", { ascending: true });
 
@@ -79,7 +79,7 @@ Deno.serve(async (req: Request) => {
     const { data: nodesData, error: nodesError } = await database
       .from("nodes")
       .select(
-        "id, unit_id, title, type, content_id, content_type, pass_threshold, order_index, estimated_mins, icon, new_concepts, review_concepts, prerequisites",
+        "id, unit_id, title, type, content_id, content_type, pass_threshold, order_index, estimated_mins, icon, new_concepts, review_concepts, prerequisites, reward_content",
       )
       .in("unit_id", unitIds)
       .order("order_index", { ascending: true });
@@ -104,6 +104,7 @@ Deno.serve(async (req: Request) => {
       totalDurationWeeks: course.total_duration_weeks,
       sessionsPerWeek: course.sessions_per_week,
       sessionDurationMinutes: course.session_duration_minutes,
+      rewardContent: course.reward_content,
     },
     sections: (sections ?? []).map((s: Record<string, unknown>) => ({
       id: s["id"],
@@ -122,6 +123,7 @@ Deno.serve(async (req: Request) => {
       title: u["title"],
       iconKey: u["icon_key"],
       orderIndex: u["order_index"],
+      rewardContent: u["reward_content"],
     })),
     nodes: (nodes as Array<Record<string, unknown>>).map((n) => ({
       id: n["id"],
@@ -137,6 +139,7 @@ Deno.serve(async (req: Request) => {
       newConcepts: n["new_concepts"],
       reviewConcepts: n["review_concepts"],
       prerequisites: n["prerequisites"],
+      rewardContent: n["reward_content"],
     })),
   });
 });

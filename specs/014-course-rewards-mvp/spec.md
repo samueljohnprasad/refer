@@ -80,7 +80,7 @@ The MVP creates a restrained hierarchy in which each significant level has a rec
 1. Learner completes the node immediately before the chest position.
 2. After the lesson-completion flow, the journey map focuses on the newly available chest.
 3. Chest transitions from locked to available.
-4. Learner taps the chest at any time (chest does not block continuing the path).
+4. The chest becomes the next active path node. The learner claims it before the following lesson unlocks.
 5. A short reveal plays; the Insight Card appears with title, body, and "Back to path".
 6. Claim is durably recorded; subsequent taps reopen the same card without replaying the reward.
 
@@ -150,7 +150,7 @@ The MVP creates a restrained hierarchy in which each significant level has a rec
 | FR-2.3 | Curriculum authors may explicitly omit the chest or override its position. Invalid positions cause the chest to be omitted with a validation warning logged. |
 | FR-2.4 | The chest must have four distinct persistent states: Locked, Available, Opening (transient), and Claimed. |
 | FR-2.5 | States must not rely on color alone to be distinguishable. |
-| FR-2.6 | The chest must not open automatically and must not block the learner from continuing or stopping. |
+| FR-2.6 | The chest must not open automatically. When authored into a unit, it becomes the next active progression node and the following lesson remains locked until the chest is claimed. The learner may still leave the course at any time. |
 | FR-2.7 | Tapping an available chest triggers a short reveal and grants exactly one authored Insight Card. |
 | FR-2.8 | The claim action is idempotent: repeated taps or retries cannot create duplicate grant records. |
 | FR-2.9 | Tapping a claimed chest reopens the Insight Card without replaying the full reward grant. |
@@ -176,7 +176,7 @@ The MVP creates a restrained hierarchy in which each significant level has a rec
 | ID | Requirement |
 |----|-------------|
 | FR-4.1 | When the course becomes complete according to existing required-content and prerequisite rules, show a visually and structurally distinctive finale. |
-| FR-4.2 | Optional content must not block course completion unless it is already explicitly required by the existing course schema. |
+| FR-4.2 | Optional content must not block course completion unless it is represented by an authored progression node. An authored chest is required; an automatic trophy is not. |
 | FR-4.3 | The finale must contain: "Course complete", course title, a warm acknowledgement of effort, three to five concrete capabilities developed across the course, and actions for reviewing the course, optionally starting another relevant course, or finishing for now. |
 | FR-4.4 | The finale must never claim recovery, treatment completion, symptom elimination, or permanent mental-health mastery. |
 | FR-4.5 | When the final action simultaneously completes the lesson, final unit, and course: commit all progress; grant the unit trophy as silent durable state; show only the course finale; include the final unit capability in the course summary. |

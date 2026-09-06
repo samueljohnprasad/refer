@@ -35,10 +35,10 @@ export const RewardBadgeView = React.memo(function RewardBadgeView({
     >
       <Text className="text-2xl mr-2">{icon}</Text>
       <View>
-        <Text className="text-lg font-extrabold text-ink">
+        <Text className="text-base font-bold text-ink">
           +{reward.amount}
         </Text>
-        <Text className="text-xs font-bold text-ink-soft uppercase tracking-wider">
+        <Text className="text-sm font-bold text-ink-soft uppercase tracking-wider">
           {label}
         </Text>
       </View>

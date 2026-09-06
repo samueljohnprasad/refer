@@ -28,8 +28,9 @@ export function useCelebrationOrchestrator(
   const handleCompletionResult = useCallback(
     (result: CompleteNodeResponse): void => {
       try {
-        const level = resolveLevel(result);
-        dispatch(setPendingCelebration({ courseId, level }));
+        dispatch(
+          setPendingCelebration({ courseId, celebration: result.celebration }),
+        );
       } catch (err) {
         // ponytail: never throw — rewards must not block navigation (FR-5.4)
         console.warn("[rewards] orchestrator error", err);
@@ -39,14 +40,4 @@ export function useCelebrationOrchestrator(
   );
 
   return { handleCompletionResult };
-}
-
-// ── Priority logic ────────────────────────────────────────────────────────────
-
-function resolveLevel(
-  result: CompleteNodeResponse,
-): 'lesson' | 'unit' | 'course' {
-  if (result.courseCompleted) return 'course';
-  if (result.unitCompleted) return 'unit';
-  return 'lesson';
 }

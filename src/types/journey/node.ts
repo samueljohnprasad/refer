@@ -4,6 +4,11 @@
  */
 
 import { NodeStatus, NodeType, NodeIcon, JourneyRewardType } from "./enums";
+import type {
+  InsightRewardContent,
+  LessonRewardContent,
+  UnitRewardContent,
+} from "../journeyV5";
 
 /** Reward granted when completing a node or opening a chest */
 export interface JourneyReward {
@@ -35,6 +40,12 @@ export interface PathNodeData {
   taskId: string;
   /** Rewards earned upon completion */
   rewards: JourneyReward[];
+  /** Backend-authored celebration content for reward nodes. */
+  rewardContent?:
+    | LessonRewardContent
+    | InsightRewardContent
+    | UnitRewardContent
+    | null;
 }
 
 /** Computed screen coordinates for a node */
@@ -90,6 +101,12 @@ export interface JourneyNode {
   icon: NodeIcon;
   /** Rewards on completion */
   rewards: JourneyReward[];
+  /** Backend-authored celebration content for reward nodes. */
+  rewardContent?:
+    | LessonRewardContent
+    | InsightRewardContent
+    | UnitRewardContent
+    | null;
   /** Parent unit ID */
   unitId: string;
   /** X position of the previous node (needed for segment start in local coords) */

@@ -176,16 +176,18 @@ function resolveTextColor(
   color: TextVariants["color"],
   variant: TextVariants["variant"],
 ): string | import("react-native").OpaqueColorValue {
+  if (color === "ink") return SEMANTIC_COLORS.text.primary;
   if (color === "surface") return "#FFFFFF";
-  if (color === "sage" || variant === "eyebrow") return SEMANTIC_COLORS.brand.primary;
+  if (color === "sage" || (!color && variant === "eyebrow")) return SEMANTIC_COLORS.brand.primary;
   if (color === "danger") return SEMANTIC_COLORS.error.foreground;
   if (color === "streak") return SEMANTIC_COLORS.warning.foreground;
   if (color === "premium") return SEMANTIC_COLORS.brand.soft;
-  if (color === "soft" || isSoftVariant(variant)) return SEMANTIC_COLORS.text.secondary;
+  if (color === "soft") return SEMANTIC_COLORS.text.secondary;
+  if (color === "muted") return SEMANTIC_COLORS.text.secondary;
+  if (!color && isSoftVariant(variant)) return SEMANTIC_COLORS.text.secondary;
   if (
-    color === "muted" ||
-    variant === "caption-muted" ||
-    variant === "overline"
+    !color &&
+    (variant === "caption-muted" || variant === "overline")
   ) {
     return SEMANTIC_COLORS.text.secondary;
   }

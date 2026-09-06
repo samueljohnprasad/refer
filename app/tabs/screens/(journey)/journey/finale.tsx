@@ -1,54 +1,64 @@
-import React, { useEffect, useState } from "react";
-import { router, useLocalSearchParams, Stack } from "expo-router";
-import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
-import { selectCourse, selectCourseFinaleSeen } from "@/src/domains/journey/state/journeySelectors";
-import { markCourseFinaleSeen } from "@/src/domains/journey/state/journeySlice";
-import { getCourseRewardContent, FALLBACK_ACKNOWLEDGEMENT } from "@/src/data/journey/rewardsConfig";
+import React, { useCallback, useEffect } from "react";
+import { router, Stack, useLocalSearchParams } from "expo-router";
+import { useAppSelector } from "@/src/store/hooks";
+import {
+  selectCourse,
+  selectCourseProgressForCourse,
+  selectIsCourseCompleteForCourse,
+} from "@/src/domains/journey/state/journeySelectors";
+import { journeyApi } from "@/src/domains/journey/data/journeyApi";
 import { CourseFinaleScreen } from "@/src/domains/journey/ui/screens/CourseFinaleScreen";
 
 export default function FinaleRoute() {
-  const { courseId } = useLocalSearchParams<{ courseId: string }>();
-  const dispatch = useAppDispatch();
-  const [mounted, setMounted] = useState(false);
-
-  const course = useAppSelector((state) => selectCourse(state, courseId as string));
-  const hasSeenFinale = useAppSelector((state) => selectCourseFinaleSeen(state, courseId as string));
+  const { courseId = "" } = useLocalSearchParams<{ courseId: string }>();
+  const course = useAppSelector((state) => selectCourse(state, courseId));
+  const progress = useAppSelector((state) =>
+    selectCourseProgressForCourse(state, courseId),
+  );
+  const isCourseComplete = useAppSelector((state) =>
+    selectIsCourseCompleteForCourse(state, courseId),
+  );
+  const [markFinaleSeen, mutation] =
+    journeyApi.useMarkCourseFinaleSeenMutation();
 
   useEffect(() => {
-    if (hasSeenFinale) {
+    if (progress?.finaleSeenAt || !isCourseComplete) router.back();
+  }, [isCourseComplete, progress?.finaleSeenAt]);
+
+  const dismiss = useCallback(async () => {
+    if (!courseId || mutation.isLoading) return;
+    try {
+      await markFinaleSeen(courseId).unwrap();
       router.back();
-    } else {
-      setMounted(true);
+    } catch {
+      // Keep finale open. Learner can retry without losing the once-only state.
     }
-  }, [hasSeenFinale]);
+  }, [courseId, markFinaleSeen, mutation.isLoading]);
 
-  const handleDismiss = () => {
-    if (courseId) {
-      dispatch(markCourseFinaleSeen({ courseId }));
-    }
-    router.back();
-  };
-
-  if (!mounted || !courseId || hasSeenFinale) {
-    return null; // Don't render until we know we should show it
-  }
-
-  const rewardContent = getCourseRewardContent(courseId);
-  const acknowledgement = rewardContent?.acknowledgement || FALLBACK_ACKNOWLEDGEMENT;
-  const capabilitySummary = rewardContent?.capabilitySummary || [];
-
-  if (capabilitySummary.length === 0) {
-    console.warn(`[rewards] missing capabilitySummary for course ${courseId}`);
+  if (
+    !course ||
+    !course.rewardContent ||
+    progress?.finaleSeenAt ||
+    !isCourseComplete
+  ) {
+    return null;
   }
 
   return (
     <>
-      <Stack.Screen options={{ headerShown: false, presentation: "fullScreenModal", animation: "fade" }} />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+          presentation: "fullScreenModal",
+          animation: "fade",
+        }}
+      />
       <CourseFinaleScreen
-        courseTitle={course?.title || "Your Journey"}
-        acknowledgement={acknowledgement}
-        capabilitySummary={capabilitySummary}
-        onDismiss={handleDismiss}
+        courseTitle={course.title}
+        content={course.rewardContent}
+        isDismissing={mutation.isLoading}
+        onReview={dismiss}
+        onDismiss={dismiss}
       />
     </>
   );

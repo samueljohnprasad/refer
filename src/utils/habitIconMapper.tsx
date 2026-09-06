@@ -19,17 +19,18 @@ type SFSymbolMapping = {
 };
 
 // Map existing emojis to SF Symbols
+// ponytail: colors desaturated ~20% so icons feel part of the sage palette
 export const EMOJI_TO_SF_SYMBOL: Record<string, SFSymbolMapping> = {
-  "💧": { systemName: "drop.fill", color: "#0ea5e9" }, // sky-500
-  "💪": { systemName: "figure.run", color: "#f59e0b" }, // amber-500
-  "🧘": { systemName: "figure.mind.and.body", color: "#8b5cf6" }, // violet-500
-  "📚": { systemName: "book.closed.fill", color: "#3b82f6" }, // blue-500
-  "❤️": { systemName: "heart.fill", color: "#ef4444" }, // red-500
-  "✍️": { systemName: "pencil.and.outline", color: "#10b981" }, // emerald-500
-  "😴": { systemName: "moon.zzz.fill", color: "#6366f1" }, // indigo-500
-  "🚶": { systemName: "figure.walk", color: "#22c55e" }, // green-500
-  "✨": { systemName: "sparkles", color: "#eab308" }, // yellow-500
-  "✓": { systemName: "checkmark.circle.fill", color: "#14b8a6" }, // teal-500
+  "💧": { systemName: "drop.fill", color: "#38a3c8" },       // muted sky
+  "💪": { systemName: "figure.run", color: "#c98d35" },       // muted amber
+  "🧘": { systemName: "figure.mind.and.body", color: "#7c5cc4" }, // muted violet
+  "📚": { systemName: "book.closed.fill", color: "#3d7cc4" }, // muted blue
+  "❤️": { systemName: "heart.fill", color: "#d95f5f" },       // muted red
+  "✍️": { systemName: "pencil.and.outline", color: "#2fa87a" }, // muted emerald
+  "😴": { systemName: "moon.zzz.fill", color: "#5b5ec4" },    // muted indigo
+  "🚶": { systemName: "figure.walk", color: "#3aaa5a" },      // muted green
+  "✨": { systemName: "sparkles", color: "#c9a020" },          // muted yellow
+  "✓": { systemName: "checkmark.circle.fill", color: "#2aa89a" }, // muted teal
 };
 
 interface HabitIconProps {

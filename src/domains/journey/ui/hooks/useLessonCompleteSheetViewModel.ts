@@ -2,10 +2,11 @@ import { useCallback, useEffect } from "react";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { triggerIfEnabledSync } from "@/lib/haptics/hapticUtils";
 import { HAPTIC_INTENSITIES } from "@/lib/haptics/hapticConfig";
+import type { LessonRewardContent } from "@/src/types/journeyV5";
 
 export interface LessonCompleteSheetProps {
   isVisible: boolean;
-  takeaway: string;
+  content: LessonRewardContent;
   onContinue: () => void;
 }
 

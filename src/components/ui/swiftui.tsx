@@ -13,7 +13,6 @@ import {
   requestRecordingPermissionsAsync,
 } from "expo-audio";
 import { useWhisperModels } from "@/hooks/ai/useWhisperModels";
-import * as Haptics from "expo-haptics";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -26,89 +25,13 @@ import Animated, {
 } from "react-native-reanimated";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
-
-// Animated Sound Wave Bar Component
-interface WaveBarProps {
-  delay: number;
-  isActive: boolean;
-  height: number;
-  color: string;
-}
-
-const WaveBar = ({ delay, isActive, height, color }: WaveBarProps) => {
-  const animatedHeight = useSharedValue(height * 0.4);
-
-  useEffect(() => {
-    if (isActive) {
-      animatedHeight.value = withDelay(
-        delay,
-        withRepeat(
-          withSequence(
-            withTiming(height, {
-              duration: 300 + Math.random() * 200,
-              easing: Easing.inOut(Easing.ease),
-            }),
-            withTiming(height * 0.3, {
-              duration: 300 + Math.random() * 200,
-              easing: Easing.inOut(Easing.ease),
-            })
-          ),
-          -1,
-          true
-        )
-      );
-    } else {
-      cancelAnimation(animatedHeight);
-      animatedHeight.value = withTiming(height * 0.4, { duration: 200 });
-    }
-  }, [isActive, height]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    height: animatedHeight.value,
-  }));
-
-  return (
-    <Animated.View
-      style={[
-        { width: 3, borderRadius: 2, backgroundColor: color },
-        animatedStyle,
-      ]}
-    />
-  );
-};
-
 import { Button } from "@/src/components/ui/Button";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Mic01Icon } from "@hugeicons/core-free-icons";
+import { SoundWaveIcon } from "@/src/components/ui/SoundWaveIcon";
 
-// Sound Wave Icon Component
-interface SoundWaveIconProps {
-  isActive: boolean;
-  size?: number;
-}
+// ─── Speak Button ───────────────────────────────────────────────────────────
 
-const SoundWaveIcon = ({ isActive, size = 20 }: SoundWaveIconProps) => {
-  const barHeights = [size * 0.5, size * 0.8, size, size * 0.8, size * 0.5];
-  const delays = [0, 50, 100, 150, 200];
-  const color = SEMANTIC_COLORS.surface.primary; // Always white for contrast against the 3D sage background
-
-  return (
-    <View
-      className="flex-row items-center justify-center gap-[3px]"
-      style={{ height: size, width: size * 1.2 }}
-    >
-      {barHeights.map((height, index) => (
-        <WaveBar
-          key={index}
-          delay={delays[index]}
-          isActive={isActive}
-          height={height}
-          color={color}
-        />
-      ))}
-    </View>
-  );
-};
-
-// Speak Button Component
 interface SpeakButtonProps {
   isActive: boolean;
   isDisabled: boolean;
@@ -121,27 +44,42 @@ const SpeakButton = ({
   isDisabled,
   isLoading,
   onPress,
-}: SpeakButtonProps) => {
-  const getButtonText = () => {
+}: SpeakButtonProps): React.JSX.Element => {
+  const getButtonText = (): string => {
     if (isLoading && isActive) return "Stopping...";
     if (isLoading && !isActive) return "Starting...";
     if (isActive) return "Listening...";
     return "Speak";
   };
 
+  // ponytail: outlined/light secondary button per audit; never filled green
   return (
     <Button
       disabled={isDisabled || isLoading}
       onPress={onPress}
-      variant="primary"
-      size="lg"
+      variant="secondary"
+      size="sm"
       fullWidth={false}
-      width={140}
+      width={isActive ? 120 : 106}
+      accessibilityLabel={isActive ? "Stop speaking" : "Speak to transcribe"}
       leftIcon={
         isLoading ? (
-          <ActivityIndicator size="small" color={SEMANTIC_COLORS.surface.primary} />
+          <ActivityIndicator
+            size="small"
+            color={String(SEMANTIC_COLORS.text.primary)}
+          />
+        ) : isActive ? (
+          <SoundWaveIcon
+            isActive={true}
+            size={15}
+            color={String(SEMANTIC_COLORS.text.primary)}
+          />
         ) : (
-          <SoundWaveIcon isActive={isActive} size={18} />
+          <HugeiconsIcon
+            icon={Mic01Icon}
+            size={17}
+            color={String(SEMANTIC_COLORS.text.primary)}
+          />
         )
       }
       label={getButtonText()}

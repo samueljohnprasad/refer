@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { View, Modal, ActivityIndicator } from "react-native";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { Text } from "@/components/ui/Text";
 import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
 import { Feather } from "@expo/vector-icons";
@@ -10,6 +10,7 @@ import { Host, BottomSheet, Group, RNHostView } from "@expo/ui/swift-ui";
 import {
   presentationDetents,
   presentationDragIndicator,
+  presentationBackground,
 } from "@expo/ui/swift-ui/modifiers";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
@@ -42,16 +43,13 @@ export const BookmarkedJournalsBottomSheet: React.FC<
     }
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  // ponytail: content-height ~68% for small counts (<=2), taller 88% with scroll for many entries
+  const sheetFraction = (bookmarkedJournals?.length ?? 0) <= 2 ? 0.68 : 0.88;
+
   if (!isOpen) return null;
 
   return (
-    <Modal
-      visible={isOpen}
-      transparent
-      animationType="none"
-      statusBarTranslucent
-      onRequestClose={onClose}
-    >
+    <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
       <Host>
         <BottomSheet
           isPresented={isOpen}
@@ -63,30 +61,29 @@ export const BookmarkedJournalsBottomSheet: React.FC<
         >
           <Group
             modifiers={[
-              presentationDetents([{ fraction: 0.9 }]),
+              presentationDetents([{ fraction: sheetFraction }]),
               presentationDragIndicator("visible"),
+              presentationBackground("#FAF7EE"),
             ]}
           >
             <RNHostView>
-              <View className="flex-1">
-                {/* Header */}
-                <View className="flex-row items-center justify-between border-b border-sage-100 px-6 pb-6 pt-8">
-                  <View>
-                    <Text className="happy-font-heading-bold text-[28px] leading-8 text-ink tracking-tight">
-                      Pinned Notes
-                    </Text>
-                    <Text className="happy-font-body-medium text-[17px] text-ink-muted mt-1">
-                      {totalCount || 0} entries saved
-                    </Text>
-                  </View>
+              <View className="flex-1 bg-[#FAF7EE]">
+                {/* Header: compact 22px semibold title with close metadata */}
+                <View className="px-5 pt-3 pb-3 border-b border-sage-100/60">
+                  <Text className="happy-font-heading-semibold text-[22px] leading-[28px] text-ink">
+                    Pinned Notes
+                  </Text>
+                  <Text className="happy-font-body text-[14px] leading-[18px] text-ink-muted mt-0.5">
+                    {totalCount === 1 ? "1 pinned note" : `${totalCount || 0} pinned notes`}
+                  </Text>
                 </View>
 
                 {/* Content */}
-                <View className="flex-1 px-6 pb-6">
+                <View className="flex-1 px-5 pb-4">
                   {isLoading && bookmarkedJournals.length === 0 ? (
-                    <SkeletonList count={3} className="pt-4" />
+                    <SkeletonList count={3} className="pt-3" />
                   ) : bookmarkedJournals && bookmarkedJournals.length > 0 ? (
-                    <View className="pt-4 flex-1">
+                    <View className="pt-2.5 flex-1">
                       <EntryCardsView
                         onRefresh={refetch}
                         entries={bookmarkedJournals}
@@ -98,18 +95,11 @@ export const BookmarkedJournalsBottomSheet: React.FC<
                         scrollEnabled={true}
                         onEndReached={handleLoadMore}
                         ListFooterComponent={
-                          <View className="items-center py-6">
-                            {isFetchingNextPage ? (
+                          isFetchingNextPage ? (
+                            <View className="items-center py-4">
                               <ActivityIndicator size="small" color={SEMANTIC_COLORS.brand.primary} />
-                            ) : !hasNextPage && bookmarkedJournals.length > 0 ? (
-                              <>
-                                <View className="mb-3 h-px w-full bg-sage-100" />
-                                <Text className="happy-font-body-medium text-sm text-ink-muted">
-                                  All {totalCount} pinned notes loaded
-                                </Text>
-                              </>
-                            ) : null}
-                          </View>
+                            </View>
+                          ) : null
                         }
                       />
                     </View>
@@ -133,6 +123,6 @@ export const BookmarkedJournalsBottomSheet: React.FC<
           </Group>
         </BottomSheet>
       </Host>
-    </Modal>
+    </View>
   );
 };

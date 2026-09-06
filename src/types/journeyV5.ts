@@ -6,7 +6,8 @@
 // ── Status types ────────────────────────────────────────────────────────────
 
 /** All possible statuses a node can have. 'locked' is client-only — never stored in DB. */
-export type NodeStatus = "locked" | "in_progress" | "attempted" | "completed" | "claimed";
+export type NodeStatus =
+  "locked" | "in_progress" | "attempted" | "completed" | "claimed";
 
 /**
  * Visual status used by the journey map renderer.
@@ -15,7 +16,8 @@ export type NodeStatus = "locked" | "in_progress" | "attempted" | "completed" | 
  *   active     → node is accessible but not yet complete (star/checkpoint icon)
  *   completed  → node is done (checkmark icon)
  */
-export type NodeVisualStatus = "locked" | "active" | "completed";
+export type NodeVisualStatus =
+  "locked" | "active" | "available" | "opening" | "completed" | "claimed";
 
 /** Status for units and sections — no 'attempted' state at this level. */
 export type DerivedStatus = "locked" | "in_progress" | "completed";
@@ -36,7 +38,62 @@ export type NodeType =
   | "journal"
   | "checkpoint"
   | "chest"
+  | "trophy"
   | "ai_insight";
+
+export enum CelebrationLevel {
+  LESSON = "lesson",
+  UNIT = "unit",
+  COURSE = "course",
+}
+
+export interface LessonRewardContent {
+  title: string;
+  takeaway: string;
+  primaryActionLabel: string;
+}
+
+export interface InsightRewardContent {
+  title: string;
+  body: string;
+  claimActionLabel: string;
+  primaryActionLabel: string;
+}
+
+export interface UnitRewardContent {
+  title: string;
+  capabilityLabel: string;
+  capabilityStatement: string;
+  primaryActionLabel: string;
+}
+
+export interface CourseRewardContent {
+  title: string;
+  acknowledgement: string;
+  capabilityHeading: string;
+  capabilitySummary: string[];
+  reviewActionLabel: string;
+  doneActionLabel: string;
+}
+
+export type RewardCelebration =
+  | {
+      level: CelebrationLevel.LESSON;
+      nodeId: string;
+      content: LessonRewardContent;
+    }
+  | {
+      level: CelebrationLevel.UNIT;
+      unitId: string;
+      unitTitle: string;
+      content: UnitRewardContent;
+    }
+  | {
+      level: CelebrationLevel.COURSE;
+      courseId: string;
+      courseTitle: string;
+      content: CourseRewardContent;
+    };
 
 // ── Entity types (mirrors DB schema, camelCase) ──────────────────────────────
 
@@ -60,6 +117,7 @@ export interface Course {
   totalDurationWeeks?: number;
   sessionsPerWeek?: number;
   sessionDurationMinutes?: number[];
+  rewardContent: CourseRewardContent | null;
 }
 
 export interface EnrolledCourseListItem {
@@ -116,6 +174,7 @@ export interface Unit {
   iconKey: string;
   /** Sort order within the section */
   orderIndex: number;
+  rewardContent: UnitRewardContent | null;
 }
 
 export interface Node {
@@ -141,6 +200,8 @@ export interface Node {
   newConcepts?: string[];
   reviewConcepts?: string[];
   prerequisites?: string[];
+  rewardContent:
+    LessonRewardContent | InsightRewardContent | UnitRewardContent | null;
 }
 
 // ── Progress types (mirrors DB progress tables) ──────────────────────────────
@@ -151,6 +212,7 @@ export interface UserCourseProgress {
   status: CourseStatus;
   startedAt: string | null;
   completedAt: string | null;
+  finaleSeenAt: string | null;
 }
 
 export interface UserNodeProgress {
@@ -217,4 +279,5 @@ export interface CompleteNodeResponse {
   unitCompleted: boolean;
   sectionCompleted: boolean;
   courseCompleted: boolean;
+  celebration: RewardCelebration | null;
 }

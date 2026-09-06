@@ -1,6 +1,5 @@
-import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
-import { Text as RNText, View } from "react-native";
+import { View } from "react-native";
 import {
   BottomSheet,
   Group,
@@ -22,11 +21,12 @@ import {
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 import type { PathNodeData } from "@/src/types/journey/node";
-import type { InsightCardContent } from "@/src/data/journey/rewardsConfig";
+import { NodeType } from "@/src/types/journey";
+import type { InsightRewardContent } from "@/src/types/journeyV5";
 
 export interface ChestRewardModalProps {
   node: PathNodeData | null;
-  insightCard: InsightCardContent | null;
+  insightCard: InsightRewardContent | null;
   isClaiming: boolean;
   onClaim: () => Promise<void>;
   onDismiss: () => void;
@@ -37,10 +37,11 @@ function ChestRewardContent({
   isClaiming,
   insightCard,
   onClaim,
-}: Omit<ChestRewardModalProps, "onDismiss">): React.JSX.Element {
-  const isTrophy = node?.type === ("trophy" as any);
-  const title = insightCard?.title || (isTrophy ? "Claim Trophy!" : "Treasure Chest!");
-  const body = insightCard?.body || (isTrophy ? "You've finished this unit!" : "You've found a chest!");
+  onDismiss,
+}: ChestRewardModalProps): React.JSX.Element {
+  const isTrophy = node?.type === NodeType.TROPHY;
+  const isClaimed = node?.status === "claimed";
+  if (!insightCard) return <></>;
 
   return (
     <VStack
@@ -48,24 +49,41 @@ function ChestRewardContent({
       spacing={24}
       modifiers={[padding({ horizontal: 24, vertical: 20 })]}
     >
-      <Image systemName={isTrophy ? "star.circle.fill" : "gift.fill"} size={48} color={SEMANTIC_COLORS.warning.foreground} />
+      <Image
+        systemName={isTrophy ? "star.circle.fill" : "gift.fill"}
+        size={48}
+        color={SEMANTIC_COLORS.warning.foreground}
+      />
       <VStack alignment="center" spacing={8}>
-        <Text modifiers={[font({ size: 24, weight: "bold" }), multilineTextAlignment("center")]}>
-          {title}
+        <Text
+          modifiers={[
+            font({ size: 24, weight: "bold" }),
+            multilineTextAlignment("center"),
+          ]}
+        >
+          {insightCard.title}
         </Text>
-        <Text modifiers={[font({ size: 16 }), foregroundStyle("secondary"), multilineTextAlignment("center")]}>
-          {body}
+        <Text
+          modifiers={[
+            font({ size: 16 }),
+            foregroundStyle("secondary"),
+            multilineTextAlignment("center"),
+          ]}
+        >
+          {insightCard.body}
         </Text>
       </VStack>
       <RNHostView matchContents>
         <View style={{ width: 280 }}>
           <CourseExercisePrimaryButton
-            label={isClaiming ? "Claiming…" : "Claim Rewards"}
+            label={
+              isClaimed
+                ? insightCard.primaryActionLabel
+                : insightCard.claimActionLabel
+            }
             loading={isClaiming}
             disabled={isClaiming}
-            onPress={() => {
-              void onClaim();
-            }}
+            onPress={isClaimed ? onDismiss : () => void onClaim()}
           />
         </View>
       </RNHostView>
@@ -100,6 +118,7 @@ export function ChestRewardModal({
             insightCard={insightCard}
             isClaiming={isClaiming}
             onClaim={onClaim}
+            onDismiss={onDismiss}
           />
         </Group>
       </BottomSheet>

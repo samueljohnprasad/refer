@@ -62,7 +62,7 @@ export const NodeSilhouette = React.memo(function NodeSilhouette({
   } else if (type === NodeType.MILESTONE) {
     viewBox = `0 0 100 ${100 + depth * (100 / size)}`;
     pathD = NODE_SHAPES.rosette;
-  } else if (type === NodeType.CHECKPOINT || type === ("trophy" as any)) {
+  } else if (type === NodeType.CHECKPOINT || type === NodeType.TROPHY) {
     viewBox = `0 0 100 ${100 + depth * (100 / size)}`;
     pathD = NODE_SHAPES.hexagon;
   }

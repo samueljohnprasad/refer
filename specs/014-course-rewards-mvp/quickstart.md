@@ -3,6 +3,8 @@
 **Feature:** `specs/014-course-rewards-mvp`
 **Branch:** `014-course-rewards-mvp`
 
+Implementation note (2026-09-06): reward copy is returned by the backend. Do not inspect `rewardsConfig.ts` or AsyncStorage finale keys; those historical examples are retired.
+
 ---
 
 ## Prerequisites

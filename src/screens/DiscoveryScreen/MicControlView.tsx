@@ -6,17 +6,14 @@ import { useAtom } from "jotai";
 import { HStack } from "@/components/ui/hstack";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
-  AiMicIcon,
-  Cancel01Icon,
+  Mic01Icon,
   Tick01Icon,
   PauseIcon,
 } from "@hugeicons/core-free-icons";
-import * as Haptics from "expo-haptics";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 import { Button } from "@/src/components/ui/Button";
 
-// Props interface for the presenter component
 export interface MicControlViewProps {
   isRecording: boolean;
   isPaused: boolean;
@@ -37,110 +34,123 @@ const MicControlView: React.FC<MicControlViewProps> = ({
   const [, setRecorderOpen] = useAtom(recorderOpenAtom);
 
   const handleDiscard = useCallback(() => {
-    // Heavy haptic for destructive action (discard recording)
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     setRecorderOpen(false);
     onDiscard?.();
   }, [setRecorderOpen, onDiscard]);
 
+  const confirmDiscard = useCallback(() => {
+    Alert.alert(
+      "Discard recording?",
+      "This recording will be permanently deleted.",
+      [
+        { text: "Keep Recording", style: "cancel" },
+        {
+          text: "Discard",
+          style: "destructive",
+          onPress: handleDiscard,
+        },
+      ]
+    );
+  }, [handleDiscard]);
+
   return (
     <View className="w-full items-center justify-center">
-      {/* Dynamic button panel */}
-      <HStack className="justify-center items-center gap-10 h-24 w-full">
-        {/* Cancel Button Slot */}
+      <HStack className="justify-center items-center gap-8 h-24 w-full">
+        {/* Left Action: Delete / Cancel Slot */}
         {!isRecording ? (
-          <Button
-            label=""
-            variant="secondary"
-            size="lg"
-            width={56}
-            fullWidth={false}
-            leftIcon={
-              <Feather
-                name={isPaused ? "trash-2" : "x"}
-                size={22}
-                color={SEMANTIC_COLORS.text.secondary}
-              />
-            }
-            onPress={() => {
-              Haptics.selectionAsync();
-              if (isPaused) {
-                Alert.alert(
-                  "Discard recording?",
-                  "This will permanently delete your current audio and cannot be undone.",
-                  [
-                    { text: "Keep Recording", style: "cancel" },
-                    {
-                      text: "Discard",
-                      style: "destructive",
-                      onPress: () => {
-                        handleDiscard();
-                      },
-                    },
-                  ]
-                );
-              } else {
-                handleDiscard();
+          <Animated.View
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(150)}
+          >
+            <Button
+              label=""
+              variant="secondary"
+              size="md"
+              width={52}
+              fullWidth={false}
+              accessibilityLabel={isPaused ? "Discard recording" : "Cancel recording"}
+              leftIcon={
+                isPaused ? (
+                  <Feather name="trash-2" size={20} color="#DC2626" />
+                ) : (
+                  <Feather
+                    name="x"
+                    size={20}
+                    color={String(SEMANTIC_COLORS.text.secondary)}
+                  />
+                )
               }
-            }}
-          />
+              // ponytail: Button handles press-in haptic; no haptic on pressout/release
+              onPress={() => {
+                if (isPaused) {
+                  confirmDiscard();
+                } else {
+                  handleDiscard();
+                }
+              }}
+            />
+          </Animated.View>
         ) : (
           /* Empty spacer to keep Center button centered */
-          <View className="w-14 h-14 bg-transparent" />
+          <View className="w-[52px] h-12 bg-transparent" />
         )}
 
-        {/* Center Mic/Pause Toggle */}
+        {/* Center Primary Action: Pause while recording, Resume while paused */}
         <Button
           label=""
           variant="primary"
           size="xl"
-          width={80}
+          width={76}
           fullWidth={false}
           leftIcon={
             isRecording ? (
               <HugeiconsIcon
                 icon={PauseIcon}
-                size={36}
-                color={SEMANTIC_COLORS.surface.primary}
+                size={34}
+                color={String(SEMANTIC_COLORS.surface.primary)}
               />
             ) : (
+              // ponytail: plain mic for resume without overloaded AI sparkles
               <HugeiconsIcon
-                icon={AiMicIcon}
-                size={36}
-                color={SEMANTIC_COLORS.surface.primary}
+                icon={Mic01Icon}
+                size={34}
+                color={String(SEMANTIC_COLORS.surface.primary)}
               />
             )
           }
-          onPress={() => {
-            Haptics.selectionAsync();
-            onToggleRecord();
-          }}
-          accessibilityLabel={isRecording ? "Pause recording" : "Start recording"}
+          // ponytail: Button handles press-in haptic; no haptic on pressout/release
+          onPress={onToggleRecord}
+          accessibilityLabel={isRecording ? "Pause recording" : "Resume recording"}
         />
 
-        {/* Check/Done Button Slot */}
+        {/* Right Action: Done Button Slot */}
         {isPaused ? (
-          <Button
-            label=""
-            variant="primary"
-            size="lg"
-            width={56}
-            fullWidth={false}
-            leftIcon={
-              <HugeiconsIcon
-                icon={Tick01Icon}
-                size={22}
-                color={SEMANTIC_COLORS.surface.primary}
-              />
-            }
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              onStop();
-            }}
-          />
+          <Animated.View
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(150)}
+          >
+            {/* ponytail: medium Done button with text and icon, secondary to Resume */}
+            <Button
+              label="Done"
+              variant="primary"
+              size="md"
+              width={88}
+              fullWidth={false}
+              accessibilityLabel="Finish recording"
+              leftIcon={
+                <HugeiconsIcon
+                  icon={Tick01Icon}
+                  size={18}
+                  color={String(SEMANTIC_COLORS.surface.primary)}
+                />
+              }
+              // ponytail: Button handles press-in haptic; no haptic on pressout/release
+              onPress={onStop}
+            />
+          </Animated.View>
         ) : (
           /* Empty spacer to keep Center button centered */
-          <View className="w-14 h-14 bg-transparent" />
+          <View className="w-[88px] h-12 bg-transparent" />
         )}
       </HStack>
     </View>

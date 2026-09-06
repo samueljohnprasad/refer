@@ -4,12 +4,22 @@ import { Text } from "@/src/components/ui/Text";
 import { Enums } from "@/database.types";
 import { MoodIcon, type MoodKey } from "@/src/components/MoodIcon";
 
+import { format } from "date-fns";
+
 interface MoodSelectorProps {
   selectedMood: Enums<"mood">;
   onSelectMood: (mood: Enums<"mood">) => void;
   viewOnly?: boolean;
   title?: string;
+  date?: string | null;
 }
+
+const formatEntryDate = (dateStr?: string | null): string | null => {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return null;
+  return format(d, "MMM d · h:mm a");
+};
 
 const MOODS: { id: Enums<'mood'>; label: string }[] = [
   { id: "terrible", label: "Terrible" },
@@ -29,24 +39,35 @@ export const MoodSelector = React.memo<MoodSelectorProps>(
     onSelectMood,
     viewOnly = false,
     title,
+    date,
   }: MoodSelectorProps) => {
       if (viewOnly) {
         const currentMood = MOODS.find((m) => m.id === selectedMood) || MOODS[4];
+        const formattedDate = formatEntryDate(date);
         return (
-          // ponytail: vector MoodIcon in journal view-only header
+          // ponytail: quiet mood tile & editorial title with subtle date
           <View 
-            className="mb-6"
+            className="mb-4"
             accessible={true}
-            accessibilityLabel={`Journal entry titled ${title || "Daily Reflections"}. Mood is ${currentMood.label}.`}
+            accessibilityLabel={`Journal entry: ${title || "Daily Reflections"}. Mood: ${currentMood.label}.`}
           >
-            <View className="flex-row items-center gap-3.5">
-              <View className="h-13 w-13 items-center justify-center rounded-[18px] bg-white border border-sage-200">
-                <MoodIcon mood={currentMood.id as MoodKey} size={36} />
+            <View className="flex-row items-center gap-3">
+              {/* Mood tile: reduced ~15%, soft cream/white surface, lower border contrast */}
+              <View 
+                className="h-11 w-11 items-center justify-center rounded-xl bg-white/70 border border-ink/8"
+                accessibilityLabel={`Mood: ${currentMood.label}`}
+              >
+                <MoodIcon mood={currentMood.id as MoodKey} size={28} />
               </View>
-              <View className="flex-1">
-                <Text variant="h1" className="text-[26px] leading-[30px]">
+              <View className="flex-1 justify-center">
+                <Text color="ink" className="happy-font-heading-semibold text-[24px] leading-[29px]">
                   {title || "Daily Reflections"}
                 </Text>
+                {formattedDate ? (
+                  <Text color="soft" className="happy-font-body-medium text-[13px] leading-4 mt-0.5">
+                    {formattedDate}
+                  </Text>
+                ) : null}
               </View>
             </View>
           </View>

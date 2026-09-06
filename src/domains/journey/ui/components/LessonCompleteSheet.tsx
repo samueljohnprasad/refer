@@ -1,115 +1,44 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import { View } from "react-native";
-import { Text } from "@/src/components/ui/Text";
-import {
-  BottomSheetModal,
-  BottomSheetView,
-  BottomSheetBackdrop,
-  type BottomSheetBackdropProps,
-} from "@gorhom/bottom-sheet";
-import { PressableScale } from "@/src/components/ui/PressableScale";
-import Animated, { FadeInUp, FadeIn, useReducedMotion } from "react-native-reanimated";
-import {
-  useLessonCompleteSheetViewModel,
-  type LessonCompleteSheetProps,
-} from "../hooks/useLessonCompleteSheetViewModel";
+import { BottomSheet, Group, Host, Image, RNHostView, Text, VStack } from "@expo/ui/swift-ui";
+import { font, foregroundStyle, multilineTextAlignment, padding, presentationBackground, presentationDetents, presentationDragIndicator } from "@expo/ui/swift-ui/modifiers";
+import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
+import type { LessonRewardContent } from "@/src/types/journeyV5";
+import { SAGE, NEUTRAL } from "@/src/theme/palette";
 
-function ModalBackdrop(props: BottomSheetBackdropProps): React.JSX.Element {
+export interface LessonCompleteSheetProps {
+  isVisible: boolean;
+  content: LessonRewardContent;
+  onContinue: () => void;
+}
+
+function LessonCompleteContent({ content, onContinue }: Pick<LessonCompleteSheetProps, "content" | "onContinue">): React.JSX.Element {
   return (
-    <BottomSheetBackdrop
-      {...props}
-      disappearsOnIndex={-1}
-      appearsOnIndex={0}
-      pressBehavior="none"
-      opacity={0.5}
-    />
+    <VStack alignment="center" spacing={20} modifiers={[padding({ horizontal: 24, vertical: 22 })]}>
+      <Image systemName="checkmark.seal.fill" size={52} color={SAGE[500]} />
+      <Text modifiers={[font({ size: 28, weight: "bold" }), multilineTextAlignment("center")]}>{content.title}</Text>
+      <VStack alignment="center" spacing={8} modifiers={[padding({ horizontal: 18, vertical: 16 })]}>
+        <Text modifiers={[font({ size: 17, weight: "semibold" }), foregroundStyle(NEUTRAL.ink), multilineTextAlignment("center")]}>{content.takeaway}</Text>
+      </VStack>
+      <RNHostView matchContents>
+        <View style={{ width: 280 }}>
+          <CourseExercisePrimaryButton label={content.primaryActionLabel} onPress={onContinue} />
+        </View>
+      </RNHostView>
+    </VStack>
   );
 }
 
-export const LessonCompleteSheetView = React.memo(
-  function LessonCompleteSheetView({
-    takeaway,
-    handleContinue,
-    bottomSheetRef,
-  }: LessonCompleteSheetProps &
-    ReturnType<typeof useLessonCompleteSheetViewModel> & {
-      bottomSheetRef: React.ForwardedRef<BottomSheetModal>;
-    }): React.JSX.Element {
-    const reduceMotion = useReducedMotion();
-    
-    const titleEntering = reduceMotion ? FadeIn.delay(100).duration(300) : FadeInUp.delay(100).duration(300).springify();
-    const boxEntering = reduceMotion ? FadeIn.delay(250).duration(300) : FadeInUp.delay(250).duration(300);
-    const btnEntering = reduceMotion ? FadeIn.delay(400).duration(300) : FadeInUp.delay(400).duration(300).springify();
+export default function LessonCompleteSheet({ isVisible, content, onContinue }: LessonCompleteSheetProps): React.JSX.Element {
+  return (
+    <Host>
+      <BottomSheet isPresented={isVisible} onIsPresentedChange={(presented) => { if (!presented) onContinue(); }}>
+        <Group modifiers={[presentationDetents([{ fraction: 0.5 }]), presentationDragIndicator("visible"), presentationBackground(NEUTRAL.white)]}>
+          <LessonCompleteContent content={content} onContinue={onContinue} />
+        </Group>
+      </BottomSheet>
+    </Host>
+  );
+}
 
-    return (
-      <BottomSheetModal
-        ref={bottomSheetRef}
-        index={0}
-        snapPoints={["50%"]}
-        enablePanDownToClose={false}
-        backdropComponent={ModalBackdrop}
-        backgroundStyle={{
-          borderRadius: 28,
-          backgroundColor: "white",
-        }}
-        style={{ marginHorizontal: 8 }}
-      >
-        <BottomSheetView className="flex-1 px-6 pt-2 pb-8 justify-between"  accessibilityViewIsModal={true}>
-          <View>
-            <Animated.View
-              entering={titleEntering}
-              className="items-center mb-6"
-            >
-              <Text className="text-3xl font-extrabold text-ink text-center mb-2" accessibilityRole="header">
-                Lesson Complete!
-              </Text>
-              <Text className="text-6xl mb-4" importantForAccessibility="no">🌟</Text>
-            </Animated.View>
-
-            <Animated.View
-              entering={boxEntering}
-              className="bg-brand-soft p-4 rounded-2xl"
-            >
-              <Text className="text-base text-ink font-semibold text-center">
-                {takeaway}
-              </Text>
-            </Animated.View>
-          </View>
-
-          <Animated.View entering={btnEntering}>
-            <PressableScale
-              onPress={handleContinue}
-              scale={0.95}
-              hapticStyle="heavy"
-              className="w-full"
-              accessibilityRole="button"
-              accessibilityLabel="Continue and go back to path"
-              style={{
-                backgroundColor: "#58CC02",
-                paddingVertical: 16,
-                borderRadius: 16,
-                borderBottomWidth: 4,
-                borderBottomColor: "#45A802",
-                alignItems: "center",
-              }}
-            >
-              <Text className="text-lg font-extrabold text-white">CONTINUE</Text>
-            </PressableScale>
-          </Animated.View>
-        </BottomSheetView>
-      </BottomSheetModal>
-    );
-  },
-);
-
-const LessonCompleteSheet = forwardRef<BottomSheetModal, LessonCompleteSheetProps>(
-  (props, ref) => {
-    const viewModel = useLessonCompleteSheetViewModel(props, ref);
-    return <LessonCompleteSheetView {...props} {...viewModel} bottomSheetRef={ref} />;
-  },
-);
-
-LessonCompleteSheet.displayName = "LessonCompleteSheet";
-
-export default LessonCompleteSheet;
-export type { LessonCompleteSheetProps };
+export type { LessonRewardContent };

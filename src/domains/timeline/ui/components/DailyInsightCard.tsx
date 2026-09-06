@@ -24,7 +24,7 @@ export const DailyInsightCard = ({ insight, onPress }: DailyInsightCardProps) =>
         <Text 
           className="text-[15px] text-[#1A1A1A] leading-[22px]" 
           style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-          numberOfLines={2}
+          numberOfLines={3}
         >
           {firstSentence}
         </Text>

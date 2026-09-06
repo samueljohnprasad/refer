@@ -276,6 +276,7 @@ export type Database = {
           id: string
           is_published: boolean
           order_index: number
+          reward_content: Json | null
           session_duration_minutes: number[] | null
           sessions_per_week: number | null
           target_audience: string | null
@@ -292,6 +293,7 @@ export type Database = {
           id?: string
           is_published?: boolean
           order_index?: number
+          reward_content?: Json | null
           session_duration_minutes?: number[] | null
           sessions_per_week?: number | null
           target_audience?: string | null
@@ -308,6 +310,7 @@ export type Database = {
           id?: string
           is_published?: boolean
           order_index?: number
+          reward_content?: Json | null
           session_duration_minutes?: number[] | null
           sessions_per_week?: number | null
           target_audience?: string | null
@@ -933,6 +936,7 @@ export type Database = {
           pass_threshold: number | null
           prerequisites: string[]
           review_concepts: string[]
+          reward_content: Json | null
           title: string
           type: string
           unit_id: string
@@ -948,6 +952,7 @@ export type Database = {
           pass_threshold?: number | null
           prerequisites?: string[]
           review_concepts?: string[]
+          reward_content?: Json | null
           title: string
           type: string
           unit_id: string
@@ -963,6 +968,7 @@ export type Database = {
           pass_threshold?: number | null
           prerequisites?: string[]
           review_concepts?: string[]
+          reward_content?: Json | null
           title?: string
           type?: string
           unit_id?: string
@@ -1335,6 +1341,7 @@ export type Database = {
           icon_key: string
           id: string
           order_index: number
+          reward_content: Json | null
           section_id: string
           title: string
         }
@@ -1342,6 +1349,7 @@ export type Database = {
           icon_key?: string
           id?: string
           order_index?: number
+          reward_content?: Json | null
           section_id: string
           title: string
         }
@@ -1349,6 +1357,7 @@ export type Database = {
           icon_key?: string
           id?: string
           order_index?: number
+          reward_content?: Json | null
           section_id?: string
           title?: string
         }
@@ -1486,6 +1495,7 @@ export type Database = {
         Row: {
           completed_at: string | null
           course_id: string
+          finale_seen_at: string | null
           started_at: string | null
           status: string
           user_id: string
@@ -1493,6 +1503,7 @@ export type Database = {
         Insert: {
           completed_at?: string | null
           course_id: string
+          finale_seen_at?: string | null
           started_at?: string | null
           status?: string
           user_id: string
@@ -1500,6 +1511,7 @@ export type Database = {
         Update: {
           completed_at?: string | null
           course_id?: string
+          finale_seen_at?: string | null
           started_at?: string | null
           status?: string
           user_id?: string

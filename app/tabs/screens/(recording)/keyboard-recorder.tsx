@@ -58,6 +58,7 @@ export default function KeyboardRecorderScreen() {
             exiting={FadeOut.duration(200).easing(Easing.out(Easing.ease))}
             style={{ flex: 1 }}
           >
+            <Stack.Screen options={{ headerShown: false }} />
             <EmotionAnalysisLoadingScreen
               journalText={journalText}
               onAnalysisCompleted={({ insights }) => {

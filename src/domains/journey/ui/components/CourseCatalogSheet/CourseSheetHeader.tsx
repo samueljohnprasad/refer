@@ -38,11 +38,14 @@ export function CourseSheetHeader({
 
       <Pressable
         onPress={onClose}
-        className="h-11 w-11 items-center justify-center rounded-full bg-slate-100/80"
+        className="h-11 w-11 items-center justify-center"
+        hitSlop={8}
         accessibilityRole="button"
         accessibilityLabel="Close course catalog"
       >
-        <HugeiconsIcon icon={Cancel01Icon} size={20} color={SEMANTIC_COLORS.brand.pressed} />
+        <View className="h-8 w-8 items-center justify-center rounded-full bg-black/[0.04] active:bg-black/[0.08]">
+          <HugeiconsIcon icon={Cancel01Icon} size={16} color={SEMANTIC_COLORS.text.secondary} />
+        </View>
       </Pressable>
     </View>
   );

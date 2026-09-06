@@ -3,6 +3,12 @@
 **Feature:** `specs/014-course-rewards-mvp`
 **Branch:** `014-course-rewards-mvp`
 
+## Implemented contract
+
+Reward copy and reward-node presence are backend-authored. The client does not import a reward config or synthesize copy. `get-course-tree` returns `rewardContent` on courses, units, and nodes; `complete-node` returns one typed `celebration` object (or `null`) and performs idempotent persistence. `user_course_progress.finale_seen_at` is the durable, authenticated finale acknowledgement. The older bundled-config and AsyncStorage examples below are historical and are not runtime contracts.
+
+An authored chest is part of the canonical progression sequence: completing the preceding node makes the chest current, claiming it unlocks the following node, and the path label comes from `rewardContent.claimActionLabel`. Trophies remain automatic and non-blocking.
+
 ---
 
 ## Contract 1: Authored Rewards Config

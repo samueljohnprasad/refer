@@ -5,6 +5,7 @@ const TYPE_LABEL: Record<NodeType, string> = {
   [NodeType.CHECKPOINT]: "Checkpoint",
   [NodeType.CHEST]: "Reward chest",
   [NodeType.MILESTONE]: "Milestone",
+  [NodeType.TROPHY]: "Trophy",
 };
 
 const STATE_LABEL: Record<NodeState, string> = {

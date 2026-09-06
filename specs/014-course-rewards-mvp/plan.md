@@ -4,11 +4,13 @@
 **Branch:** `014-course-rewards-mvp`
 **Status:** Ready for tasks generation
 
+Implementation note (2026-09-06): backend-authored reward data supersedes the original bundled-config proposal. Runtime uses `reward_content` from `get-course-tree`, typed `celebration` responses from the completion Edge Function, and `finale_seen_at` in course progress.
+
 ---
 
 ## Summary
 
-Happy will add a coherent 4-level reward hierarchy on top of existing journey-map plumbing. The existing `completeNode` edge function already returns `unitCompleted` and `courseCompleted` flags — they are just unused client-side. Chest infrastructure (`ChestNode`, `ChestRewardModal`, claim flow) already exists. Unit complete and lesson completion modal shells already exist. The MVP wires all of it together with authored config content and a celebration orchestrator.
+Happy will add a coherent 4-level reward hierarchy on top of existing journey-map plumbing. The existing `completeNode` edge function now returns typed celebration content and persists reward state. Chest infrastructure, unit complete, and lesson completion modal shells are wired to backend-authored content.
 
 **Technical approach:** Config-driven authored content in a bundled `rewardsConfig.ts` (OTA-updatable) + a minimal celebration orchestrator hook that reads `completeNode` response flags and dispatches the correct celebration level to Redux. No new state library, no new DB tables, no currency, no generalized reward platform.
 

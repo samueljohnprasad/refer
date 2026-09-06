@@ -25,7 +25,8 @@ Deno.serve(async (req: Request) => {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-  if (userError || !user) return err("Failed to resolve authenticated user", 401);
+  if (userError || !user)
+    return err("Failed to resolve authenticated user", 401);
 
   // ── 1. Parse request ──────────────────────────────────────────────────────
   let courseId: string;
@@ -41,15 +42,14 @@ Deno.serve(async (req: Request) => {
   const [courseProgressResult, sectionsResult] = await Promise.all([
     supabase
       .from("user_course_progress")
-      .select("user_id, course_id, status, started_at, completed_at")
+      .select(
+        "user_id, course_id, status, started_at, completed_at, finale_seen_at",
+      )
       .eq("user_id", user.id)
       .eq("course_id", courseId)
       .maybeSingle(),
 
-    supabase
-      .from("sections")
-      .select("id")
-      .eq("course_id", courseId),
+    supabase.from("sections").select("id").eq("course_id", courseId),
   ]);
 
   if (courseProgressResult.error)
@@ -58,7 +58,10 @@ Deno.serve(async (req: Request) => {
       500,
     );
   if (sectionsResult.error)
-    return err(`Failed to fetch sections: ${sectionsResult.error.message}`, 500);
+    return err(
+      `Failed to fetch sections: ${sectionsResult.error.message}`,
+      500,
+    );
 
   // ── 3. Resolve all node ids for the course via sections → units → nodes ──
   const sectionIds = (sectionsResult.data ?? []).map(
@@ -112,8 +115,9 @@ Deno.serve(async (req: Request) => {
       );
 
     const courseNodeIds = new Set(nodeIds);
-    nodeProgressRows = ((nodeProgressData ?? []) as Array<Record<string, unknown>>)
-      .filter((row) => courseNodeIds.has(row["node_id"] as string));
+    nodeProgressRows = (
+      (nodeProgressData ?? []) as Array<Record<string, unknown>>
+    ).filter((row) => courseNodeIds.has(row["node_id"] as string));
   }
 
   // ── 4. Build nodeProgressMap as keyed object ─────────────────────────────
@@ -143,6 +147,7 @@ Deno.serve(async (req: Request) => {
         status: courseProgressRow["status"],
         startedAt: courseProgressRow["started_at"],
         completedAt: courseProgressRow["completed_at"],
+        finaleSeenAt: courseProgressRow["finale_seen_at"],
       }
     : null;
 

@@ -8,18 +8,18 @@ import {
   withSequence,
   useReducedMotion,
 } from "react-native-reanimated";
-import type { UnitData } from "@/src/types/journey";
+import type { UnitRewardContent } from "@/src/types/journeyV5";
 import { triggerIfEnabledSync } from "@/lib/haptics/hapticUtils";
 import { HAPTIC_INTENSITIES } from "@/lib/haptics/hapticConfig";
 
 export interface UnitCompleteModalProps {
-  unit: UnitData | null;
-  capabilityStatement: string;
+  unitTitle: string;
+  content: UnitRewardContent;
   onContinue: () => void;
 }
 
 export function useUnitCompleteModalViewModel(
-  { unit, capabilityStatement, onContinue }: UnitCompleteModalProps,
+  { unitTitle, content, onContinue }: UnitCompleteModalProps,
   ref: React.ForwardedRef<BottomSheetModal>,
 ) {
   const snapPoints = useMemo(() => ["65%"], []);
@@ -29,7 +29,8 @@ export function useUnitCompleteModalViewModel(
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (unit) {
+    if (content) {
+      if (ref && "current" in ref) ref.current?.present();
       const timer = setTimeout(() => setShowConfetti(!reduceMotion), 200);
       if (reduceMotion) {
         trophyScale.value = 1;
@@ -61,11 +62,8 @@ export function useUnitCompleteModalViewModel(
         clearTimeout(timer);
         clearTimeout(burstTimer);
       };
-    } else {
-      setShowConfetti(false);
-      trophyScale.value = 0;
     }
-  }, [unit, trophyScale, reduceMotion]);
+  }, [content, ref, trophyScale, reduceMotion]);
 
   const trophyStyle = useAnimatedStyle(() => ({
     transform: [{ scale: trophyScale.value }],
@@ -89,7 +87,7 @@ export function useUnitCompleteModalViewModel(
     trophyStyle,
     handleConfettiComplete,
     handleContinue,
-    unit,
-    capabilityStatement,
+    unitTitle,
+    content,
   };
 }

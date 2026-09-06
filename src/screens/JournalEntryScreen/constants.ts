@@ -37,3 +37,32 @@ export const DEFAULT_NEW_TAG = {
   name: "New Tag",
   emoji: "🆕",
 } as const;
+
+// ponytail: warm cream memory gradients, calm and desaturated
+export const MOOD_GRADIENTS: Record<string, [string, string]> = {
+  terrible: ["#FAF0F0", "#F5E6E6"],
+  bad: ["#FAF2EB", "#F6E9DE"],
+  fine: ["#FAF7EE", "#F5F0E1"],
+  good: ["#F1F7F3", "#E8F3EB"],
+  great: ["#F1F5FA", "#E8EFF7"],
+};
+
+export const getRelativeDayTitle = (dateStr?: string | null): string => {
+  if (!dateStr) return "Today";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "Today";
+  const now = new Date();
+  const isSameDay = d.toDateString() === now.toDateString();
+  if (isSameDay) return "Today";
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
+  return d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+};
+
+export const getFormattedTime = (dateStr?: string | null): string => {
+  if (!dateStr) return "Reflection";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "Reflection";
+  return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+};

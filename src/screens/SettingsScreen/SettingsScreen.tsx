@@ -243,7 +243,7 @@ export default function SettingsScreen() {
             )}
             <SettingsItem
               icon={Delete02Icon}
-              title="Erase Personal Data"
+              title="Delete all data"
               subtitle="Permanently delete all data"
               onPress={() => {
                 Haptics.selectionAsync();

@@ -1,166 +1,42 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import { View } from "react-native";
-import { Text } from "@/src/components/ui/Text";
-import {
-  BottomSheetModal,
-  BottomSheetView,
-  BottomSheetBackdrop,
-  type BottomSheetBackdropProps,
-} from "@gorhom/bottom-sheet";
-import Animated, { FadeInUp, FadeIn, useReducedMotion } from "react-native-reanimated";
-import { PressableScale } from "@/src/components/ui/PressableScale";
-import { ConfettiExplosion } from "@/src/components/animations/ConfettiExplosion";
-import {
-  useUnitCompleteModalViewModel,
-  type UnitCompleteModalProps,
-} from "../hooks/useUnitCompleteModalViewModel";
+import { BottomSheet, Group, Host, Image, RNHostView, Text, VStack } from "@expo/ui/swift-ui";
+import { font, foregroundStyle, multilineTextAlignment, padding, presentationBackground, presentationDetents, presentationDragIndicator } from "@expo/ui/swift-ui/modifiers";
+import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
+import { SAGE, NEUTRAL } from "@/src/theme/palette";
+import type { UnitCompleteModalProps } from "../hooks/useUnitCompleteModalViewModel";
 
-function ModalBackdrop(props: BottomSheetBackdropProps): React.JSX.Element {
+function UnitCompleteContent({ unitTitle, content, onContinue }: UnitCompleteModalProps): React.JSX.Element {
   return (
-    <BottomSheetBackdrop
-      {...props}
-      disappearsOnIndex={-1}
-      appearsOnIndex={0}
-      pressBehavior="none"
-      opacity={0.5}
-    />
+    <VStack alignment="center" spacing={18} modifiers={[padding({ horizontal: 24, vertical: 22 })]}>
+      <Image systemName="rosette" size={52} color={SAGE[500]} />
+      <VStack alignment="center" spacing={4}>
+        <Text modifiers={[font({ size: 28, weight: "bold" }), multilineTextAlignment("center")]}>{content.title}</Text>
+        <Text modifiers={[font({ size: 18, weight: "semibold" }), foregroundStyle(SAGE[700]), multilineTextAlignment("center")]}>{unitTitle}</Text>
+      </VStack>
+      <VStack alignment="center" spacing={8} modifiers={[padding({ horizontal: 18, vertical: 16 })]}>
+        <Text modifiers={[font({ size: 16, weight: "semibold" }), foregroundStyle(NEUTRAL.ink), multilineTextAlignment("center")]}>{content.capabilityLabel}</Text>
+        <Text modifiers={[font({ size: 18, weight: "bold" }), foregroundStyle(SAGE[700]), multilineTextAlignment("center")]}>{content.capabilityStatement}</Text>
+      </VStack>
+      <RNHostView matchContents>
+        <View style={{ width: 280 }}>
+          <CourseExercisePrimaryButton label={content.primaryActionLabel} onPress={onContinue} />
+        </View>
+      </RNHostView>
+    </VStack>
   );
 }
 
-export interface UnitCompleteModalViewProps
-  extends ReturnType<typeof useUnitCompleteModalViewModel> {
-  bottomSheetRef: React.ForwardedRef<BottomSheetModal>;
-}
-
-/**
- * Presentational View component for UnitCompleteModal.
- * Strictly contains JSX code without internal hooks.
- */
-export const UnitCompleteModalView = React.memo(
-  function UnitCompleteModalView({
-    snapPoints,
-    showConfetti,
-    trophyStyle,
-    handleConfettiComplete,
-    handleContinue,
-    unit,
-    capabilityStatement,
-    bottomSheetRef,
-  }: UnitCompleteModalViewProps): React.JSX.Element {
-    const reduceMotion = useReducedMotion();
-    
-    const titleEntering = reduceMotion ? FadeIn.delay(200).duration(300) : FadeInUp.delay(200).duration(300).springify();
-    const boxEntering = reduceMotion ? FadeIn.delay(350).duration(300) : FadeInUp.delay(350).duration(300);
-    const btnEntering = reduceMotion ? FadeIn.delay(700).duration(300) : FadeInUp.delay(700).duration(300).springify();
-
-    return (
-      <BottomSheetModal
-        ref={bottomSheetRef}
-        index={0}
-        snapPoints={snapPoints}
-        enablePanDownToClose={false}
-        backdropComponent={ModalBackdrop}
-        backgroundStyle={{
-          borderRadius: 28,
-          backgroundColor: "white",
-        }}
-        style={{ marginHorizontal: 8 }}
-      >
-        <BottomSheetView className="flex-1 px-6 pt-2 pb-8 justify-between"  accessibilityViewIsModal={true}>
-          {unit && (
-            <View>
-              <ConfettiExplosion
-                isVisible={showConfetti}
-                count={30}
-                duration={1200}
-                onAnimationComplete={handleConfettiComplete}
-              />
-
-              <View className="items-center mb-4 mt-4">
-                <Animated.View
-                  style={[
-                    trophyStyle,
-                    {
-                      width: 88,
-                      height: 88,
-                      borderRadius: 22,
-                      backgroundColor: "#FEF3C7",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderWidth: 3,
-                      borderColor: "#F59E0B",
-                    },
-                  ]}
-                  importantForAccessibility="no"
-                >
-                  <Text className="text-5xl">🏆</Text>
-                </Animated.View>
-              </View>
-
-              <Animated.View
-                entering={titleEntering}
-                className="items-center mb-6"
-              >
-                <Text className="text-2xl font-extrabold text-ink text-center" accessibilityRole="header">
-                  Unit Complete!
-                </Text>
-              </Animated.View>
-
-              <Animated.View
-                entering={boxEntering}
-                className="bg-brand-soft p-5 rounded-2xl mb-8"
-              >
-                <Text className="text-base text-ink font-bold text-center mb-1">
-                  You now understand:
-                </Text>
-                <Text className="text-lg text-brand-strong font-extrabold text-center">
-                  {capabilityStatement}
-                </Text>
-              </Animated.View>
-            </View>
-          )}
-
-          <Animated.View
-            entering={btnEntering}
-          >
-            <PressableScale
-              onPress={handleContinue}
-              scale={0.95}
-              hapticStyle="heavy"
-              className="w-full"
-              accessibilityRole="button"
-              accessibilityLabel="Continue"
-              style={{
-                backgroundColor: "#58CC02",
-                paddingVertical: 16,
-                borderRadius: 16,
-                borderBottomWidth: 4,
-                borderBottomColor: "#45A802",
-                alignItems: "center",
-              }}
-            >
-              <Text className="text-lg font-extrabold text-white">
-                CONTINUE
-              </Text>
-            </PressableScale>
-          </Animated.View>
-        </BottomSheetView>
-      </BottomSheetModal>
-    );
-  },
-);
-
-/**
- * Container component for UnitCompleteModal.
- */
-const UnitCompleteModal = forwardRef<BottomSheetModal, UnitCompleteModalProps>(
-  (props, ref) => {
-    const viewModel = useUnitCompleteModalViewModel(props, ref);
-    return <UnitCompleteModalView {...viewModel} bottomSheetRef={ref} />;
-  },
-);
-
-UnitCompleteModal.displayName = "UnitCompleteModal";
-
-export default UnitCompleteModal;
 export type { UnitCompleteModalProps };
+
+export default function UnitCompleteModal({ unitTitle, content, onContinue }: UnitCompleteModalProps): React.JSX.Element {
+  return (
+    <Host>
+      <BottomSheet isPresented onIsPresentedChange={(presented) => { if (!presented) onContinue(); }}>
+        <Group modifiers={[presentationDetents([{ fraction: 0.55 }]), presentationDragIndicator("visible"), presentationBackground(NEUTRAL.white)]}>
+          <UnitCompleteContent unitTitle={unitTitle} content={content} onContinue={onContinue} />
+        </Group>
+      </BottomSheet>
+    </Host>
+  );
+}

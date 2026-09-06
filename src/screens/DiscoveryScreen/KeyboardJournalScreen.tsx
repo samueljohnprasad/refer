@@ -3,49 +3,52 @@ import React, {
   useCallback,
   useEffect,
   useRef,
+  useMemo,
 } from "react";
 import {
   View,
   Text,
   TextInput,
   Platform,
-  Modal,
   Pressable,
   ScrollView,
   KeyboardAvoidingView,
   Keyboard,
-  Switch,
+  useWindowDimensions,
 } from "react-native";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
-import { format } from "date-fns";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
-import { Stack } from "expo-router";
-
-import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
-import { selectedDateDiscoveryAtom } from "./helpers";
 import { useAtom } from "jotai";
-import WhisperUI from "@/src/components/ui/swiftui";
 import * as Haptics from "expo-haptics";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Host, RNHostView, DatePicker as SwiftUIDateTimePicker, Button as SUIButton, Toggle as SUIToggle, Menu as SUIMenu, Text as SUIText } from "@expo/ui/swift-ui";
-import { datePickerStyle, font, foregroundStyle, labelStyle, buttonStyle, controlSize, tint, toggleStyle, labelsHidden } from "@expo/ui/swift-ui/modifiers";
 import {
-  Cancel01Icon,
-  Tick01Icon,
-  SparklesIcon,
-  CircleArrowReload01Icon,
-} from "@hugeicons/core-free-icons";
-import { Button } from "@/src/components/ui/Button";
+  Host,
+  DatePicker as SwiftUIDateTimePicker,
+  Button as SUIButton,
+  Toggle as SUIToggle,
+  Menu as SUIMenu,
+  Text as SUIText,
+} from "@expo/ui/swift-ui";
+import {
+  datePickerStyle,
+  labelStyle,
+  buttonStyle,
+  controlSize,
+  tint,
+} from "@expo/ui/swift-ui/modifiers";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
+import { useAppDispatch } from "@/src/store/hooks";
+import { setVisible as setAssistantVisible } from "@/src/store/slices/happyAssistantSlice";
+import { selectedDateDiscoveryAtom } from "./helpers";
+import { useJournalDraft } from "./hooks/useJournalDraft";
+import {
+  useKeyboardJournalOperations,
+  MAX_JOURNAL_LENGTH,
+  CHAR_COUNT_THRESHOLD,
+  CHAR_COUNT_WARNING,
+} from "./hooks/useKeyboardJournalOperations";
+import { JournalPromptRow } from "./components/JournalPromptRow";
+import { KeyboardJournalBottomBar } from "./components/KeyboardJournalBottomBar";
 
 interface KeyboardJournalScreenProps {
   onSubmit?: (text: string, enableAIInsights?: boolean) => void;
@@ -53,248 +56,236 @@ interface KeyboardJournalScreenProps {
   onClose: () => void;
 }
 
+// ponytail: warm cream memory background matching JournalEntryScreen
+const WARM_CREAM_GRADIENT = ["#FAF7EE", "#F5F0E1"] as const;
+
 const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   onSubmit,
   onStop,
   onClose,
 }) => {
   const [journalText, setJournalText] = useState<string>("");
-  const [localSelectedDate, setLocalSelectedDate] = useAtom(
-    selectedDateDiscoveryAtom
-  );
-  const scrollViewRef = useRef<ScrollView>(null);
   const [realtimeResult, setRealtimeResult] = useState<string>("");
-  const [isRealtimeActive, setIsRealtimeActive] = useState(false);
+  const [isRealtimeActive, setIsRealtimeActive] = useState<boolean>(false);
   const [enableAIInsights, setEnableAIInsights] = useState<boolean>(true);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
+
+  const [localSelectedDate, setLocalSelectedDate] = useAtom(selectedDateDiscoveryAtom);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const textInputRef = useRef<TextInput>(null);
 
   const { currentPrompt, shufflePrompt } = useJournalEntry();
-  const rotation = useSharedValue(0);
   const insets = useSafeAreaInsets();
+  const { height: windowHeight } = useWindowDimensions();
+  const dispatch = useAppDispatch();
 
-  const formattedDate = format(localSelectedDate, "MMMM d, yyyy");
+  const { initialDraft, isDraftLoaded, saveDraft, clearDraft } = useJournalDraft(currentPrompt);
 
-  const handleShufflePrompt = useCallback(() => {
-    rotation.value = withSpring(rotation.value + 360, { damping: 20, stiffness: 100, overshootClamping: true });
-    shufflePrompt();
-  }, [rotation, shufflePrompt]);
-
-  const rotateStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ rotate: `${rotation.value}deg` }],
-    };
+  const { handleClose, handleSubmit } = useKeyboardJournalOperations({
+    isRealtimeActive,
+    journalText,
+    realtimeResult,
+    enableAIInsights,
+    saveDraft,
+    clearDraft,
+    setJournalText,
+    onClose,
+    onSubmit,
+    onStop,
   });
 
-  const handleDateSelect = useCallback((date: Date) => {
-    setLocalSelectedDate(date);
-  }, []);
-
-  const handleTodayPress = useCallback(() => {
-    const today = new Date();
-    setLocalSelectedDate(today);
-  }, []);
-
+  // Restore saved draft when available
   useEffect(() => {
+    if (isDraftLoaded && initialDraft && !journalText) {
+      setJournalText(initialDraft);
+    }
+  }, [isDraftLoaded, initialDraft]);
+
+  // ponytail: auto-save draft while typing
+  useEffect(() => {
+    if (isDraftLoaded) {
+      void saveDraft(journalText);
+    }
+  }, [journalText, isDraftLoaded, saveDraft]);
+
+  // ponytail: hide floating panda assistant during writing
+  useEffect(() => {
+    dispatch(setAssistantVisible(false));
     return () => {
+      dispatch(setAssistantVisible(true));
       Keyboard.dismiss();
     };
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   }, []);
 
-  const handleSubmit = useCallback(() => {
-    Keyboard.dismiss();
-    if (journalText.trim().length > 0) {
-      const handler = onSubmit || onStop;
-      if (handler) {
-        handler(journalText.substring(0, 7000), enableAIInsights);
-      }
-    }
-  }, [journalText, enableAIInsights, onSubmit, onStop]);
+  const handleVoiceStop = useCallback(() => {
+    setJournalText((prev) => {
+      const trimmedPrev = prev.trim();
+      const trimmedResult = realtimeResult.trim();
+      if (!trimmedPrev) return trimmedResult;
+      if (!trimmedResult) return trimmedPrev;
+      return `${trimmedPrev}\n\n${trimmedResult}`;
+    });
+    setRealtimeResult("");
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100);
+  }, [realtimeResult]);
 
-  const isSubmitDisabled = journalText.trim().length === 0;
+  const combinedLength = (journalText + realtimeResult).length;
+  const hasText = combinedLength > 0;
+  const isSubmitDisabled = !hasText;
+  const showCharacterCount = combinedLength >= CHAR_COUNT_THRESHOLD;
+  const isNearLimit = combinedLength >= CHAR_COUNT_WARNING;
 
-  const MAX_LENGTH = 7000;
-  const MAX_PROGRESS_WIDTH = 30;
-  const progressWidth = Math.max(4, Math.min(MAX_PROGRESS_WIDTH, (journalText.length / MAX_LENGTH) * MAX_PROGRESS_WIDTH));
+  // ponytail: flexible canvas height filling available viewport gracefully
+  const canvasMinHeight = useMemo(
+    () => Math.max(260, Math.round(windowHeight * 0.45)),
+    [windowHeight]
+  );
 
   return (
-    <>
-      <View className="flex-1 bg-white" style={{ flex: 1, paddingTop: insets.top }}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-          className="flex-1"
-          style={{ flex: 1 }}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+    <LinearGradient
+      colors={WARM_CREAM_GRADIENT}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      className="flex-1"
+      style={{ flex: 1 }}
+    >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        className="flex-1"
+      >
+        {/* Apple SwiftUI Native Header - aligned glass controls */}
+        <View
+          className="flex-row justify-between items-center px-4 pb-2"
+          style={{ paddingTop: Math.max(insets.top + 4, 16) }}
         >
-          {/* Date Header - Centered and Clickable */}
-          <View className="flex-row justify-between items-center px-4 pb-2 pt-2">
-            <Host matchContents style={{ width: 44, height: 44 }}>
-              <SUIButton
-                label="Cancel"
-                systemImage="xmark"
-                onPress={() => {
-                  if (isRealtimeActive) return;
-                  Keyboard.dismiss();
-                  onClose();
-                }}
-                modifiers={[
-                  labelStyle("iconOnly"),
-                  buttonStyle("glass"),
-                  controlSize("large"),
-                  tint(SEMANTIC_COLORS.text.secondary),
-                ]}
-              />
-            </Host>
+          <Host matchContents style={{ width: 44, height: 44, justifyContent: "center", alignItems: "center" }}>
+            <SUIButton
+              label="Cancel"
+              systemImage="xmark"
+              onPress={handleClose}
+              modifiers={[
+                labelStyle("iconOnly"),
+                buttonStyle("glass"),
+                controlSize("large"),
+                tint(SEMANTIC_COLORS.text.primary),
+              ]}
+            />
+          </Host>
 
-            <Host matchContents style={{ height: 40, width: 150, justifyContent: "center", alignItems: "center" }}>
-              <SwiftUIDateTimePicker
-                selection={localSelectedDate}
-                onDateChange={(date: Date) => {
-                  Haptics.selectionAsync();
-                  handleDateSelect(date);
-                }}
-                displayedComponents={["date"]}
-                modifiers={[datePickerStyle("compact")]}
-              />
-            </Host>
+          <Host matchContents style={{ height: 40, width: 140, justifyContent: "center", alignItems: "center" }}>
+            <SwiftUIDateTimePicker
+              selection={localSelectedDate}
+              onDateChange={(date: Date) => {
+                Haptics.selectionAsync();
+                setLocalSelectedDate(date);
+              }}
+              displayedComponents={["date"]}
+              modifiers={[
+                datePickerStyle("compact"),
+                tint(SEMANTIC_COLORS.text.primary),
+              ]}
+            />
+          </Host>
 
-            <Host matchContents style={{ height: 44, justifyContent: "center" }}>
-              <SUIMenu
-                label="Options"
-                systemImage="line.3.horizontal.decrease"
-                modifiers={[
-                  labelStyle("iconOnly"),
-                  buttonStyle("glass"),
-                  controlSize("large"),
-                  tint(SEMANTIC_COLORS.text.secondary),
-                ]}
-              >
-                <SUIToggle
-                  isOn={enableAIInsights}
-                  onIsOnChange={(isOn: boolean) => {
-                    if (isRealtimeActive) return;
-                    setEnableAIInsights(isOn);
-                  }}
-                >
-                  <SUIText>AI Insights</SUIText>
-                  <SUIText>Generate AI analysis</SUIText>
-                </SUIToggle>
-              </SUIMenu>
-            </Host>
-          </View>
-
-          {/* Content */}
-          <ScrollView
-            ref={scrollViewRef}
-            className="flex-1 px-6"
-            style={{ flex: 1 }}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ flexGrow: 1, paddingBottom: 28, paddingTop: 24 }}
-          >
-            {/* Prompt - No Card, Just Text with Icon */}
-            <View className="flex-row justify-between items-start mb-6">
-              <Text className="flex-1 text-ink text-[24px] leading-7 pr-4 happy-font-heading-bold">
-                {currentPrompt}
-              </Text>
-              <Pressable
-                onPress={handleShufflePrompt}
-                accessibilityLabel="Shuffle writing prompt"
-                accessibilityRole="button"
-                className="p-2"
-                style={({ pressed }) => ({
-                  opacity: pressed ? 0.7 : 1,
-                })}
-              >
-                <Animated.View style={rotateStyle}>
-                  <HugeiconsIcon
-                    icon={CircleArrowReload01Icon}
-                    size={22}
-                    color={SEMANTIC_COLORS.brand.pressed}
-                  />
-                </Animated.View>
-              </Pressable>
-            </View>
-
-            <View
-              className="happy-brand-card flex-1 rounded-2xl p-5 relative"
-              style={{ minHeight: 200 }}
+          <Host matchContents style={{ width: 44, height: 44, justifyContent: "center", alignItems: "center" }}>
+            <SUIMenu
+              label="Options"
+              systemImage="ellipsis"
+              modifiers={[
+                labelStyle("iconOnly"),
+                buttonStyle("glass"),
+                controlSize("large"),
+                tint(SEMANTIC_COLORS.text.primary),
+              ]}
             >
-              <TextInput
-                focusable
-                maxLength={MAX_LENGTH}
-                value={journalText + realtimeResult}
-                onChangeText={setJournalText}
-                placeholder="Start by answering the prompt, or write anything on your mind."
-                placeholderTextColor={SEMANTIC_COLORS.text.tertiary}
-                multiline
-                textAlignVertical="top"
-                className="text-ink text-[17px] leading-7 happy-font-body pb-6"
-                style={{
-                  flex: 1,
-                  minHeight: 140,
+              <SUIToggle
+                isOn={enableAIInsights}
+                onIsOnChange={(isOn: boolean) => {
+                  if (isRealtimeActive) return;
+                  setEnableAIInsights(isOn);
                 }}
-                autoFocus
-              />
-              <View className="absolute bottom-4 right-4 flex-row items-center gap-1.5">
-                <View 
-                  className="rounded-full h-1.5 bg-sage-400" 
-                  style={{ width: progressWidth }} 
-                />
-                <Text className="text-sage-600 text-[10px] happy-font-body-semibold">
-                  {journalText.length}/{MAX_LENGTH / 1000}k
+              >
+                <SUIText>AI Insights</SUIText>
+                <SUIText>Generate AI analysis</SUIText>
+              </SUIToggle>
+            </SUIMenu>
+          </Host>
+        </View>
+
+        {/* Content Body */}
+        <ScrollView
+          ref={scrollViewRef}
+          className="flex-1 px-5"
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingTop: 8,
+            paddingBottom: 16,
+          }}
+        >
+          {/* Prompt Block */}
+          <JournalPromptRow prompt={currentPrompt} onShuffle={shufflePrompt} />
+
+          {/* Writing Canvas - warm paper surface filling available space */}
+          <Pressable
+            onPress={() => textInputRef.current?.focus()}
+            className={`bg-white/85 rounded-2xl p-5 border relative shadow-sm flex-1 ${
+              isFocused ? "border-sage-500/80" : "border-ink/8"
+            }`}
+            style={{ minHeight: canvasMinHeight }}
+          >
+            <TextInput
+              ref={textInputRef}
+              focusable
+              maxLength={MAX_JOURNAL_LENGTH}
+              value={journalText + realtimeResult}
+              onChangeText={setJournalText}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              placeholder="Start writing…"
+              placeholderTextColor="rgba(20, 36, 20, 0.4)"
+              multiline
+              textAlignVertical="top"
+              className="text-ink text-[17px] leading-7 happy-font-body pb-6"
+              style={{ flex: 1, minHeight: 180 }}
+              autoFocus
+            />
+
+            {/* Character Counter (visible only >= 80% limit) */}
+            {showCharacterCount && (
+              <View className="absolute bottom-3 right-4">
+                <Text
+                  className={`text-[11px] happy-font-body-medium ${
+                    isNearLimit ? "text-terracotta-500" : "text-ink-muted"
+                  }`}
+                >
+                  {combinedLength.toLocaleString()} / {MAX_JOURNAL_LENGTH.toLocaleString()}
                 </Text>
               </View>
-            </View>
-          </ScrollView>
+            )}
+          </Pressable>
+        </ScrollView>
 
-          {/* Bottom Actions */}
-          <View
-            className="px-6 pt-4 bg-white border-t border-sage-100"
-            style={{ paddingBottom: 24}}
-          >
-            {/* Action Buttons */}
-            <View className="flex-row items-center justify-between gap-3">
-              <WhisperUI
-                setRealtimeResult={(text) => {
-                  setRealtimeResult(text);
-                }}
-                onStop={() => {
-                  setJournalText((prev) => {
-                    const trimmedPrev = prev.trim();
-                    const trimmedResult = realtimeResult.trim();
-                    if (!trimmedPrev) return trimmedResult;
-                    if (!trimmedResult) return trimmedPrev;
-                    return trimmedPrev + "\n\n" + trimmedResult;
-                  });
-                  setRealtimeResult("");
-                  setTimeout(() => {
-                    scrollViewRef.current?.scrollToEnd({ animated: true });
-                  }, 100);
-                }}
-                isRealtimeActive={isRealtimeActive}
-                setIsRealtimeActive={setIsRealtimeActive}
-              />
-
-                <Button
-                  disabled={isSubmitDisabled || isRealtimeActive}
-                  onPress={handleSubmit}
-                  variant="primary"
-                  size="lg"
-                  width={56}
-                  fullWidth={false}
-                  accessibilityLabel="Submit journal entry"
-                  leftIcon={
-                    <HugeiconsIcon icon={Tick01Icon} size={22} color={SEMANTIC_COLORS.surface.primary} />
-                  }
-                />
-            </View>
-          </View>
-        </KeyboardAvoidingView>
-      </View>
-    </>
+        {/* Bottom Toolbar */}
+        <KeyboardJournalBottomBar
+          paddingBottom={Math.max(16, insets.bottom)}
+          hasText={hasText}
+          isSubmitDisabled={isSubmitDisabled}
+          isRealtimeActive={isRealtimeActive}
+          setIsRealtimeActive={setIsRealtimeActive}
+          setRealtimeResult={setRealtimeResult}
+          onVoiceStop={handleVoiceStop}
+          onSubmit={handleSubmit}
+        />
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 };
 

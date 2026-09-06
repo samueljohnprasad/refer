@@ -8,6 +8,7 @@ import type {
 export interface CourseOverviewLesson {
   id: string;
   title: string;
+  type: string;
   estimatedMinutes: number;
 }
 
@@ -76,6 +77,7 @@ function buildOverviewSection(
       id: node.id,
       title: node.title,
       estimatedMinutes: node.estimatedMins,
+      type: node.type,
     })),
   }));
 

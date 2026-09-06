@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useColorScheme } from "react-native";
 import { Stack, router } from "expo-router";
 import Animated from "react-native-reanimated";
@@ -16,14 +16,12 @@ import { ChestRewardModal } from "./components";
 import LessonCompleteSheet from "./components/LessonCompleteSheet";
 import UnitCompleteModal from "./components/UnitCompleteModal";
 import { CheckpointActionSheet } from "./components/CheckpointActionSheet";
-import { getLessonTakeaway, getUnitRewardContent } from "@/src/data/journey/rewardsConfig";
+import { CelebrationLevel } from "@/src/types/journeyV5";
 import * as Haptics from "expo-haptics";
 import type {
   JourneyMapViewModel,
   JourneyMapActions,
 } from "./hooks/useJourneyMapViewModel";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 
 export interface JourneyMapViewProps {
   model: JourneyMapViewModel;
@@ -52,30 +50,6 @@ export const JourneyMapView = React.memo(function JourneyMapView({
     animatedStyle,
     controller,
   } = model;
-
-  const prevNode = useMemo(() => {
-    if (!controller?.flashListData) return null;
-    const currentIndex = controller.flashListData.findIndex(item => item.itemType === 'node' && item.status === 'active');
-    if (currentIndex <= 0) return null;
-    // Find the first node before the current one
-    for (let i = currentIndex - 1; i >= 0; i--) {
-      const item = controller.flashListData[i];
-      if (item && item.itemType === 'node') {
-        return item as any; // Cast as JourneyNode to avoid strict type issues on progress property
-      }
-    }
-    return null;
-  }, [controller?.flashListData]);
-
-  const prevNodeId = prevNode?.id;
-  const takeaway = prevNodeId ? getLessonTakeaway(prevNodeId) : "You've completed this lesson. Keep going to build on what you've learned.";
-  
-  // For unit completion, we use the header state's title and ID to find the capability statement.
-  // Wait, if we just completed a unit, the header state might already reflect the NEXT unit.
-  // We can just rely on the previous node's unitId.
-  const prevUnitId = prevNode?.unitId;
-  const unitReward = prevUnitId ? getUnitRewardContent(prevUnitId) : null;
-  const capabilityStatement = unitReward?.capabilityStatement || "You've gained a new capability.";
 
   if (model.isPreparing) {
     return (
@@ -181,19 +155,19 @@ export const JourneyMapView = React.memo(function JourneyMapView({
       ) : null}
 
       {/* T012: Lesson Celebration */}
-      {controller.pendingCelebration === "lesson" && (
+      {controller.pendingCelebration?.level === CelebrationLevel.LESSON && (
         <LessonCompleteSheet
           isVisible={true}
-          takeaway={takeaway}
+          content={controller.pendingCelebration.content}
           onContinue={controller.dismissCelebration}
         />
       )}
 
       {/* T020: Unit Celebration */}
-      {controller.pendingCelebration === "unit" && (
+      {controller.pendingCelebration?.level === CelebrationLevel.UNIT && (
         <UnitCompleteModal
-          unit={{ id: prevUnitId || "", title: "Unit Complete", description: "", nodes: [] } as any}
-          capabilityStatement={capabilityStatement}
+          unitTitle={controller.pendingCelebration.unitTitle}
+          content={controller.pendingCelebration.content}
           onContinue={controller.dismissCelebration}
         />
       )}
@@ -205,11 +179,16 @@ export const JourneyMapView = React.memo(function JourneyMapView({
         data={controller.checkpointSheetData}
         onStart={() => {
           if (!controller.checkpointSheetData?.node) return;
-          void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          void Haptics.notificationAsync(
+            Haptics.NotificationFeedbackType.Success,
+          );
           controller.closeCheckpointSheet();
           router.push({
             pathname: "/tabs/screens/journey-flow",
-            params: { courseId, nodeId: controller.checkpointSheetData.node.id },
+            params: {
+              courseId,
+              nodeId: controller.checkpointSheetData.node.id,
+            },
           });
         }}
         onReview={() => {
@@ -217,7 +196,10 @@ export const JourneyMapView = React.memo(function JourneyMapView({
           controller.closeCheckpointSheet();
           router.push({
             pathname: "/tabs/screens/journey-flow",
-            params: { courseId, nodeId: controller.checkpointSheetData.node.id },
+            params: {
+              courseId,
+              nodeId: controller.checkpointSheetData.node.id,
+            },
           });
         }}
       />
