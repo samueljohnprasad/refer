@@ -56,6 +56,12 @@ export const XPHistoryScreen: React.FC = () => {
     router.back();
   };
 
+  // ponytail: reciprocal navigation to achievements & badges
+  const handleAchievementsPress = (): void => {
+    Haptics.selectionAsync();
+    router.push("/tabs/screens/achievements");
+  };
+
   const handleLoadMore = async (): Promise<void> => {
     if (isLoadingMore || !hasMore) return;
 
@@ -102,6 +108,15 @@ export const XPHistoryScreen: React.FC = () => {
         <Stack.Toolbar.Button
           icon="chevron.backward"
           onPress={handleBackPress}
+          separateBackground
+        />
+      </Stack.Toolbar>
+      {/* ponytail: reciprocal navigation to achievements & badges */}
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          icon="rosette"
+          accessibilityLabel="Achievements & Badges"
+          onPress={handleAchievementsPress}
           separateBackground
         />
       </Stack.Toolbar>
