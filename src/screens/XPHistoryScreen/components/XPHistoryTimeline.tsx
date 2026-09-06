@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { View, Text } from "react-native";
 import dayjs from "dayjs";
 import { Mascot } from "@/src/components/ui/Mascot";
-import { XP_ACTION_LABELS, XPHistoryEntry } from "@/src/types/xp";
+import { XP_ACTION_LABELS, XPActionType, XPHistoryEntry } from "@/src/types/xp";
 import { Timeline } from "@/src/components/ui/Timeline";
 import type { TimelineItemData, TimelineSection } from "@/src/components/ui/Timeline/types";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
@@ -38,11 +38,61 @@ const XPHistoryTimelineEmptyState: React.FC = React.memo(() => (
 XPHistoryTimelineEmptyState.displayName = "XPHistoryTimelineEmptyState";
 
 function parseTitle(title: string): { prefix: string; value?: string } {
-  const match = title.match(/^(.+):\s*(.+)$/);
-  if (match) {
-    return { prefix: match[1] + ":", value: match[2] };
+  // Check for dot separator (e.g. "Challenge completed · Evening Check-in")
+  const dotMatch = title.match(/^(.+?)\s*·\s*(.+)$/);
+  if (dotMatch) {
+    return { prefix: `${dotMatch[1]} ·`, value: dotMatch[2] };
   }
+
+  // Check for colon separator (e.g. "Mood: Good")
+  const colonMatch = title.match(/^(.+?:)\s*(.+)$/);
+  if (colonMatch) {
+    return { prefix: colonMatch[1], value: colonMatch[2] };
+  }
+
   return { prefix: title };
+}
+
+// ponytail: normalize event titles to TYPE · OBJECT grammar per audit #9-#13
+function normalizeTimelineItem(entry: XPHistoryEntry): {
+  title: string;
+  status: "completed" | "challenge" | "milestone";
+} {
+  const desc = entry.description || XP_ACTION_LABELS[entry.action] || "";
+
+  // Challenge check
+  if (/challenge/i.test(desc)) {
+    const cleanName = desc
+      .replace(/^Completed:\s*/i, "")
+      .replace(/^Challenge:\s*/i, "")
+      .trim();
+    return {
+      title: `Challenge completed · ${cleanName}`,
+      status: "challenge",
+    };
+  }
+
+  // Mood check: shorten "Mood logged: Good" -> "Mood: Good"
+  if (/^Mood logged:\s*(.+)$/i.test(desc)) {
+    const moodName = desc.match(/^Mood logged:\s*(.+)$/i)?.[1]?.trim() || "";
+    return {
+      title: `Mood: ${moodName}`,
+      status: "completed",
+    };
+  }
+
+  // Milestone check
+  if (/^Completed:\s*(.+)$/i.test(desc)) {
+    return {
+      title: desc,
+      status: "milestone",
+    };
+  }
+
+  return {
+    title: desc,
+    status: "completed",
+  };
 }
 
 const transformHistoryToTimeline = (
@@ -62,21 +112,14 @@ const transformHistoryToTimeline = (
     const group = grouped.get(dayTimestamp)!;
     group.dailyTotal += entry.amount;
 
-    let title = XP_ACTION_LABELS[entry.action];
-    if (entry.description) {
-      title =
-        entry.description.includes("Completed:") ||
-        entry.description.includes("logged:")
-          ? entry.description
-          : `Completed: ${entry.description}`;
-    }
+    const { title, status } = normalizeTimelineItem(entry);
 
     group.items.push({
       id: entry.id,
       title,
-      subtitle: `+${entry.amount} Insights`,
+      subtitle: `${entry.amount} Insights`,
       date: dayjs(entry.timestamp).valueOf(),
-      status: "completed",
+      status,
     });
   });
 
@@ -90,7 +133,7 @@ const transformHistoryToTimeline = (
   });
 };
 
-// ponytail: day-level reward header matching audit items 23 & 32
+// ponytail: day-level reward header matching audit items 3, 4, 5
 const renderSectionHeader = (section: TimelineSection<XPItem>) => {
   const isToday = dayjs(section.date).isSame(dayjs(), "day");
   const isYesterday = dayjs(section.date).isSame(dayjs().subtract(1, "day"), "day");
@@ -101,7 +144,7 @@ const renderSectionHeader = (section: TimelineSection<XPItem>) => {
       : dayjs(section.date).format("D MMM");
 
   return (
-    <View className="flex-row items-center justify-between px-5 pt-4 pb-1.5">
+    <View className="flex-row items-baseline justify-between px-5 pt-4 pb-1.5">
       <Text
         style={{
           fontFamily: APP_FONT_FAMILIES.semiBold,
@@ -116,12 +159,12 @@ const renderSectionHeader = (section: TimelineSection<XPItem>) => {
       {section.dailyTotal !== undefined && section.dailyTotal > 0 && (
         <Text
           style={{
-            fontFamily: APP_FONT_FAMILIES.bold,
-            color: "#166534",
-            fontSize: 12,
+            fontFamily: APP_FONT_FAMILIES.semiBold,
+            color: "#5F7F58",
+            fontSize: 11,
           }}
         >
-          +{section.dailyTotal} Insights
+          {section.dailyTotal} Insights
         </Text>
       )}
     </View>
@@ -136,17 +179,39 @@ const renderXPItem = (item: XPItem) => {
     <View className="flex-row justify-between items-center py-0.5">
       <View className="flex-1 pr-4">
         <View className="flex-row flex-wrap items-baseline">
-          <Text className="happy-font-body-regular text-[#2C2C2E] text-[15px] leading-5">
+          <Text
+            style={{
+              fontFamily: APP_FONT_FAMILIES.regular,
+              color: "#8E8E93",
+              fontSize: 14,
+              lineHeight: 18,
+            }}
+          >
             {prefix}
           </Text>
           {value && (
-            <Text className="happy-font-body-bold text-[#2C2C2E] text-[15px] leading-5 ml-1">
+            <Text
+              style={{
+                fontFamily: APP_FONT_FAMILIES.semiBold,
+                color: "#2C2C2E",
+                fontSize: 14,
+                lineHeight: 18,
+                marginLeft: 4,
+              }}
+            >
               {value}
             </Text>
           )}
         </View>
       </View>
-      <Text className="happy-font-body-medium text-gray-500 text-[11px] uppercase">
+      <Text
+        style={{
+          fontFamily: APP_FONT_FAMILIES.regular,
+          color: "#8E8E93",
+          fontSize: 11,
+          textTransform: "uppercase",
+        }}
+      >
         {dayjs(item.date).format("h:mm a")}
       </Text>
     </View>

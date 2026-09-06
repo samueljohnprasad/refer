@@ -1,18 +1,30 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 
 interface TimelineDotProps {
-  readonly status: "completed" | "in_progress" | "draft";
+  readonly status: "completed" | "in_progress" | "draft" | "challenge" | "milestone";
 }
 
+// ponytail: subtle star indicator for challenges/milestones per audit #15-#16
 const TimelineDot: React.FC<TimelineDotProps> = React.memo(({ status }) => {
-  const isCompleted: boolean = status === "completed";
+  const isSpecial = status === "challenge" || status === "milestone";
+  const isCompleted = status === "completed" || isSpecial;
 
   return (
-    <View style={[styles.halo, isCompleted ? styles.haloCompleted : styles.haloNeutral]}>
-      <View style={[styles.inner, isCompleted ? styles.innerCompleted : styles.innerNeutral]} />
+    <View style={[styles.halo, isCompleted ? styles.haloCompleted : styles.haloCollapsed]}>
+      <View
+        style={[
+          styles.inner,
+          isCompleted ? styles.innerCompleted : styles.innerNeutral,
+          isSpecial && styles.innerSpecial,
+        ]}
+      >
+        {isSpecial && (
+          <Text style={styles.starText}>★</Text>
+        )}
+      </View>
     </View>
   );
 });
@@ -34,6 +46,12 @@ const styles = StyleSheet.create({
   haloNeutral: {
     backgroundColor: "transparent",
   },
+  haloCollapsed: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "transparent",
+  },
   inner: {
     width: 12,
     height: 12,
@@ -47,5 +65,21 @@ const styles = StyleSheet.create({
   innerNeutral: {
     backgroundColor: "#FDFDFD",
     borderColor: "#C7C7CC",
+  },
+  innerSpecial: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: SEMANTIC_COLORS.brand.pressed,
+    borderColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  starText: {
+    color: "#FFFFFF",
+    fontSize: 8,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: -1,
   },
 });
