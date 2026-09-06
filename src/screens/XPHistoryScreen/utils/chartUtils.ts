@@ -3,15 +3,26 @@ import { XPHistoryEntry } from '@/src/types/xp';
 
 export interface ChartDayData {
   day: string;
+  fullDayName: string;
   weekIndex: number;
   dayIndex: number;
   value: number; // 0.0 to 1.0
   dateString: string;
   totalXP: number; // For tooltip/display
   isToday: boolean;
+  isFuture: boolean;
 }
 
 const dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const fullDayLabels = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
 
 export const generateXPChartData = (history: XPHistoryEntry[], numWeeks = 4) => {
   // 1. Find the start of the week for numWeeks ago (Sunday start)
@@ -26,14 +37,18 @@ export const generateXPChartData = (history: XPHistoryEntry[], numWeeks = 4) => 
   const grid: ChartDayData[][] = Array.from({ length: numWeeks }, (_, weekIndex) => 
     Array.from({ length: 7 }, (_, dayIndex) => {
       const dayDate = addDays(startDate, weekIndex * 7 + dayIndex);
+      const isToday = isDateToday(dayDate);
+      const isFuture = dayDate.getTime() > today.getTime() && !isToday;
       return {
         day: dayLabels[dayIndex],
+        fullDayName: fullDayLabels[dayIndex],
         weekIndex,
         dayIndex,
         value: 0,
         dateString: format(dayDate, 'd MMMM'),
         totalXP: 0,
-        isToday: isDateToday(dayDate),
+        isToday,
+        isFuture,
       };
     })
   );

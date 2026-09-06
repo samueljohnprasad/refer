@@ -1,7 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native";
 import { useUserLevel } from "@/hooks/data/useUserLevel";
-import { LevelBadge } from "@/src/components/Level/LevelBadge";
 import StageProgressBar from "@/src/components/ui/StageProgressBar";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 
@@ -23,7 +22,7 @@ export const XPHistorySummary: React.FC<XPHistorySummaryProps> = React.memo(
     } = useUserLevel();
 
     return (
-      <View className="px-5 pt-1 pb-3">
+      <View className="px-5 pt-1 pb-1">
         {/* 1. Section Header */}
         <Text
           style={{
@@ -38,9 +37,18 @@ export const XPHistorySummary: React.FC<XPHistorySummaryProps> = React.memo(
           Current Level
         </Text>
 
-        {/* 2. Brand-colored Level Badge Pill */}
-        <View className="mb-3 self-start">
-          <LevelBadge level={currentLevel} size="md" />
+        {/* 2. Brand Rank Display */}
+        <View className="flex-row items-center mb-2.5">
+          <Text
+            style={{
+              fontFamily: APP_FONT_FAMILIES.bold,
+              color: "#5F7F58",
+              fontSize: 18,
+              lineHeight: 22,
+            }}
+          >
+            ✦  {currentLevel.name}
+          </Text>
         </View>
 
         {/* 3. Progress Sentence: single clear sentence */}

@@ -102,7 +102,6 @@ export const XPHistoryScreen: React.FC = () => {
         <Stack.Toolbar.Button
           icon="chevron.backward"
           onPress={handleBackPress}
-          separateBackground
         />
       </Stack.Toolbar>
       <SplitView
@@ -121,7 +120,7 @@ export const XPHistoryScreen: React.FC = () => {
             contentPaddingTop={16}
           />
         }
-        initialTopSectionHeight={375}
+        initialTopSectionHeight={430}
         minSectionHeight={100}
         maxTopSectionHeight={700}
         velocityThreshold={500}
