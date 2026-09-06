@@ -63,17 +63,60 @@ export const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = React
     const isToday = dayjs(date).isSame(dayjs(), "day");
     const isYesterday = dayjs(date).isSame(dayjs().subtract(1, "day"), "day");
 
+    // ponytail: quiet group label as context not hero content
     let prefix = null;
-    if (isToday) prefix = <Text style={{ fontFamily: APP_FONT_FAMILIES.extraBold, color: "#1A1A1A", fontSize: 11, letterSpacing: 1.5 }}>TODAY</Text>;
-    else if (isYesterday) prefix = <Text style={{ fontFamily: APP_FONT_FAMILIES.extraBold, color: "#1A1A1A", fontSize: 11, letterSpacing: 1.5 }}>YEST.</Text>;
-    else {
+    if (isToday) {
+      prefix = (
+        <Text
+          style={{
+            fontFamily: APP_FONT_FAMILIES.semiBold,
+            color: "#8E8E93",
+            fontSize: 10,
+            letterSpacing: 0.2,
+          }}
+        >
+          TODAY
+        </Text>
+      );
+    } else if (isYesterday) {
+      prefix = (
+        <Text
+          style={{
+            fontFamily: APP_FONT_FAMILIES.semiBold,
+            color: "#8E8E93",
+            fontSize: 10,
+            letterSpacing: 0.2,
+          }}
+        >
+          YEST.
+        </Text>
+      );
+    } else {
       const dayNum = dayjs(date).format("D");
       const monthStr = dayjs(date).format("MMM").toUpperCase();
       const yearStr = dayjs(date).format("YYYY");
       prefix = (
         <View className="items-center">
-          <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#1A1A1A", fontSize: 11 }}>{monthStr} {dayNum}</Text>
-          <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#8E8E93", fontSize: 10, letterSpacing: 1.2, marginTop: 2 }}>{yearStr}</Text>
+          <Text
+            style={{
+              fontFamily: APP_FONT_FAMILIES.semiBold,
+              color: "#8E8E93",
+              fontSize: 10,
+            }}
+          >
+            {monthStr} {dayNum}
+          </Text>
+          <Text
+            style={{
+              fontFamily: APP_FONT_FAMILIES.regular,
+              color: "#AEAEB2",
+              fontSize: 9,
+              letterSpacing: 0.5,
+              marginTop: 1,
+            }}
+          >
+            {yearStr}
+          </Text>
         </View>
       );
     }

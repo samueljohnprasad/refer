@@ -121,12 +121,17 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
             const emotion = EMOTIONS.find((e) => e.id === emotionScore);
             const emotionName = emotion ? emotion.name : "Mood";
 
-            // Award XP for mood logging
-            xp?.awardXP(XPActionType.MOOD_LOG, {
-              customDescription: `Mood logged: ${emotionName}`,
-            });
-            // Earn coins for mood log
-            earnCoinsForAction("MOOD_LOG");
+            // ponytail: award XP & coins only on first mood check of the day to prevent farming
+            const totalLoggedToday = Array.from(emotionCounts.values()).reduce(
+              (sum, c) => sum + c,
+              0,
+            );
+            if (totalLoggedToday === 0) {
+              xp?.awardXP(XPActionType.MOOD_LOG, {
+                customDescription: `Mood logged: ${emotionName}`,
+              });
+              earnCoinsForAction("MOOD_LOG");
+            }
             // Update mood challenge
             challenges?.updateProgress("mood_count");
             onEmotionLogged?.(emotionScore, updated);
@@ -138,6 +143,7 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
       [
         challenges,
         earnCoinsForAction,
+        emotionCounts,
         isLoggingEmotion,
         logEmotionToSupabase,
         onEmotionLogged,

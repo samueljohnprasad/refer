@@ -17,6 +17,7 @@ interface XPHistoryTimelineProps {
 interface XPItem extends TimelineItemData {
   title: string;
   subtitle: string;
+  dailyTotal?: number;
 }
 
 const XPHistoryTimelineEmptyState: React.FC = React.memo(() => (
@@ -35,86 +36,108 @@ const XPHistoryTimelineEmptyState: React.FC = React.memo(() => (
 
 XPHistoryTimelineEmptyState.displayName = "XPHistoryTimelineEmptyState";
 
-const transformHistoryToTimeline = (entries: XPHistoryEntry[]): TimelineSection<XPItem>[] => {
-  const grouped = new Map<number, XPItem[]>();
+function parseTitle(title: string): { prefix: string; value?: string } {
+  const match = title.match(/^(.+):\s*(.+)$/);
+  if (match) {
+    return { prefix: match[1] + ":", value: match[2] };
+  }
+  return { prefix: title };
+}
+
+const transformHistoryToTimeline = (
+  entries: XPHistoryEntry[],
+): TimelineSection<XPItem>[] => {
+  const grouped = new Map<
+    number,
+    { items: XPItem[]; dailyTotal: number }
+  >();
 
   entries.forEach((entry) => {
-    // Group by start of day timestamp (number)
     const dayTimestamp = dayjs(entry.timestamp).startOf("day").valueOf();
     if (!grouped.has(dayTimestamp)) {
-      grouped.set(dayTimestamp, []);
-    }
-    
-    let title = XP_ACTION_LABELS[entry.action];
-    if (entry.description) {
-      title = entry.description.includes("Completed:") || entry.description.includes("logged:") 
-        ? entry.description 
-        : `Completed: ${entry.description}`;
-    } else {
-      title = `${title}`;
+      grouped.set(dayTimestamp, { items: [], dailyTotal: 0 });
     }
 
-    const currentDayItems = grouped.get(dayTimestamp)!;
-    
-    currentDayItems.push({
+    const group = grouped.get(dayTimestamp)!;
+    group.dailyTotal += entry.amount;
+
+    let title = XP_ACTION_LABELS[entry.action];
+    if (entry.description) {
+      title =
+        entry.description.includes("Completed:") ||
+        entry.description.includes("logged:")
+          ? entry.description
+          : `Completed: ${entry.description}`;
+    }
+
+    group.items.push({
       id: entry.id,
       title,
       subtitle: `+${entry.amount} Insights`,
       date: dayjs(entry.timestamp).valueOf(),
       status: "completed",
-    } as XPItem);
+    });
   });
 
-  return Array.from(grouped.entries()).map(([date, data]) => ({
-    date,
-    title: dayjs(date).format("D MMM"), 
-    data,
-  }));
+  return Array.from(grouped.entries()).map(([date, group]) => {
+    // Carry dailyTotal on every item so the first-rendered item can show it
+    const items = group.items.map((item) => ({
+      ...item,
+      dailyTotal: group.dailyTotal,
+    }));
+    return {
+      date,
+      title: dayjs(date).format("D MMM"),
+      data: items,
+    };
+  });
 };
 
+// ponytail: clean 4-column timeline row with scannable title and aligned time
 const renderXPItem = (item: XPItem) => {
+  const { prefix, value } = parseTitle(item.title);
+
   return (
-    <View className="mb-4">
-      <View className="py-2 flex-row justify-between items-start">
-        <View className="flex-1 pr-4">
-          <Text className="happy-font-body-bold text-[#2C2C2E] text-[15px] leading-5">
-            {item.title}
+    <View className="flex-row justify-between items-center py-0.5">
+      <View className="flex-1 pr-4">
+        <View className="flex-row flex-wrap items-baseline">
+          <Text className="happy-font-body-regular text-[#2C2C2E] text-[15px] leading-5">
+            {prefix}
           </Text>
-          <View className="flex-row mt-1.5">
-            <View className="bg-[#166534]/10 rounded-full px-2 py-0.5 border border-[#166534]/20 flex-row items-center">
-              <Text className="happy-font-body-bold text-[#166534] text-[12px] tracking-wide">
-                {item.subtitle.toUpperCase()}
-              </Text>
-            </View>
-          </View>
+          {value && (
+            <Text className="happy-font-body-bold text-[#2C2C2E] text-[15px] leading-5 ml-1">
+              {value}
+            </Text>
+          )}
         </View>
-        <Text className="happy-font-body-medium text-gray-500 text-[11px] mt-0.5 uppercase">
-          {dayjs(item.date).format("h:mm a")}
-        </Text>
       </View>
+      <Text className="happy-font-body-medium text-gray-500 text-[11px] uppercase">
+        {dayjs(item.date).format("h:mm a")}
+      </Text>
     </View>
   );
 };
 
-export const XPHistoryTimeline: React.FC<XPHistoryTimelineProps> = React.memo(
-  ({ entries, header, isLoadingMore, onEndReached, contentPaddingTop }) => {
-    const timelineData = useMemo(
-      () => transformHistoryToTimeline(entries),
-      [entries],
-    );
+export const XPHistoryTimeline: React.FC<XPHistoryTimelineProps> =
+  React.memo(
+    ({ entries, header, isLoadingMore, onEndReached, contentPaddingTop }) => {
+      const timelineData = useMemo(
+        () => transformHistoryToTimeline(entries),
+        [entries],
+      );
 
-    return (
-      <Timeline
-        sections={timelineData}
-        renderItem={renderXPItem}
-        onEndReached={onEndReached}
-        isLoadingMore={isLoadingMore}
-        ListHeaderComponent={header}
-        ListEmptyComponent={<XPHistoryTimelineEmptyState />}
-        contentPaddingTop={contentPaddingTop}
-      />
-    );
-  }
-);
+      return (
+        <Timeline
+          sections={timelineData}
+          renderItem={renderXPItem}
+          onEndReached={onEndReached}
+          isLoadingMore={isLoadingMore}
+          ListHeaderComponent={header}
+          ListEmptyComponent={<XPHistoryTimelineEmptyState />}
+          contentPaddingTop={contentPaddingTop}
+        />
+      );
+    },
+  );
 
 XPHistoryTimeline.displayName = "XPHistoryTimeline";

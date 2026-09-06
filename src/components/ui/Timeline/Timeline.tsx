@@ -87,23 +87,23 @@ function TimelineInner<T extends TimelineItemData>({
       const isLastItemInSection: boolean = index === section.data.length - 1;
 
       return (
-        <View className="flex-row items-stretch px-4">
+        <View className="flex-row items-stretch px-5">
           {/* 1. Date Column (fixed width) */}
-          <View className="w-[52px] items-end pt-[11px] pr-2">
+          <View className="w-[52px] items-end pt-[9px] pr-2">
             {isFirstItemInSection && (
               <TimelineSectionHeader date={section.date} title={section.title} mode={mode} />
             )}
           </View>
 
           {/* 2. Stem Column (fixed width, centered) */}
-          <View className="w-[28px] items-center relative">
-            {/* The dotted line connects ALL dots now (Point 6) */}
+          <View className="w-[20px] items-center relative">
+            {/* The dotted line connects ALL dots */}
             {!(isVeryFirst && isVeryLast) && (
               <TimelineStemLine
                 flex={false}
                 style={{
                   position: 'absolute',
-                  left: 13,
+                  left: 9,
                   top: isVeryFirst ? 14 : 0,
                   bottom: isVeryLast ? undefined : 0,
                   height: isVeryLast ? 14 : undefined,
@@ -111,14 +111,14 @@ function TimelineInner<T extends TimelineItemData>({
               />
             )}
 
-            {/* The Dot (aligned with top of content, Point 5) */}
-            <View className="absolute top-[14px] left-[4px] items-center">
-              <TimelineDot status={item.status || "in_progress"} />
+            {/* The Dot (center aligns with first line of content text) */}
+            <View className="absolute top-[8px] left-[0px] items-center">
+              <TimelineDot status={item.status || "completed"} />
             </View>
           </View>
 
-          {/* 3. Content Column (aligned x-position, Point 4) */}
-          <View className="flex-1 pl-2 pb-3 pt-[10px]">
+          {/* 3. Content Column */}
+          <View className="flex-1 pl-2 py-2">
             {renderItem(item, index)}
           </View>
         </View>
@@ -150,7 +150,7 @@ function TimelineInner<T extends TimelineItemData>({
       }
       ListEmptyComponent={ListEmptyComponent}
       ListFooterComponent={<LoadingFooter visible={isLoadingMore} />}
-      contentContainerStyle={{ paddingBottom: 120, paddingHorizontal: 16 }}
+      contentContainerStyle={{ paddingBottom: 120, paddingHorizontal: 20 }}
       showsVerticalScrollIndicator={false}
       contentInsetAdjustmentBehavior="automatic"
       scrollEventThrottle={16}
