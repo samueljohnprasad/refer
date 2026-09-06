@@ -8,7 +8,6 @@ import {
 
 interface AssistantActionModalProps {
   visible: boolean;
-  bottomInset: number;
   children: ReactNode;
   onClose: () => void;
 }
@@ -18,7 +17,6 @@ export function AssistantActionModal({
   children,
   onClose,
 }: AssistantActionModalProps): ReactElement | null {
-
   return (
     <Modal
       visible={visible}
@@ -38,14 +36,13 @@ export function AssistantActionModal({
         >
           <Group
             modifiers={[
-              presentationDetents([{ height: 440 }]),
+              // ponytail: compact detent height eliminating empty space per audit (24-32pt after save row)
+              presentationDetents([{ height: 320 }]),
               presentationDragIndicator("visible"),
             ]}
           >
             <RNHostView>
-              <View className="flex-1">
-                {children}
-              </View>
+              <View className="flex-1">{children}</View>
             </RNHostView>
           </Group>
         </BottomSheet>

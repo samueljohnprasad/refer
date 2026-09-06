@@ -29,16 +29,16 @@ export const ASSISTANT_ACTION_REGISTRY = {
   [HappyAssistantActionIdEnum.SaveProgress]: {
     id: HappyAssistantActionIdEnum.SaveProgress,
     command: HappyAssistantCommandEnum.OpenSaveProfile,
-    label: "Save Progress",
-    description: "Add a login so this progress is not lost.",
+    label: "Save your progress",
+    description: "Add a login to keep your progress.",
     icon: UserShield01Icon,
     tint: "#7C3AED",
   },
   [HappyAssistantActionIdEnum.SavePremiumProfile]: {
     id: HappyAssistantActionIdEnum.SavePremiumProfile,
     command: HappyAssistantCommandEnum.OpenSaveProfile,
-    label: "Save Premium Profile",
-    description: "Keep Premium and progress safe with Apple or Google.",
+    label: "Save your progress",
+    description: "Add a login to keep Premium and your progress.",
     icon: UserShield01Icon,
     tint: "#7C3AED",
   },
@@ -204,7 +204,7 @@ export const ASSISTANT_CONTEXT_CONFIG = {
 export const ASSISTANT_COPY_CONFIG = {
   [HappyAssistantContextEnum.Exercises]: {
     title: "Hi, I'm Happy",
-    subtitle: "Want a quick next step for your mind?",
+    subtitle: "What would help right now?",
   },
   [HappyAssistantContextEnum.Journal]: {
     title: "Hi, I'm Happy",

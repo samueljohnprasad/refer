@@ -56,10 +56,7 @@ const CONTEXT_MATCHERS: readonly {
   },
   {
     context: HappyAssistantContextEnum.Journeys,
-    pathIncludes: [
-      AssistantPathSegment.Journeys,
-      AssistantPathSegment.Journey,
-    ],
+    pathIncludes: [AssistantPathSegment.Journeys, AssistantPathSegment.Journey],
   },
   {
     context: HappyAssistantContextEnum.Settings,
@@ -103,7 +100,7 @@ function resolveVisibleActionIds(
     return limitActionIds(resolvedActionIds);
   }
 
-  return prependSaveProfileAction(
+  return appendSaveProfileAction(
     resolvedActionIds,
     resolveSaveProfileActionId(input),
   );
@@ -124,7 +121,7 @@ function resolveSaveProfileActionId(
     : HappyAssistantActionIdEnum.SaveProgress;
 }
 
-function prependSaveProfileAction(
+function appendSaveProfileAction(
   actionIds: readonly ResolvedHappyAssistantActionId[],
   saveActionId: SaveProfileActionId,
 ): ResolvedHappyAssistantActionId[] {
@@ -132,10 +129,7 @@ function prependSaveProfileAction(
     (actionId) => !isSaveActionId(actionId),
   );
 
-  return [
-    saveActionId,
-    ...nonSaveActionIds.slice(0, MAX_VISIBLE_ACTIONS - 1),
-  ];
+  return [...nonSaveActionIds.slice(0, MAX_VISIBLE_ACTIONS - 1), saveActionId];
 }
 
 function isSaveActionId(

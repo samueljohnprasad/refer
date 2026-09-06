@@ -1,7 +1,6 @@
 import { useCallback, useEffect, type ReactElement } from "react";
 import * as Haptics from "expo-haptics";
 import { usePathname } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import {
@@ -9,7 +8,6 @@ import {
   openSheet,
   requestCommand,
   setPosition,
-  setAssistantMessage,
   type HappyAssistantCommand,
 } from "@/src/store/slices/happyAssistantSlice";
 import { useHappyAssistantActions } from "./useHappyAssistantActions";
@@ -22,7 +20,6 @@ import { FloatingAssistantButton } from "./FloatingAssistantButton";
 export function FloatingHappyAssistant(): ReactElement {
   const dispatch = useAppDispatch();
   const pathname = usePathname();
-  const insets = useSafeAreaInsets();
   const { title, subtitle, actions } = useHappyAssistantActions();
   const { isSheetOpen, isVisible, position, assistantMessage } = useAppSelector(
     (state) => state.happyAssistant,
@@ -40,9 +37,7 @@ export function FloatingHappyAssistant(): ReactElement {
 
   const handleCommandPress = useCallback(
     (command: HappyAssistantCommand): void => {
-      void Haptics.selectionAsync().catch(
-        () => {},
-      );
+      void Haptics.selectionAsync().catch(() => {});
       dispatch(requestCommand(command));
     },
     [dispatch],
@@ -74,11 +69,7 @@ export function FloatingHappyAssistant(): ReactElement {
         onOpen={openAssistant}
         onPositionChange={handlePositionChange}
       />
-      <AssistantActionModal
-        visible={isSheetOpen}
-        bottomInset={Math.max(insets.bottom, 12) + 12}
-        onClose={closeAssistant}
-      >
+      <AssistantActionModal visible={isSheetOpen} onClose={closeAssistant}>
         <AssistantActionSheet
           title={title}
           subtitle={subtitle}
