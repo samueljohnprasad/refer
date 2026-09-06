@@ -38,17 +38,17 @@ export const AchievementCategorySection = memo(function AchievementCategorySecti
   const meta = CATEGORY_META[category] ?? { label: category, icon: Medal01Icon };
 
   return (
-    <View className="mb-5 px-4">
-      <View className="mb-2.5 flex-row items-center gap-2.5">
-        <View className="h-8 w-8 items-center justify-center rounded-lg bg-sage-100">
+    <View className="mb-3.5 px-4">
+      <View className="mb-1.5 flex-row items-center gap-2">
+        <View className="h-7 w-7 items-center justify-center rounded-md bg-sage-100">
           <HugeiconsIcon
             icon={meta.icon}
-            size={17}
+            size={15}
             color={SEMANTIC_COLORS.brand.pressed}
             strokeWidth={2}
           />
         </View>
-        <Text className="happy-font-body-bold text-[17px] text-ink">
+        <Text className="happy-font-body-bold text-[16px] text-ink">
           {meta.label}
         </Text>
       </View>

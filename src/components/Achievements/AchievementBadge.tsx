@@ -36,15 +36,23 @@ interface AchievementBadgeProps {
   showUnlockedProgress?: boolean;
 }
 
-// ponytail: clean locked badge desaturation & standardized lock overlay per audit
-const getOpacity = (isUnlocked: boolean) => (isUnlocked ? 1 : 0.42);
+// ponytail: 3-tier state model (locked 0.35, in-progress 0.65, unlocked 1.0) & compact keyhole per audit
+const getOpacity = (isUnlocked: boolean, progress = 0) => {
+  if (isUnlocked) return 1;
+  if (progress > 0) return 0.65;
+  return 0.35;
+};
 const getBorderColor = (isUnlocked: boolean, color: string) => (isUnlocked ? hexToRgba(color, 0.4) : "#E5E7EB");
 const getBgColor = (isUnlocked: boolean, color: string) => (isUnlocked ? hexToRgba(color, 0.1) : "#F3F5F0");
 const getShadowColor = (isUnlocked: boolean, color: string) => (isUnlocked ? color : "#000");
 const getShadowOpacity = (isUnlocked: boolean) => (isUnlocked ? 0.04 : 0.02);
 const getIconColor = (isUnlocked: boolean, color: string) => (isUnlocked ? color : "#8E8E93");
 const getTextColor = (isUnlocked: boolean) => (isUnlocked ? "text-ink" : "text-[#3A3A3C]");
-const getProgressColor = (isUnlocked: boolean, color: string) => (isUnlocked ? color : "#636366");
+const getProgressColor = (isUnlocked: boolean, progress = 0) => {
+  if (isUnlocked) return SEMANTIC_COLORS.brand.primary;
+  if (progress > 0) return SEMANTIC_COLORS.brand.pressed;
+  return "#636366";
+};
 const getRole = (onPress: any) => (onPress ? "button" : "image");
 
 const isInteractivePressed = (pressed: boolean, onPress: any) => {
@@ -59,7 +67,8 @@ const getWidth = (width: number, pressed: boolean, onPress: any) => {
 
 const getAriaLabel = (isUnlocked: boolean, name: string, xp: number, p: number, t: number) => {
   if (isUnlocked) return `${name} · Unlocked. +${xp} XP.`;
-  return `${name} · Locked. Progress: ${p} of ${t}.`;
+  if (p > 0) return `${name} · In progress. ${p} of ${t}.`;
+  return `${name} · Locked. ${p} of ${t}.`;
 };
 
 const getProgressPercent = (target: number, progress: number) => (target > 0 ? (progress / target) * 100 : 0);
@@ -96,7 +105,7 @@ const getShouldShowProgress = (p1: boolean, p2: boolean, p3: boolean, p4: boolea
   return checkProgressConditions(p4, p5);
 };
 
-const BadgeImageAsset = ({ asset, sizeStyles, isUnlocked }: any) => (
+const BadgeImageAsset = ({ asset, sizeStyles, isUnlocked, progress }: any) => (
   <View
     className="items-center justify-center relative"
     style={{ width: sizeStyles.hex, height: sizeStyles.hex }}
@@ -106,27 +115,27 @@ const BadgeImageAsset = ({ asset, sizeStyles, isUnlocked }: any) => (
       style={{
         width: sizeStyles.hex,
         height: sizeStyles.hex,
-        opacity: getOpacity(isUnlocked),
+        opacity: getOpacity(isUnlocked, progress),
       }}
       resizeMode="contain"
     />
     {!isUnlocked && (
       <View
-        className="absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white items-center justify-center shadow-sm"
+        className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white items-center justify-center shadow-sm"
         style={{ elevation: 2 }}
       >
-        <HugeiconsIcon icon={LockIcon} size={13} color="#3A3A3C" strokeWidth={2} />
+        <HugeiconsIcon icon={LockIcon} size={11} color="#3A3A3C" strokeWidth={2} />
       </View>
     )}
   </View>
 );
 
-const BadgeIcon = ({ achievement, sizeStyles, isUnlocked }: any) => {
+const BadgeIcon = ({ achievement, sizeStyles, isUnlocked, progress }: any) => {
   const isNumberIcon = !isNaN(Number(achievement.icon));
   if (isNumberIcon) {
     return <HugeiconsIcon icon={getCategoryIcon(achievement.category)} size={sizeStyles.icon} color={getIconColor(isUnlocked, achievement.color)} />;
   }
-  return <Text style={{ fontSize: sizeStyles.icon, opacity: getOpacity(isUnlocked) }}>{achievement.icon}</Text>;
+  return <Text style={{ fontSize: sizeStyles.icon, opacity: getOpacity(isUnlocked, progress) }}>{achievement.icon}</Text>;
 };
 
 const BadgePlaceholder = ({ achievement, sizeStyles, isUnlocked }: any) => (
@@ -148,8 +157,17 @@ const BadgePlaceholder = ({ achievement, sizeStyles, isUnlocked }: any) => (
   </View>
 );
 
-const BadgeImage = ({ achievement, sizeStyles, isUnlocked }: any) => {
-  if (achievement.imageAsset) return <BadgeImageAsset asset={achievement.imageAsset} sizeStyles={sizeStyles} isUnlocked={isUnlocked} />;
+const BadgeImage = ({ achievement, sizeStyles, isUnlocked, progress }: any) => {
+  if (achievement.imageAsset) {
+    return (
+      <BadgeImageAsset
+        asset={achievement.imageAsset}
+        sizeStyles={sizeStyles}
+        isUnlocked={isUnlocked}
+        progress={progress}
+      />
+    );
+  }
   return <BadgePlaceholder achievement={achievement} sizeStyles={sizeStyles} isUnlocked={isUnlocked} />;
 };
 
@@ -185,7 +203,7 @@ const BadgeProgressText = ({ showProgressText, showProgressBar, displayedProgres
   );
 };
 
-const BadgeProgress = ({ config, progressPercent, displayedProgress, target }: any) => {
+const BadgeProgress = ({ config, progressPercent, displayedProgress, target, progress }: any) => {
   const shouldShow = getShouldShowProgress(
     config.showProgress,
     config.showProgressBar,
@@ -197,7 +215,13 @@ const BadgeProgress = ({ config, progressPercent, displayedProgress, target }: a
   return (
     <View className="w-full mt-1.5">
       <BadgeProgressBar showProgressBar={config.showProgressBar} progressPercent={progressPercent} color={config.achievement.color} />
-      <BadgeProgressText showProgressText={config.showProgressText} showProgressBar={config.showProgressBar} displayedProgress={displayedProgress} target={target} color={getProgressColor(config.isUnlocked, config.achievement.color)} />
+      <BadgeProgressText
+        showProgressText={config.showProgressText}
+        showProgressBar={config.showProgressBar}
+        displayedProgress={displayedProgress}
+        target={target}
+        color={getProgressColor(config.isUnlocked, progress)}
+      />
     </View>
   );
 };
@@ -216,9 +240,9 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = (props) => {
   const config = { ...defaultBadgeConfig, ...props } as any;
 
   const sizeStyles: Record<string, any> = {
-    sm: { hex: 60, icon: 18, nameSize: "text-[12px]", tileWidth: 88 },
-    md: { hex: 78, icon: 24, nameSize: "text-[13px]", tileWidth: 104 },
-    lg: { hex: 96, icon: 32, nameSize: "text-[14px]", tileWidth: 128 },
+    sm: { hex: 60, icon: 18, nameSize: "text-[11px]", tileWidth: 88 },
+    md: { hex: 78, icon: 24, nameSize: "text-[12px]", tileWidth: 104 },
+    lg: { hex: 96, icon: 32, nameSize: "text-[13px]", tileWidth: 128 },
   };
 
   const styles = sizeStyles[config.size];
@@ -233,15 +257,15 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = (props) => {
       accessibilityRole={getRole(config.onPress)}
       accessibilityLabel={getAriaLabel(config.isUnlocked, config.achievement.name, config.achievement.xpBonus, progress, target)}
       accessibilityState={{ selected: config.isUnlocked }}
-      className="items-center mb-2 w-full"
+      className="items-center mb-1.5 w-full"
       style={({ pressed }) => [getWidth(styles.tileWidth, pressed, config.onPress)]}
     >
-      <BadgeImage achievement={config.achievement} sizeStyles={styles} isUnlocked={config.isUnlocked} />
-      <Text className={`${styles.nameSize} happy-font-body-semibold text-center mt-1 leading-[17px] min-h-[34px] px-0.5 ${getTextColor(config.isUnlocked)}`} numberOfLines={2}>
+      <BadgeImage achievement={config.achievement} sizeStyles={styles} isUnlocked={config.isUnlocked} progress={progress} />
+      <Text className={`${styles.nameSize} happy-font-body-semibold text-center mt-1 leading-[15px] min-h-[30px] px-0.5 ${getTextColor(config.isUnlocked)}`} numberOfLines={2}>
         {config.achievement.name}
       </Text>
       <BadgeDescription achievement={config.achievement} showDescription={config.showDescription} />
-      <BadgeProgress config={config} progressPercent={progressPercent} displayedProgress={displayedProgress} target={target} />
+      <BadgeProgress config={config} progressPercent={progressPercent} displayedProgress={displayedProgress} target={target} progress={progress} />
     </Pressable>
   );
 };

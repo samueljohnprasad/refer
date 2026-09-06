@@ -110,7 +110,7 @@ export const AchievementsScreen: React.FC = () => {
           accessibilityLabel="Achievements list"
         >
           {/* Compact Top Summary */}
-          <View className="items-center pt-2 pb-4">
+          <View className="items-center pt-1.5 pb-2.5">
             <Text className="happy-font-body-bold text-[20px] text-ink">
               {unlockedCount} of {totalCount} unlocked
             </Text>
@@ -130,16 +130,6 @@ export const AchievementsScreen: React.FC = () => {
               />
             );
           })}
-
-          {/* Motivational Collection Footer */}
-          {hasAchievements && unlockedCount < totalCount && (
-            <View className="items-center px-4 pt-1 pb-4">
-              <Text className="happy-font-body-medium text-[13px] text-ink-muted text-center">
-                {totalCount - unlockedCount} badge
-                {totalCount - unlockedCount !== 1 ? "s" : ""} remaining
-              </Text>
-            </View>
-          )}
         </ScrollView>
 
         <AchievementBadgeDetailSheet
