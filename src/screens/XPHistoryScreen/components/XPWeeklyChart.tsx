@@ -59,12 +59,13 @@ const AnimatedWeeklyBar = ({ data, width, height, index, internalPaddingHorizont
   const progress = useDerivedValue(() => data.value[index]?.value || 0, [data, index]);
   const isToday = useMemo(() => data.value[index]?.isToday || false, [data, index]);
 
+  // ponytail: minHeight 26 gives exact chunky squircle pill look from previous
   return (
     <Bar
       key={index}
       letter={letter}
       maxHeight={height}
-      minHeight={height / 5}
+      minHeight={26}
       width={barWidth}
       progress={progress}
       isToday={isToday}
@@ -78,7 +79,7 @@ const WeeklyChart: React.FC<{ width: number; height: number; data: SharedValue<W
   const initialData = useMemo(() => data.value || [], [data]);
 
   return (
-    <View style={{ width, height, paddingHorizontal: internalPaddingHorizontal, gap, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center' }}>
+    <View style={{ width, height: height + 32, paddingHorizontal: internalPaddingHorizontal, gap, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center' }}>
       {initialData.map((_, index) => (
         <AnimatedWeeklyBar
           key={index}
@@ -111,14 +112,13 @@ export const XPWeeklyChart = ({ weeklyData, weekLabels }: { weeklyData: ChartDay
 
   return (
     <View style={styles.container}>
-      <View style={{ height: 32, width: windowWidth, zIndex: 1 }}>
+      <View style={{ height: 28, width: windowWidth, zIndex: 1, marginBottom: 12 }}>
         <Animated.FlatList
           ref={animatedRef}
           horizontal
           pagingEnabled
           snapToInterval={windowWidth}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.listContent}
           decelerationRate="fast"
           data={weeklyData}
           keyExtractor={(_, index) => index.toString()}
@@ -131,9 +131,7 @@ export const XPWeeklyChart = ({ weeklyData, weekLabels }: { weeklyData: ChartDay
           )}
         />
       </View>
-      <View style={{ marginTop: 8 }}>
-        <WeeklyChart width={windowWidth} height={150} data={animatedData} />
-      </View>
+      <WeeklyChart width={windowWidth} height={100} data={animatedData} />
     </View>
   );
 };
@@ -141,8 +139,8 @@ export const XPWeeklyChart = ({ weeklyData, weekLabels }: { weeklyData: ChartDay
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 64,
-    paddingTop: 32,
+    marginBottom: 16,
+    paddingTop: 12,
     paddingBottom: 8,
     backgroundColor: 'transparent',
     alignItems: 'center',
@@ -161,11 +159,18 @@ const styles = StyleSheet.create({
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 14,
   },
+  barWrapper: {
+    alignItems: 'center',
+  },
   label: {
     color: '#1F2937',
     textAlign: 'center',
     marginTop: 8,
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 12,
+  },
+  todayLabel: {
+    color: '#1C1C1E',
+    fontFamily: APP_FONT_FAMILIES.bold,
   },
 });
