@@ -1,241 +1,261 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, useWindowDimensions, View, Pressable } from "react-native";
+import React, { useMemo } from "react";
+import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import Animated, {
-  useSharedValue,
+  useAnimatedRef,
+  useDerivedValue,
+  useScrollViewOffset,
+  interpolate,
+  interpolateColor,
   useAnimatedStyle,
   withTiming,
-  Easing,
+  SharedValue,
 } from "react-native-reanimated";
-import * as Haptics from "expo-haptics";
 import type { ChartDayData } from "../utils/chartUtils";
 
-interface XPWeeklyChartProps {
-  weeklyData: ChartDayData[][];
-  weekLabels: string[];
-}
-
-// ponytail: max bar height around 64-72pt per audit item 8
-const BAR_MAX_HEIGHT = 68;
-const BAR_WIDTH = 20;
+type WeekData = ChartDayData[];
 
 interface BarProps {
-  targetHeight: number;
-  color: string;
-  borderRadius: number;
+  maxHeight: number;
+  minHeight: number;
+  width: number;
+  progress: SharedValue<number>;
+  isToday?: boolean;
 }
 
-// ponytail: smooth entrance transition on chart mount per audit item 11
-const AnimatedBar: React.FC<BarProps> = React.memo(
-  ({ targetHeight, color, borderRadius }) => {
-    const animHeight = useSharedValue(0);
-
-    useEffect(() => {
-      animHeight.value = withTiming(targetHeight, {
-        duration: 500,
-        easing: Easing.out(Easing.cubic),
-      });
-    }, [animHeight, targetHeight]);
-
-    const rAnimatedStyle = useAnimatedStyle(() => ({
-      height: animHeight.value,
-    }));
-
-    return (
-      <Animated.View
-        style={[
-          {
-            width: BAR_WIDTH,
-            backgroundColor: color,
-            borderRadius,
-            borderCurve: "continuous",
-          },
-          rAnimatedStyle,
-        ]}
-      />
+const Bar: React.FC<BarProps> = React.memo(
+  ({ maxHeight, minHeight, width, progress, isToday }) => {
+    const animatedProgress = useDerivedValue(
+      () => withTiming(progress.value, { duration: 500 }),
+      [progress],
     );
-  },
-);
 
-AnimatedBar.displayName = "AnimatedBar";
+    const rAnimatedStyle = useAnimatedStyle(() => {
+      const height = interpolate(
+        animatedProgress.value,
+        [0, 1],
+        [minHeight, maxHeight],
+      );
 
-// ponytail: proportional data visualization with true zero states per audit items 13-25
-export const XPWeeklyChart: React.FC<XPWeeklyChartProps> = React.memo(
-  ({ weeklyData, weekLabels }) => {
-    const { width: windowWidth } = useWindowDimensions();
-    const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(null);
+      // Brand palette: soft gray placeholders when empty, forest green when active
+      const startColor = isToday ? "#D1D5DB" : "#E5E7EB";
+      const endColor = isToday ? "#4B6745" : "#5F7F58";
 
-    if (!weeklyData || weeklyData.length === 0) return null;
+      const backgroundColor = interpolateColor(
+        animatedProgress.value,
+        [0, 1],
+        [startColor, endColor],
+      );
 
-    const currentWeekIndex = weeklyData.length - 1;
-    const currentWeek = weeklyData[currentWeekIndex] || [];
-    const currentWeekLabel = weekLabels[currentWeekIndex] || "This Week";
-
-    const maxXP = Math.max(...currentWeek.map((d) => d.totalXP), 50);
-    const selectedDay =
-      selectedDayIndex !== null ? currentWeek[selectedDayIndex] : null;
-
-    const handleBarPress = (index: number) => {
-      Haptics.selectionAsync();
-      setSelectedDayIndex((prev) => (prev === index ? null : index));
-    };
-
-    const internalPaddingHorizontal = 32;
-    const gap = 12;
-    const columnWidth =
-      (windowWidth - internalPaddingHorizontal * 2 - gap * 6) / 7;
+      return { height, backgroundColor };
+    }, [isToday, maxHeight, minHeight]);
 
     return (
-      <View style={styles.container}>
-        {/* 1. Header: Eyebrow + Baseline-aligned Title & Date */}
-        <View style={[styles.headerContainer, { width: windowWidth }]}>
-          <Text style={styles.sectionTitle}>This Week</Text>
-          <View style={styles.headerRow}>
-            <Text style={styles.metricTitle}>Insights earned</Text>
-            <Text
-              style={[
-                styles.weekLabel,
-                selectedDay !== null && styles.weekLabelActive,
-              ]}
-            >
-              {selectedDay
-                ? `${selectedDay.totalXP} Insights (${selectedDay.day})`
-                : currentWeekLabel}
-            </Text>
-          </View>
-        </View>
-
-        {/* 2. Proportional Bars on Shared Baseline */}
-        <View style={{ width: windowWidth, alignItems: "center", marginTop: 12 }}>
-          <View
-            style={{
-              width: windowWidth,
-              height: BAR_MAX_HEIGHT,
-              paddingHorizontal: internalPaddingHorizontal,
-              gap,
-              flexDirection: "row",
-              alignItems: "flex-end",
-              justifyContent: "center",
-            }}
-          >
-            {currentWeek.map((day, index) => {
-              const hasData = day.totalXP > 0;
-              const isSelected = selectedDayIndex === index;
-
-              // Proportional height for earned, 3px nub for past zero, 2px for future
-              let targetHeight = 3;
-              let borderRadius = 2;
-              let barColor = day.isToday ? "#D1D5DB" : "#E5E7EB";
-
-              if (hasData) {
-                targetHeight = Math.max(
-                  8,
-                  Math.round((day.totalXP / maxXP) * (BAR_MAX_HEIGHT - 4)),
-                );
-                borderRadius = 6;
-                barColor = isSelected
-                  ? "#2C4627"
-                  : day.isToday
-                    ? "#4B6745"
-                    : "#5F7F58";
-              } else if (day.isFuture) {
-                targetHeight = 2;
-                borderRadius = 1;
-                barColor = "#F0F0F2";
-              } else if (isSelected) {
-                barColor = "#5F7F58";
-              }
-
-              return (
-                <Pressable
-                  key={day.dayIndex}
-                  onPress={() => handleBarPress(index)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${day.fullDayName}, ${day.totalXP} Insights earned`}
-                  hitSlop={{ top: 12, bottom: 12, left: 6, right: 6 }}
-                  style={{
-                    width: columnWidth,
-                    alignItems: "center",
-                  }}
-                >
-                  <AnimatedBar
-                    targetHeight={targetHeight}
-                    color={barColor}
-                    borderRadius={borderRadius}
-                  />
-                </Pressable>
-              );
-            })}
-          </View>
-
-          {/* 3. Shared Baseline Axis Line */}
-          <View
-            style={{
-              width: windowWidth - internalPaddingHorizontal * 2,
-              height: 1,
-              backgroundColor: "#E5E7EB",
-              marginTop: 2,
-            }}
-          />
-
-          {/* 4. High-Contrast Day Labels */}
-          <View
-            style={{
-              width: windowWidth,
-              paddingHorizontal: internalPaddingHorizontal,
-              gap,
-              flexDirection: "row",
-              justifyContent: "center",
-              marginTop: 6,
-            }}
-          >
-            {currentWeek.map((day, index) => {
-              const isSelected = selectedDayIndex === index;
-              return (
-                <Pressable
-                  key={day.dayIndex}
-                  onPress={() => handleBarPress(index)}
-                  style={{ width: columnWidth, alignItems: "center" }}
-                >
-                  <Text
-                    style={[
-                      styles.label,
-                      day.isToday && styles.todayLabel,
-                      isSelected && styles.selectedLabel,
-                    ]}
-                  >
-                    {day.day}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </View>
+      <View style={styles.barWrapper}>
+        <Animated.View
+          style={[
+            {
+              width,
+              borderRadius: 10,
+              borderCurve: "continuous",
+            },
+            rAnimatedStyle,
+          ]}
+        />
       </View>
     );
   },
 );
 
-XPWeeklyChart.displayName = "XPWeeklyChart";
+Bar.displayName = "Bar";
+
+const AnimatedWeeklyBar: React.FC<{
+  data: SharedValue<WeekData>;
+  width: number;
+  height: number;
+  index: number;
+  internalPaddingHorizontal: number;
+  gap: number;
+}> = React.memo(
+  ({ data, width, height, index, internalPaddingHorizontal, gap }) => {
+    const barWidth =
+      (width - internalPaddingHorizontal * 2 - gap * 6) / 7;
+    const progress = useDerivedValue(
+      () => data.value[index]?.value || 0,
+      [data, index],
+    );
+    const isToday = useMemo(
+      () => data.value[index]?.isToday || false,
+      [data, index],
+    );
+
+    return (
+      <Bar
+        key={index}
+        maxHeight={height}
+        minHeight={24}
+        width={barWidth}
+        progress={progress}
+        isToday={isToday}
+      />
+    );
+  },
+);
+
+AnimatedWeeklyBar.displayName = "AnimatedWeeklyBar";
+
+const WeeklyChart: React.FC<{
+  width: number;
+  height: number;
+  data: SharedValue<WeekData>;
+}> = ({ width, height, data }) => {
+  const internalPaddingHorizontal = 32;
+  const gap = 12;
+  const initialData = useMemo(() => data.value || [], [data]);
+  const barWidth =
+    (width - internalPaddingHorizontal * 2 - gap * 6) / 7;
+
+  return (
+    <View style={{ width, alignItems: "center" }}>
+      {/* Bars Plot Area */}
+      <View
+        style={{
+          width,
+          height,
+          paddingHorizontal: internalPaddingHorizontal,
+          gap,
+          flexDirection: "row",
+          alignItems: "flex-end",
+          justifyContent: "center",
+        }}
+      >
+        {initialData.map((_, index) => (
+          <AnimatedWeeklyBar
+            key={index}
+            data={data}
+            width={width}
+            height={height}
+            index={index}
+            internalPaddingHorizontal={internalPaddingHorizontal}
+            gap={gap}
+          />
+        ))}
+      </View>
+
+      {/* Day Labels Row */}
+      <View
+        style={{
+          width,
+          paddingHorizontal: internalPaddingHorizontal,
+          gap,
+          flexDirection: "row",
+          justifyContent: "center",
+          marginTop: 8,
+        }}
+      >
+        {initialData.map((_, index) => {
+          const letter = initialData[index]?.day || "";
+          const isToday = initialData[index]?.isToday || false;
+          return (
+            <View
+              key={index}
+              style={{ width: barWidth, alignItems: "center" }}
+            >
+              <Text style={[styles.label, isToday && styles.todayLabel]}>
+                {letter}
+              </Text>
+            </View>
+          );
+        })}
+      </View>
+    </View>
+  );
+};
+
+export const XPWeeklyChart: React.FC<{
+  weeklyData: ChartDayData[][];
+  weekLabels: string[];
+}> = ({ weeklyData, weekLabels }) => {
+  const { width: windowWidth } = useWindowDimensions();
+  const animatedRef = useAnimatedRef<any>();
+  const scrollOffset = useScrollViewOffset(animatedRef);
+
+  const activeIndex = useDerivedValue(() => {
+    return Math.max(
+      0,
+      Math.min(
+        weeklyData.length - 1,
+        Math.floor((scrollOffset.value + windowWidth / 2) / windowWidth),
+      ),
+    );
+  }, [scrollOffset, weeklyData.length]);
+
+  const animatedData = useDerivedValue(() => {
+    return weeklyData[activeIndex.value] || [];
+  }, [activeIndex, weeklyData]);
+
+  if (!weeklyData || weeklyData.length === 0) return null;
+
+  return (
+    <View style={styles.container}>
+      {/* Paging Header: Metric & Week Label */}
+      <View style={{ height: 42, width: windowWidth, zIndex: 1 }}>
+        <Animated.FlatList
+          ref={animatedRef}
+          horizontal
+          pagingEnabled
+          snapToInterval={windowWidth}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+          decelerationRate="fast"
+          data={weeklyData}
+          keyExtractor={(_, index) => index.toString()}
+          initialScrollIndex={
+            weeklyData.length > 0 ? weeklyData.length - 1 : 0
+          }
+          getItemLayout={(_, index) => ({
+            length: windowWidth,
+            offset: windowWidth * index,
+            index,
+          })}
+          renderItem={({ index }) => (
+            <View style={[{ width: windowWidth }, styles.labelContainer]}>
+              <View>
+                <Text style={styles.sectionTitle}>This Week</Text>
+                <Text style={styles.metricTitle}>Insights earned</Text>
+              </View>
+              <Text style={styles.weekLabel}>{weekLabels[index]}</Text>
+            </View>
+          )}
+        />
+      </View>
+
+      {/* Chunky Squircle Bar Chart */}
+      <View style={{ marginTop: 16 }}>
+        <WeeklyChart width={windowWidth} height={100} data={animatedData} />
+      </View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    marginBottom: 8,
-    paddingTop: 4,
+    marginBottom: 16,
+    paddingTop: 8,
     paddingBottom: 4,
     backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
   },
-  headerContainer: {
-    paddingHorizontal: 32,
+  listContent: {
+    alignItems: "center",
   },
-  headerRow: {
+  labelContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "baseline",
-    marginTop: 2,
+    alignItems: "flex-end",
+    paddingHorizontal: 32,
   },
   sectionTitle: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
@@ -243,6 +263,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     letterSpacing: 0.5,
     textTransform: "uppercase",
+    marginBottom: 2,
   },
   metricTitle: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
@@ -254,13 +275,13 @@ const styles = StyleSheet.create({
     fontFamily: APP_FONT_FAMILIES.regular,
     fontSize: 12,
   },
-  weekLabelActive: {
-    color: "#5F7F58",
-    fontFamily: APP_FONT_FAMILIES.semiBold,
+  barWrapper: {
+    alignItems: "center",
   },
   label: {
-    color: "#636366", // High-contrast Apple Secondary Label
+    color: "#8E8E93",
     textAlign: "center",
+    marginTop: 8,
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 12,
   },
@@ -268,10 +289,5 @@ const styles = StyleSheet.create({
     color: "#1C1C1E",
     fontFamily: APP_FONT_FAMILIES.bold,
   },
-  selectedLabel: {
-    color: "#5F7F58",
-    fontFamily: APP_FONT_FAMILIES.bold,
-  },
 });
-
 
