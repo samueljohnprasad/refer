@@ -21,7 +21,7 @@ interface LevelBadgeProps {
 export const getLevelIcon = (levelNum: number) => {
   switch (levelNum) {
     case 1: return Plant01Icon;
-    case 2: return BrainIcon;
+    case 2: return StarsIcon;
     case 3: return Target01Icon;
     case 4: return StarsIcon;
     case 5: return Medal01Icon;
@@ -37,7 +37,7 @@ export const getLevelIcon = (levelNum: number) => {
 export const getLevelSFSymbol = (levelNum: number): SFSymbol => {
   switch (levelNum) {
     case 1: return "leaf.fill";
-    case 2: return "brain.head.profile";
+    case 2: return "sparkles";
     case 3: return "target";
     case 4: return "sparkles";
     case 5: return "medal.fill";

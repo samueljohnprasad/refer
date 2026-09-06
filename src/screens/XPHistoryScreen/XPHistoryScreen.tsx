@@ -56,12 +56,6 @@ export const XPHistoryScreen: React.FC = () => {
     router.back();
   };
 
-  // ponytail: reciprocal navigation to achievements & badges
-  const handleAchievementsPress = (): void => {
-    Haptics.selectionAsync();
-    router.push("/tabs/screens/achievements");
-  };
-
   const handleLoadMore = async (): Promise<void> => {
     if (isLoadingMore || !hasMore) return;
 
@@ -111,18 +105,9 @@ export const XPHistoryScreen: React.FC = () => {
           separateBackground
         />
       </Stack.Toolbar>
-      {/* ponytail: reciprocal navigation to achievements & badges */}
-      <Stack.Toolbar placement="right">
-        <Stack.Toolbar.Button
-          icon="rosette"
-          accessibilityLabel="Achievements & Badges"
-          onPress={handleAchievementsPress}
-          separateBackground
-        />
-      </Stack.Toolbar>
       <SplitView
         topContent={
-          <View style={{ paddingTop: 60, paddingHorizontal: 16 }}>
+          <View style={{ paddingTop: 56 }}>
             <XPHistorySummary totalXP={totalXP} todayXP={todayXP} />
             <XPWeeklyChart weeklyData={chartData} weekLabels={weekLabels} />
           </View>
@@ -136,7 +121,7 @@ export const XPHistoryScreen: React.FC = () => {
             contentPaddingTop={16}
           />
         }
-        initialTopSectionHeight={500}
+        initialTopSectionHeight={360}
         minSectionHeight={100}
         maxTopSectionHeight={700}
         velocityThreshold={500}

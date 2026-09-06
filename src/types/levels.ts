@@ -24,7 +24,7 @@ export const LEVEL_TIERS: LevelTier[] = [
     name: "Mindful",
     minXP: 101,
     maxXP: 500,
-    color: "#2563EB",
+    color: "#5F7F58",
   },
   {
     level: 3,
