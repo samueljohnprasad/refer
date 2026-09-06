@@ -21,8 +21,11 @@ const TimelineDot: React.FC<TimelineDotProps> = React.memo(({ status }) => {
           isSpecial && styles.innerSpecial,
         ]}
       >
-        {isSpecial && (
+        {status === "challenge" && (
           <Text style={styles.starText}>★</Text>
+        )}
+        {status === "milestone" && (
+          <Text style={styles.diamondText}>◇</Text>
         )}
       </View>
     </View>
@@ -76,6 +79,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   starText: {
+    color: "#FFFFFF",
+    fontSize: 8,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: -1,
+  },
+  diamondText: {
     color: "#FFFFFF",
     fontSize: 8,
     fontWeight: "bold",

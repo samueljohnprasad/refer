@@ -16,8 +16,9 @@ interface XPHistoryTimelineProps {
 }
 
 interface XPItem extends TimelineItemData {
-  title: string;
-  subtitle: string;
+  category: string;
+  detail?: string;
+  isMultiLine: boolean;
   dailyTotal?: number;
 }
 
@@ -37,26 +38,12 @@ const XPHistoryTimelineEmptyState: React.FC = React.memo(() => (
 
 XPHistoryTimelineEmptyState.displayName = "XPHistoryTimelineEmptyState";
 
-function parseTitle(title: string): { prefix: string; value?: string } {
-  // Check for dot separator (e.g. "Challenge completed · Evening Check-in")
-  const dotMatch = title.match(/^(.+?)\s*·\s*(.+)$/);
-  if (dotMatch) {
-    return { prefix: `${dotMatch[1]} ·`, value: dotMatch[2] };
-  }
-
-  // Check for colon separator (e.g. "Mood: Good")
-  const colonMatch = title.match(/^(.+?:)\s*(.+)$/);
-  if (colonMatch) {
-    return { prefix: colonMatch[1], value: colonMatch[2] };
-  }
-
-  return { prefix: title };
-}
-
-// ponytail: normalize event titles to TYPE · OBJECT grammar per audit #9-#13
+// ponytail: normalize event titles to category + detail per audit #9-#13
 function normalizeTimelineItem(entry: XPHistoryEntry): {
-  title: string;
+  category: string;
+  detail?: string;
   status: "completed" | "challenge" | "milestone";
+  isMultiLine: boolean;
 } {
   const desc = entry.description || XP_ACTION_LABELS[entry.action] || "";
 
@@ -67,31 +54,49 @@ function normalizeTimelineItem(entry: XPHistoryEntry): {
       .replace(/^Challenge:\s*/i, "")
       .trim();
     return {
-      title: `Challenge completed · ${cleanName}`,
+      category: "Challenge completed",
+      detail: cleanName,
       status: "challenge",
+      isMultiLine: true,
+    };
+  }
+
+  // Journey milestone check (e.g. "First step on your journey")
+  if (/journey/i.test(desc) || /first step/i.test(desc)) {
+    return {
+      category: "Journey started",
+      detail: "Sleep Reset",
+      status: "milestone",
+      isMultiLine: true,
     };
   }
 
   // Mood check: shorten "Mood logged: Good" -> "Mood: Good"
-  if (/^Mood logged:\s*(.+)$/i.test(desc)) {
-    const moodName = desc.match(/^Mood logged:\s*(.+)$/i)?.[1]?.trim() || "";
+  if (/^Mood logged:\s*(.+)$/i.test(desc) || /^Mood:\s*(.+)$/i.test(desc)) {
+    const moodName = desc.replace(/^Mood( logged)?:\s*/i, "").trim();
     return {
-      title: `Mood: ${moodName}`,
+      category: "Mood:",
+      detail: moodName,
       status: "completed",
+      isMultiLine: false,
     };
   }
 
-  // Milestone check
+  // Activity milestone check
   if (/^Completed:\s*(.+)$/i.test(desc)) {
+    const activityName = desc.replace(/^Completed:\s*/i, "").trim();
     return {
-      title: desc,
-      status: "milestone",
+      category: "Activity completed",
+      detail: activityName,
+      status: "completed",
+      isMultiLine: true,
     };
   }
 
   return {
-    title: desc,
+    category: desc,
     status: "completed",
+    isMultiLine: false,
   };
 }
 
@@ -112,12 +117,13 @@ const transformHistoryToTimeline = (
     const group = grouped.get(dayTimestamp)!;
     group.dailyTotal += entry.amount;
 
-    const { title, status } = normalizeTimelineItem(entry);
+    const { category, detail, status, isMultiLine } = normalizeTimelineItem(entry);
 
     group.items.push({
       id: entry.id,
-      title,
-      subtitle: `${entry.amount} Insights`,
+      category,
+      detail,
+      isMultiLine,
       date: dayjs(entry.timestamp).valueOf(),
       status,
     });
@@ -150,7 +156,7 @@ const renderSectionHeader = (section: TimelineSection<XPItem>) => {
           fontFamily: APP_FONT_FAMILIES.semiBold,
           color: "#8E8E93",
           fontSize: 11,
-          letterSpacing: 0.5,
+          letterSpacing: 0.3,
           textTransform: "uppercase",
         }}
       >
@@ -173,7 +179,46 @@ const renderSectionHeader = (section: TimelineSection<XPItem>) => {
 
 // ponytail: clean 4-column timeline row with scannable title and aligned time
 const renderXPItem = (item: XPItem) => {
-  const { prefix, value } = parseTitle(item.title);
+  if (item.isMultiLine && item.detail) {
+    return (
+      <View className="flex-row justify-between items-start py-0.5">
+        <View className="flex-1 pr-4">
+          <Text
+            style={{
+              fontFamily: APP_FONT_FAMILIES.regular,
+              color: "#636366",
+              fontSize: 14,
+              lineHeight: 18,
+            }}
+          >
+            {item.category}
+          </Text>
+          <Text
+            style={{
+              fontFamily: APP_FONT_FAMILIES.semiBold,
+              color: "#1C1C1E",
+              fontSize: 14,
+              lineHeight: 18,
+              marginTop: 2,
+            }}
+          >
+            {item.detail}
+          </Text>
+        </View>
+        <Text
+          style={{
+            fontFamily: APP_FONT_FAMILIES.regular,
+            color: "#8E8E93",
+            fontSize: 11,
+            textTransform: "uppercase",
+            marginTop: 2,
+          }}
+        >
+          {dayjs(item.date).format("h:mm a")}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-row justify-between items-center py-0.5">
@@ -182,24 +227,24 @@ const renderXPItem = (item: XPItem) => {
           <Text
             style={{
               fontFamily: APP_FONT_FAMILIES.regular,
-              color: "#8E8E93",
+              color: "#636366",
               fontSize: 14,
               lineHeight: 18,
             }}
           >
-            {prefix}
+            {item.category}
           </Text>
-          {value && (
+          {item.detail && (
             <Text
               style={{
                 fontFamily: APP_FONT_FAMILIES.semiBold,
-                color: "#2C2C2E",
+                color: "#1C1C1E",
                 fontSize: 14,
                 lineHeight: 18,
                 marginLeft: 4,
               }}
             >
-              {value}
+              {item.detail}
             </Text>
           )}
         </View>
