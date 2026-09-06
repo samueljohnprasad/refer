@@ -45,6 +45,7 @@ export function shouldHideAssistant(pathname: string | null): boolean {
     path.includes("support-chat") ||
     path.includes("timelines") ||
     path.includes("xp-history") ||
+    path.includes("achievements") ||
     path.includes("timeline")
   );
 }

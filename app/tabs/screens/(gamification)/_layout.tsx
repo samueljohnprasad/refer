@@ -19,9 +19,14 @@ export default function GamificationGroupLayout() {
         options={{
           headerShown: true,
           title: "Achievements",
-          headerTransparent: true,
+          headerStyle: { backgroundColor: "#FDFDF9" },
+          headerShadowVisible: false,
           freezeOnBlur: true,
-          headerBackTitle: "Home",
+          headerBackButtonDisplayMode: "minimal",
+          headerTitleStyle: {
+            fontFamily: APP_FONT_FAMILIES.bold,
+            fontSize: 18,
+          },
           animation: "slide_from_right",
         }}
       />

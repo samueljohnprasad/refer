@@ -20,7 +20,8 @@ import {
   Fire02Icon,
   TaskDone01Icon,
   StarsIcon,
-  BarChartIcon
+  BarChartIcon,
+  LockIcon,
 } from "@hugeicons/core-free-icons";
 interface AchievementBadgeProps {
   achievement: Achievement;
@@ -35,14 +36,15 @@ interface AchievementBadgeProps {
   showUnlockedProgress?: boolean;
 }
 
-const getOpacity = (isUnlocked: boolean) => (isUnlocked ? 1 : 0.5);
+// ponytail: clean locked badge desaturation & standardized lock overlay per audit
+const getOpacity = (isUnlocked: boolean) => (isUnlocked ? 1 : 0.42);
 const getBorderColor = (isUnlocked: boolean, color: string) => (isUnlocked ? hexToRgba(color, 0.4) : "#E5E7EB");
-const getBgColor = (isUnlocked: boolean, color: string) => (isUnlocked ? hexToRgba(color, 0.1) : "#F9FAFB");
+const getBgColor = (isUnlocked: boolean, color: string) => (isUnlocked ? hexToRgba(color, 0.1) : "#F3F5F0");
 const getShadowColor = (isUnlocked: boolean, color: string) => (isUnlocked ? color : "#000");
 const getShadowOpacity = (isUnlocked: boolean) => (isUnlocked ? 0.04 : 0.02);
-const getIconColor = (isUnlocked: boolean, color: string) => (isUnlocked ? color : "#9CA3AF");
-const getTextColor = (isUnlocked: boolean) => (isUnlocked ? "text-ink" : "text-gray-600");
-const getProgressColor = (isUnlocked: boolean, color: string) => (isUnlocked ? color : "#9CA3AF");
+const getIconColor = (isUnlocked: boolean, color: string) => (isUnlocked ? color : "#8E8E93");
+const getTextColor = (isUnlocked: boolean) => (isUnlocked ? "text-ink" : "text-[#3A3A3C]");
+const getProgressColor = (isUnlocked: boolean, color: string) => (isUnlocked ? color : "#636366");
 const getRole = (onPress: any) => (onPress ? "button" : "image");
 
 const isInteractivePressed = (pressed: boolean, onPress: any) => {
@@ -95,8 +97,27 @@ const getShouldShowProgress = (p1: boolean, p2: boolean, p3: boolean, p4: boolea
 };
 
 const BadgeImageAsset = ({ asset, sizeStyles, isUnlocked }: any) => (
-  <View style={{ opacity: getOpacity(isUnlocked) }}>
-    <Image source={asset.unlocked} style={{ width: sizeStyles.hex, height: sizeStyles.hex }} resizeMode="contain" />
+  <View
+    className="items-center justify-center relative"
+    style={{ width: sizeStyles.hex, height: sizeStyles.hex }}
+  >
+    <Image
+      source={asset.unlocked}
+      style={{
+        width: sizeStyles.hex,
+        height: sizeStyles.hex,
+        opacity: getOpacity(isUnlocked),
+      }}
+      resizeMode="contain"
+    />
+    {!isUnlocked && (
+      <View
+        className="absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white items-center justify-center shadow-sm"
+        style={{ elevation: 2 }}
+      >
+        <HugeiconsIcon icon={LockIcon} size={13} color="#3A3A3C" strokeWidth={2} />
+      </View>
+    )}
   </View>
 );
 
@@ -158,7 +179,7 @@ const getMarginClass = (showProgressBar: boolean) => {
 const BadgeProgressText = ({ showProgressText, showProgressBar, displayedProgress, target, color }: any) => {
   if (!showProgressText) return null;
   return (
-    <Text className={`happy-font-body-semibold text-[11px] text-center ${getMarginClass(showProgressBar)}`} style={{ color }}>
+    <Text className={`happy-font-body-medium text-[12px] text-center ${getMarginClass(showProgressBar)}`} style={{ color }}>
       {displayedProgress}/{target}
     </Text>
   );
@@ -174,7 +195,7 @@ const BadgeProgress = ({ config, progressPercent, displayedProgress, target }: a
   );
   if (!shouldShow) return null;
   return (
-    <View className="w-full mt-2">
+    <View className="w-full mt-1.5">
       <BadgeProgressBar showProgressBar={config.showProgressBar} progressPercent={progressPercent} color={config.achievement.color} />
       <BadgeProgressText showProgressText={config.showProgressText} showProgressBar={config.showProgressBar} displayedProgress={displayedProgress} target={target} color={getProgressColor(config.isUnlocked, config.achievement.color)} />
     </View>
@@ -195,9 +216,9 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = (props) => {
   const config = { ...defaultBadgeConfig, ...props } as any;
 
   const sizeStyles: Record<string, any> = {
-    sm: { hex: 60, icon: 18, nameSize: "text-xs", tileWidth: 88 },
-    md: { hex: 80, icon: 24, nameSize: "text-xs", tileWidth: 104 },
-    lg: { hex: 100, icon: 32, nameSize: "text-sm", tileWidth: 128 },
+    sm: { hex: 60, icon: 18, nameSize: "text-[12px]", tileWidth: 88 },
+    md: { hex: 78, icon: 24, nameSize: "text-[13px]", tileWidth: 104 },
+    lg: { hex: 96, icon: 32, nameSize: "text-[14px]", tileWidth: 128 },
   };
 
   const styles = sizeStyles[config.size];
@@ -212,11 +233,11 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = (props) => {
       accessibilityRole={getRole(config.onPress)}
       accessibilityLabel={getAriaLabel(config.isUnlocked, config.achievement.name, config.achievement.xpBonus, progress, target)}
       accessibilityState={{ selected: config.isUnlocked }}
-      className="items-center mb-3"
+      className="items-center mb-2 w-full"
       style={({ pressed }) => [getWidth(styles.tileWidth, pressed, config.onPress)]}
     >
       <BadgeImage achievement={config.achievement} sizeStyles={styles} isUnlocked={config.isUnlocked} />
-      <Text className={`${styles.nameSize} happy-font-body-bold text-center mt-1.5 ${getTextColor(config.isUnlocked)}`} numberOfLines={2}>
+      <Text className={`${styles.nameSize} happy-font-body-semibold text-center mt-1 leading-[17px] min-h-[34px] px-0.5 ${getTextColor(config.isUnlocked)}`} numberOfLines={2}>
         {config.achievement.name}
       </Text>
       <BadgeDescription achievement={config.achievement} showDescription={config.showDescription} />
