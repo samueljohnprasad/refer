@@ -125,12 +125,12 @@ export default function JournalCalendarScreen() {
           shadowColor: 'transparent',
         }}
       />
-      {/* ponytail: single settings action in header toolbar */}
-      <Stack.Toolbar placement="right" tintColor={SEMANTIC_COLORS.text.primary}>
+      {/* ponytail: subtle tertiary settings action in header toolbar */}
+      <Stack.Toolbar placement="right" tintColor={SEMANTIC_COLORS.text.secondary}>
         <Stack.Toolbar.Button
-          icon="gearshape.fill"
+          icon="gearshape"
           accessibilityLabel="Settings"
-          tintColor={SEMANTIC_COLORS.brand.pressed}
+          tintColor={SEMANTIC_COLORS.text.secondary}
           onPress={handleSettingsPress}
         />
       </Stack.Toolbar>
@@ -160,8 +160,8 @@ export default function JournalCalendarScreen() {
           {/* ponytail: action-first home screen hierarchy */}
           {/* Hero: Today's Reflection */}
           <View className="mt-6">
-            <View className="mb-2 px-1">
-              <Text className="text-[12px] font-bold tracking-wider text-ink-soft uppercase">
+            <View className="mb-1.5 px-1">
+              <Text className="text-[11px] font-semibold tracking-wider text-ink-muted/80 uppercase">
                 Today's reflection
               </Text>
             </View>
@@ -183,7 +183,7 @@ export default function JournalCalendarScreen() {
           </View>
 
           {/* Reinforcement: Compact Streak */}
-          <View className="mt-8">
+          <View className="mt-5">
             <WeeklyStreakWidget
               showDepth={false}
               onPress={() => router.push("/tabs/screens/xp-history")}

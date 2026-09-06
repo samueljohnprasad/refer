@@ -37,7 +37,7 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
     >
       {/* Left: Streak label */}
       <View className="flex-row items-center gap-2">
-        <AnimatedFireIcon width={22} height={22} />
+        <AnimatedFireIcon width={20} height={20} />
         <Text
           className="text-[15px] font-bold text-ink"
           style={{ fontFamily: APP_FONT_FAMILIES.bold }}
@@ -51,14 +51,14 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
         <View className="flex-row items-center gap-2">
           {streakData.weeklyProgress.days.map((isCompleted: boolean, i: number) => (
             <View key={i} className="items-center gap-1.5">
-              <Text className="text-[11px] font-bold text-ink-soft">
+              <Text className="text-[11px] font-bold text-ink-muted">
                 {labels[i]}
               </Text>
               <View className="w-4 h-4 items-center justify-center">
                 {isCompleted ? (
-                  <View className="w-2 h-2 rounded-full bg-brand-primary" />
+                  <View className="w-2.5 h-2.5 rounded-full bg-brand-primary" />
                 ) : (
-                  <View className="w-2 h-2 rounded-full border-[1.5px] border-border-default bg-transparent" />
+                  <View className="w-2.5 h-2.5 rounded-full border-[1.5px] border-border-default/80 bg-transparent" />
                 )}
               </View>
             </View>
@@ -68,7 +68,7 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
         <Feather
           name="chevron-right"
           size={16}
-          color="#A1A1AA"
+          color="#8E8E93"
         />
       </View>
     </Card>

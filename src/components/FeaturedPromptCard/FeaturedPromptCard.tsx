@@ -35,26 +35,26 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
   if (!currentPrompt || prompts.length === 0) return null;
 
   return (
-    // ponytail: inset prompt refresh button and tighten card vertical whitespace
+    // ponytail: compact reflection card with tightened vertical rhythm
     <Card
       variant="tile"
       radius="lg"
       showDepth={false}
       haptic="none"
-      contentClassName="min-h-[150px] p-4 pt-3.5 pb-4"
+      contentClassName="p-3.5 pt-3 pb-3"
     >
-      <View className="absolute right-3.5 top-3.5 z-10">
+      <View className="absolute right-2.5 top-2.5 z-10">
         <TouchableOpacity
           onPress={cyclePrompt}
-          className="h-11 w-11 items-center justify-center"
-          accessibilityLabel="New prompt"
+          className="h-11 w-11 items-center justify-center active:opacity-60"
+          accessibilityLabel="New reflection prompt"
           accessibilityRole="button"
         >
-          <Feather name="refresh-cw" size={18} color={SEMANTIC_COLORS.text.primary} />
+          <Feather name="refresh-cw" size={17} color={SEMANTIC_COLORS.text.primary} />
         </TouchableOpacity>
       </View>
 
-      <View className="min-h-[64px] pr-10" key={currentPrompt.id}>
+      <View className="min-h-[56px] pr-10 justify-center" key={currentPrompt.id}>
         <Text
           style={{
             fontFamily: APP_FONT_FAMILIES.extraBold,
@@ -83,8 +83,8 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
         onPress={() => onPress(currentPrompt)}
         accessibilityLabel={`Start reflection: ${currentPrompt.description}`}
         style={{
-          minHeight: 50,
-          marginTop: 10,
+          minHeight: 46,
+          marginTop: 8,
           paddingHorizontal: 24,
           backgroundColor: SEMANTIC_COLORS.brand.primary,
         }}
