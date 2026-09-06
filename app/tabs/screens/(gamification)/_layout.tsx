@@ -45,8 +45,8 @@ export default function GamificationGroupLayout() {
           headerStyle: { backgroundColor: "#FFFFFF" },
           headerShadowVisible: false,
           headerTitleStyle: {
-            fontFamily: APP_FONT_FAMILIES.extraBold,
-            fontSize: 20,
+            fontFamily: APP_FONT_FAMILIES.bold,
+            fontSize: 18,
           },
         }}
       />

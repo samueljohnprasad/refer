@@ -134,7 +134,7 @@ export const XPHistoryScreen: React.FC = () => {
             contentPaddingTop={16}
           />
         }
-        initialTopSectionHeight={500}
+        initialTopSectionHeight={470}
         minSectionHeight={100}
         maxTopSectionHeight={700}
         velocityThreshold={500}

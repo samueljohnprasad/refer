@@ -30,9 +30,9 @@ const Bar: React.FC<BarProps> = ({ maxHeight, minHeight, width, progress, letter
   const rAnimatedStyle = useAnimatedStyle(() => {
     const height = interpolate(animatedProgress.value, [0, 1], [minHeight, maxHeight]);
     
-    // Highlight the current day using a more saturated brand color (e.g. SEMANTIC_COLORS.brand.pressed) and darker gray when empty
+    // ponytail: neutral gray empty squircles, consistent brand forest green for active
     const startColor = isToday ? '#D1D5DB' : '#E5E7EB'; 
-    const endColor = isToday ? '#166534' : '#637A65';
+    const endColor = isToday ? '#4B6745' : '#5F7F58';
 
     const backgroundColor = interpolateColor(
       animatedProgress.value,
@@ -112,7 +112,8 @@ export const XPWeeklyChart = ({ weeklyData, weekLabels }: { weeklyData: ChartDay
 
   return (
     <View style={styles.container}>
-      <View style={{ height: 28, width: windowWidth, zIndex: 1, marginBottom: 12 }}>
+      {/* Paging Header: Eyebrow + Week Title */}
+      <View style={{ height: 44, width: windowWidth, zIndex: 1, marginBottom: 16 }}>
         <Animated.FlatList
           ref={animatedRef}
           horizontal
@@ -126,6 +127,7 @@ export const XPWeeklyChart = ({ weeklyData, weekLabels }: { weeklyData: ChartDay
           getItemLayout={(_, index) => ({ length: windowWidth, offset: windowWidth * index, index })}
           renderItem={({ index }) => (
             <View style={[{ width: windowWidth }, styles.labelContainer]}>
+              <Text style={styles.eyebrow}>This Week</Text>
               <Text style={styles.weekLabel}>{weekLabels[index]}</Text>
             </View>
           )}
@@ -140,30 +142,35 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     marginBottom: 16,
-    paddingTop: 12,
+    paddingTop: 24,
     paddingBottom: 8,
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  listContent: {
-    paddingTop: 16,
   },
   labelContainer: {
     justifyContent: 'center',
     alignItems: 'flex-start',
     paddingLeft: 32,
   },
-  weekLabel: {
-    color: '#1F2937', 
+  eyebrow: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 14,
+    color: '#636366',
+    fontSize: 11,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+    marginBottom: 6,
+  },
+  weekLabel: {
+    color: '#1C1C1E', 
+    fontFamily: APP_FONT_FAMILIES.semiBold,
+    fontSize: 15,
   },
   barWrapper: {
     alignItems: 'center',
   },
   label: {
-    color: '#1F2937',
+    color: '#636366',
     textAlign: 'center',
     marginTop: 8,
     fontFamily: APP_FONT_FAMILIES.semiBold,
