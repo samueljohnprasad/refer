@@ -91,7 +91,7 @@ const EmotionItem: React.FC<{
             backgroundColor: interpolateColor(
               highlightProgress.value,
               [0, 1],
-              ["transparent", SEMANTIC_COLORS.selection.surface],
+              ["transparent", SEMANTIC_COLORS.selection.surface as string],
             ),
           }))}
         >
