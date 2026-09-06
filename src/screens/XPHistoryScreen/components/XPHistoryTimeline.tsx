@@ -5,6 +5,7 @@ import { Mascot } from "@/src/components/ui/Mascot";
 import { XP_ACTION_LABELS, XPHistoryEntry } from "@/src/types/xp";
 import { Timeline } from "@/src/components/ui/Timeline";
 import type { TimelineItemData, TimelineSection } from "@/src/components/ui/Timeline/types";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 
 interface XPHistoryTimelineProps {
   entries: XPHistoryEntry[];
@@ -80,17 +81,51 @@ const transformHistoryToTimeline = (
   });
 
   return Array.from(grouped.entries()).map(([date, group]) => {
-    // Carry dailyTotal on every item so the first-rendered item can show it
-    const items = group.items.map((item) => ({
-      ...item,
-      dailyTotal: group.dailyTotal,
-    }));
     return {
       date,
       title: dayjs(date).format("D MMM"),
-      data: items,
+      dailyTotal: group.dailyTotal,
+      data: group.items,
     };
   });
+};
+
+// ponytail: day-level reward header matching audit items 23 & 32
+const renderSectionHeader = (section: TimelineSection<XPItem>) => {
+  const isToday = dayjs(section.date).isSame(dayjs(), "day");
+  const isYesterday = dayjs(section.date).isSame(dayjs().subtract(1, "day"), "day");
+  const dayLabel = isToday
+    ? "Today"
+    : isYesterday
+      ? "Yesterday"
+      : dayjs(section.date).format("D MMM");
+
+  return (
+    <View className="flex-row items-center justify-between px-5 pt-4 pb-1.5">
+      <Text
+        style={{
+          fontFamily: APP_FONT_FAMILIES.semiBold,
+          color: "#8E8E93",
+          fontSize: 11,
+          letterSpacing: 0.5,
+          textTransform: "uppercase",
+        }}
+      >
+        {dayLabel}
+      </Text>
+      {section.dailyTotal !== undefined && section.dailyTotal > 0 && (
+        <Text
+          style={{
+            fontFamily: APP_FONT_FAMILIES.bold,
+            color: "#166534",
+            fontSize: 12,
+          }}
+        >
+          +{section.dailyTotal} Insights
+        </Text>
+      )}
+    </View>
+  );
 };
 
 // ponytail: clean 4-column timeline row with scannable title and aligned time
@@ -130,6 +165,7 @@ export const XPHistoryTimeline: React.FC<XPHistoryTimelineProps> =
         <Timeline
           sections={timelineData}
           renderItem={renderXPItem}
+          renderSectionHeader={renderSectionHeader}
           onEndReached={onEndReached}
           isLoadingMore={isLoadingMore}
           ListHeaderComponent={header}

@@ -47,6 +47,7 @@ LoadingFooter.displayName = "LoadingFooter";
 function TimelineInner<T extends TimelineItemData>({
   sections,
   renderItem,
+  renderSectionHeader,
   onEndReached,
   isLoadingMore = false,
   ListHeaderComponent,
@@ -87,44 +88,56 @@ function TimelineInner<T extends TimelineItemData>({
       const isLastItemInSection: boolean = index === section.data.length - 1;
 
       return (
-        <View className="flex-row items-stretch px-5">
-          {/* 1. Date Column (fixed width) */}
-          <View className="w-[52px] items-end pt-[9px] pr-2">
-            {isFirstItemInSection && (
-              <TimelineSectionHeader date={section.date} title={section.title} mode={mode} />
-            )}
-          </View>
+        <View>
+          {isFirstItemInSection &&
+            renderSectionHeader &&
+            renderSectionHeader(section)}
 
-          {/* 2. Stem Column (fixed width, centered) */}
-          <View className="w-[20px] items-center relative">
-            {/* The dotted line connects ALL dots */}
-            {!(isVeryFirst && isVeryLast) && (
-              <TimelineStemLine
-                flex={false}
-                style={{
-                  position: 'absolute',
-                  left: 9,
-                  top: isVeryFirst ? 14 : 0,
-                  bottom: isVeryLast ? undefined : 0,
-                  height: isVeryLast ? 14 : undefined,
-                }}
-              />
+          <View className="flex-row items-stretch px-5">
+            {/* 1. Date Column (fixed width, hidden when section header is rendered) */}
+            {!renderSectionHeader && (
+              <View className="w-[52px] items-end pt-[9px] pr-2">
+                {isFirstItemInSection && (
+                  <TimelineSectionHeader
+                    date={section.date}
+                    title={section.title}
+                    mode={mode}
+                  />
+                )}
+              </View>
             )}
 
-            {/* The Dot (center aligns with first line of content text) */}
-            <View className="absolute top-[8px] left-[0px] items-center">
-              <TimelineDot status={item.status || "completed"} />
+            {/* 2. Stem Column (fixed width, centered) */}
+            <View className="w-[20px] items-center relative">
+              {/* The dotted line connects ALL dots */}
+              {!(isVeryFirst && isVeryLast) && (
+                <TimelineStemLine
+                  flex={false}
+                  style={{
+                    position: "absolute",
+                    left: 9,
+                    top: isVeryFirst ? 14 : 0,
+                    bottom: isVeryLast ? undefined : 0,
+                    height: isVeryLast ? 14 : undefined,
+                  }}
+                />
+              )}
+
+              {/* The Dot (center aligns with first line of content text) */}
+              <View className="absolute top-[8px] left-[0px] items-center">
+                <TimelineDot status={item.status || "completed"} />
+              </View>
             </View>
-          </View>
 
-          {/* 3. Content Column */}
-          <View className="flex-1 pl-2 py-2">
-            {renderItem(item, index)}
+            {/* 3. Content Column */}
+            <View className="flex-1 pl-2 py-2">
+              {renderItem(item, index)}
+            </View>
           </View>
         </View>
       );
     },
-    [renderItem],
+    [mode, renderItem, renderSectionHeader],
   );
 
   // ── Key extractor ─────────────────────────────────────────────────────

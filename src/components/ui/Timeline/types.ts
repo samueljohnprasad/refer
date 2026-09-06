@@ -30,6 +30,8 @@ export interface TimelineSection<T extends TimelineItemData> {
   readonly date: number;
   /** Items within this day, sorted newest-first */
   readonly data: T[];
+  /** Optional aggregate XP or points gained on this day */
+  readonly dailyTotal?: number;
 }
 
 // ─── Component Props ────────────────────────────────────────────────────
@@ -39,6 +41,8 @@ export interface TimelineProps<T extends TimelineItemData> {
   readonly sections: TimelineSection<T>[];
   /** Render callback for each item — the consumer owns the card UI */
   readonly renderItem: (item: T, index: number) => React.ReactElement;
+  /** Optional custom section header renderer */
+  readonly renderSectionHeader?: (section: TimelineSection<T>) => React.ReactElement | null;
   /** Fired when the list scrolls near the bottom */
   readonly onEndReached?: () => void;
   /** Shows a spinner at the bottom when true */
