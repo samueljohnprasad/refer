@@ -1,12 +1,13 @@
 import React from "react";
-import { Image, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { EmojiSelectorProps } from "../types";
-import { EMOTION_IMAGES, EMOTIONS_CONFIG, EmotionType } from "../constants";
+import { EMOTIONS_CONFIG } from "../constants";
+import { MoodIcon, type MoodKey } from "@/src/components/MoodIcon";
 
 /**
  * Presentational component for emotion image selection
  * Displays 5 mood emotion images for selection
- * Uses emotion images from assets instead of emojis
+ * Uses vector MoodIcon
  */
 export const EmojiSelector = React.memo<EmojiSelectorProps>(
   ({ selectedEmoji, onSelectEmoji }: EmojiSelectorProps) => {
@@ -15,6 +16,7 @@ export const EmojiSelector = React.memo<EmojiSelectorProps>(
         {EMOTIONS_CONFIG.map((emotion) => {
           const isSelected: boolean = selectedEmoji === emotion.key;
           return (
+            // ponytail: vector MoodIcon selection
             <TouchableOpacity
               key={emotion.key}
               onPress={(): void => onSelectEmoji(emotion.key)}
@@ -24,10 +26,9 @@ export const EmojiSelector = React.memo<EmojiSelectorProps>(
               accessibilityLabel={`Select ${emotion.label} mood`}
               accessibilityRole="button"
             >
-              <Image
-                source={EMOTION_IMAGES[emotion.key as EmotionType]}
-                className={isSelected ? "w-12 h-12" : "w-10 h-10"}
-                resizeMode="contain"
+              <MoodIcon
+                mood={emotion.key as MoodKey}
+                size={isSelected ? 44 : 38}
               />
             </TouchableOpacity>
           );

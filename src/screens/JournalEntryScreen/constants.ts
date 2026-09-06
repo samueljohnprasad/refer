@@ -1,15 +1,7 @@
 import { Easing } from "react-native-reanimated";
 
-// Emotion images configuration
-export const EMOTION_IMAGES = {
-  terrible: require("@/assets/emojis/terrible.png"),
-  bad: require("@/assets/emojis/bad.png"),
-  fine: require("@/assets/emojis/fine.png"),
-  good: require("@/assets/emojis/good.png"),
-  great: require("@/assets/emojis/great.png"),
-} as const;
+// ponytail: vector MoodIcon replaced raster EMOTION_IMAGES
 
-export type EmotionType = keyof typeof EMOTION_IMAGES;
 
 export const EMOTIONS_CONFIG = [
   { key: "terrible" as const, label: "Terrible", color: "#FF6B6B", emoji: "😢" },

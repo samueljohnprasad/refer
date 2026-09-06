@@ -16,7 +16,6 @@ import { LegendList } from "@legendapp/list";
 import { getEntryTypeIcon } from "../../../components/lib/entryTypeUtils";
 import { JournalEntry } from "@/hooks/data/types";
 import { Image } from "@/components/ui/image";
-import { Emotion, emotions } from "@/assets/emojis";
 import { SectionHeader } from "@/src/components/ui/SectionHeader";
 import { FeelingsType } from "@/src/network/genAi";
 import { HugeiconsIcon } from "@hugeicons/react-native";

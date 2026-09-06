@@ -5,8 +5,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
 import { format } from "date-fns";
-import { Image } from "@/components/ui/image";
-import { emotions, Emotion } from "@/assets/emojis";
+import { MoodIcon, type MoodKey } from "@/src/components/MoodIcon";
 import useFetchDailyMoods from "@/hooks/data/useFetchDailyMoods";
 import dayjs from "dayjs";
 
@@ -104,11 +103,13 @@ export const EmotionDetailsModal: React.FC<EmotionDetailsModalProps> = ({
                   className="flex-row items-center bg-gray-50 rounded-2xl p-4"
                 >
                   <View className="flex-row items-center flex-1">
-                    <Image
-                      source={emotions[entry.mood as Emotion]}
-                      className="w-10 h-10 mr-3"
-                      alt={entry.mood}
-                    />
+                    {/* ponytail: vector MoodIcon for crisp modal list */}
+                    <View className="mr-3">
+                      <MoodIcon
+                        mood={entry.mood as MoodKey}
+                        size={38}
+                      />
+                    </View>
                     <View className="flex-1">
                       <Text className="text-gray-900 font-semibold text-base capitalize">
                         {entry.mood}

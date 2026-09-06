@@ -4,8 +4,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from "react-native";
-import { bad, fine, good, great, terrible } from "@/assets/emojis";
-import { Image } from "@/src/components/tw";
+import { MoodIcon, type MoodKey } from "@/src/components/MoodIcon";
 import { PressableOpacity } from "pressto";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Add01Icon } from "@hugeicons/core-free-icons";
@@ -39,12 +38,12 @@ const MOOD_SCORE_LABELS: Record<number, string> = {
   5: "Great",
 };
 
-const moodEmojiMap = {
-  1: terrible,
-  2: bad,
-  3: fine,
-  4: good,
-  5: great,
+const MOOD_SCORE_TO_KEY: Record<number, MoodKey> = {
+  1: "terrible",
+  2: "bad",
+  3: "okay",
+  4: "good",
+  5: "great",
 };
 
 export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
@@ -59,23 +58,21 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
   }) => {
     const diameter = size;
     const radius = diameter / 2;
-    const moodEmoji = moodscore
-      ? moodEmojiMap[moodscore as keyof typeof moodEmojiMap]
-      : null;
+    const moodKey = moodscore ? MOOD_SCORE_TO_KEY[moodscore] : null;
 
     const moodLabel = moodscore ? MOOD_SCORE_LABELS[moodscore] ?? String(moodscore) : "Not set";
 
     // --- Render core badge content (display-only, no press handling here) ---
     const badgeContent = (
+      // ponytail: vector MoodIcon for crisp calendar badge rendering
       <View
         style={{ width: diameter, height: diameter, borderRadius: radius }}
         className={`items-center justify-center ${disabled ? "opacity-30" : ""}`}
       >
-        {moodEmoji ? (
-          <Image
-            source={moodEmoji}
-            alt={moodLabel}
-            style={{ width: diameter, height: diameter }}
+        {moodKey ? (
+          <MoodIcon
+            mood={moodKey}
+            size={diameter}
           />
         ) : hideEmptySlot ? (
           // ponytail: suppress empty mood affordance when hideEmptySlot is active

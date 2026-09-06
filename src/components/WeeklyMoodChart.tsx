@@ -26,7 +26,7 @@ import {
 } from "victory-native";
 import { Defs, LinearGradient, Stop, G } from "react-native-svg";
 import { addDays, differenceInCalendarDays, format } from "date-fns";
-import { emotions } from "@/assets/emojis";
+import { MoodIcon, type MoodKey } from "@/src/components/MoodIcon";
 import {
   MOOD_COLORS,
   moodScoreToColor,
@@ -1383,12 +1383,10 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
                 }}
                 accessibilityLabel={`Mood level: ${it.label}`}
               >
-                <Image
-                  source={emotions[it.key as keyof typeof emotions]}
-                  style={{ width: 18, height: 18 }}
-                  resizeMode="contain"
-                  progressiveRenderingEnabled={true}
-                  accessibilityLabel={`${it.label} mood emoji`}
+                {/* ponytail: vector MoodIcon for crisp chart legend */}
+                <MoodIcon
+                  mood={it.key as MoodKey}
+                  size={18}
                 />
               </View>
             ))}

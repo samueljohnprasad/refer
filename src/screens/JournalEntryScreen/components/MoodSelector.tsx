@@ -1,7 +1,8 @@
 import React from "react";
-import { View, TouchableOpacity, Image } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Enums } from "@/database.types";
+import { MoodIcon, type MoodKey } from "@/src/components/MoodIcon";
 
 interface MoodSelectorProps {
   selectedMood: Enums<"mood">;
@@ -9,17 +10,6 @@ interface MoodSelectorProps {
   viewOnly?: boolean;
   title?: string;
 }
-
-// Emotion images configuration
-const EMOTION_IMAGES = {
-  terrible: require("@/assets/emojis/terrible.png"),
-  bad: require("@/assets/emojis/bad.png"),
-  fine: require("@/assets/emojis/fine.png"),
-  good: require("@/assets/emojis/good.png"),
-  great: require("@/assets/emojis/great.png"),
-} as const;
-
-type EmotionType = keyof typeof EMOTION_IMAGES;
 
 const MOODS: { id: Enums<'mood'>; label: string }[] = [
   { id: "terrible", label: "Terrible" },
@@ -30,7 +20,7 @@ const MOODS: { id: Enums<'mood'>; label: string }[] = [
 ];
 
 /**
- * Mood selector component with emotion images
+ * Mood selector component with vector MoodIcon
  * Ultra-clean design with minimal styling
  */
 export const MoodSelector = React.memo<MoodSelectorProps>(
@@ -43,6 +33,7 @@ export const MoodSelector = React.memo<MoodSelectorProps>(
       if (viewOnly) {
         const currentMood = MOODS.find((m) => m.id === selectedMood) || MOODS[4];
         return (
+          // ponytail: vector MoodIcon in journal view-only header
           <View 
             className="mb-6"
             accessible={true}
@@ -50,11 +41,7 @@ export const MoodSelector = React.memo<MoodSelectorProps>(
           >
             <View className="flex-row items-center gap-3.5">
               <View className="h-13 w-13 items-center justify-center rounded-[18px] bg-white border border-sage-200">
-                <Image
-                  source={EMOTION_IMAGES[currentMood.id as EmotionType]}
-                  className="w-9 h-9"
-                  resizeMode="contain"
-                />
+                <MoodIcon mood={currentMood.id as MoodKey} size={36} />
               </View>
               <View className="flex-1">
                 <Text variant="h1" className="text-[26px] leading-[30px]">
@@ -67,35 +54,40 @@ export const MoodSelector = React.memo<MoodSelectorProps>(
       }
 
     return (
+      // ponytail: vector MoodIcon selection row
       <View className="px-4 pb-4">
         <View className="flex-row justify-between">
-          {MOODS.map((mood) => (
-            <TouchableOpacity
-              key={mood.id}
-              onPress={() => onSelectMood(mood.id)}
-              className="items-center"
-              activeOpacity={0.7}
-              accessibilityRole="button"
-              accessibilityLabel={mood.label}
-              accessibilityState={{ selected: selectedMood === mood.id }}
-            >
-              <Image
-                source={EMOTION_IMAGES[mood.id as EmotionType]}
-                className={selectedMood === mood.id ? "w-14 h-14" : "w-12 h-12 opacity-50"}
-                resizeMode="contain"
-              />
-              <Text
-                variant="caption"
-                className={`mt-1.5 text-[11px] ${
-                  selectedMood === mood.id
-                    ? "font-bold text-ink scale-105"
-                    : "font-medium text-ink-soft opacity-70"
-                }`}
+          {MOODS.map((mood) => {
+            const isSelected = selectedMood === mood.id;
+            return (
+              <TouchableOpacity
+                key={mood.id}
+                onPress={() => onSelectMood(mood.id)}
+                className="items-center"
+                activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel={mood.label}
+                accessibilityState={{ selected: isSelected }}
               >
-                {mood.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <View style={{ opacity: isSelected ? 1 : 0.45 }}>
+                  <MoodIcon
+                    mood={mood.id as MoodKey}
+                    size={isSelected ? 44 : 38}
+                  />
+                </View>
+                <Text
+                  variant="caption"
+                  className={`mt-1.5 text-[11px] ${
+                    isSelected
+                      ? "font-bold text-ink"
+                      : "font-medium text-ink-soft opacity-70"
+                  }`}
+                >
+                  {mood.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </View>
     );

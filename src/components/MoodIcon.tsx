@@ -1,7 +1,7 @@
 import React from "react";
 import Svg, { Circle, Path } from "react-native-svg";
 
-export type MoodKey = "terrible" | "bad" | "okay" | "good" | "great";
+export type MoodKey = "terrible" | "bad" | "okay" | "fine" | "good" | "great";
 
 interface MoodConfig {
   fill: string;
@@ -19,6 +19,10 @@ const MOOD_CONFIG: Record<MoodKey, MoodConfig> = {
   },
   okay: {
     fill: "#ECCB77", // Soft warm amber
+    stroke: "#D5B054",
+  },
+  fine: {
+    fill: "#ECCB77", // Alias for okay
     stroke: "#D5B054",
   },
   good: {
@@ -97,7 +101,7 @@ export const MoodIcon: React.FC<MoodIconProps> = ({ mood, size = 38 }) => {
         </>
       )}
 
-      {mood === "okay" && (
+      {(mood === "okay" || mood === "fine") && (
         <>
           {/* Calm horizontal line */}
           <Path
