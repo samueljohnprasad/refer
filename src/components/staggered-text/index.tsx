@@ -1,360 +1,152 @@
-import React, { memo, useEffect, useMemo, useRef } from "react";
-import { View, StyleSheet } from "react-native";
-import {
-  Canvas,
-  Text as SkiaText,
-  useFont,
-  matchFont,
-  Blur,
-  Group,
-  SkFont,
-} from "@shopify/react-native-skia";
-import {
-  useSharedValue,
-  withTiming,
-  withDelay,
-  useDerivedValue,
-  interpolate,
+import { memo, useEffect } from "react";
+import { View } from "react-native";
+import Animated, {
+  Easing,
   cancelAnimation,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
 } from "react-native-reanimated";
-import type {
-  IAnimationConfig,
-  ICharacterAnimationParams,
-  ICharacterMetrics,
-  ICharacterRenderer,
-  IStaggeredCharacterLayer,
-  IStaggeredText,
-  ITransitionCharacter,
-} from "./types";
-import { withBuildCharacterMetrics } from "./helper";
-import { merge } from "./base";
-import {
-  DEFAULT_CONFIG,
-  DEFAULT_ENTER_FROM,
-  DEFAULT_ENTER_TO,
-  DEFAULT_EXIT_FROM,
-  DEFAULT_EXIT_TO,
-} from "./const";
-import {
-  APP_FONT_ASSETS,
-  APP_FONT_FAMILIES,
-} from "@/src/theme/typography";
 
-const CharRenderer: React.FC<ICharacterRenderer<SkFont>> &
-  React.FunctionComponent<ICharacterRenderer<SkFont>> = memo<
-  ICharacterRenderer<SkFont>
->(
-  ({
-    char,
-    x,
-    y,
-    font,
-    fontSize,
-    color,
-    from,
-    to,
-    progress,
-  }:
-    | React.ComponentProps<typeof CharRenderer>
-    | ICharacterRenderer<SkFont>): React.ReactElement &
-    React.ReactNode &
-    React.JSX.Element => {
-    const animatedY = useDerivedValue<number>(() => {
-      const fromPx = from.translateY * fontSize;
-      const toPx = to.translateY * fontSize;
-      return interpolate(progress.value, [0, 1], [fromPx, toPx]);
-    });
+import { useReducedMotion } from "@/src/hooks/useReducedMotion";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 
-    const opacity = useDerivedValue<number>(() => {
-      const mid = (from.opacity + to.opacity) / 2;
-      return interpolate(
-        progress.value,
-        [0, 0.5, 1],
-        [from.opacity, mid, to.opacity],
-      );
-    });
+import type { StaggeredCharacterProps, StaggeredTextProps } from "./types";
 
-    const blurAmount = useDerivedValue<number>(() =>
-      interpolate(progress.value, [0, 1], [from.blur, to.blur]),
-    );
+const DEFAULT_DURATION_MS = 250;
+const DEFAULT_CHARACTER_DELAY_MS = 24;
+const DEFAULT_EASING = Easing.out(Easing.cubic);
+const DEFAULT_TEXT_PROPS = {
+  activeIndex: 0,
+  fontSize: 24,
+  color: "#ffffff",
+  fontFamily: APP_FONT_FAMILIES.extraBold,
+  letterSpacing: 0,
+};
+const DEFAULT_ANIMATION_CONFIG = {
+  duration: DEFAULT_DURATION_MS,
+  characterDelay: DEFAULT_CHARACTER_DELAY_MS,
+  easing: DEFAULT_EASING,
+};
+const INITIAL_OPACITY = 0.65;
+const INITIAL_TRANSLATE_Y = 6;
+const INITIAL_SCALE = 0.98;
 
-    const scaleVal = useDerivedValue<number>(() =>
-      interpolate(progress.value, [0, 1], [from.scale, to.scale]),
-    );
+const AnimatedCharacter = memo(function AnimatedCharacter({
+  character,
+  delay,
+  duration,
+  easing,
+  fontFamily,
+  fontSize,
+  color,
+  letterSpacing,
+  reduceMotion,
+}: StaggeredCharacterProps) {
+  const progress = useSharedValue(1);
 
-    const transform = useDerivedValue(() => [
-      { translateX: x },
-      { translateY: y + animatedY.value },
-      { scale: scaleVal.value },
-      { translateX: -x },
-    ]);
+  useEffect(() => {
+    if (reduceMotion) {
+      progress.value = 1;
+      return;
+    }
 
-    return (
-      <Group transform={transform} origin={{ x, y }}>
-        <Group opacity={opacity}>
-          <Blur blur={blurAmount} />
-          <SkiaText x={x} y={0} text={char} font={font} color={color} />
-        </Group>
-      </Group>
-    );
-  },
-);
+    progress.value = 0;
+    progress.value = withDelay(delay, withTiming(1, { duration, easing }));
 
-const StaggeredTransitionCharacter: React.FC<ITransitionCharacter<SkFont>> &
-  React.FunctionComponent<ITransitionCharacter<SkFont>> = memo<
-  ITransitionCharacter<SkFont>
->(
-  ({
-    char,
-    x,
-    y,
-    delay,
-    font,
-    fontSize,
-    color,
-    from,
-    to,
-    direction,
-    config,
-    triggerSnapshot,
-    ...props
-  }:
-    | React.ComponentProps<typeof StaggeredTransitionCharacter>
-    | ITransitionCharacter<SkFont>): React.ReactElement &
-    React.ReactNode &
-    React.JSX.Element => {
-    const progress = useSharedValue<number>(direction === "in" ? 1 : 0);
+    return () => cancelAnimation(progress);
+  }, [delay, duration, easing, progress, reduceMotion]);
 
-    useEffect(() => {
-      const target = direction === "in" ? 0 : 1;
-      const easing =
-        direction === "in" ? config.enterEasing : config.exitEasing;
-
-      progress.value = withDelay<number>(
-        delay,
-        withTiming<number>(target, { duration: config.duration, easing }),
-      );
-      return () => cancelAnimation<number>(progress);
-    }, []);
-
-    return (
-      <CharRenderer
-        char={char}
-        x={x}
-        y={y}
-        font={font}
-        fontSize={fontSize}
-        color={color}
-        from={from}
-        to={to}
-        progress={progress}
-      />
-    );
-  },
-);
-
-const StaggeredTextTransitionLayer: React.FC<IStaggeredCharacterLayer<SkFont>> &
-  React.FunctionComponent<IStaggeredCharacterLayer<SkFont>> = memo<
-  IStaggeredCharacterLayer<SkFont>
->(
-  ({
-    texts,
-    activeIndex,
-    fontSize,
-    color,
-    font,
-    height,
-    staggerFrom,
-    enterFrom,
-    enterTo,
-    exitFrom,
-    exitTo,
-    config,
-    letterSpacing,
-  }:
-    | React.ComponentProps<typeof StaggeredTextTransitionLayer>
-    | IStaggeredCharacterLayer<SkFont>):
-    | (React.ReactElement & React.ReactNode & React.JSX.Element)
-    | null => {
-    const trigger = useSharedValue<number>(0);
-    const prevIndexRef = useRef<number>(activeIndex);
-
-    const mesureMetrics = useMemo<ICharacterMetrics[][]>(
-      () =>
-        texts.map<ICharacterMetrics[]>((t) =>
-          withBuildCharacterMetrics<SkFont>(
-            t,
-            font,
-            staggerFrom,
-            config.characterDelay,
-            letterSpacing,
-          ),
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(progress.value, [0, 1], [INITIAL_OPACITY, 1]),
+    transform: [
+      {
+        translateY: interpolate(
+          progress.value,
+          [0, 1],
+          [INITIAL_TRANSLATE_Y, 0],
         ),
-      [texts, font, staggerFrom, config.characterDelay, letterSpacing],
-    );
+      },
+      {
+        scale: interpolate(progress.value, [0, 1], [INITIAL_SCALE, 1]),
+      },
+    ],
+  }));
 
-    const maxWidth = useMemo<number>(
-      () =>
-        Math.max(
-          ...mesureMetrics.map((m) => m.reduce((s, c) => s + c.width, 0)),
-          200,
-        ) + 100,
-      [mesureMetrics],
-    );
-
-    const outgoingIndex = prevIndexRef.current;
-    const incomingIndex = activeIndex;
-    const isTransitioning = outgoingIndex !== incomingIndex;
-
-    useEffect(() => {
-      if (activeIndex !== prevIndexRef.current) {
-        trigger.value += 1;
-        prevIndexRef.current = activeIndex;
-      }
-    }, [activeIndex]);
-
-    const triggerSnapshot = trigger.value;
-    const baseY = height / 2 + fontSize / 3;
-
-    const incomingMetrics = mesureMetrics[incomingIndex] ?? [];
-    const outgoingMetrics = isTransitioning
-      ? (mesureMetrics[outgoingIndex] ?? [])
-      : [];
-    const incomingTextWidth = incomingMetrics.reduce((s, c) => s + c.width, 0);
-    const outgoingTextWidth = outgoingMetrics.reduce((s, c) => s + c.width, 0);
-
-    const incomingOffsetX = (maxWidth - incomingTextWidth) / 2;
-    const outgoingOffsetX = (maxWidth - outgoingTextWidth) / 2;
-
-    return (
-      <View style={[styles.container, { height }]}>
-        <Canvas style={{ width: maxWidth, height }}>
-          {isTransitioning &&
-            outgoingMetrics.map((m, i) => (
-              <StaggeredTransitionCharacter
-                key={`out-${outgoingIndex}-${i}`}
-                char={m.char}
-                x={m.x + outgoingOffsetX}
-                y={baseY}
-                delay={m.delay}
-                font={font}
-                fontSize={fontSize}
-                color={color}
-                from={exitFrom}
-                to={exitTo}
-                direction="out"
-                config={config}
-                trigger={trigger}
-                triggerSnapshot={triggerSnapshot}
-              />
-            ))}
-          {incomingMetrics.map<React.ReactNode>((m, useless_index: number) => (
-            <StaggeredTransitionCharacter
-              key={`in-${incomingIndex}-${useless_index}`}
-              char={m.char}
-              x={m.x + incomingOffsetX}
-              y={baseY}
-              delay={m.delay}
-              font={font}
-              fontSize={fontSize}
-              color={color}
-              from={enterFrom}
-              to={enterTo}
-              direction="in"
-              config={config}
-              trigger={trigger}
-              triggerSnapshot={triggerSnapshot}
-            />
-          ))}
-        </Canvas>
-      </View>
-    );
-  },
-);
-
-export const StaggeredText: React.FC<IStaggeredText> &
-  React.FunctionComponent<IStaggeredText> = memo<IStaggeredText>(
-  ({
-    texts,
-    activeIndex = 0,
-    fontSize = 24,
-    color = "#ffffff",
-    fontPath,
-    height: heightProp,
-    staggerFrom = "leading",
-    letterSpacing = 1,
-    enterFrom: enterFromProp,
-    enterTo: enterToProp,
-    exitFrom: exitFromProp,
-    exitTo: exitToProp,
-    animationConfig: configProp,
-  }: React.ComponentProps<typeof StaggeredText> | IStaggeredText):
-    | (React.ReactElement & React.ReactNode & React.JSX.Element)
-    | null => {
-    const config = merge<Required<IAnimationConfig>>(
-      configProp,
-      DEFAULT_CONFIG,
-    );
-    const enterFrom = merge<Required<ICharacterAnimationParams>>(
-      enterFromProp,
-      DEFAULT_ENTER_FROM,
-    );
-    const enterTo = merge<Required<ICharacterAnimationParams>>(
-      enterToProp,
-      DEFAULT_ENTER_TO,
-    );
-    const exitFrom = merge<Required<ICharacterAnimationParams>>(
-      exitFromProp,
-      DEFAULT_EXIT_FROM,
-    );
-    const exitTo = merge<Required<ICharacterAnimationParams>>(
-      exitToProp,
-      DEFAULT_EXIT_TO,
-    );
-
-    const height = heightProp ?? fontSize * 2;
-
-    const loadedFont = useFont(fontPath ?? APP_FONT_ASSETS.regular, fontSize);
-
-    const systemFont = useMemo(() => {
-      return matchFont({
-        fontFamily: APP_FONT_FAMILIES.regular,
-        fontSize,
-      });
-    }, [fontSize]);
-
-    const font = loadedFont ?? systemFont;
-
-    if (!font) return null;
-
-    return (
-      <StaggeredTextTransitionLayer
-        texts={texts}
-        activeIndex={activeIndex}
-        fontSize={fontSize}
-        color={color}
-        font={font}
-        height={height}
-        staggerFrom={staggerFrom}
-        enterFrom={enterFrom}
-        enterTo={enterTo}
-        exitFrom={exitFrom}
-        exitTo={exitTo}
-        config={config}
-        letterSpacing={letterSpacing}
-      />
-    );
-  },
-);
-
-const styles = StyleSheet.create({
-  container: {
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  return (
+    <Animated.Text
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+      style={[
+        {
+          color,
+          fontFamily,
+          fontSize,
+          letterSpacing,
+          lineHeight: fontSize * 1.25,
+        },
+        animatedStyle,
+      ]}
+    >
+      {character === " " ? "\u00A0" : character}
+    </Animated.Text>
+  );
 });
 
-export default memo<
-  React.FC<IStaggeredText> & React.FunctionComponent<IStaggeredText>
->(StaggeredText);
+export const StaggeredText = memo(function StaggeredText(
+  inputProps: StaggeredTextProps,
+) {
+  const props = resolveStaggeredTextProps(inputProps);
+  const reduceMotion = useReducedMotion();
+  const activeText = getActiveText(props.texts, props.activeIndex);
+
+  if (!activeText) return null;
+
+  return (
+    <View
+      accessible
+      accessibilityRole="header"
+      accessibilityLabel={activeText}
+      className="w-full flex-row items-center justify-center"
+      style={{ height: props.height }}
+    >
+      {Array.from(activeText).map((character, index) => (
+        <AnimatedCharacter
+          key={`${props.activeIndex}-${index}`}
+          character={character}
+          delay={index * props.animationConfig.characterDelay}
+          duration={props.animationConfig.duration}
+          easing={props.animationConfig.easing}
+          fontFamily={props.fontFamily}
+          fontSize={props.fontSize}
+          color={props.color}
+          letterSpacing={props.letterSpacing}
+          reduceMotion={reduceMotion}
+        />
+      ))}
+    </View>
+  );
+});
+
+function resolveStaggeredTextProps(inputProps: StaggeredTextProps) {
+  const props = { ...DEFAULT_TEXT_PROPS, ...inputProps };
+
+  return {
+    ...props,
+    height: inputProps.height ?? props.fontSize * 1.5,
+    animationConfig: {
+      ...DEFAULT_ANIMATION_CONFIG,
+      ...inputProps.animationConfig,
+    },
+  };
+}
+
+function getActiveText(texts: readonly string[], activeIndex: number): string {
+  return texts[activeIndex] ?? getFirstText(texts);
+}
+
+function getFirstText(texts: readonly string[]): string {
+  return texts[0] ?? "";
+}

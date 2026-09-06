@@ -5,9 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Mascot, MascotState } from "./Mascot";
 import { Button } from "@/src/components/ui/Button";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 import { StaggeredText } from "@/src/components/staggered-text";
-import { APP_FONT_ASSETS } from "@/src/theme/typography";
 
 interface EmptyStateProps {
   mascotState: MascotState;
@@ -66,11 +64,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             activeIndex={activeIndex}
             fontSize={28}
             color={SEMANTIC_COLORS.brand.onSoft}
-            fontPath={APP_FONT_ASSETS.extraBold}
-            staggerFrom="leading"
             height={40}
             animationConfig={{
-              duration: 800,
+              duration: 250,
               characterDelay: 30,
             }}
           />
