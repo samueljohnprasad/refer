@@ -1642,9 +1642,15 @@ WITH curriculum AS (
       "instruction": "See what the shortcut misses.",
       "trapTitle": "I feel terrified, so this must be dangerous.",
       "trapBody": "The mind uses the strength of the feeling as evidence about the outside world.",
-      "relief": "Treating the feeling as proof can make a quick decision feel certain.",
-      "rebound": "Avoidance prevents new information, so the same alarm may feel even more convincing next time.",
-      "counterMove": "Measure two things separately: how intense the alarm feels and what current evidence says about danger."
+      "shortTermPayoff": "Treating the feeling as proof can make a quick decision feel certain.",
+      "hiddenCost": [
+        "Avoidance prevents new information, so the same alarm may feel even more convincing next time."
+      ],
+      "counterMove": {
+        "body": [
+          "Measure two things separately: how intense the alarm feels and what current evidence says about danger."
+        ]
+      }
     }
   },
   {

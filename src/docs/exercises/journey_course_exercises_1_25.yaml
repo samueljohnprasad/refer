@@ -156,9 +156,9 @@ exercises:
       instruction: "string"
       trapTitle: "string"
       trapBody: "string"
-      relief: "string"
-      rebound: "string"
-      counterMove: "{ title: string; body: string }"
+      shortTermPayoff: "string"
+      hiddenCost: "string[]"
+      counterMove: "{ title?: string; body: string[] }"
 
   - id: story_serial
     name: "Story Serial"
