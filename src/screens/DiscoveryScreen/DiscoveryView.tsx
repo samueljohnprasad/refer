@@ -41,6 +41,7 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = React.memo(
     return (
       <SafeAreaView className="flex-1 bg-sage-50" edges={["top"]}>
         <ScrollView
+          scrollEnabled={false}
           contentContainerClassName="px-5 pt-2 pb-6 flex-grow flex-col"
           showsVerticalScrollIndicator={false}
           bounces={false}
@@ -53,7 +54,7 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = React.memo(
 
           {/* ponytail: main content stack moved down ~20pt with balanced internal gaps */}
           <View className="mt-10 flex-col">
-            {/* Prompt Section: Date Metadata (~20-24pt gap) Prompt Headline */}
+            {/* Prompt Section: date metadata and headline form one visual group */}
             <View className="mb-11">
               <RecordPromptSection
                 selectedDate={selectedDate}
@@ -109,7 +110,7 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = React.memo(
         </SuspensLoader>
       </SafeAreaView>
     );
-  }
+  },
 );
 
 DiscoveryView.displayName = "DiscoveryView";

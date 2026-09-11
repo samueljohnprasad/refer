@@ -4,7 +4,10 @@ import WelcomeHeroVisual from "../components/WelcomeHeroVisual";
 
 const WelcomeStep: React.FC = () => {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View
+      pointerEvents="none"
+      className="flex-1 items-center justify-center bg-white"
+    >
       <WelcomeHeroVisual />
     </View>
   );

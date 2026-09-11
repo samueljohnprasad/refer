@@ -15,25 +15,24 @@ export interface RecordPromptSectionViewProps {
 }
 
 // ponytail: pure presentational prompt section with 100% Tailwind CSS classes
-export const RecordPromptSectionView: React.FC<RecordPromptSectionViewProps> = React.memo(
-  ({ menuConfig, displayedPrompt, promptAnimStyle }) => {
+export const RecordPromptSectionView: React.FC<RecordPromptSectionViewProps> =
+  React.memo(({ menuConfig, displayedPrompt, promptAnimStyle }) => {
     return (
       <View className="pt-2">
-        <View className="flex-row items-center -ml-2 mb-2.5">
+        <View className="-ml-2 flex-row items-center">
           <ConfigurableGlassMenu config={menuConfig} />
         </View>
 
-        {/* ponytail: tightened prompt typography (34px / 37px) so question reads as one cohesive thought */}
+        {/* ponytail: 34px prompt keeps hero weight while 36px leading holds the thought together */}
         <Animated.Text
           style={promptAnimStyle}
-          className="text-ink text-[34px] leading-[37px] tracking-tight happy-font-heading-bold"
+          className="text-[34px] leading-9 tracking-tight text-ink happy-font-heading-bold"
         >
           {displayedPrompt}
         </Animated.Text>
       </View>
     );
-  }
-);
+  });
 
 RecordPromptSectionView.displayName = "RecordPromptSectionView";
 export default RecordPromptSectionView;

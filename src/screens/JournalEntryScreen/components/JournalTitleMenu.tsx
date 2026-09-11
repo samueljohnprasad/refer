@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   ConfigurableGlassMenu,
   GlassMenuConfig,
@@ -63,6 +63,7 @@ export function JournalTitleMenu({
       subtitle: displaySubtitle,
       showChevron: true,
       controlSize: "regular",
+      titleTextStyle: "callout",
       sections: [
         {
           id: "actions-section",
@@ -71,14 +72,7 @@ export function JournalTitleMenu({
         },
       ],
     };
-  }, [
-    title,
-    displaySubtitle,
-    isBookmarked,
-    onBookmark,
-    onExport,
-    onDelete,
-  ]);
+  }, [title, displaySubtitle, isBookmarked, onBookmark, onExport, onDelete]);
 
   return <ConfigurableGlassMenu config={menuConfig} />;
 }

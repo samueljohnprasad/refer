@@ -16,7 +16,7 @@ export const NEUTRAL = {
   surface: "#f7f7f7",
   border: "#e5e5e5",
   inkMuted: "#afafaf",
-  inkSoft: "#767676",
+  inkSoft: "#6b6b6b",
   ink: "#142414",
   black: "#000000",
 } as const;

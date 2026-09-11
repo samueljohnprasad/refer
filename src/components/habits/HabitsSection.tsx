@@ -9,7 +9,6 @@ import { useHabitStreaks } from "@/src/hooks/data/useHabitStreaks";
 import { HabitCard } from "@/src/components/habits/HabitCard";
 import { EmptyState } from "@/src/components/ui/EmptyState";
 import { HabitCategorySkeleton } from "@/src/components/habits/HabitSkeletons";
-import { Habit } from "@/src/types/habits";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Add01Icon } from "@hugeicons/core-free-icons";
 import * as Haptics from "expo-haptics";
@@ -19,8 +18,6 @@ import {
   TIME_CATEGORY_CONFIG,
 } from "@/src/utils/habitCategories";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
-
 
 interface HabitsSectionProps {
   selectedDate: Date;
@@ -32,8 +29,11 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   const router = useRouter();
 
   const { habits, loading: habitsLoading } = useHabits();
-  const { toggleHabitCompletion, getHabitsWithStatus, loading: completionsLoading } =
-    useHabitCompletions(selectedDate);
+  const {
+    toggleHabitCompletion,
+    getHabitsWithStatus,
+    loading: completionsLoading,
+  } = useHabitCompletions(selectedDate);
   const { streaks, refetchStreaks } = useHabitStreaks();
 
   const habitsWithStatus = getHabitsWithStatus(habits);
@@ -66,9 +66,6 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
     router.push("/tabs/screens/habits-modal/add" as never);
   };
 
-  const completedCount = habitsWithStatus.filter((h) => h.isCompleted).length;
-  const totalCount = habitsWithStatus.length;
-
   // Categorize habits by time of day
   const categorizedHabits = useMemo(
     () => categorizeHabits(habitsWithStatusAndStreaks),
@@ -81,7 +78,13 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   );
 
   return (
-    <View className={habitsWithStatus.length === 0 && !habitsLoading && !completionsLoading ? "flex-1" : "pb-32"}>
+    <View
+      className={
+        habitsWithStatus.length === 0 && !habitsLoading && !completionsLoading
+          ? "-mt-3 flex-1"
+          : "-mt-3 pb-32"
+      }
+    >
       {habitsLoading || completionsLoading ? (
         <>
           <HabitCategorySkeleton />
@@ -93,12 +96,14 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
           title={[
             "Build Better Habits",
             "Track Daily Progress",
-            "Stay Consistent"
+            "Stay Consistent",
           ]}
           // ponytail: concise habit empty-state copy
           description="Build routines with simple daily tracking."
           buttonText="Add Habit"
-          onButtonPress={() => router.push("/tabs/screens/habits-modal/add" as never)}
+          onButtonPress={() =>
+            router.push("/tabs/screens/habits-modal/add" as never)
+          }
           buttonIcon={Add01Icon}
         />
       ) : (
@@ -107,8 +112,8 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
           {activeCategories.map((category, i) => (
             <View key={category} className={i > 0 ? "mt-8" : ""}>
               {/* Section header — quiet, small, uppercase label */}
-              <View className="px-5 mb-1">
-                <Text className="happy-font-body-bold text-[11px] tracking-widest uppercase text-ink-muted/50">
+              <View className="mb-1 px-5">
+                <Text className="text-xs uppercase tracking-wider text-ink-soft happy-font-body-bold">
                   {TIME_CATEGORY_CONFIG[category].label}
                 </Text>
               </View>
@@ -142,7 +147,11 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
             accessibilityLabel="Add a new habit"
           >
             <View className="h-9 w-9 items-center justify-center rounded-full bg-sage-50 mr-3">
-              <HugeiconsIcon icon={Add01Icon} size={16} color={SEMANTIC_COLORS.brand.pressed} />
+              <HugeiconsIcon
+                icon={Add01Icon}
+                size={16}
+                color={SEMANTIC_COLORS.brand.pressed}
+              />
             </View>
             <Text className="happy-font-body text-[15px] text-ink-muted">
               Add Habit

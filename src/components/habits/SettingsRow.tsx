@@ -17,10 +17,12 @@ import {
 import {
   pickerStyle,
   datePickerStyle,
+  foregroundStyle,
   labelsHidden,
   tag,
   tint,
 } from "@expo/ui/swift-ui/modifiers";
+import { NEUTRAL, SAGE } from "@/src/theme/palette";
 /** Inline type — mirrors @expo/ui DatePicker's range prop */
 type DateRange = {
   start?: Date;
@@ -71,12 +73,20 @@ interface SettingsDateRowProps {
 // ─── Components ─────────────────────────────────────────────────────
 
 /** A plain row with label + optional right-side content */
-export function SettingsRow({ label, detail, children }: SettingsRowProps): React.JSX.Element {
+export function SettingsRow({
+  label,
+  detail,
+  children,
+}: SettingsRowProps): React.JSX.Element {
   return (
-    <View className="flex-row items-center justify-between px-5 py-3.5 min-h-[48px]">
-      <RNText className="text-[17px] text-black">{label}</RNText>
+    <View className="min-h-[48px] flex-row items-center justify-between px-5 py-2.5">
+      <RNText className="text-[15px] text-ink happy-font-body-medium">
+        {label}
+      </RNText>
       {detail && (
-        <RNText className="text-[15px] text-gray-500">{detail}</RNText>
+        <RNText className="text-[15px] text-ink-soft happy-font-body">
+          {detail}
+        </RNText>
       )}
       {children}
     </View>
@@ -90,13 +100,15 @@ export function SettingsToggleRow({
   onValueChange,
 }: SettingsToggleRowProps): React.JSX.Element {
   return (
-    <View className="flex-row items-center justify-between px-5 py-3 min-h-[48px]">
-      <RNText className="text-[17px] text-black">{label}</RNText>
+    <View className="min-h-[48px] flex-row items-center justify-between px-5 py-2.5">
+      <RNText className="text-[15px] text-ink happy-font-body-medium">
+        {label}
+      </RNText>
       <Switch
         value={value}
         onValueChange={onValueChange}
-        trackColor={{ false: "#E5E7EB", true: "#34C759" }}
-        thumbColor="#FFFFFF"
+        trackColor={{ false: NEUTRAL.border, true: SAGE[500] }}
+        thumbColor={NEUTRAL.white}
       />
     </View>
   );
@@ -110,13 +122,15 @@ export function SettingsPickerRow({
   onSelectionChange,
 }: SettingsPickerRowProps): React.JSX.Element {
   return (
-    <View className="flex-row items-center justify-between px-5 py-3.5 min-h-[48px]">
-      <RNText className="text-[17px] text-black">{label}</RNText>
+    <View className="min-h-[48px] flex-row items-center justify-between px-5 py-2.5">
+      <RNText className="text-[15px] text-ink happy-font-body-medium">
+        {label}
+      </RNText>
       <Host matchContents>
         <Picker
           selection={selection}
           onSelectionChange={(sel: string) => onSelectionChange(sel)}
-          modifiers={[pickerStyle("menu"), tint("#6B7280")]}
+          modifiers={[pickerStyle("menu"), tint(NEUTRAL.inkSoft)]}
         >
           {options.map((opt) => (
             <SwiftUIText key={opt.value} modifiers={[tag(opt.value)]}>
@@ -156,15 +170,22 @@ export function SettingsDateRow({
   }
 
   return (
-    <View className="flex-row items-center justify-between px-5 py-2 min-h-[48px]">
-      <RNText className="text-[17px] text-black">{label}</RNText>
+    <View className="min-h-[48px] flex-row items-center justify-between px-5 py-2.5">
+      <RNText className="text-[15px] text-ink happy-font-body-medium">
+        {label}
+      </RNText>
       <Host matchContents>
         <SwiftUIDateTimePicker
           onDateChange={onDateChange}
           displayedComponents={displayedComponents}
           selection={selection}
           range={range}
-          modifiers={[datePickerStyle(pickerStyleProp), labelsHidden()]}
+          modifiers={[
+            datePickerStyle(pickerStyleProp),
+            labelsHidden(),
+            foregroundStyle(NEUTRAL.inkSoft),
+            tint(SAGE[500]),
+          ]}
         />
       </Host>
     </View>
@@ -173,7 +194,7 @@ export function SettingsDateRow({
 
 /** Thin horizontal separator line */
 export function SectionDivider(): React.JSX.Element {
-  return <View className="h-px bg-gray-100 mx-5" />;
+  return <View className="mx-5 h-px bg-brand-border/40" />;
 }
 
 /** Bold section header text */

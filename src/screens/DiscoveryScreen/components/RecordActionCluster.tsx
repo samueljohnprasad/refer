@@ -56,7 +56,7 @@ const SecondaryActionButton = React.memo<SecondaryActionButtonProps>(
       >
         <Animated.View
           style={animatedStyle}
-          className="w-[52px] h-[52px] rounded-full items-center justify-center bg-white border border-ink/[0.06] shadow-sm shadow-ink/5"
+          className="h-[52px] w-[52px] items-center justify-center rounded-full border border-ink/[0.06] bg-white shadow-xs shadow-ink/5"
         >
           <SymbolView
             name={symbolName}
@@ -67,7 +67,7 @@ const SecondaryActionButton = React.memo<SecondaryActionButtonProps>(
         </Animated.View>
       </Pressable>
     );
-  }
+  },
 );
 
 SecondaryActionButton.displayName = "SecondaryActionButton";
@@ -125,7 +125,7 @@ export const RecordActionCluster = React.memo<RecordActionClusterProps>(
         >
           <Animated.View
             style={micAnimStyle}
-            className="w-[70px] h-[70px] rounded-full bg-sage-500 items-center justify-center shadow-md shadow-sage-700/18"
+            className="h-[70px] w-[70px] items-center justify-center rounded-full bg-sage-500 shadow-sm shadow-sage-700/15"
           >
             <SymbolView
               name="mic.fill"
@@ -144,7 +144,7 @@ export const RecordActionCluster = React.memo<RecordActionClusterProps>(
         />
       </View>
     );
-  }
+  },
 );
 
 RecordActionCluster.displayName = "RecordActionCluster";

@@ -7,6 +7,7 @@ import { Checkbox } from "@/src/components/check-box";
 import * as Haptics from "expo-haptics";
 import { format, parse } from "date-fns";
 import { HabitIcon } from "@/src/utils/habitIconMapper";
+import { SAGE } from "@/src/theme/palette";
 
 interface HabitCardProps {
   habit: HabitWithStatus;
@@ -48,7 +49,6 @@ export const HabitCard: React.FC<HabitCardProps> = ({
   habit,
   onPress,
   onToggleComplete,
-  isLast = false,
 }) => {
   const [showConfetti, setShowConfetti] = React.useState(false);
   const isFirstRender = React.useRef(true);
@@ -62,21 +62,25 @@ export const HabitCard: React.FC<HabitCardProps> = ({
   }, [habit.isCompleted]);
 
   const handleCardPress = (): void => {
-    Haptics.selectionAsync();
+    void Haptics.selectionAsync();
     onPress();
   };
 
   const handleCheckboxPress = (e: { stopPropagation?: () => void }): void => {
     e?.stopPropagation?.();
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onToggleComplete();
   };
 
   const repeatLabel = getRepeatLabel(habit);
   // Only show scheduled time when user explicitly set at_time option
-  const showTime = habit.timeOption === "at_time" && !!habit.scheduledTime && !habit.isCompleted;
+  const showTime =
+    habit.timeOption === "at_time" &&
+    !!habit.scheduledTime &&
+    !habit.isCompleted;
   // Show metadata row only when there is something useful to show
-  const hasMetadata = !!repeatLabel || showTime || (habit.currentStreak ?? 0) > 0;
+  const hasMetadata =
+    !!repeatLabel || showTime || (habit.currentStreak ?? 0) > 0;
 
   return (
     <View>
@@ -93,7 +97,7 @@ export const HabitCard: React.FC<HabitCardProps> = ({
             <HabitIcon
               icon={habit.icon}
               size={24}
-              opacity={habit.isCompleted ? 0.4 : 1}
+              opacity={habit.isCompleted ? 0.72 : 1}
             />
           </View>
 
@@ -101,9 +105,7 @@ export const HabitCard: React.FC<HabitCardProps> = ({
           <View className="flex-1">
             {/* Habit Name — muted opacity on complete, no strikethrough */}
             <Text
-              className={`happy-font-body-bold text-[17px] text-ink${
-                habit.isCompleted ? " opacity-40" : ""
-              }`}
+              className={`text-[17px] happy-font-body-bold ${habit.isCompleted ? "text-ink-soft" : "text-ink"}`}
             >
               {habit.name}
             </Text>
@@ -113,14 +115,14 @@ export const HabitCard: React.FC<HabitCardProps> = ({
               <View className="flex-row items-center mt-0.5 gap-3">
                 {/* Non-daily repeat label */}
                 {!!repeatLabel && (
-                  <Text className="happy-font-body-medium text-xs text-ink-muted">
+                  <Text className="text-xs text-ink-soft happy-font-body">
                     {repeatLabel}
                   </Text>
                 )}
 
                 {/* Scheduled time — only real at_time values */}
                 {showTime && (
-                  <Text className="happy-font-body-medium text-xs text-ink-muted">
+                  <Text className="text-xs text-ink-soft happy-font-body">
                     {formatTime(habit.scheduledTime!)}
                   </Text>
                 )}
@@ -142,10 +144,10 @@ export const HabitCard: React.FC<HabitCardProps> = ({
             <View className="z-10">
               <Checkbox
                 checked={habit.isCompleted}
-                checkmarkColor="#5f7f58"
+                checkmarkColor={SAGE[500]}
                 size={24}
                 showBorder={true}
-                stroke={5}
+                stroke={4}
               />
             </View>
 

@@ -19,6 +19,7 @@ import { useColorScheme } from "react-native";
 import * as Haptics from "expo-haptics";
 
 export type GlassMenuItemType = "button" | "toggle";
+export type GlassMenuTitleTextStyle = "callout" | "subheadline";
 
 export interface GlassMenuButtonItem {
   type: "button";
@@ -53,6 +54,7 @@ export interface GlassMenuConfig {
   controlSize?: "mini" | "small" | "regular" | "large";
   minWidth?: number;
   minHeight?: number;
+  titleTextStyle: GlassMenuTitleTextStyle;
   sections: GlassMenuSection[];
 }
 
@@ -84,7 +86,9 @@ export function ConfigurableGlassMenu({ config }: ConfigurableGlassMenuProps) {
           role={item.role}
           onPress={() => {
             if (item.role === "destructive") {
-              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+              Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Warning,
+              );
             } else {
               Haptics.selectionAsync();
             }
@@ -128,7 +132,10 @@ export function ConfigurableGlassMenu({ config }: ConfigurableGlassMenuProps) {
               <SUIText
                 modifiers={[
                   foregroundStyle(headerFg),
-                  font({ weight: "semibold", size: 16 }),
+                  font({
+                    weight: "semibold",
+                    textStyle: config.titleTextStyle,
+                  }),
                 ]}
               >
                 {config.title}
@@ -143,10 +150,7 @@ export function ConfigurableGlassMenu({ config }: ConfigurableGlassMenuProps) {
             </HStack>
             {config.subtitle ? (
               <SUIText
-                modifiers={[
-                  foregroundStyle(headerFgMuted),
-                  font({ size: 11 }),
-                ]}
+                modifiers={[foregroundStyle(headerFgMuted), font({ size: 11 })]}
               >
                 {config.subtitle}
               </SUIText>
@@ -165,9 +169,7 @@ export function ConfigurableGlassMenu({ config }: ConfigurableGlassMenuProps) {
             );
           }
           return (
-            <Section key={sectionKey}>
-              {section.items.map(renderItem)}
-            </Section>
+            <Section key={sectionKey}>{section.items.map(renderItem)}</Section>
           );
         })}
       </Menu>

@@ -125,8 +125,8 @@ const Footer = ({
 
   return (
     <View
-      style={style}
-      className={`absolute bottom-0 left-0 right-0 z-10 ${className}`}
+      style={[{ zIndex: 20 }, style]}
+      className={`absolute bottom-0 left-0 right-0 ${className}`}
       {...props}
     >
       {renderGlass()}

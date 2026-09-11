@@ -48,7 +48,7 @@ export function useRecordPromptSectionViewModel({
       promptOpacity.value = withTiming(1, TIMING_FADE);
       promptTranslateY.value = withSpring(0, SPRING_DEFAULT);
     },
-    [promptOpacity, promptTranslateY]
+    [promptOpacity, promptTranslateY],
   );
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export function useRecordPromptSectionViewModel({
 
   const formattedDate = useMemo(
     () => format(selectedDate, "MMMM d"),
-    [selectedDate]
+    [selectedDate],
   );
 
   // ponytail: small control size with 44pt minHeight ensures comfortable tap target for full date row
@@ -87,6 +87,7 @@ export function useRecordPromptSectionViewModel({
       showChevron: true,
       controlSize: "small",
       minHeight: 44,
+      titleTextStyle: "subheadline",
       sections: [
         {
           items: [
@@ -122,7 +123,13 @@ export function useRecordPromptSectionViewModel({
         },
       ],
     };
-  }, [formattedDate, onDatePress, onTodayPress, onShufflePrompt, onOpenOptions]);
+  }, [
+    formattedDate,
+    onDatePress,
+    onTodayPress,
+    onShufflePrompt,
+    onOpenOptions,
+  ]);
 
   return {
     menuConfig,
