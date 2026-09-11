@@ -117,33 +117,41 @@ export async function startServerLearningSession(
   courseId: string,
   nodeId: string,
 ): Promise<V1LearningSessionResult> {
-  await assertNodeBelongsToCourse(courseId, nodeId);
+  // ponytail: ensure we never hang infinitely if network drops mid-flight
+  return Promise.race([
+    (async () => {
+      await assertNodeBelongsToCourse(courseId, nodeId);
 
-  const { data, error } = await database
-    .from("exercises")
-    .select(
-      "id, node_id, order_index, type, phase, duration_seconds, scaffold_level, difficulty, is_scored, concept, content",
-    )
-    .eq("node_id", nodeId)
-    .order("order_index", { ascending: true });
+      const { data, error } = await database
+        .from("exercises")
+        .select(
+          "id, node_id, order_index, type, phase, duration_seconds, scaffold_level, difficulty, is_scored, concept, content",
+        )
+        .eq("node_id", nodeId)
+        .order("order_index", { ascending: true });
 
-  if (error) throw new Error(error.message);
+      if (error) throw new Error(error.message);
 
   const exercises = ((data ?? []) as ExerciseRow[]).map(mapExercise);
   if (exercises.length === 0) {
     throw new Error(`No exercises found for node ${nodeId}.`);
   }
 
-  assertSupportedExercises(exercises);
+      assertSupportedExercises(exercises);
 
-  return {
-    kind: V1NodeSessionKindEnum.V1Session,
-    nodeId,
-    sessionId: `server:${nodeId}`,
-    exercises,
-    requiredResolvedItemCount: exercises.length,
-    source: "server",
-  };
+      return {
+        kind: V1NodeSessionKindEnum.V1Session,
+        nodeId,
+        sessionId: `server:${nodeId}`,
+        exercises,
+        requiredResolvedItemCount: exercises.length,
+        source: "server",
+      };
+    })(),
+    new Promise<V1LearningSessionResult>((_, reject) =>
+      setTimeout(() => reject(new Error("Network timeout loading exercises")), 15000)
+    )
+  ]);
 }
 
 export async function fetchCourseExercises(

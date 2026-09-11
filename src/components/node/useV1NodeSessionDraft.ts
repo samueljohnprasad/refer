@@ -29,14 +29,26 @@ export function useV1NodeSessionDraft({
 }) {
   const exerciseSignature = exerciseIds.join("|");
 
-  useEffect(() => {
+    useEffect(() => {
     let mounted = true;
+    let fallbackFired = false;
+
+    // ponytail: fallback timeout in case AsyncStorage hangs indefinitely (bridge issues)
+    const fallbackTimeout = setTimeout(() => {
+      if (!mounted) return;
+      fallbackFired = true;
+      dispatch(
+        ensureV1LearningSession({
+          nodeId,
+          initialSavedResponses,
+        }),
+      );
+    }, 1500);
 
     loadV1SessionDraft(nodeId, exerciseSignature)
       .then((draft) => {
-        if (!mounted) {
-          return;
-        }
+        if (!mounted || fallbackFired) return;
+        clearTimeout(fallbackTimeout);
 
         dispatch(
           hydrateV1LearningSession({
@@ -49,9 +61,8 @@ export function useV1NodeSessionDraft({
       })
       .catch((error: unknown) => {
         console.warn("Failed to load v1 learning session draft", error);
-        if (!mounted) {
-          return;
-        }
+        if (!mounted || fallbackFired) return;
+        clearTimeout(fallbackTimeout);
 
         dispatch(
           ensureV1LearningSession({
@@ -63,6 +74,7 @@ export function useV1NodeSessionDraft({
 
     return () => {
       mounted = false;
+      clearTimeout(fallbackTimeout);
     };
   }, [dispatch, exerciseCount, exerciseSignature, initialSavedResponses, nodeId]);
 
