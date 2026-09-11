@@ -219,10 +219,24 @@ export const JourneyMapView = React.memo(function JourneyMapView({
         <CelebrationOverlay
           isVisible={true}
           context={{
-            // ponytail: Use level 2 to show streak for unit completion, or level 1. Let's stick to 1 for now unless requested.
             level: 1,
             primaryText: "Unit Complete!",
             secondaryText: `${controller.pendingCelebration.unitTitle}\n\n${controller.pendingCelebration.content.capabilityStatement}`,
+            pandaAnimationKey: 'generic_success',
+            backgroundColor: isDark ? '#1a2a1a' : '#fbfdf8',
+          }}
+          onContinue={controller.dismissCelebration}
+        />
+      )}
+
+      {/* Course Celebration */}
+      {controller.pendingCelebration?.level === CelebrationLevel.COURSE && (
+        <CelebrationOverlay
+          isVisible={true}
+          context={{
+            level: 1,
+            primaryText: "Course Complete!",
+            secondaryText: `${controller.pendingCelebration.courseTitle}\n\n${controller.pendingCelebration.content.acknowledgement}`,
             pandaAnimationKey: 'generic_success',
             backgroundColor: isDark ? '#1a2a1a' : '#fbfdf8',
           }}

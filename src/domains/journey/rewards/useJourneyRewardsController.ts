@@ -47,6 +47,8 @@ export function useJourneyRewardsController(courseId: string) {
     selectUnit(state, rewardNodeEntity?.unitId ?? ""),
   );
 
+  const [markFinaleSeen] = journeyApi.useMarkCourseFinaleSeenMutation();
+
   useFocusEffect(
     useCallback(() => {
       if (
@@ -70,17 +72,6 @@ export function useJourneyRewardsController(courseId: string) {
       );
     }, [course, courseId, courseProgress, dispatch, isCourseComplete]),
   );
-
-  useEffect(() => {
-    if (pendingCelebration?.level !== CelebrationLevel.COURSE) return;
-    if (pushedFinaleCourseRef.current === courseId) return;
-    pushedFinaleCourseRef.current = courseId;
-    router.push({
-      pathname: "/tabs/screens/(journey)/journey/finale",
-      params: { courseId },
-    });
-    dispatch(setPendingCelebration({ courseId, celebration: null }));
-  }, [courseId, dispatch, pendingCelebration]);
 
   useEffect(() => {
     if (
@@ -156,8 +147,12 @@ export function useJourneyRewardsController(courseId: string) {
   }, [isClaimingReward]);
 
   const dismissCelebration = useCallback(() => {
+    // ponytail: mark course finale as seen inline without the separate screen
+    if (pendingCelebration?.level === CelebrationLevel.COURSE) {
+      markFinaleSeen(courseId).catch(() => {});
+    }
     dispatch(setPendingCelebration({ courseId, celebration: null }));
-  }, [courseId, dispatch]);
+  }, [courseId, dispatch, pendingCelebration, markFinaleSeen]);
 
   const insightCard =
     rewardNode?.type === NodeType.CHEST
