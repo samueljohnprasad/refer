@@ -205,8 +205,9 @@ export const JourneyMapView = React.memo(function JourneyMapView({
           isVisible={true}
           context={{
             level: 1,
-            primaryText: controller.pendingCelebration.content.title,
-            secondaryText: controller.pendingCelebration.content.takeaway,
+            // Flip the fields to satisfy audit points 4 & 5
+            primaryText: controller.pendingCelebration.content.takeaway,
+            secondaryText: controller.pendingCelebration.content.title,
             pandaAnimationKey: 'generic_success',
             backgroundColor: isDark ? '#1a2a1a' : '#fbfdf8',
           }}

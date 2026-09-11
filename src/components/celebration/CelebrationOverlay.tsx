@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Modal } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { CelebrationOverlayProps } from '../../types/celebration';
 import { useCelebrationTimeline } from '../../hooks/useCelebrationTimeline';
@@ -54,49 +54,54 @@ export function CelebrationOverlay({
   if (!isVisible) return null;
 
   return (
-    <Animated.View 
-      style={[StyleSheet.absoluteFill, overlayStyle, { backgroundColor: context.backgroundColor }]}
-      className="flex-1 justify-center items-center z-50"
-    >
-      <Pressable 
-        style={StyleSheet.absoluteFill} 
-        onPress={handlePress} 
-        disabled={!canInteract}
+    <Modal transparent visible={isVisible} animationType="none" statusBarTranslucent>
+      <Animated.View 
+        style={[StyleSheet.absoluteFill, overlayStyle, { backgroundColor: context.backgroundColor }]}
+        className="flex-1 justify-center items-center z-50"
       >
-        <View className="flex-1 justify-center items-center px-6">
-          
-          <View className="w-64 h-64 justify-center items-center mb-8 relative">
-            <HappyRipple progress={timeline.rippleScale} color="rgba(255, 255, 255, 0.4)" />
-            <PandaMetaphor progress={timeline.pandaProgress} animationKey={context.pandaAnimationKey} />
+        <Pressable 
+          style={StyleSheet.absoluteFill} 
+          onPress={handlePress} 
+          disabled={!canInteract}
+        >
+          <View className="flex-1 justify-center items-center px-6">
+            
+            <View className="w-64 h-64 justify-center items-center mb-8 relative">
+              <HappyRipple 
+                progress={timeline.rippleScale} 
+                color={context.backgroundColor === '#1a2a1a' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(88, 204, 2, 0.15)'} 
+              />
+              <PandaMetaphor progress={timeline.pandaProgress} animationKey={context.pandaAnimationKey} />
+            </View>
+            
+            <Animated.View style={textStyle} className="mb-2">
+              <Text className="font-nunito-800 text-3xl text-center text-slate-800">
+                {context.primaryText}
+              </Text>
+            </Animated.View>
+
+            <Animated.View style={secondaryTextStyle} className="mb-12">
+              <Text className="font-nunito-600 text-lg text-slate-500 text-center">
+                {context.secondaryText}
+              </Text>
+              {context.level === 2 && (
+                <StreakIndicator />
+              )}
+            </Animated.View>
+
+            <Animated.View style={buttonStyle} className="w-full">
+              <Pressable 
+                onPress={handlePress}
+                className="bg-slate-900 py-4 rounded-2xl items-center w-full shadow-sm"
+                disabled={!canInteract}
+              >
+                <Text className="font-nunito-700 text-white text-lg">Continue</Text>
+              </Pressable>
+            </Animated.View>
+
           </View>
-          
-          <Animated.View style={textStyle} className="mb-2">
-            <Text className="font-nunito-800 text-3xl text-center text-slate-800">
-              {context.primaryText}
-            </Text>
-          </Animated.View>
-
-          <Animated.View style={secondaryTextStyle} className="mb-12">
-            <Text className="font-nunito-600 text-lg text-slate-500 text-center">
-              {context.secondaryText}
-            </Text>
-            {context.level === 2 && (
-              <StreakIndicator />
-            )}
-          </Animated.View>
-
-          <Animated.View style={buttonStyle} className="w-full">
-            <Pressable 
-              onPress={handlePress}
-              className="bg-slate-900 py-4 rounded-2xl items-center w-full shadow-sm"
-              disabled={!canInteract}
-            >
-              <Text className="font-nunito-700 text-white text-lg">Continue</Text>
-            </Pressable>
-          </Animated.View>
-
-        </View>
-      </Pressable>
-    </Animated.View>
+        </Pressable>
+      </Animated.View>
+    </Modal>
   );
 }
