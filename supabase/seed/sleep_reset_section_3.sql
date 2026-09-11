@@ -3052,12 +3052,12 @@ WITH curriculum AS (
                 {
                   "id": "trail-multiple-all",
                   "label": "All three changes are bad",
-                  "response": "That's a guess. One might have worked if the others hadn't interfered."
+                  "response": "That is only a guess because other changes interfered."
                 },
                 {
                   "id": "trail-multiple-none",
                   "label": "The outcome is unclear",
-                  "response": "Exactly. Multiple changes obscure the data."
+                  "response": "Multiple simultaneous changes obscure what actually caused the outcome."
                 }
               ]
             },
@@ -3069,7 +3069,7 @@ WITH curriculum AS (
                 {
                   "id": "trail-single-one",
                   "label": "Test one change across several nights",
-                  "response": "Correct. This forms the basis of the one-change rule."
+                  "response": "Testing one variable over several nights isolates what helped."
                 },
                 {
                   "id": "trail-single-fast",
@@ -3077,8 +3077,26 @@ WITH curriculum AS (
                   "response": "Changing nothing provides no new data to improve the evening blueprint."
                 }
               ]
+            },
+            {
+              "id": "trail-single-duration",
+              "prompt": "How long should you test that single change before deciding if it works?",
+              "summary": "You need a few nights to see a clear pattern.",
+              "options": [
+                {
+                  "id": "trail-single-duration-one",
+                  "label": "Decide after one night",
+                  "response": "A single night of data is easily skewed by random variation."
+                },
+                {
+                  "id": "trail-single-duration-many",
+                  "label": "Test for several nights",
+                  "response": "Testing across multiple nights smooths out random noise to reveal real patterns."
+                }
+              ]
             }
-          ]
+          ],
+          "stamp": "ONE CHANGE ISOLATES CAUSE"
         }
       }
     ]
