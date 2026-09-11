@@ -1,16 +1,17 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { View, Text } from "react-native";
+import Animated, { FadeInDown, ReduceMotion } from "react-native-reanimated";
+import { Button } from "@/src/components/ui/Button";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
-import {
-  COURSE_EXERCISE_FONTS,
-  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import {
   readRecord,
   readString,
+  readStringArray,
 } from "@/src/components/exercise/courseExerciseContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
+
+const ANIMATION = FadeInDown.duration(250).reduceMotion(ReduceMotion.System);
 
 export function CommonTrapCategoryEngine({
   exercise,
@@ -19,10 +20,24 @@ export function CommonTrapCategoryEngine({
 }: V1CategoryEngineProps) {
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
-  const isRevealed = saved?.revealed === true;
+  const phase = readString(saved?.phase) || "trap";
+
+  const trapTitle = readString(content.trapTitle);
+  const trapBody = readString(content.trapBody);
+  const shortTermPayoff = readString(content.shortTermPayoff) || readString(content.relief); // fallback
+  const hiddenCostRaw = content.hiddenCost ?? content.rebound;
+  const hiddenCost = readStringArray(hiddenCostRaw).length > 0
+    ? readStringArray(hiddenCostRaw)
+    : (readString(hiddenCostRaw) ? [readString(hiddenCostRaw)!] : []);
+    
+  const counterMoveObj = readRecord(content.counterMove);
+  const counterMoveBodyRaw = counterMoveObj?.body ?? content.counterMove;
+  const counterMoveBody = readStringArray(counterMoveBodyRaw).length > 0 
+    ? readStringArray(counterMoveBodyRaw) 
+    : (readString(counterMoveBodyRaw) ? [readString(counterMoveBodyRaw)!] : []);
 
   useEffect(() => {
-    if (!saved) {
+    if (!saved || !saved.phase) {
       onInteraction(
         {
           format: CourseExerciseCategoryEnum.CommonTrap,
@@ -30,183 +45,100 @@ export function CommonTrapCategoryEngine({
           revealed: false,
           isCorrect: true,
         },
+        false,
+      );
+    } else if (phase === "counter") {
+      onInteraction(
+        {
+          format: CourseExerciseCategoryEnum.CommonTrap,
+          phase: "counter",
+          revealed: false,
+          isCorrect: true,
+        },
         true,
       );
     }
-  }, [onInteraction, saved]);
+  }, [onInteraction, saved?.phase, phase]);
+
+  const handleNextPhase = (nextPhase: string) => {
+    onInteraction(
+      {
+        format: CourseExerciseCategoryEnum.CommonTrap,
+        phase: nextPhase,
+      },
+      nextPhase === "counter",
+    );
+  };
+
+  const isPayoffVisible = ["payoff", "cost", "counter", "complete"].includes(phase);
+  const isCostVisible = ["cost", "counter", "complete"].includes(phase);
+  const isCounterVisible = ["counter", "complete"].includes(phase);
 
   return (
-    <View style={styles.screenContent}>
+    <View className="flex-1 px-4 pt-2 pb-6">
       <CourseExerciseHeading
         title={readString(content.title) ?? "The trap that makes sense"}
         instruction={readString(content.instruction) ?? "Tap through."}
       />
 
-      <View style={styles.trapCard}>
-        <Text style={styles.neutralKicker}>THE TRAP · IT MAKES TOTAL SENSE</Text>
-        <Text style={styles.trapTitle}>{readString(content.trapTitle)}</Text>
-        <Text style={styles.trapBody}>{readString(content.trapBody)}</Text>
-      </View>
+      <View className="gap-4">
+        {/* Trap */}
+        <Animated.View entering={ANIMATION} className="bg-cream p-5 rounded-3xl">
+          <Text className="text-[11px] font-bold tracking-wider text-forest-700/60 mb-2">THE TRAP</Text>
+          {trapTitle && <Text className="text-xl font-bold text-forest-900 mb-2">{trapTitle}</Text>}
+          {trapBody && <Text className="text-base text-forest-800 leading-relaxed">{trapBody}</Text>}
+        </Animated.View>
 
-      {isRevealed ? (
-        <View style={styles.revealStack}>
-          <TrapOutcome
-            icon="check"
-            kicker="THE FIRST HOUR"
-            body={readString(content.relief)}
-            tone="olive"
-          />
-          <TrapOutcome
-            icon="corner-up-left"
-            kicker="THE BOOMERANG"
-            body={readString(content.rebound)}
-            tone="orange"
-          />
-          <View style={styles.counterMove}>
-            <Text style={styles.neutralKicker}>THE COUNTER-MOVE</Text>
-            <Text style={styles.outcomeBody}>
-              {readString(content.counterMove)}
-            </Text>
-          </View>
-        </View>
-      ) : null}
-    </View>
-  );
-}
+        {phase === "trap" && (
+          <Animated.View entering={ANIMATION}>
+            <Button variant="primary" label="AND THEN WHAT HAPPENS?" onPress={() => handleNextPhase("payoff")} />
+          </Animated.View>
+        )}
 
-function TrapOutcome({
-  body,
-  icon,
-  kicker,
-  tone,
-}: {
-  body: string | null;
-  icon: "check" | "corner-up-left";
-  kicker: string;
-  tone: "olive" | "orange";
-}) {
-  const isOlive = tone === "olive";
-  return (
-    <View
-      style={[
-        styles.outcome,
-        isOlive ? styles.oliveOutcome : styles.orangeOutcome,
-      ]}
-    >
-      <View
-        style={[
-          styles.iconCircle,
-          isOlive ? styles.oliveIcon : styles.orangeIcon,
-        ]}
-      >
-        <Feather
-          name={icon}
-          size={14}
-          color={SEMANTIC_COLORS.surface.primary}
-        />
-      </View>
-      <View style={styles.outcomeCopy}>
-        <Text style={isOlive ? styles.oliveKicker : styles.orangeKicker}>
-          {kicker}
-        </Text>
-        <Text style={styles.outcomeBody}>{body}</Text>
+        {/* Payoff */}
+        {isPayoffVisible && (
+          <Animated.View entering={ANIMATION} className="bg-cream p-5 rounded-3xl">
+            <Text className="text-[11px] font-bold tracking-wider text-forest-700/60 mb-2">WHY IT FEELS SAFE</Text>
+            {shortTermPayoff && <Text className="text-base text-forest-800 leading-relaxed">{shortTermPayoff}</Text>}
+          </Animated.View>
+        )}
+
+        {phase === "payoff" && (
+          <Animated.View entering={ANIMATION}>
+            <Button variant="primary" label="SEE WHAT IT TURNS INTO" onPress={() => handleNextPhase("cost")} />
+          </Animated.View>
+        )}
+
+        {/* Cost */}
+        {isCostVisible && (
+          <Animated.View entering={ANIMATION} className="bg-cream p-5 rounded-3xl">
+            <Text className="text-[11px] font-bold tracking-wider text-forest-700/60 mb-2">WHAT IT TURNS INTO</Text>
+            <View className="gap-2">
+              {hiddenCost.map((cost, idx) => (
+                <Text key={idx} className="text-base text-forest-800 leading-relaxed">• {cost}</Text>
+              ))}
+            </View>
+          </Animated.View>
+        )}
+
+        {phase === "cost" && (
+          <Animated.View entering={ANIMATION}>
+            <Button variant="primary" label="WHAT CAN I DO INSTEAD?" onPress={() => handleNextPhase("counter")} />
+          </Animated.View>
+        )}
+
+        {/* Counter */}
+        {isCounterVisible && (
+          <Animated.View entering={ANIMATION} className="bg-sage-50 p-5 rounded-3xl">
+            <Text className="text-[11px] font-bold tracking-wider text-forest-700 mb-2">TRY THIS INSTEAD</Text>
+            <View className="gap-2">
+              {counterMoveBody.map((move, idx) => (
+                <Text key={idx} className="text-base text-forest-800 leading-relaxed">{move}</Text>
+              ))}
+            </View>
+          </Animated.View>
+        )}
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  screenContent: {
-    flex: 1,
-    paddingHorizontal: 8,
-    paddingTop: 6,
-    paddingBottom: 12,
-  },
-  trapCard: {
-    gap: 9,
-    paddingHorizontal: 22,
-    paddingVertical: 22,
-    borderRadius: 28,
-    backgroundColor: SEMANTIC_COLORS.surface.primary,
-    shadowColor: SEMANTIC_COLORS.shadow,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.14,
-    shadowRadius: 8,
-  },
-  neutralKicker: {
-    color: SEMANTIC_COLORS.text.secondary,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 10.5,
-    letterSpacing: 0.5,
-  },
-  trapTitle: {
-    color: SEMANTIC_COLORS.text.primary,
-    fontFamily: COURSE_EXERCISE_FONTS.heading,
-    fontSize: 21,
-    lineHeight: 26,
-  },
-  trapBody: {
-    color: SEMANTIC_COLORS.text.primary,
-    fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 14.5,
-    lineHeight: 22,
-  },
-  revealStack: { gap: 10, marginTop: 12 },
-  outcome: {
-    minHeight: 76,
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 11,
-    paddingHorizontal: 15,
-    paddingVertical: 13,
-    borderWidth: 1.5,
-    borderRadius: 22,
-  },
-  oliveOutcome: {
-    borderColor: SEMANTIC_COLORS.brand.primary,
-    backgroundColor: SEMANTIC_COLORS.brand.soft,
-  },
-  orangeOutcome: {
-    borderColor: SEMANTIC_COLORS.brand.primaryLight,
-    backgroundColor: SEMANTIC_COLORS.brand.soft,
-  },
-  iconCircle: {
-    width: 28,
-    height: 28,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 14,
-  },
-  oliveIcon: { backgroundColor: SEMANTIC_COLORS.brand.primary },
-  orangeIcon: { backgroundColor: SEMANTIC_COLORS.brand.primary },
-  outcomeCopy: { flex: 1 },
-  oliveKicker: {
-    color: SEMANTIC_COLORS.brand.pressed,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 10.5,
-    letterSpacing: 0.5,
-  },
-  orangeKicker: {
-    color: SEMANTIC_COLORS.brand.pressed,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 10.5,
-    letterSpacing: 0.5,
-  },
-  outcomeBody: {
-    marginTop: 3,
-    color: SEMANTIC_COLORS.text.primary,
-    fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 13.5,
-    lineHeight: 20,
-  },
-  counterMove: {
-    paddingHorizontal: 15,
-    paddingVertical: 13,
-    borderRadius: 22,
-    backgroundColor: SEMANTIC_COLORS.surface.primary,
-    shadowColor: SEMANTIC_COLORS.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-});
