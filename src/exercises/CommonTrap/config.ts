@@ -8,9 +8,10 @@ export const CommonTrapConfig: CourseExerciseCategoryConfig = {
   engine: CommonTrapCategoryEngine,
   goalLabel: "See why a tempting coping move rebounds.",
   unavailableCopy: "This common-trap exercise is not available yet.",
-  // ponytail: engine drives phase reveals; hide skip once user progresses past trap
+  // ponytail: engine drives phase reveals; hide skip once user progresses past trap; hide footer until final phase
   presentation: {
     hideSkip: (_exercise, response) => Boolean(response?.phase && response.phase !== "trap"),
+    hideFooter: (_exercise, response) => response?.phase !== "counter" && response?.phase !== "complete",
   },
   interaction: {
     submissionMode: "explicit",
