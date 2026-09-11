@@ -3002,6 +3002,30 @@ WITH curriculum AS (
           "next": "Continue"
         }
       }
+      ,{
+        "source_id": "u3_l25_stimulus_surge",
+        "node_source_id": "u3_2_make_the_bedroom_work-n4",
+        "order_index": 10,
+        "type": "surge_diagram",
+        "phase": "model",
+        "duration_seconds": 35,
+        "scaffold_level": 1,
+        "difficulty": 0.12,
+        "is_scored": false,
+        "concept": "stimulus_control",
+        "content": {
+          "category": "surge_diagram",
+          "format": "surge_diagram",
+          "title": "Frustration changes over time",
+          "instruction": "Read the shape.",
+          "diagramTitle": "Wakeful effort rises, peaks, and can fall",
+          "peakLabel": "peak effort",
+          "fadeLabel": "body adjusts",
+          "axisLabel": "time",
+          "explanation": "When you can't sleep, frustration and effort can rise quickly. If you step out of bed and shift context, the effort cycle breaks and activation can fall.",
+          "note": "The goal isn't to force sleep, but to protect the bed from being associated with a surge of effort."
+        }
+      }
     ]
 
   $json$::jsonb) AS row(
