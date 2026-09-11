@@ -8,7 +8,6 @@ export { default as JourneyLoadingSkeleton } from "./JourneyLoadingSkeleton";
 export { default as NodeCompletionModal } from "./NodeCompletionModal";
 export { default as MascotBubble } from "./MascotBubble";
 export { default as ChestRewardModal } from "./ChestRewardModal";
-export { default as UnitCompleteModal } from "./UnitCompleteModal";
 export { default as ScrollToActiveButton } from "./ScrollToActiveButton";
 export { default as UnitDivider } from "./UnitDivider";
 export { default as SideProgressRail } from "./SideProgressRail";
@@ -22,7 +21,6 @@ export type { PathConnectorProps } from "./PathConnector";
 export type { JourneyHeaderProps } from "./JourneyHeader";
 export type { NodeCompletionModalProps } from "./NodeCompletionModal";
 export type { MascotBubbleProps } from "./MascotBubble";
-export type { UnitCompleteModalProps } from "./UnitCompleteModal";
 export type { ScrollToActiveButtonProps } from "./ScrollToActiveButton";
 export type {
   AnimatedNodeButtonProps,
