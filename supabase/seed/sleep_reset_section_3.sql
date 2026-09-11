@@ -2950,6 +2950,54 @@ WITH curriculum AS (
           "revisitMessage": "A short revisit can strengthen any principle that still feels effortful; no single response lowers your path."
         }
       }
+      ,{
+        "source_id": "u3_l21_switch_cue_invent",
+        "node_source_id": "u3_1_shift_into_night-n3",
+        "order_index": 10,
+        "type": "invent_first",
+        "phase": "infer",
+        "duration_seconds": 60,
+        "scaffold_level": 3,
+        "difficulty": 0.2,
+        "is_scored": true,
+        "concept": "transition_cue",
+        "content": {
+          "category": "invent_first",
+          "format": "invent_first",
+          "title": "Invent the rule",
+          "instruction": "Find what makes a transition cue effective.",
+          "cases": [
+            {
+              "id": "effective",
+              "name": "Alex",
+              "reading": "ends work, then folds a small basket of laundry",
+              "outcome": "changes pace",
+              "isCalm": true
+            },
+            {
+              "id": "ineffective",
+              "name": "Sam",
+              "reading": "ends work, then immediately checks personal emails",
+              "outcome": "stays alert",
+              "isCalm": false
+            }
+          ],
+          "question": "What separates the effective cue?",
+          "options": [
+            {
+              "id": "screen",
+              "label": "It does not use a screen.",
+              "response": "Screens matter, but laundry isn't the only screen-free task. What is the shift in demand?"
+            },
+            {
+              "id": "demand",
+              "label": "It significantly lowers demand.",
+              "response": "Yes. A transition cue acts as a bridge by requiring less cognitive effort."
+            }
+          ],
+          "theory": "demand"
+        }
+      }
     ]
 
   $json$::jsonb) AS row(
