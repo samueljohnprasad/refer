@@ -1,6 +1,7 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import Animated, { useAnimatedStyle, SharedValue, interpolate, Extrapolation } from 'react-native-reanimated';
+import React, { useRef, useEffect } from 'react';
+import { View } from 'react-native';
+import Animated, { useAnimatedStyle, SharedValue, interpolate, Extrapolation, runOnJS } from 'react-native-reanimated';
+import LottieView from 'lottie-react-native';
 import { CelebrationContext } from '../../types/celebration';
 
 interface PandaMetaphorProps {
@@ -9,33 +10,48 @@ interface PandaMetaphorProps {
 }
 
 export function PandaMetaphor({ progress, animationKey }: PandaMetaphorProps) {
-  // In a real implementation, this would map animationKey to a Lottie view.
-  // We use Reanimated here to mock the motion of the panda.
+  const lottieRef = useRef<LottieView>(null);
+
+  const playLottie = () => {
+    lottieRef.current?.play();
+  };
 
   const pandaStyle = useAnimatedStyle(() => {
-    const translateY = interpolate(progress.value, [0, 0.5, 1], [20, -10, 0], Extrapolation.CLAMP);
+    // ponytail: slightly more dramatic rise as requested in audit
+    const translateY = interpolate(progress.value, [0, 0.5, 1], [40, -5, 0], Extrapolation.CLAMP);
     const opacity = interpolate(progress.value, [0, 0.2, 1], [0, 1, 1], Extrapolation.CLAMP);
+    
+    // Auto-play lottie when opacity hits 1
+    if (opacity === 1) {
+      runOnJS(playLottie)();
+    }
+
     return {
       transform: [{ translateY }],
       opacity,
     };
   });
 
-  const getEmoji = () => {
+  const getAnimationSource = () => {
     switch (animationKey) {
-      case 'anxiety_relax': return '😌';
-      case 'thought_reframe': return '🤔';
-      case 'sleep_calm': return '😴';
-      case 'generic_success': return '🐼';
-      default: return '🐼';
+      case 'anxiety_relax': return require('../../../assets/lottie/panda/anxiety_relax.json');
+      case 'thought_reframe': return require('../../../assets/lottie/panda/thought_reframe.json');
+      case 'sleep_calm': return require('../../../assets/lottie/panda/sleep_calm.json');
+      case 'generic_success': return require('../../../assets/lottie/panda/generic_success.json');
+      default: return require('../../../assets/lottie/panda/generic_success.json');
     }
   };
 
   return (
-    <Animated.View style={pandaStyle} className="items-center justify-center">
-      <View className="w-32 h-32 bg-white/50 rounded-full items-center justify-center shadow-sm border border-white/20">
-        <Text className="text-6xl">{getEmoji()}</Text>
-      </View>
+    <Animated.View style={pandaStyle} className="items-center justify-center absolute w-full h-full">
+      <LottieView
+        ref={lottieRef}
+        source={getAnimationSource()}
+        style={{ width: '100%', height: '100%' }}
+        autoPlay={false}
+        loop={false}
+        resizeMode="contain"
+      />
     </Animated.View>
   );
 }
