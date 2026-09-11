@@ -36,14 +36,13 @@ export function CommonTrapCategoryEngine({
     ? readStringArray(counterMoveBodyRaw) 
     : (readString(counterMoveBodyRaw) ? [readString(counterMoveBodyRaw)!] : []);
 
+  // ponytail: remove legacy fields isCorrect/revealed from payload
   useEffect(() => {
     if (!saved || !saved.phase) {
       onInteraction(
         {
           format: CourseExerciseCategoryEnum.CommonTrap,
           phase: "trap",
-          revealed: false,
-          isCorrect: true,
         },
         false,
       );
@@ -52,8 +51,6 @@ export function CommonTrapCategoryEngine({
         {
           format: CourseExerciseCategoryEnum.CommonTrap,
           phase: "counter",
-          revealed: false,
-          isCorrect: true,
         },
         true,
       );

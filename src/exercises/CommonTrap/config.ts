@@ -16,5 +16,11 @@ export const CommonTrapConfig: CourseExerciseCategoryConfig = {
   interaction: {
     submissionMode: "explicit",
     getPrimaryLabel: () => "Continue",
+    // ponytail: restore primary transition to complete phase
+    getPrimaryTransition: (_exercise, response) => ({
+      kind: "response" as const,
+      ready: true,
+      response: { ...response, phase: "complete" },
+    }),
   },
 };
