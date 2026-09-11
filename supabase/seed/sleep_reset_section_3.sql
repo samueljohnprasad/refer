@@ -3026,6 +3026,61 @@ WITH curriculum AS (
           "note": "The goal isn't to force sleep, but to protect the bed from being associated with a surge of effort."
         }
       }
+      ,{
+        "source_id": "u3_l28_experiment_discovery",
+        "node_source_id": "u3_3_clear_test_personalize-n3",
+        "order_index": 10,
+        "type": "guided_discovery_trail",
+        "phase": "reason",
+        "duration_seconds": 70,
+        "scaffold_level": 2,
+        "difficulty": 0.17,
+        "is_scored": false,
+        "concept": "evening_experiment",
+        "content": {
+          "category": "guided_discovery_trail",
+          "format": "guided_discovery_trail",
+          "completionMode": "direct",
+          "title": "Follow the evidence",
+          "instruction": "Choose one clue at a time.",
+          "questions": [
+            {
+              "id": "trail-multiple-changes",
+              "prompt": "You try a new tea, change your bedtime, and read instead of watch TV. You sleep poorly. What is known?",
+              "summary": "You changed three things, but don't know which caused the poor sleep.",
+              "options": [
+                {
+                  "id": "trail-multiple-all",
+                  "label": "All three changes are bad",
+                  "response": "That's a guess. One might have worked if the others hadn't interfered."
+                },
+                {
+                  "id": "trail-multiple-none",
+                  "label": "The outcome is unclear",
+                  "response": "Exactly. Multiple changes obscure the data."
+                }
+              ]
+            },
+            {
+              "id": "trail-single-change",
+              "prompt": "How can you isolate the cause?",
+              "summary": "Testing one variable clarifies the outcome.",
+              "options": [
+                {
+                  "id": "trail-single-one",
+                  "label": "Test one change across several nights",
+                  "response": "Correct. This forms the basis of the one-change rule."
+                },
+                {
+                  "id": "trail-single-fast",
+                  "label": "Change nothing",
+                  "response": "Changing nothing provides no new data to improve the evening blueprint."
+                }
+              ]
+            }
+          ]
+        }
+      }
     ]
 
   $json$::jsonb) AS row(
