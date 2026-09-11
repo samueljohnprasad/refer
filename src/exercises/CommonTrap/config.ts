@@ -11,16 +11,30 @@ export const CommonTrapConfig: CourseExerciseCategoryConfig = {
   // ponytail: engine drives phase reveals; hide skip once user progresses past trap; hide footer until final phase
   presentation: {
     hideSkip: (_exercise, response) => Boolean(response?.phase && response.phase !== "trap"),
-    hideFooter: (_exercise, response) => response?.phase !== "counter" && response?.phase !== "complete",
   },
   interaction: {
     submissionMode: "explicit",
-    getPrimaryLabel: () => "Continue",
-    // ponytail: restore primary transition to complete phase
-    getPrimaryTransition: (_exercise, response) => ({
-      kind: "response" as const,
-      ready: true,
-      response: { ...response, phase: "complete" },
-    }),
+    getPrimaryLabel: (_exercise, response) => {
+      const phase = (response?.phase as string) || "trap";
+      if (phase === "trap") return "AND THEN WHAT HAPPENS?";
+      if (phase === "payoff") return "SEE WHAT IT TURNS INTO";
+      if (phase === "cost") return "WHAT CAN I DO INSTEAD?";
+      return "Continue";
+    },
+    getPrimaryTransition: (_exercise, response) => {
+      const phase = (response?.phase as string) || "trap";
+      let nextPhase = "complete";
+      
+      if (phase === "trap") nextPhase = "payoff";
+      else if (phase === "payoff") nextPhase = "cost";
+      else if (phase === "cost") nextPhase = "counter";
+      else if (phase === "counter") nextPhase = "complete";
+
+      return {
+        kind: "response" as const,
+        ready: true,
+        response: { ...response, phase: nextPhase },
+      };
+    },
   },
 };
