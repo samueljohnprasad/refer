@@ -1,0 +1,3208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Happy — App Store Screens v2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --sage-50: #f8fbf6;
+        --sage-100: #e5ede1;
+        --sage-200: #d3e0cd;
+        --sage-300: #abc0a2;
+        --sage-400: #7e9874;
+        --sage-500: #5f7f58;
+        --sage-600: #44633f;
+        --sage-700: #29452a;
+        --sage-800: #152714;
+        --canvas: #f8faf7;
+        --surface: #f7f7f7;
+        --border: #e5e5e5;
+        --ink: #142414;
+        --ink-soft: #6b6b6b;
+        --ink-muted: #afafaf;
+        --red: #ff4b4b;
+        --yellow: #ffd900;
+        --blue: #1cb0f6;
+        --purple: #ce82ff;
+        --orange: #ff9600;
+        --success: #16a34a;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: #0b120b;
+        font-family: "Nunito", sans-serif;
+        color: #e6ede4;
+      }
+
+      /* ---------- page chrome ---------- */
+      .page-header {
+        background: #0f1a0f;
+        border-bottom: 1px solid #1f2f1f;
+        padding: 20px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .page-title {
+        font-size: 18px;
+        font-weight: 900;
+        color: #f0f5f0;
+        letter-spacing: -0.02em;
+      }
+
+      .page-sub {
+        font-size: 12px;
+        color: #7e9874;
+        margin-top: 2px;
+      }
+
+      .export-note {
+        font-size: 11px;
+        color: var(--sage-300);
+        background: rgba(171, 192, 162, 0.08);
+        border: 1px solid rgba(171, 192, 162, 0.22);
+        border-radius: 8px;
+        padding: 8px 14px;
+        line-height: 1.6;
+      }
+
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 12px;
+        padding: 24px 32px;
+        background: #0f1a0f;
+        border-bottom: 1px solid #1f2f1f;
+        max-width: 1040px;
+        margin: 0 auto;
+      }
+
+      .thumb-card {
+        cursor: pointer;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1.5px solid #1f2f1f;
+        transition: border-color 0.15s;
+        user-select: none;
+      }
+
+      .thumb-card:hover {
+        border-color: var(--sage-300);
+      }
+
+      .thumb-art {
+        height: 120px;
+        background: var(--sage-800);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+
+      .thumb-tag {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        background: var(--sage-300);
+        color: var(--sage-800);
+        font-size: 8px;
+        font-weight: 900;
+        padding: 1px 5px;
+        border-radius: 3px;
+      }
+
+      .thumb-phone {
+        width: 60px;
+        height: 100px;
+        background: var(--canvas);
+        border-radius: 10px;
+        border: 2px solid var(--sage-600);
+        padding: 10px 6px 0;
+      }
+
+      .thumb-phone i {
+        display: block;
+        height: 6px;
+        border-radius: 2px;
+        background: var(--sage-200);
+        margin-bottom: 4px;
+      }
+
+      .thumb-phone i:first-child {
+        background: var(--sage-500);
+        height: 9px;
+      }
+
+      .thumb-label {
+        padding: 7px 9px;
+        background: #0b120b;
+        border-top: 1px solid #1f2f1f;
+      }
+
+      .thumb-num {
+        font-size: 9px;
+        font-weight: 800;
+        color: var(--sage-300);
+      }
+
+      .thumb-name {
+        font-size: 9px;
+        color: #7e9874;
+      }
+
+      .main-area {
+        max-width: 520px;
+        margin: 0 auto;
+      }
+
+      .artboard-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 48px 0 0;
+      }
+
+      .artboard-section:last-child {
+        padding-bottom: 80px;
+      }
+
+      .ab-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .ab-num {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--sage-300);
+        color: var(--sage-800);
+        font-size: 12px;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .ab-name {
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .ab-role {
+        font-size: 11px;
+        color: #7e9874;
+      }
+
+      .ab-footer {
+        margin-top: 12px;
+        font-size: 10px;
+        color: #4b5e4b;
+        text-align: center;
+        line-height: 1.7;
+      }
+
+      .ab-footer code {
+        background: #1a2a1a;
+        padding: 1px 5px;
+        border-radius: 3px;
+        font-family: monospace;
+        color: var(--sage-300);
+      }
+
+      .export-bar {
+        position: sticky;
+        bottom: 0;
+        z-index: 100;
+        background: #0f1a0f;
+        border-top: 1px solid #1f2f1f;
+        padding: 10px 24px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .nav-lbl {
+        font-size: 10px;
+        color: #7e9874;
+      }
+
+      .nav-btn {
+        background: rgba(171, 192, 162, 0.08);
+        border: 1px solid rgba(171, 192, 162, 0.22);
+        border-radius: 6px;
+        padding: 5px 10px;
+        font-size: 10px;
+        font-weight: 800;
+        color: var(--sage-300);
+        cursor: pointer;
+        font-family: inherit;
+      }
+
+      .nav-btn:hover {
+        background: rgba(171, 192, 162, 0.18);
+      }
+
+      /* ---------- artboard 390×844 ---------- */
+      .artboard {
+        width: 390px;
+        height: 844px;
+        background: linear-gradient(
+          170deg,
+          var(--sage-700) 0%,
+          var(--sage-800) 55%,
+          #0f1a0f 100%
+        );
+        position: relative;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .glow {
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(171, 192, 162, 0.22) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .za {
+        position: absolute;
+        top: 20px;
+        left: 28px;
+        right: 28px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        z-index: 10;
+      }
+
+      .bdot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--sage-300);
+      }
+
+      .bname {
+        font-size: 10px;
+        font-weight: 800;
+        color: rgba(255, 255, 255, 0.55);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .zb {
+        position: absolute;
+        top: 46px;
+        left: 28px;
+        right: 28px;
+        z-index: 10;
+      }
+
+      .ey {
+        font-size: 12px;
+        font-weight: 800;
+        color: var(--sage-300);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 9px;
+      }
+
+      .hl {
+        font-size: 50px;
+        font-weight: 900;
+        color: #fff;
+        line-height: 1.04;
+        letter-spacing: -0.025em;
+        margin-bottom: 13px;
+      }
+
+      .hl .ac {
+        color: var(--sage-300);
+      }
+
+      .sh {
+        font-size: 13.5px;
+        color: rgba(255, 255, 255, 0.62);
+        line-height: 1.5;
+        max-width: 300px;
+      }
+
+      .zc {
+        position: absolute;
+        top: 232px;
+        left: 11px;
+        right: 11px;
+        bottom: 42px;
+        z-index: 5;
+      }
+
+      .phone {
+        width: 100%;
+        height: 100%;
+        background: var(--sage-600);
+        border-radius: 46px;
+        border: 2px solid var(--sage-400);
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+      }
+
+      .phone-inner {
+        position: absolute;
+        inset: 2px;
+        background: var(--canvas);
+        border-radius: 44px;
+        overflow: hidden;
+      }
+
+      .sbar {
+        height: 52px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 15px 22px 0;
+        position: relative;
+        z-index: 5;
+      }
+
+      .stime {
+        font-size: 14px;
+        font-weight: 800;
+        color: var(--ink);
+      }
+
+      .sicons {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 2px;
+      }
+
+      .sbars {
+        display: flex;
+        align-items: flex-end;
+        gap: 1.5px;
+        height: 10px;
+      }
+
+      .sbars span {
+        width: 2.5px;
+        background: var(--ink);
+        border-radius: 1px;
+      }
+
+      .batt {
+        width: 23px;
+        height: 11px;
+        border: 1.5px solid var(--ink);
+        border-radius: 3px;
+        padding: 1.5px;
+        position: relative;
+      }
+
+      .batt::after {
+        content: "";
+        position: absolute;
+        right: -4.5px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 2.5px;
+        height: 5px;
+        background: var(--ink);
+        border-radius: 0 2px 2px 0;
+      }
+
+      .batt-fill {
+        height: 100%;
+        width: 88%;
+        background: var(--ink);
+        border-radius: 1px;
+      }
+
+      .di {
+        width: 114px;
+        height: 32px;
+        background: #000;
+        border-radius: 20px;
+        position: absolute;
+        top: 11px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+      }
+
+      .sc {
+        padding: 0 16px;
+        overflow: hidden;
+      }
+
+      .zd {
+        position: absolute;
+        bottom: 13px;
+        left: 28px;
+        right: 28px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        z-index: 10;
+      }
+
+      .stars {
+        display: flex;
+        gap: 2px;
+      }
+
+      .star {
+        width: 13px;
+        height: 13px;
+        background: var(--yellow);
+        clip-path: polygon(
+          50% 0%,
+          61% 35%,
+          98% 35%,
+          68% 57%,
+          79% 91%,
+          50% 70%,
+          21% 91%,
+          32% 57%,
+          2% 35%,
+          39% 35%
+        );
+      }
+
+      .ptxt {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.55);
+      }
+
+      /* ---------- shared in-phone widgets ---------- */
+      .card {
+        background: #fff;
+        border: 1.5px solid var(--border);
+        border-radius: 16px;
+        padding: 12px 14px;
+      }
+
+      .lbl {
+        font-size: 8px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 10px;
+        font-weight: 800;
+        padding: 4px 9px;
+        border-radius: 999px;
+      }
+
+      .pill-fire {
+        background: #feede0;
+        color: var(--orange);
+      }
+
+      .pill-course {
+        background: var(--sage-100);
+        color: var(--sage-600);
+      }
+
+      .btn3d {
+        display: block;
+        border-radius: 14px;
+        text-align: center;
+        font-weight: 900;
+        color: #fff;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .btn-sage {
+        background: var(--sage-500);
+        box-shadow: 0 4px 0 var(--sage-600);
+      }
+
+      /* --- S1 journey --- */
+      .unit-card {
+        background: var(--sage-500);
+        border-radius: 16px;
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 4px 0 var(--sage-600);
+        color: #fff;
+      }
+
+      .unit-eyebrow {
+        font-size: 8px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        opacity: 0.8;
+      }
+
+      .unit-title {
+        font-size: 14px;
+        font-weight: 900;
+        margin-top: 2px;
+      }
+
+      .unit-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.22);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      .bubble {
+        position: absolute;
+        background: #fff;
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        padding: 7px 10px;
+        font-size: 9.5px;
+        font-weight: 700;
+        color: var(--ink);
+        max-width: 132px;
+        line-height: 1.35;
+        box-shadow: 0 4px 12px rgba(20, 36, 20, 0.08);
+      }
+
+      .start-tag {
+        position: absolute;
+        background: #fff;
+        border: 2px solid var(--sage-500);
+        color: var(--sage-500);
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+        padding: 3px 8px;
+        border-radius: 8px;
+      }
+
+      .start-tag::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -7px;
+        transform: translateX(-50%) rotate(45deg);
+        width: 8px;
+        height: 8px;
+        background: #fff;
+        border-right: 2px solid var(--sage-500);
+        border-bottom: 2px solid var(--sage-500);
+      }
+
+      .tabbar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 64px;
+        background: rgba(255, 255, 255, 0.92);
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-start;
+        padding: 9px 8px 0;
+      }
+
+      .tab {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        font-size: 7.5px;
+        font-weight: 800;
+        color: var(--ink-muted);
+      }
+
+      .tab svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .tab.on {
+        color: var(--sage-500);
+      }
+
+      /* --- S2 capture --- */
+      .prompt {
+        font-size: 17px;
+        font-weight: 900;
+        color: var(--ink);
+        line-height: 1.25;
+        letter-spacing: -0.01em;
+      }
+
+      .mic-wrap {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .ring {
+        position: absolute;
+        border-radius: 50%;
+        border: 1.5px solid var(--sage-300);
+      }
+
+      .mic {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: var(--sage-500);
+        box-shadow:
+          0 5px 0 var(--sage-600),
+          0 12px 24px rgba(95, 127, 88, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .side-btn {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: #fff;
+        border: 1.5px solid var(--border);
+        box-shadow: 0 3px 0 var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .wave {
+        display: flex;
+        align-items: center;
+        gap: 2.5px;
+        height: 26px;
+      }
+
+      .wave span {
+        width: 3px;
+        border-radius: 2px;
+        background: var(--sage-400);
+      }
+
+      .transcript {
+        font-size: 10.5px;
+        color: var(--ink);
+        line-height: 1.5;
+      }
+
+      .transcript em {
+        font-style: normal;
+        color: var(--ink-muted);
+      }
+
+      .mood-chip {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--sage-50);
+        border: 1.5px solid var(--sage-200);
+        border-radius: 12px;
+        padding: 8px 10px;
+      }
+
+      /* --- S3 home --- */
+      .greet {
+        font-size: 20px;
+        font-weight: 900;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+      }
+
+      .hero {
+        background: var(--sage-500);
+        border-radius: 18px;
+        padding: 14px;
+        color: #fff;
+        box-shadow: 0 4px 0 var(--sage-600);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        right: -30px;
+        top: -30px;
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .moods {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .mood {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 7.5px;
+        font-weight: 800;
+        color: var(--ink-soft);
+      }
+
+      .face {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+      }
+
+      .mood.on .face {
+        background: var(--sage-100);
+        border-color: var(--sage-500);
+        box-shadow: 0 3px 0 var(--sage-500);
+      }
+
+      .mood.on {
+        color: var(--sage-600);
+      }
+
+      .week {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .day {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 8px;
+        font-weight: 800;
+        color: var(--ink-muted);
+      }
+
+      .day i {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+      }
+
+      .day.done i {
+        background: var(--orange);
+        border-color: var(--orange);
+      }
+
+      .day.today i {
+        border: 2px dashed var(--orange);
+        background: #feede0;
+      }
+
+      .day.done {
+        color: var(--ink);
+      }
+
+      .prog {
+        height: 8px;
+        background: var(--sage-100);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+
+      .prog i {
+        display: block;
+        height: 100%;
+        width: 60%;
+        background: var(--sage-500);
+        border-radius: 999px;
+      }
+
+      /* --- S4 journal calendar --- */
+      .cal {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px 2px;
+      }
+
+      .cal .dow {
+        font-size: 7.5px;
+        font-weight: 800;
+        color: var(--ink-muted);
+        text-align: center;
+        margin-bottom: 2px;
+      }
+
+      .cd {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        font-size: 8.5px;
+        font-weight: 700;
+        color: var(--ink);
+        padding: 2px 0;
+      }
+
+      .cd.dim {
+        color: var(--ink-muted);
+      }
+
+      .cd .m {
+        font-size: 11px;
+        line-height: 1;
+        height: 12px;
+      }
+
+      .cd.sel {
+        background: var(--sage-500);
+        color: #fff;
+        border-radius: 9px;
+      }
+
+      .entry {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .entry .m {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+
+      .entry .t {
+        font-size: 11px;
+        font-weight: 900;
+        color: var(--ink);
+      }
+
+      .entry .s {
+        font-size: 9px;
+        color: var(--ink-soft);
+        line-height: 1.45;
+        margin-top: 2px;
+      }
+
+      .entry .meta {
+        font-size: 8px;
+        font-weight: 800;
+        color: var(--ink-muted);
+        margin-top: 4px;
+        display: flex;
+        gap: 6px;
+      }
+
+      /* --- S5 exercises --- */
+      .chips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: nowrap;
+        overflow: hidden;
+      }
+
+      .chip {
+        font-size: 9px;
+        font-weight: 800;
+        padding: 5px 10px;
+        border-radius: 999px;
+        border: 1.5px solid var(--border);
+        color: var(--ink-soft);
+        background: #fff;
+        white-space: nowrap;
+      }
+
+      .chip.on {
+        background: var(--sage-500);
+        border-color: var(--sage-500);
+        color: #fff;
+      }
+
+      .ex {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        background: #fff;
+        border: 1.5px solid var(--border);
+        border-radius: 16px;
+        padding: 10px 12px;
+      }
+
+      .ex .ico {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+        flex-shrink: 0;
+      }
+
+      .ex .t {
+        font-size: 11px;
+        font-weight: 900;
+        color: var(--ink);
+      }
+
+      .ex .s {
+        font-size: 8.5px;
+        color: var(--ink-soft);
+        margin-top: 2px;
+      }
+
+      .ex .dur {
+        font-size: 8px;
+        font-weight: 800;
+        color: var(--sage-600);
+        background: var(--sage-100);
+        padding: 3px 7px;
+        border-radius: 999px;
+        flex-shrink: 0;
+      }
+
+      .delta {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 9px;
+        font-weight: 800;
+        color: var(--ink);
+      }
+
+      .delta .bar {
+        flex: 1;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--sage-100);
+        position: relative;
+      }
+
+      .delta .bar i {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        border-radius: 999px;
+      }
+
+      /* --- S5 insights timeline --- */
+      .seg {
+        display: flex;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: 999px;
+        padding: 3px;
+      }
+
+      .seg div {
+        flex: 1;
+        text-align: center;
+        font-size: 9.5px;
+        font-weight: 800;
+        color: var(--ink-soft);
+        padding: 5px 0;
+        border-radius: 999px;
+      }
+
+      .seg .on {
+        background: #fff;
+        color: var(--ink);
+        box-shadow: 0 1px 3px rgba(20, 36, 20, 0.12);
+      }
+
+      .tl {
+        position: relative;
+        padding-left: 22px;
+      }
+
+      .tl::before {
+        content: "";
+        position: absolute;
+        left: 6px;
+        top: 6px;
+        bottom: 6px;
+        width: 2px;
+        background: var(--sage-200);
+        border-radius: 1px;
+      }
+
+      .tli {
+        position: relative;
+        margin-bottom: 13px;
+      }
+
+      .tli::before {
+        content: "";
+        position: absolute;
+        left: -21px;
+        top: 1px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--sage-500);
+        border: 2.5px solid var(--canvas);
+        box-shadow: 0 0 0 1.5px var(--sage-500);
+      }
+
+      .tli.pending::before {
+        background: #fff;
+        box-shadow: 0 0 0 1.5px var(--sage-300);
+      }
+
+      .tli .d {
+        font-size: 8px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        color: var(--ink-muted);
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+
+      .tli .sum {
+        font-size: 10.5px;
+        color: var(--ink);
+        line-height: 1.45;
+      }
+
+      .tli .view {
+        font-size: 9.5px;
+        font-weight: 800;
+        color: var(--sage-500);
+        margin-top: 4px;
+      }
+
+      .tli .xp {
+        font-size: 8px;
+        font-weight: 800;
+        color: var(--orange);
+        background: #feede0;
+        padding: 2px 6px;
+        border-radius: 999px;
+        margin-left: 6px;
+      }
+
+      .gen {
+        border: 1.5px dashed var(--sage-300);
+        background: var(--sage-50);
+        border-radius: 12px;
+        padding: 9px 11px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 9.5px;
+        font-weight: 800;
+        color: var(--sage-600);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page-header">
+      <div>
+        <div class="page-title">Happy — App Store Screenshots v2</div>
+        <div class="page-sub">
+          6 screens · 390×844 px each · Export at Chrome @3x = 1170×2532 px PNG
+        </div>
+      </div>
+      <div class="export-note">
+        Run <strong>exportScreen(N)</strong> in DevTools Console to isolate a
+        screen.<br />Device toolbar → 390×844 @3x → Capture screenshot.
+      </div>
+    </div>
+
+    <div class="gallery">
+      <div class="thumb-card" onclick="go(1)">
+        <div class="thumb-art">
+          <span class="thumb-tag">S1</span>
+          <div class="thumb-phone">
+            <i></i><i></i><i style="width: 60%"></i
+            ><i style="height: 22px; background: var(--sage-100)"></i>
+          </div>
+        </div>
+        <div class="thumb-label">
+          <div class="thumb-num">Screen 1</div>
+          <div class="thumb-name">Guided Journeys</div>
+        </div>
+      </div>
+      <div class="thumb-card" onclick="go(2)">
+        <div class="thumb-art">
+          <span class="thumb-tag">S2</span>
+          <div class="thumb-phone">
+            <i></i><i></i><i style="width: 60%"></i
+            ><i style="height: 22px; background: var(--sage-100)"></i>
+          </div>
+        </div>
+        <div class="thumb-label">
+          <div class="thumb-num">Screen 2</div>
+          <div class="thumb-name">Voice Capture</div>
+        </div>
+      </div>
+      <div class="thumb-card" onclick="go(3)">
+        <div class="thumb-art">
+          <span class="thumb-tag">S3</span>
+          <div class="thumb-phone">
+            <i></i><i></i><i style="width: 60%"></i
+            ><i style="height: 22px; background: var(--sage-100)"></i>
+          </div>
+        </div>
+        <div class="thumb-label">
+          <div class="thumb-num">Screen 3</div>
+          <div class="thumb-name">Daily Check-in</div>
+        </div>
+      </div>
+      <div class="thumb-card" onclick="go(4)">
+        <div class="thumb-art">
+          <span class="thumb-tag">S4</span>
+          <div class="thumb-phone">
+            <i></i><i></i><i style="width: 60%"></i
+            ><i style="height: 22px; background: var(--sage-100)"></i>
+          </div>
+        </div>
+        <div class="thumb-label">
+          <div class="thumb-num">Screen 4</div>
+          <div class="thumb-name">Mood Journal</div>
+        </div>
+      </div>
+      <div class="thumb-card" onclick="go(5)">
+        <div class="thumb-art">
+          <span class="thumb-tag">S5</span>
+          <div class="thumb-phone">
+            <i></i><i></i><i style="width: 60%"></i
+            ><i style="height: 22px; background: var(--sage-100)"></i>
+          </div>
+        </div>
+        <div class="thumb-label">
+          <div class="thumb-num">Screen 5</div>
+          <div class="thumb-name">AI Insights Timeline</div>
+        </div>
+      </div>
+      <div class="thumb-card" onclick="go(6)">
+        <div class="thumb-art">
+          <span class="thumb-tag">S6</span>
+          <div class="thumb-phone">
+            <i></i><i></i><i style="width: 60%"></i
+            ><i style="height: 22px; background: var(--sage-100)"></i>
+          </div>
+        </div>
+        <div class="thumb-label">
+          <div class="thumb-num">Screen 6</div>
+          <div class="thumb-name">CBT Exercises</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-area">
+      <!-- ================= SCREEN 1 : JOURNEYS ================= -->
+      <div class="artboard-section" id="screen-1">
+        <div class="ab-header">
+          <div class="ab-num">1</div>
+          <div class="ab-name">Guided Journeys</div>
+          <div class="ab-role">— Promise</div>
+        </div>
+        <div class="artboard">
+          <div class="glow" style="top: -70px; right: -70px"></div>
+          <div class="za">
+            <div class="bdot"></div>
+            <div class="bname">Happy</div>
+          </div>
+          <div class="zb">
+            <div class="ey">Guided journeys</div>
+            <div class="hl">
+              Your mind,<br /><span class="ac">one lesson</span><br />at a time
+            </div>
+            <div class="sh">
+              CBT &amp; mindfulness courses laid out as a path. Finish lessons,
+              pass checkpoints, unlock rewards.
+            </div>
+          </div>
+          <div class="zc" style="top: 250px">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="sbar">
+                  <div class="stime">9:41</div>
+                  <div class="sicons">
+                    <div class="sbars">
+                      <span style="height: 3px"></span
+                      ><span style="height: 5px"></span
+                      ><span style="height: 7px"></span
+                      ><span style="height: 9px"></span>
+                    </div>
+                    <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
+                      <path
+                        d="M7.5 8.5a1 1 0 110 2 1 1 0 010-2z"
+                        fill="#142414"
+                      />
+                      <path
+                        d="M4.2 6.8a4.7 4.7 0 016.6 0M1.5 4.2a8.4 8.4 0 0112 0"
+                        stroke="#142414"
+                        stroke-width="1.2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    <div class="batt"><div class="batt-fill"></div></div>
+                  </div>
+                </div>
+                <div class="di"></div>
+                <div class="sc" style="padding: 2px 14px 0">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      margin-bottom: 10px;
+                    "
+                  >
+                    <span class="pill pill-course">
+                      <svg
+                        width="11"
+                        height="11"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M9 4l6 2 6-2v14l-6 2-6-2-6 2V6z" />
+                        <path d="M9 4v14M15 6v14" />
+                      </svg>
+                      3 courses
+                    </span>
+                    <span class="pill pill-fire">🔥 21</span>
+                  </div>
+                  <div class="unit-card">
+                    <div>
+                      <div class="unit-eyebrow">
+                        UNIT 2 · CALM UNDER PRESSURE
+                      </div>
+                      <div class="unit-title">Catch the thought spiral</div>
+                    </div>
+                    <div class="unit-icon">🌿</div>
+                  </div>
+                </div>
+
+                <!-- path -->
+                <div style="position: relative; height: 360px; margin-top: 8px">
+                  <svg
+                    width="100%"
+                    height="360"
+                    viewBox="0 0 366 360"
+                    style="position: absolute; inset: 0"
+                  >
+                    <defs>
+                      <filter
+                        id="sh"
+                        x="-20%"
+                        y="-20%"
+                        width="140%"
+                        height="160%"
+                      >
+                        <feDropShadow
+                          dx="0"
+                          dy="3"
+                          stdDeviation="2"
+                          flood-color="#142414"
+                          flood-opacity="0.12"
+                        />
+                      </filter>
+                    </defs>
+                    <!-- connector -->
+                    <path
+                      d="M120 40 C 120 90, 246 90, 246 130 S 120 180, 120 220 S 246 270, 246 310"
+                      fill="none"
+                      stroke="#d3e0cd"
+                      stroke-width="7"
+                      stroke-linecap="round"
+                      stroke-dasharray="0 16"
+                    />
+
+                    <!-- node 1 completed -->
+                    <g transform="translate(120 40)">
+                      <circle r="27" cy="6" fill="#44633f" />
+                      <circle r="27" fill="#5f7f58" />
+                      <ellipse
+                        rx="15"
+                        ry="7"
+                        cy="-11"
+                        fill="rgba(255,255,255,0.22)"
+                      />
+                      <path
+                        d="M-10 0 l7 7 l14 -15"
+                        fill="none"
+                        stroke="#fff"
+                        stroke-width="4.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </g>
+
+                    <!-- node 2 completed -->
+                    <g transform="translate(246 130)">
+                      <circle r="27" cy="6" fill="#44633f" />
+                      <circle r="27" fill="#5f7f58" />
+                      <ellipse
+                        rx="15"
+                        ry="7"
+                        cy="-11"
+                        fill="rgba(255,255,255,0.22)"
+                      />
+                      <path
+                        d="M-10 0 l7 7 l14 -15"
+                        fill="none"
+                        stroke="#fff"
+                        stroke-width="4.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </g>
+
+                    <!-- node 3 current (with halo) -->
+                    <g transform="translate(120 220)">
+                      <circle
+                        r="40"
+                        fill="none"
+                        stroke="#abc0a2"
+                        stroke-width="5"
+                        opacity="0.55"
+                      />
+                      <circle r="29" cy="7" fill="#44633f" />
+                      <circle r="29" fill="#5f7f58" />
+                      <ellipse
+                        rx="16"
+                        ry="7"
+                        cy="-12"
+                        fill="rgba(255,255,255,0.25)"
+                      />
+                      <path
+                        d="M0 -13 l4 8 9 1.3 -6.5 6.3 1.5 9 -8 -4.2 -8 4.2 1.5 -9 -6.5 -6.3 9 -1.3z"
+                        fill="#fff"
+                      />
+                    </g>
+
+                    <!-- node 4 chest (locked, gold) -->
+                    <g transform="translate(246 310)">
+                      <rect
+                        x="-26"
+                        y="-14"
+                        width="52"
+                        height="40"
+                        rx="9"
+                        fill="#C9A400"
+                      />
+                      <rect
+                        x="-26"
+                        y="-20"
+                        width="52"
+                        height="40"
+                        rx="9"
+                        fill="#FFD900"
+                      />
+                      <rect
+                        x="-26"
+                        y="-20"
+                        width="52"
+                        height="15"
+                        rx="9"
+                        fill="#FFE55C"
+                      />
+                      <rect
+                        x="-26"
+                        y="-7"
+                        width="52"
+                        height="3"
+                        fill="#C9A400"
+                      />
+                      <rect
+                        x="-6"
+                        y="-11"
+                        width="12"
+                        height="12"
+                        rx="3"
+                        fill="#7a5c00"
+                      />
+                    </g>
+
+                    <!-- node 5 locked (peeks from bottom) -->
+                    <g transform="translate(120 395)">
+                      <circle r="27" cy="6" fill="#cfcfcf" />
+                      <circle r="27" fill="#e5e5e5" />
+                    </g>
+                  </svg>
+
+                  <div
+                    class="start-tag"
+                    style="left: 100px; top: -4px; display: none"
+                  ></div>
+                  <div class="start-tag" style="left: 100px; top: 150px">
+                    START
+                  </div>
+
+                  <div class="bubble" style="left: 196px; top: 196px">
+                    Two lessons down. This one's a 3-min breathing reset 🌱
+                  </div>
+                  <div
+                    style="
+                      position: absolute;
+                      left: 206px;
+                      top: 246px;
+                      width: 34px;
+                      height: 34px;
+                      border-radius: 50%;
+                      background: var(--sage-100);
+                      border: 1.5px solid var(--sage-300);
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-size: 17px;
+                    "
+                  >
+                    🐨
+                  </div>
+
+                  <div
+                    class="bubble"
+                    style="
+                      left: 14px;
+                      top: 290px;
+                      background: #fff5d6;
+                      border-color: #ffd900;
+                      color: #7a5c00;
+                      max-width: 110px;
+                    "
+                  >
+                    <span class="lbl" style="color: #b58a00">chest</span
+                    ><br />Insight reward
+                  </div>
+                </div>
+
+                <div class="tabbar">
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 11l9-8 9 8v10H3z" /></svg
+                    >Home
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M4 4h13a3 3 0 013 3v13H7a3 3 0 01-3-3z" />
+                      <path d="M4 17a3 3 0 013-3h13" /></svg
+                    >Journal
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M12 8v8M8 12h8" /></svg
+                    >Capture
+                  </div>
+                  <div class="tab on">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z" /></svg
+                    >Journeys
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                    >
+                      <path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z" />
+                      <path d="M5 19l7-7" /></svg
+                    >Exercises
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="zd">
+            <div class="stars">
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+            </div>
+            <div class="ptxt">4.8 · Health &amp; Fitness</div>
+          </div>
+        </div>
+        <div class="ab-footer">
+          Export: Chrome F12 → 390×844 @3x → Capture screenshot → 1170×2532px
+          PNG<br />Console: <code>exportScreen(1)</code>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 2 : VOICE CAPTURE ================= -->
+      <div class="artboard-section" id="screen-2">
+        <div class="ab-header">
+          <div class="ab-num">2</div>
+          <div class="ab-name">Voice Capture</div>
+          <div class="ab-role">— Core action</div>
+        </div>
+        <div class="artboard">
+          <div class="glow" style="top: -70px; left: -70px"></div>
+          <div class="za">
+            <div class="bdot"></div>
+            <div class="bname">Happy</div>
+          </div>
+          <div class="zb">
+            <div class="ey">Voice journaling</div>
+            <div class="hl">
+              Just talk.<br /><span class="ac">Happy listens.</span>
+            </div>
+            <div class="sh">
+              Speak your day out loud. AI transcribes it, reads the emotion, and
+              reflects back what it heard.
+            </div>
+          </div>
+          <div class="zc">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="sbar">
+                  <div class="stime">9:41</div>
+                  <div class="sicons">
+                    <div class="sbars">
+                      <span style="height: 3px"></span
+                      ><span style="height: 5px"></span
+                      ><span style="height: 7px"></span
+                      ><span style="height: 9px"></span>
+                    </div>
+                    <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
+                      <path
+                        d="M7.5 8.5a1 1 0 110 2 1 1 0 010-2z"
+                        fill="#142414"
+                      />
+                      <path
+                        d="M4.2 6.8a4.7 4.7 0 016.6 0M1.5 4.2a8.4 8.4 0 0112 0"
+                        stroke="#142414"
+                        stroke-width="1.2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    <div class="batt"><div class="batt-fill"></div></div>
+                  </div>
+                </div>
+                <div class="di"></div>
+                <div class="sc" style="padding: 2px 16px 0">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      margin-bottom: 14px;
+                    "
+                  >
+                    <div class="lbl" style="color: var(--sage-600)">
+                      Thu, 11 Sep
+                    </div>
+                    <span class="pill pill-fire">🔥 21 day streak</span>
+                  </div>
+
+                  <div class="lbl" style="margin-bottom: 6px">
+                    Today's prompt
+                  </div>
+                  <div class="prompt">
+                    What's one thing that felt heavier than it needed to today?
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 5px;
+                      margin-top: 8px;
+                      font-size: 9px;
+                      font-weight: 800;
+                      color: var(--sage-500);
+                    "
+                  >
+                    <svg
+                      width="11"
+                      height="11"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                    >
+                      <path d="M4 4l6 6M20 20l-6-6M20 4l-6 6M4 20l6-6" />
+                    </svg>
+                    Shuffle prompt
+                  </div>
+
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      gap: 22px;
+                      margin: 22px 0 14px;
+                    "
+                  >
+                    <div class="side-btn">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#6b6b6b"
+                        stroke-width="2.2"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M4 8h3l2-3h6l2 3h3v11H4z" />
+                        <circle cx="12" cy="13" r="3.5" />
+                      </svg>
+                    </div>
+                    <div class="mic-wrap">
+                      <div
+                        class="ring"
+                        style="width: 150px; height: 150px; opacity: 0.25"
+                      ></div>
+                      <div
+                        class="ring"
+                        style="width: 118px; height: 118px; opacity: 0.5"
+                      ></div>
+                      <div class="mic">
+                        <svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#fff"
+                          stroke-width="2.4"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <rect x="9" y="3" width="6" height="11" rx="3" />
+                          <path d="M5 11a7 7 0 0014 0M12 18v3" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="side-btn">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#6b6b6b"
+                        stroke-width="2.2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M4 20h4l11-11-4-4L4 16z" />
+                        <path d="M13 7l4 4" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      gap: 10px;
+                      margin-bottom: 14px;
+                    "
+                  >
+                    <div class="wave">
+                      <span style="height: 6px"></span
+                      ><span style="height: 14px"></span
+                      ><span style="height: 22px"></span
+                      ><span style="height: 12px"></span
+                      ><span style="height: 26px"></span
+                      ><span style="height: 16px"></span
+                      ><span style="height: 8px"></span
+                      ><span style="height: 20px"></span
+                      ><span style="height: 11px"></span
+                      ><span style="height: 24px"></span
+                      ><span style="height: 9px"></span
+                      ><span style="height: 17px"></span
+                      ><span style="height: 6px"></span>
+                    </div>
+                    <div
+                      style="
+                        font-size: 11px;
+                        font-weight: 900;
+                        color: var(--ink);
+                        font-variant-numeric: tabular-nums;
+                      "
+                    >
+                      0:42
+                    </div>
+                    <div
+                      style="
+                        width: 7px;
+                        height: 7px;
+                        border-radius: 50%;
+                        background: var(--red);
+                      "
+                    ></div>
+                  </div>
+
+                  <div class="card" style="margin-bottom: 9px">
+                    <div class="lbl" style="margin-bottom: 5px">
+                      Live transcript
+                    </div>
+                    <div class="transcript">
+                      …honestly the meeting wasn't even bad, I just kept
+                      replaying it on the walk home and assuming everyone
+                      thought I'd <em>rambled</em>
+                    </div>
+                  </div>
+
+                  <div class="mood-chip">
+                    <div
+                      style="
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 50%;
+                        background: #fff5d6;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 16px;
+                      "
+                    >
+                      😐
+                    </div>
+                    <div style="flex: 1">
+                      <div class="lbl" style="color: var(--sage-600)">
+                        Emotion read
+                      </div>
+                      <div
+                        style="
+                          font-size: 11px;
+                          font-weight: 800;
+                          color: var(--ink);
+                        "
+                      >
+                        Anxious · leaning Okay
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        font-size: 8px;
+                        font-weight: 800;
+                        color: var(--sage-500);
+                      "
+                    >
+                      Analyzing…
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tabbar">
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 11l9-8 9 8v10H3z" /></svg
+                    >Home
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M4 4h13a3 3 0 013 3v13H7a3 3 0 01-3-3z" />
+                      <path d="M4 17a3 3 0 013-3h13" /></svg
+                    >Journal
+                  </div>
+                  <div class="tab on">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <circle cx="12" cy="12" r="10" />
+                      <path
+                        d="M12 7v10M7 12h10"
+                        stroke="#fff"
+                        stroke-width="2.4"
+                        stroke-linecap="round"
+                      /></svg
+                    >Capture
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z" />
+                      <path d="M9 4v14M15 6v14" /></svg
+                    >Journeys
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                    >
+                      <path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z" />
+                      <path d="M5 19l7-7" /></svg
+                    >Exercises
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="zd">
+            <div class="stars">
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+            </div>
+            <div class="ptxt">4.8 · Health &amp; Fitness</div>
+          </div>
+        </div>
+        <div class="ab-footer">
+          Export: Chrome F12 → 390×844 @3x → Capture screenshot → 1170×2532px
+          PNG<br />Console: <code>exportScreen(2)</code>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 3 : HOME CHECK-IN ================= -->
+      <div class="artboard-section" id="screen-3">
+        <div class="ab-header">
+          <div class="ab-num">3</div>
+          <div class="ab-name">Daily Check-in</div>
+          <div class="ab-role">— Habit</div>
+        </div>
+        <div class="artboard">
+          <div class="glow" style="bottom: -90px; right: -80px"></div>
+          <div class="za">
+            <div class="bdot"></div>
+            <div class="bname">Happy</div>
+          </div>
+          <div class="zb">
+            <div class="ey">Daily check-in</div>
+            <div class="hl">
+              Show up.<br /><span class="ac">Feel the shift.</span>
+            </div>
+            <div class="sh">
+              A prompt, a mood, a streak. Two minutes a day is all it takes to
+              build the habit.
+            </div>
+          </div>
+          <div class="zc">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="sbar">
+                  <div class="stime">9:41</div>
+                  <div class="sicons">
+                    <div class="sbars">
+                      <span style="height: 3px"></span
+                      ><span style="height: 5px"></span
+                      ><span style="height: 7px"></span
+                      ><span style="height: 9px"></span>
+                    </div>
+                    <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
+                      <path
+                        d="M7.5 8.5a1 1 0 110 2 1 1 0 010-2z"
+                        fill="#142414"
+                      />
+                      <path
+                        d="M4.2 6.8a4.7 4.7 0 016.6 0M1.5 4.2a8.4 8.4 0 0112 0"
+                        stroke="#142414"
+                        stroke-width="1.2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    <div class="batt"><div class="batt-fill"></div></div>
+                  </div>
+                </div>
+                <div class="di"></div>
+                <div class="sc" style="padding: 2px 16px 0">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      margin-bottom: 12px;
+                    "
+                  >
+                    <div>
+                      <div class="greet">Good evening, Sam</div>
+                      <div
+                        style="
+                          font-size: 10px;
+                          color: var(--ink-soft);
+                          font-weight: 600;
+                        "
+                      >
+                        Thursday, 11 September
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 50%;
+                        background: var(--surface);
+                        border: 1.5px solid var(--border);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                      "
+                    >
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#6b6b6b"
+                        stroke-width="2.2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="3" />
+                        <path
+                          d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div class="hero" style="margin-bottom: 10px">
+                    <div
+                      class="lbl"
+                      style="
+                        color: rgba(255, 255, 255, 0.75);
+                        margin-bottom: 6px;
+                      "
+                    >
+                      Today's reflection
+                    </div>
+                    <div
+                      style="
+                        font-size: 15px;
+                        font-weight: 900;
+                        line-height: 1.25;
+                        max-width: 230px;
+                        position: relative;
+                        z-index: 1;
+                      "
+                    >
+                      What did you handle better today than you would have a
+                      month ago?
+                    </div>
+                    <div
+                      style="
+                        display: inline-block;
+                        margin-top: 10px;
+                        background: #fff;
+                        color: var(--sage-600);
+                        font-size: 9px;
+                        font-weight: 900;
+                        letter-spacing: 0.06em;
+                        padding: 6px 12px;
+                        border-radius: 999px;
+                        position: relative;
+                        z-index: 1;
+                      "
+                    >
+                      REFLECT →
+                    </div>
+                  </div>
+
+                  <div class="card" style="margin-bottom: 10px">
+                    <div class="lbl" style="margin-bottom: 8px">
+                      How are you feeling?
+                    </div>
+                    <div class="moods">
+                      <div class="mood">
+                        <div class="face">😞</div>
+                        Terrible
+                      </div>
+                      <div class="mood">
+                        <div class="face">🙁</div>
+                        Bad
+                      </div>
+                      <div class="mood">
+                        <div class="face">😐</div>
+                        Okay
+                      </div>
+                      <div class="mood on">
+                        <div class="face">🙂</div>
+                        Good
+                      </div>
+                      <div class="mood">
+                        <div class="face">😄</div>
+                        Great
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card" style="margin-bottom: 10px">
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 8px;
+                      "
+                    >
+                      <div class="lbl">This week</div>
+                      <span
+                        class="pill pill-fire"
+                        style="font-size: 9px; padding: 3px 8px"
+                        >🔥 21</span
+                      >
+                    </div>
+                    <div class="week">
+                      <div class="day done">
+                        <i
+                          ><svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#fff"
+                            stroke-width="3.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M5 12l5 5 9-11" /></svg></i
+                        >M
+                      </div>
+                      <div class="day done">
+                        <i
+                          ><svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#fff"
+                            stroke-width="3.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M5 12l5 5 9-11" /></svg></i
+                        >T
+                      </div>
+                      <div class="day done">
+                        <i
+                          ><svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#fff"
+                            stroke-width="3.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M5 12l5 5 9-11" /></svg></i
+                        >W
+                      </div>
+                      <div class="day today"><i></i>T</div>
+                      <div class="day"><i></i>F</div>
+                      <div class="day"><i></i>S</div>
+                      <div class="day"><i></i>S</div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="card"
+                    style="display: flex; align-items: center; gap: 12px"
+                  >
+                    <div
+                      style="
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 12px;
+                        background: var(--sage-100);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 18px;
+                        flex-shrink: 0;
+                      "
+                    >
+                      🌿
+                    </div>
+                    <div style="flex: 1; min-width: 0">
+                      <div class="lbl" style="color: var(--sage-600)">
+                        Continue journey
+                      </div>
+                      <div
+                        style="
+                          font-size: 11px;
+                          font-weight: 900;
+                          color: var(--ink);
+                          margin: 2px 0 5px;
+                        "
+                      >
+                        Catch the thought spiral · Lesson 3
+                      </div>
+                      <div class="prog"><i></i></div>
+                    </div>
+                    <div
+                      style="
+                        width: 28px;
+                        height: 28px;
+                        border-radius: 50%;
+                        background: var(--sage-500);
+                        box-shadow: 0 3px 0 var(--sage-600);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-shrink: 0;
+                      "
+                    >
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="#fff"
+                      >
+                        <path d="M7 4l12 8-12 8z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tabbar">
+                  <div class="tab on">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M3 11l9-8 9 8v10H3z" /></svg
+                    >Home
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M4 4h13a3 3 0 013 3v13H7a3 3 0 01-3-3z" />
+                      <path d="M4 17a3 3 0 013-3h13" /></svg
+                    >Journal
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M12 8v8M8 12h8" /></svg
+                    >Capture
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z" />
+                      <path d="M9 4v14M15 6v14" /></svg
+                    >Journeys
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                    >
+                      <path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z" />
+                      <path d="M5 19l7-7" /></svg
+                    >Exercises
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="zd">
+            <div class="stars">
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+            </div>
+            <div class="ptxt">4.8 · Health &amp; Fitness</div>
+          </div>
+        </div>
+        <div class="ab-footer">
+          Export: Chrome F12 → 390×844 @3x → Capture screenshot → 1170×2532px
+          PNG<br />Console: <code>exportScreen(3)</code>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 4 : MOOD JOURNAL ================= -->
+      <div class="artboard-section" id="screen-4">
+        <div class="ab-header">
+          <div class="ab-num">4</div>
+          <div class="ab-name">Mood Journal</div>
+          <div class="ab-role">— Proof</div>
+        </div>
+        <div class="artboard">
+          <div class="glow" style="top: -70px; right: -70px"></div>
+          <div class="za">
+            <div class="bdot"></div>
+            <div class="bname">Happy</div>
+          </div>
+          <div class="zb">
+            <div class="ey">Mood journal</div>
+            <div class="hl">
+              Every mood,<br /><span class="ac">on the calendar</span>
+            </div>
+            <div class="sh">
+              A month of feelings at a glance. Tap any day to reread what you
+              said and how you felt.
+            </div>
+          </div>
+          <div class="zc">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="sbar">
+                  <div class="stime">9:41</div>
+                  <div class="sicons">
+                    <div class="sbars">
+                      <span style="height: 3px"></span
+                      ><span style="height: 5px"></span
+                      ><span style="height: 7px"></span
+                      ><span style="height: 9px"></span>
+                    </div>
+                    <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
+                      <path
+                        d="M7.5 8.5a1 1 0 110 2 1 1 0 010-2z"
+                        fill="#142414"
+                      />
+                      <path
+                        d="M4.2 6.8a4.7 4.7 0 016.6 0M1.5 4.2a8.4 8.4 0 0112 0"
+                        stroke="#142414"
+                        stroke-width="1.2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    <div class="batt"><div class="batt-fill"></div></div>
+                  </div>
+                </div>
+                <div class="di"></div>
+                <div class="sc" style="padding: 2px 16px 0">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      margin-bottom: 10px;
+                    "
+                  >
+                    <div class="greet" style="font-size: 18px">September</div>
+                    <div style="display: flex; gap: 6px">
+                      <div
+                        style="
+                          width: 26px;
+                          height: 26px;
+                          border-radius: 50%;
+                          background: var(--surface);
+                          border: 1.5px solid var(--border);
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          font-size: 11px;
+                          font-weight: 900;
+                          color: var(--ink-soft);
+                        "
+                      >
+                        ‹
+                      </div>
+                      <div
+                        style="
+                          width: 26px;
+                          height: 26px;
+                          border-radius: 50%;
+                          background: var(--surface);
+                          border: 1.5px solid var(--border);
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          font-size: 11px;
+                          font-weight: 900;
+                          color: var(--ink-soft);
+                        "
+                      >
+                        ›
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="card"
+                    style="padding: 10px 8px; margin-bottom: 10px"
+                  >
+                    <div class="cal">
+                      <div class="dow">M</div>
+                      <div class="dow">T</div>
+                      <div class="dow">W</div>
+                      <div class="dow">T</div>
+                      <div class="dow">F</div>
+                      <div class="dow">S</div>
+                      <div class="dow">S</div>
+                      <div class="cd"><span class="m">🙂</span>1</div>
+                      <div class="cd"><span class="m">😄</span>2</div>
+                      <div class="cd"><span class="m">😐</span>3</div>
+                      <div class="cd"><span class="m">🙂</span>4</div>
+                      <div class="cd"><span class="m">🙁</span>5</div>
+                      <div class="cd"><span class="m">🙂</span>6</div>
+                      <div class="cd"><span class="m">😄</span>7</div>
+                      <div class="cd"><span class="m">😄</span>8</div>
+                      <div class="cd"><span class="m">🙂</span>9</div>
+                      <div class="cd"><span class="m">😐</span>10</div>
+                      <div class="cd sel"><span class="m">🙂</span>11</div>
+                      <div class="cd dim"><span class="m"></span>12</div>
+                      <div class="cd dim"><span class="m"></span>13</div>
+                      <div class="cd dim"><span class="m"></span>14</div>
+                      <div class="cd dim"><span class="m"></span>15</div>
+                      <div class="cd dim"><span class="m"></span>16</div>
+                      <div class="cd dim"><span class="m"></span>17</div>
+                      <div class="cd dim"><span class="m"></span>18</div>
+                      <div class="cd dim"><span class="m"></span>19</div>
+                      <div class="cd dim"><span class="m"></span>20</div>
+                      <div class="cd dim"><span class="m"></span>21</div>
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-around;
+                        border-top: 1px solid var(--border);
+                        margin-top: 8px;
+                        padding-top: 8px;
+                      "
+                    >
+                      <div style="text-align: center">
+                        <div
+                          style="
+                            font-size: 14px;
+                            font-weight: 900;
+                            color: var(--success);
+                          "
+                        >
+                          73%
+                        </div>
+                        <div class="lbl" style="font-size: 6.5px">
+                          Good days
+                        </div>
+                      </div>
+                      <div
+                        style="
+                          text-align: center;
+                          border-left: 1px solid var(--border);
+                          padding-left: 14px;
+                        "
+                      >
+                        <div
+                          style="
+                            font-size: 14px;
+                            font-weight: 900;
+                            color: var(--ink);
+                          "
+                        >
+                          11
+                        </div>
+                        <div class="lbl" style="font-size: 6.5px">Entries</div>
+                      </div>
+                      <div
+                        style="
+                          text-align: center;
+                          border-left: 1px solid var(--border);
+                          padding-left: 14px;
+                        "
+                      >
+                        <div
+                          style="
+                            font-size: 14px;
+                            font-weight: 900;
+                            color: var(--sage-500);
+                          "
+                        >
+                          +0.6
+                        </div>
+                        <div class="lbl" style="font-size: 6.5px">
+                          vs August
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      margin-bottom: 8px;
+                    "
+                  >
+                    <div class="lbl">Thursday, 11 Sep</div>
+                    <div
+                      style="
+                        font-size: 8.5px;
+                        font-weight: 800;
+                        color: var(--sage-500);
+                      "
+                    >
+                      Timeline &amp; Insights →
+                    </div>
+                  </div>
+
+                  <div class="card entry" style="margin-bottom: 8px">
+                    <div class="m" style="background: var(--sage-100)">🙂</div>
+                    <div style="flex: 1; min-width: 0">
+                      <div class="t">Walked home instead of the bus</div>
+                      <div class="s">
+                        Kept replaying the meeting, then noticed I was doing it.
+                        Named it. It got quieter.
+                      </div>
+                      <div class="meta">
+                        <span>🎙 Voice · 0:42</span><span>·</span
+                        ><span>Mood: Good</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card entry" style="margin-bottom: 8px">
+                    <div class="m" style="background: #fff5d6">😐</div>
+                    <div style="flex: 1; min-width: 0">
+                      <div class="t">Slept badly, still showed up</div>
+                      <div class="s">
+                        Morning check-in. Low energy but did the 3-min breathing
+                        lesson anyway.
+                      </div>
+                      <div class="meta">
+                        <span>✍️ Typed</span><span>·</span
+                        ><span>Mood: Okay</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="card"
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 9px;
+                      background: var(--sage-50);
+                      border-color: var(--sage-200);
+                    "
+                  >
+                    <div style="font-size: 14px">✨</div>
+                    <div
+                      style="
+                        font-size: 9.5px;
+                        font-weight: 700;
+                        color: var(--sage-700);
+                        line-height: 1.4;
+                      "
+                    >
+                      Your mood lifts on days you walk. That's
+                      <strong>4 of 4</strong> this month.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tabbar">
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 11l9-8 9 8v10H3z" /></svg
+                    >Home
+                  </div>
+                  <div class="tab on">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M4 4h13a3 3 0 013 3v13H7a3 3 0 01-3-3z" /></svg
+                    >Journal
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M12 8v8M8 12h8" /></svg
+                    >Capture
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z" />
+                      <path d="M9 4v14M15 6v14" /></svg
+                    >Journeys
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                    >
+                      <path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z" />
+                      <path d="M5 19l7-7" /></svg
+                    >Exercises
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="zd">
+            <div class="stars">
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+            </div>
+            <div class="ptxt">4.8 · Health &amp; Fitness</div>
+          </div>
+        </div>
+        <div class="ab-footer">
+          Export: Chrome F12 → 390×844 @3x → Capture screenshot → 1170×2532px
+          PNG<br />Console: <code>exportScreen(4)</code>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 5 : AI INSIGHTS TIMELINE ================= -->
+      <div class="artboard-section" id="screen-5">
+        <div class="ab-header">
+          <div class="ab-num">5</div>
+          <div class="ab-name">AI Insights Timeline</div>
+          <div class="ab-role">— AI payoff</div>
+        </div>
+        <div class="artboard">
+          <div class="glow" style="top: -70px; left: -70px"></div>
+          <div class="za">
+            <div class="bdot"></div>
+            <div class="bname">Happy</div>
+          </div>
+          <div class="zb">
+            <div class="ey">AI insights</div>
+            <div class="hl">
+              Your story,<br /><span class="ac">read back to you</span>
+            </div>
+            <div class="sh">
+              Daily, weekly and monthly AI summaries of what you wrote. Patterns
+              you'd never spot in the moment.
+            </div>
+          </div>
+          <div class="zc">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="sbar">
+                  <div class="stime">9:41</div>
+                  <div class="sicons">
+                    <div class="sbars">
+                      <span style="height: 3px"></span
+                      ><span style="height: 5px"></span
+                      ><span style="height: 7px"></span
+                      ><span style="height: 9px"></span>
+                    </div>
+                    <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
+                      <path
+                        d="M7.5 8.5a1 1 0 110 2 1 1 0 010-2z"
+                        fill="#142414"
+                      />
+                      <path
+                        d="M4.2 6.8a4.7 4.7 0 016.6 0M1.5 4.2a8.4 8.4 0 0112 0"
+                        stroke="#142414"
+                        stroke-width="1.2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    <div class="batt"><div class="batt-fill"></div></div>
+                  </div>
+                </div>
+                <div class="di"></div>
+                <div class="sc" style="padding: 2px 16px 0">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      margin-bottom: 10px;
+                    "
+                  >
+                    <div class="greet" style="font-size: 18px">Timeline</div>
+                    <span class="pill pill-course">✨ 24 insights</span>
+                  </div>
+
+                  <div class="seg" style="margin-bottom: 14px">
+                    <div>Days</div>
+                    <div class="on">Weeks</div>
+                    <div>Months</div>
+                  </div>
+
+                  <div class="tl">
+                    <div class="tli">
+                      <div class="d">
+                        Sep 8–14, 2026 <span class="xp">+340 XP</span>
+                      </div>
+                      <div class="sum">
+                        Strong week for catching spirals early. Three of four
+                        anxious entries ended with a reframe you wrote yourself,
+                        not one we suggested.
+                      </div>
+                      <div class="view">View insight</div>
+                    </div>
+                    <div class="tli">
+                      <div class="d">
+                        Sep 1–7, 2026 <span class="xp">+280 XP</span>
+                      </div>
+                      <div class="sum">
+                        Clear need for introverted recovery time. Your mood
+                        dipped after back-to-back social days and rebounded
+                        within one quiet evening.
+                      </div>
+                      <div class="view">View insight</div>
+                    </div>
+                    <div class="tli">
+                      <div class="d">
+                        Aug 25–31, 2026 <span class="xp">+210 XP</span>
+                      </div>
+                      <div class="sum">
+                        Strong correlation between physical movement and
+                        cognitive breakthroughs. Every "figured it out" entry
+                        followed a walk.
+                      </div>
+                      <div class="view">View insight</div>
+                    </div>
+                    <div class="tli pending">
+                      <div class="d">Aug 18–24, 2026</div>
+                      <div class="gen">
+                        <span>Generate Weekly Insight</span>
+                        <span style="font-size: 12px">✨</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="card"
+                    style="
+                      background: var(--sage-50);
+                      border-color: var(--sage-200);
+                      display: flex;
+                      gap: 9px;
+                      align-items: flex-start;
+                    "
+                  >
+                    <div style="font-size: 13px; line-height: 1">📈</div>
+                    <div>
+                      <div
+                        class="lbl"
+                        style="color: var(--sage-600); margin-bottom: 3px"
+                      >
+                        Month so far
+                      </div>
+                      <div
+                        style="
+                          font-size: 9.5px;
+                          font-weight: 700;
+                          color: var(--sage-700);
+                          line-height: 1.4;
+                        "
+                      >
+                        Average mood <strong>3.9 → 4.3</strong>. Anxiety
+                        mentions down <strong>38%</strong> since you started
+                        Unit 2.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tabbar">
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 11l9-8 9 8v10H3z" /></svg
+                    >Home
+                  </div>
+                  <div class="tab on">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M4 4h13a3 3 0 013 3v13H7a3 3 0 01-3-3z" /></svg
+                    >Journal
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M12 8v8M8 12h8" /></svg
+                    >Capture
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z" />
+                      <path d="M9 4v14M15 6v14" /></svg
+                    >Journeys
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                    >
+                      <path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z" />
+                      <path d="M5 19l7-7" /></svg
+                    >Exercises
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="zd">
+            <div class="stars">
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+            </div>
+            <div class="ptxt">4.8 · Health &amp; Fitness</div>
+          </div>
+        </div>
+        <div class="ab-footer">
+          Export: Chrome F12 → 390×844 @3x → Capture screenshot → 1170×2532px
+          PNG<br />Console: <code>exportScreen(5)</code>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 6 : CBT EXERCISES ================= -->
+      <div class="artboard-section" id="screen-6">
+        <div class="ab-header">
+          <div class="ab-num">6</div>
+          <div class="ab-name">CBT Exercises</div>
+          <div class="ab-role">— Close</div>
+        </div>
+        <div class="artboard">
+          <div class="glow" style="bottom: -90px; left: -80px"></div>
+          <div class="za">
+            <div class="bdot"></div>
+            <div class="bname">Happy</div>
+          </div>
+          <div class="zb">
+            <div class="ey">CBT &amp; mindfulness tools</div>
+            <div class="hl">
+              Tools for the<br /><span class="ac">hard moments</span>
+            </div>
+            <div class="sh">
+              Reframe a thought, calm a spiral, ground yourself. Guided
+              exercises that take minutes, not sessions.
+            </div>
+          </div>
+          <div class="zc">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="sbar">
+                  <div class="stime">9:41</div>
+                  <div class="sicons">
+                    <div class="sbars">
+                      <span style="height: 3px"></span
+                      ><span style="height: 5px"></span
+                      ><span style="height: 7px"></span
+                      ><span style="height: 9px"></span>
+                    </div>
+                    <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
+                      <path
+                        d="M7.5 8.5a1 1 0 110 2 1 1 0 010-2z"
+                        fill="#142414"
+                      />
+                      <path
+                        d="M4.2 6.8a4.7 4.7 0 016.6 0M1.5 4.2a8.4 8.4 0 0112 0"
+                        stroke="#142414"
+                        stroke-width="1.2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    <div class="batt"><div class="batt-fill"></div></div>
+                  </div>
+                </div>
+                <div class="di"></div>
+                <div class="sc" style="padding: 2px 16px 0">
+                  <div
+                    class="greet"
+                    style="font-size: 18px; margin-bottom: 10px"
+                  >
+                    Exercises
+                  </div>
+
+                  <div class="chips" style="margin-bottom: 12px">
+                    <div class="chip on">All</div>
+                    <div class="chip">CBT core</div>
+                    <div class="chip">Anxiety</div>
+                    <div class="chip">Mindfulness</div>
+                    <div class="chip">Overthinking</div>
+                  </div>
+
+                  <div
+                    class="hero"
+                    style="margin-bottom: 12px; padding: 12px 14px"
+                  >
+                    <div
+                      class="lbl"
+                      style="
+                        color: rgba(255, 255, 255, 0.75);
+                        margin-bottom: 4px;
+                      "
+                    >
+                      Jump back in
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        position: relative;
+                        z-index: 1;
+                      "
+                    >
+                      <div>
+                        <div style="font-size: 14px; font-weight: 900">
+                          Thought reframing
+                        </div>
+                        <div
+                          style="font-size: 9px; opacity: 0.85; margin-top: 2px"
+                        >
+                          Step 3 of 5 · Evidence for &amp; against
+                        </div>
+                      </div>
+                      <div
+                        style="
+                          width: 32px;
+                          height: 32px;
+                          border-radius: 50%;
+                          background: #fff;
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          box-shadow: 0 3px 0 rgba(0, 0, 0, 0.15);
+                        "
+                      >
+                        <svg
+                          width="13"
+                          height="13"
+                          viewBox="0 0 24 24"
+                          fill="#5f7f58"
+                        >
+                          <path d="M7 4l12 8-12 8z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="lbl" style="margin-bottom: 7px">Library</div>
+                  <div class="ex" style="margin-bottom: 7px">
+                    <div class="ico" style="background: #ddf4ff">🌬️</div>
+                    <div style="flex: 1; min-width: 0">
+                      <div class="t">Box breathing</div>
+                      <div class="s">Anxiety · calm the body first</div>
+                    </div>
+                    <div class="dur">3 min</div>
+                  </div>
+                  <div class="ex" style="margin-bottom: 7px">
+                    <div class="ico" style="background: #f0deff">🔄</div>
+                    <div style="flex: 1; min-width: 0">
+                      <div class="t">Catch the distortion</div>
+                      <div class="s">CBT core · name the thinking trap</div>
+                    </div>
+                    <div class="dur">5 min</div>
+                  </div>
+                  <div class="ex" style="margin-bottom: 7px">
+                    <div class="ico" style="background: #feede0">🪨</div>
+                    <div style="flex: 1; min-width: 0">
+                      <div class="t">5-4-3-2-1 grounding</div>
+                      <div class="s">Mindfulness · back to the room</div>
+                    </div>
+                    <div class="dur">2 min</div>
+                  </div>
+                  <div class="ex" style="margin-bottom: 12px">
+                    <div class="ico" style="background: var(--sage-100)">
+                      🃏
+                    </div>
+                    <div style="flex: 1; min-width: 0">
+                      <div class="t">Coping cards</div>
+                      <div class="s">Overthinking · your own reminders</div>
+                    </div>
+                    <div class="dur">1 min</div>
+                  </div>
+
+                  <div class="card">
+                    <div class="lbl" style="margin-bottom: 8px">
+                      Last session · Thought reframing
+                    </div>
+                    <div class="delta" style="margin-bottom: 6px">
+                      <span style="width: 44px">Distress</span>
+                      <div class="bar">
+                        <i
+                          style="
+                            width: 78%;
+                            background: var(--red);
+                            opacity: 0.35;
+                          "
+                        ></i
+                        ><i style="width: 32%; background: var(--red)"></i>
+                      </div>
+                      <span style="color: var(--success)">−46</span>
+                    </div>
+                    <div class="delta">
+                      <span style="width: 44px">Calm</span>
+                      <div class="bar">
+                        <i style="width: 30%; background: var(--sage-300)"></i
+                        ><i
+                          style="
+                            width: 74%;
+                            background: var(--sage-500);
+                            opacity: 0.9;
+                          "
+                        ></i>
+                      </div>
+                      <span style="color: var(--success)">+44</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tabbar">
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 11l9-8 9 8v10H3z" /></svg
+                    >Home
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M4 4h13a3 3 0 013 3v13H7a3 3 0 01-3-3z" />
+                      <path d="M4 17a3 3 0 013-3h13" /></svg
+                    >Journal
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M12 8v8M8 12h8" /></svg
+                    >Capture
+                  </div>
+                  <div class="tab">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z" />
+                      <path d="M9 4v14M15 6v14" /></svg
+                    >Journeys
+                  </div>
+                  <div class="tab on">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z" /></svg
+                    >Exercises
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="zd">
+            <div class="stars">
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+            </div>
+            <div class="ptxt">4.8 · Health &amp; Fitness</div>
+          </div>
+        </div>
+        <div class="ab-footer">
+          Export: Chrome F12 → 390×844 @3x → Capture screenshot → 1170×2532px
+          PNG<br />Console: <code>exportScreen(6)</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="export-bar">
+      <span class="nav-lbl">Jump to:</span>
+      <button class="nav-btn" onclick="go(1)">S1: Guided Journeys</button>
+      <button class="nav-btn" onclick="go(2)">S2: Voice Capture</button>
+      <button class="nav-btn" onclick="go(3)">S3: Daily Check-in</button>
+      <button class="nav-btn" onclick="go(4)">S4: Mood Journal</button>
+      <button class="nav-btn" onclick="go(5)">S5: AI Insights Timeline</button>
+      <button class="nav-btn" onclick="go(6)">S6: CBT Exercises</button>
+      <span style="margin-left: auto; font-size: 10px; color: #4b5e4b"
+        >Console:
+        <code
+          style="
+            background: #1a2a1a;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #abc0a2;
+          "
+          >exportScreen(N)</code
+        >
+        isolates a screen</span
+      >
+    </div>
+
+    <script>
+      function go(n) {
+        document
+          .getElementById("screen-" + n)
+          .scrollIntoView({ behavior: "smooth" });
+      }
+      function exportScreen(n) {
+        document.querySelectorAll(".artboard-section").forEach((s, i) => {
+          if (i !== n - 1) s.style.display = "none";
+          else {
+            s.style.padding = "0";
+            s.style.margin = "0";
+          }
+        });
+        [".page-header", ".gallery", ".export-bar"].forEach(
+          (q) => (document.querySelector(q).style.display = "none"),
+        );
+        document
+          .querySelectorAll(".ab-header,.ab-footer")
+          .forEach((e) => (e.style.display = "none"));
+        console.log(
+          "Screen " +
+            n +
+            " isolated. F12 → device toolbar 390×844 @3x → Capture screenshot. Refresh to restore.",
+        );
+      }
+    </script>
+  </body>
+</html>

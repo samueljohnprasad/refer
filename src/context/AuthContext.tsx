@@ -34,6 +34,7 @@ import {
   unregisterPushToken,
 } from "../utils/pushTokenRegistration";
 import { migrateGuestProgress } from "../lib/migrations/migrateGuestProgress";
+import { store, resetStore } from "../store/store";
 
 export type AuthProviderId = "apple" | "google";
 
@@ -316,6 +317,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (event === "SIGNED_OUT") {
         setSession(null);
         setUser(null);
+        store.dispatch(resetStore());
         AsyncStorage.clear().catch(console.error);
       }
     });
@@ -363,6 +365,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (user?.id) {
         await unregisterPushToken(user.id).catch(console.error);
       }
+      store.dispatch(resetStore());
       await AsyncStorage.clear();
 
       const anonymousSession = await ensureAnonymousSessionInternal();
@@ -373,6 +376,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (error) {
       setSession(null);
       setUser(null);
+      store.dispatch(resetStore());
       await AsyncStorage.clear();
       router.replace("/");
     } finally {
