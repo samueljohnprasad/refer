@@ -105,6 +105,10 @@ export function completesOnPrimaryInteraction(exercise: Exercise): boolean {
   if (category === CourseExerciseCategoryEnum.LearnCards && !exercise.content?.recall) {
     return true;
   }
+  
+  if (category === CourseExerciseCategoryEnum.CommonTrap) {
+    return true;
+  }
 
   return exercise.content?.completionMode === "direct";
 }
