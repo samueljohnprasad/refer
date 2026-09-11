@@ -14,6 +14,7 @@ export const CommonTrapConfig: CourseExerciseCategoryConfig = {
   },
   interaction: {
     submissionMode: "explicit",
+    completesDirectly: true,
     getPrimaryLabel: (_exercise, response) => {
       const phase = (response?.phase as string) || "trap";
       if (phase === "trap") return "AND THEN WHAT HAPPENS?";

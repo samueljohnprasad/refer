@@ -100,13 +100,15 @@ export function completesOnPrimaryInteraction(exercise: Exercise): boolean {
     return true;
   }
   
-  // ponytail: learn_cards without recall completes directly
   const category = resolveCourseExerciseCategory(exercise);
+  
+  // ponytail: learn_cards without recall completes directly
   if (category === CourseExerciseCategoryEnum.LearnCards && !exercise.content?.recall) {
     return true;
   }
-  
-  if (category === CourseExerciseCategoryEnum.CommonTrap) {
+
+  const config = category ? (courseExerciseCategoryEngineRegistry[category] || FINAL_BATCH_CATEGORY_CONFIGS[category as keyof typeof FINAL_BATCH_CATEGORY_CONFIGS]) : null;
+  if (config?.interaction?.completesDirectly) {
     return true;
   }
 

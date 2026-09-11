@@ -21,6 +21,7 @@ export type ExerciseInteractionConfig = (
   getPrimaryLabel?: (exercise: Exercise, response: Record<string, unknown>) => string | null;
   getPrimaryTransition?: (exercise: Exercise, response: Record<string, unknown>) => CoursePrimaryTransition | null;
   buildRetryResponse?: (exercise: Exercise, response: Record<string, unknown>) => Record<string, unknown> | null;
+  completesDirectly?: boolean;
 };
 
 
