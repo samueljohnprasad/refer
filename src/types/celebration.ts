@@ -6,7 +6,8 @@ export type LessonPhase =
   | 'completed';
 
 export interface CelebrationContext {
-  level: 1 | 2;
+  type: 'lesson' | 'lesson_streak' | 'unit' | 'course';
+  eyebrowText?: string;
   primaryText: string;
   secondaryText: string;
   pandaAnimationKey: 'anxiety_relax' | 'thought_reframe' | 'sleep_calm' | 'generic_success';

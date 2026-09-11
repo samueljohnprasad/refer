@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image } from 'react-native';
-import Animated, { useAnimatedStyle, SharedValue, interpolate, Extrapolation } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, SharedValue, interpolate, Extrapolation, useReducedMotion } from 'react-native-reanimated';
 import { CelebrationContext } from '../../types/celebration';
 
 interface PandaMetaphorProps {
@@ -9,14 +9,27 @@ interface PandaMetaphorProps {
 }
 
 export function PandaMetaphor({ progress, animationKey }: PandaMetaphorProps) {
+  const reducedMotion = useReducedMotion();
+
   const pandaStyle = useAnimatedStyle(() => {
-    // ponytail: dramatic rise to take up the visual weight
-    const translateY = interpolate(progress.value, [0, 0.5, 1], [40, -5, 0], Extrapolation.CLAMP);
-    const opacity = interpolate(progress.value, [0, 0.2, 1], [0, 1, 1], Extrapolation.CLAMP);
-    const scale = interpolate(progress.value, [0, 0.5, 1], [0.8, 1.05, 1], Extrapolation.CLAMP);
+    if (reducedMotion) {
+      // Respect Reduce Motion: simple fade and tiny scale
+      const opacity = interpolate(progress.value, [0, 1], [0, 1], Extrapolation.CLAMP);
+      const scale = interpolate(progress.value, [0, 1], [0.95, 1], Extrapolation.CLAMP);
+      return {
+        transform: [{ scale }],
+        opacity,
+      };
+    }
+
+    // ponytail: playful pop and settle bounce
+    const translateY = interpolate(progress.value, [0, 0.4, 0.7, 1], [60, -15, 5, 0], Extrapolation.CLAMP);
+    const opacity = interpolate(progress.value, [0, 0.1, 1], [0, 1, 1], Extrapolation.CLAMP);
+    const scale = interpolate(progress.value, [0, 0.4, 0.6, 0.8, 1], [0.5, 1.15, 0.95, 1.02, 1], Extrapolation.CLAMP);
+    const rotate = interpolate(progress.value, [0, 0.4, 0.6, 0.8, 1], [-5, 4, -2, 1, 0], Extrapolation.CLAMP);
 
     return {
-      transform: [{ translateY }, { scale }],
+      transform: [{ translateY }, { scale }, { rotate: `${rotate}deg` }],
       opacity,
     };
   });

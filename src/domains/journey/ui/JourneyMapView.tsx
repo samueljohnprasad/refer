@@ -204,8 +204,7 @@ export const JourneyMapView = React.memo(function JourneyMapView({
         <CelebrationOverlay
           isVisible={true}
           context={{
-            level: 1,
-            // Flip the fields to satisfy audit points 4 & 5
+            type: 'lesson',
             primaryText: controller.pendingCelebration.content.takeaway,
             secondaryText: controller.pendingCelebration.content.title,
             pandaAnimationKey: 'generic_success',
@@ -220,9 +219,10 @@ export const JourneyMapView = React.memo(function JourneyMapView({
         <CelebrationOverlay
           isVisible={true}
           context={{
-            level: 1,
+            type: 'unit',
+            eyebrowText: 'UNIT COMPLETE',
             primaryText: controller.pendingCelebration.content.capabilityStatement,
-            secondaryText: `Unit Complete · ${controller.pendingCelebration.unitTitle}`,
+            secondaryText: controller.pendingCelebration.unitTitle,
             pandaAnimationKey: 'generic_success',
             backgroundColor: isDark ? '#1a2a1a' : '#fbfdf8',
           }}
@@ -235,9 +235,10 @@ export const JourneyMapView = React.memo(function JourneyMapView({
         <CelebrationOverlay
           isVisible={true}
           context={{
-            level: 1,
+            type: 'course',
+            eyebrowText: 'COURSE COMPLETE',
             primaryText: controller.pendingCelebration.content.acknowledgement,
-            secondaryText: `Course Complete · ${controller.pendingCelebration.courseTitle}`,
+            secondaryText: controller.pendingCelebration.courseTitle,
             pandaAnimationKey: 'generic_success',
             backgroundColor: isDark ? '#1a2a1a' : '#fbfdf8',
           }}
