@@ -3099,6 +3099,45 @@ WITH curriculum AS (
           "stamp": "ONE CHANGE ISOLATES CAUSE"
         }
       }
+      ,{
+        "source_id": "u3_l29_blueprint_chain",
+        "node_source_id": "u3_3_clear_test_personalize-n4",
+        "order_index": 10,
+        "type": "teach_back_chain",
+        "phase": "explain",
+        "duration_seconds": 80,
+        "scaffold_level": 4,
+        "difficulty": 0.27,
+        "is_scored": true,
+        "concept": "evening_blueprint",
+        "content": {
+          "title": "Build the blueprint",
+          "instruction": "Put the flexible evening steps in order.",
+          "message": "How does an evening blueprint safely guide you to rest?",
+          "steps": [
+            {
+              "id": "step1_light",
+              "label": "Manage environmental cues (e.g., dim lights)",
+              "order": 1
+            },
+            {
+              "id": "step2_capture",
+              "label": "Capture lingering worries if needed",
+              "order": 2
+            },
+            {
+              "id": "step3_cue",
+              "label": "Use a familiar transition cue to step down demand",
+              "order": 3
+            },
+            {
+              "id": "step4_bed",
+              "label": "Go to bed, but reset if wakefulness persists",
+              "order": 4
+            }
+          ]
+        }
+      }
     ]
 
   $json$::jsonb) AS row(
