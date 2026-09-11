@@ -2987,15 +2987,19 @@ WITH curriculum AS (
             {
               "id": "screen",
               "label": "It does not use a screen.",
-              "response": "Screens matter, but laundry isn't the only screen-free task. What is the shift in demand?"
+              "feedback": "Screens matter, but laundry isn't the only screen-free task. What is the shift in demand?"
             },
             {
               "id": "demand",
               "label": "It significantly lowers demand.",
-              "response": "Yes. A transition cue acts as a bridge by requiring less cognitive effort."
+              "isCorrect": true,
+              "feedback": "Yes. A transition cue acts as a bridge by requiring less cognitive effort."
             }
           ],
-          "theory": "demand"
+          "theory": "demand",
+          "rule": "Demand Drops",
+          "body": "A good transition cue is anything that noticeably lowers the cognitive and physical demands placed on you.",
+          "next": "Continue"
         }
       }
     ]
