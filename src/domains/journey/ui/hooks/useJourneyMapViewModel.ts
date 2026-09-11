@@ -32,6 +32,7 @@ export interface JourneyMapViewModel {
   activeCourseSummary: any;
   animatedStyle: any;
   controller: ReturnType<typeof useJourneyMapController>;
+  completedNodeId?: string;
 }
 
 export interface JourneyMapActions {
@@ -44,6 +45,7 @@ export interface JourneyMapActions {
 export interface UseJourneyMapViewModelOptions {
   courseId?: string;
   slug?: string;
+  completedNodeId?: string;
 }
 
 export function useJourneyMapViewModel(
@@ -105,7 +107,7 @@ export function useJourneyMapViewModel(
     courseId ? selectActiveNodeModalIdForCourse(state, courseId) : null,
   );
 
-  const controller = useJourneyMapController(courseId || "");
+  const controller = useJourneyMapController(courseId || "", options?.completedNodeId);
 
   const isAnyOverlayActive =
     activeNodeId !== null ||
@@ -149,6 +151,7 @@ export function useJourneyMapViewModel(
     activeCourseSummary,
     animatedStyle,
     controller,
+    completedNodeId: options?.completedNodeId,
   };
 
   const actions: JourneyMapActions = {

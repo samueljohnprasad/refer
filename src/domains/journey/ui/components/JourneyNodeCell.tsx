@@ -17,6 +17,10 @@ export interface JourneyNodeCellViewProps
   screenWidth: number;
 }
 
+import Animated, { useAnimatedProps, withDelay, withTiming, useSharedValue, useEffect } from "react-native-reanimated";
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
+
 export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
   item,
   nodeState,
@@ -26,6 +30,7 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
   handlePress,
   screenWidth,
   courseId,
+  completedNodeId,
 }: JourneyNodeCellViewProps): React.JSX.Element {
   const isModalNodeType =
     item.type === "chest" ||
@@ -52,7 +57,7 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
           style={{ position: "absolute", top: 0, left: 0 }}
           pointerEvents="none"
         >
-          <Path
+          <AnimatedPath
             d={item.segmentD}
             stroke={segmentColor}
             strokeWidth={pathStrokeWidth}

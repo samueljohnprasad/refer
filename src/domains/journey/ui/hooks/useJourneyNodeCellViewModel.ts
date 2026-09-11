@@ -16,6 +16,7 @@ export interface JourneyNodeCellProps {
   screenWidth: number;
   activeGlobalIndex: number;
   onNodePress: (node: PathNodeData, event?: any, color?: string) => void;
+  completedNodeId?: string;
 }
 
 export function toPathNodeData(item: JourneyNode): PathNodeData {
@@ -39,6 +40,7 @@ export function useJourneyNodeCellViewModel({
   screenWidth: _screenWidth,
   activeGlobalIndex,
   onNodePress,
+  completedNodeId,
 }: JourneyNodeCellProps) {
   const { pathColors, pathStrokeWidth } = useHighContrast();
   const isProgressSegment =
@@ -83,5 +85,6 @@ export function useJourneyNodeCellViewModel({
     handlePress,
     pathStrokeWidth,
     showConnector: item.globalIndex > 0,
+    completedNodeId,
   };
 }

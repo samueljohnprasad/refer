@@ -76,6 +76,7 @@ type JourneyMapController = {
 
 export function useJourneyMapController(
   courseId: string,
+  completedNodeId?: string,
 ): JourneyMapController {
   const legendListRef = useRef<LegendListRef | null>(null);
   const [isSectionSheetOpen, setIsSectionSheetOpen] = useState(false);
@@ -107,8 +108,18 @@ export function useJourneyMapController(
     selectRenderedSectionIdForCourse(state, courseId),
   );
   const listKey = renderedSectionId ?? courseId;
-  const { flashListData, activeGlobalIndex, activeListIndex, units } =
+  const { flashListData, activeGlobalIndex, activeListIndex: defaultActiveListIndex, units } =
     useJourneyFlashListData(courseId, renderedSectionId ?? undefined);
+
+  let activeListIndex = defaultActiveListIndex;
+  if (completedNodeId) {
+    const completedIndex = flashListData.findIndex(
+      (item) => item.type === "node" && item.node.id === completedNodeId
+    );
+    if (completedIndex !== -1) {
+      activeListIndex = completedIndex;
+    }
+  }
   const { visibleUnitId, onViewableItemsChanged } = useVisibleUnit({ units });
   const { renderedSection, renderedUnit } = useAppSelector((state) =>
     selectRenderedJourneyViewForCourse(state, courseId, visibleUnitId),

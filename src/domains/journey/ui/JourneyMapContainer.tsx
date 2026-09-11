@@ -10,6 +10,7 @@ import JourneyMapView from "./JourneyMapView";
 export interface JourneyMapContainerProps {
   courseId?: string;
   slug?: string;
+  completedNodeId?: string;
   isOnboarding?: boolean;
   onComplete?: () => void;
 }
@@ -17,10 +18,11 @@ export interface JourneyMapContainerProps {
 export default function JourneyMapContainer({
   courseId,
   slug,
+  completedNodeId,
   isOnboarding,
   onComplete,
 }: JourneyMapContainerProps): React.JSX.Element {
-  const { model, actions } = useJourneyMapViewModel({ courseId, slug });
+  const { model, actions } = useJourneyMapViewModel({ courseId, slug, completedNodeId });
 
   const hasInitializedRef = React.useRef(false);
   const baselineIndexRef = React.useRef<number | null>(null);

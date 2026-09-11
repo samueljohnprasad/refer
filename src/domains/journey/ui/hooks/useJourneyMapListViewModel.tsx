@@ -45,10 +45,12 @@ export function useJourneyMapListViewModel({
   courseId,
   controller,
   isOnboarding,
+  completedNodeId,
 }: {
   courseId: string;
   controller: ReturnType<typeof useJourneyMapController>;
   isOnboarding?: boolean;
+  completedNodeId?: string;
 }): {
   model: JourneyMapListViewModel;
   actions: JourneyMapListActions;
@@ -82,10 +84,11 @@ export function useJourneyMapListViewModel({
           courseId={courseId}
           activeGlobalIndex={activeGlobalIndex}
           onNodePress={handleNodePress}
+          completedNodeId={completedNodeId}
         />
       );
     },
-    [activeGlobalIndex, courseId, handleNodePress],
+    [activeGlobalIndex, courseId, handleNodePress, completedNodeId],
   );
 
   const listFooterComponent = useMemo(

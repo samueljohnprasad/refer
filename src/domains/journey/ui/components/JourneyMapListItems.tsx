@@ -23,6 +23,7 @@ type JourneyMapListItemProps = {
   item: JourneyFlashListItem;
   courseId: string;
   onNodePress: (node: PathNodeData, e?: any, color?: string) => void;
+  completedNodeId?: string;
 };
 
 export const JourneyMapListItem = React.memo(function JourneyMapListItem({
@@ -30,6 +31,7 @@ export const JourneyMapListItem = React.memo(function JourneyMapListItem({
   item,
   courseId,
   onNodePress,
+  completedNodeId,
 }: JourneyMapListItemProps): React.JSX.Element {
   const { width: screenWidth } = useWindowDimensions();
 
@@ -42,6 +44,7 @@ export const JourneyMapListItem = React.memo(function JourneyMapListItem({
           screenWidth={screenWidth}
           activeGlobalIndex={activeGlobalIndex}
           onNodePress={onNodePress}
+          completedNodeId={completedNodeId}
         />
       );
     case "divider":

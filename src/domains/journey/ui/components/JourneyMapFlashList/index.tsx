@@ -7,6 +7,7 @@ export interface JourneyMapFlashListProps {
   courseId: string;
   controller: ReturnType<typeof useJourneyMapController>;
   isOnboarding?: boolean;
+  completedNodeId?: string;
 }
 
 /**
@@ -18,11 +19,13 @@ export const JourneyMapFlashList = React.memo(function JourneyMapFlashList({
   courseId,
   controller,
   isOnboarding,
+  completedNodeId,
 }: JourneyMapFlashListProps): React.JSX.Element {
   const { model, actions } = useJourneyMapListViewModel({
     courseId,
     controller,
     isOnboarding,
+    completedNodeId,
   });
   return <JourneyMapListView model={model} actions={actions} />;
 });
