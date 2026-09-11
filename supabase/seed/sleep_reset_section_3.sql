@@ -3116,26 +3116,45 @@ WITH curriculum AS (
           "message": "How does an evening blueprint safely guide you to rest?",
           "steps": [
             {
-              "id": "step1_light",
+              "id": "step1-light",
               "label": "Manage environmental cues (e.g., dim lights)",
               "order": 1
             },
             {
-              "id": "step2_capture",
+              "id": "step2-capture",
               "label": "Capture lingering worries if needed",
               "order": 2
             },
             {
-              "id": "step3_cue",
+              "id": "step3-cue",
               "label": "Use a familiar transition cue to step down demand",
               "order": 3
             },
             {
-              "id": "step4_bed",
+              "id": "step4-bed",
               "label": "Go to bed, but reset if wakefulness persists",
               "order": 4
             }
-          ]
+          ],
+          "transfer": {
+            "prompt": "Which response protects the evening blueprint?",
+            "options": [
+              {
+                "id": "transfer-supported",
+                "label": "Keep steps flexible and reset if wakeful",
+                "isSupported": true,
+                "response": "Flexibility prevents bed from becoming high-pressure.",
+                "takeaway": "An evening blueprint guides rest without rigid rules."
+              },
+              {
+                "id": "transfer-rigid",
+                "label": "Force yourself to stay in bed until asleep",
+                "isSupported": false,
+                "response": "Forcing sleep strengthens wakeful frustration in bed.",
+                "takeaway": "Resetting when wakeful protects the bed-sleep link."
+              }
+            ]
+          }
         }
       }
     ]
