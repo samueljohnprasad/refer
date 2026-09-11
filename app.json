@@ -24,7 +24,8 @@
         "NSCameraUsageDescription": "The app needs access to the camera to take photos of your food for calorie tracking. This allows the AI to analyze your meals and calculate nutritional information.",
         "NSUserNotificationUsageDescription": "The app sends notifications to remind you to record your daily voice journal entries.",
         "ITSAppUsesNonExemptEncryption": false,
-        "UIBackgroundModes": []
+        "UIBackgroundModes": [],
+        "EXDevMenuShowFloatingActionButton": false
       }
     },
     "android": {

@@ -48,9 +48,9 @@ export interface NodeVariantConfig {
   /** Human-readable label for accessibility */
   label: string;
   /** Icon config per node status — looked up by status key */
-  icons: Record<NodeVisualStatus, NodeIconConfig>;
+  icons: Partial<Record<NodeVisualStatus, NodeIconConfig>>;
   /** Color config per node status — looked up by status key */
-  colors: Record<NodeVisualStatus, NodeColorConfig>;
+  colors: Partial<Record<NodeVisualStatus, NodeColorConfig>>;
   /** Default rewards granted when this node type is completed */
   rewards: JourneyReward[];
   /** Size override in dp. Falls back to global settings if omitted */

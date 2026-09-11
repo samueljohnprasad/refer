@@ -94,6 +94,7 @@ export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
       isPresented,
       catalogCourses,
       isCatalogLoading,
+      enrolledCourses,
       enrolledCourseIds,
       selectedCourseId,
       selectedCourse,

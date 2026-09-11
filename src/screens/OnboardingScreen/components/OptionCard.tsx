@@ -12,7 +12,7 @@ import {
   Moon01Icon,
   Leaf01Icon,
   CloudIcon,
-  Alert01Icon,
+  CloudBigRainIcon,
   SparklesIcon,
   ShuffleIcon,
   Notebook01Icon,
@@ -21,7 +21,6 @@ import {
   BedIcon,
 } from "@hugeicons/core-free-icons";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 
 export function getQuizIcon(id: string) {
   switch (id) {
@@ -45,7 +44,7 @@ export function getQuizIcon(id: string) {
     case "heavy":
       return WorryIcon;
     case "overwhelming":
-      return Alert01Icon;
+      return CloudBigRainIcon;
 
     // Experience
     case "never":
@@ -93,8 +92,8 @@ function OptionCardInner<T extends string>({
         accessibilityState={{ selected: isSelected }}
         accessibilityLabel={`${option.title}, ${option.subtitle}`}
         className="w-full"
-        contentClassName="flex-row items-center gap-3.5 px-[18px] py-[18px]"
-        showDepth={true}
+        contentClassName="flex-row items-center gap-3.5 px-4 py-3"
+        showDepth={false}
       >
         <View
           className={`h-11 w-11 items-center justify-center rounded-xl ${
@@ -107,7 +106,7 @@ function OptionCardInner<T extends string>({
             color={isSelected ? "#FFFFFF" : SEMANTIC_COLORS.brand.pressed}
           />
         </View>
-        <View className="flex-1">
+        <View className="flex-1 pr-1">
           <Text
             className={`happy-font-body-semibold text-[15px] font-semibold ${
               isSelected ? "text-sage-700" : "text-ink"
@@ -115,19 +114,21 @@ function OptionCardInner<T extends string>({
           >
             {option.title}
           </Text>
-          <Text
-            className="happy-font-body text-xs text-ink-soft"
-          >
+          <Text className="happy-font-body mt-0.5 text-xs text-ink-soft">
             {option.subtitle}
           </Text>
         </View>
-        {isSelected && (
-          <View
-            className="h-6 w-6 items-center justify-center rounded-full bg-sage-500"
-          >
-            <Text className="text-xs font-extrabold text-white">✓</Text>
-          </View>
-        )}
+        <View
+          className={`h-5 w-5 items-center justify-center rounded-full border-[1.5px] ${
+            isSelected
+              ? "border-sage-500 bg-white"
+              : "border-neutral-300 bg-transparent"
+          }`}
+        >
+          {isSelected && (
+            <View className="h-2.5 w-2.5 rounded-full bg-sage-500" />
+          )}
+        </View>
       </Card>
     </Animated.View>
   );

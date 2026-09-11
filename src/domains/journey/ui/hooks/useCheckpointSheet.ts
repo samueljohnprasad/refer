@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { NodeStatus, type PathNodeData } from "@/src/types/journey";
 
 export type CheckpointActionSheetData = {
@@ -11,10 +11,16 @@ export type CheckpointActionSheetData = {
 export function useCheckpointSheet() {
   const [isOpen, setIsOpen] = useState(false);
   const [sheetData, setSheetData] = useState<CheckpointActionSheetData | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const openSheet = useCallback((node: PathNodeData) => {
-    console.log("!!! openSheet called for", node.type);
-    // ponytail: simple extraction
+    if (timerRef.current) clearTimeout(timerRef.current);
     const isCompleted = node.status === NodeStatus.COMPLETED || node.status === NodeStatus.CLAIMED;
     
     // In a real app we'd parse node.task, but fallback to sensible defaults
@@ -32,7 +38,11 @@ export function useCheckpointSheet() {
 
   const closeSheet = useCallback(() => {
     setIsOpen(false);
-    setTimeout(() => setSheetData(null), 300); // clear after animation
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setSheetData(null);
+      timerRef.current = null;
+    }, 300);
   }, []);
 
   return {

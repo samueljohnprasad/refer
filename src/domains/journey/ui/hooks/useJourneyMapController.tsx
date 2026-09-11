@@ -71,6 +71,7 @@ type JourneyMapController = {
   setIsCheckpointSheetOpen: Dispatch<SetStateAction<boolean>>;
   checkpointSheetData: CheckpointActionSheetData | null;
   closeCheckpointSheet: () => void;
+  isOverlayOpen: boolean;
 };
 
 export function useJourneyMapController(
@@ -78,7 +79,6 @@ export function useJourneyMapController(
 ): JourneyMapController {
   const legendListRef = useRef<LegendListRef | null>(null);
   const [isSectionSheetOpen, setIsSectionSheetOpen] = useState(false);
-  const isRoutingRef = useRef(false);
   const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
   const { toast } = useToast();
@@ -123,7 +123,15 @@ export function useJourneyMapController(
 
   const canOpenSections = sectionOverviewItems.length > 0;
   const isViewingPreviewSection = previewSection !== null;
-  const canAutoScrollToActiveNode = useNodeModalAutoScrollGate(courseId);
+  const isOverlayOpen =
+    isSectionSheetOpen ||
+    isCheckpointSheetOpen ||
+    rewards.rewardNode !== null ||
+    rewards.pendingCelebration !== null;
+  const canAutoScrollToActiveNode = useNodeModalAutoScrollGate(
+    courseId,
+    isOverlayOpen,
+  );
 
   useEffect(() => {
     if (previewSectionId === null || previewSection !== null) {
@@ -163,8 +171,6 @@ export function useJourneyMapController(
 
   const handleNodePress = useCallback(
     (node: PathNodeData, e?: any, color?: string): void => {
-      if (isRoutingRef.current) return;
-
       if (node.status === "locked") {
         void Haptics.notificationAsync(
           Haptics.NotificationFeedbackType.Warning,
@@ -182,7 +188,10 @@ export function useJourneyMapController(
         return;
       }
 
-      if (node.type === NodeType.TROPHY && node.status === "claimed") {
+      if (
+        (node.type === NodeType.TROPHY || node.type === NodeType.MILESTONE) &&
+        (node.status === "claimed" || node.status === "completed")
+      ) {
         rewards.openRewardNode(node);
         return;
       }
@@ -192,18 +201,10 @@ export function useJourneyMapController(
         return;
       }
 
-      if (node.type === "milestone") {
-        if (node.status === "completed") {
-          // just show the trophy celebration again
-          return;
-        }
-        return;
-      }
-
       // Routing for active/completed nodes is handled declaratively by <Link> in JourneyNodeCell
       return;
     },
-    [rewards, toast],
+    [openCheckpointSheet, rewards, toast],
   );
 
   const handleOpenSections = useCallback((): void => {
@@ -257,5 +258,6 @@ export function useJourneyMapController(
     setIsCheckpointSheetOpen,
     checkpointSheetData,
     closeCheckpointSheet,
+    isOverlayOpen,
   };
 }

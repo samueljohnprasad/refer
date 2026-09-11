@@ -21,6 +21,7 @@ interface CourseOverviewScreenProps {
   isLoading: boolean;
   hasError: boolean;
   isEnrolled: boolean;
+  isCompleted?: boolean;
   isStartingCourse: boolean;
   enrollmentError: string | null;
   onBack: () => void;
@@ -36,6 +37,7 @@ export function CourseOverviewScreen({
   isLoading,
   hasError,
   isEnrolled,
+  isCompleted,
   isStartingCourse,
   enrollmentError,
   onBack,
@@ -44,7 +46,11 @@ export function CourseOverviewScreen({
   onPrimaryActionPress,
 }: CourseOverviewScreenProps): React.JSX.Element {
   const canStartCourse = Boolean(overview && overview.lessonCount > 0) && !hasError;
-  const primaryLabel = isEnrolled ? "Continue journey" : "Start journey";
+  const primaryLabel = isCompleted
+    ? "Open Journey"
+    : isEnrolled
+      ? "Continue journey"
+      : "Start journey";
 
   return (
     <View className="flex-1 bg-white" style={{ paddingTop: Math.max(insets.top, 12) }}>

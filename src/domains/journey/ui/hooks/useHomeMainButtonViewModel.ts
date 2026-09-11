@@ -1,9 +1,6 @@
 import { useCallback } from "react";
-import * as Haptics from "expo-haptics";
 import {
   useAnimatedStyle,
-  useSharedValue,
-  withSpring,
   withTiming,
 } from "react-native-reanimated";
 

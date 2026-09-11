@@ -432,6 +432,18 @@ export function buildJourneyFlashListData(
     }
   }
 
+  // If no node is active because all nodes are completed, target the final node in the rendered section
+  if (activeListIndex === -1 && flashListData.length > 0) {
+    for (let i = flashListData.length - 1; i >= 0; i--) {
+      const item = flashListData[i];
+      if (item && item.itemType === "node") {
+        activeListIndex = i;
+        activeGlobalIndex = item.globalIndex;
+        break;
+      }
+    }
+  }
+
   return {
     flashListData,
     activeGlobalIndex,

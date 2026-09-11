@@ -4,8 +4,10 @@
  */
 
 import React from "react";
+import { useLocalSearchParams } from "expo-router";
 import JourneyMapContainer from "@/src/domains/journey/ui/JourneyMapContainer";
 
 export default function JourneyMapRoute(): React.JSX.Element {
-  return <JourneyMapContainer />;
+  const { slug } = useLocalSearchParams<{ slug?: string }>();
+  return <JourneyMapContainer slug={slug} />;
 }

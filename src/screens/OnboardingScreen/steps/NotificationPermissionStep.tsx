@@ -1,8 +1,7 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHeaderHeight } from "expo-router/react-navigation";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, Platform } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { NotificationTime } from "../types";
 import { ReminderCard } from "@/src/components/notifications/ReminderCard";
@@ -18,10 +17,9 @@ interface NotificationPermissionStepProps {
 const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   selectedTime,
   onSelectTime,
-  stressTiming,
 }) => {
-  const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
+  const contentTopPadding = Platform.OS === "ios" ? 100 : insets.top + 100;
   
   const {
     items,
@@ -34,32 +32,45 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   useEffect(() => {
     const hasEnabled = Object.values(cfg).some((c) => c.enabled);
     if (hasEnabled && !selectedTime) {
-      onSelectTime("evening"); // Dummy value to enable "Continue" button
+      onSelectTime("evening");
     }
   }, [cfg, selectedTime, onSelectTime]);
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 24, paddingTop: headerHeight - insets.top }}
+      contentContainerStyle={{
+        paddingBottom: 140,
+        paddingTop: contentTopPadding,
+      }}
       contentInsetAdjustmentBehavior="automatic"
-      className="flex-1 pt-6"
+      className="flex-1 px-6"
     >
-      <Animated.View entering={FadeIn.duration(180).delay(80)} className="px-6">
+      <Animated.View entering={FadeIn.duration(160).delay(80)}>
         <Text
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="text-[26px] leading-[1.1] text-ink"
+          className="text-xs font-semibold uppercase tracking-wider text-sage-600"
         >
-          Daily Reminders
+          Gentle nudges
         </Text>
-        <Text className="mt-3 text-[15px] leading-relaxed text-ink-soft">
-          Set up gentle nudges to help you build a consistent journaling habit
+      </Animated.View>
+
+      <Animated.View entering={FadeIn.duration(180).delay(140)} className="mt-1.5">
+        <Text
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
+          className="text-[26px] leading-[1.15] text-ink"
+        >
+          Daily reminders
+        </Text>
+        <Text className="mt-2 text-[15px] leading-relaxed text-ink-soft">
+          Choose when you’d like a gentle nudge.
         </Text>
       </Animated.View>
 
       <Animated.View
-        entering={FadeIn.duration(180).delay(160)}
-        className="mt-8 border-y border-border/50"
+        entering={FadeIn.duration(180).delay(200)}
+        style={{ borderCurve: "continuous" }}
+        className="mt-6 overflow-hidden rounded-2xl border border-sage-200/80 bg-warm-white shadow-sm"
       >
         {items.map((item, index) => {
           const isSelected = cfg[item.id]?.enabled;
@@ -75,6 +86,15 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
             />
           );
         })}
+      </Animated.View>
+
+      <Animated.View entering={FadeIn.duration(180).delay(260)} className="mt-4 px-1">
+        <Text
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
+          className="text-center text-[13px] leading-relaxed text-ink-soft"
+        >
+          You can change these anytime in Settings.
+        </Text>
       </Animated.View>
     </ScrollView>
   );

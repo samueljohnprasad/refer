@@ -48,8 +48,8 @@ export function useNodeViewModel(
       faceColor = SAGE[100];
       rimColor = SAGE[200];
       iconColor = SAGE[400];
-      isInteractive = false;
-      indicator = "none";
+      isInteractive = true;
+      indicator = "lock";
       break;
     case NodeState.AVAILABLE:
       faceColor = SAGE[300];

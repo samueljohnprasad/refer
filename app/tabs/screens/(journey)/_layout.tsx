@@ -40,10 +40,12 @@ export default function JourneyGroupLayout() {
         }}
       />
       <Stack.Screen
-        name="journey-step-preview"
+        name="journey/finale"
         options={{
           headerShown: false,
-          title: "Step Preview",
+          presentation: "fullScreenModal",
+          animation: "fade",
+          title: "Course Finale",
         }}
       />
       <Stack.Screen

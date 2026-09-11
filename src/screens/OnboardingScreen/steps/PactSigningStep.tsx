@@ -1,16 +1,11 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHeaderHeight } from "expo-router/react-navigation";
-import { Text, View, ScrollView, Pressable } from "react-native";
-import Animated, { FadeIn, useAnimatedStyle, interpolate } from "react-native-reanimated";
-import { SvgAppButton } from "@/src/domains/journey/ui/components/svg-app-button";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
+import { Text, View, ScrollView, Platform, Pressable, StyleSheet } from "react-native";
+import Animated, { FadeIn, useAnimatedStyle } from "react-native-reanimated";
+import { SymbolView } from "expo-symbols";
 import { useHoldToCommit } from "../hooks/useHoldToCommit";
 import { DailyGoalMinutes } from "../types";
-
-const DIVIDER_SEGMENTS = Array.from({ length: 28 }, (_, index) => index);
 
 interface PactSigningStepProps {
   dailyGoal: DailyGoalMinutes;
@@ -21,96 +16,55 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
   dailyGoal,
   onCommit,
 }) => {
-  const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
   const { progress, isHolding, committed, onPressIn, onPressOut } =
     useHoldToCommit(onCommit);
-  const [buttonWidth, setButtonWidth] = React.useState(0);
+  const contentTopPadding = Platform.OS === "ios" ? 100 : insets.top + 100;
 
   const commitFillStyle = useAnimatedStyle(() => ({
-    width: buttonWidth * progress.value,
-    opacity: interpolate(progress.value, [0, 0.02, 1], [0, 1, 1]),
+    width: `${Math.min(100, Math.max(0, progress.value * 100))}%`,
   }));
 
   return (
     <View className="flex-1">
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 24, flexGrow: 1, paddingTop: headerHeight - insets.top }}
+        contentContainerStyle={{
+          paddingBottom: 24,
+          flexGrow: 1,
+          paddingTop: contentTopPadding,
+        }}
         contentInsetAdjustmentBehavior="automatic"
         className="flex-1 px-6"
       >
         <View className="flex-1">
           <Animated.Text
             entering={FadeIn.duration(160).delay(80)}
-            className="text-xs font-semibold uppercase tracking-widest text-sage-500"
+            className="text-xs font-semibold uppercase tracking-wider text-sage-600"
           >
-            Step 6 of 6
+            A small commitment
           </Animated.Text>
 
           <Animated.View entering={FadeIn.duration(180).delay(140)}>
             <Text
               style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-              className="mt-2 text-[30px] leading-[1.1] text-ink"
+              className="mt-2 text-[26px] leading-[1.15] text-ink"
             >
-              A small{" "}
-              <Text
-                style={{
-                  fontFamily: APP_FONT_FAMILIES.regularItalic,
-                  color: SEMANTIC_COLORS.brand.primary,
-                }}
-              >
-                pact.
-              </Text>
+              A small pact
             </Text>
           </Animated.View>
 
           <Animated.View
             entering={FadeIn.duration(180).delay(160)}
             style={{ borderCurve: "continuous" }}
-            className="mt-5 w-full rounded-[24px] border-2 border-sage-100 bg-warm-white px-6 py-7"
+            className="mt-4 w-full rounded-[22px] border border-sage-200/80 bg-warm-white px-5 py-4.5 shadow-sm"
           >
             <Text
               style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-              className="text-left text-[18px] leading-[26px] text-ink"
+              className="text-left text-[17px] leading-[26px] text-ink"
             >
-              For the next 7 days, I&apos;ll show up for myself, even if
-              it&apos;s just for {dailyGoal} minutes.
+              For the next 7 days, I’ll show up for myself — even if it’s only for {dailyGoal} minutes.
             </Text>
-            <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-              className="mt-6 text-left text-[18px] leading-[26px] text-ink"
-            >
-              I&apos;ll be honest. I&apos;ll be patient. I&apos;m worth the
-              effort.
-            </Text>
-
-            <View className="mt-7 pt-2">
-              <View
-                style={{
-                  width: "100%",
-                  height: 1,
-                  borderTopWidth: 1,
-                  borderColor: SEMANTIC_COLORS.selection.foreground,
-                  borderStyle: "dashed",
-                  opacity: 0.8,
-                }}
-              />
-              <View className="mt-5 flex-row items-baseline justify-between">
-                <Text
-                  style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-                  className="text-[11px] uppercase tracking-[0.1em] text-ink-muted"
-                >
-                  Signed
-                </Text>
-                <Text
-                  style={{ fontFamily: APP_FONT_FAMILIES.regularItalic }}
-                  className="text-[22px] tracking-[-0.01em] text-sage-600"
-                >
-                  You, today
-                </Text>
-              </View>
-            </View>
           </Animated.View>
         </View>
       </ScrollView>
@@ -121,44 +75,54 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
         style={{ paddingBottom: Math.max(insets.bottom + 8, 32) }}
       >
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-          className="mb-3 text-center text-[13px] text-ink-muted"
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
+          className="mb-3 text-center text-[13px] text-ink-soft"
         >
-          Hold to make it official.
+          {committed
+            ? "You’re in. One day at a time."
+            : "Hold to make your 7-day commitment."}
         </Text>
-        <SvgAppButton
-          width="100%"
-          height={56}
-          color={SEMANTIC_COLORS.brand.primary}
-          backgroundColor={SEMANTIC_COLORS.brand.onSoft}
-          leftRadius={22}
-          rightRadius={22}
-          pressDepth={4}
-          onPress={() => {}}
+
+        {/* 3D Tactile Hold-to-Commit Button with visible left-to-right fill */}
+        <Pressable
           onPressIn={onPressIn}
           onPressOut={onPressOut}
           disabled={committed}
-          contentContainerStyle={{
-            justifyContent: "center",
-            alignItems: "center",
-            overflow: "hidden",
-            borderRadius: 22,
-          }}
+          accessibilityRole="button"
+          accessibilityLabel={committed ? "Pact sealed" : "Hold to commit"}
+          className="h-14 w-full justify-center"
         >
+          {/* Bottom Rim / 3D Shadow Plate */}
           <View
-            onLayout={(event) => {
-              setButtonWidth(event.nativeEvent.layout.width);
-            }}
             style={{
               position: "absolute",
               left: 0,
-              top: 0,
+              right: 0,
               bottom: 0,
-              width: "100%",
+              top: 4,
               borderRadius: 22,
-              overflow: "hidden",
+              backgroundColor: "#182C19",
             }}
+          />
+
+          {/* Button Face */}
+          <View
+            style={[
+              {
+                position: "absolute",
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 4,
+                borderRadius: 22,
+                backgroundColor: committed ? "#182C19" : "#243E26",
+                overflow: "hidden",
+                borderWidth: 1,
+                borderColor: "rgba(95, 127, 88, 0.35)",
+              },
+            ]}
           >
+            {/* Left-to-Right Animated Fill Progress */}
             <Animated.View
               style={[
                 {
@@ -166,23 +130,50 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
                   left: 0,
                   top: 0,
                   bottom: 0,
-                  backgroundColor: SEMANTIC_COLORS.brand.onSoft,
+                  backgroundColor: "#4E7E49",
                 },
                 commitFillStyle,
               ]}
-            />
+            >
+              {/* Luminous leading edge bar */}
+              <View
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 3,
+                  backgroundColor: "rgba(255, 255, 255, 0.75)",
+                }}
+              />
+            </Animated.View>
+
+            {/* Centered Button Content */}
+            <View
+              pointerEvents="none"
+              style={StyleSheet.absoluteFill}
+              className="flex-row items-center justify-center gap-2"
+            >
+              {committed ? (
+                <SymbolView
+                  name="checkmark.circle.fill"
+                  size={18}
+                  tintColor="#FFFFFF"
+                />
+              ) : null}
+              <Text
+                style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+                className="text-center text-[16px] font-bold uppercase tracking-[0.03em] text-white"
+              >
+                {committed
+                  ? "You’re in"
+                  : isHolding
+                    ? "Committing..."
+                    : "Hold to commit"}
+              </Text>
+            </View>
           </View>
-          <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.bold }}
-            className="text-center text-[17px] font-bold uppercase tracking-[0.02em] text-white z-10"
-          >
-            {committed
-              ? "Pact sealed"
-              : isHolding
-                ? "Sealing pact..."
-                : "Hold to commit"}
-          </Text>
-        </SvgAppButton>
+        </Pressable>
       </Animated.View>
     </View>
   );

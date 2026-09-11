@@ -1,16 +1,16 @@
-import React, { useCallback, useRef } from 'react';
-import { View } from 'react-native';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import React, { useCallback, useRef, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import SignInBottomSheet from '@/src/components/SignInBottomSheet';
+import SignInBottomSheet, { type SignInBottomSheetHandle } from '@/src/components/SignInBottomSheet';
 import { useAuth } from '@/src/context/AuthContext';
 import OnboardingScreen from '@/src/screens/OnboardingScreen/OnboardingScreen';
 
 export default function PremiumOnboardingRoute(): React.JSX.Element {
   const router = useRouter();
-  const signInSheetRef = useRef<BottomSheetModal>(null);
+  const signInSheetRef = useRef<SignInBottomSheetHandle>(null);
   const hasContinuedRef = useRef<boolean>(false);
   const { isAnonymous } = useAuth();
+  const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
 
   const continueToHome = useCallback((): void => {
     if (hasContinuedRef.current) return;
@@ -18,7 +18,7 @@ export default function PremiumOnboardingRoute(): React.JSX.Element {
     router.replace('/tabs/(tabs)/home');
   }, [router]);
 
-  const handleComplete = async (skipped?: boolean): Promise<void> => {
+  const handleComplete = useCallback(async (skipped?: boolean): Promise<void> => {
     if (isAnonymous && !skipped) {
       setTimeout(() => {
         signInSheetRef.current?.present();
@@ -27,18 +27,28 @@ export default function PremiumOnboardingRoute(): React.JSX.Element {
     }
 
     continueToHome();
-  };
+  }, [isAnonymous, continueToHome]);
 
   return (
     <View className="flex-1">
       <OnboardingScreen onComplete={handleComplete} />
-      <SignInBottomSheet
-        ref={signInSheetRef}
-        showSkipButton
-        onDismiss={continueToHome}
-        onSkip={continueToHome}
-        onSuccess={continueToHome}
-      />
+      {isSheetOpen && (
+        <View
+          style={StyleSheet.absoluteFill}
+          className="bg-black/35"
+          pointerEvents="auto"
+        />
+      )}
+      <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+        <SignInBottomSheet
+          ref={signInSheetRef}
+          showSkipButton
+          onOpenChange={setIsSheetOpen}
+          onDismiss={continueToHome}
+          onSkip={continueToHome}
+          onSuccess={continueToHome}
+        />
+      </View>
     </View>
   );
 }

@@ -4,7 +4,6 @@ import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { JourneyUnitIcon } from "./JourneyUnitIcon";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 import {
   useHomeMainButtonViewModel,
   type HomeMainButtonProps,
@@ -49,7 +48,7 @@ export const HomeMainButtonView = React.memo(function HomeMainButtonView({
           className="w-12 h-12 items-center justify-center rounded-full mr-2"
           style={{ backgroundColor: "rgba(20, 36, 20, 0.10)" }}
         >
-          <JourneyUnitIcon iconKey={unitIconKey} size={24} color={SEMANTIC_COLORS.text.primary} />
+          <JourneyUnitIcon iconKey={unitIconKey} size={24} color={String(SEMANTIC_COLORS.text.primary)} />
         </View>
       </Card>
     </View>

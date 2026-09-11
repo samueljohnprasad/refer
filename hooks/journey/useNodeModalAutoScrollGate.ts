@@ -6,15 +6,19 @@ import { useAppSelector } from "@/src/store/hooks";
 
 const AUTO_SCROLL_RESUME_DELAY_MS = JOURNEY.SCROLL_TO_NODE_DELAY_MS;
 
-export function useNodeModalAutoScrollGate(courseId: string): boolean {
+export function useNodeModalAutoScrollGate(
+  courseId: string,
+  isBlocked?: boolean,
+): boolean {
   const isNodeModalOpen = useAppSelector(
     (state) => selectActiveNodeModalIdForCourse(state, courseId) !== null,
   );
-  const [canAutoScroll, setCanAutoScroll] = useState(!isNodeModalOpen);
-  const hasPausedForModalRef = useRef(isNodeModalOpen);
+  const isGated = isNodeModalOpen || Boolean(isBlocked);
+  const [canAutoScroll, setCanAutoScroll] = useState(!isGated);
+  const hasPausedForModalRef = useRef(isGated);
 
   useEffect(() => {
-    if (isNodeModalOpen) {
+    if (isGated) {
       hasPausedForModalRef.current = true;
       setCanAutoScroll(false);
       return;
@@ -33,7 +37,7 @@ export function useNodeModalAutoScrollGate(courseId: string): boolean {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [isNodeModalOpen]);
+  }, [isGated]);
 
   return canAutoScroll;
 }

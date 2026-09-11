@@ -27,6 +27,16 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
   screenWidth,
   courseId,
 }: JourneyNodeCellViewProps): React.JSX.Element {
+  const isModalNodeType =
+    item.type === "chest" ||
+    item.type === "checkpoint" ||
+    item.type === "trophy";
+  const isAccessible =
+    nodeState === "current" ||
+    nodeState === "completed" ||
+    nodeState === "available";
+  const shouldRouteToFlow = !isModalNodeType && isAccessible;
+
   return (
     <View
       style={{
@@ -55,7 +65,7 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
         </Svg>
       ) : null}
 
-      {(item.type === "lesson" || item.type === "milestone") && (nodeState === "current" || nodeState === "completed" || nodeState === "available") ? (
+      {shouldRouteToFlow ? (
         <Link
           href={{
             pathname: "/tabs/screens/journey-flow",
@@ -63,21 +73,19 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
           }}
           asChild
         >
-          <Link.Trigger>
-            <Link.AppleZoom>
-              <Node
-                type={item.type}
-                state={nodeState}
-                id={item.id}
-                index={item.globalIndex}
-                position={nodePosition}
-                size={NODE_DISPLAY_SIZE}
-                label={item.label}
-                iconName={item.icon}
-                onPress={handlePress}
-                accessibilityLabel={nodeA11yLabel(item.type, nodeState)}
-              />
-            </Link.AppleZoom>
+          <Link.Trigger withAppleZoom>
+            <Node
+              type={item.type}
+              state={nodeState}
+              id={item.id}
+              index={item.globalIndex}
+              position={nodePosition}
+              size={NODE_DISPLAY_SIZE}
+              label={item.label}
+              iconName={item.icon}
+              onPress={handlePress}
+              accessibilityLabel={nodeA11yLabel(item.type, nodeState)}
+            />
           </Link.Trigger>
         </Link>
       ) : (

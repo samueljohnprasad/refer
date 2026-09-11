@@ -98,12 +98,15 @@ export function ChestRewardModal({
   onClaim,
   onDismiss,
 }: ChestRewardModalProps): React.JSX.Element {
+  const isPresented =
+    node !== null && node.type === NodeType.CHEST && insightCard !== null;
+
   return (
     <Host>
       <BottomSheet
-        isPresented={node !== null}
-        onIsPresentedChange={(isPresented) => {
-          if (!isPresented && !isClaiming) onDismiss();
+        isPresented={isPresented}
+        onIsPresentedChange={(presented) => {
+          if (!presented && !isClaiming) onDismiss();
         }}
       >
         <Group

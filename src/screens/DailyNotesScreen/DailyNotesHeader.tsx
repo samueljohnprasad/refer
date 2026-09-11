@@ -51,6 +51,8 @@ import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 import { GlassView, isGlassEffectAPIAvailable } from "expo-glass-effect";
 import { BlurView } from "expo-blur";
+import { Host, Menu as SUIMenu, Button as SUIButton } from "@expo/ui/swift-ui";
+import { labelStyle, controlSize, tint } from "@expo/ui/swift-ui/modifiers";
 
 const AnimatedGlassView = Animated.createAnimatedComponent(GlassView);
 const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
@@ -403,7 +405,7 @@ const DailyNotesHeader = React.memo(
 
                 {/* ponytail: softer month title and compressed week row spacing */}
                 <Animated.View 
-                  style={[titleAndBookmarkStyle, { position: 'absolute', left: 100, right: 100, top: 0, bottom: 0, zIndex: -1 }]} 
+                  style={[titleAndBookmarkStyle, { position: 'absolute', left: 72, right: 72, top: 0, bottom: 0, zIndex: -1 }]} 
                   className="flex-row items-center justify-center pointer-events-none"
                   pointerEvents="none"
                 >
@@ -414,42 +416,49 @@ const DailyNotesHeader = React.memo(
 
                 <Animated.View 
                   style={titleAndBookmarkStyle} 
-                  className="flex-row items-center gap-1"
+                  className="flex-row items-center gap-1.5"
                   pointerEvents={isExpanded ? "none" : "auto"}
                 >
                   <TodayPill visible={showTodayPill} onPress={handleGoToToday} offsetX={0} />
-                  {/* ponytail: direct navigation to continuous AI timeline review */}
-                  <Pressable
-                    className="min-h-[44px] min-w-[44px] justify-center items-center rounded-full"
-                    onPress={handleTimelinePress}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                    accessibilityRole="button"
-                    accessibilityLabel="Timeline & AI Insights"
-                    accessibilityHint="Opens continuous reflection timeline across days, weeks, and months"
-                  >
-                    <HugeiconsIcon
-                      icon={BarChartHorizontalIcon}
-                      size={20}
-                      color={SEMANTIC_COLORS.brand.pressed}
-                      strokeWidth={2}
-                    />
-                  </Pressable>
-                  <Pressable
-                    className="min-h-[44px] min-w-[44px] justify-center items-center rounded-full"
-                    onPress={handleBookmarkPressInternal}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                    accessibilityRole="button"
-                    accessibilityLabel="Bookmarks"
-                  >
-                    <Animated.View style={bookmarkIconStyle}>
+                  {Platform.OS === "ios" ? (
+                    <Host matchContents style={{ width: 44, height: 44, justifyContent: "center", alignItems: "center" }}>
+                      <SUIMenu
+                        label="More options"
+                        systemImage="ellipsis"
+                        modifiers={[
+                          labelStyle("iconOnly"),
+                          controlSize("regular"),
+                          tint(SEMANTIC_COLORS.brand.pressed as string),
+                        ]}
+                      >
+                        <SUIButton
+                          label="Timeline & Insights"
+                          systemImage="chart.bar.xaxis"
+                          onPress={handleTimelinePress}
+                        />
+                        <SUIButton
+                          label="Bookmarks"
+                          systemImage="bookmark"
+                          onPress={handleBookmarkPressInternal}
+                        />
+                      </SUIMenu>
+                    </Host>
+                  ) : (
+                    <Pressable
+                      className="min-h-[44px] min-w-[44px] justify-center items-center rounded-full"
+                      onPress={handleBookmarkPressInternal}
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Bookmarks"
+                    >
                       <HugeiconsIcon
                         icon={Bookmark03Icon}
                         size={20}
                         color={SEMANTIC_COLORS.brand.pressed}
                         strokeWidth={2}
                       />
-                    </Animated.View>
-                  </Pressable>
+                    </Pressable>
+                  )}
                 </Animated.View>
               </View>
             </Animated.View>
@@ -504,14 +513,14 @@ const DailyNotesHeader = React.memo(
                         onPress={dayPressHandlers(dayData)}
                         onLayout={index === 0 ? (e) => setButtonHeight(e.nativeEvent.layout.height) : undefined}
                       />
-                      <View className="flex-1 items-center mb-1">
+                      <View className="h-6 items-center justify-center mt-0.5">
                         <MoodBadge
                           disabled={dayData.disabled}
                           moodscore={dayData.mood !== undefined ? Math.round(dayData.mood) : undefined}
                           active={dayData.isSelectedDay}
-                          size={24}
+                          size={22}
                           onPress={() => onEmojiPress(dayData.day, dayData.mood)}
-                          hideEmptySlot={dayData.disabled && dayData.mood === undefined}
+                          hideEmptySlot={dayData.mood === undefined}
                         />
                       </View>
                     </View>

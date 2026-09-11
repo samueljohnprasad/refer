@@ -122,10 +122,6 @@ const getHeaderConfig = (stepName: string): HeaderConfig => {
       return {
         visible: true,
         showBackButton: true,
-        trailingLabel: "YOUR COURSE",
-        trailingLabelColor: "#7D8D7B",
-        trailingLabelTracking: 0.6,
-        trailingLabelAlignment: "end",
       };
     case "pact_signing":
       return { visible: true, showBackButton: true, progress: 0.6 };
@@ -353,7 +349,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
 
   const handlePactCommit = useCallback(() => {
     updatePactSigned();
-    setTimeout(goNext, 1200);
+    goNext();
   }, [updatePactSigned, goNext]);
 
 
@@ -408,6 +404,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
           <PlanRevealStep
             planName={derivedPlanName}
             motivation={formData.motivation}
+            stressLevel={formData.stressLevel}
           />
         );
       case "lesson_complete":
@@ -454,6 +451,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
           <WelcomeToHappyStep
             planName={derivedPlanName}
             dailyGoal={formData.dailyGoal}
+            onLoginPress={() => handleContinue(false)}
           />
         );
       default:

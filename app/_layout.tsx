@@ -18,6 +18,7 @@ import {
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
+import { requireOptionalNativeModule } from "expo-modules-core";
 import { Slot, router as expoRouter } from "expo-router";
 import { AuthProvider } from "@/src/context/AuthContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -99,6 +100,12 @@ export default function RootLayout() {
       // Initialize premium haptic system
       void HapticManager.initialize().catch(() => {});
       Presets.System.impactHeavy();
+
+      // Disable Expo Dev Menu floating action button so it does not obstruct onboarding or CTAs
+      try {
+        const DevMenuPreferences = requireOptionalNativeModule("DevMenuPreferences");
+        void DevMenuPreferences?.setPreferencesAsync?.({ showFloatingActionButton: false });
+      } catch {}
     }
   }, [fontsReady]);
 

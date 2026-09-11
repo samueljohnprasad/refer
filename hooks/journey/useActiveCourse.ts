@@ -45,7 +45,9 @@ function resolveActiveCourseId(
   return availableCourseIds[0] ?? null;
 }
 
-export function useActiveCourse(): UseActiveCourseResult {
+export function useActiveCourse(
+  initialCourseId?: string,
+): UseActiveCourseResult {
   const dispatch = useAppDispatch();
   const activeCourseId = useAppSelector(selectActiveCourseId);
   const enrolledCoursesQuery = useGetEnrolledCourseIdsQuery();
@@ -63,14 +65,18 @@ export function useActiveCourse(): UseActiveCourseResult {
   const isLoading = isLoadingEnrollments || isLoadingCatalog;
   const error = enrollmentError ?? catalogError;
   const resolvedCourseId = useMemo(
-    () =>
-      resolveActiveCourseId(
+    () => {
+      if (initialCourseId) {
+        return initialCourseId;
+      }
+      return resolveActiveCourseId(
         activeCourseId,
         enrolledIds,
         courseCatalog?.map((course) => course.id),
         isLoading,
-      ),
-    [activeCourseId, courseCatalog, enrolledIds, isLoading],
+      );
+    },
+    [activeCourseId, courseCatalog, enrolledIds, initialCourseId, isLoading],
   );
 
   useEffect(() => {

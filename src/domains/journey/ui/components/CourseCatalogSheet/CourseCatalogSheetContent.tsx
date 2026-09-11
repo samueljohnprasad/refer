@@ -9,7 +9,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import type { CourseOverview } from "@/src/domains/journey/model/courseOverview";
-import type { CourseCatalogListItem } from "@/src/types/journeyV5";
+import type {
+  CourseCatalogListItem,
+  EnrolledCourseListItem,
+} from "@/src/types/journeyV5";
 import { CourseCatalogList } from "./CourseCatalogList";
 import { CourseOverviewScreen } from "./CourseOverviewScreen";
 
@@ -18,6 +21,7 @@ interface CourseCatalogModel {
   listRef: React.RefObject<FlatList<CourseCatalogListItem> | null>;
   catalogCourses: CourseCatalogListItem[];
   isCatalogLoading: boolean;
+  enrolledCourses?: EnrolledCourseListItem[];
   enrolledCourseIds: Set<string>;
   selectedCourseId: string | null;
   selectedCourse: CourseCatalogListItem | null;
@@ -73,6 +77,11 @@ export function CourseCatalogSheetContent({
             isLoading={model.isCourseTreeLoading}
             hasError={model.hasCourseTreeError}
             isEnrolled={model.enrolledCourseIds.has(model.selectedCourse.id)}
+            isCompleted={
+              model.enrolledCourses?.find(
+                (c) => c.id === model.selectedCourse?.id,
+              )?.status === "completed"
+            }
             isStartingCourse={model.isStartingCourse}
             enrollmentError={model.enrollmentError}
             onBack={actions.handleCourseBack}

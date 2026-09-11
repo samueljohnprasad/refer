@@ -8,30 +8,49 @@ import JourneyMapView from "./JourneyMapView";
  * Passes pure model data and action handlers to JourneyMapView without extra markup.
  */
 export interface JourneyMapContainerProps {
+  courseId?: string;
+  slug?: string;
   isOnboarding?: boolean;
   onComplete?: () => void;
 }
 
 export default function JourneyMapContainer({
+  courseId,
+  slug,
   isOnboarding,
   onComplete,
 }: JourneyMapContainerProps): React.JSX.Element {
-  const { model, actions } = useJourneyMapViewModel();
+  const { model, actions } = useJourneyMapViewModel({ courseId, slug });
 
-  const prevIndexRef = React.useRef(model.controller.activeGlobalIndex);
+  const hasInitializedRef = React.useRef(false);
+  const baselineIndexRef = React.useRef<number | null>(null);
 
   React.useEffect(() => {
-    const prev = prevIndexRef.current;
+    if (!isOnboarding || !onComplete || !model.controller.isLoaded) {
+      return;
+    }
+
     const current = model.controller.activeGlobalIndex;
-    
+
+    // Capture initial active index once the course tree and progress have finished loading
+    if (!hasInitializedRef.current) {
+      hasInitializedRef.current = true;
+      baselineIndexRef.current = current;
+      return;
+    }
+
+    const baseline = baselineIndexRef.current;
     // Auto-advance only if the user actually completed a lesson while on this screen
-    // (i.e. the active node index increased).
-    if (isOnboarding && onComplete && current > 0 && current > prev) {
+    // (i.e. the active node index increased beyond the initial baseline).
+    if (baseline !== null && current > baseline) {
       onComplete();
     }
-    
-    prevIndexRef.current = current;
-  }, [isOnboarding, onComplete, model.controller.activeGlobalIndex]);
+  }, [
+    isOnboarding,
+    onComplete,
+    model.controller.isLoaded,
+    model.controller.activeGlobalIndex,
+  ]);
 
   return (
     <JourneyMapView

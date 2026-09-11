@@ -9,6 +9,7 @@ import { StaggeredText } from "@/src/components/staggered-text";
 
 interface EmptyStateProps {
   mascotState: MascotState;
+  mascotSize?: number;
   buttonText?: string;
   onButtonPress?: () => void;
   buttonIcon?: any;
@@ -24,6 +25,7 @@ interface EmptyStateProps {
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
   mascotState,
+  mascotSize = 102,
   buttonText,
   onButtonPress,
   buttonIcon,
@@ -50,21 +52,21 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 
   return (
     <View
-      className={`flex-1 items-center justify-center py-8 min-h-[400px] ${containerClassName}`}
+      className={`flex-1 items-center justify-center py-4 min-h-[300px] ${containerClassName}`}
     >
       {/* ponytail: tighten vertical rhythm between mascot and text */}
-      <View className="mb-3 items-center justify-center">
-        <Mascot state={mascotState} size={120} />
+      <View className="mb-2.5 items-center justify-center">
+        <Mascot state={mascotState} size={mascotSize} />
       </View>
 
       {titles.length > 0 && (
-        <View className="mb-1.5 w-full justify-center items-center h-[40px]">
+        <View className="mb-1 w-full justify-center items-center h-[36px]">
           <StaggeredText
             texts={titles}
             activeIndex={activeIndex}
-            fontSize={28}
+            fontSize={26}
             color={SEMANTIC_COLORS.brand.onSoft}
-            height={40}
+            height={36}
             animationConfig={{
               duration: 250,
               characterDelay: 30,
@@ -74,12 +76,12 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       )}
 
       {description && (
-        <Text variant="body" color="soft" className="text-center px-8 mb-8">
+        <Text variant="body" color="soft" className="text-center px-8 mb-5">
           {description}
         </Text>
       )}
 
-      <View className="px-8 self-stretch w-full max-w-sm flex-col gap-3 justify-center">
+      <View className="px-8 self-stretch w-full max-w-sm flex-col gap-2.5 justify-center">
         {secondaryButtonText && onSecondaryButtonPress ? (
           <>
             <Button
@@ -111,7 +113,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
                   <HugeiconsIcon
                     icon={secondaryButtonIcon}
                     size={18}
-                    color="#142414"
+                    color={SEMANTIC_COLORS.text.primary}
                   />
                 ) : undefined
               }

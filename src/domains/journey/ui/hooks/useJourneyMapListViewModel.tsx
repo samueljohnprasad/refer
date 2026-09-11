@@ -5,6 +5,8 @@ import {
   JourneyMapListFooter,
   JourneyMapListItem,
   ESTIMATED_ITEM_SIZE,
+  JOURNEY_HEADER_CONTENT_HEIGHT,
+  ONBOARDING_HEADER_CONTENT_HEIGHT,
   JOURNEY_VIEWABILITY_CONFIG,
   getJourneyMapItemKey,
   getJourneyMapItemType,
@@ -42,9 +44,11 @@ export interface JourneyMapListActions {
 export function useJourneyMapListViewModel({
   courseId,
   controller,
+  isOnboarding,
 }: {
   courseId: string;
   controller: ReturnType<typeof useJourneyMapController>;
+  isOnboarding?: boolean;
 }): {
   model: JourneyMapListViewModel;
   actions: JourneyMapListActions;
@@ -89,13 +93,24 @@ export function useJourneyMapListViewModel({
     [bottomSpacerHeight],
   );
 
+  const contentContainerStyle = useMemo(
+    () => ({
+      paddingTop:
+        insets.top +
+        (isOnboarding
+          ? ONBOARDING_HEADER_CONTENT_HEIGHT
+          : JOURNEY_HEADER_CONTENT_HEIGHT),
+    }),
+    [insets.top, isOnboarding],
+  );
+
   const model: JourneyMapListViewModel = {
     courseId,
     isLoaded,
     flashListData,
     listKey,
     activeNodeInitialScrollIndex,
-    contentContainerStyle: { paddingTop: insets.top + 100 },
+    contentContainerStyle,
     estimatedItemSize: ESTIMATED_ITEM_SIZE,
     viewabilityConfig: JOURNEY_VIEWABILITY_CONFIG,
     getJourneyMapItemKey,

@@ -1,6 +1,6 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { type ReactElement } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View, type ColorValue } from "react-native";
 import * as Haptics from "expo-haptics";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
@@ -23,13 +23,13 @@ type Variant =
   | "danger";
 
 interface VariantConfig {
-  faceColor: string;
-  rimColor: string;
-  labelColor: string;
-  disabledFaceColor: string;
-  disabledRimColor: string;
-  disabledLabelColor?: string;
-  faceStrokeColor?: string;
+  faceColor: ColorValue;
+  rimColor: ColorValue;
+  labelColor: ColorValue;
+  disabledFaceColor: ColorValue;
+  disabledRimColor: ColorValue;
+  disabledLabelColor?: ColorValue;
+  faceStrokeColor?: ColorValue;
   faceStrokeWidth?: number;
 }
 
@@ -44,10 +44,10 @@ const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
   },
   secondary: {
     faceColor: SEMANTIC_COLORS.surface.primary,
-    rimColor: SEMANTIC_COLORS.border.strong,
+    rimColor: SEMANTIC_COLORS.border.default,
     labelColor: SEMANTIC_COLORS.text.primary,
-    faceStrokeColor: SEMANTIC_COLORS.border.strong,
-    faceStrokeWidth: 4,
+    faceStrokeColor: SEMANTIC_COLORS.border.default,
+    faceStrokeWidth: 2,
     disabledFaceColor: "#F7F7F7",
     disabledRimColor: "#E5E5E5",
   },
@@ -235,7 +235,7 @@ export function Button({
   const faceColor = isDisabled ? config.disabledFaceColor : config.faceColor;
   const rimColor = isDisabled ? config.disabledRimColor : config.rimColor;
   const labelColor = isDisabled 
-    ? (config.disabledLabelColor ?? `${config.labelColor}80`)
+    ? (config.disabledLabelColor ?? config.labelColor)
     : config.labelColor;
   const radius = variant === "pill" ? 9999 : sizeConfig.radius;
 

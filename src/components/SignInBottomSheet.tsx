@@ -1,13 +1,24 @@
-import { View, Modal } from "react-native";
+import {
+  ActivityIndicator,
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { useToast } from "heroui-native";
-import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import * as AppleAuthentication from "expo-apple-authentication";
+import * as Haptics from "expo-haptics";
+import Svg, { Path } from "react-native-svg";
 import { useAuth, type AuthProviderId } from "@/src/context/AuthContext";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { clearGuestProgress } from "@/hooks/data/useGuestProgress";
 import type { CustomerInfo } from "react-native-purchases";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { Text } from "@/src/components/ui/Text";
 import { Button } from "@/src/components/ui/Button";
 import { Card } from "@/src/components/ui/Card";
@@ -17,6 +28,27 @@ import {
   presentationDetents,
   presentationDragIndicator,
 } from "@expo/ui/swift-ui/modifiers";
+
+const GoogleGIcon = ({ size = 20 }: { size?: number }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24">
+    <Path
+      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      fill="#4285F4"
+    />
+    <Path
+      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      fill="#34A853"
+    />
+    <Path
+      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+      fill="#FBBC05"
+    />
+    <Path
+      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+      fill="#EA4335"
+    />
+  </Svg>
+);
 
 interface PremiumRecoveryState {
   appUserID: string | null;
@@ -29,6 +61,7 @@ interface SignInBottomSheetProps {
   onSkip?: () => void;
   onSuccess?: () => void;
   showSkipButton?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export interface SignInBottomSheetHandle {
@@ -41,6 +74,7 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
   onSkip,
   onSuccess,
   showSkipButton = false,
+  onOpenChange,
 }, ref) => {
   const router = useRouter();
   const { toast } = useToast();
@@ -65,14 +99,29 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
   const [busyRestore, setBusyRestore] = useState<boolean>(false);
   const [premiumRecovery, setPremiumRecovery] =
     useState<PremiumRecoveryState | null>(null);
+  const [isAppleAuthAvailable, setIsAppleAuthAvailable] = useState<boolean>(
+    Platform.OS === "ios"
+  );
+
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      AppleAuthentication.isAvailableAsync()
+        .then((avail) => setIsAppleAuthAvailable(avail))
+        .catch(() => setIsAppleAuthAvailable(false));
+    } else {
+      setIsAppleAuthAvailable(false);
+    }
+  }, []);
 
   useImperativeHandle(ref, () => ({
     present: () => {
       setIsOpen(true);
+      onOpenChange?.(true);
     },
     dismiss: () => {
       dismissAccountClaimPrompt();
       setIsOpen(false);
+      onOpenChange?.(false);
     },
   }));
 
@@ -104,15 +153,18 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
   const dismissSheet = (): void => {
     dismissAccountClaimPrompt();
     setIsOpen(false);
+    onOpenChange?.(false);
   };
 
   const handleSheetDismiss = (): void => {
     dismissAccountClaimPrompt();
     onDismiss?.();
     setIsOpen(false);
+    onOpenChange?.(false);
   };
 
   const finishSuccessfully = (): void => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     dismissSheet();
 
     if (onSuccess) {
@@ -120,7 +172,7 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
       return;
     }
 
-    router.replace("/tabs/screens/onboard-container");
+    router.replace("/tabs/(tabs)/home");
   };
 
   const handleSkip = (): void => {
@@ -162,7 +214,7 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
           showError("Account saved. Premium needs a refresh.");
           return;
         } else {
-          showSuccess(hasPro ? "Premium profile saved." : "Progress saved.");
+          showSuccess("Account created.");
         }
         finishSuccessfully();
         return;
@@ -250,12 +302,18 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
   };
 
 
-  const sheetHeight = premiumRecovery || accountConflict ? 380 : showSkipButton ? 340 : 290;
-
-  if (!isOpen) return null;
+  const sheetHeight =
+    premiumRecovery || accountConflict ? 380 : showSkipButton ? 285 : 245;
 
   return (
-    <Host>
+    <Modal
+      visible={isOpen}
+      transparent
+      animationType="none"
+      statusBarTranslucent
+      onRequestClose={handleSheetDismiss}
+    >
+      <Host style={StyleSheet.absoluteFill}>
         <BottomSheet
           isPresented={isOpen}
           onIsPresentedChange={(val: boolean) => {
@@ -271,11 +329,14 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
             ]}
           >
             <RNHostView>
-              <View className="flex-1 px-6 pt-5 pb-6">
+              <View className="flex-1 px-6 pt-5 pb-5">
                 {premiumRecovery ? (
                   <View className="flex-1 justify-between">
                     <View>
-                      <Text variant="h1" className="text-center mb-3">
+                      <Text
+                        style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+                        className="text-center text-[20px] mb-2 text-ink"
+                      >
                         {premiumRecovery.reason === "claim"
                           ? "Premium Refresh Needed"
                           : "Premium Restore Needed"}
@@ -331,7 +392,10 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
                 ) : accountConflict ? (
                   <View className="flex-1 justify-between">
                     <View>
-                      <Text variant="h1" className="text-center mb-3">
+                      <Text
+                        style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+                        className="text-center text-[20px] mb-2 text-ink"
+                      >
                         {hasPro ? "Premium Is Active Here" : "Existing Account Found"}
                       </Text>
                       <Text variant="body" className="text-center leading-[22px]">
@@ -363,50 +427,127 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
                 ) : (
                   <View className="flex-1 justify-between">
                     <View>
-                      <Text variant="h1" className="mb-2">
-                        {isAnonymous
-                          ? hasPro
-                            ? "Save Your Premium Profile"
-                            : "Save Your Progress"
-                          : "Welcome Back"}
+                      <Text
+                        style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+                        className="text-[21px] leading-tight text-ink"
+                      >
+                        {isAnonymous ? "Create your account" : "Welcome back"}
                       </Text>
-                      <Text variant="body" className="leading-[22px]">
+                      <Text
+                        style={{ fontFamily: APP_FONT_FAMILIES.regular }}
+                        className="mt-1.5 text-[14px] leading-[20px] text-ink-soft"
+                      >
                         {isAnonymous
-                          ? "Add a login to keep your current Happy profile, progress, and Premium access safe."
-                          : "Sign in to sync your journals, moods, and calories across all your devices."}
+                          ? "Keep your course, reflections, and streak synced to you."
+                          : "Sign in to sync your course, reflections, and streak across devices."}
                       </Text>
                     </View>
 
                     <View className="gap-3">
-                      <Button
-                        label="Continue with Apple"
-                        variant="primary"
-                        onPress={() => handleProviderPress("apple")}
-                        loading={busyProvider === "apple"}
-                        disabled={busyProvider !== null}
-                        fullWidth
-                        leftIcon={<FontAwesome name="apple" size={20} color="white" />}
-                      />
+                      {/* Apple Button: Official native ASAuthorizationAppleIDButton on iOS, styled HIG black on fallback */}
+                      <View
+                        pointerEvents={busyProvider !== null ? "none" : "auto"}
+                        style={{
+                          width: "100%",
+                          height: 50,
+                          opacity: busyProvider !== null && busyProvider !== "apple" ? 0.6 : 1,
+                        }}
+                      >
+                        {Platform.OS === "ios" && isAppleAuthAvailable && busyProvider !== "apple" ? (
+                          <AppleAuthentication.AppleAuthenticationButton
+                            buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
+                            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                            cornerRadius={16}
+                            style={{ width: "100%", height: 50 }}
+                            onPress={() => handleProviderPress("apple")}
+                          />
+                        ) : (
+                          <Pressable
+                            onPress={() => handleProviderPress("apple")}
+                            disabled={busyProvider !== null}
+                            accessibilityRole="button"
+                            accessibilityLabel="Continue with Apple"
+                            style={({ pressed }) => [
+                              {
+                                height: 50,
+                                borderRadius: 16,
+                                backgroundColor: pressed ? "#1A1A1A" : "#000000",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: 10,
+                              },
+                            ]}
+                          >
+                            {busyProvider === "apple" ? (
+                              <ActivityIndicator size="small" color="#FFFFFF" />
+                            ) : (
+                              <>
+                                <FontAwesome name="apple" size={20} color="#FFFFFF" />
+                                <Text
+                                  style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
+                                  className="text-[16px] text-white"
+                                >
+                                  Continue with Apple
+                                </Text>
+                              </>
+                            )}
+                          </Pressable>
+                        )}
+                      </View>
 
-                      <Button
-                        label="Continue with Google"
-                        variant="secondary"
+                      {/* Google Button: Platform standard white surface, official 4-color G icon, matching 50pt height and 16pt radius */}
+                      <Pressable
                         onPress={() => handleProviderPress("google")}
-                        loading={busyProvider === "google"}
                         disabled={busyProvider !== null}
-                        fullWidth
-                        leftIcon={<FontAwesome name="google" size={18} color={SEMANTIC_COLORS.text.primary} />}
-                      />
+                        accessibilityRole="button"
+                        accessibilityLabel="Continue with Google"
+                        style={({ pressed }) => [
+                          {
+                            height: 50,
+                            borderRadius: 16,
+                            backgroundColor: pressed ? "#F8FAFC" : "#FFFFFF",
+                            borderWidth: 1,
+                            borderColor: "#E2E8F0",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: 12,
+                            opacity: busyProvider !== null && busyProvider !== "google" ? 0.6 : 1,
+                          },
+                        ]}
+                      >
+                        {busyProvider === "google" ? (
+                          <ActivityIndicator size="small" color="#4285F4" />
+                        ) : (
+                          <>
+                            <GoogleGIcon size={20} />
+                            <Text
+                              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
+                              className="text-[16px] text-gray-900"
+                            >
+                              Continue with Google
+                            </Text>
+                          </>
+                        )}
+                      </Pressable>
 
                       {showSkipButton ? (
-                        <Button
-                          label="Maybe later"
-                          variant="ghost"
+                        <Pressable
                           onPress={handleSkip}
                           disabled={busyProvider !== null}
-                          fullWidth
-                          className="mt-1"
-                        />
+                          hitSlop={8}
+                          accessibilityRole="button"
+                          accessibilityLabel="Maybe later"
+                          className="py-2.5 items-center justify-center"
+                        >
+                          <Text
+                            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
+                            className="text-[14px] text-ink-soft"
+                          >
+                            Maybe later
+                          </Text>
+                        </Pressable>
                       ) : null}
                     </View>
                   </View>
@@ -416,5 +557,6 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
           </Group>
         </BottomSheet>
       </Host>
+    </Modal>
   );
 });

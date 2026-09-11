@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text as RNText } from "react-native";
+import { View } from "react-native";
 import { Host, VStack, BottomSheet, Group, RNHostView, Text } from "@expo/ui/swift-ui";
 import {
   font,

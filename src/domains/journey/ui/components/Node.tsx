@@ -1,6 +1,6 @@
 // ponytail: true
 import React, { useCallback } from "react";
-import { Pressable, AccessibilityInfo, View, Text } from "react-native";
+import { Pressable, View, Text } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -13,6 +13,7 @@ import Animated, {
 import * as Haptics from "expo-haptics";
 import { Feather, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { NodeType, NodeState } from "@/src/types/journey";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { useNodeViewModel } from "../hooks/useNodeViewModel";
 import { NodeSilhouette } from "./NodeShapes";
 
@@ -56,6 +57,7 @@ export const Node = React.memo(React.forwardRef<View, NodeProps>(function Node({
 
   const handlePressIn = useCallback(() => {
     if (!vm.isInteractive) return;
+    if (state === NodeState.LOCKED) return;
     runOnJS(Haptics.impactAsync)(Haptics.ImpactFeedbackStyle.Light);
     
     if (reduceMotion) {
@@ -63,23 +65,23 @@ export const Node = React.memo(React.forwardRef<View, NodeProps>(function Node({
     } else {
       yOffset.value = withTiming(DEPTH, { duration: 80 });
     }
-  }, [vm.isInteractive, yOffset, opacity, reduceMotion]);
+  }, [vm.isInteractive, state, yOffset, opacity, reduceMotion]);
 
   const handlePressOut = useCallback(() => {
     if (!vm.isInteractive) return;
+    if (state === NodeState.LOCKED) return;
     
     if (reduceMotion) {
       opacity.value = 1;
     } else {
       yOffset.value = withSpring(0, PRESS_SPRING);
     }
-  }, [vm.isInteractive, yOffset, opacity, reduceMotion]);
+  }, [vm.isInteractive, state, yOffset, opacity, reduceMotion]);
 
   const handlePress = useCallback((e: any) => {
-    console.log("!!! Node handlePress", { type, state, isInteractive: vm.isInteractive });
     if (!vm.isInteractive) return;
     onPress?.(e);
-  }, [vm.isInteractive, onPress, type, state]);
+  }, [vm.isInteractive, onPress]);
 
   const hSize = size / 2;
 
@@ -222,7 +224,7 @@ export const Node = React.memo(React.forwardRef<View, NodeProps>(function Node({
               iconAnimatedStyle,
             ]}
           >
-            <Text style={{ fontFamily: "Nunito-Bold", fontSize: 14, color: "#4B4B4B" }}>
+            <Text style={{ fontFamily: APP_FONT_FAMILIES.bold, fontSize: 14, color: "#4B4B4B" }}>
               {label}
             </Text>
             <View

@@ -6,7 +6,6 @@ const Label = NativeTabs.Trigger.Label;
 const Icon = NativeTabs.Trigger.Icon;
 import { useWidgetWeekMoods } from "@/hooks/data/useWidgetWeekMoods";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 
 export default function TabLayout() {
   const isDark = useColorScheme() === "dark";
@@ -30,15 +29,6 @@ export default function TabLayout() {
         color: isDark ? SEMANTIC_COLORS.text.secondary : SEMANTIC_COLORS.text.secondary,
       }}
     >
-      <NativeTabs.Trigger name="exercises">
-        <Label>Exercises</Label>
-        <Icon
-          sf={{
-            default: "doc.text",
-            selected: "doc.text.fill",
-          }}
-        />
-      </NativeTabs.Trigger>
       <NativeTabs.Trigger name="home">
         <Label>Home</Label>
         <Icon
@@ -58,22 +48,31 @@ export default function TabLayout() {
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="record">
-        <Label>Record</Label>
+        <Label>Capture</Label>
         <Icon
           sf={{
-            default: "mic",
-            selected: "mic.fill",
+            default: "plus.circle",
+            selected: "plus.circle.fill",
           }}
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="journeys">
+        <Label>Journeys</Label>
         <Icon
           sf={{
             default: "map",
             selected: "map.fill",
           }}
         />
-        <Label>Journeys</Label>
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="exercises">
+        <Label>Exercises</Label>
+        <Icon
+          sf={{
+            default: "leaf",
+            selected: "leaf.fill",
+          }}
+        />
       </NativeTabs.Trigger>
     </NativeTabs>
   );

@@ -27,6 +27,9 @@ export const NodeSilhouette = React.memo(function NodeSilhouette({
 }: NodeSilhouetteProps) {
   const depth = 6;
   const hSize = size / 2;
+  const clipId = React.useId().replace(/[:]/g, "");
+  const lessonClipId = `lessonClip-${clipId}`;
+  const shapeClipId = `shapeClip-${clipId}`;
 
   if (type === NodeType.LESSON) {
     // Exact match for existing DuolingoSvgNodeButton
@@ -34,7 +37,7 @@ export const NodeSilhouette = React.memo(function NodeSilhouette({
       
       <Svg width="100%" height="100%" viewBox="-10 -10 120 130">
         <Defs>
-          <ClipPath id="lessonClip">
+          <ClipPath id={lessonClipId}>
             <Ellipse cx={50} cy={40} rx={51} ry={41} />
           </ClipPath>
         </Defs>
@@ -47,7 +50,7 @@ export const NodeSilhouette = React.memo(function NodeSilhouette({
           fill={fill as any}
           animatedProps={faceAnimatedProps}
         />
-        <AnimatedG animatedProps={faceAnimatedProps} clipPath="url(#lessonClip)">
+        <AnimatedG animatedProps={faceAnimatedProps} clipPath={`url(#${lessonClipId})`}>
           <Rect x={-10} y={-2} width={120} height={30} fill="rgba(255, 255, 255, 0.3)" transform="rotate(-45 50 40)" />
           <Rect x={-10} y={50} width={120} height={26} fill="rgba(255, 255, 255, 0.3)" transform="rotate(-45 50 40)" />
         </AnimatedG>
@@ -70,7 +73,7 @@ export const NodeSilhouette = React.memo(function NodeSilhouette({
   return (
     <Svg width={size} height={size + depth} viewBox={viewBox}>
       <Defs>
-        <ClipPath id="shapeClip">
+        <ClipPath id={shapeClipId}>
           <Path d={pathD} />
         </ClipPath>
       </Defs>
@@ -81,7 +84,7 @@ export const NodeSilhouette = React.memo(function NodeSilhouette({
       {/* Animated Face */}
       <AnimatedPath d={pathD} fill={fill as any} animatedProps={faceAnimatedProps} />
       {/* Gloss */}
-      <AnimatedG animatedProps={faceAnimatedProps} clipPath="url(#shapeClip)">
+      <AnimatedG animatedProps={faceAnimatedProps} clipPath={`url(#${shapeClipId})`}>
         <Rect x={-50} y={10} width={200} height={25} fill="rgba(255, 255, 255, 0.3)" transform="rotate(-45 50 50)" />
         <Rect x={-50} y={40} width={200} height={8} fill="rgba(255, 255, 255, 0.3)" transform="rotate(-45 50 50)" />
       </AnimatedG>

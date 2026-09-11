@@ -12,6 +12,9 @@ import { useRouter } from "expo-router";
 import { EmptyState } from "@/src/components/ui/EmptyState";
 import { JournalTabSkeleton } from "./JournalSkeletons";
 import { EntryCard } from "./EntryCard";
+import { Button } from "@/src/components/ui/Button";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
 interface EntryCardsViewProps {
   entries: JournalEntry[];
@@ -87,12 +90,13 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
     return (
       <EmptyState
         mascotState="panda-notes"
+        mascotSize={102}
         title={[
-          "What's on your mind?",
           "Capture a quick thought",
+          "What's on your mind?",
           "Reflect on your day",
         ]}
-        description="A private space to capture your thoughts."
+        description="Private by default. Just start where you are."
         buttonText="Record Voice"
         onButtonPress={() => router.push("/tabs/(tabs)/record")}
         buttonIcon={Mic01Icon}
@@ -101,10 +105,50 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
           router.push("/tabs/screens/keyboard-recorder")
         }
         secondaryButtonIcon={NoteIcon}
-        containerClassName="pb-[120px]"
+        containerClassName="py-2 pb-4"
       />
     );
   }
+
+  const composerFooter = (
+    <View className="flex-row items-center gap-2.5 pt-3 pb-6">
+      <Button
+        label="Record Voice"
+        variant="primary"
+        size="md"
+        className="flex-1"
+        onPress={() => router.push("/tabs/(tabs)/record")}
+        leftIcon={
+          <HugeiconsIcon
+            icon={Mic01Icon}
+            size={16}
+            color={SEMANTIC_COLORS.surface.primary}
+          />
+        }
+      />
+      <Button
+        label="Write Text"
+        variant="secondary"
+        size="md"
+        className="flex-1"
+        onPress={() => router.push("/tabs/screens/keyboard-recorder")}
+        leftIcon={
+          <HugeiconsIcon
+            icon={NoteIcon}
+            size={16}
+            color={SEMANTIC_COLORS.text.primary}
+          />
+        }
+      />
+    </View>
+  );
+
+  const combinedFooter = (
+    <>
+      {composerFooter}
+      {ListFooterComponent}
+    </>
+  );
 
   return (
     <View className="gap-2.5 flex-1">
@@ -115,7 +159,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
           scrollEnabled={scrollEnabled}
           onEndReached={onEndReached}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={ListFooterComponent}
+          ListFooterComponent={combinedFooter}
           contentContainerStyle={{ gap: 10, paddingBottom: 40 }}
           keyExtractor={(item: JournalEntry, index: number) =>
             item.id != null
@@ -203,7 +247,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
               </View>
             );
           })}
-          {ListFooterComponent}
+          {combinedFooter}
         </View>
       )}
       <ConfirmationModal

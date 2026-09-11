@@ -1,437 +1,204 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
-import React, { useEffect } from "react";
-import * as Haptics from "expo-haptics";
+import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHeaderHeight } from "expo-router/react-navigation";
-import { Text, View, ScrollView } from "react-native";
-import Animated, { FadeIn } from "react-native-reanimated";
+import { Text, View, ScrollView, Platform } from "react-native";
+import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { PLAN_STATS } from "../constants";
-import { MotivationAnswer } from "../types";
-import { useWindowDimensions } from "react-native";
-import { getScaledLayout } from "./progress-graph-victory/layout";
-import ProgressGraphVictoryChart from "./progress-graph-victory/ProgressGraphVictoryChart";
-import { useProgressGraphVictoryAnimation } from "./progress-graph-victory/useProgressGraphVictoryAnimation";
-import TestimonialCard from "../components/TestimonialCard";
-import ConfettiBurst from "../components/ConfettiBurst";
+import { MotivationAnswer, StressLevel } from "../types";
 
 interface PlanRevealStepProps {
   planName: string;
   motivation?: MotivationAnswer;
+  stressLevel?: StressLevel;
 }
 
 const PLAN_META: Record<
   MotivationAnswer,
   {
     subtitle: string;
-    testimonial: string;
-    author: { name: string; age: number; initial: string };
-    learnItems: Array<{ step: string; title: string; subtitle: string }>;
+    practiceItems: readonly string[];
   }
 > = {
   anxiety: {
-    subtitle: "From racing thoughts to steady ground.",
-    testimonial:
-      "\"The AI noticed I was using 'should' 40 times a week. Therapy never caught that. Now I notice it before I write it.\"",
-    author: { name: "Jordan", age: 35, initial: "J" },
-    learnItems: [
-      {
-        step: "1",
-        title: "Naming the feeling",
-        subtitle: "Day 1, Foundation",
-      },
-      {
-        step: "2",
-        title: "The thought spiral",
-        subtitle: "Day 2, Cognitive distortions",
-      },
-      {
-        step: "3",
-        title: "Body as compass",
-        subtitle: "Day 3, Somatic awareness",
-      },
+    subtitle: "From racing thoughts to steadier ground.",
+    practiceItems: [
+      "Understanding the anxiety loop",
+      "Settling the body’s alert response",
+      "Catching patterns earlier",
     ],
   },
   mood: {
     subtitle: "From heavy days to steadier light.",
-    testimonial:
-      "\"The reflection helped me notice what quietly lifts me before my mood drops all the way.\"",
-    author: { name: "Marcus", age: 34, initial: "M" },
-    learnItems: [
-      {
-        step: "1",
-        title: "Naming the feeling",
-        subtitle: "Day 1, Emotional clarity",
-      },
-      {
-        step: "2",
-        title: "Tiny lifts",
-        subtitle: "Day 2, Mood anchors",
-      },
-      {
-        step: "3",
-        title: "Body as compass",
-        subtitle: "Day 3, Somatic awareness",
-      },
+    practiceItems: [
+      "Identifying subtle mood triggers",
+      "Practicing tiny daily anchors",
+      "Finding steadier responses to hard moments",
     ],
   },
   stress: {
     subtitle: "From pressure to steadier ground.",
-    testimonial:
-      "\"I stopped waiting until I was overwhelmed. The app helped me catch stress while it was still workable.\"",
-    author: { name: "Aria", age: 29, initial: "A" },
-    learnItems: [
-      {
-        step: "1",
-        title: "Naming the feeling",
-        subtitle: "Day 1, Foundation",
-      },
-      {
-        step: "2",
-        title: "Pressure points",
-        subtitle: "Day 2, Stress patterns",
-      },
-      {
-        step: "3",
-        title: "Body as compass",
-        subtitle: "Day 3, Somatic awareness",
-      },
+    practiceItems: [
+      "Recognizing tension before it peaks",
+      "Decompressing the nervous system",
+      "Resetting when pressure mounts",
     ],
   },
   self_understanding: {
     subtitle: "From confusion to clearer patterns.",
-    testimonial:
-      "\"I thought I needed more discipline. Turns out I needed language for what I was actually feeling.\"",
-    author: { name: "Robin", age: 31, initial: "R" },
-    learnItems: [
-      {
-        step: "1",
-        title: "Naming the feeling",
-        subtitle: "Day 1, Foundation",
-      },
-      {
-        step: "2",
-        title: "The thought spiral",
-        subtitle: "Day 2, Pattern spotting",
-      },
-      {
-        step: "3",
-        title: "Body as compass",
-        subtitle: "Day 3, Somatic awareness",
-      },
+    practiceItems: [
+      "Uncovering repetitive thought loops",
+      "Naming what you actually feel",
+      "Aligning daily choices with your needs",
     ],
   },
   sleep: {
     subtitle: "From restless nights to gentler wind-downs.",
-    testimonial:
-      "\"I finally noticed my evenings had a shape. Once I could see it, I could change it.\"",
-    author: { name: "Sam", age: 33, initial: "S" },
-    learnItems: [
-      {
-        step: "1",
-        title: "Naming the feeling",
-        subtitle: "Day 1, Nervous system check-in",
-      },
-      {
-        step: "2",
-        title: "The evening spiral",
-        subtitle: "Day 2, Thought patterns",
-      },
-      {
-        step: "3",
-        title: "Body as compass",
-        subtitle: "Day 3, Wind-down cues",
-      },
+    practiceItems: [
+      "Quieting late-night racing thoughts",
+      "Releasing physical tension before bed",
+      "Creating a predictable wind-down rhythm",
     ],
   },
 };
 
-const ProjectionGraph: React.FC = () => {
-  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
-  const isCompactScreen = screenWidth < 390 || screenHeight < 880;
-  const horizontalPadding = isCompactScreen ? 12 : 16;
-  const maxCardWidth = isCompactScreen ? 332 : 352;
-  const cardWidth = Math.max(
-      Math.min(screenWidth - horizontalPadding * 2 - 8, maxCardWidth),
-      288,
-  );
-  const cardHeight = cardWidth * (isCompactScreen ? 0.87 : 0.9);
-  const scale = cardWidth / 320;
-  const chartHeight = cardHeight * (isCompactScreen ? 0.68 : 0.72);
-  const baseLayout = getScaledLayout({
-      scale,
-      cardWidth,
-      cardHeight,
-      chartHeight,
-      isCompact: isCompactScreen,
-  });
-  const layout = {
-      ...baseLayout,
-      chartContainerStyle: {
-          ...baseLayout.chartContainerStyle,
-          position: "relative" as const,
-          left: 0,
-          right: 0,
-          top: 0,
-          marginTop: 16,
-          marginBottom: 16,
+function getWhyThisCourse(
+  motivation: MotivationAnswer,
+  stressLevel?: StressLevel,
+): string {
+  switch (motivation) {
+    case "anxiety":
+      if (stressLevel === "heavy") {
+        return "You told us anxiety feels like a constant weight, so we’ll start with understanding what keeps the alert system switched on and making it easier to settle.";
       }
-  };
-  const animationState = useProgressGraphVictoryAnimation();
-
-  return (
-    <View>
-      <ProgressGraphVictoryChart
-        comparisonDashOpacity={animationState.comparisonDashOpacity}
-        comparisonDotOpacity={animationState.comparisonDotOpacity}
-        comparisonProjectionEnd={animationState.comparisonProjectionEnd}
-        endDotOpacity={animationState.endDotOpacity}
-        happyProjectionEnd={animationState.happyProjectionEnd}
-        layout={layout}
-        startDotOpacity={animationState.startDotOpacity}
-      />
-
-      <View
-        style={{
-          marginTop: 8,
-          paddingTop: 12,
-          borderTopWidth: 1,
-          borderTopColor: "#D3E0CD",
-          borderStyle: "dashed",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-          <View
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: 999,
-              backgroundColor: "#5F7F58",
-            }}
-          />
-          <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-            className="text-[11px] text-ink-muted"
-          >
-            With Happy
-          </Text>
-        </View>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-          <View
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: 999,
-              backgroundColor: "#E5EDE1",
-              borderWidth: 1,
-              borderColor: "#A8B89A",
-              borderStyle: "dashed",
-            }}
-          />
-          <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-            className="text-[11px] text-ink-muted"
-          >
-            Without journaling
-          </Text>
-        </View>
-      </View>
-
-      <Text
-        style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-        className="mt-2 text-[10px] italic leading-[1.4] text-ink-muted"
-      >
-        Based on self-reported clarity scores from{" "}
-        <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}>3,847 Happy users</Text>{" "}
-        over their first 30 days. Individual results vary.
-      </Text>
-    </View>
-  );
-};
+      if (stressLevel === "moderate") {
+        return "You told us anxiety feels like regular tension, so we’ll start with understanding what keeps the alert system switched on and making it easier to settle.";
+      }
+      if (stressLevel === "overwhelming") {
+        return "You told us anxiety feels like it takes over some days, so we’ll start with understanding the alert response and giving you tools to find space.";
+      }
+      return "Based on what you shared, we’ll start by helping you understand what keeps the alert system switched on and practice ways to settle it.";
+    case "mood":
+      return "Based on what you shared, we’ll start with small anchors that help you notice what lifts your day.";
+    case "stress":
+      return "Based on what you shared, we’ll focus on catching pressure before it builds up and giving your nervous system room to decompress.";
+    case "self_understanding":
+      return "Based on what you shared, we’ll help you decode emotional patterns and find clearer language for what you experience.";
+    case "sleep":
+      return "Based on what you shared, we’ll focus on evening unwinding practices to help your body signal safety before bed.";
+    default:
+      return "Based on what you shared, we’ll start with foundational practices tailored to where you are right now.";
+  }
+}
 
 const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
   planName,
   motivation = "anxiety",
+  stressLevel,
 }) => {
-  const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
   const planMeta = PLAN_META[motivation];
-  const displayPlanName = planName.endsWith(".") ? planName : `${planName}.`;
-
-  useEffect(() => {
-    // Slight delay to align with the animation sequence
-    const timer = setTimeout(() => {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, []);
+  const displayPlanName = planName.replace(/\.$/, "");
+  const contentTopPadding = Platform.OS === "ios" ? 100 : insets.top + 100;
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 176, paddingTop: headerHeight - insets.top }}
+      contentContainerStyle={{
+        paddingBottom: 120,
+        paddingTop: contentTopPadding,
+      }}
       contentInsetAdjustmentBehavior="automatic"
-      className="flex-1 px-6 pt-4"
+      className="flex-1 px-6"
     >
-      <Animated.View entering={FadeIn.duration(180).delay(80)}>
-        <View className="flex-row items-center">
-          <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-            className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta"
-          >
-            Built around your goal
-          </Text>
-          <View className="ml-2 -mt-1 z-10">
-            <ConfettiBurst />
-          </View>
-        </View>
+      <Animated.View entering={FadeIn.duration(160).delay(60)}>
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-          className="mt-3 text-[28px] leading-[1.08] text-ink"
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
+          className="text-xs font-semibold uppercase tracking-wider text-sage-600"
         >
-          Your first course:{"\n"}
-          <Text
-            style={{
-              fontFamily: APP_FONT_FAMILIES.regularItalic,
-              color: "#5F7F58",
-            }}
-          >
-            {displayPlanName}
-          </Text>
+          Built around your goal
         </Text>
       </Animated.View>
 
-      <Animated.View entering={FadeIn.duration(180).delay(160)}>
+      {/* Hero Course Card */}
+      <Animated.View entering={FadeInDown.duration(220).delay(120)}>
         <LinearGradient
-          colors={["rgba(16,130,150,0.92)", "rgba(24,86,180,0.85)"]}
+          colors={["#243e26", "#182c19"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{
-            marginTop: 16,
+            marginTop: 12,
             overflow: "hidden",
-            borderRadius: 16,
+            borderRadius: 20,
             borderCurve: "continuous",
-            paddingHorizontal: 24,
-            paddingVertical: 28,
+            paddingHorizontal: 22,
+            paddingVertical: 24,
+            borderWidth: 1,
+            borderColor: "rgba(95, 127, 88, 0.25)",
           }}
         >
           <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-            className="text-[15px] text-gold/90"
+            style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+            className="text-[26px] leading-[1.15] text-white"
           >
-            7-Day Foundation Course
+            {displayPlanName}
           </Text>
+
           <Text
             style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-            className="mt-2 text-[26px] leading-[1.15] text-white"
+            className="mt-2 text-[15px] leading-relaxed text-white/80"
           >
             {planMeta.subtitle}
           </Text>
 
-          <View className="mt-5 flex-row flex-wrap">
-            {PLAN_STATS.map((stat) => (
-              <View key={stat.label} className="mb-4 w-1/2 pr-3">
-                <Text
-                  style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-                  className="text-2xl text-gold"
-                >
-                  {stat.value}
-                </Text>
-                <Text
-                  numberOfLines={1}
-                  adjustsFontSizeToFit
-                  minimumFontScale={0.85}
-                  style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-                  className="mt-0.5 text-[11px] uppercase tracking-[0.05em] text-white/70"
-                >
-                  {stat.label}
-                </Text>
-              </View>
-            ))}
+          <View className="mt-5 flex-row items-center border-t border-white/10 pt-4">
+            <Text
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
+              className="text-xs font-semibold tracking-wide text-sage-200"
+            >
+              7 days · about 5 min/day
+            </Text>
           </View>
         </LinearGradient>
       </Animated.View>
 
-      <Animated.View
-        entering={FadeIn.duration(180).delay(240)}
-        className="mt-3 rounded-2xl border-2 border-sage-200 bg-cream px-[18px] py-5"
-      >
+      {/* Why This Course - Open content */}
+      <Animated.View entering={FadeIn.duration(180).delay(220)} className="mt-7">
         <Text
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="mb-2 text-[20px] leading-[1.3] text-ink"
+          className="text-xs font-semibold uppercase tracking-wider text-sage-600"
         >
-          Projected path
+          Why this course
         </Text>
         <Text
           style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-          className="text-[17px] leading-[1.35] text-ink"
+          className="mt-2 text-[15px] leading-relaxed text-ink"
         >
-          Your projected{" "}
-          <Text
-            style={{
-              fontFamily: APP_FONT_FAMILIES.regularItalic,
-              color: "#5F7F58",
-            }}
-          >
-            mood clarity
-          </Text>{" "}
-          over 30 days
+          {getWhyThisCourse(motivation, stressLevel)}
         </Text>
-        <ProjectionGraph />
       </Animated.View>
 
-      <Animated.View entering={FadeIn.duration(180).delay(320)}>
-        <View
-          style={{
-            marginTop: 16,
-            borderRadius: 16,
-            borderCurve: "continuous",
-          }}
-          className="rounded-2xl border border-sage-200/80 bg-sage-100/50 px-4 py-4"
+      {/* You'll Practice - Open content */}
+      <Animated.View entering={FadeIn.duration(180).delay(280)} className="mt-6">
+        <Text
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
+          className="text-xs font-semibold uppercase tracking-wider text-sage-600"
         >
-          <View
-            style={{
-              alignSelf: "flex-start",
-              borderRadius: 999,
-              borderCurve: "continuous",
-            }}
-            className="bg-sage-600 px-2.5 py-1"
-          >
-            <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-              className="text-[11px] uppercase tracking-[0.05em] text-white"
-            >
-              New · AI Companion
-            </Text>
-          </View>
-          <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-            className="mt-3 text-[18px] leading-[1.3] text-ink"
-          >
-            Mochi learns your patterns & reflects them back.
-          </Text>
-          <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-            className="mt-1.5 text-[13px] leading-[1.45] text-ink-muted"
-          >
-            After every journal entry, get an AI insight written just for you.
-            Spot the patterns you can&apos;t see.
-          </Text>
+          You’ll practice
+        </Text>
+        <View className="mt-3 gap-2.5">
+          {planMeta.practiceItems.map((item, idx) => (
+            <View key={idx} className="flex-row items-start gap-3">
+              <View className="mt-2 h-1.5 w-1.5 rounded-full bg-sage-500" />
+              <Text
+                style={{ fontFamily: APP_FONT_FAMILIES.regular }}
+                className="flex-1 text-[15px] leading-relaxed text-ink"
+              >
+                {item}
+              </Text>
+            </View>
+          ))}
         </View>
-      </Animated.View>
-
-      <Animated.View entering={FadeIn.duration(180).delay(400)} className="mt-4">
-        <TestimonialCard
-          initial={planMeta.author.initial}
-          name={planMeta.author.name}
-          age={planMeta.author.age}
-          quote={planMeta.testimonial.replace(/^"|"$/g, "")}
-          tone="sky"
-        />
       </Animated.View>
     </ScrollView>
   );

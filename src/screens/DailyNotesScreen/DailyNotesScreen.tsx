@@ -390,8 +390,8 @@ function DailyNotesScreenComponent(): ReactElement {
         contentInsetAdjustmentBehavior="automatic"
       >
         {/* Tab Picker */}
-        <View className="px-4 pt-4 pb-4 items-start">
-          <Host style={{ height: 32, width: 280 }}>
+        <View className="px-4 pt-2.5 pb-2 items-start">
+          <Host style={{ height: 32, width: 230 }}>
             <Picker
               selection={tabFilter}
               onSelectionChange={(newSelection) => {

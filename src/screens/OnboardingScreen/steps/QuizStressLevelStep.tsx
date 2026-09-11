@@ -1,46 +1,44 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useCallback } from "react";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, Platform } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import OptionCard from "../components/OptionCard";
 import { MotivationAnswer, StressLevel } from "../types";
 import { MOTIVATION_FOLLOWUP } from "../constants";
-import { useHeaderHeight } from "expo-router/react-navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface QuizStressLevelStepProps {
   selected?: StressLevel;
   motivation?: MotivationAnswer;
   onSelect: (level: StressLevel) => void;
-  onAdvance: () => void;
+  onAdvance?: () => void;
 }
 
 const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
   selected,
   motivation = "anxiety",
   onSelect,
-  onAdvance,
 }) => {
-  const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
   const followup = MOTIVATION_FOLLOWUP[motivation];
+  const contentTopPadding = Platform.OS === "ios" ? 100 : insets.top + 100;
 
   const handleSelect = useCallback(
     (id: StressLevel) => {
       onSelect(id);
-      setTimeout(onAdvance, 400);
     },
-    [onSelect, onAdvance],
+    [onSelect],
   );
 
-  const [questionMain, questionItalic] = followup.question.split(/(?=\s\w+$)/);
+  const cleanQuestion = followup.question.replace(/\?$/, "");
+  const [questionMain, questionItalic] = cleanQuestion.split(/(?=\s\w+$)/);
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        paddingBottom: 24,
-        paddingTop: headerHeight - insets.top,
+        paddingBottom: 120,
+        paddingTop: contentTopPadding,
       }}
       contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6"
@@ -52,10 +50,10 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
         Set the pace
       </Animated.Text>
 
-      <Animated.View entering={FadeIn.duration(180).delay(140)}>
+      <Animated.View entering={FadeIn.duration(180).delay(140)} className="mt-1.5">
         <Text
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="mt-2 text-[30px] leading-[1.1] text-ink"
+          className="text-[26px] leading-[1.18] text-ink"
         >
           {questionMain}
           <Text
@@ -65,12 +63,12 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
             {questionItalic}?
           </Text>
         </Text>
-        <Text className="mt-3 text-[15px] leading-relaxed text-ink-soft">
+        <Text className="mt-2 text-[15px] leading-relaxed text-ink-soft">
           {followup.subtext}
         </Text>
       </Animated.View>
 
-      <View className="mt-6 gap-3">
+      <View className="mt-5 gap-2.5">
         {followup.options.map((option, index) => (
           <OptionCard
             key={option.id}

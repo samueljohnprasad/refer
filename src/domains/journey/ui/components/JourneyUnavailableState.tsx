@@ -8,26 +8,32 @@ import { Text } from "@/src/components/ui/Text";
 interface JourneyUnavailableStateProps {
   hasError: boolean;
   onRetry: () => void;
+  onExploreCatalog?: () => void;
 }
 
 export default function JourneyUnavailableState({
   hasError,
   onRetry,
+  onExploreCatalog,
 }: JourneyUnavailableStateProps): React.JSX.Element {
   return (
     <SafeAreaView className="flex-1 bg-brand-canvas px-8">
       <View className="flex-1 items-center justify-center pb-16">
         <Text variant="h1" className="text-center">
-          {hasError ? "Journey could not load" : "No journey available"}
+          {hasError ? "Journey could not load" : "No active journey"}
         </Text>
         <Text variant="body" className="mt-3 max-w-[290px] text-center">
           {hasError
             ? "Check your connection, then try again."
-            : "Publish a course to make it available here."}
+            : "Explore our courses to start your journey."}
         </Text>
         {hasError ? (
           <View className="mt-8 w-full max-w-[300px]">
             <Button label="Try again" onPress={onRetry} />
+          </View>
+        ) : onExploreCatalog ? (
+          <View className="mt-8 w-full max-w-[300px]">
+            <Button label="Explore journeys" onPress={onExploreCatalog} />
           </View>
         ) : null}
       </View>

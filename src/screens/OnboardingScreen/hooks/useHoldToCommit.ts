@@ -7,7 +7,7 @@ import {
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 
-const HOLD_DURATION_MS = 1500;
+const HOLD_DURATION_MS = 800;
 
 interface UseHoldToCommitReturn {
   progress: { value: number };
@@ -39,26 +39,27 @@ export const useHoldToCommit = (
     clearAllTimers();
     setCommitted(true);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    onCommit();
+    // Micro-transition acknowledgment (~550ms) before moving directly into reminders
+    setTimeout(() => {
+      onCommit();
+    }, 550);
   }, [clearAllTimers, onCommit]);
 
   const onPressIn = useCallback(() => {
     if (committed) return;
     setIsHolding(true);
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
     progress.value = withTiming(1, {
       duration: HOLD_DURATION_MS,
       easing: Easing.linear,
     });
 
+    // Subtle haptic near completion
     tickTimersRef.current = [
       setTimeout(() => {
         Haptics.selectionAsync();
-      }, 500),
-      setTimeout(() => {
-        Haptics.selectionAsync();
-      }, 1000),
+      }, 550),
     ];
 
     holdTimerRef.current = setTimeout(() => {
@@ -71,7 +72,11 @@ export const useHoldToCommit = (
     setIsHolding(false);
     clearAllTimers();
 
-    progress.value = withTiming(0, { duration: 200 });
+    // Smooth reset if released early
+    progress.value = withTiming(0, {
+      duration: 220,
+      easing: Easing.out(Easing.quad),
+    });
   }, [committed, progress, clearAllTimers]);
 
   return { progress, isHolding, committed, onPressIn, onPressOut };

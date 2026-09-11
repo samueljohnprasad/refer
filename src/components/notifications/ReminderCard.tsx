@@ -1,17 +1,10 @@
 import React from "react";
-import { View, Pressable } from "react-native";
+import { View, Pressable, Switch } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { SymbolView, SymbolViewProps } from "expo-symbols";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
-import dayjs from "dayjs";
 import { Host, DatePicker } from "@expo/ui/swift-ui";
 import type { ReminderItem } from "./types";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 import * as Haptics from "expo-haptics";
 
 type ReminderCardProps = {
@@ -31,26 +24,10 @@ const iconMap: Record<string, SymbolViewProps["name"]> = {
 };
 
 /**
- * Flat edge-to-edge reminder item
+ * Flat edge-to-edge reminder item with native Switch
  */
 export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
-  ({ item, isSelected = false, onToggle, onEditTime, onTimeChange, isLast = false }) => {
-    const toggleScale = useSharedValue(isSelected ? 1 : 0);
-
-    React.useEffect(() => {
-      toggleScale.value = withSpring(isSelected ? 1 : 0, {
-        damping: 20,
-        stiffness: 100,
-        overshootClamping: true,
-      });
-    }, [isSelected]);
-
-    const toggleAnimatedStyle = useAnimatedStyle(() => {
-      return {
-        transform: [{ scale: toggleScale.value }],
-      };
-    });
-
+  ({ item, isSelected = false, onToggle, onTimeChange, isLast = false }) => {
     const icon = iconMap[item.id] || "clock";
 
     const handlePress = () => {
@@ -59,12 +36,12 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
     };
 
     return (
-      <View className="flex-row items-center pl-5 gap-4 bg-transparent">
+      <View className="flex-row items-center pl-4 gap-3.5 bg-transparent">
         <Pressable onPress={handlePress} hitSlop={8} accessibilityRole="checkbox" accessibilityState={{ checked: isSelected }}>
-          <View className="w-8 items-center justify-center">
+          <View className="w-7 items-center justify-center">
             <SymbolView
               name={icon as SymbolViewProps["name"]}
-              size={22}
+              size={20}
               tintColor={isSelected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.text.tertiary}
               type="hierarchical"
             />
@@ -72,17 +49,17 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
         </Pressable>
         
         <View
-          className={`flex-1 flex-row items-center py-3.5 pr-5 ${
-            !isLast ? "border-b border-border/50" : ""
+          className={`flex-1 flex-row items-center py-2.5 pr-4 ${
+            !isLast ? "border-b border-border/40" : ""
           }`}
         >
           <Pressable 
-            className="flex-1 justify-center py-2 -my-2"
+            className="flex-1 justify-center py-1.5 -my-1.5"
             onPress={handlePress}
             accessibilityRole="none"
           >
             <Text
-              className="text-[17px] text-foreground"
+              className="text-[16px] font-medium text-ink"
             >
               {item.title}
             </Text>
@@ -103,25 +80,21 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
             />
           </Host>
 
-          {/* Toggle Switch */}
-          <Pressable onPress={handlePress} hitSlop={8} className="ml-4" accessibilityRole="none">
-            <View
-              className="w-7 h-7 rounded-full items-center justify-center border-2"
-              style={{
-                borderColor: isSelected ? SEMANTIC_COLORS.brand.primary : "#e4e4e7",
-                backgroundColor: isSelected ? SEMANTIC_COLORS.brand.primary : "transparent",
+          {/* Native Toggle Switch */}
+          <View className="ml-3">
+            <Switch
+              value={isSelected}
+              onValueChange={handlePress}
+              trackColor={{
+                true: SEMANTIC_COLORS.brand.primary,
+                false: "#E5E5EA",
               }}
-            >
-              {isSelected && (
-                <Animated.View
-                  style={toggleAnimatedStyle}
-                  className="items-center justify-center"
-                >
-                  <SymbolView name="checkmark" size={14} tintColor={SEMANTIC_COLORS.surface.primary} weight="bold" />
-                </Animated.View>
-              )}
-            </View>
-          </Pressable>
+              ios_backgroundColor="#E5E5EA"
+              accessibilityRole="switch"
+              accessibilityState={{ checked: isSelected }}
+              accessibilityLabel={`${item.title} reminder`}
+            />
+          </View>
         </View>
       </View>
     );

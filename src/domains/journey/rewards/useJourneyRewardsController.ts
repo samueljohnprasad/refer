@@ -6,6 +6,7 @@ import { NodeStatus, NodeType } from "@/src/types/journey";
 import {
   CelebrationLevel,
   type InsightRewardContent,
+  type UnitRewardContent,
 } from "@/src/types/journeyV5";
 import { journeyApi } from "@/src/domains/journey/data/journeyApi";
 import {
@@ -82,22 +83,39 @@ export function useJourneyRewardsController(courseId: string) {
   }, [courseId, dispatch, pendingCelebration]);
 
   useEffect(() => {
-    if (rewardNodeEntity?.type !== NodeType.TROPHY || !rewardUnit?.rewardContent)
+    if (
+      rewardNode?.type !== NodeType.TROPHY &&
+      rewardNode?.type !== NodeType.MILESTONE
+    )
       return;
+
+    const unitReward: UnitRewardContent =
+      rewardUnit?.rewardContent ??
+      (rewardNodeEntity?.rewardContent as UnitRewardContent | null) ??
+      (rewardNode.rewardContent as UnitRewardContent | null) ?? {
+        title: rewardUnit?.title ?? rewardNode.label ?? "Unit Complete",
+        capabilityLabel: "Achievement",
+        capabilityStatement: "You've completed this unit!",
+        primaryActionLabel: "Continue",
+      };
 
     dispatch(
       setPendingCelebration({
         courseId,
         celebration: {
           level: CelebrationLevel.UNIT,
-          unitId: rewardUnit.id,
-          unitTitle: rewardUnit.title,
-          content: rewardUnit.rewardContent,
+          unitId: rewardUnit?.id ?? rewardNodeEntity?.unitId ?? "",
+          unitTitle:
+            rewardUnit?.title ??
+            rewardNodeEntity?.title ??
+            rewardNode.label ??
+            "Unit Complete",
+          content: unitReward,
         },
       }),
     );
     setRewardNode(null);
-  }, [courseId, dispatch, rewardNodeEntity, rewardUnit]);
+  }, [courseId, dispatch, rewardNode, rewardNodeEntity, rewardUnit]);
 
   const handleClaimReward = useCallback(async () => {
     if (!rewardNode || isClaimingReward) return;

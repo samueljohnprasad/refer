@@ -32,7 +32,7 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
   };
 
   const getTextColor = () => {
-    if (disabled) return "rgba(20, 36, 20, 0.32)";
+    if (disabled) return "rgba(20, 36, 20, 0.50)";
     if (isSelected || isToday) return SEMANTIC_COLORS.brand.pressed;
     return SEMANTIC_COLORS.text.primary;
   };
@@ -60,11 +60,11 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
             className="happy-font-body-bold text-[10px] uppercase tracking-widest mb-1"
             style={{
               color: disabled
-                ? SEMANTIC_COLORS.text.tertiary
+                ? SEMANTIC_COLORS.text.secondary
                 : isSelected
                 ? SEMANTIC_COLORS.brand.pressed
                 : SEMANTIC_COLORS.text.primary,
-              opacity: isSelected || disabled ? 1 : 0.75,
+              opacity: disabled ? 0.6 : isSelected ? 1 : 0.75,
             }}
           >
             {dayName}
@@ -75,7 +75,7 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
             }`}
             style={{
               color: getTextColor(),
-              opacity: isSelected || disabled ? 1 : 0.9,
+              opacity: isSelected ? 1 : disabled ? 0.95 : 0.9,
             }}
           >
             {format(day, "d")}

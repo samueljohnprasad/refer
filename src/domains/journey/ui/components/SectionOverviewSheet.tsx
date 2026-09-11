@@ -1,14 +1,12 @@
 import React from "react";
 import { ScrollView, View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Cancel01Icon, LockIcon } from "@hugeicons/core-free-icons";
+import { LockIcon } from "@hugeicons/core-free-icons";
 import { Card } from "@/src/components/ui/Card";
 import { Text } from "@/src/components/ui/Text";
-import { PressableScale } from "@/src/components/ui/PressableScale";
 import StageProgressBar from "@/src/components/ui/StageProgressBar";
 import type { SectionOverviewItem } from "@/src/types/journey/sectionMap";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 import {
   useSectionOverviewViewModel,
   type SectionOverviewSheetProps,
@@ -38,7 +36,7 @@ function SectionCard({
       variant={cardVariant}
       radius="xl"
       onPress={() => onPress(section.id)}
-      disabled={false}
+      disabled={!section.isUnlocked}
       accessibilityLabel={`${section.title}, ${unitRangeLabel}. Status: ${lockStatusStr}.`}
       accessibilityState={{ disabled: !section.isUnlocked }}
       className={`mb-4 ${section.isUnlocked ? "opacity-100" : "opacity-80"}`}
@@ -81,23 +79,34 @@ function SectionCard({
           progress={section.progressPercent}
           height={8}
           showGlow={section.isCurrent}
-          fillColor={section.isCurrent ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.border.selected}
-          trackColor={SEMANTIC_COLORS.brand.soft}
+          fillColor={
+            section.isCurrent
+              ? String(SEMANTIC_COLORS.brand.primary)
+              : String(SEMANTIC_COLORS.border.selected)
+          }
+          trackColor={String(SEMANTIC_COLORS.brand.soft)}
         />
 
         <View className="flex-row items-center justify-end mt-1">
           {!section.isCurrent ? (
             <View className="flex-row items-center gap-1.5">
               {!section.isUnlocked && (
-                <HugeiconsIcon icon={LockIcon} size={14} color={SEMANTIC_COLORS.brand.primary} />
+                <HugeiconsIcon
+                  icon={LockIcon}
+                  size={14}
+                  color={String(SEMANTIC_COLORS.text.secondary)}
+                />
               )}
               <Text
                 variant="label-bold"
-                color="sage"
+                color={section.isUnlocked ? "sage" : "muted"}
                 className="text-xs uppercase tracking-widest"
               >
-                {!section.isUnlocked ? "Unlock" : isComplete ? "Review" : "Enter"}{" "}
-                →
+                {!section.isUnlocked
+                  ? "Locked"
+                  : isComplete
+                  ? "Review →"
+                  : "Enter →"}
               </Text>
             </View>
           ) : null}
@@ -116,10 +125,10 @@ export interface SectionOverviewSheetViewProps
  */
 export const SectionOverviewSheetView = React.memo(
   function SectionOverviewSheetView({
-    insets,
+    insets: _insets,
     handlePreviewAndClose,
     sections,
-    onClose,
+    onClose: _onClose,
     journeyTitle,
   }: SectionOverviewSheetViewProps): React.JSX.Element {
     return (

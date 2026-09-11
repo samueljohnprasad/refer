@@ -15,6 +15,7 @@ import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import { useSetAtom } from "jotai";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { ContinueJourneyCard } from "@/src/components/ContinueJourneyCard/ContinueJourneyCard";
 
 
 // Re-export for backward compat from other files that import from here.
@@ -188,6 +189,11 @@ export default function JournalCalendarScreen() {
               showDepth={false}
               onPress={() => router.push("/tabs/screens/xp-history")}
             />
+          </View>
+
+          {/* ponytail: secondary learning resume entry point */}
+          <View className="mt-6">
+            <ContinueJourneyCard />
           </View>
         </View>
       </ScrollView>

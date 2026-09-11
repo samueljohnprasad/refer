@@ -11,7 +11,6 @@ import {
   type DuolingoHeaderStats,
 } from "../hooks/useDuolingoHeaderViewModel";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -30,8 +29,6 @@ const HeaderButton = memo(function HeaderButton({
   title,
   textClassName,
 }: HeaderButtonProps): React.JSX.Element {
-  const isDark = useColorScheme() === "dark";
-
   return (
     <Pressable
       onPress={onPress}
@@ -43,12 +40,12 @@ const HeaderButton = memo(function HeaderButton({
       <Icon
         width={28}
         height={28}
-        color={String(isDark ? SEMANTIC_COLORS.text.primary : SEMANTIC_COLORS.text.primary)}
+        color={String(SEMANTIC_COLORS.text.primary)}
       />
       <AnimatedOdometer
         value={title}
         textClassName={textClassName}
-        color={String(isDark ? SEMANTIC_COLORS.text.primary : SEMANTIC_COLORS.text.primary)}
+        color={String(SEMANTIC_COLORS.text.primary)}
       />
     </Pressable>
   );

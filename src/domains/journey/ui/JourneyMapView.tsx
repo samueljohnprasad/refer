@@ -17,6 +17,7 @@ import LessonCompleteSheet from "./components/LessonCompleteSheet";
 import UnitCompleteModal from "./components/UnitCompleteModal";
 import { CheckpointActionSheet } from "./components/CheckpointActionSheet";
 import { CelebrationLevel } from "@/src/types/journeyV5";
+import { NodeType } from "@/src/types/journey";
 import * as Haptics from "expo-haptics";
 import type {
   JourneyMapViewModel,
@@ -51,6 +52,9 @@ export const JourneyMapView = React.memo(function JourneyMapView({
     controller,
   } = model;
 
+  const { setActiveCourseId, onAddCoursePress, onCloseCatalogSheet, retry } =
+    actions;
+
   if (model.isPreparing) {
     return (
       <>
@@ -60,19 +64,57 @@ export const JourneyMapView = React.memo(function JourneyMapView({
     );
   }
 
-  if (model.loadError || model.hasNoCourses) {
+  if (model.loadError) {
     return (
       <>
         <Stack.Screen options={{ headerShown: false }} />
         <JourneyUnavailableState
-          hasError={Boolean(model.loadError)}
-          onRetry={actions.retry}
+          hasError={true}
+          onRetry={retry}
         />
       </>
     );
   }
 
-  const { setActiveCourseId, onAddCoursePress, onCloseCatalogSheet } = actions;
+  if (model.hasNoCourses) {
+    return (
+      <>
+        <Stack.Screen options={{ headerShown: false }} />
+        <JourneyUnavailableState
+          hasError={false}
+          onRetry={retry}
+          onExploreCatalog={onAddCoursePress}
+        />
+        <CourseCatalogSheet
+          isPresented={isCourseCatalogPresented}
+          enrolledCourses={enrolledCourses}
+          onClose={onCloseCatalogSheet}
+          onCourseSelect={setActiveCourseId}
+        />
+      </>
+    );
+  }
+
+  const handleCheckpointAction = React.useCallback(
+    (isReview: boolean) => {
+      if (!controller.checkpointSheetData?.node) return;
+      if (!isReview) {
+        void Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success,
+        );
+      }
+      const nodeId = controller.checkpointSheetData.node.id;
+      controller.closeCheckpointSheet();
+      router.push({
+        pathname: "/tabs/screens/journey-flow",
+        params: {
+          courseId,
+          nodeId,
+        },
+      });
+    },
+    [controller, courseId],
+  );
 
   return (
     <>
@@ -133,6 +175,7 @@ export const JourneyMapView = React.memo(function JourneyMapView({
               <JourneyMapFlashList
                 courseId={courseId}
                 controller={controller}
+                isOnboarding={isOnboarding}
               />
             )}
           </Animated.View>
@@ -144,7 +187,9 @@ export const JourneyMapView = React.memo(function JourneyMapView({
         onClose={onCloseCatalogSheet}
         onCourseSelect={setActiveCourseId}
       />
-      {controller.rewardNode ? (
+      {controller.rewardNode &&
+      controller.rewardNode.type === NodeType.CHEST &&
+      controller.insightCard ? (
         <ChestRewardModal
           node={controller.rewardNode}
           insightCard={controller.insightCard}
@@ -177,31 +222,8 @@ export const JourneyMapView = React.memo(function JourneyMapView({
         isPresented={controller.isCheckpointSheetOpen}
         onIsPresentedChange={controller.setIsCheckpointSheetOpen}
         data={controller.checkpointSheetData}
-        onStart={() => {
-          if (!controller.checkpointSheetData?.node) return;
-          void Haptics.notificationAsync(
-            Haptics.NotificationFeedbackType.Success,
-          );
-          controller.closeCheckpointSheet();
-          router.push({
-            pathname: "/tabs/screens/journey-flow",
-            params: {
-              courseId,
-              nodeId: controller.checkpointSheetData.node.id,
-            },
-          });
-        }}
-        onReview={() => {
-          if (!controller.checkpointSheetData?.node) return;
-          controller.closeCheckpointSheet();
-          router.push({
-            pathname: "/tabs/screens/journey-flow",
-            params: {
-              courseId,
-              nodeId: controller.checkpointSheetData.node.id,
-            },
-          });
-        }}
+        onStart={() => handleCheckpointAction(false)}
+        onReview={() => handleCheckpointAction(true)}
       />
     </>
   );

@@ -43,13 +43,13 @@ export const useReminderConfig = (
 
       let initialCfg = { ...stored };
 
-      // If no config exists, enable all default items by default
+      // If no config exists, default to 1 recommended reminder (Evening Wind-down)
       if (Object.keys(stored).length === 0) {
         defaultItems.forEach((it) => {
           initialCfg[it.id] = {
             hour: it.hour,
             minute: it.minute,
-            enabled: true,
+            enabled: it.id === "3",
             title: it.title,
             body: it.notificationBody,
           };

@@ -11,6 +11,8 @@ import type { JourneyFlashListItem, PathNodeData } from "@/src/types/journey";
 
 export const ESTIMATED_ITEM_SIZE = 120;
 export const LIST_BOTTOM_SPACER_HEIGHT = 132;
+export const JOURNEY_HEADER_CONTENT_HEIGHT = 168;
+export const ONBOARDING_HEADER_CONTENT_HEIGHT = 108;
 export const JOURNEY_VIEWABILITY_CONFIG = {
   itemVisiblePercentThreshold: 10,
   minimumViewTime: 100,

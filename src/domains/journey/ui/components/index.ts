@@ -22,7 +22,6 @@ export type { PathConnectorProps } from "./PathConnector";
 export type { JourneyHeaderProps } from "./JourneyHeader";
 export type { NodeCompletionModalProps } from "./NodeCompletionModal";
 export type { MascotBubbleProps } from "./MascotBubble";
-export type { ChestNodeProps } from "./ChestNode";
 export type { UnitCompleteModalProps } from "./UnitCompleteModal";
 export type { ScrollToActiveButtonProps } from "./ScrollToActiveButton";
 export type {
