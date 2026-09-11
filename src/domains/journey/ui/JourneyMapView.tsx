@@ -221,8 +221,8 @@ export const JourneyMapView = React.memo(function JourneyMapView({
           isVisible={true}
           context={{
             level: 1,
-            primaryText: "Unit Complete!",
-            secondaryText: `${controller.pendingCelebration.unitTitle}\n\n${controller.pendingCelebration.content.capabilityStatement}`,
+            primaryText: controller.pendingCelebration.content.capabilityStatement,
+            secondaryText: `Unit Complete · ${controller.pendingCelebration.unitTitle}`,
             pandaAnimationKey: 'generic_success',
             backgroundColor: isDark ? '#1a2a1a' : '#fbfdf8',
           }}
@@ -236,8 +236,8 @@ export const JourneyMapView = React.memo(function JourneyMapView({
           isVisible={true}
           context={{
             level: 1,
-            primaryText: "Course Complete!",
-            secondaryText: `${controller.pendingCelebration.courseTitle}\n\n${controller.pendingCelebration.content.acknowledgement}`,
+            primaryText: controller.pendingCelebration.content.acknowledgement,
+            secondaryText: `Course Complete · ${controller.pendingCelebration.courseTitle}`,
             pandaAnimationKey: 'generic_success',
             backgroundColor: isDark ? '#1a2a1a' : '#fbfdf8',
           }}
