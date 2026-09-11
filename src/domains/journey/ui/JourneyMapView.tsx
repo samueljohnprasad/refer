@@ -13,8 +13,7 @@ import JourneyMapFlashList from "./components/JourneyMapFlashList";
 import JourneyLoadingSkeleton from "./components/JourneyLoadingSkeleton";
 import JourneyUnavailableState from "./components/JourneyUnavailableState";
 import { ChestRewardModal } from "./components";
-import LessonCompleteSheet from "./components/LessonCompleteSheet";
-import UnitCompleteModal from "./components/UnitCompleteModal";
+import { CelebrationOverlay } from "@/src/components/celebration/CelebrationOverlay";
 import { CheckpointActionSheet } from "./components/CheckpointActionSheet";
 import { CelebrationLevel } from "@/src/types/journeyV5";
 import { NodeType } from "@/src/types/journey";
@@ -176,6 +175,7 @@ export const JourneyMapView = React.memo(function JourneyMapView({
                 courseId={courseId}
                 controller={controller}
                 isOnboarding={isOnboarding}
+                completedNodeId={model.completedNodeId}
               />
             )}
           </Animated.View>
@@ -201,18 +201,31 @@ export const JourneyMapView = React.memo(function JourneyMapView({
 
       {/* T012: Lesson Celebration */}
       {controller.pendingCelebration?.level === CelebrationLevel.LESSON && (
-        <LessonCompleteSheet
+        <CelebrationOverlay
           isVisible={true}
-          content={controller.pendingCelebration.content}
+          context={{
+            level: 1,
+            primaryText: controller.pendingCelebration.content.title,
+            secondaryText: controller.pendingCelebration.content.takeaway,
+            pandaAnimationKey: 'generic_success',
+            backgroundColor: isDark ? '#1a2a1a' : '#fbfdf8',
+          }}
           onContinue={controller.dismissCelebration}
         />
       )}
 
       {/* T020: Unit Celebration */}
       {controller.pendingCelebration?.level === CelebrationLevel.UNIT && (
-        <UnitCompleteModal
-          unitTitle={controller.pendingCelebration.unitTitle}
-          content={controller.pendingCelebration.content}
+        <CelebrationOverlay
+          isVisible={true}
+          context={{
+            // ponytail: Use level 2 to show streak for unit completion, or level 1. Let's stick to 1 for now unless requested.
+            level: 1,
+            primaryText: "Unit Complete!",
+            secondaryText: `${controller.pendingCelebration.unitTitle}\n\n${controller.pendingCelebration.content.capabilityStatement}`,
+            pandaAnimationKey: 'generic_success',
+            backgroundColor: isDark ? '#1a2a1a' : '#fbfdf8',
+          }}
           onContinue={controller.dismissCelebration}
         />
       )}
