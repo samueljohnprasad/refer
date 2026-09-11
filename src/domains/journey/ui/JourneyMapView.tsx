@@ -55,6 +55,27 @@ export const JourneyMapView = React.memo(function JourneyMapView({
   const { setActiveCourseId, onAddCoursePress, onCloseCatalogSheet, retry } =
     actions;
 
+  const handleCheckpointAction = React.useCallback(
+    (isReview: boolean) => {
+      if (!controller.checkpointSheetData?.node) return;
+      if (!isReview) {
+        void Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success,
+        );
+      }
+      const nodeId = controller.checkpointSheetData.node.id;
+      controller.closeCheckpointSheet();
+      router.push({
+        pathname: "/tabs/screens/journey-flow",
+        params: {
+          courseId,
+          nodeId,
+        },
+      });
+    },
+    [controller, courseId],
+  );
+
   if (model.isPreparing) {
     return (
       <>
@@ -94,27 +115,6 @@ export const JourneyMapView = React.memo(function JourneyMapView({
       </>
     );
   }
-
-  const handleCheckpointAction = React.useCallback(
-    (isReview: boolean) => {
-      if (!controller.checkpointSheetData?.node) return;
-      if (!isReview) {
-        void Haptics.notificationAsync(
-          Haptics.NotificationFeedbackType.Success,
-        );
-      }
-      const nodeId = controller.checkpointSheetData.node.id;
-      controller.closeCheckpointSheet();
-      router.push({
-        pathname: "/tabs/screens/journey-flow",
-        params: {
-          courseId,
-          nodeId,
-        },
-      });
-    },
-    [controller, courseId],
-  );
 
   return (
     <>
