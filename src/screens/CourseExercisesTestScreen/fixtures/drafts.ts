@@ -2,24 +2,27 @@ import type { Exercise } from "@/src/types/journeyV5";
 
 export const draftMicrolearningFixtures: readonly Exercise[] = [
   {
-    id: "fixture-common-trap",
+    id: "fixture-common-trap-v2",
     nodeId: "fixture-draft-node",
     orderIndex: 0,
     type: "common_trap",
     isScored: false,
     content: {
       title: "Recognizing Common Traps",
-      instruction: "Identify the trap and practice the counter move.",
+      instruction: "See why the trap feels helpful — then learn the counter move.",
       trapTitle: "The Perfection Trap",
-      trapBody: "Believing that anything less than 100% is a failure.",
-      shortTermPayoff: "It feels safe because you are setting a high standard.",
+      trapBody: "If it isn’t perfect, it feels like failure.",
+      shortTermPayoff: "High standards can feel protective.",
       hiddenCost: [
-        "It causes immense pressure and anxiety over minor details."
+        "More checking.",
+        "More pressure.",
+        "Small details start to feel high-stakes."
       ],
       counterMove: {
-        title: "Good Enough Practice",
+        title: "Try This Instead",
         body: [
-          "Set a time limit and accept the result when time is up."
+          "Set a time limit.",
+          "When it ends, stop — even if it isn’t perfect."
         ]
       }
     }
