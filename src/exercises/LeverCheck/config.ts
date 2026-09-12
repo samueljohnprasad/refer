@@ -19,11 +19,23 @@ export const LeverCheckConfig: CourseExerciseCategoryConfig = {
   unavailableCopy: "This lever check is not available yet.",
   interaction: {
     submissionMode: "explicit",
-    getPrimaryLabel: (_exercise: Exercise, response: Record<string, unknown>) => {
-      return readStringArray(response.pulledLeverIds).length >= 2
-        ? "Continue"
-        : "Pull both levers";
+    getPrimaryLabel: (exercise: Exercise, response: Record<string, unknown>) => {
+      const levers = Array.isArray(exercise.content?.levers) ? exercise.content?.levers : [];
+      const totalLevers = levers.length > 0 ? levers.length : 2;
+      const pulledCount = readStringArray(response.pulledLeverIds).length;
+      if (pulledCount >= totalLevers) {
+        return "Continue";
+      }
+      return totalLevers === 2 ? "Pull both levers" : "Pull all levers";
     },
-    getPrimaryTransition: (_exercise: Exercise, _response: Record<string, unknown>) => null,
+    getPrimaryTransition: (exercise: Exercise, response: Record<string, unknown>) => {
+      const levers = Array.isArray(exercise.content?.levers) ? exercise.content?.levers : [];
+      const totalLevers = levers.length > 0 ? levers.length : 2;
+      const pulledCount = readStringArray(response.pulledLeverIds).length;
+      if (pulledCount >= totalLevers) {
+        return { kind: "check" };
+      }
+      return null;
+    },
   },
 };

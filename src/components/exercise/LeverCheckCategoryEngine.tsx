@@ -101,7 +101,7 @@ function LeverRow({
       </Text>
       <View className="h-[22px] overflow-hidden rounded-[10px] bg-[#EBDDC5]">
         <View
-          className="h-full bg-[#7E9874]"
+          className={`h-full ${isOlive ? "bg-[#7E9874]" : "bg-[#FF9600]"}`}
           style={{ width: `${pulled ? lever.remainingPercent : 100}%` }}
         >
           {pulled ? (
