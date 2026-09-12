@@ -205,10 +205,10 @@ export function SurgeDiagramCategoryEngine({
       {/* Interactive Graph Card */}
       <View className="mt-3 rounded-[24px] bg-[#FAFAF8] px-5 py-4 border border-[#E2E8DF]">
         {/* Phase Header */}
-        <View className="flex-row items-center mb-1 min-h-[28px]">
+        <View className="flex-row items-start mb-2 min-h-[42px]">
           <View
             style={{ backgroundColor: phaseConfig.tagBg }}
-            className="rounded-full px-2.5 py-0.5 mr-2"
+            className="rounded-full px-2.5 py-0.5 mr-2 mt-0.5"
           >
             <Text
               style={{ color: phaseConfig.tagColor }}
@@ -217,7 +217,7 @@ export function SurgeDiagramCategoryEngine({
               {phaseConfig.tag}
             </Text>
           </View>
-          <Text className="happy-font-body-medium text-[13.5px] text-ink flex-1">
+          <Text className="happy-font-body-medium text-[13.5px] leading-[19px] text-ink flex-1">
             {phaseConfig.caption}
           </Text>
         </View>
