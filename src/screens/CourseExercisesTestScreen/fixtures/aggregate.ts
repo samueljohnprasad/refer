@@ -3,6 +3,7 @@ import { modelMicrolearningFixtures } from "./model";
 import { narrativeMicrolearningFixtures } from "./narrative";
 import { priorityMicrolearningFixtures } from "./priority";
 import { reviewMicrolearningFixtures } from "./review";
+import { draftMicrolearningFixtures } from "./drafts";
 
 export interface MicrolearningFixtureGroup {
   id: string;
@@ -31,6 +32,11 @@ export const microlearningFixtureGroups: readonly MicrolearningFixtureGroup[] = 
     label: "Review exercises",
     exercises: reviewMicrolearningFixtures,
   },
+  {
+    id: "drafts",
+    label: "Drafts",
+    exercises: draftMicrolearningFixtures,
+  },
 ];
 
 export const allMicrolearningFixtures: readonly Exercise[] = [
@@ -40,4 +46,5 @@ export const allMicrolearningFixtures: readonly Exercise[] = [
   ...modelMicrolearningFixtures,
   ...narrativeMicrolearningFixtures,
   ...reviewMicrolearningFixtures,
+  ...draftMicrolearningFixtures,
 ];
