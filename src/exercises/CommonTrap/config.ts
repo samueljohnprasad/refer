@@ -11,10 +11,6 @@ export const CommonTrapConfig: CourseExerciseCategoryConfig = {
   // ponytail: engine drives phase reveals; hide skip once user progresses past trap; hide footer until final phase
   presentation: {
     hideSkip: (_exercise, response) => Boolean(response?.phase && response.phase !== "trap"),
-    hideFooter: (_exercise, response) => {
-      const phase = (response?.phase as string) || "trap";
-      return phase !== "complete";
-    },
   },
   interaction: {
     submissionMode: "explicit",

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { View, Text, Pressable } from "react-native";
+import React, { useEffect } from "react";
+import { View, Text } from "react-native";
 import Animated, { FadeInDown, ReduceMotion } from "react-native-reanimated";
 import { ArrowDown } from "lucide-react-native";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
@@ -61,13 +61,6 @@ export function CommonTrapCategoryEngine({
   const isCostVisible = ["cost", "complete"].includes(phase);
   const isComplete = phase === "complete";
 
-  const handleNext = (nextPhase: string) => {
-    onInteraction(
-      { format: CourseExerciseCategoryEnum.CommonTrap, phase: nextPhase },
-      true,
-    );
-  };
-
   return (
     <View className="flex-1 px-4 pt-2 pb-16">
       <CourseExerciseHeading
@@ -94,17 +87,6 @@ export function CommonTrapCategoryEngine({
               {trapBody}
             </Text>
           )}
-
-          {phase === "trap" && (
-            <Pressable
-              onPress={() => handleNext("payoff")}
-              className="py-3 px-5 border border-sage-300 rounded-full bg-white active:bg-sage-50"
-            >
-              <Text className="text-forest-800 font-semibold text-sm">
-                AND THEN WHAT HAPPENS?
-              </Text>
-            </Pressable>
-          )}
         </Animated.View>
 
         {/* Payoff */}
@@ -117,17 +99,6 @@ export function CommonTrapCategoryEngine({
               <Text className="text-base text-forest-800 leading-relaxed mb-4">
                 {shortTermPayoff}
               </Text>
-            )}
-
-            {phase === "payoff" && (
-              <Pressable
-                onPress={() => handleNext("cost")}
-                className="py-3 px-5 border border-sage-300 rounded-full bg-white active:bg-sage-50"
-              >
-                <Text className="text-forest-800 font-semibold text-sm">
-                  SEE WHAT IT TURNS INTO
-                </Text>
-              </Pressable>
             )}
           </Animated.View>
         )}
@@ -167,17 +138,6 @@ export function CommonTrapCategoryEngine({
                 </Animated.View>
               ))}
             </View>
-
-            {phase === "cost" && (
-              <Pressable
-                onPress={() => handleNext("complete")}
-                className="py-3 px-5 border border-sage-300 rounded-full bg-white active:bg-sage-50 self-start"
-              >
-                <Text className="text-forest-800 font-semibold text-sm">
-                  WHAT CAN I DO INSTEAD?
-                </Text>
-              </Pressable>
-            )}
           </Animated.View>
         )}
 
