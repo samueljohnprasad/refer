@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 24,
   },
-  selectedLabel: { color: SEMANTIC_COLORS.selection.foreground },
+  selectedLabel: { color: SEMANTIC_COLORS.text.primary },
   correctLabel: { color: SEMANTIC_COLORS.success.foreground },
   incorrectLabel: { color: SEMANTIC_COLORS.error.foreground },
   disabledLabel: { color: SEMANTIC_COLORS.disabled.foreground },

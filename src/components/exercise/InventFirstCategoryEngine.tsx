@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
-import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import { CourseExerciseOptionButton } from "@/src/components/exercise/CourseExerciseOptionButton";
 import {
   COURSE_EXERCISE_FONTS,
@@ -56,6 +55,7 @@ export function InventFirstCategoryEngine({
         format: CourseExerciseCategoryEnum.InventFirst,
         selectedOptionId: optionId,
         phase: "feedback",
+        isCorrect: true, // Forces immediate "Continue"
       },
       true, // This indicates the exercise is "complete" and ready to continue
     );
@@ -63,13 +63,15 @@ export function InventFirstCategoryEngine({
 
   return (
     <View style={styles.screenContent}>
-      <CourseExerciseHeading
-        title={readString(content.title) ?? "Invent the Outcome"}
-        instruction={
-          readString(content.instruction) ??
-          "Review the case and predict what happens next."
-        }
-      />
+      <View style={styles.header}>
+        <Text style={styles.title}>
+          {readString(content.title) ?? "Invent the Outcome"}
+        </Text>
+        <Text style={styles.instruction}>
+          {readString(content.instruction) ??
+            "Review the case and predict what happens next."}
+        </Text>
+      </View>
 
       <View style={[styles.caseList, isAnswered && styles.caseListDimmed]}>
         {cases.map((item, index) => (
@@ -91,11 +93,7 @@ export function InventFirstCategoryEngine({
               <Text style={styles.caseName}>{item.name} </Text>
               {item.text}
             </Text>
-            <Text
-              style={[styles.caseLabel, item.isCalm && styles.caseLabelCalm]}
-            >
-              {item.label}
-            </Text>
+            <Text style={styles.caseLabel}>{item.label}</Text>
           </View>
         ))}
       </View>
@@ -143,7 +141,14 @@ export function InventFirstCategoryEngine({
                     <Text style={styles.chainArrowText}>↓</Text>
                   </View>
                 )}
-                <Text style={styles.chainStepText}>{step}</Text>
+                <Text
+                  style={[
+                    styles.chainStepText,
+                    idx === 0 && styles.chainStepFirst,
+                  ]}
+                >
+                  {step}
+                </Text>
               </View>
             ))}
           </View>
@@ -198,6 +203,22 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
 
+  header: { marginBottom: 20 },
+  title: {
+    color: SEMANTIC_COLORS.brand.pressed,
+    fontFamily: COURSE_EXERCISE_FONTS.heading,
+    fontSize: 24,
+    lineHeight: 30,
+    letterSpacing: -0.4,
+    marginBottom: 4,
+  },
+  instruction: {
+    color: SEMANTIC_COLORS.text.secondary,
+    fontFamily: COURSE_EXERCISE_FONTS.body,
+    fontSize: 15,
+    lineHeight: 21,
+  },
+
   caseList: { gap: 8, marginBottom: 20 },
   caseListDimmed: { opacity: 0.6 },
   caseCard: {
@@ -222,7 +243,7 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
-  avatarOlive: { backgroundColor: SEMANTIC_COLORS.brand.primaryLight },
+  avatarOlive: { backgroundColor: SEMANTIC_COLORS.brand.soft }, // Removed primaryLight as per color fix
   avatarNeutral: { backgroundColor: SEMANTIC_COLORS.surface.secondary },
   avatarDimmed: { opacity: 0.7 },
   avatarLabel: {
@@ -239,32 +260,31 @@ const styles = StyleSheet.create({
   },
   caseName: {
     color: SEMANTIC_COLORS.text.primary,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-  },
+    fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
+  }, // Primary ink, semibold
   caseLabel: {
     width: 88,
-    color: SEMANTIC_COLORS.text.secondary,
+    color: SEMANTIC_COLORS.text.tertiary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
     fontSize: 11.5,
     lineHeight: 16,
     textAlign: "right",
-  },
-  caseLabelCalm: { color: SEMANTIC_COLORS.brand.pressed },
+  }, // Muted sage/tertiary
 
   questionText: {
-    color: SEMANTIC_COLORS.brand.pressed,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
     fontSize: 14,
     marginBottom: 12,
     textAlign: "center",
-  },
+  }, // Primary dark neutral
   options: { gap: 8 },
 
   feedbackContainer: { marginTop: 24, gap: 16 },
   feedbackTitle: {
     color: SEMANTIC_COLORS.brand.pressed,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 12,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
+    fontSize: 13,
     letterSpacing: 0.5,
     textTransform: "uppercase",
   },
@@ -283,11 +303,12 @@ const styles = StyleSheet.create({
   },
   chainStep: { alignItems: "center", gap: 6 },
   chainStepText: {
-    color: SEMANTIC_COLORS.brand.pressed,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
     fontSize: 15,
     textAlign: "center",
-  },
+  }, // Default primary ink
+  chainStepFirst: { color: SEMANTIC_COLORS.brand.pressed }, // First step muted forest
   chainArrow: { height: 18, justifyContent: "center" },
   chainArrowText: {
     color: SEMANTIC_COLORS.text.tertiary,
@@ -300,20 +321,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderRadius: 20,
-    backgroundColor: SEMANTIC_COLORS.brand.soft,
+    backgroundColor: SEMANTIC_COLORS.surface.secondary,
   },
   counterTitle: {
     color: SEMANTIC_COLORS.brand.pressed,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 12,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
+    fontSize: 13,
     letterSpacing: 0.5,
     textTransform: "uppercase",
-    marginBottom: 4,
+    marginBottom: 6,
   },
   counterBody: {
-    color: SEMANTIC_COLORS.brand.onSoft,
+    color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 14,
-    lineHeight: 21,
+    fontSize: 15,
+    lineHeight: 22,
   },
 });
