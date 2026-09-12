@@ -80,7 +80,7 @@ export function RecallWarmupCategoryEngine({
   }
 
   return (
-    <View className="flex-1 px-5 pt-3 pb-8">
+    <View className="flex-1 px-5 pt-0 pb-8">
       {/* HEADER */}
       <View className="mb-4">
         <Text className="text-[24px] font-bold text-ink tracking-[-0.4px] mb-1">
@@ -95,7 +95,7 @@ export function RecallWarmupCategoryEngine({
       <Animated.View 
         key={card.id + (isAnswerRevealed ? "-ans" : "-q")} 
         entering={reducedMotion ? undefined : FadeIn.duration(300)}
-        className="rounded-[24px] bg-sage-50 border border-sage-200 px-6 py-7 shadow-sm shadow-black/5"
+        className="rounded-[24px] bg-sage-50 border border-sage-100 px-6 py-7 shadow-sm shadow-black/5"
       >
         <Text className="text-[11px] font-semibold tracking-widest uppercase text-sage-500 mb-4">
           CONCEPT {currentCardIndex + 1} OF {content.cards.length}
@@ -109,11 +109,11 @@ export function RecallWarmupCategoryEngine({
           <TouchableOpacity
             onPress={handleReveal}
             activeOpacity={0.7}
-            className="mt-6 bg-transparent border border-sage-300 py-3 rounded-full items-center"
+            className="mt-6 bg-transparent border border-sage-300 py-2.5 rounded-full items-center"
             accessibilityRole="button"
           >
-            <Text className="text-ink text-[15px] font-semibold tracking-wide">
-              REVEAL ANSWER
+            <Text className="text-ink text-[15px] font-medium tracking-wide">
+              Reveal answer
             </Text>
           </TouchableOpacity>
         ) : (
@@ -141,7 +141,7 @@ export function RecallWarmupCategoryEngine({
           ) : (
             <Animated.View exiting={FadeOut}>
               <Text className="text-center font-medium text-[15px] text-ink-soft mb-4">
-                How did that feel?
+                How well did you remember it?
               </Text>
               <View className="flex-row gap-3">
                 <TouchableOpacity
