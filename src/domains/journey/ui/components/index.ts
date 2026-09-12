@@ -27,11 +27,9 @@ export type {
   NodeHapticStyle,
 } from "./AnimatedNodeButton";
 
-export { default as MentalHealthSectionDivider } from "./MentalHealthSectionDivider";
 export { default as GuestSignUpSheet } from "./GuestSignUpSheet";
 export { default as StreakBanner } from "./StreakBanner";
 export { default as XPCounter } from "./XPCounter";
-export type { MentalHealthSectionDividerProps } from "./MentalHealthSectionDivider";
 export type { GuestSignUpSheetProps } from "./GuestSignUpSheet";
 export type { StreakBannerProps } from "./StreakBanner";
 export type { XPCounterProps, XPGain } from "./XPCounter";
