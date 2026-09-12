@@ -3,6 +3,28 @@ import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import { LensReplayCategoryEngine } from "@/src/components/exercise/LensReplayCategoryEngine";
 import type { Exercise } from "@/src/types/journeyV5";
 
+function readArray(value: unknown): unknown[] {
+  return Array.isArray(value) ? value : [];
+}
+
+function hasSeenAllHighlights(
+  exercise: Exercise,
+  response: Record<string, unknown> | null,
+): boolean {
+  const segments = Array.isArray(exercise.content?.segments)
+    ? exercise.content.segments
+    : [];
+  const highlightCount = segments.filter((segment) => {
+    return Boolean(
+      segment &&
+      typeof segment === "object" &&
+      !Array.isArray(segment) &&
+      typeof (segment as Record<string, unknown>).label === "string",
+    );
+  }).length;
+  return readArray(response?.seenSegmentIndexes).length >= highlightCount;
+}
+
 export const LensReplayConfig: CourseExerciseCategoryConfig = {
   category: CourseExerciseCategoryEnum.LensReplay,
   formats: [CourseExerciseCategoryEnum.LensReplay],
@@ -11,7 +33,15 @@ export const LensReplayConfig: CourseExerciseCategoryConfig = {
   unavailableCopy: "This lens replay is not available yet.",
   interaction: {
     submissionMode: "immediate",
-    getPrimaryLabel: (exercise, response) => "Continue",
-    getPrimaryTransition: (_exercise, _response) => null,
+    submissionRequirement: { fields: ["isComplete"] }, // Wait until engine says isComplete
+    getPrimaryLabel: () => "Continue",
+    getPrimaryTransition: () => null,
+  },
+  presentation: {
+    hideFooter: (exercise, response) => {
+      // Hide the footer entirely until they've clicked all highlights
+      return !hasSeenAllHighlights(exercise, response);
+    },
+    hideFeedback: () => true, // Ensure no "Correct" banner appears
   },
 };

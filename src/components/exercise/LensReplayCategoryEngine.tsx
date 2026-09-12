@@ -91,9 +91,10 @@ export function LensReplayCategoryEngine({
         ...saved,
         seenSegmentIndexes: nextSeen,
         activeSegmentIndex: index,
-        phase: nextSeen.length > 0 ? "feedback" : "replay", // Hide skip button when interacted
+        phase: "replay",
+        isComplete: isNowAllSeen, // Fulfills submissionRequirement when all seen
       }),
-      isNowAllSeen,
+      nextSeen.length > 0, // Sets ready=true, which hides Skip button
     );
   };
 
