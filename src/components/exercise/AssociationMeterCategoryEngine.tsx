@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { LayoutAnimation, Pressable, Text, View } from "react-native";
-import { Host, Slider } from "@expo/ui/swift-ui";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
-  
   readNumber,
   readRecord,
   readString,
@@ -12,7 +10,6 @@ import {
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
-import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 
 interface AssociationChoice {
   id: string;
@@ -40,15 +37,6 @@ export function AssociationMeterCategoryEngine({
   const choices = readChoices(content.choices);
   const reduceMotion = useReducedMotion();
 
-  const [sliderValue, setSliderValue] = useState(position);
-  const [isDragging, setIsDragging] = useState(false);
-
-  useEffect(() => {
-    if (!isDragging) {
-      setSliderValue(position);
-    }
-  }, [position, isDragging]);
-
   useEffect(() => {
     if (!saved) {
       onInteraction(
@@ -68,7 +56,6 @@ export function AssociationMeterCategoryEngine({
     if (locked) return;
     Haptics.selectionAsync();
 
-    // Animation approximately 300-450ms smooth
     if (!reduceMotion) {
       LayoutAnimation.configureNext({
         duration: 400,
@@ -91,7 +78,7 @@ export function AssociationMeterCategoryEngine({
   };
 
   return (
-    <View className="px-2 pb-6 pt-1.5 flex-1">
+    <View className="flex-1 px-2 pb-6 pt-1.5">
       <CourseExerciseHeading
         title={readString(content.title) ?? "What gets the final vote?"}
         instruction={
@@ -101,48 +88,24 @@ export function AssociationMeterCategoryEngine({
       />
 
       {/* METER CARD - Visual Center */}
-      <View className="rounded-[26px] border border-cream-300 bg-cream-50 px-5 py-5 shadow-sm shadow-black/5 z-10">
+      <View className="z-10 rounded-[26px] border border-[#DCD3C4] bg-[#F9F4ED] px-5 py-5 shadow-sm shadow-black/5">
         <View className="flex-row justify-between gap-4">
-          <Text className="font-semibold max-w-[45%] text-[11px] leading-4 tracking-wider text-forest-700">
+          <Text className="happy-font-body-bold max-w-[45%] text-[11px] leading-4 tracking-wider text-[#29452A]">
             {readString(content.leftLabel) ?? "FEELING AS PROOF"}
           </Text>
-          <Text className="font-semibold max-w-[45%] text-right text-[11px] leading-4 tracking-wider text-forest-700">
+          <Text className="happy-font-body-bold max-w-[45%] text-right text-[11px] leading-4 tracking-wider text-[#29452A]">
             {readString(content.rightLabel) ?? "CHECK THE WHOLE PICTURE"}
           </Text>
         </View>
-        <View className="mt-4 h-10 justify-center">
-          <Host matchContents>
-            <Slider
-              value={sliderValue}
-              min={0}
-              max={100}
-              onEditingChanged={(isEditing: boolean) => {
-                setIsDragging(isEditing);
-                if (!isEditing && !locked && choices.length > 0) {
-                  // Find the closest target position and snap to it
-                  const closest = choices.reduce((prev, curr) => {
-                    return Math.abs(curr.targetPosition - sliderValue) < Math.abs(prev.targetPosition - sliderValue)
-                      ? curr
-                      : prev;
-                  });
-                  if (closest.id !== selectedChoiceId) {
-                    selectChoice(closest);
-                  } else {
-                    // Re-sync back if it didn't change
-                    setSliderValue(closest.targetPosition);
-                  }
-                }
-              }}
-              onValueChange={(val: number) => {
-                if (!locked) {
-                  setSliderValue(val);
-                }
-              }}
-            />
-          </Host>
+        <View className="relative mt-5 h-6 justify-center">
+          <View className="h-[7px] overflow-hidden rounded-full bg-[#E7E0D4]" />
+          {/* Non-draggable looking reasoning continuum marker */}
+          <View
+            className="absolute h-4 w-1.5 rounded-full bg-[#29452A] shadow-sm shadow-black/20"
+            style={{ left: `${position}%`, transform: [{ translateX: -3 }] }}
+          />
         </View>
-        {/* Caption Contrast increased */}
-        <Text className="font-medium mt-4 text-[13.5px] leading-5 text-ink-primary">
+        <Text className="happy-font-body-bold mt-4 text-[13.5px] leading-5 text-[#201E1D]">
           {caption}
         </Text>
       </View>
@@ -160,15 +123,15 @@ export function AssociationMeterCategoryEngine({
               disabled={locked}
               onPress={() => selectChoice(choice)}
               style={{ opacity: isUnselectedInCompleteState ? 0.4 : 1 }}
-              className={`min-h-[52px] justify-center rounded-[20px] border px-4 py-3 active:bg-cream-100 ${
+              className={`min-h-[52px] justify-center rounded-[20px] border px-4 py-3 active:bg-[#F2F8EF] ${
                 isSelected
-                  ? "border-sage-400 bg-sage-50"
-                  : "border-cream-300 bg-white"
+                  ? "border-[#ABC0A2] bg-[#F2F8EF]"
+                  : "border-[#DCD3C4] bg-white"
               }`}
             >
               <Text
-                className={`font-medium text-[13.5px] leading-[19px] ${
-                  isSelected ? "text-forest-900" : "text-ink-primary"
+                className={`happy-font-body-bold text-[13.5px] leading-[19px] ${
+                  isSelected ? "text-[#29452A]" : "text-[#201E1D]"
                 }`}
               >
                 {choice.label}
@@ -180,11 +143,11 @@ export function AssociationMeterCategoryEngine({
 
       {/* FINAL RULE */}
       {isComplete ? (
-        <View className="mt-4 rounded-[22px] bg-[#f8fbf6] p-5">
-          <Text className="font-bold text-lg leading-6 text-forest-900 mb-2">
+        <View className="mt-4 rounded-[22px] bg-[#F2F8EF] p-5">
+          <Text className="happy-font-heading-bold text-lg leading-6 text-[#29452A] mb-2">
             {readString(content.rule)}
           </Text>
-          <Text className="text-[14px] leading-[22px] text-forest-800">
+          <Text className="happy-font-body text-[14px] leading-[22px] text-[#3F4A31]">
             {readString(content.takeaway)}
           </Text>
         </View>
