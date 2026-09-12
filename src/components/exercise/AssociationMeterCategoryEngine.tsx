@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { LayoutAnimation, Pressable, Text, View } from "react-native";
+import { Host, Slider } from "@expo/ui/swift-ui";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
@@ -38,6 +39,15 @@ export function AssociationMeterCategoryEngine({
     readString(saved?.caption) ?? readString(content.initialCaption) ?? "";
   const choices = readChoices(content.choices);
   const reduceMotion = useReducedMotion();
+
+  const [sliderValue, setSliderValue] = useState(position);
+  const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    if (!isDragging) {
+      setSliderValue(position);
+    }
+  }, [position, isDragging]);
 
   useEffect(() => {
     if (!saved) {
@@ -100,16 +110,36 @@ export function AssociationMeterCategoryEngine({
             {readString(content.rightLabel) ?? "CHECK THE WHOLE PICTURE"}
           </Text>
         </View>
-        <View className="relative mt-5 h-6 justify-center">
-          <View className="h-[7px] overflow-hidden rounded-full bg-cream-300">
-            {/* The fill is intentionally removed or muted if we don't want a "progress" look, 
-                but keeping a subtle tracking line. Let's just use a solid track. */}
-          </View>
-          {/* Non-draggable looking reasoning continuum marker */}
-          <View
-            className="absolute h-4 w-1.5 rounded-full bg-forest-700 shadow-sm shadow-black/20"
-            style={{ left: `${position}%`, transform: [{ translateX: -3 }] }}
-          />
+        <View className="mt-4 h-10 justify-center">
+          <Host matchContents>
+            <Slider
+              value={sliderValue}
+              min={0}
+              max={100}
+              onEditingChanged={(isEditing: boolean) => {
+                setIsDragging(isEditing);
+                if (!isEditing && !locked && choices.length > 0) {
+                  // Find the closest target position and snap to it
+                  const closest = choices.reduce((prev, curr) => {
+                    return Math.abs(curr.targetPosition - sliderValue) < Math.abs(prev.targetPosition - sliderValue)
+                      ? curr
+                      : prev;
+                  });
+                  if (closest.id !== selectedChoiceId) {
+                    selectChoice(closest);
+                  } else {
+                    // Re-sync back if it didn't change
+                    setSliderValue(closest.targetPosition);
+                  }
+                }
+              }}
+              onValueChange={(val: number) => {
+                if (!locked) {
+                  setSliderValue(val);
+                }
+              }}
+            />
+          </Host>
         </View>
         {/* Caption Contrast increased */}
         <Text className="font-medium mt-4 text-[13.5px] leading-5 text-ink-primary">
