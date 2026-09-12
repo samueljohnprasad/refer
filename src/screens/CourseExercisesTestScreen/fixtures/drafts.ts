@@ -222,6 +222,9 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
           feedback: "Correct! Avoidance reinforces anxiety.",
         },
       ],
+      rule: "Avoidance is a trap.",
+      body: "When you avoid something, you temporarily reduce anxiety, but you teach your brain that the thing was truly dangerous.",
+      next: "Let’s look at how to break this loop.",
     },
   },
 ];

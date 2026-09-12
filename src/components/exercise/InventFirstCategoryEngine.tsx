@@ -92,11 +92,15 @@ export function InventFirstCategoryEngine({
         <Text style={styles.coach}>{selectedOption.feedback}</Text>
       ) : null}
 
-      {locked ? (
+      {locked && readString(content.rule) ? (
         <View style={styles.reveal}>
           <Text style={styles.revealTitle}>{readString(content.rule)}</Text>
-          <Text style={styles.revealBody}>{readString(content.body)}</Text>
-          <Text style={styles.revealNext}>{readString(content.next)}</Text>
+          {readString(content.body) ? (
+            <Text style={styles.revealBody}>{readString(content.body)}</Text>
+          ) : null}
+          {readString(content.next) ? (
+            <Text style={styles.revealNext}>{readString(content.next)}</Text>
+          ) : null}
         </View>
       ) : null}
 
