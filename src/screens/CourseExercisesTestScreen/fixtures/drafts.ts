@@ -276,6 +276,7 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
           text: " I quickly sat down and pretended to look at my phone.",
         },
       ],
+      insight: "When we feel anxious, our brain often interprets neutral events as negative. Stepping back allows us to see alternate explanations.",
     },
   },
   {
@@ -311,6 +312,9 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
           tone: "orange",
         },
       ],
+      rule: "Not all levers pull the same weight.",
+      takeaway: "Preparation and deep breathing pull the alarm down, while caffeine pushes it up. You have the power to choose which levers to pull.",
+      note: "Notice how small actions compound.",
     },
   },
   {
@@ -340,6 +344,10 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
         },
       ],
       rightOrder: ["p2", "p3", "p1"],
+      clue: "Look for the short-term vs long-term tradeoffs.",
+      feedbackTitle: "Why it fits",
+      feedback: "Avoidance gives immediate relief but guarantees the anxiety will return stronger next time. Exposure is uncomfortable now but builds lasting confidence.",
+      capability: "Long-term thinking",
     },
   },
 ] as unknown as Exercise[];
