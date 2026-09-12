@@ -14,6 +14,7 @@ export const SituationLanguageConfig: CourseExerciseCategoryConfig = {
   goalLabel: "Shift fixed identity language toward a changeable situation.",
   unavailableCopy: "This language exercise is not available yet.",
   interaction: {
+    submissionMode: "immediate",
     completesDirectly: true,
     getPrimaryLabel: () => "Continue",
   },
