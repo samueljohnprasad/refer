@@ -12,26 +12,12 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       instruction: "See why the trap feels helpful — then learn the counter move.",
       trapTitle: "The Perfection Trap",
       trapBody: "If it isn’t perfect, it feels like failure.",
-      prediction: {
-        question: "When perfection feels protective, what usually happens next?",
-        options: [
-          { id: "predict-1", label: "I check more and put more pressure on myself", isCorrect: true },
-          { id: "predict-2", label: "I relax because I know I did enough", isCorrect: false, feedback: "That would be ideal, but the perfection trap usually drives more anxiety." }
-        ]
-      },
-      shortTermPayoff: "High standards feel protective",
+      shortTermPayoff: "High standards can feel protective.",
       hiddenCost: [
         "more checking",
         "more pressure",
         "small details feel high-stakes"
       ],
-      counterMoveQuestion: {
-        question: "Which move breaks the loop?",
-        options: [
-          { id: "counter-1", label: "Check one more time", isCorrect: false, feedback: "One more check keeps the loop going." },
-          { id: "counter-2", label: "Set a stopping point", isCorrect: true }
-        ]
-      },
       counterMove: {
         body: [
           "Set a stopping point before you start.",

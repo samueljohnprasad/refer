@@ -1642,25 +1642,11 @@ WITH curriculum AS (
       "instruction": "See what the shortcut misses.",
       "trapTitle": "I feel terrified, so this must be dangerous.",
       "trapBody": "The mind uses the strength of the feeling as evidence about the outside world.",
-      "prediction": {
-        "question": "When you use the feeling as proof, what usually happens next?",
-        "options": [
-          { "id": "p1", "label": "I avoid the situation to feel safe", "isCorrect": true },
-          { "id": "p2", "label": "I calmly evaluate the facts", "isCorrect": false, "feedback": "High intensity feelings usually push us toward immediate avoidance." }
-        ]
-      },
-      "shortTermPayoff": "Avoidance makes a quick decision feel certain",
+      "shortTermPayoff": "Treating the feeling as proof can make a quick decision feel certain.",
       "hiddenCost": [
         "prevents new information",
         "alarm feels even more convincing next time"
       ],
-      "counterMoveQuestion": {
-        "question": "Which move breaks the loop?",
-        "options": [
-          { "id": "c1", "label": "Trust the feeling and stay away", "isCorrect": false, "feedback": "Avoiding the situation confirms the mind's false alarm." },
-          { "id": "c2", "label": "Separate the feeling from the facts", "isCorrect": true }
-        ]
-      },
       "counterMove": {
         "body": [
           "Measure two things separately: how intense the alarm feels and what current evidence says about danger."

@@ -20,22 +20,15 @@ export const CommonTrapConfig: CourseExerciseCategoryConfig = {
       if (phase === "trap") return "AND THEN WHAT HAPPENS?";
       if (phase === "payoff") return "SEE WHAT IT TURNS INTO";
       if (phase === "cost") return "WHAT CAN I DO INSTEAD?";
-      return "Got it";
+      return "CONTINUE";
     },
     getPrimaryTransition: (_exercise, response) => {
       const phase = (response?.phase as string) || "trap";
       
-      if (phase === "trap") {
-        return { kind: "response", ready: true, response: { ...response, phase: "payoff" } };
-      }
-      if (phase === "payoff") {
-        return { kind: "response", ready: true, response: { ...response, phase: "cost" } };
-      }
-      if (phase === "cost") {
-        return { kind: "response", ready: true, response: { ...response, phase: "complete" } };
-      }
+      if (phase === "trap") return { kind: "response", ready: true, response: { ...response, phase: "payoff" } };
+      if (phase === "payoff") return { kind: "response", ready: true, response: { ...response, phase: "cost" } };
+      if (phase === "cost") return { kind: "response", ready: true, response: { ...response, phase: "complete" } };
       
-      // When on the final phase ('complete'), return null so the engine completes the exercise.
       return null;
     },
   },

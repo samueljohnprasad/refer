@@ -54,9 +54,6 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
   const allowsSkip =
     props.exercise.content?.hideSkipAction !== true && !configHideSkip;
 
-  const courseContentOffset = {
-    marginTop: -Math.max(insets.top - COURSE_CONTENT_TOP_PADDING, 0),
-  };
   const exerciseContent = (
     <props.Engine
       exercise={props.exercise}
@@ -76,7 +73,7 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
           onClose={props.onClose}
         />
         <LessonScreen className="flex-1 bg-brand-surface" hideHeader hideFooter>
-          <View style={courseContentOffset}>
+          <View className="pt-2">
             {exerciseContent}
             {props.showingFeedback ? (
               <CourseExerciseFeedbackPanel
