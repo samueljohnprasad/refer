@@ -17,28 +17,19 @@ export const RecallWarmupConfig: CourseExerciseCategoryConfig = {
     interaction: {
         submissionMode: "explicit",
         getPrimaryLabel: (exercise, response) => {
-            if (response.revealed !== true) return "Flip the card";
-            const cardIndex = readNumber(response.cardIndex);
-            const cardCount = readRecallCards(exercise.content?.cards).length;
-            return cardIndex < cardCount - 1 ? "Next one" : "Wrap up";
+            if (response?.phase === "complete") return "CONTINUE";
+            return null;
         },
         getPrimaryTransition: (exercise, response) => {
-            if (response.revealed !== true) {
-                return {
-                    kind: "response",
-                    ready: true,
-                    response: { ...response, revealed: true },
-                };
-            }
-
-            const cardIndex = readNumber(response.cardIndex);
-            const cardCount = readRecallCards(exercise.content?.cards).length;
-            if (cardIndex >= cardCount - 1) return { kind: "check" };
-            return {
-                kind: "response",
-                ready: true,
-                response: { ...response, cardIndex: cardIndex + 1, revealed: false },
-            };
+            if (response?.phase === "complete") return { kind: "check" };
+            return null;
+        }
+    },
+    presentation: {
+        hideSkip: (exercise, response) => {
+            const index = readNumber(response?.currentCardIndex);
+            const cardPhase = response?.cardPhase;
+            return response?.phase === "complete" || index > 0 || cardPhase === "answer";
         }
     },
     validation: validateRecallWarmupContent,
