@@ -39,7 +39,7 @@ export const LeverCheckConfig: CourseExerciseCategoryConfig = {
     },
   },
   presentation: {
-    hidePrimary: (exercise: Exercise, response: Record<string, unknown>) => {
+    hideFooter: (exercise: Exercise, response: Record<string, unknown>) => {
       const levers = Array.isArray(exercise.content?.levers) ? exercise.content?.levers : [];
       const totalLevers = levers.length > 0 ? levers.length : 2;
       const pulledCount = readStringArray(response?.pulledLeverIds).length;

@@ -301,7 +301,7 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
         },
         {
           id: "l2",
-          label: "Deep Breathing",
+          label: "Slower Breathing",
           remainingPercent: 50,
           explanation: "A slower breath can help the body settle.",
           tone: "olive",
@@ -316,8 +316,7 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       ],
       rule: "THE IDEA",
       takeaway:
-        "Different choices can push alertness in different directions.\n\nPreparation and slower breathing may help it settle.\nCaffeine can keep it more activated.",
-      note: "You may not control the whole system — but you can influence it.",
+        "Different choices can shift alertness in different directions.\n\nPreparation and slower breathing may help it settle.\nCaffeine can keep it more activated.",
     },
   },
   {
@@ -333,24 +332,24 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
         {
           id: "p1",
           left: "Avoidance",
-          right: "Short-term relief, long-term anxiety",
+          right: "Relief now,\nanxiety stays stronger later",
         },
         {
           id: "p2",
           left: "Exposure",
-          right: "Short-term anxiety, long-term relief",
+          right: "Anxiety now,\nfear can weaken later",
         },
         {
           id: "p3",
           left: "Reappraisal",
-          right: "Shift in emotional response",
+          right: "A new interpretation\ncan shift the response",
         },
       ],
       rightOrder: ["p2", "p3", "p1"],
-      clue: "Look for the short-term vs long-term tradeoffs.",
-      feedbackTitle: "Why it fits",
+      clue: "Hint: Look at what happens now — and what happens later.",
+      feedbackTitle: "THE PATTERN",
       feedback:
-        "Avoidance gives immediate relief but guarantees the anxiety will return stronger next time. Exposure is uncomfortable now but builds lasting confidence.",
+        "What helps right now is not always what helps later.\n\nAvoidance can bring quick relief while keeping fear strong.\nExposure can feel harder now while creating room to learn.\nReappraisal changes the meaning you give the situation.",
       capability: "Long-term thinking",
     },
   },

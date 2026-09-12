@@ -45,7 +45,7 @@ export function LeverCheckCategoryEngine({
     
     // Accessibility announcement
     const direction = lever.tone === "olive" ? "lower" : "higher";
-    AccessibilityInfo.announceForAccessibility(`${lever.label} shifted alertness ${direction}. ${lever.explanation}`);
+    AccessibilityInfo.announceForAccessibility(`${lever.label}. Shifts alertness ${direction}.`);
 
     onInteraction(
       createResponse({ ...saved, pulledLeverIds: nextIds }),
@@ -54,7 +54,7 @@ export function LeverCheckCategoryEngine({
   };
 
   return (
-    <View className="flex-1 px-5 pt-2 pb-8">
+    <View className="flex-1 px-5 pt-0 pb-8">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Identify the Levers"}
         instruction={readString(content.instruction) ?? "Pull each lever to see which way it shifts alertness."}
@@ -63,12 +63,12 @@ export function LeverCheckCategoryEngine({
       {/* Scale Indicator */}
       <View className="mb-6 mt-2">
         <Text className="text-[11px] font-semibold tracking-widest text-ink-muted uppercase text-center mb-1.5">
-          Alertness
+          Shift in Alertness
         </Text>
         <View className="flex-row justify-between items-center">
-          <Text className="text-[11px] font-medium text-ink-soft">LOW</Text>
+          <Text className="text-[11px] font-medium text-ink-soft">LOWER</Text>
           <View className="flex-1 h-[1px] bg-sage-200 mx-2" />
-          <Text className="text-[11px] font-medium text-ink-soft">HIGH</Text>
+          <Text className="text-[11px] font-medium text-ink-soft">HIGHER</Text>
         </View>
       </View>
 
@@ -131,7 +131,7 @@ function LeverRow({
   useEffect(() => {
     if (pulled) {
       // Shift left (20%) for olive/down, shift right (80%) for orange/up
-      const target = isOlive ? 20 : 80;
+      const target = isOlive ? 15 : 85;
       position.value = reduceMotion ? target : withTiming(target, { duration: 350 });
     } else {
       position.value = 50;
@@ -141,29 +141,26 @@ function LeverRow({
   const indicatorStyle = useAnimatedStyle(() => {
     return {
       left: `${position.value}%`,
-      marginLeft: -10, // Half of w-5 (20px) to truly center it
+      marginLeft: pulled ? -7 : -2,
     };
   });
 
   return (
     <View>
-      <Text className="text-ink font-semibold text-[15px] mb-2.5">
+      <Text className="text-ink font-semibold text-[15px] mb-1.5">
         {lever.label}
       </Text>
       
       {/* Track */}
-      <View className="h-3 rounded-full bg-sage-200 w-full justify-center relative">
-        {/* Center notch */}
-        <View className="absolute left-1/2 w-0.5 h-full bg-sage-300" style={{ transform: [{ translateX: -1 }] }} />
-        
+      <View className="h-1.5 rounded-full bg-[#E2E2E2] w-full justify-center relative my-2.5">
         {/* Thumb */}
         <Animated.View
-          className={`absolute h-5 w-5 rounded-full shadow-sm border ${
+          className={`absolute ${
             !pulled 
-              ? "bg-cream-100 border-sage-300" 
+              ? "h-4 w-1 rounded-[1px] bg-[#999999]" 
               : isOlive 
-                ? "bg-sage-600 border-sage-700" 
-                : "bg-[#FF9600] border-[#E58133]" // Orange
+                ? "h-3.5 w-3.5 rounded-full bg-sage-600" 
+                : "h-3.5 w-3.5 rounded-full bg-[#FF9600]" // Orange
           }`}
           style={indicatorStyle}
         />
@@ -172,16 +169,16 @@ function LeverRow({
       {/* Interaction / Explanation */}
       {pulled ? (
         <Animated.View entering={reduceMotion ? undefined : FadeIn.delay(100).duration(300)}>
-          <Text className="text-ink-soft text-[14px] leading-[20px] mt-3">
+          <Text className="text-ink-soft text-[14px] leading-[20px] mt-2">
             {lever.explanation}
           </Text>
         </Animated.View>
       ) : (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={`${lever.label}. Try this lever.`}
+          accessibilityLabel={`${lever.label}. Not explored. Try this lever.`}
           onPress={onPress}
-          className="mt-3.5 bg-transparent border border-sage-300 py-2.5 rounded-full items-center active:bg-sage-100/50"
+          className="mt-2.5 bg-transparent border border-sage-300 py-1.5 rounded-full items-center active:bg-sage-100/50"
         >
           <Text className="text-ink text-[14.5px] font-medium tracking-wide">
             Try this lever
