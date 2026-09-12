@@ -169,6 +169,9 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
           caption: "Looking for evidence, but with a bias against the alarm.",
         },
       ],
+      rule: "Alarm intensity and danger probability are different measures.",
+      takeaway:
+        "A strong feeling deserves support. A conclusion about danger needs evidence from the situation.",
     },
   },
   {
