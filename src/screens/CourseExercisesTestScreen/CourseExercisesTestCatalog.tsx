@@ -1,5 +1,5 @@
-import React from "react";
-import { Pressable, Text, View } from "react-native";
+import React, { useState, useMemo } from "react";
+import { Pressable, Text, View, TextInput } from "react-native";
 import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 import { SEMANTIC_COLORS, COURSE_EXERCISE_FONTS } from "@/src/components/exercise/courseExerciseTheme";
 import { Skeleton, SkeletonCard } from "@/src/components/ui/Skeleton";
@@ -28,6 +28,40 @@ export function CourseExercisesTestCatalog({
   onRetry,
   onStartRun,
 }: CourseExercisesTestCatalogProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredGroups = useMemo(() => {
+    if (!searchQuery.trim()) return microlearningFixtureGroups;
+    const query = searchQuery.toLowerCase().trim();
+    return microlearningFixtureGroups
+      .map((group) => ({
+        ...group,
+        exercises: group.exercises.filter(
+          (ex) =>
+            ex.type.toLowerCase().includes(query) ||
+            (typeof ex.content?.title === "string" &&
+              ex.content.title.toLowerCase().includes(query))
+        ),
+      }))
+      .filter((g) => g.exercises.length > 0);
+  }, [searchQuery]);
+
+  const filteredAllFixtures = useMemo(() => {
+    if (!searchQuery.trim()) return allMicrolearningFixtures;
+    return filteredGroups.flatMap((g) => g.exercises);
+  }, [searchQuery, filteredGroups]);
+
+  const filteredServerExercises = useMemo(() => {
+    if (!searchQuery.trim()) return exercises;
+    const query = searchQuery.toLowerCase().trim();
+    return exercises.filter(
+      (ex) =>
+        ex.type.toLowerCase().includes(query) ||
+        (typeof ex.content?.title === "string" &&
+          ex.content.title.toLowerCase().includes(query))
+    );
+  }, [searchQuery, exercises]);
+
   return (
     <>
       <SourceLabel label="LOCAL FIXTURES" />
@@ -35,13 +69,23 @@ export function CourseExercisesTestCatalog({
       <Text style={styles.description}>
         Run local fixtures without waiting for published course data.
       </Text>
-      {allMicrolearningFixtures.length > 0 ? (
+
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search exercises by name..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        placeholderTextColor={SEMANTIC_COLORS.text.secondary}
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+      {filteredAllFixtures.length > 0 ? (
         <>
           <CourseExercisePrimaryButton
-            label={`Run all ${allMicrolearningFixtures.length} fixtures`}
-            onPress={() => onStartRun([...allMicrolearningFixtures])}
+            label={`Run ${filteredAllFixtures.length} fixture${filteredAllFixtures.length === 1 ? '' : 's'}`}
+            onPress={() => onStartRun([...filteredAllFixtures])}
           />
-          {microlearningFixtureGroups.map((group) =>
+          {filteredGroups.map((group) =>
             group.exercises.length > 0 ? (
               <ExerciseShelf
                 key={group.id}
@@ -56,7 +100,7 @@ export function CourseExercisesTestCatalog({
       ) : (
         <View style={styles.emptyFixtures}>
           <Text style={styles.emptyText}>
-            Category fixtures will appear here as each redesign lands.
+            No fixtures match your search.
           </Text>
         </View>
       )}
@@ -66,7 +110,7 @@ export function CourseExercisesTestCatalog({
         <Text style={styles.title}>Published exercises</Text>
         <ServerContent
           completedIds={completedIds}
-          exercises={exercises}
+          exercises={filteredServerExercises}
           onRetry={onRetry}
           onStartRun={onStartRun}
           status={serverStatus}
@@ -186,6 +230,19 @@ function readLabel(value: unknown, fallback: string): string {
 }
 
 const styles = {
+  searchInput: {
+    marginTop: 16,
+    marginBottom: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: SEMANTIC_COLORS.border.default,
+    backgroundColor: SEMANTIC_COLORS.surface.primary,
+    fontFamily: COURSE_EXERCISE_FONTS.body,
+    fontSize: 16,
+    color: SEMANTIC_COLORS.text.primary,
+  },
   sourceLabel: {
     alignSelf: "flex-start",
     borderRadius: 999,
