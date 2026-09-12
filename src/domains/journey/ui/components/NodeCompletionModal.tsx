@@ -103,10 +103,13 @@ export const NodeCompletionModalView = React.memo(
                   <Text className="text-4xl">🎉</Text>
                 </View>
                 <Text className="text-2xl font-extrabold text-ink text-center">
-                  Lesson Complete!
+                  {node.type === "lesson" ? "Lesson Complete!" : 
+                   node.type === "checkpoint" ? "Checkpoint Reached!" : 
+                   node.type === "chest" ? "Reward Unlocked!" : 
+                   "Exercise Complete!"}
                 </Text>
                 <Text className="text-base text-ink-soft text-center mt-1">
-                  Great job finishing lesson {node.index + 1}
+                  Great job finishing step {node.index + 1}
                 </Text>
               </View>
 
