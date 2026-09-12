@@ -11,33 +11,46 @@ export interface MicrolearningFixtureGroup {
   exercises: readonly Exercise[];
 }
 
-export const microlearningFixtureGroups: readonly MicrolearningFixtureGroup[] = [
-  {
-    id: "priority",
-    label: "Priority interactions",
-    exercises: priorityMicrolearningFixtures,
-  },
-  {
-    id: "model",
-    label: "Interactive models",
-    exercises: modelMicrolearningFixtures,
-  },
-  {
-    id: "narrative",
-    label: "Narrative exercises",
-    exercises: narrativeMicrolearningFixtures,
-  },
-  {
-    id: "review",
-    label: "Review exercises",
-    exercises: reviewMicrolearningFixtures,
-  },
-  {
-    id: "drafts",
-    label: "Drafts",
-    exercises: draftMicrolearningFixtures,
-  },
-];
+// ponytail: showcase group for latest requested exercises
+export const microlearningFixtureGroups: readonly MicrolearningFixtureGroup[] =
+  [
+    {
+      id: "showcase",
+      label: "Showcase",
+      exercises: draftMicrolearningFixtures.filter((fixture) =>
+        [
+          "fixture-socratic-dialogue",
+          "fixture-story-serial",
+          "fixture-surge-diagram",
+        ].includes(fixture.id),
+      ),
+    },
+    {
+      id: "priority",
+      label: "Priority interactions",
+      exercises: priorityMicrolearningFixtures,
+    },
+    {
+      id: "model",
+      label: "Interactive models",
+      exercises: modelMicrolearningFixtures,
+    },
+    {
+      id: "narrative",
+      label: "Narrative exercises",
+      exercises: narrativeMicrolearningFixtures,
+    },
+    {
+      id: "review",
+      label: "Review exercises",
+      exercises: reviewMicrolearningFixtures,
+    },
+    {
+      id: "drafts",
+      label: "Drafts",
+      exercises: draftMicrolearningFixtures,
+    },
+  ];
 
 export const allMicrolearningFixtures: readonly Exercise[] = [
   ...priorityMicrolearningFixtures.filter(
