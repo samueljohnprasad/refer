@@ -3,6 +3,7 @@ import { LayoutAnimation, Pressable, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
+  
   readNumber,
   readRecord,
   readString,
@@ -10,11 +11,14 @@ import {
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 
 interface AssociationChoice {
+  id: string;
   label: string;
-  delta: number;
+  targetPosition: number;
   caption: string;
+  completesExercise: boolean;
 }
 
 export function AssociationMeterCategoryEngine({
@@ -25,91 +29,132 @@ export function AssociationMeterCategoryEngine({
 }: V1CategoryEngineProps) {
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
-  const position = readNumber(saved?.position) ?? 50;
-  const hasFlipped = saved?.hasFlipped === true;
+  const position =
+    readNumber(saved?.position) ?? readNumber(content.initialPosition) ?? 50;
+  const phase = readString(saved?.phase) ?? "exploring";
+  const selectedChoiceId = readString(saved?.selectedChoiceId);
+  const isComplete = phase === "complete";
   const caption =
     readString(saved?.caption) ?? readString(content.initialCaption) ?? "";
   const choices = readChoices(content.choices);
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (!saved) onInteraction(createResponse(), false);
-  }, [onInteraction, saved]);
+    if (!saved) {
+      onInteraction(
+        {
+          format: CourseExerciseCategoryEnum.AssociationMeter,
+          phase: "exploring",
+          position: readNumber(content.initialPosition) ?? 50,
+          caption: null,
+          selectedChoiceId: null,
+        },
+        false,
+      );
+    }
+  }, [onInteraction, saved, content.initialPosition]);
 
-  const runEvenings = (choice: AssociationChoice) => {
+  const selectChoice = (choice: AssociationChoice) => {
     if (locked) return;
     Haptics.selectionAsync();
+
+    // Animation approximately 300-450ms smooth
     if (!reduceMotion) {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      LayoutAnimation.configureNext({
+        duration: 400,
+        update: { type: LayoutAnimation.Types.easeInEaseOut },
+      });
     }
-    const nextPosition = Math.min(95, Math.max(5, position + choice.delta));
-    const nextFlipped = hasFlipped || nextPosition >= 70;
+
+    const nextPhase = choice.completesExercise ? "complete" : "exploring";
+
     onInteraction(
-      createResponse({
-        ...saved,
-        position: nextPosition,
+      {
+        format: CourseExerciseCategoryEnum.AssociationMeter,
+        phase: nextPhase,
+        position: choice.targetPosition,
         caption: choice.caption,
-        hasFlipped: nextFlipped,
-      }),
-      nextFlipped,
+        selectedChoiceId: choice.id,
+      },
+      choice.completesExercise,
     );
   };
 
   return (
-    <View className="px-2 pb-3 pt-1.5">
+    <View className="px-2 pb-6 pt-1.5 flex-1">
       <CourseExerciseHeading
-        title={readString(content.title) ?? "What is the phone for at 11pm?"}
-        instruction={readString(content.instruction) ?? "Run a few evenings."}
+        title={readString(content.title) ?? "What gets the final vote?"}
+        instruction={
+          readString(content.instruction) ??
+          "Try different ways of reading the alarm."
+        }
       />
 
-      <View className="rounded-[26px] border border-[#E4DACB] bg-[#F9F4ED] px-5 py-5 shadow-sm shadow-black/10">
+      {/* METER CARD - Visual Center */}
+      <View className="rounded-[26px] border border-cream-300 bg-cream-50 px-5 py-5 shadow-sm shadow-black/5 z-10">
         <View className="flex-row justify-between gap-4">
-          <Text className="happy-font-body-bold max-w-[45%] text-[11.5px] leading-4 text-[#29452A]">
-            {readString(content.leftLabel)}
+          <Text className="font-semibold max-w-[45%] text-[11px] leading-4 tracking-wider text-forest-700">
+            {readString(content.leftLabel) ?? "FEELING AS PROOF"}
           </Text>
-          <Text className="happy-font-body-bold max-w-[45%] text-right text-[11.5px] leading-4 text-[#29452A]">
-            {readString(content.rightLabel)}
+          <Text className="font-semibold max-w-[45%] text-right text-[11px] leading-4 tracking-wider text-forest-700">
+            {readString(content.rightLabel) ?? "CHECK THE WHOLE PICTURE"}
           </Text>
         </View>
         <View className="relative mt-5 h-6 justify-center">
-          <View className="h-[7px] overflow-hidden rounded-full bg-[#E7E0D4]">
-            <View
-              className="h-full rounded-full bg-[#5F7F58]"
-              style={{ width: `${position}%` }}
-            />
+          <View className="h-[7px] overflow-hidden rounded-full bg-cream-300">
+            {/* The fill is intentionally removed or muted if we don't want a "progress" look, 
+                but keeping a subtle tracking line. Let's just use a solid track. */}
           </View>
+          {/* Non-draggable looking reasoning continuum marker */}
           <View
-            className="absolute h-[22px] w-[22px] rounded-full border-[3px] border-[#F9F4ED] bg-[#5F7F58] shadow-sm shadow-black/20"
-            style={{ left: `${position}%`, transform: [{ translateX: -11 }] }}
+            className="absolute h-4 w-1.5 rounded-full bg-forest-700 shadow-sm shadow-black/20"
+            style={{ left: `${position}%`, transform: [{ translateX: -3 }] }}
           />
         </View>
-        <Text className="happy-font-body mt-3 text-[12.5px] leading-[18px] text-[#82796A]">
+        {/* Caption Contrast increased */}
+        <Text className="font-medium mt-4 text-[13.5px] leading-5 text-ink-primary">
           {caption}
         </Text>
       </View>
 
-      <View className="mt-3 gap-2.5">
-        {choices.map((choice) => (
-          <Pressable
-            key={choice.label}
-            accessibilityRole="button"
-            disabled={locked}
-            onPress={() => runEvenings(choice)}
-            className="min-h-[58px] justify-center rounded-[22px] border-[1.5px] border-[#DCD3C4] border-b-[3px] bg-[#F9F4ED] px-4 py-3 active:translate-y-0.5 active:border-b-[1.5px]"
-          >
-            <Text className="happy-font-body-bold text-[13.5px] leading-[19px] text-[#201E1D]">
-              {choice.label}
-            </Text>
-          </Pressable>
-        ))}
+      {/* WAYS TO READ IT */}
+      <View className="mt-3 gap-2">
+        {choices.map((choice) => {
+          const isSelected = selectedChoiceId === choice.id;
+          const isUnselectedInCompleteState = isComplete && !isSelected;
+
+          return (
+            <Pressable
+              key={choice.id}
+              accessibilityRole="button"
+              disabled={locked}
+              onPress={() => selectChoice(choice)}
+              style={{ opacity: isUnselectedInCompleteState ? 0.4 : 1 }}
+              className={`min-h-[52px] justify-center rounded-[20px] border px-4 py-3 active:bg-cream-100 ${
+                isSelected
+                  ? "border-sage-400 bg-sage-50"
+                  : "border-cream-300 bg-white"
+              }`}
+            >
+              <Text
+                className={`font-medium text-[13.5px] leading-[19px] ${
+                  isSelected ? "text-forest-900" : "text-ink-primary"
+                }`}
+              >
+                {choice.label}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
 
-      {hasFlipped ? (
-        <View className="mt-3 rounded-[22px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] p-4">
-          <Text className="happy-font-heading-bold text-lg leading-[22px] text-[#3F4A31]">
+      {/* FINAL RULE */}
+      {isComplete ? (
+        <View className="mt-4 rounded-[22px] bg-[#f8fbf6] p-5">
+          <Text className="font-bold text-lg leading-6 text-forest-900 mb-2">
             {readString(content.rule)}
           </Text>
-          <Text className="happy-font-body mt-1.5 text-[13.5px] leading-5 text-[#3F4A31]">
+          <Text className="text-[14px] leading-[22px] text-forest-800">
             {readString(content.takeaway)}
           </Text>
         </View>
@@ -120,25 +165,23 @@ export function AssociationMeterCategoryEngine({
 
 function readChoices(value: unknown): AssociationChoice[] {
   if (!Array.isArray(value)) return [];
-  return value.flatMap((item) => {
+  return value.flatMap((item, index) => {
     const choice = readRecord(item);
     const label = readString(choice?.label);
-    const delta = readNumber(choice?.delta);
+    const targetPosition = readNumber(choice?.targetPosition);
     const caption = readString(choice?.caption);
-    return label && delta !== null && caption
-      ? [{ label, delta, caption }]
+    const completesExercise = choice?.completesExercise === true;
+    const id = readString(choice?.id) ?? `choice-${index}`;
+    return label && targetPosition !== null && caption
+      ? [
+          {
+            id,
+            label,
+            targetPosition,
+            caption,
+            completesExercise: !!completesExercise,
+          },
+        ]
       : [];
   });
-}
-
-function createResponse(extra: Record<string, unknown> = {}) {
-  return {
-    format: CourseExerciseCategoryEnum.AssociationMeter,
-    phase: "association",
-    position: 50,
-    caption: null,
-    hasFlipped: false,
-    isCorrect: true,
-    ...extra,
-  };
 }

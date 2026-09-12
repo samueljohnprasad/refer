@@ -1746,27 +1746,34 @@ WITH curriculum AS (
       "title": "What gets the final vote?",
       "instruction": "Try different ways of reading the alarm.",
       "leftLabel": "FEELING AS PROOF",
-      "rightLabel": "FEELING PLUS EVIDENCE",
+      "rightLabel": "CHECK THE WHOLE PICTURE",
       "initialCaption": "The alarm is loud. The conclusion is still open.",
+      "initialPosition": 50,
       "choices": [
         {
+          "id": "feeling_as_proof",
           "label": "Treat 9 out of 10 anxiety as 9 out of 10 danger",
-          "delta": -20,
-          "caption": "Intensity has replaced evidence."
+          "targetPosition": 12,
+          "caption": "The feeling has become the evidence.",
+          "completesExercise": false
         },
         {
-          "label": "Rate the feeling, then list what is happening now",
-          "delta": 25,
-          "caption": "The feeling and the facts have separate places."
+          "id": "confirmation_bias",
+          "label": "Look only for facts that support the alarm",
+          "targetPosition": 38,
+          "caption": "You’re checking evidence, but only the evidence that agrees with the alarm.",
+          "completesExercise": false
         },
         {
-          "label": "Compare the prediction with past safe outcomes",
-          "delta": 20,
-          "caption": "Past outcomes add evidence without denying the feeling."
+          "id": "balanced_evidence",
+          "label": "Check what supports the alarm — and what doesn’t",
+          "targetPosition": 88,
+          "caption": "Now the conclusion comes from the whole situation, not the feeling alone.",
+          "completesExercise": true
         }
       ],
-      "rule": "Alarm intensity and danger probability are different measures.",
-      "takeaway": "A strong feeling deserves support. A conclusion about danger needs evidence from the situation."
+      "rule": "Alarm intensity ≠ danger probability.",
+      "takeaway": "A strong feeling deserves support. A conclusion about danger needs evidence from the whole situation."
     }
   },
   {
