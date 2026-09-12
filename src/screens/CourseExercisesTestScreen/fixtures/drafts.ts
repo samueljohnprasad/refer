@@ -9,22 +9,23 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
     isScored: false,
     content: {
       title: "Recognizing Common Traps",
-      instruction: "See why the trap feels helpful — then learn the counter move.",
+      instruction:
+        "See why the trap feels helpful — then learn the counter move.",
       trapTitle: "The Perfection Trap",
       trapBody: "If it isn’t perfect, it feels like failure.",
       shortTermPayoff: "High standards can feel protective.",
       hiddenCost: [
         "more checking",
         "more pressure",
-        "small details feel high-stakes"
+        "small details feel high-stakes",
       ],
       counterMove: {
         body: [
           "Set a stopping point before you start.",
-          "When the timer ends, stop checking — even if it still feels unfinished."
-        ]
-      }
-    }
+          "When the timer ends, stop checking — even if it still feels unfinished.",
+        ],
+      },
+    },
   },
   {
     id: "fixture-curiosity-bet",
@@ -39,11 +40,12 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       options: [
         { id: "bet-10", label: "10%" },
         { id: "bet-30", label: "30%" },
-        { id: "bet-50", label: "50%" }
+        { id: "bet-50", label: "50%" },
       ],
-      answer: "Studies show that about 30% of adults experience insomnia symptoms.",
-      bestAnswerIndex: 1
-    }
+      answer:
+        "Studies show that about 30% of adults experience insomnia symptoms.",
+      bestAnswerIndex: 1,
+    },
   },
   {
     id: "fixture-explorable-model",
@@ -54,14 +56,16 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
     content: {
       title: "Help Maya’s alarm settle",
       instruction: "Test one lever, then notice the bedtime change.",
-      setup: "Maya carries a demanding workday into bedtime, where her alarm is still trying to protect her.",
+      setup:
+        "Maya carries a demanding workday into bedtime, where her alarm is still trying to protect her.",
       model: "maya_alarm",
-      chartAccessibilityLabel: "Line chart of Maya’s alarm level from 7am to 1am",
+      chartAccessibilityLabel:
+        "Line chart of Maya’s alarm level from 7am to 1am",
       initialValues: {
         stress: 80,
-        relaxation: 20
-      }
-    }
+        relaxation: 20,
+      },
+    },
   },
   {
     id: "fixture-guess-reveal",
@@ -73,8 +77,8 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       title: "Guess the Stat",
       instruction: "Make your best guess.",
       prompt: "Out of 10 people, how many will experience a panic attack?",
-      actual: 3
-    }
+      actual: 3,
+    },
   },
   {
     id: "fixture-faded-thought-record",
@@ -89,7 +93,7 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
         { id: "record-situation", label: "Situation" },
         { id: "record-hot-thought", label: "Hot thought" },
         { id: "record-evidence", label: "Evidence" },
-        { id: "record-balanced-thought", label: "Balanced thought" }
+        { id: "record-balanced-thought", label: "Balanced thought" },
       ],
       examples: [
         {
@@ -97,9 +101,18 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
           label: "Watch one field",
           context: "A manager asks Jordan to revisit one slide.",
           prefills: [
-            { fieldId: "record-situation", value: "A manager asks to revisit one slide." },
-            { fieldId: "record-hot-thought", value: "I ruined the whole presentation." },
-            { fieldId: "record-evidence", value: "Only one slide needs changes." }
+            {
+              fieldId: "record-situation",
+              value: "A manager asks to revisit one slide.",
+            },
+            {
+              fieldId: "record-hot-thought",
+              value: "I ruined the whole presentation.",
+            },
+            {
+              fieldId: "record-evidence",
+              value: "Only one slide needs changes.",
+            },
           ],
           tasks: [
             {
@@ -111,19 +124,78 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
                   id: "record-worked-supported",
                   label: "One slide needs work, not everything",
                   isSupported: true,
-                  feedback: "That keeps the concern in proportion to the evidence."
+                  feedback:
+                    "That keeps the concern in proportion to the evidence.",
                 },
                 {
                   id: "record-worked-unsupported",
                   label: "I will get fired",
                   isSupported: false,
-                  feedback: "This is a catastrophic leap."
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  }
+                  feedback: "This is a catastrophic leap.",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    id: "fixture-association-meter",
+    nodeId: "fixture-draft-node",
+    orderIndex: 5,
+    type: "association_meter",
+    isScored: false,
+    content: {
+      title: "Rate the Association",
+      instruction: "How strongly do you associate these?",
+      initialCaption: "Consider the link between these two items.",
+      choices: [
+        {
+          label: "Option A",
+          delta: -20,
+          caption: "That's a weak association.",
+        },
+        {
+          label: "Option B",
+          delta: 20,
+          caption: "That's a strong association.",
+        },
+      ],
+    },
+  },
+  {
+    id: "fixture-invent-first",
+    nodeId: "fixture-draft-node",
+    orderIndex: 6,
+    type: "invent_first",
+    isScored: false,
+    content: {
+      title: "Invent the Outcome",
+      instruction: "Review the case and predict what happens next.",
+      cases: [
+        {
+          id: "case-1",
+          name: "Alex",
+          reading: "Alex feels anxious before the meeting.",
+          outcome: "Alex decides to skip the meeting.",
+          isCalm: false,
+        },
+      ],
+      options: [
+        {
+          id: "opt-1",
+          label: "They face the fear",
+          isCorrect: false,
+          feedback: "Avoiding actually reinforced the fear.",
+        },
+        {
+          id: "opt-2",
+          label: "The fear grows stronger",
+          isCorrect: true,
+          feedback: "Correct! Avoidance reinforces anxiety.",
+        },
+      ],
+    },
+  },
 ];
