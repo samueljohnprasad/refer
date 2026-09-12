@@ -1,6 +1,6 @@
 import { ColorValue } from "react-native";
 import { NodeType, NodeState } from "@/src/types/journey";
-import { SAGE } from "@/src/theme/palette";
+import { SAGE, NEUTRAL } from "@/src/theme/palette";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
 export interface NodeViewModel {
@@ -45,9 +45,9 @@ export function useNodeViewModel(
   // 2. Determine state colors and indicator
   switch (state) {
     case NodeState.LOCKED:
-      faceColor = SAGE[100];
-      rimColor = SAGE[200];
-      iconColor = SAGE[400];
+      faceColor = NEUTRAL.border; // #e5e5e5
+      rimColor = "#d4d4d4"; // deeper neutral for the 3D rim
+      iconColor = NEUTRAL.inkMuted; // #afafaf
       isInteractive = true;
       indicator = "lock";
       break;
