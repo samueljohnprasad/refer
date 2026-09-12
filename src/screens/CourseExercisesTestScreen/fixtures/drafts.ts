@@ -296,7 +296,8 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
           id: "l1",
           label: "Preparation",
           remainingPercent: 30,
-          explanation: "Less uncertainty can make the situation easier to enter.",
+          explanation:
+            "Less uncertainty can make the situation easier to enter.",
           tone: "olive",
         },
         {
@@ -351,6 +352,86 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       feedback:
         "What helps right now is not always what helps later.\n\nAvoidance can bring quick relief while keeping fear strong.\nExposure can feel harder now while creating room to learn.\nReappraisal changes the meaning you give the situation.",
       capability: "Long-term thinking",
+    },
+  },
+
+  {
+    id: "fixture-name-it",
+    nodeId: "fixture-draft-node",
+    orderIndex: 10,
+    type: "name_it",
+    isScored: false,
+    content: {
+      families: [
+        {
+          name: "Fear",
+          words: [
+            { word: "Anxious", description: "Worrying about the future" },
+            { word: "Terrified", description: "Overwhelming dread" },
+            {
+              word: "Insecure",
+              description: "Uncertain or anxious about oneself",
+            },
+          ],
+        },
+        {
+          name: "Anger",
+          words: [
+            { word: "Frustrated", description: "Feeling blocked from a goal" },
+            {
+              word: "Resentful",
+              description: "Bitter about being treated unfairly",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    id: "fixture-panic-wave",
+    nodeId: "fixture-draft-node",
+    orderIndex: 11,
+    type: "panic_wave_commit",
+    isScored: false,
+    content: {
+      title: "The panic wave: commit your guess",
+      instruction: "How long does a panic attack typically peak?",
+      rule: "The wave breaks faster than you think.",
+      safetyNote: "If it feels longer, it's often a series of smaller waves.",
+      neverGuess: "No panic wave lasts that long. Your body can't sustain it.",
+      shortGuess:
+        "A bit too short. The adrenaline takes a bit more time to cycle.",
+      closeGuess: "Exactly. The peak is usually under 10 minutes.",
+      longGuess:
+        "It feels like forever, but the biological peak is much faster.",
+    },
+  },
+  {
+    id: "fixture-situation-language",
+    nodeId: "fixture-draft-node",
+    orderIndex: 12,
+    type: "situation_language",
+    isScored: false,
+    content: {
+      title: "Same day. Two sentences.",
+      instruction: "Flip each switch to see the difference.",
+      rule: "Separate the person from the problem.",
+      takeaway:
+        "Notice how changing one word creates space between you and the feeling.",
+      cards: [
+        {
+          identityText: "I am a failure.",
+          situationText: "I failed at this task.",
+          identityWhy: "Defines who you are.",
+          situationWhy: "Describes a specific event.",
+        },
+        {
+          identityText: "I am an anxious person.",
+          situationText: "I am feeling anxious right now.",
+          identityWhy: "Makes it a permanent trait.",
+          situationWhy: "Makes it a temporary state.",
+        },
+      ],
     },
   },
 ] as unknown as Exercise[];
