@@ -147,19 +147,26 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
     type: "association_meter",
     isScored: false,
     content: {
-      title: "Rate the Association",
-      instruction: "How strongly do you associate these?",
-      initialCaption: "Consider the link between these two items.",
+      title: "What gets the final vote?",
+      instruction: "Try different ways of reading the alarm.",
+      leftLabel: "FEELING AS PROOF",
+      rightLabel: "FEELING PLUS EVIDENCE",
+      initialCaption: "The alarm is loud. The conclusion is still open.",
       choices: [
         {
-          label: "Option A",
+          label: "Treat 9 out of 10 anxiety as 9 out of 10 danger",
           delta: -20,
-          caption: "That's a weak association.",
+          caption: "Intensity has replaced evidence.",
         },
         {
-          label: "Option B",
+          label: "Look for facts matching the alarm",
           delta: 20,
-          caption: "That's a strong association.",
+          caption: "Looking for evidence, but with a bias.",
+        },
+        {
+          label: "Look for facts proving the alarm wrong",
+          delta: 30,
+          caption: "Looking for evidence, but with a bias against the alarm.",
         },
       ],
     },
