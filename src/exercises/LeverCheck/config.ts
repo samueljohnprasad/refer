@@ -26,7 +26,7 @@ export const LeverCheckConfig: CourseExerciseCategoryConfig = {
       if (pulledCount >= totalLevers) {
         return "Continue";
       }
-      return totalLevers === 2 ? "Pull both levers" : "Pull all levers";
+      return null;
     },
     getPrimaryTransition: (exercise: Exercise, response: Record<string, unknown>) => {
       const levers = Array.isArray(exercise.content?.levers) ? exercise.content?.levers : [];
@@ -38,4 +38,15 @@ export const LeverCheckConfig: CourseExerciseCategoryConfig = {
       return null;
     },
   },
+  presentation: {
+    hidePrimary: (exercise: Exercise, response: Record<string, unknown>) => {
+      const levers = Array.isArray(exercise.content?.levers) ? exercise.content?.levers : [];
+      const totalLevers = levers.length > 0 ? levers.length : 2;
+      const pulledCount = readStringArray(response?.pulledLeverIds).length;
+      return pulledCount < totalLevers;
+    },
+    hideSkip: (exercise: Exercise, response: Record<string, unknown>) => {
+      return readStringArray(response?.pulledLeverIds).length > 0;
+    }
+  }
 };

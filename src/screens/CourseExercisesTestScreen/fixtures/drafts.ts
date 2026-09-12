@@ -290,35 +290,34 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
     isScored: false,
     content: {
       title: "Identify the Levers",
-      instruction: "Pull the levers to see what affects the outcome.",
+      instruction: "Pull each lever to see which way it shifts alertness.",
       levers: [
         {
           id: "l1",
           label: "Preparation",
           remainingPercent: 30,
-          explanation: "Preparation reduces baseline anxiety.",
+          explanation: "Less uncertainty can make the situation easier to enter.",
           tone: "olive",
         },
         {
           id: "l2",
           label: "Deep Breathing",
           remainingPercent: 50,
-          explanation:
-            "Breathing activates the parasympathetic nervous system.",
+          explanation: "A slower breath can help the body settle.",
           tone: "olive",
         },
         {
           id: "l3",
           label: "Caffeine",
           remainingPercent: 90,
-          explanation: "Caffeine can increase physiological arousal.",
+          explanation: "Caffeine can keep the body more activated.",
           tone: "orange",
         },
       ],
-      rule: "Not all levers pull the same weight.",
+      rule: "THE IDEA",
       takeaway:
-        "Preparation and deep breathing pull the alarm down, while caffeine pushes it up. You have the power to choose which levers to pull.",
-      note: "Notice how small actions compound.",
+        "Different choices can push alertness in different directions.\n\nPreparation and slower breathing may help it settle.\nCaffeine can keep it more activated.",
+      note: "You may not control the whole system — but you can influence it.",
     },
   },
   {
