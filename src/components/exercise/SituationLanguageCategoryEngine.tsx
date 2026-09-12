@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Pressable, Text, View, AccessibilityInfo } from "react-native";
 import * as Haptics from "expo-haptics";
 import Animated, { FadeIn, useAnimatedStyle, withTiming } from "react-native-reanimated";
@@ -34,10 +34,14 @@ export function SituationLanguageCategoryEngine({
   const explored = readExplored(saved?.explored);
   
   const reduceMotion = useReducedMotion();
-  const allExplored = explored.length >= cards.length && explored.every((v) => v);
+  const previouslyCompleted = Boolean(saved?.isComplete);
+  const currentlyAllExplored = cards.length > 0 && cards.every((_, i) => Boolean(explored[i]));
+  const isComplete = previouslyCompleted || currentlyAllExplored;
 
   useEffect(() => {
-    if (!saved) onInteraction(createResponse(), false);
+    if (!saved) {
+      onInteraction(createResponse({ isComplete: false }), false);
+    }
   }, [onInteraction, saved]);
 
   const setMode = (cardIndex: number, mode: LanguageMode) => {
@@ -48,23 +52,34 @@ export function SituationLanguageCategoryEngine({
     nextModes[cardIndex] = mode;
     
     const nextExplored = [...explored];
-    while (nextExplored.length <= cardIndex) nextExplored.push(false);
+    while (nextExplored.length < cards.length) {
+      nextExplored.push(false);
+    }
     if (mode === "situation") {
       nextExplored[cardIndex] = true;
     }
     
     const card = cards[cardIndex];
-    if (mode === "situation") {
-      AccessibilityInfo.announceForAccessibility(`Experience selected. ${card.situationText}. ${card.situationWhy}`);
-    } else {
-      AccessibilityInfo.announceForAccessibility(`Identity selected. ${card.identityText}. ${card.identityWhy}`);
+    if (card) {
+      if (mode === "situation") {
+        AccessibilityInfo.announceForAccessibility(`Experience selected. ${card.situationText}.`);
+      } else {
+        AccessibilityInfo.announceForAccessibility(`Identity selected. ${card.identityText}.`);
+      }
     }
 
-    const nextAllExplored = nextExplored.length >= cards.length && nextExplored.every((v) => v);
+    const nextAllExplored = cards.length > 0 && cards.every((_, i) => Boolean(nextExplored[i]));
+    const nextIsComplete = previouslyCompleted || nextAllExplored;
 
     onInteraction(
-      createResponse({ ...saved, modes: nextModes, explored: nextExplored }),
-      nextAllExplored
+      createResponse({
+        ...saved,
+        hasInteracted: true,
+        modes: nextModes,
+        explored: nextExplored,
+        isComplete: nextIsComplete,
+      }),
+      nextIsComplete
     );
   };
 
@@ -75,8 +90,8 @@ export function SituationLanguageCategoryEngine({
         instruction={readString(content.instruction) ?? "Flip each sentence from identity to experience."}
       />
 
-      {/* gap-6 for generous space between the two cards */}
-      <View className="gap-8 mt-2">
+      {/* Cards list */}
+      <View className="gap-5 mt-3">
         {cards.map((card, index) => {
           const mode = modes[index] ?? "identity";
           const situation = mode === "situation";
@@ -93,16 +108,20 @@ export function SituationLanguageCategoryEngine({
         })}
       </View>
 
-      {allExplored ? (
+      {/* Final insight card */}
+      {isComplete ? (
         <Animated.View 
-          entering={reduceMotion ? undefined : FadeIn.duration(400)}
-          className="mt-8 rounded-[20px] bg-sage-50 px-5 py-5 border border-sage-100"
+          entering={reduceMotion ? undefined : FadeIn.delay(200).duration(350)}
+          className="mt-6 rounded-[20px] bg-[#F5F8F4] px-5 py-4 border border-[#D8E2D5]"
+          accessible
+          accessibilityRole="summary"
         >
-          <Text className="text-[12px] font-bold tracking-widest text-sage-600 mb-2 uppercase">
+          <Text className="text-[12px] font-bold tracking-widest text-sage-600 mb-1.5 uppercase">
             {readString(content.rule) ?? "THE SHIFT"}
           </Text>
           <Text className="text-[15px] leading-[22px] text-ink">
-            {readString(content.takeaway)}
+            {readString(content.takeaway) ??
+              "A setback or feeling can describe a moment without defining who you are.\n\nDescribe what’s happening without turning it into who you are."}
           </Text>
         </Animated.View>
       ) : null}
@@ -110,29 +129,46 @@ export function SituationLanguageCategoryEngine({
   );
 }
 
-function CardItem({ card, situation, reduceMotion, onSelectIdentity, onSelectSituation }: any) {
+function CardItem({
+  card,
+  situation,
+  reduceMotion,
+  onSelectIdentity,
+  onSelectSituation,
+}: {
+  card: LanguageCard;
+  situation: boolean;
+  reduceMotion: boolean;
+  onSelectIdentity: () => void;
+  onSelectSituation: () => void;
+}) {
   const identityOp = useAnimatedStyle(() => ({
-    opacity: reduceMotion ? (situation ? 0 : 1) : withTiming(situation ? 0 : 1, { duration: 200 })
+    opacity: reduceMotion ? (situation ? 0 : 1) : withTiming(situation ? 0 : 1, { duration: 180 }),
   }));
   const situationOp = useAnimatedStyle(() => ({
-    opacity: reduceMotion ? (situation ? 1 : 0) : withTiming(situation ? 1 : 0, { duration: 200 })
+    opacity: reduceMotion ? (situation ? 1 : 0) : withTiming(situation ? 1 : 0, { duration: 180 }),
   }));
 
   return (
-    <View className="rounded-[20px] bg-cream-50 px-5 py-5 border border-cream-200">
-      {/* Sentence: 24-28pt gap to switch */}
-      <View className="mb-6 min-h-[44px] justify-center items-center relative">
-         <Animated.Text className="absolute text-center happy-font-heading-bold text-[17px] leading-[22px] text-ink" style={identityOp}>
-           {card.identityText}
-         </Animated.Text>
-         <Animated.Text className="absolute text-center happy-font-heading-bold text-[17px] leading-[22px] text-ink" style={situationOp}>
-           {card.situationText}
-         </Animated.Text>
+    <View className="rounded-[22px] bg-[#FAFAF8] px-5 py-4 border border-[#E2E8DF]">
+      {/* Sentence: ~24px gap to switch */}
+      <View className="mb-6 min-h-[38px] justify-center items-center relative">
+        <Animated.Text
+          className="absolute text-center happy-font-heading-bold text-[17px] leading-[22px] text-ink"
+          style={identityOp}
+        >
+          {card.identityText}
+        </Animated.Text>
+        <Animated.Text
+          className="absolute text-center happy-font-heading-bold text-[17px] leading-[22px] text-ink"
+          style={situationOp}
+        >
+          {card.situationText}
+        </Animated.Text>
       </View>
 
-      {/* Switch */}
-      <View className="flex-row rounded-full bg-white p-1 border border-cream-200 relative mb-4">
-        {/* Animated background */}
+      {/* Segmented Switch: ~20px gap to caption */}
+      <View className="flex-row rounded-full bg-[#F5F4F0] p-1 border border-[#E2E8DF] relative mb-5">
         <AnimatedBackground situation={situation} reduceMotion={reduceMotion} />
         
         <Pressable
@@ -142,7 +178,7 @@ function CardItem({ card, situation, reduceMotion, onSelectIdentity, onSelectSit
           onPress={onSelectIdentity}
           className="flex-1 min-h-[36px] justify-center items-center z-10"
         >
-          <Text className={`font-semibold text-[13px] tracking-wide ${!situation ? "text-ink" : "text-ink-soft"}`}>
+          <Text className={`font-semibold text-[12.5px] tracking-wider ${!situation ? "text-ink" : "text-[#8A8A85]"}`}>
             IDENTITY
           </Text>
         </Pressable>
@@ -154,18 +190,24 @@ function CardItem({ card, situation, reduceMotion, onSelectIdentity, onSelectSit
           onPress={onSelectSituation}
           className="flex-1 min-h-[36px] justify-center items-center z-10"
         >
-          <Text className={`font-semibold text-[13px] tracking-wide ${situation ? "text-white" : "text-ink-soft"}`}>
+          <Text className={`font-semibold text-[12.5px] tracking-wider ${situation ? "text-white" : "text-[#8A8A85]"}`}>
             EXPERIENCE
           </Text>
         </Pressable>
       </View>
 
       {/* Caption: one-line / two-line explanation */}
-      <View className="min-h-[40px] justify-center relative">
-        <Animated.Text className="absolute text-center w-full happy-font-body text-[14px] leading-[20px] text-ink-soft" style={identityOp}>
+      <View className="min-h-[36px] justify-center items-center relative">
+        <Animated.Text
+          className="absolute text-center w-full happy-font-body text-[13.5px] leading-[19px] text-[#6B6B6B]"
+          style={identityOp}
+        >
           {card.identityWhy}
         </Animated.Text>
-        <Animated.Text className="absolute text-center w-full happy-font-body text-[14px] leading-[20px] text-ink-soft" style={situationOp}>
+        <Animated.Text
+          className="absolute text-center w-full happy-font-body text-[13.5px] leading-[19px] text-[#6B6B6B]"
+          style={situationOp}
+        >
           {card.situationWhy}
         </Animated.Text>
       </View>
@@ -173,15 +215,21 @@ function CardItem({ card, situation, reduceMotion, onSelectIdentity, onSelectSit
   );
 }
 
-function AnimatedBackground({ situation, reduceMotion }: any) {
-  // brand sage: sage-600 is roughly #7E9874
-  // taupe: #D5CEC4 or #E4DDD3
+function AnimatedBackground({
+  situation,
+  reduceMotion,
+}: {
+  situation: boolean;
+  reduceMotion: boolean;
+}) {
   const style = useAnimatedStyle(() => {
     return {
-      left: reduceMotion ? (situation ? '50%' : '0%') : withTiming(situation ? '50%' : '0%', { duration: 200 }),
-      backgroundColor: reduceMotion 
-        ? (situation ? '#7E9874' : '#E6E2DA') 
-        : withTiming(situation ? '#7E9874' : '#E6E2DA', { duration: 200 }),
+      left: reduceMotion
+        ? situation ? "50%" : "0%"
+        : withTiming(situation ? "50%" : "0%", { duration: 180 }),
+      backgroundColor: reduceMotion
+        ? situation ? "#7E9874" : "#E4E0D8"
+        : withTiming(situation ? "#7E9874" : "#E4E0D8", { duration: 180 }),
     };
   });
   
@@ -214,7 +262,7 @@ function readModes(value: unknown): LanguageMode[] {
 
 function readExplored(value: unknown): boolean[] {
   if (!Array.isArray(value)) return [];
-  return value.map((item) => !!item);
+  return value.map((item) => Boolean(item));
 }
 
 function createResponse(extra: Record<string, unknown> = {}) {
@@ -223,6 +271,8 @@ function createResponse(extra: Record<string, unknown> = {}) {
     phase: "language",
     modes: [],
     explored: [],
+    hasInteracted: false,
+    isComplete: false,
     isCorrect: true,
     ...extra,
   };

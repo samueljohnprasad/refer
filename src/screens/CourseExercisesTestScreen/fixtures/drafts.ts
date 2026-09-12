@@ -415,9 +415,11 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
     content: {
       title: "Change the frame",
       instruction: "Flip each sentence from identity to experience.",
+      primaryLabel: "Continue",
+      successPrimaryLabel: "Continue",
       rule: "THE SHIFT",
       takeaway:
-        "A setback or feeling can describe a moment without defining who you are.\n\nName what is happening — not who you are.",
+        "A setback or feeling can describe a moment without defining who you are.\n\nDescribe what’s happening without turning it into who you are.",
       cards: [
         {
           identityText: "I am a failure.",
@@ -429,9 +431,232 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
           identityText: "I am an anxious person.",
           situationText: "I am feeling anxious right now.",
           identityWhy: "Turns a passing feeling into an identity.",
-          situationWhy: "Names what you’re feeling without turning it into who you are.",
+          situationWhy:
+            "Names what you’re feeling without turning it into who you are.",
         },
       ],
     },
   },
+  {
+    id: "fixture-socratic-dialogue",
+    nodeId: "fixture-draft-node",
+    orderIndex: 13,
+    type: "socratic_dialogue",
+    isScored: false,
+    content: {
+      category: "socratic_dialogue",
+      format: "socratic_dialogue",
+      title: "A 2am conversation",
+      instruction: "Choose the honest answer.",
+      supportTitle: "Why test your thoughts?",
+      supportBody:
+        "Socratic dialogue isn’t positive thinking or reassurance. It’s checking whether a catastrophic prediction has actual evidence behind it, or if it’s just the brain running a familiar alarm script.",
+      terminalNote:
+        "You tested the thought instead of obeying it. When you separate prediction from evidence, the alarm loses its grip.",
+      nodes: {
+        start: {
+          message:
+            "I woke up at 2am convinced tomorrow’s presentation will be a total disaster. My mind says everyone will see I’m incompetent.",
+          done: false,
+          support: false,
+          supportive: false,
+          options: [
+            {
+              label: "What specific evidence makes you certain?",
+              next: "evidence",
+              lead: "Let’s look at the facts.",
+            },
+            {
+              label: "Has a presentation ever gone okay before?",
+              next: "past_evidence",
+              lead: "Let’s check your track record.",
+            },
+          ],
+        },
+        evidence: {
+          message:
+            "Well, I haven’t memorized slide 14, and I stumbled once during rehearsal this afternoon.",
+          done: false,
+          support: false,
+          supportive: false,
+          options: [
+            {
+              label: "Does stumbling in rehearsal guarantee disaster on stage?",
+              next: "rehearsal_link",
+              lead: "Consider the link between rehearsal and reality.",
+            },
+            {
+              label: "What actually happens if you need to glance at notes?",
+              next: "worst_case",
+              lead: "Let’s look at the real stakes.",
+            },
+          ],
+        },
+        past_evidence: {
+          message:
+            "The last two went fine after the first few minutes. But this one feels way more dangerous.",
+          done: false,
+          support: false,
+          supportive: false,
+          options: [
+            {
+              label: "Does the feeling of danger prove actual danger?",
+              next: "feelings_signal",
+              lead: "Feelings are signals, not facts.",
+            },
+            {
+              label: "Did the previous ones also feel terrifying beforehand?",
+              next: "previous_patterns",
+              lead: "Check how you felt then vs how it went.",
+            },
+          ],
+        },
+        previous_patterns: {
+          message:
+            "Actually, yes. I lost sleep before both and expected the exact same humiliation.",
+          done: false,
+          support: false,
+          supportive: true,
+          options: [
+            {
+              label: "So the 2am alarm is a familiar script, not a new fact.",
+              next: "conclusion",
+              lead: "Notice the pattern.",
+            },
+          ],
+        },
+        feelings_signal: {
+          message:
+            "No... my alarm always fires when stakes feel high, whether there’s real danger or not.",
+          done: false,
+          support: false,
+          supportive: true,
+          options: [
+            {
+              label: "So the alarm is doing its job, but the prophecy is untested.",
+              next: "conclusion",
+              lead: "Separate signal from prophecy.",
+            },
+          ],
+        },
+        rehearsal_link: {
+          message:
+            "No. Almost everyone stumbles in rehearsal. It’s where you catch the rough spots.",
+          done: false,
+          support: false,
+          supportive: true,
+          options: [
+            {
+              label: "Stumbling is part of preparing, not proof of failure.",
+              next: "conclusion",
+              lead: "Reframe rehearsal.",
+            },
+          ],
+        },
+        worst_case: {
+          message:
+            "I’d pause for three seconds, check the slide, and keep talking. Nobody would judge that.",
+          done: false,
+          support: false,
+          supportive: true,
+          options: [
+            {
+              label: "A brief pause is normal human delivery, not incompetence.",
+              next: "conclusion",
+              lead: "Perspective resets the alarm.",
+            },
+          ],
+        },
+        conclusion: {
+          message:
+            "Looking at the actual evidence: the danger isn’t tomorrow. It’s treating my 2am panic as proof. I can park this worry until the morning.",
+          done: true,
+          support: false,
+          supportive: true,
+          options: [],
+        },
+      },
+    },
+  },
+  {
+    id: "fixture-story-serial",
+    nodeId: "fixture-draft-node",
+    orderIndex: 14,
+    type: "story_serial",
+    isScored: false,
+    content: {
+      category: "story_serial",
+      format: "story_serial",
+      title: "Walk both alarm paths",
+      instruction: "Choose one path, then rewind.",
+      episodeLabel: "ONE INVITE · TWO READINGS",
+      opening:
+        "Sam receives an unexpected 1-on-1 meeting invite from his manager with no agenda. His chest tightens and his immediate impulse is to call in sick.",
+      branches: [
+        {
+          choice: "Treat the alarm as proof",
+          label: "PROOF PATH",
+          beats: [
+            "Sam decides the meeting must mean bad news or criticism.",
+            "His body prepares as if the worst-case scenario is already taking place.",
+            "Cancelling brings immediate relief, but leaves the fear unchallenged and stronger for next time.",
+          ],
+        },
+        {
+          choice: "Separate alarm from evidence",
+          label: "MAP PATH",
+          beats: [
+            "Sam acknowledges the tight chest as natural body arousal.",
+            "He labels “I must be in trouble” as an unverified prediction, not a settled fact.",
+            "He shows up with curiosity, discovering the meeting was just a routine quarterly check-in.",
+          ],
+        },
+      ],
+      reflectionPrompt:
+        "What was the real turning point between the two paths?",
+      reflectionOptions: [
+        {
+          id: "alarm",
+          label: "The first path had much stronger anxiety sensations",
+          feedback:
+            "Both paths started with the exact same tight chest and adrenaline surge. The difference was what Sam did with the signal.",
+        },
+        {
+          id: "reading",
+          label: "The second path separated bodily alarm from assumed facts",
+          feedback:
+            "Exactly. The sensations were real, but Sam recognized that physical alarm does not equal real-world danger.",
+        },
+        {
+          id: "guarantee",
+          label: "The second path proved that managers never share bad news",
+          feedback:
+            "No outcome is ever guaranteed. The second path simply kept him grounded in what was actually known.",
+        },
+      ],
+      stamp: "ALARM MAP MASTERED",
+      hook: "Next: Recognize the alarm signal before avoidance takes the wheel.",
+    },
+  },
+  {
+    id: "fixture-surge-diagram",
+    nodeId: "fixture-draft-node",
+    orderIndex: 15,
+    type: "surge_diagram",
+    isScored: false,
+    content: {
+      category: "surge_diagram",
+      format: "surge_diagram",
+      title: "An alarm changes over time",
+      instruction: "Read the shape of a surge.",
+      diagramTitle: "Activation rises, peaks, and naturally falls",
+      peakLabel: "Strongest point (~10 min)",
+      fadeLabel: "Body resets naturally",
+      axisLabel: "Time passing",
+      explanation:
+        "An adrenaline surge feels endless in the moment, but the human body cannot sustain maximum arousal indefinitely. Without added catastrophic thoughts, the wave crests and subsides on its own.",
+      note: "The exact peak and duration vary, but every biological surge has a natural ceiling and descent.",
+    },
+  },
 ] as unknown as Exercise[];
+

@@ -14,17 +14,23 @@ export const SituationLanguageConfig: CourseExerciseCategoryConfig = {
   goalLabel: "Shift fixed identity language toward a changeable situation.",
   unavailableCopy: "This language exercise is not available yet.",
   interaction: {
-    submissionMode: "immediate",
+    completesDirectly: true,
     getPrimaryLabel: () => "Continue",
   },
   presentation: {
-    hideFooter: (exercise, response) => {
-      const explored = readArray(response.explored);
-      return explored.length < 2 || explored.some((v) => !v);
+    showsFeedbackInline: () => true,
+    hideFooter: (exercise: Exercise, response: Record<string, unknown> | null) => {
+      if (response?.isComplete) return false;
+      const explored = readArray(response?.explored);
+      const cards = Array.isArray(exercise?.content?.cards) ? exercise.content.cards : [];
+      const totalCards = cards.length > 0 ? cards.length : 2;
+      return explored.length < totalCards || explored.some((v) => !v);
     },
-    hideSkip: (exercise, response) => {
-      const explored = readArray(response.explored);
-      return explored.some((v) => !!v);
-    }
-  }
+    hideSkip: (exercise: Exercise, response: Record<string, unknown> | null) => {
+      if (response?.isComplete) return true;
+      const explored = readArray(response?.explored);
+      const hasInteracted = Boolean(response?.hasInteracted || explored.some(Boolean));
+      return hasInteracted;
+    },
+  },
 };
