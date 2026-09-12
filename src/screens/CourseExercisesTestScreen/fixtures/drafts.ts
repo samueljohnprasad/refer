@@ -244,4 +244,102 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       },
     },
   },
-];
+  ,
+  {
+    id: "fixture-lens-replay",
+    nodeId: "fixture-draft-node",
+    orderIndex: 7,
+    type: "lens_replay",
+    isScored: false,
+    content: {
+      title: "Replay the Scene",
+      instruction: "Tap the highlighted text to see what was really happening.",
+      segments: [
+        {
+          text: "When I walked into the room, ",
+        },
+        {
+          text: "everyone stopped talking.",
+          key: "lens1",
+          response:
+            "They were actually in the middle of a transition, not stopping because of you.",
+        },
+        {
+          text: " I knew immediately that ",
+        },
+        {
+          text: "they were talking about me.",
+          key: "lens2",
+          response: "They were discussing the previous meeting's agenda.",
+        },
+        {
+          text: " I quickly sat down and pretended to look at my phone.",
+        },
+      ],
+    },
+  },
+  {
+    id: "fixture-lever-check",
+    nodeId: "fixture-draft-node",
+    orderIndex: 8,
+    type: "lever_check",
+    isScored: false,
+    content: {
+      title: "Identify the Levers",
+      instruction: "Pull the levers to see what affects the outcome.",
+      levers: [
+        {
+          id: "l1",
+          label: "Preparation",
+          remainingPercent: 30,
+          explanation: "Preparation reduces baseline anxiety.",
+          tone: "olive",
+        },
+        {
+          id: "l2",
+          label: "Deep Breathing",
+          remainingPercent: 50,
+          explanation:
+            "Breathing activates the parasympathetic nervous system.",
+          tone: "olive",
+        },
+        {
+          id: "l3",
+          label: "Caffeine",
+          remainingPercent: 90,
+          explanation: "Caffeine can increase physiological arousal.",
+          tone: "orange",
+        },
+      ],
+    },
+  },
+  {
+    id: "fixture-lever-match",
+    nodeId: "fixture-draft-node",
+    orderIndex: 9,
+    type: "lever_match",
+    isScored: false,
+    content: {
+      title: "Match the Levers",
+      instruction: "Match each action to its consequence.",
+      pairs: [
+        {
+          id: "p1",
+          left: "Avoidance",
+          right: "Short-term relief, long-term anxiety",
+        },
+        {
+          id: "p2",
+          left: "Exposure",
+          right: "Short-term anxiety, long-term relief",
+        },
+        {
+          id: "p3",
+          left: "Reappraisal",
+          right: "Shift in emotional response",
+        },
+      ],
+      rightOrder: ["p2", "p3", "p1"],
+    },
+  },
+] as unknown as Exercise[];
