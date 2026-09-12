@@ -253,30 +253,33 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
     isScored: false,
     content: {
       title: "Replay the Scene",
-      instruction: "Tap the highlighted text to see what was really happening.",
+      instruction:
+        "Tap the highlighted parts to see what you noticed — and what your mind added.",
       segments: [
         {
-          text: "When I walked into the room, ",
+          text: "When I walked into the room,\n",
         },
         {
           text: "everyone stopped talking.",
-          key: "lens1",
+          label: "WHAT YOU NOTICED",
           response:
-            "They were actually in the middle of a transition, not stopping because of you.",
+            "Everyone stopped talking when you entered.\n\nThat is the observable part of the scene.",
         },
         {
-          text: " I knew immediately that ",
+          text: "\nI knew immediately that ",
         },
         {
           text: "they were talking about me.",
-          key: "lens2",
-          response: "They were discussing the previous meeting's agenda.",
+          label: "WHAT YOUR MIND ADDED",
+          response:
+            "You interpreted the silence as being about you.\n\nThat may be possible — but the scene does not prove it.",
         },
         {
-          text: " I quickly sat down and pretended to look at my phone.",
+          text: "\nI quickly sat down and pretended to look at my phone.",
         },
       ],
-      insight: "When we feel anxious, our brain often interprets neutral events as negative. Stepping back allows us to see alternate explanations.",
+      insight:
+        "An anxious mind can turn an ambiguous moment into certainty.\n\nPause at what you know, then leave room for other explanations.",
     },
   },
   {
@@ -313,7 +316,8 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
         },
       ],
       rule: "Not all levers pull the same weight.",
-      takeaway: "Preparation and deep breathing pull the alarm down, while caffeine pushes it up. You have the power to choose which levers to pull.",
+      takeaway:
+        "Preparation and deep breathing pull the alarm down, while caffeine pushes it up. You have the power to choose which levers to pull.",
       note: "Notice how small actions compound.",
     },
   },
@@ -346,7 +350,8 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       rightOrder: ["p2", "p3", "p1"],
       clue: "Look for the short-term vs long-term tradeoffs.",
       feedbackTitle: "Why it fits",
-      feedback: "Avoidance gives immediate relief but guarantees the anxiety will return stronger next time. Exposure is uncomfortable now but builds lasting confidence.",
+      feedback:
+        "Avoidance gives immediate relief but guarantees the anxiety will return stronger next time. Exposure is uncomfortable now but builds lasting confidence.",
       capability: "Long-term thinking",
     },
   },
