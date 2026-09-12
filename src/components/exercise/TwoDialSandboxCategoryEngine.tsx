@@ -1,8 +1,8 @@
-import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
-import React, { useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Text, View, AccessibilityInfo } from "react-native";
 import Slider from "@react-native-community/slider";
 import * as Haptics from "expo-haptics";
+import Animated, { FadeIn } from "react-native-reanimated";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
   readNumber,
@@ -10,41 +10,46 @@ import {
   readString,
   readStringArray,
 } from "@/src/components/exercise/courseExerciseContent";
-import { twoDialSandboxStyles as styles } from "@/src/components/exercise/twoDialSandboxStyles";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
+import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 
-interface DialPreset {
-  id: string;
-  label: string;
-  load: number;
-  recovery: number;
+type Quadrant = "HL" | "HH" | "LH" | "LL";
+
+interface StateOutcome {
+  id: Quadrant;
+  title: string;
+  body: string;
 }
 
-const OUTCOMES = {
+const ALL_QUADRANTS: Quadrant[] = ["HL", "HH", "LH", "LL"];
+
+const OUTCOMES: Record<Quadrant, StateOutcome> = {
   HL: {
-    title: "Running on fumes",
-    body: "High demand, thin refill. The alarm stops switching off between rounds. Tension rises by day; the body stays wired by night.",
-    warning: true,
+    id: "HL",
+    title: "Deadline crunch",
+    body: "High demand with little recovery can keep the system running hot.",
   },
   HH: {
-    title: "Stretched but steady",
-    body: "Big load, real recovery. Demanding weeks are survivable when the refill keeps pace. Stress is not the enemy; the missing refill is.",
-    warning: false,
-  },
-  LL: {
-    title: "Flat and stalled",
-    body: "Little asked, little refilled. This is the low-mood loop’s favorite weather. Empty days drain more quietly than hard ones.",
-    warning: true,
+    id: "HH",
+    title: "Steady rhythm",
+    body: "Demand is present, but recovery keeps replenishing capacity.",
   },
   LH: {
-    title: "Recharged",
-    body: "Light load, topped-up tank. This is what the system is steering you back toward after every hard stretch.",
-    warning: false,
+    id: "LH",
+    title: "Quiet recharge",
+    body: "Lower demand gives recovery room to rebuild.",
   },
-} as const;
+  LL: {
+    id: "LL",
+    title: "Stalled loop",
+    body: "Low demand with little recovery can leave the week feeling flat.",
+  },
+};
 
-type Quadrant = keyof typeof OUTCOMES;
+function getQuadrant(demand: number, recovery: number): Quadrant {
+  return `${demand >= 50 ? "H" : "L"}${recovery >= 50 ? "H" : "L"}` as Quadrant;
+}
 
 export function TwoDialSandboxCategoryEngine({
   exercise,
@@ -54,176 +59,255 @@ export function TwoDialSandboxCategoryEngine({
 }: V1CategoryEngineProps) {
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
-  const load = readNumber(saved?.load) ?? 80;
-  const recovery = readNumber(saved?.recovery) ?? 25;
-  const quadrant = getQuadrant(load, recovery);
-  const visited = readStringArray(saved?.visitedQuadrants);
-  const presets = readPresets(content.presets);
-  const outcome = OUTCOMES[quadrant];
+
+  const initialDemand = readNumber(saved?.demand ?? saved?.load) ?? 75;
+  const initialRecovery = readNumber(saved?.recovery) ?? 25;
+  const initialQuadrant = getQuadrant(initialDemand, initialRecovery);
+  const initialVisited = readStringArray(saved?.visitedQuadrants);
+  const startVisited = initialVisited.length > 0
+    ? initialVisited
+    : [initialQuadrant];
+  const isPreviouslyCompleted = Boolean(saved?.isComplete) || startVisited.length >= 4;
+
+  const [demand, setDemand] = useState(initialDemand);
+  const [recovery, setRecovery] = useState(initialRecovery);
+  const [visited, setVisited] = useState<string[]>(startVisited);
+  const [hasCompleted, setHasCompleted] = useState(isPreviouslyCompleted);
+
+  const prevQuadrantRef = useRef<Quadrant>(initialQuadrant);
+  const reduceMotion = useReducedMotion();
+
+  const currentQuadrant = getQuadrant(demand, recovery);
+  const outcome = OUTCOMES[currentQuadrant];
+  const isComplete = hasCompleted || visited.length >= 4;
 
   useEffect(() => {
     if (!saved) {
-      onInteraction(createResponse(80, 25, ["HL"]), true);
+      onInteraction(
+        createResponse(initialDemand, initialRecovery, [initialQuadrant], false, false),
+        false,
+      );
     }
   }, [onInteraction, saved]);
 
-  const updateDials = (nextLoad: number, nextRecovery: number) => {
+  const updateDials = (nextDemand: number, nextRecovery: number) => {
     if (locked) return;
-    const nextQuadrant = getQuadrant(nextLoad, nextRecovery);
+    setDemand(nextDemand);
+    setRecovery(nextRecovery);
+
+    const nextQuadrant = getQuadrant(nextDemand, nextRecovery);
+    let nextVisited = visited;
+
+    if (!visited.includes(nextQuadrant)) {
+      nextVisited = [...visited, nextQuadrant];
+      setVisited(nextVisited);
+      Haptics.selectionAsync();
+    } else if (nextQuadrant !== prevQuadrantRef.current) {
+      Haptics.selectionAsync();
+    }
+
+    if (nextQuadrant !== prevQuadrantRef.current) {
+      AccessibilityInfo.announceForAccessibility(
+        `${OUTCOMES[nextQuadrant].title}. ${OUTCOMES[nextQuadrant].body}`,
+      );
+    }
+    prevQuadrantRef.current = nextQuadrant;
+
+    const willBeComplete = hasCompleted || nextVisited.length >= 4;
+    if (!hasCompleted && nextVisited.length >= 4) {
+      setHasCompleted(true);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      AccessibilityInfo.announceForAccessibility(
+        "All four states discovered. The pattern: Demand alone doesn't decide how the week feels. Recovery changes what the same demand costs you.",
+      );
+    }
+
     onInteraction(
-      createResponse(
-        nextLoad,
-        nextRecovery,
-        Array.from(new Set([...visited, nextQuadrant])),
-      ),
-      true,
+      createResponse(nextDemand, nextRecovery, nextVisited, true, willBeComplete),
+      willBeComplete,
     );
   };
 
-  const applyPreset = (preset: DialPreset) => {
-    Haptics.selectionAsync();
-    updateDials(preset.load, preset.recovery);
-  };
-
   return (
-    <View style={styles.screenContent}>
+    <View className="px-5 pb-8 pt-0">
       <CourseExerciseHeading
-        title={readString(content.title) ?? "Two dials decide your week"}
-        instruction={readString(content.instruction) ?? "Twist both dials."}
+        title={readString(content.title) ?? "Two dials shape your week"}
+        instruction={
+          readString(content.instruction) ??
+          "Adjust demand and recovery to see how the system reacts."
+        }
       />
-      <View style={styles.modelCard}>
+
+      {/* Interactive System Card */}
+      <View className="mt-3 rounded-[24px] bg-[#FAFAF8] px-5 py-5 border border-[#E2E8DF]">
+        {/* Demand Dial */}
         <DialControl
-          title="Load"
-          caption="what the week demands"
+          title="DEMAND"
           low="quiet"
           high="everything at once"
-          value={load}
-          color={SEMANTIC_COLORS.brand.primary}
+          value={demand}
           disabled={locked}
-          onChange={(value) => updateDials(value, recovery)}
+          onChange={(val) => updateDials(val, recovery)}
         />
+
+        <View className="h-4" />
+
+        {/* Recovery Dial */}
         <DialControl
-          title="Recovery"
-          caption="sleep, breaks, people"
+          title="RECOVERY"
           low="running dry"
           high="topped up"
           value={recovery}
-          color={SEMANTIC_COLORS.brand.primary}
           disabled={locked}
-          onChange={(value) => updateDials(load, value)}
+          onChange={(val) => updateDials(demand, val)}
         />
-        <View style={styles.outcomeRow}>
-          <View style={styles.tank}>
-            <View style={[styles.tankFill, { height: `${recovery}%` }]} />
-          </View>
-          <View
-            style={[
-              styles.outcome,
-              outcome.warning ? styles.warning : styles.steady,
-            ]}
+
+        {/* Current State Output Card */}
+        <View className="mt-5 rounded-[20px] bg-[#F4F2ED] px-4 py-3.5 border border-[#E6E1D7]">
+          <Text className="text-[11px] font-bold tracking-widest text-[#8A8A85] uppercase mb-1">
+            CURRENT STATE
+          </Text>
+          <Animated.View
+            key={currentQuadrant}
+            entering={reduceMotion ? undefined : FadeIn.duration(200)}
           >
-            <Text style={styles.outcomeTitle}>{outcome.title}</Text>
-            <Text style={styles.outcomeBody}>{outcome.body}</Text>
-          </View>
+            <Text className="happy-font-heading-bold text-[16px] text-ink mb-1">
+              {outcome.title}
+            </Text>
+            <Text className="happy-font-body text-[13.5px] leading-[19px] text-[#5C5955]">
+              {outcome.body}
+            </Text>
+          </Animated.View>
         </View>
       </View>
-      <View style={styles.presets}>
-        {presets.map((preset) => (
-          <Pressable
-            key={preset.id}
-            accessibilityRole="button"
-            disabled={locked}
-            onPress={() => applyPreset(preset)}
-            style={({ pressed }) => [styles.preset, pressed && styles.pressed]}
-          >
-            <Text style={styles.presetLabel}>{preset.label}</Text>
-          </Pressable>
-        ))}
+
+      {/* States Discovered Progress Area */}
+      <View className="mt-4 px-1">
+        <View className="flex-row justify-between items-center mb-2.5">
+          <Text className="text-[11px] font-bold tracking-widest text-[#8A8A85] uppercase">
+            STATES DISCOVERED
+          </Text>
+          <Text className="text-[12px] font-bold text-ink-soft">
+            {visited.length} of 4
+          </Text>
+        </View>
+
+        <View className="flex-row flex-wrap justify-between gap-y-2">
+          {ALL_QUADRANTS.map((quad) => {
+            const item = OUTCOMES[quad];
+            const isDiscovered = visited.includes(quad);
+            const isCurrent = currentQuadrant === quad;
+
+            return (
+              <View
+                key={quad}
+                className="flex-row items-center w-[48%]"
+              >
+                <Text
+                  className={`text-[13px] font-bold mr-2 ${
+                    isDiscovered ? "text-[#5F7F58]" : "text-[#B8B2A7]"
+                  }`}
+                >
+                  {isDiscovered ? "✓" : "○"}
+                </Text>
+                <Text
+                  className={`text-[13px] ${
+                    isCurrent
+                      ? "happy-font-body-bold text-ink"
+                      : isDiscovered
+                        ? "happy-font-body-medium text-ink-soft"
+                        : "happy-font-body text-[#8A8A85]"
+                  }`}
+                  numberOfLines={1}
+                >
+                  {item.title}
+                </Text>
+              </View>
+            );
+          })}
+        </View>
       </View>
-      <Text style={styles.meta}>
-        {visited.length >= 4
-          ? "All four states found, including the trap."
-          : `${visited.length} of 4 states found. Keep twisting.`}
-      </Text>
+
+      {/* Final Insight Card - Revealed on 4/4 */}
+      {isComplete ? (
+        <Animated.View
+          entering={reduceMotion ? undefined : FadeIn.delay(180).duration(350)}
+          className="mt-5 rounded-[20px] bg-[#F5F8F4] px-5 py-4 border border-[#D8E2D5]"
+          accessible
+          accessibilityRole="summary"
+        >
+          <Text className="text-[12px] font-bold tracking-widest text-sage-600 mb-1.5 uppercase">
+            {readString(content.rule) ?? "THE PATTERN"}
+          </Text>
+          <Text className="text-[15px] leading-[22px] text-ink">
+            {readString(content.takeaway) ??
+              "Demand alone doesn’t decide how the week feels.\n\nRecovery changes what the same demand costs you."}
+          </Text>
+        </Animated.View>
+      ) : null}
     </View>
   );
 }
 
 function DialControl({
   title,
-  caption,
   low,
   high,
   value,
-  color,
   disabled,
   onChange,
 }: {
   title: string;
-  caption: string;
   low: string;
   high: string;
   value: number;
-  color: string;
   disabled: boolean;
   onChange: (value: number) => void;
 }) {
   return (
-    <View style={styles.dial}>
-      <View style={styles.dialHeading}>
-        <Text style={styles.dialTitle}>{title}</Text>
-        <Text style={styles.dialCaption}>{caption}</Text>
-      </View>
+    <View>
+      <Text className="text-[12px] font-bold tracking-wider text-ink uppercase mb-0.5">
+        {title}
+      </Text>
       <Slider
-        accessibilityLabel={`${title}, 0 to 100`}
+        accessibilityRole="adjustable"
+        accessibilityLabel={`${title} dial`}
+        accessibilityValue={{ text: value >= 50 ? `High ${title.toLowerCase()}` : `Low ${title.toLowerCase()}` }}
         disabled={disabled}
         minimumValue={0}
         maximumValue={100}
         step={1}
         value={value}
-        minimumTrackTintColor={color}
-        maximumTrackTintColor={SEMANTIC_COLORS.border.default}
-        thumbTintColor={color}
+        minimumTrackTintColor="#5F7F58"
+        maximumTrackTintColor="#E2DDD5"
+        thumbTintColor="#5F7F58"
         onValueChange={onChange}
-        style={styles.slider}
+        style={{ width: "100%", height: 38 }}
       />
-      <View style={styles.rangeLabels}>
-        <Text style={styles.rangeLabel}>{low}</Text>
-        <Text style={styles.rangeLabel}>{high}</Text>
+      <View className="flex-row justify-between px-0.5">
+        <Text className="happy-font-body text-[11px] text-[#8A8A85]">{low}</Text>
+        <Text className="happy-font-body text-[11px] text-[#8A8A85]">{high}</Text>
       </View>
     </View>
   );
 }
 
 function createResponse(
-  load: number,
+  demand: number,
   recovery: number,
   visitedQuadrants: string[],
+  hasInteracted: boolean,
+  isComplete: boolean,
 ) {
   return {
     format: CourseExerciseCategoryEnum.TwoDialSandbox,
     phase: "sandbox",
-    load,
+    demand,
+    load: demand, // compatibility with legacy
     recovery,
     visitedQuadrants,
+    hasInteracted,
+    isComplete,
     isCorrect: true,
   };
-}
-
-function getQuadrant(load: number, recovery: number): Quadrant {
-  return `${load >= 50 ? "H" : "L"}${recovery >= 50 ? "H" : "L"}` as Quadrant;
-}
-
-function readPresets(value: unknown): DialPreset[] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((item) => {
-    const preset = readRecord(item);
-    const id = readString(preset?.id);
-    const label = readString(preset?.label);
-    const load = readNumber(preset?.load);
-    const recovery = readNumber(preset?.recovery);
-    return id && label && load != null && recovery != null
-      ? [{ id, label, load, recovery }]
-      : [];
-  });
 }
