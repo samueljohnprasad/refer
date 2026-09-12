@@ -15,13 +15,16 @@ export const SituationLanguageConfig: CourseExerciseCategoryConfig = {
   unavailableCopy: "This language exercise is not available yet.",
   interaction: {
     submissionMode: "immediate",
-    getPrimaryLabel: (
-      exercise: Exercise,
-      response: Record<string, unknown>,
-    ): string => {
-      return readArray(response.modes)[1] === "situation"
-        ? "Continue"
-        : "Flip the second one yourself";
-    },
+    getPrimaryLabel: () => "Continue",
   },
+  presentation: {
+    hideFooter: (exercise, response) => {
+      const explored = readArray(response.explored);
+      return explored.length < 2 || explored.some((v) => !v);
+    },
+    hideSkip: (exercise, response) => {
+      const explored = readArray(response.explored);
+      return explored.some((v) => !!v);
+    }
+  }
 };

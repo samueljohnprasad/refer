@@ -350,7 +350,7 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       clue: "Hint: Look at what happens now — and what happens later.",
       feedbackTitle: "THE PATTERN",
       feedback:
-        "What helps right now is not always what helps later.\n\nAvoidance can bring quick relief while keeping fear strong.\nExposure can feel harder now while creating room to learn.\nReappraisal changes the meaning you give the situation.",
+        "What helps now is not always what helps later.\n\nAvoidance can bring quick relief while keeping fear strong.\nExposure can feel harder now while creating new learning.\nReappraisal can change how you interpret the situation.",
       capability: "Long-term thinking",
     },
   },
@@ -366,11 +366,11 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
         {
           name: "Fear",
           words: [
-            { word: "Anxious", description: "Worrying about the future" },
-            { word: "Terrified", description: "Overwhelming dread" },
+            { word: "Anxious", description: "Worried about what might happen" },
+            { word: "Afraid", description: "Feeling threatened or unsafe" },
             {
-              word: "Insecure",
-              description: "Uncertain or anxious about oneself",
+              word: "Terrified",
+              description: "Overwhelming, intense fear",
             },
           ],
         },
@@ -413,23 +413,23 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
     type: "situation_language",
     isScored: false,
     content: {
-      title: "Same day. Two sentences.",
-      instruction: "Flip each switch to see the difference.",
-      rule: "Separate the person from the problem.",
+      title: "Change the frame",
+      instruction: "Flip each sentence from identity to experience.",
+      rule: "THE SHIFT",
       takeaway:
-        "Notice how changing one word creates space between you and the feeling.",
+        "A setback or feeling can describe a moment without defining who you are.\n\nName what is happening — not who you are.",
       cards: [
         {
           identityText: "I am a failure.",
           situationText: "I failed at this task.",
-          identityWhy: "Defines who you are.",
-          situationWhy: "Describes a specific event.",
+          identityWhy: "Turns one setback into a statement about who you are.",
+          situationWhy: "Describes what happened without defining the whole person.",
         },
         {
           identityText: "I am an anxious person.",
           situationText: "I am feeling anxious right now.",
-          identityWhy: "Makes it a permanent trait.",
-          situationWhy: "Makes it a temporary state.",
+          identityWhy: "Turns a passing feeling into an identity.",
+          situationWhy: "Names what you’re feeling without turning it into who you are.",
         },
       ],
     },
