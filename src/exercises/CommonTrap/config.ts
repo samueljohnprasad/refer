@@ -12,10 +12,22 @@ export const CommonTrapConfig: CourseExerciseCategoryConfig = {
   presentation: {
     hideSkip: (_exercise, response) => Boolean(response?.phase && response.phase !== "trap"),
   },
-  interaction: {
+    interaction: {
     submissionMode: "explicit",
     completesDirectly: true,
-    getPrimaryLabel: () => "Continue",
-    getPrimaryTransition: () => null,
+    getPrimaryLabel: (_exercise, response) => {
+      const phase = (response?.phase as string) || "trap";
+      if (phase === "trap") return "AND THEN WHAT HAPPENS?";
+      if (phase === "payoff") return "SEE WHAT IT TURNS INTO";
+      if (phase === "cost") return "WHAT CAN I DO INSTEAD?";
+      return "CONTINUE";
+    },
+    getPrimaryTransition: (_exercise, response) => {
+      const phase = (response?.phase as string) || "trap";
+      if (phase === "trap") return { kind: "response", ready: true, response: { ...response, phase: "payoff" } };
+      if (phase === "payoff") return { kind: "response", ready: true, response: { ...response, phase: "cost" } };
+      if (phase === "cost") return { kind: "response", ready: true, response: { ...response, phase: "complete" } };
+      return null;
+    },
   },
 };
