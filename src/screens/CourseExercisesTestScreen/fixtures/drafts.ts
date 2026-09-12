@@ -194,37 +194,54 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       instruction: "Review the case and predict what happens next.",
       cases: [
         {
-          id: "case-1",
+          id: "nia",
           name: "Nia",
-          reading: "says, “No reply means I offended her.”",
-          outcome: "one meaning",
-          isCalm: false,
+          text: "says, “No reply means I offended her.”",
+          label: "one meaning",
         },
         {
-          id: "case-2",
+          id: "sam",
           name: "Sam",
-          reading: "says, “Maybe she is busy, or maybe I offended her.”",
-          outcome: "multiple meanings",
-          isCalm: true,
+          text: "says, “Maybe she is busy, or maybe I offended her.”",
+          label: "multiple meanings",
         },
       ],
+      question: "What is Nia more likely to do next?",
       options: [
         {
-          id: "opt-1",
-          label: "They face the fear",
-          isCorrect: false,
-          feedback: "Avoiding actually reinforced the fear.",
+          id: "avoid",
+          label: "Avoid the situation",
         },
         {
-          id: "opt-2",
-          label: "The fear grows stronger",
-          isCorrect: true,
-          feedback: "Correct! Avoidance reinforces anxiety.",
+          id: "check_reality",
+          label: "Check what actually happened",
         },
       ],
-      rule: "Avoidance is a trap.",
-      body: "When you avoid something, you temporarily reduce anxiety, but you teach your brain that the thing was truly dangerous.",
-      next: "Let’s look at how to break this loop.",
+      feedbackMap: {
+        avoid: {
+          title: "Why that fits",
+          body: "If Nia treats one interpretation as certain, the situation feels more threatening.",
+          chain: [
+            "one meaning",
+            "threat feels certain",
+            "avoidance feels safer",
+            "short-term relief",
+            "fear stays strong",
+          ],
+          counterTitle: "Try this instead",
+          counterBody:
+            "Leave room for more than one explanation, then check what actually happened.",
+        },
+        check_reality: {
+          title: "That breaks the loop",
+          body: "Checking reality gives Nia a chance to learn whether the feared interpretation is actually true.",
+          chain: [
+            "multiple meanings",
+            "room to check reality",
+            "new evidence can update the story",
+          ],
+        },
+      },
     },
   },
 ];

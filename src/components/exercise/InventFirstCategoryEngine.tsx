@@ -14,7 +14,6 @@ import {
 } from "@/src/components/exercise/courseExerciseContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
-import { ArrowDown01Icon } from "hugeicons-react-native";
 
 interface InventCase {
   id: string;
@@ -102,25 +101,18 @@ export function InventFirstCategoryEngine({
       </View>
 
       {/* The Question */}
-      {question ? (
-        <Text style={styles.questionText}>{question.toUpperCase()}</Text>
-      ) : null}
+      {question ? <Text style={styles.questionText}>{question}</Text> : null}
 
       <View style={styles.options}>
         {options.map((option) => {
           const isSelected = selectedOptionId === option.id;
+
           if (isAnswered && !isSelected) {
-            return null; // The prompt said "other option becomes visually quiet", but later "Do not let two large answer cards compete... selected option remains visible". So hide or dim heavily? Let's just dim heavily or hide. I'll dim heavily.
+            return null; // hide entirely to stop competition with feedback
           }
+
           return (
-            <View
-              key={option.id}
-              style={
-                isAnswered && !isSelected
-                  ? { opacity: 0.3, display: "none" }
-                  : {}
-              }
-            >
+            <View key={option.id}>
               <CourseExerciseOptionButton
                 label={option.label}
                 selected={isSelected}
@@ -144,7 +136,7 @@ export function InventFirstCategoryEngine({
           </Text>
 
           <View style={styles.chainContainer}>
-            {readChain(selectedFeedback.chain).map((step, idx, arr) => (
+            {readChain(selectedFeedback.chain).map((step, idx) => (
               <View key={idx} style={styles.chainStep}>
                 {idx > 0 && (
                   <View style={styles.chainArrow}>
@@ -206,28 +198,28 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
 
-  caseList: { gap: 8, marginBottom: 24 },
-  caseListDimmed: { opacity: 0.8 },
+  caseList: { gap: 8, marginBottom: 20 },
+  caseListDimmed: { opacity: 0.6 },
   caseCard: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 11,
-    paddingHorizontal: 14,
-    paddingVertical: 11,
-    borderRadius: 20,
+    gap: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 16,
     backgroundColor: SEMANTIC_COLORS.surface.primary,
     shadowColor: SEMANTIC_COLORS.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.09,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
   },
-  caseCardDimmed: { shadowOpacity: 0.02, paddingVertical: 8 },
+  caseCardDimmed: { shadowOpacity: 0.02, paddingVertical: 6 },
   avatar: {
-    width: 38,
-    height: 38,
+    width: 34,
+    height: 34,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 19,
+    borderRadius: 17,
     backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   avatarOlive: { backgroundColor: SEMANTIC_COLORS.brand.primaryLight },
@@ -236,14 +228,14 @@ const styles = StyleSheet.create({
   avatarLabel: {
     color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.heading,
-    fontSize: 17,
+    fontSize: 16,
   },
   caseText: {
     flex: 1,
     color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 13,
-    lineHeight: 19,
+    lineHeight: 18,
   },
   caseName: {
     color: SEMANTIC_COLORS.text.primary,
@@ -251,8 +243,8 @@ const styles = StyleSheet.create({
   },
   caseLabel: {
     width: 88,
-    color: SEMANTIC_COLORS.brand.primary,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
+    color: SEMANTIC_COLORS.text.secondary,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
     fontSize: 11.5,
     lineHeight: 16,
     textAlign: "right",
@@ -260,65 +252,68 @@ const styles = StyleSheet.create({
   caseLabelCalm: { color: SEMANTIC_COLORS.brand.pressed },
 
   questionText: {
-    color: SEMANTIC_COLORS.text.primary,
-    fontFamily: COURSE_EXERCISE_FONTS.heading,
+    color: SEMANTIC_COLORS.brand.pressed,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
     fontSize: 14,
-    letterSpacing: 0.5,
-    marginBottom: 16,
+    marginBottom: 12,
     textAlign: "center",
   },
-  options: { gap: 10 },
+  options: { gap: 8 },
 
   feedbackContainer: { marginTop: 24, gap: 16 },
   feedbackTitle: {
-    color: SEMANTIC_COLORS.success.foreground,
-    fontFamily: COURSE_EXERCISE_FONTS.heading,
-    fontSize: 16,
+    color: SEMANTIC_COLORS.brand.pressed,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
+    fontSize: 12,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
   },
   feedbackBody: {
     color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 14,
+    fontSize: 15,
     lineHeight: 22,
   },
 
   chainContainer: {
-    marginTop: 4,
+    marginTop: 8,
     marginBottom: 8,
     gap: 6,
     alignItems: "center",
   },
   chainStep: { alignItems: "center", gap: 6 },
   chainStepText: {
-    color: SEMANTIC_COLORS.text.primary,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 14,
+    color: SEMANTIC_COLORS.brand.pressed,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
+    fontSize: 15,
     textAlign: "center",
   },
-  chainArrow: { height: 16, justifyContent: "center" },
+  chainArrow: { height: 18, justifyContent: "center" },
   chainArrowText: {
-    color: SEMANTIC_COLORS.text.secondary,
+    color: SEMANTIC_COLORS.text.tertiary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 14,
   },
 
   counterContainer: {
-    marginTop: 8,
-    paddingHorizontal: 20,
-    paddingVertical: 18,
-    borderRadius: 24,
-    backgroundColor: SEMANTIC_COLORS.surface.secondary,
+    marginTop: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 20,
+    backgroundColor: SEMANTIC_COLORS.brand.soft,
   },
   counterTitle: {
-    color: SEMANTIC_COLORS.success.foreground,
-    fontFamily: COURSE_EXERCISE_FONTS.heading,
-    fontSize: 15,
+    color: SEMANTIC_COLORS.brand.pressed,
+    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
+    fontSize: 12,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
     marginBottom: 4,
   },
   counterBody: {
-    color: SEMANTIC_COLORS.text.primary,
+    color: SEMANTIC_COLORS.brand.onSoft,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 14,
-    lineHeight: 22,
+    lineHeight: 21,
   },
 });

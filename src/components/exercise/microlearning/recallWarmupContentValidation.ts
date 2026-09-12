@@ -1,5 +1,5 @@
 import type { MicrolearningContentIssue } from "@/src/components/exercise/microlearning/microlearningTypes";
-import { validateArrayCount, readRequiredPath, validateUniqueIds } from "@/src/components/exercise/microlearning/microlearningContentValidation";
+import { validateArrayCount, readRequiredPath } from "@/src/components/exercise/microlearning/microlearningContentValidation";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -14,19 +14,12 @@ export function validateRecallWarmupContent(content: unknown): MicrolearningCont
 
   const cards = validateArrayCount(content, "cards", 2, 3, issues);
   
-  if (cards) {
-    validateUniqueIds(cards, "cards", issues);
-    
+  if (cards) {    
     cards.forEach((card, index) => {
       const p = `cards[${index}]`;
       if (!isRecord(card)) {
          issues.push({ path: p, message: "Card must be an object." });
          return;
-      }
-      
-      const conceptId = card.conceptId;
-      if (typeof conceptId !== "string" || !conceptId.trim()) {
-        issues.push({ path: `${p}.conceptId`, message: "Must be a non-empty string." });
       }
       
       const question = card.question;

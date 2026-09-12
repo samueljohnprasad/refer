@@ -36,3 +36,4 @@ https://github.com/howells/arc?utm_source=chatgpt.com
 
 https://github.com/mattpocock/skills
 https://revenuecat-shipaton-2025.devpost.com/project-gallery?page=1
+https://github.com/haplollc/Minted
