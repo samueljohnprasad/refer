@@ -33,7 +33,7 @@ export const LensReplayConfig: CourseExerciseCategoryConfig = {
   unavailableCopy: "This lens replay is not available yet.",
   interaction: {
     submissionMode: "immediate",
-    submissionRequirement: { fields: ["isComplete"] }, // Wait until engine says isComplete
+    submissionRequirement: { fields: [], values: { isComplete: true } }, // Wait until engine says isComplete: true
     getPrimaryLabel: () => "Continue",
     getPrimaryTransition: () => null,
   },
