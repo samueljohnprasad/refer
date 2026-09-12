@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { LayoutAnimation, Pressable, Text, View } from "react-native";
+import { LayoutAnimation, View, Text } from "react-native";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
+import { CourseExerciseOptionButton } from "@/src/components/exercise/CourseExerciseOptionButton";
 import {
   readNumber,
   readRecord,
@@ -139,27 +140,19 @@ export function AssociationMeterCategoryEngine({
           const isUnselectedInCompleteState = isComplete && !isSelected;
 
           return (
-            <Pressable
+            <View
               key={choice.id}
-              accessibilityRole="button"
-              disabled={locked}
-              onPress={() => selectChoice(choice)}
               style={{ opacity: isUnselectedInCompleteState ? 0.65 : 1 }}
-              className={`min-h-[44px] justify-center rounded-[20px] border px-4 py-2 active:bg-[#F2F8EF] ${
-                isSelected
-                  ? "border-[#ABC0A2] bg-[#F2F8EF]"
-                  : "border-[#DCD3C4] bg-white"
-              }`}
             >
-              {/* Text weight softened to medium/regular */}
-              <Text
-                className={`happy-font-body text-[14px] leading-[20px] ${
-                  isSelected ? "text-[#29452A]" : "text-[#201E1D]"
-                }`}
-              >
-                {choice.label}
-              </Text>
-            </Pressable>
+              <CourseExerciseOptionButton
+                label={choice.label}
+                selected={isSelected}
+                disabled={locked}
+                showConfirmationIcon={false}
+                align="left"
+                onPress={() => selectChoice(choice)}
+              />
+            </View>
           );
         })}
       </View>
