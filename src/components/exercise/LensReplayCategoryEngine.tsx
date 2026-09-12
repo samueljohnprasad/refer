@@ -258,6 +258,8 @@ const styles = StyleSheet.create({
   highlightBase: {
     fontFamily: COURSE_EXERCISE_FONTS.bodyMedium, // semibold to communicate tappability without icons
     overflow: "hidden", // ensures border radius applies smoothly
+    paddingHorizontal: 2, // Expands hit region slightly
+    marginHorizontal: -2,
   },
   highlightUnexplored: {
     backgroundColor: "#E6EBE1", // Soft pale sage highlight
