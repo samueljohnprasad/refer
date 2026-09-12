@@ -11,6 +11,7 @@ export const SurgeDiagramConfig: CourseExerciseCategoryConfig = {
   goalLabel: "Follow how an alarm surge changes over time.",
   unavailableCopy: "This surge diagram is not available yet.",
   interaction: {
+    submissionMode: "immediate",
     completesDirectly: true,
     getPrimaryLabel: () => "Continue",
   },
