@@ -780,13 +780,12 @@ WITH curriculum AS (
       "category": "surge_diagram",
       "format": "surge_diagram",
       "title": "An alarm changes over time",
-      "instruction": "Read the shape.",
-      "diagramTitle": "Activation rises, peaks, and can fall",
-      "peakLabel": "strongest point",
-      "fadeLabel": "body adjusts",
-      "axisLabel": "time",
-      "explanation": "Anxiety sensations can rise quickly because the system values speed. If the situation stays safe enough, the body can update and activation can fall.",
-      "note": "The exact shape and timing vary. Do not assume an unfamiliar or severe physical symptom is anxiety."
+      "instruction": "Follow the shape of a surge.",
+      "primaryLabel": "Continue",
+      "axisLabel": "Time passing",
+      "rule": "THE PATTERN",
+      "takeaway": "A surge can feel endless while you’re inside it.\n\nBut intensity can change over time.",
+      "note": "Illustrative pattern — timing and intensity vary."
     }
   },
   {

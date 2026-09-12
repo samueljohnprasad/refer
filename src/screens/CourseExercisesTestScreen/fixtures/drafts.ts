@@ -588,54 +588,57 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       category: "story_serial",
       format: "story_serial",
       title: "Walk both alarm paths",
-      instruction: "Choose one path, then rewind.",
-      episodeLabel: "ONE INVITE · TWO READINGS",
+      instruction: "Walk one path, then rewind and compare.",
       opening:
-        "Sam receives an unexpected 1-on-1 meeting invite from his manager with no agenda. His chest tightens and his immediate impulse is to call in sick.",
+        "Sam gets an unexpected 1-on-1 invite from his manager with no agenda.\n\nHis chest tightens. His first impulse is to call in sick.",
       branches: [
         {
           choice: "Treat the alarm as proof",
-          label: "PROOF PATH",
+          label: "ALARM = PROOF",
           beats: [
-            "Sam decides the meeting must mean bad news or criticism.",
-            "His body prepares as if the worst-case scenario is already taking place.",
-            "Cancelling brings immediate relief, but leaves the fear unchallenged and stronger for next time.",
+            "“It must mean bad news.”",
+            "His body responds as if the prediction is already true.",
+            "He calls in sick.\n\nQUICK RELIEF\n\nBut the prediction never gets tested.",
           ],
         },
         {
-          choice: "Separate alarm from evidence",
-          label: "MAP PATH",
+          choice: "Treat the alarm as a signal",
+          label: "ALARM = SIGNAL",
           beats: [
-            "Sam acknowledges the tight chest as natural body arousal.",
-            "He labels “I must be in trouble” as an unverified prediction, not a settled fact.",
-            "He shows up with curiosity, discovering the meeting was just a routine quarterly check-in.",
+            "“My chest is tight.”",
+            "“That tells me I’m alarmed — not what the meeting means.”",
+            "Sam goes to the meeting.\n\nHe gets real information instead of relying on the prediction.",
           ],
         },
       ],
+      comparison: {
+        start: ["Unexpected meeting", "tight chest"],
+        path1: ["Prediction", "avoidance", "quick relief", "no new evidence"],
+        path2: ["Prediction stays uncertain", "approach", "check reality", "new evidence"],
+      },
       reflectionPrompt:
         "What was the real turning point between the two paths?",
       reflectionOptions: [
         {
           id: "alarm",
-          label: "The first path had much stronger anxiety sensations",
+          label: "The first path had stronger anxiety",
           feedback:
-            "Both paths started with the exact same tight chest and adrenaline surge. The difference was what Sam did with the signal.",
+            "Both paths started with the same body alarm.\n\nLook at what Sam did with the signal.",
         },
         {
           id: "reading",
-          label: "The second path separated bodily alarm from assumed facts",
+          label: "The second path treated the alarm as a signal, not a fact",
           feedback:
-            "Exactly. The sensations were real, but Sam recognized that physical alarm does not equal real-world danger.",
+            "Both paths started with the same body alarm.\n\nOne treated the alarm as proof.\nThe other left room to check reality.",
         },
         {
           id: "guarantee",
-          label: "The second path proved that managers never share bad news",
+          label: "The second path showed the meeting probably wasn’t serious",
           feedback:
-            "No outcome is ever guaranteed. The second path simply kept him grounded in what was actually known.",
+            "The meeting outcome wasn't the skill.\n\nLook at how Sam treated the prediction before he knew what would happen.",
         },
       ],
-      stamp: "ALARM MAP MASTERED",
-      hook: "Next: Recognize the alarm signal before avoidance takes the wheel.",
+      pattern: "Alarm tells you something feels threatening.\n\nIt does not tell you what is actually true.",
     },
   },
   {
@@ -648,14 +651,14 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       category: "surge_diagram",
       format: "surge_diagram",
       title: "An alarm changes over time",
-      instruction: "Read the shape of a surge.",
-      diagramTitle: "Activation rises, peaks, and naturally falls",
-      peakLabel: "Strongest point (~10 min)",
-      fadeLabel: "Body resets naturally",
+      instruction: "Follow the shape of a surge.",
+      primaryLabel: "Continue",
+      successPrimaryLabel: "Continue",
       axisLabel: "Time passing",
-      explanation:
-        "An adrenaline surge feels endless in the moment, but the human body cannot sustain maximum arousal indefinitely. Without added catastrophic thoughts, the wave crests and subsides on its own.",
-      note: "The exact peak and duration vary, but every biological surge has a natural ceiling and descent.",
+      rule: "THE PATTERN",
+      takeaway:
+        "A surge can feel endless while you’re inside it.\n\nBut intensity can change over time.",
+      note: "Illustrative pattern — timing and intensity vary.",
     },
   },
 ] as unknown as Exercise[];

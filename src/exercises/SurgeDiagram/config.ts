@@ -2,16 +2,25 @@
 import type { CourseExerciseCategoryConfig } from "@/src/components/exercise/courseExerciseCategoryConfig";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import { SurgeDiagramCategoryEngine } from "@/src/components/exercise/SurgeDiagramCategoryEngine";
+import type { Exercise } from "@/src/types/journeyV5";
 
 export const SurgeDiagramConfig: CourseExerciseCategoryConfig = {
   category: CourseExerciseCategoryEnum.SurgeDiagram,
   formats: [CourseExerciseCategoryEnum.SurgeDiagram],
   engine: SurgeDiagramCategoryEngine,
-  goalLabel: "See the built-in rise and fade of a stress surge.",
+  goalLabel: "Follow how an alarm surge changes over time.",
   unavailableCopy: "This surge diagram is not available yet.",
   interaction: {
-    submissionMode: "explicit",
+    completesDirectly: true,
     getPrimaryLabel: () => "Continue",
-    getPrimaryTransition: () => null,
+  },
+  presentation: {
+    showsFeedbackInline: () => true,
+    hideFooter: (exercise: Exercise, response: Record<string, unknown> | null) => {
+      return !response?.isComplete;
+    },
+    hideSkip: (exercise: Exercise, response: Record<string, unknown> | null) => {
+      return Boolean(response?.hasInteracted || response?.isComplete);
+    },
   },
 };
