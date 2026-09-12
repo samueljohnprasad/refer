@@ -183,10 +183,17 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       cases: [
         {
           id: "case-1",
-          name: "Alex",
-          reading: "Alex feels anxious before the meeting.",
-          outcome: "Alex decides to skip the meeting.",
+          name: "Nia",
+          reading: "says, “No reply means I offended her.”",
+          outcome: "one meaning",
           isCalm: false,
+        },
+        {
+          id: "case-2",
+          name: "Sam",
+          reading: "says, “Maybe she is busy, or maybe I offended her.”",
+          outcome: "multiple meanings",
+          isCalm: true,
         },
       ],
       options: [
