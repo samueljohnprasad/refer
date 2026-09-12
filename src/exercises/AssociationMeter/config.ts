@@ -8,12 +8,15 @@ export const AssociationMeterConfig: CourseExerciseCategoryConfig = {
   engine: AssociationMeterCategoryEngine,
   goalLabel: "See how repeated checking trains a threat association.",
   unavailableCopy: "This association meter is not available yet.",
+  presentation: {
+    hideFooter: (_exercise, response) => response?.hasFlipped !== true,
+  },
   interaction: {
     submissionMode: "explicit",
     getPrimaryLabel: (exercise, response) => {
       return response.hasFlipped === true
         ? "Continue"
-        : "Run evenings until the link flips";
+        : (exercise.content?.lockedPrimaryLabel as string) || "Continue";
     },
     getPrimaryTransition: (_exercise, _response) => {
       return null;
