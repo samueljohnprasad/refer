@@ -72,21 +72,21 @@ export function RecallWarmupCategoryEngine({
   if (phase === "complete") {
     return (
       <View className="flex-1 px-5 pt-8 pb-10 justify-center">
-        <Text className="text-[22px] leading-8 font-medium text-ink-primary text-center">
-          Nice — you just tested what you could recall.
+        <Text className="text-[22px] leading-8 font-medium text-ink text-center">
+          Nice — you tested what you could recall.
         </Text>
       </View>
     );
   }
 
   return (
-    <View className="flex-1 px-5 pt-5 pb-8">
+    <View className="flex-1 px-5 pt-3 pb-8">
       {/* HEADER */}
-      <View className="mb-6">
-        <Text className="text-[24px] font-bold text-forest-900 tracking-[-0.4px] mb-1">
+      <View className="mb-4">
+        <Text className="text-[24px] font-bold text-ink tracking-[-0.4px] mb-1">
           Recall Warmup
         </Text>
-        <Text className="text-[15px] leading-5 text-ink-muted">
+        <Text className="text-[15px] leading-5 text-ink-soft">
           Try to remember the answer, then reveal it.
         </Text>
       </View>
@@ -95,13 +95,13 @@ export function RecallWarmupCategoryEngine({
       <Animated.View 
         key={card.id + (isAnswerRevealed ? "-ans" : "-q")} 
         entering={reducedMotion ? undefined : FadeIn.duration(300)}
-        className="rounded-[24px] bg-cream-50 border border-cream-200 px-6 py-7 shadow-sm shadow-black/5"
+        className="rounded-[24px] bg-sage-50 border border-sage-200 px-6 py-7 shadow-sm shadow-black/5"
       >
-        <Text className="text-[11px] font-bold tracking-widest uppercase text-sage-500 mb-4">
+        <Text className="text-[11px] font-semibold tracking-widest uppercase text-sage-500 mb-4">
           CONCEPT {currentCardIndex + 1} OF {content.cards.length}
         </Text>
         
-        <Text className="text-[20px] font-semibold leading-[28px] text-ink-primary">
+        <Text className="text-[20px] font-bold leading-[28px] text-ink">
           {card.question}
         </Text>
 
@@ -109,17 +109,17 @@ export function RecallWarmupCategoryEngine({
           <TouchableOpacity
             onPress={handleReveal}
             activeOpacity={0.7}
-            className="mt-8 bg-forest-800 py-3.5 rounded-full items-center"
+            className="mt-6 bg-transparent border border-sage-300 py-3 rounded-full items-center"
             accessibilityRole="button"
           >
-            <Text className="text-white text-[15px] font-semibold tracking-wide">
+            <Text className="text-ink text-[15px] font-semibold tracking-wide">
               REVEAL ANSWER
             </Text>
           </TouchableOpacity>
         ) : (
           <Animated.View entering={reducedMotion ? undefined : FadeIn.delay(150).duration(300)}>
-            <View className="h-px bg-cream-300 w-full my-6" />
-            <Text className="text-[18px] leading-[26px] text-ink-primary">
+            <View className="h-px bg-sage-200 w-full my-6" />
+            <Text className="text-[18px] leading-[26px] text-ink">
               {card.answer}
             </Text>
           </Animated.View>
@@ -134,23 +134,23 @@ export function RecallWarmupCategoryEngine({
         >
           {feedback ? (
             <Animated.View entering={FadeIn} exiting={FadeOut} className="items-center py-6">
-              <Text className="text-[17px] font-medium text-forest-800">
+              <Text className="text-[17px] font-medium text-sage-700">
                 {feedback === "got_it" ? "Got it." : "We'll bring this one back."}
               </Text>
             </Animated.View>
           ) : (
             <Animated.View exiting={FadeOut}>
-              <Text className="text-center font-medium text-[15px] text-ink-muted mb-5">
+              <Text className="text-center font-medium text-[15px] text-ink-soft mb-4">
                 How did that feel?
               </Text>
               <View className="flex-row gap-3">
                 <TouchableOpacity
                   onPress={() => handleGrade("practice_again")}
                   activeOpacity={0.6}
-                  className="flex-1 bg-transparent border-2 border-forest-300 py-4 rounded-[20px] items-center justify-center"
+                  className="flex-1 bg-transparent border-2 border-sage-300 py-4 rounded-[20px] items-center justify-center"
                   accessibilityRole="button"
                 >
-                  <Text className="text-forest-900 font-medium text-[16px]">
+                  <Text className="text-sage-700 font-medium text-[16px]">
                     Practice again
                   </Text>
                 </TouchableOpacity>
@@ -158,7 +158,7 @@ export function RecallWarmupCategoryEngine({
                 <TouchableOpacity
                   onPress={() => handleGrade("remembered")}
                   activeOpacity={0.8}
-                  className="flex-1 bg-forest-800 py-4 rounded-[20px] items-center justify-center shadow-sm shadow-black/10"
+                  className="flex-1 bg-sage-700 py-4 rounded-[20px] items-center justify-center shadow-sm shadow-black/10"
                   accessibilityRole="button"
                 >
                   <Text className="text-white font-medium text-[16px]">
