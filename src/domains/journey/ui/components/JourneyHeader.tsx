@@ -72,11 +72,9 @@ function JourneyHeader({ unit, stats }: JourneyHeaderProps): React.JSX.Element {
           <View
             className="flex-row items-center gap-4"
             accessibilityRole="summary"
-            accessibilityLabel={`Stats: ${stats.streakDays} day streak, ${stats.wallet.gems} gems, ${stats.hearts} hearts`}
+            accessibilityLabel={`Stats: ${stats.streakDays} day streak`}
           >
             <StatBadge icon="🔥" value={stats.streakDays} label="Day streak" />
-            <StatBadge icon="💎" value={stats.wallet.gems} label="Gems" />
-            <StatBadge icon="❤️" value={stats.hearts} label="Hearts" />
           </View>
         </View>
 

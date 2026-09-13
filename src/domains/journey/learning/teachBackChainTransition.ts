@@ -17,7 +17,7 @@ export function getTeachBackChainPrimaryLabel(
       ? "Try it yourself"
       : "Build the chain above";
   }
-  if (state.phase === "complete") return "Continue";
+  if (state.phase === "complete") return "Try it on a real example";
   return state.phase === "feedback" ? "Try again" : "Choose one";
 }
 

@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import Slider from "@react-native-community/slider";
+import React, { useEffect } from "react";
+import { AccessibilityInfo, LayoutAnimation, Pressable, Text, View } from "react-native";
+import { useReducedMotion } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
-  COURSE_EXERCISE_FONTS,
-  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
-import {
-  readNumber,
   readRecord,
   readString,
 } from "@/src/components/exercise/courseExerciseContent";
@@ -38,7 +34,6 @@ export function NameItCategoryEngine({
     (family) => family.name === readString(saved?.selectedFamily),
   );
   const selectedWord = readString(saved?.selectedWord);
-  const [intensity, setIntensity] = useState(readNumber(saved?.intensity) ?? 5);
 
   useEffect(() => {
     if (!saved) {
@@ -46,8 +41,25 @@ export function NameItCategoryEngine({
     }
   }, [onInteraction, saved]);
 
+  const reducedMotion = useReducedMotion();
+
+  const animate = () => {
+    if (!reducedMotion) {
+      LayoutAnimation.configureNext(
+        LayoutAnimation.create(250, "easeInEaseOut", "opacity")
+      );
+    } else {
+      // Just a direct crossfade for reduced motion if supported, else instant
+      LayoutAnimation.configureNext(
+        LayoutAnimation.create(150, "linear", "opacity")
+      );
+    }
+  };
+
   const selectFamily = (family: FeelingFamily) => {
     Haptics.selectionAsync();
+    AccessibilityInfo.announceForAccessibility(`${family.name} family selected.`);
+    animate();
     onInteraction(
       {
         ...buildFamilyResponse(),
@@ -60,111 +72,125 @@ export function NameItCategoryEngine({
 
   const selectWord = (word: string) => {
     Haptics.selectionAsync();
+    AccessibilityInfo.announceForAccessibility(`${word} selected.`);
+    if (!selectedWord) {
+      animate(); // Animate feedback block appearing
+    }
     onInteraction(
       {
         ...saved,
         selectedWord: word,
         isCorrect: true,
       },
-      true,
+      true, // This indicates completion to the layout
     );
   };
 
-  const saveIntensity = (value: number) => {
-    setIntensity(value);
-    onInteraction({ ...saved, intensity: value, isCorrect: true }, true);
+  const changeFamily = () => {
+    animate();
+    onInteraction(buildFamilyResponse(), false);
+  };
+
+  const getFeedbackFirstSentence = (word: string) => {
+    if (word === "Terrified") return "“Terrified” names a more intense form of fear.";
+    if (word === "Afraid") return "“Afraid” points to a sense of threat or danger.";
+    if (word === "Anxious") return "“Anxious” points to worry about what might happen.";
+    return `“${word}” is more specific than simply “bad” or “upset.”`;
   };
 
   return (
-    <View style={styles.screenContent}>
+    <View className="flex-1 px-2 pb-3 pt-0">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Name the feeling"}
         instruction={
-          readString(content.instruction) ?? "Choose the closest word."
+          phase === "family"
+            ? "Start with the closest family."
+            : "Now choose the closest word."
         }
       />
 
       {phase === "family" ? (
-        <View style={styles.familyGrid}>
+        <View className="flex-row flex-wrap justify-center gap-2.5 pt-1">
           {families.map((family) => (
-            <Pressable
-              key={family.name}
-              accessibilityRole="button"
-              onPress={() => selectFamily(family)}
-              style={({ pressed }) => [styles.family, pressed && styles.pressed]}
-            >
-              <Text style={styles.familyLabel}>{family.name}</Text>
-            </Pressable>
+            <View key={family.name} className="relative">
+              <View className="absolute inset-x-0 bottom-0 top-[3px] rounded-[25px] bg-[#D8C7B5]" />
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`${family.name}, emotion family`}
+                onPress={() => selectFamily(family)}
+                className="min-h-[50px] justify-center rounded-[25px] border border-[#E8DCCB] bg-[#FDF8F3] px-6 active:translate-y-[2px]"
+              >
+                <Text className="happy-font-body-bold text-base text-[#201E1D]">
+                  {family.name}
+                </Text>
+              </Pressable>
+            </View>
           ))}
         </View>
       ) : null}
 
       {phase === "word" && selectedFamily ? (
         <>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => onInteraction(buildFamilyResponse(), false)}
-            style={styles.changeFamily}
-          >
-            <Text style={styles.changeFamilyLabel}>
-              {selectedFamily.name} family · change
+          <View className="mb-4 flex-row items-center justify-between px-1">
+            <Text className="happy-font-body-bold text-[11px] uppercase tracking-wider text-[#82796A]">
+              {selectedFamily.name} FAMILY
             </Text>
-          </Pressable>
-          <View style={styles.wordList}>
+            <Pressable
+              accessibilityRole="button"
+              onPress={changeFamily}
+              className="px-2 py-1 active:opacity-60"
+            >
+              <Text className="happy-font-body-bold text-xs text-[#55694A]">
+                Change
+              </Text>
+            </Pressable>
+          </View>
+
+          <View className="gap-2.5">
             {selectedFamily.words.map((item) => {
               const isSelected = selectedWord === item.word;
               return (
-                <Pressable
-                  key={item.word}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: isSelected }}
-                  onPress={() => selectWord(item.word)}
-                  style={({ pressed }) => [
-                    styles.word,
-                    isSelected && styles.wordSelected,
-                    pressed && styles.pressed,
-                  ]}
-                >
-                  <Text style={styles.wordLabel}>{item.word}</Text>
-                  <Text style={styles.wordDescription}>{item.description}</Text>
-                </Pressable>
+                <View key={item.word} className="relative mb-1">
+                  <View
+                    className="absolute inset-x-0 bottom-0 top-[3px] rounded-[20px]"
+                    style={{
+                      backgroundColor: isSelected ? "#7E9874" : "#D8C7B5",
+                    }}
+                  />
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={`${item.word}. ${item.description}.`}
+                    accessibilityState={{ selected: isSelected }}
+                    onPress={() => selectWord(item.word)}
+                    className={
+                      isSelected
+                        ? "min-h-[60px] justify-center rounded-[20px] border-[1.5px] border-[#7E9874] bg-[#F2F8EF] px-4 py-3 active:translate-y-[2px]"
+                        : "min-h-[60px] justify-center rounded-[20px] border border-[#E8DCCB] bg-[#FDF8F3] px-4 py-3 active:translate-y-[2px]"
+                    }
+                  >
+                    <Text className="happy-font-body-bold text-[15px] text-[#201E1D]">
+                      {isSelected ? `${item.word} — selected` : item.word}
+                    </Text>
+                    <Text className="happy-font-body mt-[3px] text-[12.5px] leading-[17px] text-[#5C5549]">
+                      {item.description}
+                    </Text>
+                  </Pressable>
+                </View>
               );
             })}
           </View>
         </>
       ) : null}
 
-      {phase === "intensity" ? (
-        <View style={styles.intensityCard}>
-          <Text style={styles.wordPill}>{selectedWord}</Text>
-          <Text style={styles.intensityLabel}>HOW LOUD IS IT RIGHT NOW?</Text>
-          <Slider
-            style={styles.slider}
-            minimumValue={0}
-            maximumValue={10}
-            step={1}
-            value={intensity}
-            disabled={locked}
-            minimumTrackTintColor={SEMANTIC_COLORS.brand.primary}
-            maximumTrackTintColor={SEMANTIC_COLORS.border.default}
-            thumbTintColor={SEMANTIC_COLORS.brand.primary}
-            accessibilityLabel="Feeling intensity, 0 to 10"
-            accessibilityValue={{ min: 0, max: 10, now: intensity }}
-            onValueChange={setIntensity}
-            onSlidingComplete={saveIntensity}
-          />
-          <View style={styles.scaleLabels}>
-            <Text style={styles.scaleLabel}>a whisper</Text>
-            <Text style={styles.scaleLabel}>very loud</Text>
-          </View>
-        </View>
-      ) : null}
-
-      {locked && selectedWord ? (
-        <View style={styles.feedback}>
-          <Text style={styles.feedbackTitle}>Why naming helps</Text>
-          <Text style={styles.feedbackBody}>
-            You landed on “{selectedWord}” at {intensity} out of 10. {readString(content.teach)}
+      {selectedWord ? (
+        <View className="mt-4 rounded-[20px] border border-[#E8DCCB] bg-[#FDF8F3] px-4 py-4">
+          <Text className="happy-font-heading-bold mb-[6px] text-[13px] uppercase tracking-wider text-[#55694A]">
+            Why naming helps
+          </Text>
+          <Text className="happy-font-body text-[13.5px] leading-[20px] text-[#201E1D]">
+            {getFeedbackFirstSentence(selectedWord)}
+            {"\n\n"}
+            A precise label can help you notice what you’re experiencing more clearly.
           </Text>
         </View>
       ) : null}
@@ -178,7 +204,6 @@ function buildFamilyResponse() {
     phase: "family",
     selectedFamily: null,
     selectedWord: null,
-    intensity: 5,
     isCorrect: true,
   };
 }
@@ -198,27 +223,3 @@ function readFamilies(value: unknown): FeelingFamily[] {
     return [{ name, words }];
   });
 }
-
-const styles = StyleSheet.create({
-  screenContent: { flex: 1, paddingHorizontal: 8, paddingTop: 6, paddingBottom: 12 },
-  familyGrid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 10, paddingTop: 4 },
-  family: { minHeight: 54, justifyContent: "center", paddingHorizontal: 24, borderWidth: 1, borderBottomWidth: 4, borderColor: SEMANTIC_COLORS.border.default, borderRadius: 27, backgroundColor: SEMANTIC_COLORS.surface.primary },
-  familyLabel: { color: SEMANTIC_COLORS.text.primary, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 16 },
-  pressed: { transform: [{ translateY: 2 }], opacity: 0.8 },
-  changeFamily: { alignSelf: "flex-start", minHeight: 40, justifyContent: "center", marginBottom: 12, paddingHorizontal: 16, borderWidth: 1.5, borderColor: SEMANTIC_COLORS.brand.primary, borderRadius: 20, backgroundColor: SEMANTIC_COLORS.brand.soft },
-  changeFamilyLabel: { color: SEMANTIC_COLORS.brand.pressed, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 13 },
-  wordList: { gap: 9 },
-  word: { minHeight: 56, paddingHorizontal: 16, paddingVertical: 11, borderWidth: 1, borderBottomWidth: 4, borderColor: SEMANTIC_COLORS.border.default, borderRadius: 22, backgroundColor: SEMANTIC_COLORS.surface.primary },
-  wordSelected: { borderColor: SEMANTIC_COLORS.brand.primary, backgroundColor: SEMANTIC_COLORS.brand.soft },
-  wordLabel: { color: SEMANTIC_COLORS.text.primary, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 15 },
-  wordDescription: { marginTop: 3, color: SEMANTIC_COLORS.text.secondary, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 12.5, lineHeight: 17 },
-  intensityCard: { alignItems: "center", gap: 16, paddingHorizontal: 22, paddingVertical: 24, borderRadius: 28, backgroundColor: SEMANTIC_COLORS.surface.primary, shadowColor: SEMANTIC_COLORS.shadow, shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.14, shadowRadius: 8 },
-  wordPill: { paddingHorizontal: 22, paddingVertical: 9, borderRadius: 22, overflow: "hidden", color: SEMANTIC_COLORS.surface.primary, backgroundColor: SEMANTIC_COLORS.brand.primary, fontFamily: COURSE_EXERCISE_FONTS.heading, fontSize: 21 },
-  intensityLabel: { color: SEMANTIC_COLORS.text.secondary, fontFamily: COURSE_EXERCISE_FONTS.bodyBold, fontSize: 12, letterSpacing: 0.6 },
-  slider: { width: "100%", height: 44 },
-  scaleLabels: { width: "100%", flexDirection: "row", justifyContent: "space-between" },
-  scaleLabel: { color: SEMANTIC_COLORS.text.secondary, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 12 },
-  feedback: { marginTop: 16, paddingHorizontal: 17, paddingVertical: 15, borderWidth: 1.5, borderColor: SEMANTIC_COLORS.brand.primary, borderRadius: 24, backgroundColor: SEMANTIC_COLORS.brand.soft },
-  feedbackTitle: { color: SEMANTIC_COLORS.text.primary, fontFamily: COURSE_EXERCISE_FONTS.heading, fontSize: 16 },
-  feedbackBody: { marginTop: 5, color: SEMANTIC_COLORS.text.primary, fontFamily: COURSE_EXERCISE_FONTS.body, fontSize: 13.5, lineHeight: 20 },
-});

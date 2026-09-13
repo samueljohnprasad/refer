@@ -18,15 +18,15 @@ export interface RecordPromptSectionViewProps {
 export const RecordPromptSectionView: React.FC<RecordPromptSectionViewProps> =
   React.memo(({ menuConfig, displayedPrompt, promptAnimStyle }) => {
     return (
-      <View className="pt-2">
-        <View className="-ml-2 flex-row items-center">
+      <View className="pt-0">
+        <View className="-ml-1 flex-row items-center">
           <ConfigurableGlassMenu config={menuConfig} />
         </View>
 
-        {/* ponytail: 34px prompt keeps hero weight while 36px leading holds the thought together */}
+        {/* ponytail: 30px display token with 36px leading gives breathing room while keeping 3-line hero dominance */}
         <Animated.Text
           style={promptAnimStyle}
-          className="text-[34px] leading-9 tracking-tight text-ink happy-font-heading-bold"
+          className="mt-1 text-[30px] leading-[36px] tracking-tight text-ink happy-font-heading-bold"
         >
           {displayedPrompt}
         </Animated.Text>

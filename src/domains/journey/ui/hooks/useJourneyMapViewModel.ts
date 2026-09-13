@@ -24,8 +24,6 @@ export interface JourneyMapViewModel {
   isCourseCatalogPresented: boolean;
   userStats: {
     streak: number;
-    gems: number;
-    hearts: number;
     xp: number;
   };
   enrolledCourses?: EnrolledCourseListItem[];
@@ -121,8 +119,6 @@ export function useJourneyMapViewModel(
   const userStats = useMemo(
     () => ({
       streak: currentStreak,
-      gems: 0,
-      hearts: 5,
       xp: totalIP,
     }),
     [currentStreak, totalIP],

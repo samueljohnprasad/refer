@@ -3,6 +3,7 @@ export * from "./JourneyMapFlashList";
 export * from "./CourseCatalogSheet";
 
 export { default as PathConnector } from "./PathConnector";
+export { default as NextJourneyBridgeDock } from "./NextJourneyBridgeDock";
 export { default as JourneyHeader } from "./JourneyHeader";
 export { default as JourneyLoadingSkeleton } from "./JourneyLoadingSkeleton";
 export { default as NodeCompletionModal } from "./NodeCompletionModal";

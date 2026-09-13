@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Modal } from "react-native";
 import { useStreak } from "@/src/hooks/useStreak";
 import { useReviewPrompt } from "@/src/hooks/useReviewPrompt";
@@ -16,12 +16,25 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
   onClose,
 }) => {
   const { currentStreak, isLoading } = useStreak();
+  const previousStreak = Math.max(0, currentStreak - 1);
 
-  // Trigger review prompt at 1-day streak milestone
-  useReviewPrompt({
-    currentStreak: currentStreak,
-    enabled: true,
+  // Trigger review prompt on Day 3 (2->3), Day 7, and Day 15 milestones
+  const { requestReview } = useReviewPrompt({
+    currentStreak,
+    previousStreak,
+    enabled: visible,
   });
+
+  const handleClose = useCallback(() => {
+    onClose();
+    if (
+      (previousStreak === 2 && currentStreak === 3) ||
+      currentStreak === 7 ||
+      currentStreak === 15
+    ) {
+      requestReview();
+    }
+  }, [onClose, previousStreak, currentStreak, requestReview]);
 
   if (isLoading) return null;
 
@@ -31,12 +44,12 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
       transparent={true}
       animationType="fade"
       statusBarTranslucent
-      onRequestClose={onClose}
+      onRequestClose={handleClose}
     >
       <StreakCelebration 
-        previousStreak={Math.max(0, currentStreak - 1)}
+        previousStreak={previousStreak}
         streak={currentStreak}
-        onClose={onClose}
+        onClose={handleClose}
       />
     </Modal>
   );

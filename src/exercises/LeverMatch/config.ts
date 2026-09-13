@@ -26,12 +26,18 @@ export const LeverMatchConfig: CourseExerciseCategoryConfig = {
   interaction: {
     submissionMode: "explicit",
     getPrimaryLabel: (exercise, response) => {
-      return hasMatchedAllPairs(exercise, response)
-        ? "Continue"
-        : "Match all pairs";
+      return "Continue";
     },
     getPrimaryTransition: (_exercise, _response) => {
       return null;
+    },
+  },
+  presentation: {
+    hideFooter: (exercise, response) => !hasMatchedAllPairs(exercise, response || {}),
+    hideSkip: (exercise, response) => {
+      const res = response || {};
+      const matched = readArray(res.matchedIds);
+      return matched.length > 0 || Boolean(res.selectedLeftId) || Boolean(res.selectedRightId);
     },
   },
 };

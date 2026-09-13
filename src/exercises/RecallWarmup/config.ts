@@ -26,6 +26,7 @@ export const RecallWarmupConfig: CourseExerciseCategoryConfig = {
         }
     },
     presentation: {
+        hideFooter: (exercise, response) => response?.phase !== "complete",
         hideSkip: (exercise, response) => {
             const index = readNumber(response?.currentCardIndex);
             const cardPhase = response?.cardPhase;

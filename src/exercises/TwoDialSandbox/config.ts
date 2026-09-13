@@ -10,7 +10,8 @@ export const TwoDialSandboxConfig: CourseExerciseCategoryConfig = {
   goalLabel: "Explore how demand and recovery shape your week.",
   unavailableCopy: "This two-dial model is not available yet.",
   interaction: {
-    submissionMode: "immediate",
+    // ponytail: explicit submission so sandbox dials remain interactive
+    submissionMode: "explicit",
     completesDirectly: true,
     getPrimaryLabel: () => "Continue",
   },

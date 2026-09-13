@@ -24,13 +24,13 @@ export function readWaveOrderVariants(value: unknown): WaveOrderVariant[] {
   if (!Array.isArray(value)) return [];
   return value.flatMap((item) => {
     const variant = readRecord(item);
-    const prompt = readString(variant?.prompt);
-    const clue = readString(variant?.clue);
-    const correctFeedback = readString(variant?.correctFeedback);
-    const workedExample = readString(variant?.workedExample);
+    const prompt = readString(variant?.prompt) ?? "";
+    const clue = readString(variant?.clue) ?? "";
+    const correctFeedback = readString(variant?.correctFeedback) ?? "";
+    const workedExample = readString(variant?.workedExample) ?? "";
     const answer = readStringArray(variant?.answer);
     const pool = readStringArray(variant?.pool);
-    return prompt && clue && correctFeedback && workedExample && answer.length
+    return answer.length
       ? [{ prompt, clue, correctFeedback, workedExample, answer, pool }]
       : [];
   });

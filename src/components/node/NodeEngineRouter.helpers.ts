@@ -122,17 +122,18 @@ export function getDisplayPrimaryLabel(
   ready: boolean,
   defaultLabel: string,
 ): string {
+  // ponytail: custom primary label from category config takes precedence
+  const courseLabel = getCoursePrimaryLabel(exercise, response);
+  if (courseLabel) {
+    return courseLabel;
+  }
+
   const category = resolveCourseExerciseCategory(exercise);
   if (
     isMicrolearningCategory(category) &&
     isMatchingFinalMicrolearningResponse(response, category || exercise.type)
   ) {
     return "Continue";
-  }
-
-  const courseLabel = getCoursePrimaryLabel(exercise, response);
-  if (courseLabel) {
-    return courseLabel;
   }
 
   const waitingLabel = exercise.content?.waitingPrimaryLabel;

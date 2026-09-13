@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
+import { AnimatedFireIcon, GrayFireIcon } from "@/src/components/ui/AnimatedStatIcon";
 import {
   useAnimatedFlameViewModel,
   useStreakBannerViewModel,
@@ -10,6 +11,7 @@ import {
 export interface AnimatedFlameViewProps
   extends ReturnType<typeof useAnimatedFlameViewModel> {
   size: number;
+  animate?: boolean;
 }
 
 /**
@@ -19,10 +21,15 @@ export interface AnimatedFlameViewProps
 export const AnimatedFlameView = React.memo(function AnimatedFlameView({
   style,
   size,
+  animate = true,
 }: AnimatedFlameViewProps): React.JSX.Element {
   return (
     <Animated.View style={style}>
-      <Text style={{ fontSize: size }}>🔥</Text>
+      {animate ? (
+        <AnimatedFireIcon width={size} height={size} />
+      ) : (
+        <GrayFireIcon width={size} height={size} />
+      )}
     </Animated.View>
   );
 });
@@ -35,7 +42,7 @@ function AnimatedFlame({
   size: number;
 }): React.JSX.Element {
   const viewModel = useAnimatedFlameViewModel(animate);
-  return <AnimatedFlameView {...viewModel} size={size} />;
+  return <AnimatedFlameView {...viewModel} size={size} animate={animate} />;
 }
 
 export interface StreakBannerViewProps

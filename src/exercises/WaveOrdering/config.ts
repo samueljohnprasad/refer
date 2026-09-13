@@ -15,116 +15,97 @@ function readStringArray(value: unknown): string[] {
     : [];
 }
 
+// ponytail: straightforward CTA labels: "Continue" when finished, "Try again" on wrong check, else "Check order"
 function getWaveOrderLabel(
-  exercise: Exercise,
+  _exercise: Exercise,
   response: Record<string, unknown>,
 ): string {
-  if (response.phase !== "feedback") return "Check order";
-  if (response.isCorrect === true || response.supported === true) {
+  if (response?.isCorrect === true || response?.phase === "complete") {
     return "Continue";
   }
-
-  const attemptCount = readNumber(response.attemptCount);
-  if (attemptCount < 3) return "Try again";
-  const variants = readWaveOrderVariants(exercise.content?.variants);
-  return readNumber(response.variantIndex) < variants.length - 1
-    ? "Try a changed example"
-    : "Show me the answer";
+  if (response?.phase === "feedback" && !response?.isCorrect) {
+    return "Try again";
+  }
+  return "Check order";
 }
 
-function resetWaveOrderResponse(
-  response: Record<string, unknown>,
-  variant: ReturnType<typeof readWaveOrderVariants>[number],
-  variantIndex: number,
-  attemptCount: number,
-): CoursePrimaryTransition {
-  const pinned = attemptCount >= 2 ? variant.answer.slice(0, 1) : [];
-  return {
-    kind: "response",
-    ready: false,
-    response: {
-      ...response,
-      phase: "entry",
-      variantIndex,
-      attemptCount,
-      tray: pinned,
-      pinnedCount: pinned.length,
-      marks: null,
-      feedbackText: null,
-      isCorrect: false,
-      supported: false,
-    },
-  };
-}
-
+// ponytail: check order transition, resets to entry on Try again
 function getNextWaveOrderState(
   exercise: Exercise,
   response: Record<string, unknown>,
 ): CoursePrimaryTransition | null {
-  const variants = readWaveOrderVariants(exercise.content?.variants);
-  const variantIndex = readNumber(response.variantIndex);
-  const variant = variants[variantIndex] ?? variants[0];
-  if (!variant) return null;
-
-  if (response.phase !== "feedback") {
-    const tray = readStringArray(response.tray);
-    const marks = variant.answer.map((answer: string, index: number) => tray[index] === answer);
-    const correct = marks.every(Boolean);
-    const rightCount = marks.filter(Boolean).length;
-    return {
-      kind: "response",
-      ready: true,
-      response: {
-        ...response,
-        phase: "feedback",
-        marks,
-        isCorrect: correct,
-        attemptCount: readNumber(response.attemptCount) + (correct ? 0 : 1),
-        feedbackText: correct
-          ? variant.correctFeedback
-          : `${rightCount} of ${variant.answer.length} in the right place. Look at where the chain starts and ends.`,
-      },
-    };
-  }
-
-  if (response.isCorrect === true || response.supported === true) {
+  if (response?.isCorrect === true || response?.phase === "complete") {
     return null;
   }
 
-  const attemptCount = readNumber(response.attemptCount);
-  if (attemptCount >= 3 && variantIndex < variants.length - 1) {
-    return resetWaveOrderResponse(
-      response,
-      variants[variantIndex + 1],
-      variantIndex + 1,
-      0,
-    );
-  }
-  if (attemptCount >= 3) {
+  if (response?.phase === "feedback" && !response?.isCorrect) {
     return {
       kind: "response",
       ready: true,
       response: {
         ...response,
-        tray: variant.answer,
-        marks: variant.answer.map(() => true),
-        supported: true,
-        feedbackText: variant.workedExample,
+        phase: "entry",
+        evaluated: false,
       },
     };
   }
-  return resetWaveOrderResponse(response, variant, variantIndex, attemptCount);
+
+  const variants = readWaveOrderVariants(exercise.content?.variants);
+  const variantIndex = readNumber(response?.variantIndex);
+  const variant = variants[variantIndex] ?? variants[0];
+  if (!variant) return null;
+
+  const tray = readStringArray(response?.tray ?? response?.order);
+  const marks = variant.answer.map((ans, idx) => tray[idx] === ans);
+  const isCorrect = marks.length === variant.answer.length && marks.every(Boolean);
+  const rightCount = marks.filter(Boolean).length;
+
+  return {
+    kind: "response",
+    ready: true,
+    response: {
+      ...response,
+      tray,
+      order: tray,
+      phase: isCorrect ? "complete" : "feedback",
+      marks,
+      isCorrect,
+      evaluated: true,
+      canCheck: true,
+      attemptCount: readNumber(response?.attemptCount) + 1,
+      rightCount,
+      feedbackText: isCorrect
+        ? variant.correctFeedback
+        : `${rightCount} of ${variant.answer.length} ${rightCount === 1 ? "is" : "are"} in the right place. Reorder the remaining ${variant.answer.length - rightCount}.`,
+    },
+  };
 }
 
 export const WaveOrderingConfig: CourseExerciseCategoryConfig = {
   category: CourseExerciseCategoryEnum.WaveOrdering,
   formats: [CourseExerciseCategoryEnum.WaveOrdering],
   engine: WaveOrderingCategoryEngine,
-  goalLabel: "Rebuild the anxiety wave from memory.",
+  goalLabel: "Order the phases into how they happen.",
   unavailableCopy: "This wave ordering exercise is not available yet.",
   interaction: {
     submissionMode: "explicit",
     getPrimaryLabel: (exercise, response) => getWaveOrderLabel(exercise, response),
     getPrimaryTransition: (exercise, response) => getNextWaveOrderState(exercise, response),
   },
+  presentation: {
+    showsFeedbackInline: () => true,
+    // ponytail: hide skip once learner evaluates order
+    hideSkip: (_exercise, response) => {
+      return Boolean(
+        response?.evaluated === true ||
+        (typeof response?.attemptCount === "number" && response.attemptCount > 0) ||
+        response?.isCorrect === true ||
+        response?.phase === "complete" ||
+        response?.phase === "feedback"
+      );
+    },
+    // ponytail: footer button always visible (disabled when tray incomplete, enabled when ready)
+    hideFooter: () => false,
+  },
 };
+

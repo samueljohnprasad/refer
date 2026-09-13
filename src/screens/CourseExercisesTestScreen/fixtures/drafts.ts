@@ -447,135 +447,16 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       category: "socratic_dialogue",
       format: "socratic_dialogue",
       title: "A 2am conversation",
-      instruction: "Choose the honest answer.",
-      supportTitle: "Why test your thoughts?",
-      supportBody:
-        "Socratic dialogue isn’t positive thinking or reassurance. It’s checking whether a catastrophic prediction has actual evidence behind it, or if it’s just the brain running a familiar alarm script.",
-      terminalNote:
-        "You tested the thought instead of obeying it. When you separate prediction from evidence, the alarm loses its grip.",
-      nodes: {
-        start: {
-          message:
-            "I woke up at 2am convinced tomorrow’s presentation will be a total disaster. My mind says everyone will see I’m incompetent.",
-          done: false,
-          support: false,
-          supportive: false,
-          options: [
-            {
-              label: "What specific evidence makes you certain?",
-              next: "evidence",
-              lead: "Let’s look at the facts.",
-            },
-            {
-              label: "Has a presentation ever gone okay before?",
-              next: "past_evidence",
-              lead: "Let’s check your track record.",
-            },
-          ],
-        },
-        evidence: {
-          message:
-            "Well, I haven’t memorized slide 14, and I stumbled once during rehearsal this afternoon.",
-          done: false,
-          support: false,
-          supportive: false,
-          options: [
-            {
-              label: "Does stumbling in rehearsal guarantee disaster on stage?",
-              next: "rehearsal_link",
-              lead: "Consider the link between rehearsal and reality.",
-            },
-            {
-              label: "What actually happens if you need to glance at notes?",
-              next: "worst_case",
-              lead: "Let’s look at the real stakes.",
-            },
-          ],
-        },
-        past_evidence: {
-          message:
-            "The last two went fine after the first few minutes. But this one feels way more dangerous.",
-          done: false,
-          support: false,
-          supportive: false,
-          options: [
-            {
-              label: "Does the feeling of danger prove actual danger?",
-              next: "feelings_signal",
-              lead: "Feelings are signals, not facts.",
-            },
-            {
-              label: "Did the previous ones also feel terrifying beforehand?",
-              next: "previous_patterns",
-              lead: "Check how you felt then vs how it went.",
-            },
-          ],
-        },
-        previous_patterns: {
-          message:
-            "Actually, yes. I lost sleep before both and expected the exact same humiliation.",
-          done: false,
-          support: false,
-          supportive: true,
-          options: [
-            {
-              label: "So the 2am alarm is a familiar script, not a new fact.",
-              next: "conclusion",
-              lead: "Notice the pattern.",
-            },
-          ],
-        },
-        feelings_signal: {
-          message:
-            "No... my alarm always fires when stakes feel high, whether there’s real danger or not.",
-          done: false,
-          support: false,
-          supportive: true,
-          options: [
-            {
-              label: "So the alarm is doing its job, but the prophecy is untested.",
-              next: "conclusion",
-              lead: "Separate signal from prophecy.",
-            },
-          ],
-        },
-        rehearsal_link: {
-          message:
-            "No. Almost everyone stumbles in rehearsal. It’s where you catch the rough spots.",
-          done: false,
-          support: false,
-          supportive: true,
-          options: [
-            {
-              label: "Stumbling is part of preparing, not proof of failure.",
-              next: "conclusion",
-              lead: "Reframe rehearsal.",
-            },
-          ],
-        },
-        worst_case: {
-          message:
-            "I’d pause for three seconds, check the slide, and keep talking. Nobody would judge that.",
-          done: false,
-          support: false,
-          supportive: true,
-          options: [
-            {
-              label: "A brief pause is normal human delivery, not incompetence.",
-              next: "conclusion",
-              lead: "Perspective resets the alarm.",
-            },
-          ],
-        },
-        conclusion: {
-          message:
-            "Looking at the actual evidence: the danger isn’t tomorrow. It’s treating my 2am panic as proof. I can park this worry until the morning.",
-          done: true,
-          support: false,
-          supportive: true,
-          options: [],
-        },
-      },
+      instruction: "Choose what you’d ask next.",
+      hintTitle: "Why test the thought?",
+      hintBody:
+        "You’re not trying to force a positive answer.\n\nYou’re checking what the prediction is actually based on.",
+      prediction: "Tomorrow’s presentation will be a disaster.",
+      evidence: ["One unfinished slide.", "One rehearsal stumble."],
+      balancedThought:
+        "A rough rehearsal doesn’t prove tomorrow will go badly.\n\nRehearsal showed me what still needs work. I can deal with that tomorrow.",
+      skill:
+        "A prediction can feel certain without being evidence.\n\nCheck the evidence before treating it as fact.",
     },
   },
   {
@@ -598,7 +479,8 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
           beats: [
             "“It must mean bad news.”",
             "His body responds as if the prediction is already true.",
-            "He calls in sick.\n\nQUICK RELIEF\n\nBut the prediction never gets tested.",
+            "He calls in sick.",
+            "QUICK RELIEF\nThe prediction remains untested.",
           ],
         },
         {
@@ -606,15 +488,16 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
           label: "ALARM = SIGNAL",
           beats: [
             "“My chest is tight.”",
-            "“That tells me I’m alarmed — not what the meeting means.”",
-            "Sam goes to the meeting.\n\nHe gets real information instead of relying on the prediction.",
+            "“That tells me I’m alarmed —\nnot what the meeting means.”",
+            "Sam goes to the meeting.",
+            "CHECK REALITY\nNow he can get information instead of relying on the prediction.",
           ],
         },
       ],
       comparison: {
         start: ["Unexpected meeting", "tight chest"],
         path1: ["Prediction", "avoidance", "quick relief", "no new evidence"],
-        path2: ["Prediction stays uncertain", "approach", "check reality", "new evidence"],
+        path2: ["Prediction stays uncertain", "show up", "check reality", "new evidence"],
       },
       reflectionPrompt:
         "What was the real turning point between the two paths?",
@@ -638,7 +521,8 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
             "The meeting outcome wasn't the skill.\n\nLook at how Sam treated the prediction before he knew what would happen.",
         },
       ],
-      pattern: "Alarm tells you something feels threatening.\n\nIt does not tell you what is actually true.",
+      pattern:
+        "Both paths started with the same body alarm.\n\nOne treated it as proof.\nThe other left room to check reality.\n\nAlarm tells you something feels threatening — not what is actually true.",
     },
   },
   {

@@ -106,12 +106,33 @@ export const showcaseMicrolearningFixtures: readonly Exercise[] = [
     isScored: false,
     content: {
       title: "Why did the alarm return?",
-      instruction: "A common question after a panic wave.",
-      question: "Why did the anxiety come back just when I started to relax?",
-      answer:
-        "After a surge peaks, your nervous system remains alert for second waves. A small normal body sensation (like taking a deep breath) can re-trigger a mini-spike. It is an echo, not starting from zero.",
-      message: "Surges often come with echoes.",
-      explanation: "Expecting minor echoes keeps you from reacting with fresh alarm.",
+      instruction: "A second wave can feel like you're back at the beginning.",
+      scenario: "“I was finally calming down.\nWhy is the anxiety coming back?”",
+      prompt: "WHAT MIGHT EXPLAIN IT?",
+      options: [
+        {
+          id: "danger-present",
+          label: "The returning anxiety means the danger is still there",
+          isCorrect: false,
+        },
+        {
+          id: "body-sensation",
+          label: "A body sensation may have been read as danger again",
+          isCorrect: true,
+        },
+      ],
+      mechanism: [
+        "The first wave eases",
+        "A body sensation appears",
+        "“Is it happening again?”",
+        "The sensation gets read as danger",
+        "The alarm rises again",
+      ],
+      insight: {
+        eyebrow: "THE IDEA",
+        title: "Another wave doesn't mean you're back at the beginning.",
+        body: "A body sensation can set off another alarm when it gets read as danger.\n\nThe returning alarm isn't, by itself, proof that danger returned.",
+      },
     },
   },
   {
@@ -126,22 +147,22 @@ export const showcaseMicrolearningFixtures: readonly Exercise[] = [
       variants: [
         {
           prompt: "Arrange what happens as an anxiety surge runs its course:",
-          clue: "Adrenaline spikes quickly, but the parasympathetic system inevitably activates.",
+          clue: "The alarm rises, reaches a peak, and then begins to settle.",
           correctFeedback:
-            "Spot on! The body triggers, peaks rapidly, then metabolizes adrenaline back to baseline.",
+            "A panic surge changes over time. The alarm rises, reaches a peak, and then begins to settle.",
           workedExample:
-            "First comes the initial surge trigger, then the rapid peak, followed by gradual dissipation.",
+            "First something feels threatening, then alarm response rises, reaches a peak, and begins to settle.",
           answer: [
-            "Initial trigger senses threat",
-            "Adrenaline surge peaks",
-            "Parasympathetic brakes kick in",
-            "Body returns to baseline",
+            "Something feels threatening",
+            "The body's alarm response rises",
+            "The surge reaches a peak",
+            "The body begins to settle",
           ],
           pool: [
-            "Adrenaline surge peaks",
-            "Body returns to baseline",
-            "Initial trigger senses threat",
-            "Parasympathetic brakes kick in",
+            "The surge reaches a peak",
+            "The body begins to settle",
+            "The body's alarm response rises",
+            "Something feels threatening",
           ],
         },
       ],
@@ -155,31 +176,103 @@ export const showcaseMicrolearningFixtures: readonly Exercise[] = [
     isScored: false,
     content: {
       title: "One wave, up close",
-      instruction: "Drag through the wave to see how it shifts.",
+      instruction: "Drag through the wave to see how it changes.",
       phases: [
         {
-          label: "The Trigger & Climb",
-          body: "Adrenaline dumps into the bloodstream. Heart accelerates and breathing quickens.",
-          tone: "orange",
-          until: 2.5,
+          label: "EARLY RISE",
+          body: "The alarm is switching on.\nThe sensations can build quickly.",
+          tone: "olive",
+          until: 2.0,
         },
         {
-          label: "The Peak",
-          body: "Intensity reaches its physiological ceiling. The body cannot sustain higher adrenaline.",
-          tone: "orange",
-          until: 4.5,
+          label: "PEAK",
+          body: "The alarm is at its strongest.\n\nStrong sensations can feel convincing, even when they aren't proof of danger.",
+          tone: "olive",
+          until: 3.8,
         },
         {
-          label: "The Fade",
-          body: "Liver begins clearing adrenaline. Muscles unclench and pulse slows down.",
+          label: "SETTLING",
+          body: "The surge is beginning to ease.\n\nYour body may still feel activated while the alarm comes down.",
+          tone: "olive",
+          until: 6.0,
+        },
+        {
+          label: "ANOTHER RISE",
+          body: "A sensation or worried thought can push the alarm upward again.\n\nAnother rise doesn't mean you're back at the beginning.",
           tone: "olive",
           until: 7.5,
         },
         {
-          label: "The Echo & Baseline",
-          body: "Parasympathetic system restores balance. You feel tired but safe.",
+          label: "SETTLING AGAIN",
+          body: "The alarm is easing again.\n\nWaves can rise and fall more than once.",
           tone: "olive",
           until: 10,
+        },
+      ],
+    },
+  },
+  {
+    id: "fixture-wave-sequence",
+    nodeId: "fixture-showcase-node",
+    orderIndex: 10,
+    type: "wave_sequence",
+    isScored: false,
+    content: {
+      title: "The anxiety wave",
+      instruction: "How an anxiety surge moves through your body.",
+      steps: [
+        "Uncertainty triggers an alarm signal",
+        "Adrenaline surges into your bloodstream",
+        "Body sensations peak in intensity",
+        "Your system metabolises the chemical burst",
+        "Sensations settle back to baseline",
+      ],
+      rule: "THE NATURAL ARC",
+      explanation:
+        "No surge stays at peak indefinitely. Every wave has a chemical half-life and begins to settle on its own.",
+    },
+  },
+  {
+    id: "fixture-why-it-matters",
+    nodeId: "fixture-showcase-node",
+    orderIndex: 11,
+    type: "why_it_matters",
+    isScored: false,
+    content: {
+      title: "Why it matters",
+      instruction: "Turn the wave model into one usable rule.",
+      message: "You do not need to fight the surge.",
+      explanation:
+        "When you realise adrenaline has a natural half-life, you stop trying to force the feeling to stop immediately. Giving the wave permission to crest takes away the fear that feeds it.",
+    },
+  },
+  {
+    id: "fixture-recall-warmup",
+    nodeId: "fixture-showcase-node",
+    orderIndex: 12,
+    type: "recall_warmup",
+    isScored: false,
+    content: {
+      category: "recall_warmup",
+      format: "recall_warmup",
+      title: "Recall Warmup",
+      instruction: "Try to remember the answer, then reveal it.",
+      cards: [
+        {
+          id: "card-1",
+          conceptId: "stimulus-control",
+          question:
+            "What guides a stimulus-control response: elapsed minutes or the experience of wakefulness and frustration?",
+          answer:
+            "The experience of wakefulness and frustration. There is no fixed clock threshold.",
+        },
+        {
+          id: "card-2",
+          conceptId: "clock-threshold",
+          question:
+            "Why is waiting for a specific elapsed minute count counterproductive during bedtime wakefulness?",
+          answer:
+            "Clock-watching fuels frustration and cognitive effort, keeping the body in an alert state.",
         },
       ],
     },

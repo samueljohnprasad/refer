@@ -1,16 +1,19 @@
-import React, { useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
+import React, { useEffect, useMemo } from "react";
+import { Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
-import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
   readRecord,
   readString,
   readStringArray,
 } from "@/src/components/exercise/courseExerciseContent";
-import { guidedRecallChipsStyles as styles } from "@/src/components/exercise/guidedRecallChipsStyles";
+import {
+  WaveOrderChip,
+  WaveOrderSlot,
+} from "@/src/components/exercise/WaveOrderComponents";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
+// ponytail: tactile ordering engine with destination slots, 3D buttons, and zero-gap layout
 export function GuidedRecallChipsCategoryEngine({
   exercise,
   savedResponse,
@@ -22,10 +25,22 @@ export function GuidedRecallChipsCategoryEngine({
   const answer = readStringArray(content.answer);
   const chips = readStringArray(content.chips);
   const selectedChips = readStringArray(saved?.selectedChips);
+  const isCorrect = saved?.isCorrect === true;
 
   useEffect(() => {
     if (!saved) onInteraction(createResponse(), false);
   }, [onInteraction, saved]);
+
+  // ponytail: success notification when correct order is reached
+  useEffect(() => {
+    if (isCorrect) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+  }, [isCorrect]);
+
+  const availablePool = useMemo(() => {
+    return chips.filter((chip) => !selectedChips.includes(chip));
+  }, [chips, selectedChips]);
 
   const updateSelection = (nextChips: string[]) => {
     const complete = nextChips.length === answer.length;
@@ -48,109 +63,85 @@ export function GuidedRecallChipsCategoryEngine({
   };
 
   const addChip = (chip: string) => {
-    if (locked || selectedChips.includes(chip)) return;
+    if (locked || isCorrect || selectedChips.includes(chip)) return;
     if (selectedChips.length >= answer.length) return;
     Haptics.selectionAsync();
     updateSelection([...selectedChips, chip]);
   };
 
   const removeChip = (index: number) => {
-    if (locked) return;
+    if (locked || isCorrect) return;
     Haptics.selectionAsync();
     updateSelection(
       selectedChips.filter((_, chipIndex) => chipIndex !== index),
     );
   };
 
-  return (
-    <View style={styles.screenContent}>
-      <CourseExerciseHeading
-        title={readString(content.title) ?? "Rebuild the loop"}
-        instruction={
-          readString(content.instruction) ?? "Tap the chips in order."
-        }
-        prompt={readString(content.prompt)}
-      />
+  const promptText = readString(content.prompt);
 
-      <View style={styles.tray}>
-        {selectedChips.length === 0 ? (
-          <Text style={styles.trayHint}>Tap the chips below, in order</Text>
-        ) : (
-          <View style={styles.chipWrap}>
-            {selectedChips.map((chip, index) => (
-              <RecallChip
-                key={`${chip}-${index}`}
-                label={chip}
-                number={index + 1}
-                selected
-                disabled={locked}
-                onPress={() => removeChip(index)}
-              />
-            ))}
-          </View>
-        )}
+  return (
+    <View className="flex-1 -mt-11 px-5 pb-8 pt-0">
+      {/* Title & Subtitle */}
+      <View className="mb-1">
+        <Text className="happy-font-heading-bold text-[24px] leading-[30px] text-[#201E1D] tracking-tight">
+          {readString(content.title) ?? "Rebuild the loop"}
+        </Text>
+        <Text className="happy-font-body text-[14.5px] leading-[20px] text-[#7A7265] mt-1">
+          {readString(content.instruction) ?? "Tap the steps in order."}
+        </Text>
       </View>
 
-      <View style={styles.pool}>
-        {chips.map((chip) => {
-          const used = selectedChips.includes(chip);
+      {/* Question Prompt */}
+      {promptText ? (
+        <Text className="happy-font-body-medium text-[15px] leading-[22px] text-[#2C2825] mt-3.5 mb-3">
+          {promptText}
+        </Text>
+      ) : null}
+
+      {/* Destination Order Slots */}
+      <View className="gap-2.5">
+        {answer.map((_, index) => {
+          const stage = selectedChips[index];
           return (
-            <RecallChip
-              key={chip}
-              label={chip}
-              disabled={locked || used}
-              muted={used}
-              onPress={() => addChip(chip)}
+            <WaveOrderSlot
+              key={index}
+              index={index}
+              stage={stage}
+              mark={isCorrect ? true : undefined}
+              phase={isCorrect ? "complete" : "entry"}
+              locked={locked}
+              onPress={() => removeChip(index)}
             />
           );
         })}
       </View>
-    </View>
-  );
-}
 
-function RecallChip({
-  disabled,
-  label,
-  muted = false,
-  number,
-  onPress,
-  selected = false,
-}: {
-  disabled: boolean;
-  label: string;
-  muted?: boolean;
-  number?: number;
-  onPress: () => void;
-  selected?: boolean;
-}) {
-  return (
-    <View style={[styles.chipContainer, muted && styles.mutedChip]}>
-      <View style={[styles.chipRim, selected && styles.chipSelectedRim]} />
-      <Pressable
-        accessibilityRole="button"
-        disabled={disabled}
-        onPress={onPress}
-        style={({ pressed }) => [
-          styles.chip,
-          selected && styles.selectedChip,
-          pressed && styles.pressedChip,
-        ]}
-      >
-        {number ? (
-          <View style={styles.chipNumber}>
-            <Text style={styles.chipNumberLabel}>{number}</Text>
-          </View>
-        ) : null}
-        <Text style={[styles.chipLabel, selected && styles.selectedLabel]}>{label}</Text>
-      </Pressable>
+      {/* Available Tappable Chips (collapsed once placed) */}
+      {!isCorrect && availablePool.length > 0 ? (
+        <View className="mt-4 w-full gap-2.5">
+          <Text className="happy-font-body-bold text-[12px] uppercase tracking-wider text-[#82796A] mb-0.5">
+            Available steps
+          </Text>
+          {availablePool.map((chip) => (
+            <WaveOrderChip
+              key={chip}
+              stage={chip}
+              disabled={locked || selectedChips.length >= answer.length}
+              onPress={() => addChip(chip)}
+            />
+          ))}
+        </View>
+      ) : null}
+
+      {/* Generous bottom spacing: guarantees no sticky CTA overlap */}
+      <View className="h-44" />
     </View>
   );
 }
 
 function createResponse(extra: Record<string, unknown> = {}) {
   return {
-    category: CourseExerciseCategoryEnum.guided_recall_chips,
+    category: CourseExerciseCategoryEnum.GuidedRecallChips,
     selectedChips: [],
     ...extra,
   };

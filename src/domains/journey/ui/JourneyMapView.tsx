@@ -7,6 +7,7 @@ import { GlassView } from "expo-glass-effect";
 import { SafeAreaView } from "@/src/components/tw";
 
 import CourseCatalogSheet from "./components/CourseCatalogSheet";
+import NextJourneyBridgeDock from "./components/NextJourneyBridgeDock";
 import { HomeMainButton } from "./components/home-main-button";
 import { DuolingoHeader } from "./components/DuolingoHeader";
 import JourneyMapFlashList from "./components/JourneyMapFlashList";
@@ -73,6 +74,14 @@ export const JourneyMapView = React.memo(function JourneyMapView({
       });
     },
     [controller, courseId],
+  );
+
+  const handleStartNextCourse = React.useCallback(
+    async (nextCourseId: string) => {
+      await controller.handleStartNextCourse(nextCourseId);
+      setActiveCourseId(nextCourseId);
+    },
+    [controller, setActiveCourseId],
   );
 
   if (model.isPreparing) {
@@ -181,6 +190,19 @@ export const JourneyMapView = React.memo(function JourneyMapView({
           </Animated.View>
         </AmbientTapDust>
       </>
+      {controller.recommendation.isCompleted &&
+        !isCourseCatalogPresented &&
+        !controller.isOverlayOpen && (
+        <NextJourneyBridgeDock
+          nextCourse={controller.recommendation.nextCourse}
+          isAllCoursesCompleted={controller.recommendation.isAllCoursesCompleted}
+          isLoading={controller.isStartingNextCourse}
+          onStartNextCourse={handleStartNextCourse}
+          onBrowseCatalog={onAddCoursePress}
+          currentCourseTitle={controller.courseTitle}
+          completionMessage={controller.courseCompletionMessage}
+        />
+      )}
       <CourseCatalogSheet
         isPresented={isCourseCatalogPresented}
         enrolledCourses={enrolledCourses}

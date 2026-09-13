@@ -11,6 +11,8 @@ interface CourseExerciseOptionButtonProps {
   disabled?: boolean;
   align?: "left" | "center";
   showConfirmationIcon?: boolean;
+  showSelectionCheckmark?: boolean;
+  indicatorPosition?: "leading" | "trailing";
   result?: "correct" | "incorrect";
   role?: "button" | "radio";
   onPress: () => void;
@@ -25,6 +27,8 @@ export function CourseExerciseOptionButton({
   disabled,
   align,
   showConfirmationIcon,
+  showSelectionCheckmark,
+  indicatorPosition,
   result,
   role = "button",
   onPress,
@@ -36,6 +40,11 @@ export function CourseExerciseOptionButton({
     showConfirmationIcon !== false,
     result,
   );
+  // ponytail: trailing checkmark for selected choice
+  const showTrailingIndicator =
+    indicatorPosition === "trailing" &&
+    selected &&
+    (showConfirmationIcon !== false || showSelectionCheckmark);
 
   return (
     <View style={styles.container}>
@@ -55,7 +64,9 @@ export function CourseExerciseOptionButton({
           pressed && styles.facePressed,
         ]}
       >
-        <OptionStateIcon state={visualState} />
+        {indicatorPosition !== "trailing" ? (
+          <OptionStateIcon state={visualState} />
+        ) : null}
         <Text
           style={[
             styles.label,
@@ -65,6 +76,11 @@ export function CourseExerciseOptionButton({
         >
           {label}
         </Text>
+        {showTrailingIndicator ? (
+          <View style={styles.checkCircle}>
+            <Text style={styles.checkLabel}>✓</Text>
+          </View>
+        ) : null}
       </Pressable>
     </View>
   );
@@ -168,16 +184,17 @@ const styles = StyleSheet.create({
     backgroundColor: SEMANTIC_COLORS.selection.surface,
   },
   faceConfirmed: {
-    borderColor: SEMANTIC_COLORS.success.border,
-    backgroundColor: SEMANTIC_COLORS.success.surface,
+    borderColor: "#ABC0A2",
+    backgroundColor: "#F2F8EF",
   },
   faceIncorrect: {
     borderColor: SEMANTIC_COLORS.error.border,
     backgroundColor: SEMANTIC_COLORS.error.surface,
   },
   faceDisabled: {
-    borderColor: SEMANTIC_COLORS.disabled.border,
-    backgroundColor: SEMANTIC_COLORS.disabled.surface,
+    borderColor: "#E2DAD0",
+    backgroundColor: "#FFFFFF",
+    opacity: 0.65,
   },
   facePressed: {
     transform: [{ translateY: 3 }],
@@ -189,23 +206,27 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 24,
   },
-  selectedLabel: { color: SEMANTIC_COLORS.text.primary },
-  correctLabel: { color: SEMANTIC_COLORS.success.foreground },
+  selectedLabel: { color: "#1B3B2B" },
+  correctLabel: { color: "#1B3B2B" },
   incorrectLabel: { color: SEMANTIC_COLORS.error.foreground },
-  disabledLabel: { color: SEMANTIC_COLORS.disabled.foreground },
+  disabledLabel: { color: "#201E1D" },
   checkCircle: {
+    width: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  errorCircle: {
     width: 24,
     height: 24,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 12,
-    backgroundColor: SEMANTIC_COLORS.success.indicator,
+    backgroundColor: SEMANTIC_COLORS.error.indicator,
   },
-  errorCircle: { backgroundColor: SEMANTIC_COLORS.error.indicator },
   checkLabel: {
-    color: SEMANTIC_COLORS.brand.onPrimary,
+    color: "#3C5A3E",
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 14,
+    fontSize: 16,
   },
 });
 
@@ -220,11 +241,11 @@ const FACE_STYLES = {
 
 const RIM_STYLES = {
   default: undefined,
-  selected: { backgroundColor: SEMANTIC_COLORS.selection.border },
-  confirmed: { backgroundColor: SEMANTIC_COLORS.success.border },
-  correct: { backgroundColor: SEMANTIC_COLORS.success.border },
+  selected: { backgroundColor: "#8FA885" },
+  confirmed: { backgroundColor: "#8FA885" },
+  correct: { backgroundColor: "#8FA885" },
   incorrect: { backgroundColor: SEMANTIC_COLORS.error.border },
-  disabled: { backgroundColor: SEMANTIC_COLORS.disabled.border },
+  disabled: { backgroundColor: SEMANTIC_COLORS.border.default },
 } as const;
 
 const LABEL_STYLES = {

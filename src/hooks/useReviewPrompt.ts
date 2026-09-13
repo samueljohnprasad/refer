@@ -1,77 +1,90 @@
 import { useEffect, useCallback } from "react";
 import * as StoreReview from "expo-store-review";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Alert } from "react-native";
 
-const REVIEW_REQUESTED_KEY = "app_review_requested";
-const REVIEW_MILESTONE_STREAK = 7; // Trigger at 7-day streak
+const REVIEW_LAST_REQUESTED_KEY = "app_review_last_requested_at";
+const LEGACY_REVIEW_REQUESTED_KEY = "app_review_requested";
+const REVIEW_MILESTONE_STREAK = 3;
+// Apple allows max 3 prompts per 365 days; wait at least 120 days between requests
+const MIN_DAYS_BETWEEN_REQUESTS = 120;
 
 interface UseReviewPromptParams {
   currentStreak: number;
+  previousStreak?: number;
   enabled?: boolean;
 }
 
+type Milestone = "streak_3" | "streak_7" | "streak_15";
+
+// ponytail: native in-app review prompt triggered at Day 3 (2->3), Day 7, and Day 15 milestones per Apple HIG
 export const useReviewPrompt = ({
   currentStreak,
+  previousStreak,
   enabled = true,
 }: UseReviewPromptParams) => {
-  const requestReview = useCallback(async () => {
-    try {
-      // Check if we've already requested a review
-      const hasRequested = await AsyncStorage.getItem(REVIEW_REQUESTED_KEY);
+  const isStreak3 =
+    previousStreak !== undefined
+      ? previousStreak === 2 && currentStreak === 3
+      : currentStreak === 3;
+  const isStreak7 = currentStreak === 7;
+  const isStreak15 = currentStreak === 15;
 
-      if (hasRequested) {
-        return; // Don't ask again
+  const currentMilestone: Milestone | null = isStreak3
+    ? "streak_3"
+    : isStreak7
+      ? "streak_7"
+      : isStreak15
+        ? "streak_15"
+        : null;
+
+  const requestReview = useCallback(async () => {
+    if (!currentMilestone) return;
+
+    try {
+      // Check legacy single-shot key
+      const legacyRequested = await AsyncStorage.getItem(
+        LEGACY_REVIEW_REQUESTED_KEY,
+      );
+      if (legacyRequested === "true") {
+        return;
+      }
+
+      // Check if this specific milestone was already prompted
+      const milestoneKey = `@happy/review_prompted_${currentMilestone}`;
+      const alreadyPrompted = await AsyncStorage.getItem(milestoneKey);
+      if (alreadyPrompted === "true") {
+        return;
       }
 
       // Check if device supports in-app reviews
       const isAvailable = await StoreReview.isAvailableAsync();
+      const hasAction = await StoreReview.hasAction();
 
-      if (!isAvailable) {
+      if (!isAvailable || !hasAction) {
         return;
       }
 
-      // Show encouraging message first
-      Alert.alert(
-        "🌟 Day 7 of Reflection",
-        "You've started your journey to self-awareness. We hope this space brings clarity to your thoughts. If it has, would you mind sharing your experience on the App Store?",
-        [
-          {
-            text: "Not Now",
-            style: "cancel",
-            onPress: async () => {
-              // Mark as requested even if declined
-              await AsyncStorage.setItem(REVIEW_REQUESTED_KEY, "true");
-            },
-          },
-          {
-            text: "Rate App",
-            onPress: async () => {
-              await StoreReview.requestReview();
-              await AsyncStorage.setItem(REVIEW_REQUESTED_KEY, "true");
-            },
-          },
-        ],
-        { cancelable: true }
-      );
+      // Record milestone prompted before calling
+      await AsyncStorage.setItem(milestoneKey, "true");
+
+      // Apple HIG: call native requestReview directly without pre-alert interruption
+      await StoreReview.requestReview();
     } catch (error) {
       console.error("Error requesting review:", error);
     }
-  }, []);
+  }, [currentMilestone]);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || !currentMilestone) return;
 
-    // Trigger review request when user hits the 1-day milestone
-    if (currentStreak === REVIEW_MILESTONE_STREAK) {
-      // Small delay to avoid interrupting the streak celebration
-      const timer = setTimeout(() => {
-        requestReview();
-      }, 2000);
+    // Delay so celebration animation completes and user enjoys the moment
+    const timer = setTimeout(() => {
+      requestReview();
+    }, 1800);
 
-      return () => clearTimeout(timer);
-    }
-  }, [currentStreak, enabled, requestReview]);
+    return () => clearTimeout(timer);
+  }, [enabled, currentMilestone, requestReview]);
 
   return { requestReview };
 };
+

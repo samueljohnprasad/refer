@@ -4,6 +4,7 @@ import { narrativeMicrolearningFixtures } from "./narrative";
 import { priorityMicrolearningFixtures } from "./priority";
 import { reviewMicrolearningFixtures } from "./review";
 import { draftMicrolearningFixtures } from "./drafts";
+import { showcaseMicrolearningFixtures } from "./showcase";
 
 export interface MicrolearningFixtureGroup {
   id: string;
@@ -17,13 +18,16 @@ export const microlearningFixtureGroups: readonly MicrolearningFixtureGroup[] =
     {
       id: "showcase",
       label: "Showcase",
-      exercises: draftMicrolearningFixtures.filter((fixture) =>
-        [
-          "fixture-socratic-dialogue",
-          "fixture-story-serial",
-          "fixture-surge-diagram",
-        ].includes(fixture.id),
-      ),
+      exercises: [
+        ...draftMicrolearningFixtures.filter((fixture) =>
+          [
+            "fixture-socratic-dialogue",
+            "fixture-story-serial",
+            "fixture-surge-diagram",
+          ].includes(fixture.id),
+        ),
+        ...showcaseMicrolearningFixtures,
+      ],
     },
     {
       id: "priority",
@@ -53,6 +57,9 @@ export const microlearningFixtureGroups: readonly MicrolearningFixtureGroup[] =
   ];
 
 export const allMicrolearningFixtures: readonly Exercise[] = [
+  ...showcaseMicrolearningFixtures.filter(
+    (fixture) => fixture.id !== "fixture-teach-back-chain",
+  ),
   ...priorityMicrolearningFixtures.filter(
     (fixture) => fixture.id !== "fixture-reframe-builder-space",
   ),

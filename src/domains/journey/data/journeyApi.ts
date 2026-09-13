@@ -54,7 +54,8 @@ async function runServerQuery<T>(
       ...summarizeResult(data),
       durationMs: Date.now() - startedAt,
     });
-    return { data };
+    // ponytail: RTK Query rejects { data: undefined }, normalize undefined to null
+    return { data: (data === undefined ? (null as T) : data) };
   } catch (error) {
     log.error("request_failed", {
       operation,

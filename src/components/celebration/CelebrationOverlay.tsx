@@ -6,6 +6,7 @@ import { useCelebrationTimeline } from '../../hooks/useCelebrationTimeline';
 import { HappyRipple } from './HappyRipple';
 import { PandaMetaphor } from './PandaMetaphor';
 import { StreakIndicator } from './StreakIndicator';
+import { Button } from '@/src/components/ui/Button';
 import { SEMANTIC_COLORS } from '../../../src/theme/colors';
 
 export interface CelebrationOverlayProps {
@@ -116,14 +117,15 @@ export function CelebrationOverlay({
               </Animated.View>
 
               <Animated.View style={buttonStyle} className="w-full">
-                <Pressable 
+                {/* ponytail: standard 3D tactile button */}
+                <Button
+                  label="Continue"
+                  variant="primary"
+                  size="lg"
+                  fullWidth
                   onPress={handlePress}
-                  className="py-4 rounded-2xl items-center w-full shadow-sm"
-                  style={{ backgroundColor: SEMANTIC_COLORS.brand.primary }}
                   disabled={!canInteract}
-                >
-                  <Text className="font-nunito-700 text-white text-lg">Continue</Text>
-                </Pressable>
+                />
               </Animated.View>
             </View>
 

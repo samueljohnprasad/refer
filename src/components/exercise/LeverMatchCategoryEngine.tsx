@@ -1,5 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, Pressable, Text, View } from "react-native";
+import { Animated, Pressable, Text, View, AccessibilityInfo, LayoutAnimation, UIManager, Platform } from "react-native";
+import { useReducedMotion } from "react-native-reanimated";
+
+if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
@@ -30,7 +35,6 @@ export function LeverMatchCategoryEngine({
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const pairs = readPairs(content.pairs);
-  const rightOrder = readStringArray(content.rightOrder);
   const matchedIds = readStringArray(saved?.matchedIds);
   const selectedLeftId = readString(saved?.selectedLeftId);
   const selectedRightId = readString(saved?.selectedRightId);
@@ -38,7 +42,10 @@ export function LeverMatchCategoryEngine({
   const [wrongPair, setWrongPair] = useState<WrongPair | null>(null);
   const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const allMatched = pairs.length > 0 && matchedIds.length >= pairs.length;
-  const orderedRightPairs = orderRightPairs(pairs, rightOrder);
+  const [orderedRightPairs, setOrderedRightPairs] = useState(() => {
+    return allMatched ? pairs : [...pairs].sort(() => Math.random() - 0.5);
+  });
+  const [hasReordered, setHasReordered] = useState(allMatched);
 
   useEffect(() => {
     if (!saved) onInteraction(createResponse(), false);
@@ -51,6 +58,20 @@ export function LeverMatchCategoryEngine({
     [],
   );
 
+  const reducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (allMatched && !hasReordered) {
+      if (!reducedMotion) {
+        LayoutAnimation.configureNext(
+          LayoutAnimation.create(250, 'easeInEaseOut', 'opacity')
+        );
+      }
+      setOrderedRightPairs(pairs);
+      setHasReordered(true);
+    }
+  }, [allMatched, hasReordered, pairs, reducedMotion]);
+
   const chooseLeft = (id: string) => {
     if (locked || matchedIds.includes(id) || wrongPair) return;
     Haptics.selectionAsync();
@@ -58,6 +79,8 @@ export function LeverMatchCategoryEngine({
       resolvePair(id, selectedRightId);
       return;
     }
+    const label = pairs.find(p => p.id === id)?.left;
+    if (label) AccessibilityInfo.announceForAccessibility(`${label} selected. Choose a consequence.`);
     onInteraction(
       createResponse({ ...saved, selectedLeftId: id, selectedRightId: null }),
       false,
@@ -71,6 +94,8 @@ export function LeverMatchCategoryEngine({
       resolvePair(selectedLeftId, id);
       return;
     }
+    const label = pairs.find(p => p.id === id)?.right;
+    if (label) AccessibilityInfo.announceForAccessibility(`${label} selected. Choose an action.`);
     onInteraction(
       createResponse({ ...saved, selectedLeftId: null, selectedRightId: id }),
       false,
@@ -81,6 +106,15 @@ export function LeverMatchCategoryEngine({
     if (leftId === rightId) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       const nextMatched = [...new Set([...matchedIds, leftId])];
+      const leftLabel = pairs.find(p => p.id === leftId)?.left;
+      const rightLabel = pairs.find(p => p.id === leftId)?.right; // same id
+      
+      if (nextMatched.length >= pairs.length) {
+        AccessibilityInfo.announceForAccessibility("All 3 pairs matched.");
+      } else {
+        AccessibilityInfo.announceForAccessibility(`${leftLabel} matched with ${rightLabel}. ${nextMatched.length} of ${pairs.length} matched.`);
+      }
+      
       onInteraction(
         createResponse({
           ...saved,
@@ -94,28 +128,24 @@ export function LeverMatchCategoryEngine({
     }
 
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    AccessibilityInfo.announceForAccessibility("Not a match. Try again.");
     setWrongPair({ leftId, rightId });
     const nextMismatchCount = mismatchCount + 1;
-    const supportId = pairs[2]?.id;
-    const nextMatched =
-      nextMismatchCount >= 2 && supportId && !matchedIds.includes(supportId)
-        ? [...matchedIds, supportId]
-        : matchedIds;
     onInteraction(
       createResponse({
         ...saved,
-        matchedIds: nextMatched,
+        matchedIds,
         mismatchCount: nextMismatchCount,
         selectedLeftId: null,
         selectedRightId: null,
       }),
-      nextMatched.length >= pairs.length,
+      matchedIds.length >= pairs.length,
     );
     clearTimer.current = setTimeout(() => setWrongPair(null), 420);
   };
 
   return (
-    <View className="px-2 pb-3 pt-1.5">
+    <View className="px-2 pb-3 pt-0">
       <CourseExerciseHeading
         title={readString(content.title) ?? "Match the levers"}
         instruction={
@@ -123,55 +153,58 @@ export function LeverMatchCategoryEngine({
         }
       />
 
-      <View className="flex-row gap-2.5">
-        <View className="flex-1 gap-2.5">
-          {pairs.map((pair) => (
-            <MatchCard
-              key={pair.id}
-              label={pair.left}
-              selected={selectedLeftId === pair.id}
-              matched={matchedIds.includes(pair.id)}
-              wrong={wrongPair?.leftId === pair.id}
-              onPress={() => chooseLeft(pair.id)}
-            />
-          ))}
-        </View>
-        <View className="flex-1 gap-2.5">
-          {orderedRightPairs.map((pair) => (
-            <MatchCard
-              key={pair.id}
-              label={pair.right}
-              selected={selectedRightId === pair.id}
-              matched={matchedIds.includes(pair.id)}
-              wrong={wrongPair?.rightId === pair.id}
-              onPress={() => chooseRight(pair.id)}
-            />
-          ))}
-        </View>
+      <View className="gap-2">
+        {pairs.map((leftPair, index) => {
+          const rightPair = orderedRightPairs[index];
+          return (
+            <View className="flex-row gap-2" key={leftPair.id}>
+              <View className="flex-1">
+                <MatchCard
+                  label={leftPair.left}
+                  selected={selectedLeftId === leftPair.id}
+                  matched={matchedIds.includes(leftPair.id)}
+                  wrong={wrongPair?.leftId === leftPair.id}
+                  showCheck={true}
+                  onPress={() => chooseLeft(leftPair.id)}
+                />
+              </View>
+              <View className="flex-1">
+                <MatchCard
+                  key={rightPair.id}
+                  label={rightPair.right}
+                  selected={selectedRightId === rightPair.id}
+                  matched={matchedIds.includes(rightPair.id)}
+                  wrong={wrongPair?.rightId === rightPair.id}
+                  showCheck={false}
+                  onPress={() => chooseRight(rightPair.id)}
+                />
+              </View>
+            </View>
+          );
+        })}
       </View>
 
-      <Text className="happy-font-body mt-3 text-center text-xs text-[#82796A]">
-        {allMatched
-          ? "All matched"
-          : `${matchedIds.length} of ${pairs.length} matched · tap one from each side`}
-      </Text>
+      {!allMatched && (
+        <Text className="happy-font-body mt-3 text-center text-xs text-[#82796A]">
+          {matchedIds.length} of {pairs.length} matched
+        </Text>
+      )}
 
       {!allMatched ? (
-        <View className="mt-3 rounded-[20px] border border-[#E4DACB] bg-[#F9F4ED] px-4 py-3">
-          <Text className="happy-font-body text-[12.5px] leading-[18px] text-[#82796A]">
-            {readString(content.clue)}
-          </Text>
-        </View>
+        mismatchCount >= 2 ? (
+          <View className="mt-3 rounded-[16px] border border-[#E8DCCB] bg-[#FDF8F3] px-4 py-3">
+            <Text className="happy-font-body text-[13px] leading-[18px] text-[#82796A]">
+              {readString(content.clue)}
+            </Text>
+          </View>
+        ) : null
       ) : (
-        <View className="mt-3 rounded-[21px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-4 py-[14px]">
-          <Text className="happy-font-heading-bold text-lg leading-[22px] text-[#3F4A31]">
-            {readString(content.feedbackTitle) ?? "Why it fits"}
+        <View className="mt-4 rounded-[16px] border border-[#E8DCCB] bg-[#FDF8F3] px-4 py-4">
+          <Text className="happy-font-heading-bold text-[14px] tracking-wider text-[#55694A] mb-2 uppercase">
+            {readString(content.feedbackTitle) ?? "THE PATTERN"}
           </Text>
-          <Text className="happy-font-body mt-1.5 text-[13px] leading-[19px] text-[#3F4A31]">
+          <Text className="happy-font-body text-[14px] leading-[20px] text-[#201E1D]">
             {readString(content.feedback)}
-          </Text>
-          <Text className="happy-font-body-bold mt-2 text-[12.5px] leading-[18px] text-[#29452A]">
-            New capability: {readString(content.capability)}
           </Text>
         </View>
       )}
@@ -184,37 +217,42 @@ function MatchCard({
   selected,
   matched,
   wrong,
+  showCheck,
   onPress,
 }: {
   label: string;
   selected: boolean;
   matched: boolean;
   wrong: boolean;
+  showCheck?: boolean;
   onPress: () => void;
 }) {
   const className = matched
-    ? "min-h-[64px] items-center justify-center rounded-[19px] border-[1.5px] border-[#7E9874] bg-[#F2F8EF] px-2.5 py-2"
+    ? "min-h-[56px] justify-center rounded-[16px] border border-[#ABC0A2] bg-[#F2F8EF] px-3 py-1.5"
     : wrong
-      ? "min-h-[64px] items-center justify-center rounded-[19px] border-[1.5px] border-[#C86D55] bg-[#FFF0EA] px-2.5 py-2"
+      ? "min-h-[64px] justify-center rounded-[16px] border-[1.5px] border-[#D1A796] bg-[#FFF5F0] px-3 py-2"
       : selected
-        ? "min-h-[64px] items-center justify-center rounded-[19px] border-[1.5px] border-[#7E9874] bg-[#F2F8EF] px-2.5 py-2"
-        : "min-h-[64px] items-center justify-center rounded-[19px] border-[1.5px] border-[#DCD3C4] border-b-[3px] bg-[#F9F4ED] px-2.5 py-2 active:translate-y-0.5 active:border-b-[1.5px]";
+        ? "min-h-[64px] justify-center rounded-[16px] border-[1.5px] border-[#7E9874] bg-[#F2F8EF] px-3 py-2"
+        : "min-h-[64px] justify-center rounded-[16px] border border-[#E8DCCB] bg-[#FDF8F3] px-3 py-2 active:bg-[#F2ECE4]";
+  
+  const textClassName = matched
+    ? "happy-font-body-bold text-center text-[13px] leading-[18px] text-[#3F4A31]"
+    : "happy-font-body-bold text-center text-[13px] leading-[18px] text-[#201E1D]";
+
+  // Accessibility announcement strings
+  const stateLabel = matched ? "matched" : selected ? "selected" : "unmatched";
+
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityState={{ selected, disabled: matched }}
+      accessibilityLabel={`${label}, ${stateLabel}`}
       disabled={matched}
       onPress={onPress}
       className={className}
     >
-      <Text
-        className={
-          matched
-            ? "happy-font-body-bold text-center text-[12.5px] leading-[17px] text-[#29452A]"
-            : "happy-font-body-bold text-center text-[12.5px] leading-[17px] text-[#201E1D]"
-        }
-      >
-        {matched ? `✓  ${label}` : label}
+      <Text className={textClassName}>
+        {matched && showCheck ? `✓ ${label}` : label}
       </Text>
     </Pressable>
   );
@@ -229,11 +267,6 @@ function readPairs(value: unknown): LeverPair[] {
     const right = readString(pair?.right);
     return id && left && right ? [{ id, left, right }] : [];
   });
-}
-
-function orderRightPairs(pairs: LeverPair[], order: string[]): LeverPair[] {
-  if (!order.length) return [...pairs].reverse();
-  return order.flatMap((id) => pairs.find((pair) => pair.id === id) ?? []);
 }
 
 function readCount(value: unknown): number {

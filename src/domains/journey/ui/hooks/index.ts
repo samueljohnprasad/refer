@@ -1,4 +1,5 @@
 export * from './useAnimatedNodeButtonViewModel';
+export * from './useCheckpointSheet';
 export * from './useChestRewardModalViewModel';
 export * from './useCourseCatalogViewModel';
 export * from './useDividerCellViewModel';

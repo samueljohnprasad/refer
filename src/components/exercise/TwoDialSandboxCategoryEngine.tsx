@@ -278,11 +278,13 @@ function DialControl({
         maximumValue={100}
         step={1}
         value={value}
+        tapToSeek
         minimumTrackTintColor="#5F7F58"
         maximumTrackTintColor="#E2DDD5"
         thumbTintColor="#5F7F58"
         onValueChange={onChange}
-        style={{ width: "100%", height: 38 }}
+        hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}
+        style={{ width: "100%", height: 48 }}
       />
       <View className="flex-row justify-between px-0.5">
         <Text className="happy-font-body text-[11px] text-[#8A8A85]">{low}</Text>

@@ -49,8 +49,8 @@ export function ContinueJourneyCard({
 
   return (
     <View className={className} testID={testID}>
-      <View className="mb-1.5 px-1">
-        <Text className="text-[11px] font-semibold tracking-wider text-ink-muted/80 uppercase">
+      <View className="mb-2 px-1">
+        <Text className="text-[11px] font-semibold tracking-wider text-brand-primary/80 uppercase">
           Continue your journey
         </Text>
       </View>
@@ -68,18 +68,18 @@ export function ContinueJourneyCard({
         {state.type === "active_next_activity" && (
           <>
             <View className="flex-row items-center justify-between">
-              <View className="flex-1 pr-3">
+              <View className="flex-1 pr-5">
                 <Text
-                  className="font-bold text-[15px] text-ink tracking-tight"
+                  className="font-bold text-[16px] text-ink tracking-tight"
                   numberOfLines={1}
                 >
                   {state.courseTitle}
                 </Text>
                 <Text
-                  className="font-semibold text-[13px] text-ink-soft mt-0.5"
-                  numberOfLines={1}
+                  className="font-medium text-[14px] text-ink mt-0.5 leading-tight"
+                  numberOfLines={2}
                 >
-                  Next: {state.activityTitle}
+                  {state.activityTitle}
                 </Text>
                 {state.estimatedMins ? (
                   <View className="flex-row items-center mt-1.5">
@@ -93,9 +93,9 @@ export function ContinueJourneyCard({
 
               {/* Course artwork thumbnail */}
               {getCourseImageSource(state.courseArtworkKey) ? (
-                <Image
+               <Image
                   source={getCourseImageSource(state.courseArtworkKey)!}
-                  className="w-11 h-11 rounded-full bg-sand/20"
+                  className="w-10 h-10 rounded-full bg-sand/20"
                   resizeMode="cover"
                 />
               ) : (
@@ -103,7 +103,7 @@ export function ContinueJourneyCard({
                   style={{
                     backgroundColor: resolveCourseAccentColor(state.courseColorHex),
                   }}
-                  className="w-11 h-11 rounded-full items-center justify-center"
+                  className="w-10 h-10 rounded-full items-center justify-center"
                 >
                   <Text className="text-white font-bold text-[15px]">
                     {getCourseMonogram(state.courseTitle)}
@@ -113,8 +113,8 @@ export function ContinueJourneyCard({
             </View>
 
             {/* Primary Action Row */}
-            <View className="mt-3 pt-2.5 border-t border-sand/20 flex-row items-center justify-between">
-              <Text className="text-[13px] font-bold text-brand-primary">
+            <View className="mt-3 pt-2 flex-row items-center justify-between">
+              <Text className="text-[13px] font-semibold text-brand-primary">
                 {state.actionLabel}
               </Text>
               <ArrowRight size={14} color={SEMANTIC_COLORS.brand.primary as string} />
@@ -126,19 +126,19 @@ export function ContinueJourneyCard({
           <>
             <View className="flex-row items-center justify-between">
               <View className="flex-1 pr-3">
-                <Text className="font-bold text-[15px] text-ink tracking-tight">
+                <Text className="font-bold text-[16px] text-ink tracking-tight">
                   {state.title}
                 </Text>
-                <Text className="text-[13px] text-ink-soft mt-0.5">
+                <Text className="text-[14px] text-ink-soft mt-0.5">
                   {state.description}
                 </Text>
               </View>
-              <View className="w-11 h-11 rounded-full bg-sage-100 items-center justify-center">
+              <View className="w-10 h-10 rounded-full bg-sage-100 items-center justify-center">
                 <Compass size={20} color={SEMANTIC_COLORS.brand.primary as string} />
               </View>
             </View>
-            <View className="mt-3 pt-2.5 border-t border-sand/20 flex-row items-center justify-between">
-              <Text className="text-[13px] font-bold text-brand-primary">
+            <View className="mt-3 pt-2 flex-row items-center justify-between">
+              <Text className="text-[13px] font-semibold text-brand-primary">
                 {state.actionLabel}
               </Text>
               <ArrowRight size={14} color={SEMANTIC_COLORS.brand.primary as string} />
@@ -150,27 +150,27 @@ export function ContinueJourneyCard({
           <>
             <View className="flex-row items-center justify-between">
               <View className="flex-1 pr-3">
-                <Text className="font-bold text-[15px] text-ink tracking-tight">
+                <Text className="font-bold text-[16px] text-ink tracking-tight">
                   {state.title}
                 </Text>
-                <Text className="text-[13px] text-ink-soft mt-0.5">
+                <Text className="text-[14px] text-ink-soft mt-0.5">
                   {state.description}
                 </Text>
               </View>
               {getCourseImageSource(state.courseTitle) ? (
                 <Image
                   source={getCourseImageSource(state.courseTitle)!}
-                  className="w-11 h-11 rounded-full bg-sand/20"
+                  className="w-10 h-10 rounded-full bg-sand/20"
                   resizeMode="cover"
                 />
               ) : (
-                <View className="w-11 h-11 rounded-full bg-sage-100 items-center justify-center">
+                <View className="w-10 h-10 rounded-full bg-sage-100 items-center justify-center">
                   <Text className="text-brand-primary font-bold text-[15px]">✓</Text>
                 </View>
               )}
             </View>
-            <View className="mt-3 pt-2.5 border-t border-sand/20 flex-row items-center justify-between">
-              <Text className="text-[13px] font-bold text-brand-primary">
+            <View className="mt-3 pt-2 flex-row items-center justify-between">
+              <Text className="text-[13px] font-semibold text-brand-primary">
                 {state.actionLabel}
               </Text>
               <ArrowRight size={14} color={SEMANTIC_COLORS.brand.primary as string} />
@@ -182,19 +182,19 @@ export function ContinueJourneyCard({
           <>
             <View className="flex-row items-center justify-between">
               <View className="flex-1 pr-3">
-                <Text className="font-bold text-[15px] text-ink tracking-tight">
+                <Text className="font-bold text-[16px] text-ink tracking-tight">
                   Continue your journey
                 </Text>
-                <Text className="text-[13px] text-ink-soft mt-0.5">
+                <Text className="text-[14px] text-ink-soft mt-0.5">
                   Pick up where you left off.
                 </Text>
               </View>
-              <View className="w-11 h-11 rounded-full bg-sand/30 items-center justify-center">
+              <View className="w-10 h-10 rounded-full bg-sand/30 items-center justify-center">
                 <Compass size={20} color={SEMANTIC_COLORS.text.secondary as string} />
               </View>
             </View>
-            <View className="mt-3 pt-2.5 border-t border-sand/20 flex-row items-center justify-between">
-              <Text className="text-[13px] font-bold text-brand-primary">
+            <View className="mt-3 pt-2 flex-row items-center justify-between">
+              <Text className="text-[13px] font-semibold text-brand-primary">
                 {state.actionLabel}
               </Text>
               <ArrowRight size={14} color={SEMANTIC_COLORS.brand.primary as string} />

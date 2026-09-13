@@ -4,6 +4,7 @@ import { EvidenceBiteCategoryEngine } from "@/src/components/exercise/EvidenceBi
 import { SurgeTimerCategoryEngine } from "@/src/components/exercise/SurgeTimerCategoryEngine";
 import type { CourseExerciseCategoryConfig } from "@/src/components/exercise/courseExerciseCategoryEngineRegistry";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
+import { WaveFaqConfig } from "@/src/exercises/WaveFaq/config";
 
 export const EIGHTH_BATCH_CATEGORY_CONFIGS = {
   [CourseExerciseCategoryEnum.EvidenceBite]: {
@@ -60,12 +61,20 @@ export const EIGHTH_BATCH_CATEGORY_CONFIGS = {
       }
     }
   },
-  [CourseExerciseCategoryEnum.WhyItMatters]: createConfig(
-    CourseExerciseCategoryEnum.WhyItMatters,
-    ConceptInsightCategoryEngine,
-    "Turn the wave model into one usable instruction.",
-    "This concept card is not available yet.",
-  ),
+  [CourseExerciseCategoryEnum.WhyItMatters]: {
+    category: CourseExerciseCategoryEnum.WhyItMatters,
+    formats: [CourseExerciseCategoryEnum.WhyItMatters],
+    engine: ConceptInsightCategoryEngine,
+    goalLabel: "Turn the wave model into one usable instruction.",
+    unavailableCopy: "This concept card is not available yet.",
+    // ponytail: direct continue flow
+    interaction: {
+      submissionMode: "explicit",
+      completesDirectly: true,
+      getPrimaryLabel: () => "Continue",
+      getPrimaryTransition: () => null,
+    },
+  },
   [CourseExerciseCategoryEnum.BreathingRound]: {
     category: CourseExerciseCategoryEnum.BreathingRound,
     formats: [CourseExerciseCategoryEnum.BreathingRound],
@@ -91,12 +100,7 @@ export const EIGHTH_BATCH_CATEGORY_CONFIGS = {
       },
     },
   },
-  [CourseExerciseCategoryEnum.WaveFaq]: createConfig(
-    CourseExerciseCategoryEnum.WaveFaq,
-    ConceptInsightCategoryEngine,
-    "Recognize a fresh worry as a re-trigger, not a failed fade.",
-    "This wave answer is not available yet.",
-  ),
+  [CourseExerciseCategoryEnum.WaveFaq]: WaveFaqConfig,
 } satisfies Partial<
   Record<CourseExerciseCategoryEnum, CourseExerciseCategoryConfig>
 >;

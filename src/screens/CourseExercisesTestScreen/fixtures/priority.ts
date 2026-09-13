@@ -148,38 +148,34 @@ export const priorityMicrolearningFixtures: readonly Exercise[] = [
     type: "teach_back_chain",
     isScored: false,
     content: {
-      title: "Teach the worry loop",
-      instruction: "Put each step in order, then apply it.",
+      title: "Build the worry loop",
+      instruction: "Put the pattern together, then break it.",
       message: "A worry can feel urgent before the facts are fully known.",
       steps: [
-        { id: "chain-check", label: "Check the evidence", order: 4 },
         { id: "chain-cue", label: "Notice uncertainty", order: 1 },
-        { id: "chain-body", label: "Body prepares to protect", order: 3 },
         { id: "chain-predict", label: "Mind predicts danger", order: 2 },
+        { id: "chain-body", label: "Body prepares to protect", order: 3 },
       ],
       transfer: {
-        prompt: "Which response keeps the facts open?",
+        prompt: "Where can you interrupt the loop?",
         options: [
           {
-            id: "transfer-supported",
-            label: "Name alarm and evidence",
+            id: "transfer-check-evidence",
+            label: "Check what you know",
             isSupported: true,
-            response: "That respects the alarm without treating it as proof.",
-            takeaway: "A feeling can matter without confirming the feared outcome.",
+            response:
+              "Checking evidence interrupts the alarm before you treat the prediction as fact.",
+            takeaway:
+              "A prediction feels certain, but checking facts keeps the loop from spinning.",
           },
           {
-            id: "transfer-proof",
-            label: "Treat alarm as proof",
+            id: "transfer-treat-as-fact",
+            label: "Treat prediction as fact",
             isSupported: false,
-            response: "The alarm is a signal, not final evidence about the outcome.",
-            takeaway: "Keep the signal and the facts separate.",
-          },
-          {
-            id: "transfer-dismiss",
-            label: "Dismiss the alarm",
-            isSupported: false,
-            response: "The alarm deserves care even while the facts remain open.",
-            takeaway: "Notice the signal before choosing a next step.",
+            response:
+              "Treating thoughts as facts feeds the alarm and triggers another round of worry.",
+            takeaway:
+              "Believing every alarm keeps the body in survival mode.",
           },
         ],
       },

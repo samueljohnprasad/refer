@@ -22,6 +22,8 @@ export interface RecallCard {
 
 export interface RecallWarmupContent {
   type: "recall_warmup";
+  title?: string;
+  instruction?: string;
   cards: RecallCard[];
 }
 

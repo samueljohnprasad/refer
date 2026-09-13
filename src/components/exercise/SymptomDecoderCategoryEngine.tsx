@@ -1,11 +1,12 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { LayoutAnimation, StyleSheet, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import { CourseExerciseOptionButton } from "@/src/components/exercise/CourseExerciseOptionButton";
 import {
   COURSE_EXERCISE_FONTS,
-  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
+  SEMANTIC_COLORS,
+} from "@/src/components/exercise/courseExerciseTheme";
 import {
   readCourseExerciseOptions,
   readRecord,
@@ -14,6 +15,7 @@ import {
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
+// ponytail: personal discovery exercise reveals explanation directly under selected symptom
 export function SymptomDecoderCategoryEngine({
   exercise,
   savedResponse,
@@ -25,15 +27,13 @@ export function SymptomDecoderCategoryEngine({
   const selectedOptionId = readString(
     readRecord(savedResponse)?.selectedOptionId,
   );
-  const selectedOption = options.find(
-    (option) => option.id === selectedOptionId,
-  );
 
   const chooseOption = (optionId: string) => {
     if (locked) {
       return;
     }
 
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     onInteraction(
       {
         format: CourseExerciseCategoryEnum.SymptomDecoder,
@@ -47,39 +47,59 @@ export function SymptomDecoderCategoryEngine({
   return (
     <View style={styles.screenContent}>
       <CourseExerciseHeading
-        title={readString(content.title) ?? "Which of these do you know?"}
+        title={readString(content.title) ?? "Decoding body alarms"}
         instruction={
           readString(content.instruction) ??
-          "Tap the one that sounds most like you."
+          "Tap the symptom that feels most familiar."
         }
       />
 
       <View style={styles.options}>
-        {options.map((option) => (
-          <CourseExerciseOptionButton
-            key={option.id}
-            label={option.label}
-            selected={selectedOptionId === option.id}
-            disabled={locked}
-            onPress={() => chooseOption(option.id)}
-          />
-        ))}
+        {options.map((option) => {
+          const isSelected = selectedOptionId === option.id;
+          const bodyParagraphs = (option.body ?? "")
+            .split("\n\n")
+            .map((p) => p.trim())
+            .filter(Boolean);
+
+          return (
+            <View key={option.id} style={styles.optionGroup}>
+              <CourseExerciseOptionButton
+                label={option.label}
+                selected={isSelected}
+                disabled={locked}
+                indicatorPosition="trailing"
+                showSelectionCheckmark
+                onPress={() => chooseOption(option.id)}
+              />
+
+              {isSelected ? (
+                <View style={styles.reveal}>
+                  <Text style={styles.revealTitle}>
+                    {option.detail ?? "YOUR BODY’S ALARM RESPONSE"}
+                  </Text>
+                  {bodyParagraphs.map((paragraph, index) => (
+                    <Text
+                      key={index}
+                      style={[
+                        styles.revealBody,
+                        index > 0 ? styles.revealParagraphGap : undefined,
+                      ]}
+                    >
+                      {paragraph}
+                    </Text>
+                  ))}
+                </View>
+              ) : null}
+            </View>
+          );
+        })}
       </View>
 
-      {selectedOption ? (
-        <View style={styles.reveal}>
-          <Text style={styles.revealTitle}>{selectedOption.detail}</Text>
-          <Text style={styles.revealBody}>{selectedOption.body}</Text>
-          {selectedOption.next ? (
-            <Text style={styles.next}>{selectedOption.next}</Text>
-          ) : null}
-        </View>
-      ) : null}
-
       <View style={styles.privateNote}>
-        <Feather name="lock" size={14} color={SEMANTIC_COLORS.text.secondary} />
+        <Feather name="lock" size={13} color={SEMANTIC_COLORS.text.secondary} />
         <Text style={styles.privateNoteText}>
-          Private. Your choice quietly shapes which lessons come first.
+          Your choice helps tailor what comes next.
         </Text>
       </View>
     </View>
@@ -90,47 +110,50 @@ const styles = StyleSheet.create({
   screenContent: {
     flex: 1,
     paddingHorizontal: 8,
-    paddingTop: 6,
-    paddingBottom: 12,
+    paddingTop: 0,
+    paddingBottom: 8,
   },
-  options: { gap: 9 },
+  options: {
+    gap: 8,
+    marginTop: 0,
+  },
+  optionGroup: {
+    gap: 6,
+  },
   reveal: {
-    marginTop: 16,
-    paddingHorizontal: 18,
-    paddingVertical: 17,
+    paddingHorizontal: 16,
+    paddingVertical: 13,
     borderWidth: 1,
-    borderColor: SEMANTIC_COLORS.border.default,
-    borderRadius: 24,
-    backgroundColor: SEMANTIC_COLORS.surface.primary,
+    borderColor: "#D9E5D5",
+    borderRadius: 18,
+    backgroundColor: "#F2F8EF",
   },
   revealTitle: {
-    color: SEMANTIC_COLORS.brand.pressed,
-    fontFamily: COURSE_EXERCISE_FONTS.heading,
-    fontSize: 18,
-    lineHeight: 23,
+    color: "#2D4F35",
+    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
+    fontSize: 12,
+    lineHeight: 16,
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    marginBottom: 6,
   },
   revealBody: {
-    marginTop: 7,
     color: SEMANTIC_COLORS.text.primary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 14,
+    lineHeight: 20,
   },
-  next: {
-    marginTop: 10,
-    color: SEMANTIC_COLORS.brand.primary,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 13,
-    lineHeight: 18,
+  revealParagraphGap: {
+    marginTop: 7,
   },
   privateNote: {
-    marginTop: 14,
+    marginTop: 10,
     flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 7,
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 4,
   },
   privateNoteText: {
-    flex: 1,
     color: SEMANTIC_COLORS.text.secondary,
     fontFamily: COURSE_EXERCISE_FONTS.body,
     fontSize: 13,

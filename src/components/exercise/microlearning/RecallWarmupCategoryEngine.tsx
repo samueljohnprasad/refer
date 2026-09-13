@@ -8,6 +8,7 @@ import * as Haptics from "expo-haptics";
 import Animated, { FadeIn, SlideInDown, FadeOut } from "react-native-reanimated";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 
+// ponytail: clean memory check engine with unbiased self-rating tactile buttons
 export function RecallWarmupCategoryEngine({
   exercise,
   savedResponse,
@@ -18,10 +19,12 @@ export function RecallWarmupCategoryEngine({
   
   const { currentCardIndex, cardPhase, phase } = response;
   const reducedMotion = useReducedMotion();
-  const card = content.cards[currentCardIndex];
+  const cards = content?.cards ?? [];
+  const card = cards[currentCardIndex];
   const isAnswerRevealed = cardPhase === "answer";
 
   const [feedback, setFeedback] = useState<"got_it" | "bring_back" | null>(null);
+  const [selectedGrade, setSelectedGrade] = useState<"remembered" | "practice_again" | null>(null);
 
   useEffect(() => {
     if (!savedResponse) {
@@ -36,7 +39,9 @@ export function RecallWarmupCategoryEngine({
   };
 
   const handleGrade = (grade: "remembered" | "practice_again") => {
+    if (selectedGrade !== null) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setSelectedGrade(grade);
     setFeedback(grade === "remembered" ? "got_it" : "bring_back");
     
     // Track opaque scored choice telemetry for this card
@@ -44,7 +49,7 @@ export function RecallWarmupCategoryEngine({
       eventName: "opaque_scored_choice",
       category: "recall_warmup",
       exerciseId: exercise.id,
-      conceptId: card.conceptId,
+      conceptId: card?.conceptId ?? `card-${currentCardIndex}`,
       stageIndex: currentCardIndex,
       correctness: grade === "remembered",
       attemptCount: 1,
@@ -53,55 +58,60 @@ export function RecallWarmupCategoryEngine({
     });
 
     setTimeout(() => {
+      setSelectedGrade(null);
       setFeedback(null);
-      const isLastCard = currentCardIndex === content.cards.length - 1;
+      const isLastCard = currentCardIndex === cards.length - 1;
       const nextResponse: RecallWarmupResponse = {
         ...response,
         reviewSignals: {
           ...response.reviewSignals,
-          [card.conceptId]: grade,
+          [card?.conceptId ?? `card-${currentCardIndex}`]: grade,
         },
         currentCardIndex: isLastCard ? currentCardIndex : currentCardIndex + 1,
         cardPhase: isLastCard ? "answer" : "question",
         phase: isLastCard ? "complete" : "card",
       };
       onInteraction(nextResponse, isLastCard);
-    }, 1200);
+    }, 1000);
   };
 
   if (phase === "complete") {
     return (
-      <View className="flex-1 px-5 pt-8 pb-10 justify-center">
-        <Text className="text-[22px] leading-8 font-medium text-ink text-center">
+      <View className="flex-1 -mt-12 px-5 justify-center items-center">
+        <Text className="happy-font-heading-bold text-[22px] leading-[30px] text-[#201E1D] text-center">
           Nice — you tested what you could recall.
         </Text>
       </View>
     );
   }
 
+  if (!card) return null;
+
   return (
-    <View className="flex-1 px-5 pt-0 pb-8">
-      {/* HEADER */}
-      <View className="mb-4">
-        <Text className="text-[24px] font-bold text-ink tracking-[-0.4px] mb-1">
-          Recall Warmup
+    <View className="flex-1 -mt-12 px-5 pb-8 pt-0">
+      {/* Title & Subtitle */}
+      <View className="mb-6">
+        <Text className="happy-font-heading-bold text-[24px] leading-[30px] text-[#201E1D] tracking-tight">
+          {content.title ?? "Recall Warmup"}
         </Text>
-        <Text className="text-[15px] leading-5 text-ink-soft">
-          Try to remember the answer, then reveal it.
+        <Text className="happy-font-body text-[14.5px] leading-[20px] text-[#7A7265] mt-1">
+          {content.instruction ?? "Try to remember the answer, then reveal it."}
         </Text>
       </View>
 
-      {/* CARD */}
+      {/* Main Single Recall Card */}
       <Animated.View 
-        key={card.id + (isAnswerRevealed ? "-ans" : "-q")} 
-        entering={reducedMotion ? undefined : FadeIn.duration(300)}
-        className="rounded-[24px] bg-sage-50 border border-sage-100 px-6 py-7 shadow-sm shadow-black/5"
+        key={(card.id ?? `card-${currentCardIndex}`) + (isAnswerRevealed ? "-ans" : "-q")} 
+        entering={reducedMotion ? undefined : FadeIn.duration(250)}
+        className="rounded-[24px] border border-[#DFE8DC] bg-[#F3F8F2] px-6 pt-5 pb-5"
       >
-        <Text className="text-[11px] font-semibold tracking-widest uppercase text-sage-500 mb-4">
-          CONCEPT {currentCardIndex + 1} OF {content.cards.length}
+        {/* Concept Metadata Label */}
+        <Text className="text-[11px] font-bold tracking-wider uppercase text-[#2D5A32] mb-3">
+          CONCEPT {currentCardIndex + 1} OF {cards.length}
         </Text>
         
-        <Text className="text-[20px] font-bold leading-[28px] text-ink">
+        {/* Question Text */}
+        <Text className="happy-font-heading-semibold text-[20px] leading-[28px] text-[#201E1D]">
           {card.question}
         </Text>
 
@@ -109,67 +119,99 @@ export function RecallWarmupCategoryEngine({
           <TouchableOpacity
             onPress={handleReveal}
             activeOpacity={0.7}
-            className="mt-6 bg-transparent border border-sage-300 py-2.5 rounded-full items-center"
+            className="mt-6 rounded-full border border-[#D0DDD0] bg-[#FAF7F2] py-3 items-center"
             accessibilityRole="button"
           >
-            <Text className="text-ink text-[15px] font-medium tracking-wide">
+            <Text className="happy-font-body-semibold text-[14.5px] text-[#201E1D]">
               Reveal answer
             </Text>
           </TouchableOpacity>
         ) : (
-          <Animated.View entering={reducedMotion ? undefined : FadeIn.delay(150).duration(300)}>
-            <View className="h-px bg-sage-200 w-full my-6" />
-            <Text className="text-[18px] leading-[26px] text-ink">
+          <Animated.View entering={reducedMotion ? undefined : FadeIn.duration(250)}>
+            {/* Quiet Neutral Divider */}
+            <View className="h-px bg-[#E2ECE0] w-full my-6" />
+            {/* Answer Text */}
+            <Text className="happy-font-body text-[16px] leading-[25px] text-[#2C2825]">
               {card.answer}
             </Text>
           </Animated.View>
         )}
       </Animated.View>
 
-      {/* SELF RATING (Below Card) */}
+      {/* Self-Rating (Attached Below Card) */}
       {isAnswerRevealed && (
         <Animated.View 
-          entering={reducedMotion ? undefined : FadeIn.delay(300).duration(300)}
-          className="mt-8"
+          entering={reducedMotion ? undefined : FadeIn.delay(150).duration(250)}
+          className="mt-5"
         >
-          {feedback ? (
-            <Animated.View entering={FadeIn} exiting={FadeOut} className="items-center py-6">
-              <Text className="text-[17px] font-medium text-sage-700">
-                {feedback === "got_it" ? "Got it." : "We'll bring this one back."}
+          {/* Secondary Question / Quiet Feedback */}
+          <Text className="happy-font-body-medium text-center text-[14.5px] text-[#7A7265] mb-3.5">
+            {feedback
+              ? feedback === "got_it"
+                ? "Got it."
+                : "We'll bring this one back."
+              : "How well did you remember it?"}
+          </Text>
+
+          {/* Equal Unbiased Tactile Choice Buttons */}
+          <View className="flex-row gap-3">
+            {/* Practice Again */}
+            <TouchableOpacity
+              onPress={() => handleGrade("practice_again")}
+              activeOpacity={0.7}
+              disabled={selectedGrade !== null}
+              className={`flex-1 min-h-[52px] py-3.5 px-2 rounded-[18px] items-center justify-center border-[1.5px] ${
+                selectedGrade === "practice_again"
+                  ? "bg-[#EAF1E7] border-[#5F7F58] border-b-[3px] border-b-[#476342]"
+                  : selectedGrade === "remembered"
+                    ? "opacity-40 bg-[#FAF7F2] border-[#D6DFD4] border-b-[3px] border-b-[#C6D2C4]"
+                    : "bg-[#FAF7F2] border-[#D6DFD4] border-b-[3px] border-b-[#C6D2C4] active:translate-y-0.5"
+              }`}
+              accessibilityRole="button"
+              accessibilityLabel="Practice again"
+            >
+              <Text
+                className={`happy-font-body-bold text-[15px] text-center ${
+                  selectedGrade === "practice_again"
+                    ? "text-[#244228]"
+                    : "text-[#201E1D]"
+                }`}
+              >
+                Practice again
               </Text>
-            </Animated.View>
-          ) : (
-            <Animated.View exiting={FadeOut}>
-              <Text className="text-center font-medium text-[15px] text-ink-soft mb-4">
-                How well did you remember it?
+            </TouchableOpacity>
+
+            {/* Remembered */}
+            <TouchableOpacity
+              onPress={() => handleGrade("remembered")}
+              activeOpacity={0.7}
+              disabled={selectedGrade !== null}
+              className={`flex-1 min-h-[52px] py-3.5 px-2 rounded-[18px] items-center justify-center border-[1.5px] ${
+                selectedGrade === "remembered"
+                  ? "bg-[#EAF1E7] border-[#5F7F58] border-b-[3px] border-b-[#476342]"
+                  : selectedGrade === "practice_again"
+                    ? "opacity-40 bg-[#FAF7F2] border-[#D6DFD4] border-b-[3px] border-b-[#C6D2C4]"
+                    : "bg-[#FAF7F2] border-[#D6DFD4] border-b-[3px] border-b-[#C6D2C4] active:translate-y-0.5"
+              }`}
+              accessibilityRole="button"
+              accessibilityLabel="Remembered"
+            >
+              <Text
+                className={`happy-font-body-bold text-[15px] text-center ${
+                  selectedGrade === "remembered"
+                    ? "text-[#244228]"
+                    : "text-[#201E1D]"
+                }`}
+              >
+                Remembered
               </Text>
-              <View className="flex-row gap-3">
-                <TouchableOpacity
-                  onPress={() => handleGrade("practice_again")}
-                  activeOpacity={0.6}
-                  className="flex-1 bg-transparent border-2 border-sage-300 py-4 rounded-[20px] items-center justify-center"
-                  accessibilityRole="button"
-                >
-                  <Text className="text-sage-700 font-medium text-[16px]">
-                    Practice again
-                  </Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity
-                  onPress={() => handleGrade("remembered")}
-                  activeOpacity={0.8}
-                  className="flex-1 bg-sage-700 py-4 rounded-[20px] items-center justify-center shadow-sm shadow-black/10"
-                  accessibilityRole="button"
-                >
-                  <Text className="text-white font-medium text-[16px]">
-                    Remembered
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </Animated.View>
-          )}
+            </TouchableOpacity>
+          </View>
         </Animated.View>
       )}
+
+      {/* Intentional Lower Whitespace */}
+      <View className="h-28" />
     </View>
   );
 }

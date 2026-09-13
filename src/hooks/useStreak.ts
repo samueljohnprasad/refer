@@ -155,12 +155,13 @@ export function useStreak(): UseStreakReturn {
         return streak.lastActivityDate === today;
     }, [streak, activityDates]);
 
-    // ── Derived: computed streak count (total active days since beginning) ──
+    // ── Derived: computed streak count (actual contiguous streak) ──
     const computedStreakCount: number = useMemo(() => {
         const dbStreak = streak?.currentStreak ?? 0;
-        const totalDays = activityDates.size;
-        return Math.max(dbStreak, totalDays);
-    }, [streak, activityDates]);
+        // If they are active today but the DB hasn't caught up, ensure at least 1
+        if (isActiveToday && dbStreak === 0) return 1;
+        return dbStreak;
+    }, [streak, isActiveToday]);
 
     // ── Derived: is at risk ──
     const isAtRisk: boolean = useMemo(() => {
@@ -175,24 +176,15 @@ export function useStreak(): UseStreakReturn {
         const weekStart = startOfWeek(today, { weekStartsOn: 0 }); // Sunday as first day
         const days: boolean[] = [false, false, false, false, false, false, false];
 
-        // 1. Mark days with recorded activity in exercise_entries
-        for (let i = 0; i < 7; i++) {
-            const day = addDays(weekStart, i);
-            if (isAfter(day, today)) break;
-            const dateStr = format(day, 'yyyy-MM-dd');
-            if (activityDates.has(dateStr)) {
-                days[i] = true;
-            }
-        }
-
-        // 2. Mark days covered by streak table if present
-        if (streak && streak.currentStreak > 0) {
-            const lastActive = parseISO(streak.lastActivityDate);
+        const streakVal = computedStreakCount;
+        if (streakVal > 0) {
+            // Only fill in dots that are part of the current contiguous streak
             for (let i = 0; i < 7; i++) {
                 const day = addDays(weekStart, i);
                 if (isAfter(day, today)) break;
-                const daysBack: number = differenceInDays(today, day);
-                if (daysBack < streak.currentStreak || isSameDay(day, lastActive)) {
+                
+                const daysBack = differenceInDays(today, day);
+                if (daysBack >= 0 && daysBack < streakVal) {
                     days[i] = true;
                 }
             }
@@ -203,7 +195,7 @@ export function useStreak(): UseStreakReturn {
         const perfectWeekPossible: boolean = days.slice(0, todayIndex).every(Boolean);
 
         return { days, activeDays, perfectWeekPossible };
-    }, [streak, activityDates]);
+    }, [computedStreakCount]);
 
     // ── Derived: milestones ──
     const milestones: StreakMilestone[] = useMemo(() => {

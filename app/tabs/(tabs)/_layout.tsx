@@ -42,8 +42,8 @@ export default function TabLayout() {
         <Label>Journal</Label>
         <Icon
           sf={{
-            default: "book.closed",
-            selected: "book.closed.fill",
+            default: "book",
+            selected: "book.fill",
           }}
         />
       </NativeTabs.Trigger>
@@ -51,8 +51,8 @@ export default function TabLayout() {
         <Label>Capture</Label>
         <Icon
           sf={{
-            default: "plus.circle",
-            selected: "plus.circle.fill",
+            default: "plus",
+            selected: "plus",
           }}
         />
       </NativeTabs.Trigger>

@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useCallback, useState } from "react";
 import { View, Text, ScrollView } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import dayjs from "dayjs";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
 import { Stack, router } from "expo-router";
 import { EmotionLogger } from "@/src/components/EmotionLogger";
@@ -62,7 +64,11 @@ export default function JournalCalendarScreen() {
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const posthog = usePostHog();
 
-  const { refetch: refetchStreak } = useStreak();
+  const {
+    refetch: refetchStreak,
+    currentStreak,
+    isLoading: isStreakLoading,
+  } = useStreak();
 
   const { showUpdateModal, currentVersion, latestVersion, hideModal } =
     useAppUpdate({ autoCheck: true });
@@ -72,6 +78,33 @@ export default function JournalCalendarScreen() {
 
   // State declarations moved above callbacks that reference them
   const [showStreakModal, setShowStreakModal] = useState(false);
+
+  // ponytail: show Day 7 & Day 15 streak celebration on app load once per calendar day
+  useEffect(() => {
+    if (isStreakLoading || (currentStreak !== 7 && currentStreak !== 15)) return;
+
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const checkAndShowMilestoneStreak = async () => {
+      try {
+        const today = dayjs().format("YYYY-MM-DD");
+        const key = `@happy/streak_modal_shown_day_${currentStreak}_${today}`;
+        const alreadyShown = await AsyncStorage.getItem(key);
+        if (!alreadyShown) {
+          await AsyncStorage.setItem(key, "true");
+          timer = setTimeout(() => {
+            setShowStreakModal(true);
+          }, 600);
+        }
+      } catch (e) {
+        console.error("Error checking milestone streak modal:", e);
+      }
+    };
+
+    void checkAndShowMilestoneStreak();
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [currentStreak, isStreakLoading]);
 
   const handleSettingsPress = useCallback(() => {
     router.push("/tabs/screens/settings");
@@ -127,11 +160,11 @@ export default function JournalCalendarScreen() {
         }}
       />
       {/* ponytail: subtle tertiary settings action in header toolbar */}
-      <Stack.Toolbar placement="right" tintColor={SEMANTIC_COLORS.text.secondary}>
+      <Stack.Toolbar placement="right" tintColor={SEMANTIC_COLORS.text.tertiary}>
         <Stack.Toolbar.Button
           icon="gearshape"
           accessibilityLabel="Settings"
-          tintColor={SEMANTIC_COLORS.text.secondary}
+          tintColor={SEMANTIC_COLORS.text.tertiary}
           onPress={handleSettingsPress}
         />
       </Stack.Toolbar>
@@ -160,7 +193,7 @@ export default function JournalCalendarScreen() {
 
           {/* ponytail: action-first home screen hierarchy */}
           {/* Hero: Today's Reflection */}
-          <View className="mt-6">
+          <View className="mt-8">
             <View className="mb-1.5 px-1">
               <Text className="text-[11px] font-semibold tracking-wider text-ink-muted/80 uppercase">
                 Today's reflection
@@ -175,7 +208,7 @@ export default function JournalCalendarScreen() {
           </View>
 
           {/* Secondary: Mood Check-in */}
-          <View className="mt-8">
+          <View className="mt-6">
             <EmotionLogger
               selectedDate={selectedEmotionDate}
               onEmotionLogged={handleEmotionLogged}
@@ -184,7 +217,7 @@ export default function JournalCalendarScreen() {
           </View>
 
           {/* Reinforcement: Compact Streak */}
-          <View className="mt-5">
+          <View className="mt-6">
             <WeeklyStreakWidget
               showDepth={false}
               onPress={() => router.push("/tabs/screens/xp-history")}
@@ -192,7 +225,7 @@ export default function JournalCalendarScreen() {
           </View>
 
           {/* ponytail: secondary learning resume entry point */}
-          <View className="mt-6">
+          <View className="mt-8">
             <ContinueJourneyCard />
           </View>
         </View>

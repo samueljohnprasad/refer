@@ -22,12 +22,12 @@ const STREAK_PRESENTATION: Record<
 > = {
   active: {
     FireIcon: AnimatedFireIcon,
-    iconClassName: "opacity-80",
-    textClassName: "text-[13px] text-bee-dark/80 happy-font-body-bold",
+    iconClassName: "opacity-75",
+    textClassName: "text-[12px] text-[#7A6B58] happy-font-body-bold",
   },
   inactive: {
     FireIcon: GrayFireIcon,
-    textClassName: "text-[13px] text-ink-soft happy-font-body-bold",
+    textClassName: "text-[12px] text-[#9E9689] happy-font-body-bold",
   },
 };
 
@@ -38,11 +38,11 @@ export const DiscoveryHeader = React.memo<DiscoveryHeaderProps>(
     const FireIcon = presentation.FireIcon;
 
     return (
-      <View className="flex-row items-center justify-end h-9 px-1">
-        {/* ponytail: softened quiet streak badge with reduced border contrast and warm tone */}
-        <View className="flex-row items-center gap-1.5 rounded-full border border-amber-500/[0.08] bg-amber-500/[0.05] px-2.5 py-1">
+      <View className="flex-row items-center justify-end h-7 px-1">
+        {/* ponytail: quiet compact streak pill with pale warm cream surface and subtle border */}
+        <View className="flex-row items-center gap-1 rounded-full border border-[#EDE7DD] bg-[#FAF6F0] px-2 py-0.5">
           <View className={presentation.iconClassName}>
-            <FireIcon width={15} height={15} />
+            <FireIcon width={13} height={13} />
           </View>
           <Text className={presentation.textClassName}>
             {formatStreakValue(currentStreak, isLoading)}

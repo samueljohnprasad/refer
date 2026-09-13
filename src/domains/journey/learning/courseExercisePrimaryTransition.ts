@@ -31,14 +31,11 @@ export function getCoursePrimaryLabel(
   exercise: Exercise,
   response: Record<string, unknown> | null,
 ): string | null {
-  if (!response) {
-    return null;
-  }
-
   const category = resolveCourseExerciseCategory(exercise);
   const config = category ? (courseExerciseCategoryEngineRegistry[category] || FINAL_BATCH_CATEGORY_CONFIGS[category as keyof typeof FINAL_BATCH_CATEGORY_CONFIGS]) : null;
   if (config?.interaction?.getPrimaryLabel) {
-    return config.interaction.getPrimaryLabel(exercise, response);
+    // ponytail: pass empty object if response is null to get default initial label
+    return config.interaction.getPrimaryLabel(exercise, response ?? {});
   }
   return null;
 }

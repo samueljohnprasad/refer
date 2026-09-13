@@ -1,264 +1,296 @@
-import React, { useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
+// ponytail: SocraticDialogueCategoryEngine with 2-stage guided discovery and 3-step compression
+import React, { useEffect, useState, useRef } from "react";
+import { AccessibilityInfo, Pressable, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
-import { FavouriteIcon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
-import {
-  readRecord,
-  readString,
-} from "@/src/components/exercise/courseExerciseContent";
+import { readRecord, readString } from "@/src/components/exercise/courseExerciseContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
+import {
+  CompressedStageCard,
+  DialogueBubble,
+  EyebrowLabel,
+  FinalSummaryCard,
+  HintButton,
+  InlineHintCard,
+  PedagogicalFeedback,
+} from "./SocraticDialogueComponents";
 
-interface DialogueOption {
-  label: string;
-  next: string;
-  lead?: string;
-}
-
-interface DialogueNode {
-  message: string;
-  options: DialogueOption[];
-  done: boolean;
-  support: boolean;
-  supportive: boolean;
-}
-
-interface TranscriptMessage {
-  text: string;
-  role: "coach" | "user";
-  supportive: boolean;
-}
+const CONTENT = {
+  title: "A 2am conversation",
+  instruction: "Choose what you’d ask next.",
+  hintTitle: "Why test the thought?",
+  hintBody:
+    "You’re not trying to force a positive answer.\n\nYou’re checking what the prediction is actually based on.",
+  personInitial:
+    "I woke up at 2am convinced tomorrow’s presentation will be a total disaster.\n\nMy mind says everyone will see I’m incompetent.",
+  r1Pref: "What specific evidence makes you certain?",
+  r1Alt: "Has a presentation ever gone okay before?",
+  r1AltFeedback:
+    "That checks past experience. First, let’s see what tonight’s prediction is based on.",
+  r1PersonResponse:
+    "I haven’t memorized slide 14, and I stumbled once during rehearsal.",
+  prediction: "Tomorrow’s presentation will be a disaster.",
+  evidence: ["One unfinished slide.", "One rehearsal stumble."],
+  r2Pref: "Does stumbling in rehearsal guarantee disaster?",
+  r2Alt: "What happens if you need to glance at your notes?",
+  r2AltFeedback:
+    "That checks how you could cope. Now test whether the stumble itself predicts disaster.",
+  r2PersonResponse: "No. Rehearsal is where I catch the rough spots.",
+  balancedThought:
+    "A rough rehearsal doesn’t prove tomorrow will go badly.\n\nRehearsal showed me what still needs work. I can deal with that tomorrow.",
+  skill:
+    "A prediction can feel certain without being evidence.\n\nCheck the evidence before treating it as fact.",
+} as const;
 
 export function SocraticDialogueCategoryEngine({
   exercise,
   savedResponse,
   locked = false,
   onInteraction,
-}: V1CategoryEngineProps) {
+}: V1CategoryEngineProps): React.JSX.Element {
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
-  const nodes = readNodes(content.nodes);
-  const currentNodeId = readString(saved?.currentNodeId) ?? "start";
-  const currentNode = nodes[currentNodeId];
-  const transcript = readTranscript(saved?.transcript);
-  const done = saved?.done === true;
-  const supportOpen = saved?.supportOpen === true;
+  const initialDone = saved?.done === true;
+  const initialStep = initialDone ? 6 : typeof saved?.step === "number" ? saved.step : 0;
+
+  const [step, setStep] = useState<number>(initialStep);
+  const [hintOpen, setHintOpen] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (!saved) onInteraction(createResponse(), false);
+    AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotion);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  // Sync initial response on mount
+  useEffect(() => {
+    if (!saved) {
+      onInteraction(createResponse({ step: 0, done: false }), false);
+    }
   }, [onInteraction, saved]);
 
-  const updateSupport = (open: boolean) => {
+  const advanceTo = (nextStep: number, delayMs: number = 0) => {
+    if (locked) return;
     Haptics.selectionAsync();
-    onInteraction(createResponse({ ...saved, supportOpen: open }), done);
-  };
 
-  const choose = (option: DialogueOption) => {
-    if (locked || !currentNode) return;
-    Haptics.selectionAsync();
-    const destination = nodes[option.next];
-    if (!destination) return;
+    const applyStep = (s: number) => {
+      setStep(s);
+      const isDone = s === 6;
+      onInteraction(
+        createResponse({
+          step: s,
+          phase: s < 3 ? "round1" : s < 6 ? "round2" : "summary",
+          done: isDone,
+        }),
+        isDone,
+      );
+    };
 
-    const nextTranscript: TranscriptMessage[] = [
-      ...transcript,
-      {
-        text: currentNode.message,
-        role: "coach",
-        supportive: currentNode.supportive,
-      },
-      { text: option.label, role: "user", supportive: false },
-    ];
-    if (option.lead) {
-      nextTranscript.push({
-        text: option.lead,
-        role: "coach",
-        supportive: destination.supportive,
-      });
+    if (delayMs > 0 && !reduceMotion) {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => applyStep(nextStep), delayMs);
+    } else {
+      applyStep(nextStep);
     }
-
-    onInteraction(
-      createResponse({
-        ...saved,
-        currentNodeId: option.next,
-        transcript: nextTranscript,
-        done: destination.done,
-        supportOpen: destination.support,
-      }),
-      destination.done,
-    );
   };
+
+  const title = readString(content.title) ?? CONTENT.title;
+  const instruction =
+    step === 6
+      ? "Prediction vs. evidence."
+      : readString(content.instruction) ?? CONTENT.instruction;
+
+  // Hint is only visible during round 1
+  const showHintButton = step < 3;
 
   return (
-    <View className="px-2 pb-3 pt-1.5">
-      <View className="flex-row items-start gap-3">
-        <View className="flex-1">
-          <CourseExerciseHeading
-            title={readString(content.title) ?? "A 2am conversation"}
-            instruction={
-              readString(content.instruction) ?? "Choose the honest answer."
-            }
-          />
-        </View>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityState={{ expanded: supportOpen }}
-          onPress={() => updateSupport(!supportOpen)}
-          className="mt-0.5 min-h-10 flex-row items-center gap-1.5 rounded-full border border-[#ABC0A2] bg-[#F2F8EF] px-3 active:translate-y-0.5"
-        >
-          <HugeiconsIcon icon={FavouriteIcon} size={15} color="#29452A" />
-          <Text className="happy-font-body-bold text-xs text-[#29452A]">
-            Support
+    <View className="-mt-7 px-2 pb-6">
+      {/* Title block with horizontally aligned Hint pill // ponytail: standard rhythm */}
+      <View className="mb-6">
+        <View className="flex-row items-center justify-between gap-3">
+          <Text
+            accessibilityRole="header"
+            className="happy-font-heading flex-1 text-2xl leading-[30px] tracking-[-0.4px] text-[#201E1D]"
+          >
+            {title}
           </Text>
-        </Pressable>
+          {showHintButton ? (
+            <HintButton
+              isOpen={hintOpen}
+              onToggle={() => {
+                Haptics.selectionAsync();
+                setHintOpen(!hintOpen);
+              }}
+            />
+          ) : null}
+        </View>
+        <Text className="happy-font-body mt-1.5 text-[15px] leading-[21px] text-[#82796A]">
+          {instruction}
+        </Text>
       </View>
 
-      {supportOpen ? (
-        <View className="mb-3 rounded-[22px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] p-4">
-          <Text className="happy-font-heading-bold text-lg leading-[22px] text-[#3F4A31]">
-            {readString(content.supportTitle)}
-          </Text>
-          <Text className="happy-font-body mt-1.5 text-[13.5px] leading-5 text-[#3F4A31]">
-            {readString(content.supportBody)}
-          </Text>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => updateSupport(false)}
-            className="mt-3 min-h-11 items-center justify-center rounded-full border-[1.5px] border-[#7E9874] bg-[#F9F4ED] px-4 active:translate-y-0.5"
-          >
-            <Text className="happy-font-body-bold text-[13px] text-[#29452A]">
-              Back to the conversation
-            </Text>
-          </Pressable>
+      {showHintButton && hintOpen ? (
+        <InlineHintCard
+          title={readString(content.hintTitle) ?? CONTENT.hintTitle}
+          body={readString(content.hintBody) ?? CONTENT.hintBody}
+          onClose={() => {
+            Haptics.selectionAsync();
+            setHintOpen(false);
+          }}
+        />
+      ) : null}
+
+      {/* Summary state */}
+      {step === 6 ? (
+        <View className="mt-3">
+          <FinalSummaryCard
+            prediction={readString(content.prediction) ?? CONTENT.prediction}
+            evidence={readEvidence(content.evidence)}
+            balancedThought={readString(content.balancedThought) ?? CONTENT.balancedThought}
+            skill={readString(content.skill) ?? CONTENT.skill}
+          />
         </View>
       ) : null}
 
-      {!supportOpen ? (
-        <>
-          <View className="gap-2.5">
-            {transcript.map((message, index) => (
-              <ConversationBubble
-                key={`${index}-${message.text}`}
-                {...message}
-              />
-            ))}
-            {currentNode ? (
-              <ConversationBubble
-                text={currentNode.message}
-                role="coach"
-                supportive={currentNode.supportive}
-              />
-            ) : null}
-          </View>
+      {/* Round 1 Active */}
+      {step < 3 ? (
+        <View className="mt-3 gap-3">
+          <DialogueBubble speaker="person" text={CONTENT.personInitial} />
 
-          {!done && currentNode?.options.length ? (
-            <View className="mt-3 gap-2">
-              {currentNode.options.map((option) => (
-                <Pressable
-                  key={`${option.label}-${option.next}`}
-                  accessibilityRole="button"
-                  disabled={locked}
-                  onPress={() => choose(option)}
-                  className="min-h-[52px] justify-center rounded-[21px] border-[1.5px] border-[#DCD3C4] border-b-[3px] bg-[#F9F4ED] px-4 py-3 active:translate-y-0.5 active:border-b-[1.5px]"
-                >
-                  <Text className="happy-font-body-bold text-[13.5px] leading-[19px] text-[#201E1D]">
-                    {option.label}
-                  </Text>
-                </Pressable>
-              ))}
+          {step === 1 ? (
+            <>
+              <View className="gap-1.5">
+                <DialogueBubble speaker="you" text={CONTENT.r1Alt} />
+                <PedagogicalFeedback text={CONTENT.r1AltFeedback} />
+              </View>
+              <View className="mt-2.5">
+                <OptionCard
+                  label={CONTENT.r1Pref}
+                  onPress={() => {
+                    setStep(2);
+                    advanceTo(3, 750);
+                  }}
+                />
+              </View>
+            </>
+          ) : step === 2 ? (
+            <>
+              <DialogueBubble speaker="you" text={CONTENT.r1Pref} />
+              <DialogueBubble speaker="person" text={CONTENT.r1PersonResponse} />
+            </>
+          ) : (
+            <View className="gap-2.5 pt-0.5">
+              <OptionCard
+                label={CONTENT.r1Pref}
+                onPress={() => {
+                  setStep(2);
+                  advanceTo(3, 750);
+                }}
+              />
+              <OptionCard
+                label={CONTENT.r1Alt}
+                onPress={() => advanceTo(1)}
+              />
             </View>
-          ) : null}
+          )}
+        </View>
+      ) : null}
 
-          {done ? (
-            <Text className="happy-font-body mt-3 text-center text-xs leading-[18px] text-[#82796A]">
-              {readString(content.terminalNote)}
-            </Text>
-          ) : null}
-        </>
+      {/* Round 2 Active */}
+      {step >= 3 && step < 6 ? (
+        <View className="mt-3 gap-3">
+          <CompressedStageCard
+            prediction={CONTENT.prediction}
+            evidence={CONTENT.evidence}
+          />
+
+          <EyebrowLabel className="mt-1">WHAT WOULD YOU ASK NEXT?</EyebrowLabel>
+
+          {step === 4 ? (
+            <>
+              <View className="gap-1.5">
+                <DialogueBubble speaker="you" text={CONTENT.r2Alt} />
+                <PedagogicalFeedback text={CONTENT.r2AltFeedback} />
+              </View>
+              <View className="mt-2.5">
+                <OptionCard
+                  label={CONTENT.r2Pref}
+                  onPress={() => {
+                    setStep(5);
+                    advanceTo(6, 850);
+                  }}
+                />
+              </View>
+            </>
+          ) : step === 5 ? (
+            <>
+              <DialogueBubble speaker="you" text={CONTENT.r2Pref} />
+              <DialogueBubble speaker="person" text={CONTENT.r2PersonResponse} />
+            </>
+          ) : (
+            <View className="gap-2.5">
+              <OptionCard
+                label={CONTENT.r2Pref}
+                onPress={() => {
+                  setStep(5);
+                  advanceTo(6, 850);
+                }}
+              />
+              <OptionCard
+                label={CONTENT.r2Alt}
+                onPress={() => advanceTo(4)}
+              />
+            </View>
+          )}
+        </View>
       ) : null}
     </View>
   );
 }
 
-function ConversationBubble({ text, role, supportive }: TranscriptMessage) {
-  const className = supportive
-    ? "max-w-[91%] self-start rounded-[20px] rounded-bl-md border border-[#ABC0A2] bg-[#F2F8EF] px-4 py-3"
-    : role === "user"
-      ? "max-w-[86%] self-end rounded-[20px] rounded-br-md bg-[#5F7F58] px-4 py-3"
-      : "max-w-[91%] self-start rounded-[20px] rounded-bl-md border border-[#DCD3C4] bg-[#F9F4ED] px-4 py-3";
+interface OptionCardProps {
+  label: string;
+  onPress: () => void;
+}
+
+function OptionCard({ label, onPress }: OptionCardProps): React.JSX.Element {
   return (
-    <View className={className}>
-      <Text
-        className={
-          role === "user"
-            ? "happy-font-body text-[13.5px] leading-5 text-white"
-            : "happy-font-body text-[13.5px] leading-5 text-[#201E1D]"
-        }
+    <View className="relative w-full pb-[3px]">
+      <View className="absolute inset-x-0 bottom-0 top-[3px] rounded-[16px] bg-[#D8CEBF]" />
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`Question option: ${label}`}
+        onPress={onPress}
+        className="min-h-[52px] justify-center rounded-[16px] border border-[#E2DAD0] bg-white p-4 active:translate-y-[3px]"
       >
-        {text}
-      </Text>
+        <Text className="happy-font-body-bold text-[14px] leading-5 text-[#201E1D]">
+          {label}
+        </Text>
+      </Pressable>
     </View>
   );
 }
 
-function readNodes(value: unknown): Record<string, DialogueNode> {
-  const source = readRecord(value);
-  if (!source) return {};
-  return Object.fromEntries(
-    Object.entries(source).flatMap(([id, value]) => {
-      const node = readRecord(value);
-      const message = readString(node?.message);
-      return message
-        ? [
-            [
-              id,
-              {
-                message,
-                options: readOptions(node?.options),
-                done: node?.done === true,
-                support: node?.support === true,
-                supportive: node?.supportive === true,
-              },
-            ],
-          ]
-        : [];
-    }),
-  );
-}
-
-function readOptions(value: unknown): DialogueOption[] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((item) => {
-    const option = readRecord(item);
-    const label = readString(option?.label);
-    const next = readString(option?.next);
-    return label && next
-      ? [{ label, next, lead: readString(option?.lead) ?? undefined }]
-      : [];
-  });
-}
-
-function readTranscript(value: unknown): TranscriptMessage[] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((item) => {
-    const message = readRecord(item);
-    const text = readString(message?.text);
-    const role = message?.role === "user" ? "user" : "coach";
-    return text
-      ? [{ text, role, supportive: message?.supportive === true }]
-      : [];
-  });
+function readEvidence(value: unknown): readonly string[] {
+  if (Array.isArray(value)) {
+    const list = value.map((v) => readString(v)).filter(Boolean) as string[];
+    if (list.length) return list;
+  }
+  return CONTENT.evidence;
 }
 
 function createResponse(extra: Record<string, unknown> = {}) {
   return {
     format: CourseExerciseCategoryEnum.SocraticDialogue,
-    phase: "conversation",
-    currentNodeId: "start",
-    transcript: [],
+    phase: "round1",
+    step: 0,
     done: false,
-    supportOpen: false,
     isCorrect: true,
     ...extra,
   };

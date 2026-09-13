@@ -3,19 +3,15 @@ import { FadedThoughtRecordCategoryEngine } from "@/src/components/exercise/Fade
 import { LeverScenarioCategoryEngine } from "@/src/components/exercise/LeverScenarioCategoryEngine";
 import { ReframeBuilderCategoryEngine } from "@/src/components/exercise/ReframeBuilderCategoryEngine";
 import { SituationLanguageCategoryEngine } from "@/src/components/exercise/SituationLanguageCategoryEngine";
-import { WorkedRewriteCategoryEngine } from "@/src/components/exercise/WorkedRewriteCategoryEngine";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
 import { LeverScenarioConfig } from "@/src/exercises/LeverScenario/config";
+import { WorkedRewriteConfig } from "@/src/exercises/WorkedRewrite/config";
 
 export const ELEVENTH_BATCH_CATEGORY_CONFIGS = {
   [CourseExerciseCategoryEnum.LeverScenario]: LeverScenarioConfig,
-  [CourseExerciseCategoryEnum.WorkedRewrite]: createConfig(
-    CourseExerciseCategoryEnum.WorkedRewrite,
-    WorkedRewriteCategoryEngine,
-    "Follow one rewrite move at a time.",
-    "This worked rewrite is not available yet.",
-  ),
+  // ponytail: use worked rewrite config with interactive transitions
+  [CourseExerciseCategoryEnum.WorkedRewrite]: WorkedRewriteConfig,
   [CourseExerciseCategoryEnum.FadedThoughtRecord]: createConfig(
     CourseExerciseCategoryEnum.FadedThoughtRecord,
     FadedThoughtRecordCategoryEngine,

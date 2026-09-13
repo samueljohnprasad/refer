@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState, useEffect } from "react";
+import { useMemo, useCallback, useState, useEffect, useRef } from "react";
 import { format } from "date-fns";
 import Animated, {
   useAnimatedStyle,
@@ -6,10 +6,10 @@ import Animated, {
   withSpring,
   withTiming,
   runOnJS,
+  Easing,
 } from "react-native-reanimated";
 import type { GlassMenuConfig } from "@/src/components/ui/ConfigurableGlassMenu";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
-import { SPRING_DEFAULT, TIMING_FADE } from "@/src/utils/motionTokens";
 
 type AnimatedTextStyle = React.ComponentProps<typeof Animated.Text>["style"];
 
@@ -28,7 +28,7 @@ export interface RecordPromptSectionViewModel {
   promptAnimStyle: AnimatedTextStyle;
 }
 
-// ponytail: prompt section hook encapsulating date formatting, menu creation, and text transition animation
+// ponytail: prompt section hook with mount guard, fast ease-out exit (100ms), and subtle spring scale enter (0.98 -> 1)
 export function useRecordPromptSectionViewModel({
   selectedDate,
   onDatePress,
@@ -38,27 +38,53 @@ export function useRecordPromptSectionViewModel({
   onOpenOptions,
 }: UseRecordPromptSectionOptions): RecordPromptSectionViewModel {
   const reducedMotion = useReducedMotion();
+  const isFirstMount = useRef(true);
   const promptOpacity = useSharedValue<number>(1);
   const promptTranslateY = useSharedValue<number>(0);
+  const promptScale = useSharedValue<number>(1);
   const [displayedPrompt, setDisplayedPrompt] = useState<string>(prompt);
 
   const updatePromptAndAnimateIn = useCallback(
     (newPrompt: string): void => {
       setDisplayedPrompt(newPrompt);
-      promptOpacity.value = withTiming(1, TIMING_FADE);
-      promptTranslateY.value = withSpring(0, SPRING_DEFAULT);
+      promptOpacity.value = withTiming(1, {
+        duration: 180,
+        easing: Easing.out(Easing.cubic),
+      });
+      promptTranslateY.value = withSpring(0, {
+        damping: 18,
+        stiffness: 180,
+        overshootClamping: true,
+      });
+      promptScale.value = withSpring(1, {
+        damping: 18,
+        stiffness: 180,
+        overshootClamping: true,
+      });
     },
-    [promptOpacity, promptTranslateY],
+    [promptOpacity, promptTranslateY, promptScale],
   );
 
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     if (reducedMotion) {
       setDisplayedPrompt(prompt);
       return;
     }
-    promptOpacity.value = withTiming(0, TIMING_FADE, (finished) => {
+    // ponytail: fast ease-out exit with subtle scale(0.98), never animate from scale(0)
+    promptOpacity.value = withTiming(0, {
+      duration: 100,
+      easing: Easing.out(Easing.quad),
+    });
+    promptScale.value = withTiming(0.98, {
+      duration: 100,
+      easing: Easing.out(Easing.quad),
+    }, (finished) => {
       if (finished) {
-        promptTranslateY.value = 8;
+        promptTranslateY.value = 6;
         runOnJS(updatePromptAndAnimateIn)(prompt);
       }
     });
@@ -67,12 +93,16 @@ export function useRecordPromptSectionViewModel({
     reducedMotion,
     promptOpacity,
     promptTranslateY,
+    promptScale,
     updatePromptAndAnimateIn,
   ]);
 
   const promptAnimStyle = useAnimatedStyle(() => ({
     opacity: promptOpacity.value,
-    transform: [{ translateY: promptTranslateY.value }],
+    transform: [
+      { translateY: promptTranslateY.value },
+      { scale: promptScale.value },
+    ],
   }));
 
   const formattedDate = useMemo(
@@ -80,14 +110,18 @@ export function useRecordPromptSectionViewModel({
     [selectedDate],
   );
 
-  // ponytail: small control size with 44pt minHeight ensures comfortable tap target for full date row
+  // ponytail: quiet metadata styling with secondary neutral and medium weight
   const menuConfig: GlassMenuConfig = useMemo(() => {
     return {
       title: `Journal · ${formattedDate}`,
       showChevron: true,
       controlSize: "small",
-      minHeight: 44,
+      minHeight: 40,
       titleTextStyle: "subheadline",
+      titleColor: "#616D5F",
+      titleWeight: "medium",
+      chevronSize: 10,
+      chevronColor: "#808C7E",
       sections: [
         {
           items: [

@@ -33,7 +33,7 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
       haptic="light"
       accessibilityRole="button"
       accessibilityLabel={`Current streak: ${currentStreak} days. Tap to view streak history.`}
-      contentClassName="w-full flex-row items-center justify-between py-3 px-3.5"
+      contentClassName="w-full flex-row items-center justify-between py-2 px-3.5"
     >
       {/* Left: Streak label */}
       <View className="flex-row items-center gap-2">

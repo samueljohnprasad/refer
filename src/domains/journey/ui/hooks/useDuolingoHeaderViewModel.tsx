@@ -9,22 +9,18 @@ import {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { scheduleOnRN } from "react-native-worklets";
-import { FireIcon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react-native";
+import { AnimatedFireIcon, GrayFireIcon } from "@/src/components/ui/AnimatedStatIcon";
 import { CourseHeaderIcon } from "@/src/domains/journey/ui/components/CourseHeaderIcon";
 import type { CourseHeaderSummary, EnrolledCourseListItem } from "@/src/types/journeyV5";
 
-const VectorFireIcon = (props: { width?: number; height?: number; color?: string }) => (
-  <HugeiconsIcon icon={FireIcon} size={props.width ?? 28} color={props.color ?? "#9CA3AF"} />
-);
-
+// ponytail: use single-source homescreen animated fire icon for journey header
 const SHEET_SPRING = { damping: 14, stiffness: 50, mass: 1 } as const;
 
 export interface DuolingoHeaderStats {
   streak: number;
-  gems: number;
-  hearts: number;
-  xp: number;
+  gems?: number;
+  hearts?: number;
+  xp?: number;
 }
 
 export interface DuolingoHeaderProps {
@@ -118,6 +114,18 @@ export function useDuolingoHeaderViewModel({
   const streak = stats?.streak ?? 0;
   const isStreakActive = streak > 0;
 
+  const FireIconComponent = useCallback(
+    (props: { width?: number; height?: number }) => {
+      const size = props.width ?? 24;
+      return isStreakActive ? (
+        <AnimatedFireIcon width={size} height={size} />
+      ) : (
+        <GrayFireIcon width={size} height={size} />
+      );
+    },
+    [isStreakActive],
+  );
+
   const buttons = [
     {
       accessibilityLabel: `${enrolledCourseCount} enrolled courses`,
@@ -130,7 +138,7 @@ export function useDuolingoHeaderViewModel({
     {
       accessibilityLabel: `${streak} day streak`,
       name: "Fire",
-      Icon: VectorFireIcon,
+      Icon: FireIconComponent,
       onPress: openStreakOverlay,
       title: String(streak),
       textClassName: isStreakActive ? "text-ink" : "text-ink-soft",

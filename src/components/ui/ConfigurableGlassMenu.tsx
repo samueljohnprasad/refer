@@ -50,7 +50,11 @@ export interface GlassMenuSection {
 export interface GlassMenuConfig {
   title: string;
   subtitle?: string;
+  titleColor?: string;
+  titleWeight?: "regular" | "medium" | "semibold" | "bold";
   showChevron?: boolean;
+  chevronSize?: number;
+  chevronColor?: string;
   controlSize?: "mini" | "small" | "regular" | "large";
   minWidth?: number;
   minHeight?: number;
@@ -131,9 +135,9 @@ export function ConfigurableGlassMenu({ config }: ConfigurableGlassMenuProps) {
             <HStack spacing={4} alignment="center">
               <SUIText
                 modifiers={[
-                  foregroundStyle(headerFg),
+                  foregroundStyle(config.titleColor ?? headerFg),
                   font({
-                    weight: "semibold",
+                    weight: config.titleWeight ?? "semibold",
                     textStyle: config.titleTextStyle,
                   }),
                 ]}
@@ -143,8 +147,8 @@ export function ConfigurableGlassMenu({ config }: ConfigurableGlassMenuProps) {
               {showChevron ? (
                 <SUIImage
                   systemName="chevron.down"
-                  size={12}
-                  color={headerFg}
+                  size={config.chevronSize ?? 12}
+                  color={config.chevronColor ?? (config.titleColor ?? headerFg)}
                 />
               ) : null}
             </HStack>

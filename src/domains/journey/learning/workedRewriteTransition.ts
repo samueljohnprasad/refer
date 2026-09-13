@@ -14,9 +14,10 @@ export function getWorkedRewritePrimaryLabel(exercise: Exercise, saved: Record<s
   return response.stageIndex === content.moves.length - 1 ? "Try it yourself" : "Next move";
 }
 
-export function getNextWorkedRewriteState(exercise: Exercise, saved: Record<string, unknown>): CoursePrimaryTransition | undefined {
+// ponytail: return null for CourseExerciseCategoryConfig compatibility
+export function getNextWorkedRewriteState(exercise: Exercise, saved: Record<string, unknown>): CoursePrimaryTransition | null {
   const content = readWorkedRewriteContent(exercise.content);
-  if (!content) return undefined;
+  if (!content) return null;
   const response = createWorkedRewriteResponse(content, saved);
   if (!hasSameWorkedRewriteResponse(saved, response)) {
     return { kind: "response", ready: isWorkedRewriteReady(response, content.moves.length), response };
@@ -29,5 +30,5 @@ export function getNextWorkedRewriteState(exercise: Exercise, saved: Record<stri
     const next = advanceWorkedRewrite(content, response);
     return { kind: "response", ready: isWorkedRewriteReady(next, content.moves.length), response: next };
   }
-  return undefined;
+  return null;
 }

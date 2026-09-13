@@ -1,4 +1,5 @@
-import { CourseExerciseCategoryConfig } from "@/src/components/exercise/courseExerciseCategoryConfig";
+// ponytail: SocraticDialogueConfig with dynamic footer hiding until completion
+import type { CourseExerciseCategoryConfig } from "@/src/components/exercise/courseExerciseCategoryConfig";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import { SocraticDialogueCategoryEngine } from "@/src/components/exercise/SocraticDialogueCategoryEngine";
 
@@ -8,13 +9,20 @@ export const SocraticDialogueConfig: CourseExerciseCategoryConfig = {
   engine: SocraticDialogueCategoryEngine,
   goalLabel: "Discover worry parking through one adaptive conversation.",
   unavailableCopy: "This guided conversation is not available yet.",
-  interaction: {
-    submissionMode: "explicit",
-    getPrimaryLabel: (exercise, response) => {
-      return response.done === true ? "Continue" : "Reply above";
+  presentation: {
+    hideFooter: (_exercise, response) => {
+      const res = response as { done?: boolean } | null;
+      return res?.done !== true;
     },
-    getPrimaryTransition: (_exercise, _response) => {
-      return null;
+    hideSkip: (_exercise, response) => {
+      const res = response as { done?: boolean; step?: number } | null;
+      return res?.done === true || (res?.step ?? 0) > 0;
     },
   },
+  interaction: {
+    submissionMode: "explicit",
+    getPrimaryLabel: () => "Continue",
+    getPrimaryTransition: () => null,
+  },
 };
+

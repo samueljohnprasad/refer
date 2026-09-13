@@ -1,13 +1,12 @@
 import React, { useEffect } from "react";
 import { Text, View } from "react-native";
-import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
   readRecord,
   readString,
 } from "@/src/components/exercise/courseExerciseContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
-import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
+// ponytail: single-card reflection engine for why it matters wave takeaway
 export function ConceptInsightCategoryEngine({
   exercise,
   savedResponse,
@@ -29,49 +28,47 @@ export function ConceptInsightCategoryEngine({
     }
   }, [exercise.type, onInteraction, saved]);
 
-  return (
-    <View className="px-2 pb-3 pt-1.5">
-      <CourseExerciseHeading
-        title={readString(content.title) ?? "One useful idea"}
-        instruction={readString(content.instruction) ?? "Just read."}
-      />
-      {exercise.type === CourseExerciseCategoryEnum.WaveFaq ? (
-        <WaveFaqCard content={content} />
-      ) : (
-        <WhyItMattersCard content={content} />
-      )}
-    </View>
-  );
-}
+  const title = readString(content.title) ?? "Why it matters";
+  const instruction =
+    readString(content.instruction) ?? "Turn the wave model into one usable rule.";
+  const message =
+    readString(content.message) ?? "You do not need to fight the surge.";
+  const explanation =
+    readString(content.explanation) ??
+    "When you realise adrenaline has a natural half-life, you stop trying to force the feeling to stop immediately. Giving the wave permission to crest takes away the fear that feeds it.";
 
-function WhyItMattersCard({ content }: { content: Record<string, unknown> }) {
   return (
-    <View className="gap-3 rounded-[24px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-6 py-[26px]">
-      <Text className="happy-font-body-bold text-[11px] tracking-[0.55px] text-[#29452A]">
-        WHY IT MATTERS TO YOU
-      </Text>
-      <Text className="happy-font-heading-bold text-[22px] leading-[28px] text-[#201E1D]">
-        {readString(content.message)}
-      </Text>
-      <Text className="happy-font-body text-sm leading-[22px] text-[#3F4A31]">
-        {readString(content.explanation)}
-      </Text>
-    </View>
-  );
-}
+    <View className="flex-1 -mt-12 px-5 pb-8 pt-0">
+      {/* Title & Subtitle */}
+      <View className="mb-4">
+        <Text className="happy-font-heading-bold text-[24px] leading-[30px] text-[#201E1D] tracking-tight">
+          {title}
+        </Text>
+        <Text className="happy-font-body text-[14.5px] leading-[20px] text-[#7A7265] mt-1">
+          {instruction}
+        </Text>
+      </View>
 
-function WaveFaqCard({ content }: { content: Record<string, unknown> }) {
-  return (
-    <View className="gap-3 rounded-[24px] bg-[#F9F4ED] px-6 py-[26px] shadow-md shadow-black/10">
-      <Text className="happy-font-body-bold text-[11px] tracking-[0.55px] text-[#82796A]">
-        EVERYONE ASKS
-      </Text>
-      <Text className="happy-font-heading-bold text-[23px] leading-[29px] text-[#201E1D]">
-        {readString(content.question)}
-      </Text>
-      <Text className="happy-font-body text-[14.5px] leading-[22.5px] text-[#3F3A34]">
-        {readString(content.answer)}
-      </Text>
+      {/* Informational Learning Card */}
+      <View className="rounded-[24px] border border-[#DFE8DC] bg-[#F3F8F2] px-6 py-6">
+        {/* Muted Green Metadata Label */}
+        <Text className="text-[11.5px] font-bold uppercase tracking-wider text-[#2D5A32] mb-3">
+          WHY IT MATTERS TO YOU
+        </Text>
+
+        {/* Card Headline Hero */}
+        <Text className="happy-font-heading-bold text-[22px] leading-[29px] text-[#201E1D]">
+          {message}
+        </Text>
+
+        {/* Explanation Body with Comfortable Spacing & Line Height */}
+        <Text className="happy-font-body text-[15px] leading-[23px] text-[#4A453E] mt-4.5">
+          {explanation}
+        </Text>
+      </View>
+
+      {/* Flexible intentional whitespace before bottom sticky CTA */}
+      <View className="h-32" />
     </View>
   );
 }

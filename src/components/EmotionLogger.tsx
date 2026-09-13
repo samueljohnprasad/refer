@@ -88,7 +88,7 @@ const EmotionItem: React.FC<{
       </View>
       <Text
         variant="chip"
-        className="mt-1.5 text-[12px] font-semibold text-ink-soft"
+        className="mt-1.5 text-[12px] font-medium text-ink-muted"
       >
         {emotion.name}
       </Text>

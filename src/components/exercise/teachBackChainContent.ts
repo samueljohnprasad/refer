@@ -129,10 +129,23 @@ export function hasSameTeachBackChainResponse(
 export function getTeachBackChainHint(
   content: TeachBackChainContent,
   orderedStepIds: readonly string[],
+  attemptCount: number = 1,
 ): string {
   const steps = getOrderedTeachBackSteps(content);
   const previous = steps[orderedStepIds.length - 1];
   const expected = steps[orderedStepIds.length];
+
+  // ponytail: causal hint on first wrong try, explicit hint only on repeat
+  if (attemptCount <= 1) {
+    if (orderedStepIds.length === 0) {
+      return "That response comes later.\nWhat opens the worry loop?";
+    }
+    if (orderedStepIds.length === 1) {
+      return "The body reacts after the mind gives the uncertainty a threatening meaning.";
+    }
+    return "Checking evidence is how you can respond to the alarm — not what creates it.";
+  }
+
   return previous
     ? `After “${previous.label}”, choose “${expected?.label}”.`
     : `Start with “${expected?.label}”.`;
@@ -149,6 +162,7 @@ function createChainResponse(
   const selectedStepId = readSelectedId(source?.selectedStepId, remainingIds);
   const expected = getOrderedTeachBackSteps(content)[orderedStepIds.length];
   const wrongStep = selectedStepId !== null && selectedStepId !== expected?.id;
+  const attemptCount = typeof source?.attemptCount === "number" ? source.attemptCount : (wrongStep ? 1 : 0);
   return {
     format: CourseExerciseCategoryEnum.TeachBackChain,
     phase: "active",
@@ -158,8 +172,8 @@ function createChainResponse(
     selectedStepId,
     mode: "chain",
     selectedTransferOptionId: null,
-    attemptCount: 0,
-    feedbackText: wrongStep ? getTeachBackChainHint(content, orderedStepIds) : null,
+    attemptCount,
+    feedbackText: wrongStep ? getTeachBackChainHint(content, orderedStepIds, attemptCount) : null,
   };
 }
 

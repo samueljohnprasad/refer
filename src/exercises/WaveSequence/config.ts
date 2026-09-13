@@ -3,10 +3,16 @@ import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import { WaveSequenceCategoryEngine } from "@/src/components/exercise/WaveSequenceCategoryEngine";
 
 export const WaveSequenceConfig: CourseExerciseCategoryConfig = {
-category: CourseExerciseCategoryEnum.WaveSequence,
-    formats: [CourseExerciseCategoryEnum.WaveSequence],
-    engine: WaveSequenceCategoryEngine,
-    goalLabel: "See the full anxiety wave, including its fade.",
-    unavailableCopy: "This wave sequence is not available yet.",
-
+  category: CourseExerciseCategoryEnum.WaveSequence,
+  formats: [CourseExerciseCategoryEnum.WaveSequence],
+  engine: WaveSequenceCategoryEngine,
+  goalLabel: "See the full anxiety wave, including its fade.",
+  unavailableCopy: "This wave sequence is not available yet.",
+  // ponytail: direct continue flow
+  interaction: {
+    submissionMode: "explicit",
+    completesDirectly: true,
+    getPrimaryLabel: () => "Continue",
+    getPrimaryTransition: () => null,
+  },
 };

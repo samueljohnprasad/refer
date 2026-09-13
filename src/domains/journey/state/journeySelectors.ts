@@ -769,3 +769,6 @@ export const selectPendingCelebration = createSelector(
   [selectPendingCelebrationMap, selectCourseIdParam],
   (pendingCelebration, courseId) => pendingCelebration[courseId] ?? null,
 );
+
+export { selectNextCourseRecommendation } from "./courseRecommendationSelectors";
+

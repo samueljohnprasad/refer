@@ -1,28 +1,23 @@
 import React, { useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, View, LayoutAnimation } from "react-native";
 import * as Haptics from "expo-haptics";
+import { useReducedMotion } from "react-native-reanimated";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import { CourseExerciseOptionButton } from "@/src/components/exercise/CourseExerciseOptionButton";
+import { StorySerialComparisonCard } from "@/src/components/exercise/StorySerialComparisonCard";
+import { StorySerialBeatItem } from "@/src/components/exercise/StorySerialBeatItem";
+import { StorySerialReflectionList } from "@/src/components/exercise/StorySerialReflectionList";
+import { StorySerialPatternCard } from "@/src/components/exercise/StorySerialPatternCard";
+import { readRecord, readString } from "@/src/components/exercise/courseExerciseContent";
 import {
-  readRecord,
-  readString,
-  readStringArray,
-} from "@/src/components/exercise/courseExerciseContent";
-import { storySerialStyles as styles } from "@/src/components/exercise/storySerialStyles";
+  createResponse,
+  readBranches,
+  readComparison,
+  readReflectionOptions,
+  readIndex,
+  type ReflectionOption,
+} from "@/src/components/exercise/storySerialContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
-import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
-
-interface StoryBranch {
-  choice: string;
-  label: string;
-  beats: string[];
-}
-
-interface ReflectionOption {
-  id: string;
-  label: string;
-  feedback: string;
-}
 
 export function StorySerialCategoryEngine({
   exercise,
@@ -33,16 +28,30 @@ export function StorySerialCategoryEngine({
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const branches = readBranches(content.branches);
+  const comparison = readComparison(content.comparison);
   const reflectionOptions = readReflectionOptions(content.reflectionOptions);
-  const selectedBranchIndex = readIndex(saved?.selectedBranchIndex);
-  const mainBeatCount = readIndex(saved?.mainBeatCount) ?? 0;
-  const alternateBeatCount = readIndex(saved?.alternateBeatCount) ?? 0;
-  const rewinding = saved?.rewinding === true;
-  const selectedReflectionId = readString(saved?.selectedReflectionId);
-  const selectedBranch =
-    selectedBranchIndex == null ? null : branches[selectedBranchIndex];
-  const alternateBranch =
-    selectedBranchIndex == null ? null : branches[1 - selectedBranchIndex];
+
+  const firstBranchIndex =
+    readIndex(saved?.firstBranchIndex) ?? readIndex(saved?.selectedBranchIndex);
+  const hasRewound = saved?.hasRewound === true || saved?.rewinding === true;
+  const activeBranchIndex =
+    readIndex(saved?.activeBranchIndex) ?? (hasRewound && firstBranchIndex != null ? 1 - firstBranchIndex : firstBranchIndex);
+  const beatCount = readIndex(saved?.beatCount) ?? (hasRewound ? (readIndex(saved?.alternateBeatCount) ?? 0) : (readIndex(saved?.mainBeatCount) ?? 0));
+  const comparisonReady = saved?.comparisonReady === true;
+  const activeReflectionId = readString(saved?.activeReflectionId);
+  const isFinalComplete = saved?.isFinalComplete === true;
+
+  const firstBranch = firstBranchIndex == null ? null : branches[firstBranchIndex];
+  const activeBranch = activeBranchIndex == null ? null : branches[activeBranchIndex];
+  const totalBeats = activeBranch ? activeBranch.beats.length : 0;
+  const isPathComplete = activeBranch != null && beatCount >= totalBeats;
+
+  const reducedMotion = useReducedMotion();
+  const animate = () => {
+    if (!reducedMotion) {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    }
+  };
 
   useEffect(() => {
     if (!saved) {
@@ -50,226 +59,232 @@ export function StorySerialCategoryEngine({
     }
   }, [onInteraction, saved]);
 
+  // Progressive reveal for active path, and auto-transition after path 2
   useEffect(() => {
-    if (!selectedBranch || mainBeatCount >= selectedBranch.beats.length) return;
-    const timer = setTimeout(() => {
-      onInteraction(
-        createResponse({
-          ...saved,
-          mainBeatCount: mainBeatCount + 1,
-        }),
-        false,
-      );
-    }, 550);
-    return () => clearTimeout(timer);
-  }, [mainBeatCount, onInteraction, saved, selectedBranch]);
-
-  useEffect(() => {
-    if (!rewinding || !alternateBranch) return;
-    if (alternateBeatCount >= alternateBranch.beats.length) return;
-    const timer = setTimeout(() => {
-      onInteraction(
-        createResponse({
-          ...saved,
-          alternateBeatCount: alternateBeatCount + 1,
-        }),
-        false,
-      );
-    }, 550);
-    return () => clearTimeout(timer);
-  }, [alternateBeatCount, alternateBranch, onInteraction, rewinding, saved]);
+    if (!activeBranch || comparisonReady) return;
+    if (beatCount < totalBeats) {
+      const timer = setTimeout(() => {
+        animate();
+        onInteraction(
+          createResponse({ ...saved, beatCount: beatCount + 1 }),
+          false,
+        );
+      }, reducedMotion ? 40 : 180);
+      return () => clearTimeout(timer);
+    }
+    // Path 2 completed: pause 400ms then auto-compress into comparison
+    if (hasRewound && isPathComplete) {
+      const timer = setTimeout(() => {
+        animate();
+        onInteraction(
+          createResponse({ ...saved, comparisonReady: true }),
+          false,
+        );
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [activeBranch, beatCount, comparisonReady, hasRewound, isPathComplete, onInteraction, reducedMotion, saved, totalBeats]);
 
   const chooseBranch = (branchIndex: number) => {
-    if (locked || selectedBranch) return;
+    if (locked || firstBranchIndex != null) return;
     Haptics.selectionAsync();
+    animate();
     onInteraction(
       createResponse({
+        firstBranchIndex: branchIndex,
         selectedBranchIndex: branchIndex,
-        mainBeatCount: 0,
+        activeBranchIndex: branchIndex,
+        beatCount: 0,
+        hasRewound: false,
+        comparisonReady: false,
       }),
       false,
     );
   };
 
   const rewind = () => {
-    if (locked || rewinding) return;
-    Haptics.selectionAsync();
+    if (locked || hasRewound || firstBranchIndex == null) return;
+    animate();
+    const secondIndex = 1 - firstBranchIndex;
     onInteraction(
-      createResponse({ ...saved, rewinding: true, alternateBeatCount: 0 }),
+      createResponse({
+        ...saved,
+        activeBranchIndex: secondIndex,
+        hasRewound: true,
+        beatCount: 0,
+        comparisonReady: false,
+      }),
       false,
     );
   };
 
   const chooseReflection = (option: ReflectionOption) => {
-    if (locked) return;
-    Haptics.selectionAsync();
+    if (locked || isFinalComplete) return;
+    const isCorrect = option.id === "reading";
+    if (isCorrect) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } else {
+      Haptics.selectionAsync();
+    }
+    animate();
     onInteraction(
       createResponse({
         ...saved,
-        selectedReflectionId: option.id,
-        reflectionFeedback: option.feedback,
+        activeReflectionId: option.id,
+        isFinalComplete: isCorrect,
       }),
-      true,
+      isCorrect,
     );
   };
 
-  const mainComplete = Boolean(
-    selectedBranch && mainBeatCount >= selectedBranch.beats.length,
-  );
-  const alternateComplete = Boolean(
-    alternateBranch && alternateBeatCount >= alternateBranch.beats.length,
-  );
+  const isSignal = activeBranch?.label.includes("SIGNAL");
 
   return (
-    <View style={styles.screenContent}>
-      <CourseExerciseHeading
-        title={readString(content.title) ?? "Sam’s week"}
-        instruction={readString(content.instruction) ?? "Choose what happens."}
-      />
-      <View style={styles.openingCard}>
-        <Text style={styles.episodeLabel}>
-          {readString(content.episodeLabel) ?? "EPISODE 1 · SAM’S WEEK"}
-        </Text>
-        <Text style={styles.opening}>{readString(content.opening)}</Text>
+    <View className="flex-1 -mt-5 px-2 pb-6">
+      <View className="mb-2.5">
+        <CourseExerciseHeading
+          title={readString(content.title) ?? "Walk both alarm paths"}
+          instruction={!comparisonReady ? (readString(content.instruction) ?? "Walk one path, then rewind and compare.") : undefined}
+        />
       </View>
 
-      {!selectedBranch ? (
-        <View style={styles.section}>
-          <Text style={styles.sectionLabel}>YOU CHOOSE FOR SAM</Text>
-          {branches.map((branch, index) => (
-            <CourseExerciseOptionButton
-              key={branch.label}
-              label={branch.choice}
-              selected={false}
-              disabled={locked}
-              onPress={() => chooseBranch(index)}
-            />
-          ))}
-        </View>
-      ) : null}
-
-      {selectedBranch ? (
-        <BeatList
-          branch={selectedBranch}
-          count={mainBeatCount}
-          alternate={false}
-        />
-      ) : null}
-      {alternateBranch && rewinding ? (
-        <BeatList
-          branch={alternateBranch}
-          count={alternateBeatCount}
-          alternate
-        />
-      ) : null}
-
-      {mainComplete && !rewinding ? (
-        <Pressable
-          accessibilityRole="button"
-          onPress={rewind}
-          style={({ pressed }) => [
-            styles.rewindButton,
-            pressed && styles.pressed,
-          ]}
-        >
-          <Text style={styles.rewindLabel}>Rewind and walk the other path</Text>
-        </Pressable>
-      ) : null}
-
-      {alternateComplete ? (
-        <View style={styles.section}>
-          <Text style={styles.reflectionPrompt}>
-            {readString(content.reflectionPrompt)}
+      {/* Scenario */}
+      {firstBranchIndex == null ? (
+        <View className="mb-5">
+          <Text className="happy-font-body text-[15px] leading-[22px] text-[#201E1D]">
+            {readString(content.opening)}
           </Text>
-          {reflectionOptions.map((option) => (
-            <CourseExerciseOptionButton
-              key={option.id}
-              label={option.label}
-              selected={selectedReflectionId === option.id}
-              showConfirmationIcon={false}
-              disabled={locked}
-              onPress={() => chooseReflection(option)}
-            />
-          ))}
         </View>
-      ) : null}
-
-      {selectedReflectionId ? (
-        <View style={styles.ending}>
-          <Text style={styles.coach}>
-            {readString(saved?.reflectionFeedback)}
-          </Text>
-          <View style={styles.stamp}>
-            <Text style={styles.stampText}>{readString(content.stamp)}</Text>
-          </View>
-          <View style={styles.hook}>
-            <Text style={styles.hookText}>{readString(content.hook)}</Text>
-          </View>
-        </View>
-      ) : null}
-    </View>
-  );
-}
-
-function BeatList({
-  branch,
-  count,
-  alternate,
-}: {
-  branch: StoryBranch;
-  count: number;
-  alternate: boolean;
-}) {
-  return (
-    <View style={styles.beatList}>
-      {branch.beats.slice(0, count).map((beat, index) => (
+      ) : !comparisonReady ? (
         <View
-          key={`${branch.label}-${index}`}
-          style={[styles.beat, alternate && styles.alternateBeat]}
+          accessible
+          accessibilityLabel="Same start. Unexpected meeting and tight chest."
+          className="mb-4 w-full rounded-[16px] border border-[#EAE4D9] bg-[#FAF7F2] px-4 py-2"
         >
-          <Text style={[styles.beatLabel, alternate && styles.alternateLabel]}>
-            {alternate ? `THE OTHER PATH · ${branch.label}` : branch.label}
+          <Text className="happy-font-heading-bold mb-0.5 text-[10px] uppercase tracking-wider text-[#8C8275]">
+            SAME START
           </Text>
-          <Text style={styles.beatText}>{beat}</Text>
+          <Text className="happy-font-body-bold text-[13.5px] text-[#2C2723]">
+            Unexpected meeting + tight chest
+          </Text>
         </View>
-      ))}
+      ) : null}
+
+      {/* Initial Decision */}
+      {firstBranchIndex == null && (
+        <View className="mt-2">
+          <Text className="happy-font-heading-bold mb-3 text-[11px] uppercase tracking-wider text-[#82796A]">
+            YOU CHOOSE FOR SAM
+          </Text>
+          <View className="gap-3">
+            {branches.map((branch, index) => (
+              <CourseExerciseOptionButton
+                key={branch.label}
+                label={branch.choice}
+                selected={false}
+                disabled={locked}
+                onPress={() => chooseBranch(index)}
+              />
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Compressed First Path summary when walking second path */}
+      {hasRewound && !comparisonReady && firstBranch && (
+        <View
+          accessible
+          accessibilityLabel={`${firstBranch.label.includes("SIGNAL") ? "Alarm as signal" : "Alarm as proof"} path summary: ${(firstBranchIndex === 0 ? comparison.path1 : comparison.path2).join(", ")}`}
+          className={`mb-4 w-full rounded-[16px] border px-4 py-2.5 opacity-85 ${
+            firstBranchIndex === 0
+              ? "border-[#E8DCCB] bg-[#FAF5EE]"
+              : "border-[#ABC0A2] bg-[#F2F7F0]"
+          }`}
+        >
+          <Text
+            className={`happy-font-heading-bold mb-0.5 text-[10.5px] uppercase tracking-wider ${
+              firstBranchIndex === 0 ? "text-[#82796A]" : "text-[#55694A]"
+            }`}
+          >
+            {firstBranch.label}
+          </Text>
+          <Text
+            className={`happy-font-body text-[13px] ${
+              firstBranchIndex === 0 ? "text-[#5C5549]" : "text-[#3F4A31]"
+            }`}
+          >
+            {(firstBranchIndex === 0 ? comparison.path1 : comparison.path2).join(" → ")}
+          </Text>
+        </View>
+      )}
+
+      {/* Active Path Card */}
+      {activeBranch && !comparisonReady && (
+        <View
+          accessible
+          accessibilityLabel={isSignal ? "Alarm as signal." : "Alarm as proof."}
+          className={`w-full rounded-[18px] border px-4 py-3.5 ${
+            isSignal
+              ? "border-[#ABC0A2] bg-[#F2F7F0]"
+              : "border-[#E8DCCB] bg-[#FDF8F3]"
+          }`}
+        >
+          <Text
+            className={`happy-font-heading-bold mb-2 text-[10.5px] uppercase tracking-wider ${
+              isSignal ? "text-[#4A6B53]" : "text-[#82796A]"
+            }`}
+          >
+            {activeBranch.label}
+          </Text>
+          <View>
+            {activeBranch.beats.slice(0, beatCount).map((beat, i) => (
+              <StorySerialBeatItem key={i} beat={beat} showArrow={i > 0} />
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Rewind CTA — Secondary Tactile button, ONLY shown after path 1 */}
+      {!hasRewound && isPathComplete && (
+        <View className="relative mt-5 w-full pb-[3px]">
+          <View className="absolute inset-x-0 bottom-0 top-[3px] rounded-[16px] bg-[#C2D5BD]" />
+          <Pressable
+            accessibilityRole="button"
+            onPress={rewind}
+            className="min-h-[50px] w-full items-center justify-center rounded-[16px] border border-[#ABC0A2] bg-white px-5 active:translate-y-[3px]"
+          >
+            <Text className="happy-font-body-bold text-[15px] text-[#3C5A3E]">
+              Rewind and walk the other path
+            </Text>
+          </Pressable>
+        </View>
+      )}
+
+      {/* Comparison & Discrimination */}
+      {comparisonReady && (
+        <View className="mb-6">
+          <StorySerialComparisonCard comparison={comparison} />
+
+          <View className="mb-3 mt-7">
+            <Text className="happy-font-body-bold text-[16px] leading-[22px] text-[#201E1D]">
+              {readString(content.reflectionPrompt)}
+            </Text>
+          </View>
+
+          <StorySerialReflectionList
+            options={reflectionOptions}
+            activeId={activeReflectionId}
+            isFinalComplete={isFinalComplete}
+            locked={locked}
+            onSelect={chooseReflection}
+          />
+
+          {/* Single Merged Final Insight Card — Flat pale sage */}
+          {isFinalComplete && (
+            <StorySerialPatternCard pattern={readString(content.pattern)} />
+          )}
+        </View>
+      )}
     </View>
   );
-}
-
-function createResponse(extra: Record<string, unknown> = {}) {
-  return {
-    format: CourseExerciseCategoryEnum.StorySerial,
-    phase: "story",
-    isCorrect: true,
-    ...extra,
-  };
-}
-
-function readBranches(value: unknown): StoryBranch[] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((item) => {
-    const branch = readRecord(item);
-    const choice = readString(branch?.choice);
-    const label = readString(branch?.label);
-    const beats = readStringArray(branch?.beats);
-    return choice && label && beats.length ? [{ choice, label, beats }] : [];
-  });
-}
-
-function readReflectionOptions(value: unknown): ReflectionOption[] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((item) => {
-    const option = readRecord(item);
-    const id = readString(option?.id);
-    const label = readString(option?.label);
-    const feedback = readString(option?.feedback);
-    return id && label && feedback ? [{ id, label, feedback }] : [];
-  });
-}
-
-function readIndex(value: unknown): number | null {
-  return typeof value === "number" && Number.isInteger(value) && value >= 0
-    ? value
-    : null;
 }

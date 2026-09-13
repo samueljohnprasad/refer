@@ -42,19 +42,21 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
       showDepth={false}
       haptic="none"
       contentClassName="p-3.5 pt-3 pb-3"
+      faceStyle={{ borderWidth: 1 }}
     >
-      <View className="absolute right-2.5 top-2.5 z-10">
+      <View className="absolute right-1 top-1 z-10">
         <TouchableOpacity
           onPress={cyclePrompt}
-          className="h-11 w-11 items-center justify-center active:opacity-60"
+          className="h-12 w-12 items-center justify-center active:opacity-60"
           accessibilityLabel="New reflection prompt"
           accessibilityRole="button"
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
           <Feather name="refresh-cw" size={17} color={SEMANTIC_COLORS.text.primary} />
         </TouchableOpacity>
       </View>
 
-      <View className="min-h-[56px] pr-10 justify-center" key={currentPrompt.id}>
+      <View className="min-h-[56px] pr-16 justify-center" key={currentPrompt.id}>
         <Text
           style={{
             fontFamily: APP_FONT_FAMILIES.extraBold,

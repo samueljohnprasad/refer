@@ -8,6 +8,7 @@ import type { Exercise } from "@/src/types/journeyV5";
 const logger = createLogger("node-engine-router");
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { clearV1SessionDraft } from "@/src/domains/journey/learning/sessionDraftStore";
+import { setVisible } from "@/src/store/slices/happyAssistantSlice";
 import {
   checkV1LearningAnswer,
   clearV1LearningSession,
@@ -112,6 +113,14 @@ export function NodeEngineRouter({
     session,
   });
 
+  // ponytail: ensure floating assistant mascot is hidden during exercises
+  useEffect(() => {
+    dispatch(setVisible(false));
+    return () => {
+      dispatch(setVisible(true));
+    };
+  }, [dispatch]);
+
 
   const trackedStartRef = useRef<string | null>(null);
   const trackedFeedbackRef = useRef<string | null>(null);
@@ -184,12 +193,13 @@ export function NodeEngineRouter({
   const handleInteraction = useV1NodeInteraction(dispatch, nodeId);
 
   const handlePrimaryPress = async () => {
-    if (!currentExercise || !currentResponse || isCompleting) {
+    const activeResponse = currentResponse ?? (currentExercise ? (responses[currentExercise.id] as Record<string, unknown> | null) : null) ?? {};
+    if (!currentExercise || isCompleting) {
       return;
     }
 
     const completesOnPress = shouldCompleteOnPrimaryPress({
-      response: currentResponse,
+      response: activeResponse,
       expectedFormat: category || currentExercise.type,
       isMicrolearning: isMicrolearningExercise,
       legacyCompletesDirectly: completesOnPrimaryInteraction(currentExercise),
@@ -197,7 +207,7 @@ export function NodeEngineRouter({
     if (isMicrolearningExercise) {
       const courseTransition = getCoursePrimaryTransition(
         currentExercise,
-        currentResponse,
+        activeResponse,
       );
       if (courseTransition?.kind === "response") {
         dispatch(
@@ -211,7 +221,7 @@ export function NodeEngineRouter({
       }
       if (completesOnPress) {
         await completeCurrentExercise(
-          buildResolvedResponse(currentExercise, currentResponse, attemptCount),
+          buildResolvedResponse(currentExercise, activeResponse, attemptCount),
         );
       }
       return;
@@ -429,7 +439,9 @@ export function NodeEngineRouter({
       config={categoryConfig ? resolveCourseExerciseConfig(categoryConfig as any) : null}
       primaryLabel={getDisplayPrimaryLabel(
         currentExercise,
-        checkStatus === V1CheckStatusEnum.Idle ? currentResponse : null,
+        checkStatus === V1CheckStatusEnum.Idle
+          ? (currentResponse ?? (responses[currentExercise.id] as Record<string, unknown> | null))
+          : null,
         ready,
         getPrimaryLabel({
           canContinueAfterExplanation,

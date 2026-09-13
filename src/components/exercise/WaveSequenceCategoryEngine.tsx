@@ -9,6 +9,7 @@ import {
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
+// ponytail: clean explanatory timeline for panic wave arc
 export function WaveSequenceCategoryEngine({
   exercise,
   savedResponse,
@@ -32,59 +33,63 @@ export function WaveSequenceCategoryEngine({
   }, [onInteraction, saved]);
 
   return (
-    <View className="px-2 pb-3 pt-1.5">
-      <CourseExerciseHeading
-        title={readString(content.title) ?? "The anxiety wave"}
-        instruction={readString(content.instruction) ?? "Just read."}
-      />
+    <View className="flex-1 -mt-4 px-5 pb-8 pt-0">
+      {/* Title & Subtitle */}
+      <View className="mb-4">
+        <Text className="happy-font-heading-bold text-[24px] leading-[30px] text-[#201E1D] tracking-tight">
+          {readString(content.title) ?? "The anxiety wave"}
+        </Text>
+        <Text className="happy-font-body text-[14.5px] leading-[20px] text-[#7A7265] mt-1">
+          {readString(content.instruction) ??
+            "How an anxiety surge moves through your body."}
+        </Text>
+      </View>
 
-      <View className="rounded-[24px] bg-[#F9F4ED] px-[22px] pb-[18px] pt-[22px] shadow-md shadow-black/10">
+      {/* Informational Cream Learning Surface */}
+      <View className="rounded-[24px] border border-[#EDE6DA] bg-[#FAF6EF] px-5 py-5">
         {steps.map((step, index) => {
-          const last = index === steps.length - 1;
+          const isLast = index === steps.length - 1;
           return (
-            <View key={step}>
-              <View className="min-h-10 flex-row items-center gap-3">
-                <View
-                  className={
-                    last
-                      ? "h-[26px] w-[26px] items-center justify-center rounded-full bg-[#5F7F58]"
-                      : "h-[26px] w-[26px] items-center justify-center rounded-full bg-[#D3E0CD]"
-                  }
-                >
-                  <Text
-                    className={
-                      last
-                        ? "happy-font-body-bold text-[12.5px] text-white"
-                        : "happy-font-body-bold text-[12.5px] text-[#29452A]"
-                    }
-                  >
+            <View key={step} className="flex-row items-start">
+              {/* Timeline Node & Connector Column */}
+              <View className="w-6 items-center">
+                <View className="h-6 w-6 items-center justify-center rounded-full bg-[#DCE7D8]">
+                  <Text className="happy-font-body-bold text-[12px] text-[#244228]">
                     {index + 1}
                   </Text>
                 </View>
-                <Text className="happy-font-body-semibold flex-1 text-[15.5px] leading-[21px] text-[#201E1D]">
+                {!isLast ? (
+                  <View className="my-1 h-3.5 w-[1.5px] bg-[#B9CBB4]" />
+                ) : null}
+              </View>
+
+              {/* Step Text */}
+              <View className={`flex-1 ml-3.5 ${!isLast ? "pb-2" : ""}`}>
+                <Text className="happy-font-body-medium text-[15px] leading-[21px] text-[#201E1D] pt-0.5">
                   {step}
                 </Text>
               </View>
-              {!last ? (
-                <View className="ml-3 h-3.5 w-0.5 rounded-full bg-[#ABC0A2]" />
-              ) : null}
             </View>
           );
         })}
 
-        <View className="mt-4 border-t-[1.5px] border-[#E7DFD2] pt-3.5">
-          <Text className="happy-font-heading-bold mb-1 text-[19px] leading-6 text-[#29452A]">
-            {readString(content.rule)}
+        {/* Quiet Divider */}
+        <View className="mt-4 mb-3.5 border-t border-[#EAE3D6]" />
+
+        {/* The Natural Arc Metadata & Explanation */}
+        <View>
+          <Text className="text-[11.5px] font-bold uppercase tracking-wider text-[#2D5A32] mb-1.5">
+            {readString(content.rule) ?? "THE NATURAL ARC"}
           </Text>
-          <Text className="happy-font-body text-[13.5px] leading-5 text-[#3F3A34]">
-            {readString(content.explanation)}
+          <Text className="happy-font-body text-[14px] leading-[21px] text-[#2C2825]">
+            {readString(content.explanation) ??
+              "No surge stays at peak indefinitely. Every wave has a chemical half-life and begins to settle on its own."}
           </Text>
         </View>
       </View>
 
-      <Text className="happy-font-body mt-3 text-center text-[12.5px] text-[#82796A]">
-        {readString(content.note)}
-      </Text>
+      {/* Intentional whitespace before sticky/footer CTA */}
+      <View className="h-32" />
     </View>
   );
 }

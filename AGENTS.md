@@ -49,7 +49,7 @@ This repo currently has multiple lockfiles (`package-lock.json`, `yarn.lock`, `b
 ## Verification
 
 - For TypeScript or behavior changes, run the narrowest useful check available.
-- For mobile UI changes, prefer verifying in the iOS simulator/dev app when available, especially screens involving keyboard, voice input, gestures, bottom sheets, or animations.
+- DO NOT use simulator or emulator tools unnecessarily — it consumes large token volume and costs user money. Only use simulator when strictly unavoidable or explicitly requested by the user. If visual check is needed, ask the user for a screenshot.
 - If verification cannot be run, state that explicitly in the final response.
 
 ## Engineering Decision Rules
@@ -134,3 +134,5 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
 - When making structural changes to exercises or features, make them end-to-end, including updating Supabase schemas, migrations, and seed data.
+
+load the agents skill contexually .agents/skills

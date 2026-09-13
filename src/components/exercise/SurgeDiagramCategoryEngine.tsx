@@ -283,10 +283,12 @@ export function SurgeDiagramCategoryEngine({
             step={0.01}
             value={progress}
             onValueChange={handleValueChange}
+            tapToSeek
             minimumTrackTintColor="#5F7F58"
             maximumTrackTintColor="#E2DDD5"
             thumbTintColor="#5F7F58"
-            style={{ height: 40, width: "100%" }}
+            hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}
+            style={{ height: 48, width: "100%" }}
             accessibilityRole="adjustable"
             accessibilityLabel="Surge timeline"
             accessibilityValue={{ text: phaseConfig.tag }}

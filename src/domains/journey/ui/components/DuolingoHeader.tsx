@@ -38,8 +38,8 @@ const HeaderButton = memo(function HeaderButton({
       className="min-h-11 min-w-11 flex-row items-center justify-center gap-1.5 px-2"
     >
       <Icon
-        width={28}
-        height={28}
+        width={24}
+        height={24}
         color={String(SEMANTIC_COLORS.text.primary)}
       />
       <AnimatedOdometer

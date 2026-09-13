@@ -1,5 +1,6 @@
 import React from "react";
 import { View, ScrollView } from "react-native";
+import Animated, { FadeInDown, ReduceMotion } from "react-native-reanimated";
 import { SafeAreaView } from "@/src/components/tw";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import { JournalingOptionsModal } from "./JournalingOptionsModal";
@@ -13,7 +14,7 @@ import type { DiscoveryScreenViewModel } from "./hooks/useDiscoveryScreenViewMod
 
 export interface DiscoveryViewProps extends DiscoveryScreenViewModel {}
 
-// ponytail: pure presentational component with unified vertical content stack balanced at 60-65% screen height
+// ponytail: pure presentational component with Emil-compliant 40ms staggered entrance and balanced negative space
 export const DiscoveryView: React.FC<DiscoveryViewProps> = React.memo(
   ({
     currentStreak,
@@ -42,45 +43,59 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = React.memo(
       <SafeAreaView className="flex-1 bg-sage-50" edges={["top"]}>
         <ScrollView
           scrollEnabled={false}
-          contentContainerClassName="px-5 pt-2 pb-6 flex-grow flex-col"
+          contentContainerClassName="px-5 pt-1 pb-4 flex-grow flex-col"
           showsVerticalScrollIndicator={false}
           bounces={false}
         >
           {/* Top Region: Quiet Streak Badge */}
-          <DiscoveryHeader
-            currentStreak={currentStreak}
-            isLoading={isStreakLoading}
+          <Animated.View entering={FadeInDown.duration(180).reduceMotion(ReduceMotion.System)}>
+            <DiscoveryHeader
+              currentStreak={currentStreak}
+              isLoading={isStreakLoading}
+            />
+          </Animated.View>
+
+          {/* Prompt Section: Hero question kept in upper third */}
+          <Animated.View
+            entering={FadeInDown.duration(200).delay(40).reduceMotion(ReduceMotion.System)}
+            className="mt-2"
+          >
+            <RecordPromptSection
+              selectedDate={selectedDate}
+              onDatePress={onOpenCalendar}
+              onTodayPress={onTodayPress}
+              prompt={currentPrompt}
+              onShufflePrompt={onShufflePrompt}
+              onOpenOptions={onOpenOptions}
+            />
+          </Animated.View>
+
+          {/* Upper Spacer: 70–90pt breathing room */}
+          <View
+            className="flex-1 min-h-[70px] max-h-[90px]"
+            style={{ flex: 1 }}
           />
 
-          {/* ponytail: main content stack moved down ~20pt with balanced internal gaps */}
-          <View className="mt-10 flex-col">
-            {/* Prompt Section: date metadata and headline form one visual group */}
-            <View className="mb-11">
-              <RecordPromptSection
-                selectedDate={selectedDate}
-                onDatePress={onOpenCalendar}
-                onTodayPress={onTodayPress}
-                prompt={currentPrompt}
-                onShufflePrompt={onShufflePrompt}
-                onOpenOptions={onOpenOptions}
-              />
-            </View>
-
-            {/* Mascot Stage: ~44pt gap from prompt, ~40pt gap to input buttons */}
-            <View className="mb-10">
-              <RecordMascotStage />
-            </View>
-
-            {/* Unified Input Action Cluster (Camera / 70px Mic / Write) */}
+          {/* ponytail: Mochi + capture controls as ONE unified composition, staggered in at 80ms */}
+          <Animated.View
+            entering={FadeInDown.duration(220).delay(80).reduceMotion(ReduceMotion.System)}
+            className="items-center"
+          >
+            <RecordMascotStage />
+            {/* 28–36pt intentional gap between Mochi and capture controls */}
+            <View className="h-8" />
             <RecordActionCluster
               onScanJournal={onScanJournal}
               onOpenRecorder={onOpenRecorder}
               onOpenKeyboard={onOpenKeyboard}
             />
-          </View>
+          </Animated.View>
 
-          {/* Flexible Remaining Space: leaves ~80-120pt calm breathing room above tab bar */}
-          <View className="flex-1 min-h-[60px]" />
+          {/* Lower Spacer: 140–200pt intentional whitespace before bottom navigation */}
+          <View
+            className="min-h-[140px] max-h-[200px]"
+            style={{ flex: 2 }}
+          />
         </ScrollView>
 
         {/* Date Picker Bottom Sheet */}

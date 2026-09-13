@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { NODE_SIZE } from "@/src/data/journey/constants";
@@ -17,7 +17,7 @@ export interface JourneyNodeCellViewProps
   screenWidth: number;
 }
 
-import Animated, { useAnimatedProps, withDelay, withTiming, useSharedValue, useEffect } from "react-native-reanimated";
+import Animated, { useAnimatedProps, withDelay, withTiming, useSharedValue } from "react-native-reanimated";
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 

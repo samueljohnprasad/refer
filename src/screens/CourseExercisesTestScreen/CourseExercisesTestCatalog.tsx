@@ -347,7 +347,7 @@ const styles = {
     textTransform: "capitalize",
   },
   testLabel: {
-    color: SEMANTIC_COLORS.error.primary,
+    color: SEMANTIC_COLORS.brand.pressed,
     fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
     fontSize: 13,
   },

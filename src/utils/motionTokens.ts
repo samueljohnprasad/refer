@@ -70,7 +70,7 @@ export const TIMING_ENTER: WithTimingConfig = {
 
 export const TIMING_EXIT: WithTimingConfig = {
   duration: DURATION.fast,
-  easing: Easing.in(Easing.cubic),
+  easing: Easing.out(Easing.cubic),
 };
 
 export const TIMING_FADE: WithTimingConfig = {

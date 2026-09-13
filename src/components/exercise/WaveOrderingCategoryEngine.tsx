@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
+import React, { useEffect, useMemo } from "react";
+import { Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
-import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
   readNumber,
   readRecord,
@@ -10,7 +9,14 @@ import {
 import { readWaveOrderVariants } from "@/src/components/exercise/courseExerciseSeventhBatchContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
+import {
+  WaveOrderChip,
+  WaveOrderClueCard,
+  WaveOrderFeedbackCard,
+  WaveOrderSlot,
+} from "@/src/components/exercise/WaveOrderComponents";
 
+// ponytail: slot + chip tap-to-place ordering engine with collapsed used chips
 export function WaveOrderingCategoryEngine({
   exercise,
   savedResponse,
@@ -21,197 +27,165 @@ export function WaveOrderingCategoryEngine({
   const saved = readRecord(savedResponse);
   const variants = readWaveOrderVariants(content.variants);
   const variantIndex = readNumber(saved?.variantIndex) ?? 0;
-  const attemptCount = readNumber(saved?.attemptCount) ?? 0;
-  const tray = readStringList(saved?.tray);
-  const marks = readBooleanList(saved?.marks);
-  const pinnedCount = readNumber(saved?.pinnedCount) ?? 0;
-  const phase = saved?.phase === "feedback" ? "feedback" : "entry";
-  const correct = saved?.isCorrect === true;
-  const supported = saved?.supported === true;
-  const feedbackText = readString(saved?.feedbackText);
   const variant = variants[variantIndex] ?? variants[0];
 
+  const tray = readStringList(saved?.tray ?? saved?.order);
+  const marks = readBooleanList(saved?.marks);
+  const attemptCount = readNumber(saved?.attemptCount) ?? 0;
+  const phase =
+    saved?.phase === "feedback"
+      ? "feedback"
+      : saved?.phase === "complete"
+        ? "complete"
+        : "entry";
+  const isCorrect = saved?.isCorrect === true || phase === "complete";
+  const rightCount = marks ? marks.filter(Boolean).length : 0;
+  const totalStages = variant?.answer?.length ?? 4;
+
+  const availablePool = useMemo(() => {
+    if (!variant?.pool) return [];
+    return variant.pool.filter((stage) => !tray.includes(stage));
+  }, [variant, tray]);
+
+  // ponytail: ensure initial response is recorded on mount
   useEffect(() => {
-    if (!saved) onInteraction(createResponse(), false);
-  }, [onInteraction, saved]);
+    if (!saved) {
+      onInteraction(
+        createResponse({
+          tray: [],
+          order: [],
+          marks: null,
+          phase: "entry",
+          evaluated: false,
+          canCheck: false,
+        }),
+        false,
+      );
+    }
+  }, [saved, onInteraction]);
+
+  // ponytail: light success haptic once complete
+  useEffect(() => {
+    if (isCorrect) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+  }, [isCorrect]);
 
   const addStage = (stage: string) => {
-    if (locked || phase !== "entry" || tray.includes(stage)) return;
-    const nextTray = [...tray, stage];
+    if (locked || isCorrect || tray.includes(stage) || tray.length >= totalStages) return;
     Haptics.selectionAsync();
+    const nextTray = [...tray, stage];
+    const isFilled = nextTray.length === totalStages;
     onInteraction(
-      createResponse({ ...saved, tray: nextTray, marks: null }),
-      nextTray.length === variant?.answer.length,
+      createResponse({
+        ...saved,
+        tray: nextTray,
+        order: nextTray,
+        marks: null,
+        phase: "entry",
+        evaluated: false,
+        canCheck: isFilled,
+      }),
+      isFilled,
     );
   };
 
   const removeStage = (stageIndex: number) => {
-    if (locked || phase !== "entry" || stageIndex < pinnedCount) return;
+    if (locked || isCorrect) return;
     Haptics.selectionAsync();
+    const nextTray = tray.filter((_, index) => index !== stageIndex);
     onInteraction(
       createResponse({
         ...saved,
-        tray: tray.filter((_, index) => index !== stageIndex),
+        tray: nextTray,
+        order: nextTray,
         marks: null,
+        phase: "entry",
+        evaluated: false,
+        canCheck: false,
       }),
       false,
     );
   };
 
+  const promptText =
+    readString(variant?.prompt) ??
+    "Arrange what happens as an anxiety surge runs its course:";
+
   return (
-    <View className="px-2 pb-3 pt-1.5">
-      <CourseExerciseHeading
-        title={readString(content.title) ?? "Order the wave"}
-        instruction={readString(content.instruction) ?? "Build the order."}
-      />
+    <View className="flex-1 -mt-11 px-5 pb-8 pt-0">
+      {/* Title & Subtitle */}
+      <View className="mb-1">
+        <Text className="happy-font-heading-bold text-[24px] leading-[30px] text-[#201E1D] tracking-tight">
+          {readString(content.title) ?? "Order the panic wave"}
+        </Text>
+        <Text className="happy-font-body text-[14.5px] leading-[20px] text-[#7A7265] mt-1">
+          {readString(content.instruction) ??
+            "Put the phases of a surge in chronological order."}
+        </Text>
+      </View>
 
-      <Text className="happy-font-body-bold mb-3 text-[15px] leading-[21px] text-[#201E1D]">
-        {variant?.prompt}
-      </Text>
+      {/* Additional Instruction Prompt */}
+      {promptText ? (
+        <Text className="happy-font-body-medium text-[14.5px] leading-[21px] text-[#2C2825] mt-4 mb-2.5">
+          {promptText}
+        </Text>
+      ) : null}
 
+      {/* Destination Slots */}
       <View className="gap-2.5">
         {variant?.answer.map((_, stageIndex) => {
           const stage = tray[stageIndex];
-          const mark = marks[stageIndex];
-          const pinned = stageIndex < pinnedCount;
+          const mark = marks ? marks[stageIndex] : undefined;
           return (
-            <Pressable
+            <WaveOrderSlot
               key={stageIndex}
-              accessibilityRole="button"
-              accessibilityState={{
-                disabled: !stage || phase === "feedback" || pinned,
-              }}
-              disabled={!stage || phase === "feedback" || pinned}
+              index={stageIndex}
+              stage={stage}
+              mark={mark}
+              phase={phase}
+              locked={locked}
               onPress={() => removeStage(stageIndex)}
-              className={getSlotClassName({ mark, phase, stage })}
-            >
-              <View
-                className={
-                  stage
-                    ? "h-6 w-6 items-center justify-center rounded-full bg-[#D3E0CD]"
-                    : "h-6 w-6 items-center justify-center rounded-full bg-[#EEE8DD]"
-                }
-              >
-                <Text className="happy-font-body-bold text-xs text-[#29452A]">
-                  {stageIndex + 1}
-                </Text>
-              </View>
-              <Text
-                className={
-                  stage
-                    ? "happy-font-body flex-1 text-[14.5px] leading-5 text-[#201E1D]"
-                    : "happy-font-body flex-1 text-[14.5px] leading-5 text-[#82796A]"
-                }
-              >
-                {stage ?? "Tap a chip to place it here"}
-              </Text>
-              {phase === "feedback" && mark ? (
-                <Text className="happy-font-body-bold text-base text-[#29452A]">
-                  ✓
-                </Text>
-              ) : null}
-            </Pressable>
+            />
           );
         })}
       </View>
 
-      {phase === "entry" ? (
-        <View className="mt-3.5 flex-row flex-wrap gap-2">
-          {variant?.pool.map((stage) => {
-            const used = tray.includes(stage);
-            return (
-              <Pressable
-                key={stage}
-                accessibilityRole="button"
-                accessibilityState={{ disabled: used }}
-                disabled={used}
-                onPress={() => addStage(stage)}
-                className={
-                  used
-                    ? "min-h-11 justify-center rounded-full border-[1.5px] border-[#DCD3C4] bg-[#F9F4ED] px-4 py-2.5 opacity-30"
-                    : "min-h-11 justify-center rounded-full border-[1.5px] border-[#DCD3C4] bg-[#F9F4ED] px-4 py-2.5 shadow-sm shadow-black/10 active:translate-y-px active:shadow-none"
-                }
-              >
-                <Text className="happy-font-body-semibold text-[14px] leading-[18px] text-[#201E1D]">
-                  {stage}
-                </Text>
-              </Pressable>
-            );
-          })}
+      {/* Available Tappable Chips (collapsed when placed) */}
+      {phase === "entry" && !isCorrect && availablePool.length > 0 ? (
+        <View className="mt-4 w-full gap-2.5">
+          {availablePool.map((stage) => (
+            <WaveOrderChip
+              key={stage}
+              stage={stage}
+              disabled={locked}
+              onPress={() => addStage(stage)}
+            />
+          ))}
         </View>
       ) : null}
 
-      {phase === "entry" && attemptCount >= 1 ? (
-        <View className="mt-3 flex-row items-start gap-2 rounded-[20px] bg-[#F9F4ED] px-4 py-3">
-          <Text className="happy-font-body-bold text-[#5F7F58]">?</Text>
-          <Text className="happy-font-body flex-1 text-[13.5px] leading-5 text-[#3F3A34]">
-            <Text className="happy-font-body-bold">Clue: </Text>
-            {variant?.clue}
-          </Text>
+      {/* Clue Card (revealed on attempts >= 1) */}
+      {attemptCount >= 1 && variant?.clue && !isCorrect ? (
+        <View className="mt-4">
+          <WaveOrderClueCard clue={variant.clue} />
         </View>
       ) : null}
 
-      {phase === "feedback" ? (
-        <WaveOrderFeedback
-          capability={readString(content.capability)}
-          correct={correct}
-          feedbackText={feedbackText}
-          supported={supported}
-        />
-      ) : null}
-    </View>
-  );
-}
-
-function WaveOrderFeedback({
-  capability,
-  correct,
-  feedbackText,
-  supported,
-}: {
-  capability: string | null;
-  correct: boolean;
-  feedbackText: string | null;
-  supported: boolean;
-}) {
-  const positive = correct || supported;
-  return (
-    <View
-      className={
-        positive
-          ? "mt-4 flex-row items-start gap-2.5 rounded-[24px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-[17px] py-[15px]"
-          : "mt-4 rounded-[24px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-[17px] py-[15px]"
-      }
-    >
-      {positive ? (
-        <View className="h-7 w-7 items-center justify-center rounded-full bg-[#5F7F58]">
-          <Text className="happy-font-body-bold text-sm text-white">✓</Text>
+      {/* Feedback Card (evaluates correct pattern or gentle retry) */}
+      {phase === "feedback" || isCorrect ? (
+        <View className="mt-4">
+          <WaveOrderFeedbackCard
+            isCorrect={isCorrect}
+            feedbackText={readString(saved?.feedbackText)}
+            rightCount={rightCount}
+            total={totalStages}
+          />
         </View>
       ) : null}
-      <View className="flex-1">
-        <Text
-          className={
-            positive
-              ? "happy-font-heading-bold text-base leading-5 text-[#29452A]"
-              : "happy-font-heading-bold text-base leading-5 text-[#29452A]"
-          }
-        >
-          {supported
-            ? "Here’s the thinking"
-            : correct
-              ? "Why it fits"
-              : "Try the order again"}
-        </Text>
-        <Text className="happy-font-body mt-1.5 text-[13.5px] leading-5 text-[#201E1D]">
-          {feedbackText}
-        </Text>
-        {correct && capability ? (
-          <Text className="happy-font-body mt-2 text-[13px] leading-[18px] text-[#29452A]">
-            <Text className="happy-font-body-bold">New capability: </Text>
-            {capability}
-          </Text>
-        ) : null}
-      </View>
+
+      {/* Generous bottom spacing: guarantees no sticky CTA overlap */}
+      <View className="h-44" />
     </View>
   );
 }
@@ -223,11 +197,11 @@ function createResponse(extra: Record<string, unknown> = {}) {
     variantIndex: 0,
     attemptCount: 0,
     tray: [],
+    order: [],
     marks: null,
-    pinnedCount: 0,
-    feedbackText: null,
     isCorrect: false,
-    supported: false,
+    evaluated: false,
+    canCheck: false,
     ...extra,
   };
 }
@@ -238,27 +212,6 @@ function readStringList(value: unknown): string[] {
     : [];
 }
 
-function readBooleanList(value: unknown): boolean[] {
-  return Array.isArray(value) ? value.map((item) => item === true) : [];
-}
-
-function getSlotClassName({
-  mark,
-  phase,
-  stage,
-}: {
-  mark: boolean | undefined;
-  phase: "entry" | "feedback";
-  stage: string | undefined;
-}): string {
-  if (!stage) {
-    return "min-h-[54px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-dashed border-[#82796A] px-3.5 py-2.5";
-  }
-  if (phase === "feedback" && mark) {
-    return "min-h-[54px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-3.5 py-2.5 shadow-sm shadow-black/10";
-  }
-  if (phase === "feedback") {
-    return "min-h-[54px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#5F7F58] bg-[#F2F8EF] px-3.5 py-2.5 shadow-sm shadow-black/10";
-  }
-  return "min-h-[54px] flex-row items-center gap-3 rounded-[22px] border-[1.5px] border-[#DCD3C4] bg-[#F9F4ED] px-3.5 py-2.5 shadow-sm shadow-black/10 active:translate-y-px active:shadow-none";
+function readBooleanList(value: unknown): boolean[] | null {
+  return Array.isArray(value) ? value.map((item) => item === true) : null;
 }

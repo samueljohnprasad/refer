@@ -1,42 +1,34 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { Dispatch, RefObject, SetStateAction } from "react";
+import { useCallback, useEffect, useRef, useState, type Dispatch, type RefObject, type SetStateAction } from "react";
 import type { LegendListRef, ViewToken } from "@legendapp/list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
-
 import { useToast } from "heroui-native";
 import { setPreviewSection } from "@/src/domains/journey/state/journeySlice";
 import {
-  selectCourse,
-  selectCurrentSectionIdForCourse,
-  selectIsCourseLoaded,
-  selectPreviewSectionForCourse,
-  selectPreviewSectionIdForCourse,
-  selectRenderedJourneyViewForCourse,
-  selectRenderedSectionIdForCourse,
-  selectSectionOverviewItemsForCourse,
+  selectCourse, selectCurrentSectionIdForCourse, selectIsCourseLoaded,
+  selectPreviewSectionForCourse, selectPreviewSectionIdForCourse,
+  selectRenderedJourneyViewForCourse, selectRenderedSectionIdForCourse,
+  selectSectionOverviewItemsForCourse, selectNextCourseRecommendation,
 } from "@/src/domains/journey/state/journeySelectors";
 import {
-  type ActiveNodeInitialScrollIndex,
-  type ActiveNodeScrollHint,
-  useCurrentNodeScrollHint,
+  type ActiveNodeInitialScrollIndex, type ActiveNodeScrollHint, useCurrentNodeScrollHint,
 } from "@/hooks/journey/useCurrentNodeScrollHint";
 import { useJourneyFlashListData } from "@/hooks/journey/useJourneyFlashListData";
 import { useNodeModalAutoScrollGate } from "@/hooks/journey/useNodeModalAutoScrollGate";
 import { useVisibleUnit } from "@/src/hooks/useVisibleUnit";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
-import type { JourneyFlashListItem, PathNodeData } from "@/src/types/journey";
-import { NodeType } from "@/src/types/journey";
+import { type JourneyFlashListItem, type PathNodeData, NodeType } from "@/src/types/journey";
 import type { SectionOverviewItem } from "@/src/types/journey/sectionMap";
 import { LIST_BOTTOM_SPACER_HEIGHT } from "../components/JourneyMapListItems";
 import { getJourneyMapHeaderState } from "../../model/journeyMapHeaderState";
-import type {
-  InsightRewardContent,
-  RewardCelebration,
-} from "@/src/types/journeyV5";
+import type { InsightRewardContent, RewardCelebration } from "@/src/types/journeyV5";
 import { useJourneyRewardsController } from "../../rewards/useJourneyRewardsController";
 import { useCheckpointSheet } from "./useCheckpointSheet";
 import type { CheckpointActionSheetData } from "./useCheckpointSheet";
+import { useStartCourseMutation } from "@/src/domains/journey/data/journeyApi";
+import type { NextCourseRecommendation } from "@/specs/019-next-journey-bridge/contracts/NextJourneyBridgeContract";
+
+
 
 type JourneyMapController = {
   activeGlobalIndex: number;
@@ -72,6 +64,9 @@ type JourneyMapController = {
   checkpointSheetData: CheckpointActionSheetData | null;
   closeCheckpointSheet: () => void;
   isOverlayOpen: boolean;
+  recommendation: NextCourseRecommendation;
+  isStartingNextCourse: boolean;
+  handleStartNextCourse: (nextCourseId: string) => Promise<void>;
 };
 
 export function useJourneyMapController(
@@ -114,7 +109,7 @@ export function useJourneyMapController(
   let activeListIndex = defaultActiveListIndex;
   if (completedNodeId) {
     const completedIndex = flashListData.findIndex(
-      (item) => item.type === "node" && item.node.id === completedNodeId
+      (item) => item.id === completedNodeId,
     );
     if (completedIndex !== -1) {
       activeListIndex = completedIndex;
@@ -237,11 +232,31 @@ export function useJourneyMapController(
     [courseId, currentSectionId, dispatch],
   );
 
+  const recommendation = useAppSelector((state) =>
+    selectNextCourseRecommendation(state, courseId),
+  );
+  const [startCourse, { isLoading: isStartingNextCourse }] =
+    useStartCourseMutation();
+
+  // ponytail: handle next course start with safe error handling
+  const handleStartNextCourse = useCallback(
+    async (nextCourseId: string): Promise<void> => {
+      try {
+        await startCourse(nextCourseId).unwrap();
+      } catch (err) {
+        console.warn("Failed to start next course", err);
+      }
+    },
+    [startCourse],
+  );
+
   return {
     activeGlobalIndex,
     activeNodeInitialScrollIndex,
-    bottomSpacerHeight: LIST_BOTTOM_SPACER_HEIGHT + insets.bottom,
+    bottomSpacerHeight:
+      LIST_BOTTOM_SPACER_HEIGHT + insets.bottom + (recommendation.showDock ? 200 : 0),
     courseTitle: course?.title ?? "Journey",
+    courseCompletionMessage: course?.rewardContent?.acknowledgement,
     flashListData,
     handleListLoad,
     handleNodePress,
@@ -270,5 +285,8 @@ export function useJourneyMapController(
     checkpointSheetData,
     closeCheckpointSheet,
     isOverlayOpen,
+    recommendation,
+    isStartingNextCourse,
+    handleStartNextCourse,
   };
 }

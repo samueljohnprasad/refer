@@ -4,10 +4,18 @@ import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import { NameItCategoryEngine } from "@/src/components/exercise/NameItCategoryEngine";
 
 export const NameItConfig: CourseExerciseCategoryConfig = {
-category: CourseExerciseCategoryEnum.NameIt,
-    formats: [CourseExerciseCategoryEnum.NameIt],
-    engine: NameItCategoryEngine,
-    goalLabel: "Name a feeling precisely and rate its intensity.",
-    unavailableCopy: "This feeling ladder is not available yet.",
-
+  category: CourseExerciseCategoryEnum.NameIt,
+  formats: [CourseExerciseCategoryEnum.NameIt],
+  engine: NameItCategoryEngine,
+  goalLabel: "Name a feeling precisely and rate its intensity.",
+  unavailableCopy: "This feeling ladder is not available yet.",
+  interaction: {
+    submissionMode: "explicit",
+    getPrimaryLabel: () => "Continue",
+    getPrimaryTransition: () => null,
+  },
+  presentation: {
+    hideFooter: (exercise, response) => !response?.selectedWord,
+    hideSkip: (exercise, response) => Boolean(response?.selectedWord),
+  },
 };

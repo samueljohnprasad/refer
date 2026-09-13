@@ -1,145 +1,18 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
-import React, { type ReactElement } from "react";
-import { ActivityIndicator, Pressable, Text, View, type ColorValue } from "react-native";
+import React from "react";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
+import {
+  VARIANTS,
+  SIZES,
+  type ButtonProps,
+} from "./button.config";
 
-// ─── Variant config ──────────────────────────────────────────────────────────
+export * from "./button.config";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-type Variant =
-  | "primary"
-  | "secondary"
-  | "correct"
-  | "incorrect"
-  | "destructive"
-  | "premium"
-  | "streak"
-  | "ghost"
-  | "pill"
-  | "danger";
-
-interface VariantConfig {
-  faceColor: ColorValue;
-  rimColor: ColorValue;
-  labelColor: ColorValue;
-  disabledFaceColor: ColorValue;
-  disabledRimColor: ColorValue;
-  disabledLabelColor?: ColorValue;
-  faceStrokeColor?: ColorValue;
-  faceStrokeWidth?: number;
-}
-
-const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
-  primary: {
-    faceColor: SEMANTIC_COLORS.brand.primary,
-    rimColor: SEMANTIC_COLORS.brand.onSoft,
-    labelColor: SEMANTIC_COLORS.surface.primary,
-    disabledFaceColor: "#F3F6FA",
-    disabledRimColor: "#E9EEF5",
-    disabledLabelColor: "#64748B",
-  },
-  secondary: {
-    faceColor: SEMANTIC_COLORS.surface.primary,
-    rimColor: SEMANTIC_COLORS.border.default,
-    labelColor: SEMANTIC_COLORS.text.primary,
-    faceStrokeColor: SEMANTIC_COLORS.border.default,
-    faceStrokeWidth: 2,
-    disabledFaceColor: "#F7F7F7",
-    disabledRimColor: "#E5E5E5",
-  },
-  correct: {
-    faceColor: SEMANTIC_COLORS.info.surface,
-    rimColor: SEMANTIC_COLORS.info.indicator,
-    labelColor: "#0A7DB8",
-    disabledFaceColor: "#F0F9FF",
-    disabledRimColor: "#A0D8F8",
-  },
-  incorrect: {
-    faceColor: SEMANTIC_COLORS.error.surface,
-    rimColor: SEMANTIC_COLORS.error.foreground,
-    labelColor: "#D10000",
-    disabledFaceColor: "#FFF0F0",
-    disabledRimColor: "#FFA0A0",
-  },
-  destructive: {
-    faceColor: SEMANTIC_COLORS.surface.primary,
-    rimColor: SEMANTIC_COLORS.error.foreground,
-    labelColor: SEMANTIC_COLORS.error.foreground,
-    disabledFaceColor: "#F7F7F7",
-    disabledRimColor: "#FFA0A0",
-  },
-  danger: {
-    faceColor: SEMANTIC_COLORS.error.foreground,
-    rimColor: "#C1272D",
-    labelColor: SEMANTIC_COLORS.surface.primary,
-    disabledFaceColor: "#FFF0F0",
-    disabledRimColor: "#FFA0A0",
-  },
-  premium: {
-    faceColor: "#9B59B6",
-    rimColor: "#7B3AAD",
-    labelColor: SEMANTIC_COLORS.surface.primary,
-    disabledFaceColor: "#E8D4FF",
-    disabledRimColor: "#B880D8",
-  },
-  streak: {
-    faceColor: SEMANTIC_COLORS.warning.foreground,
-    rimColor: "#C89400",
-    labelColor: SEMANTIC_COLORS.text.primary,
-    disabledFaceColor: "#FFF5D6",
-    disabledRimColor: "#E0C060",
-  },
-  pill: {
-    faceColor: SEMANTIC_COLORS.surface.primary,
-    rimColor: SEMANTIC_COLORS.border.strong,
-    labelColor: SEMANTIC_COLORS.text.primary,
-    disabledFaceColor: "#F7F7F7",
-    disabledRimColor: "#E5E5E5",
-  },
-};
-
-// ─── Size config ─────────────────────────────────────────────────────────────
-
-type Size = "sm" | "md" | "lg" | "xl" | "option";
-
-interface SizeConfig {
-  height: number;
-  radius: number;
-  pressDepth: number;
-  labelSize: number;
-  defaultWidth: number;
-}
-
-const SIZES: Record<Size, SizeConfig> = {
-  sm: { height: 44, radius: 22, pressDepth: 3, labelSize: 15, defaultWidth: 120 },
-  md: { height: 48, radius: 22, pressDepth: 4, labelSize: 16, defaultWidth: 150 },
-  lg: { height: 56, radius: 22, pressDepth: 4, labelSize: 17, defaultWidth: 200 },
-  xl: { height: 80, radius: 40, pressDepth: 6, labelSize: 20, defaultWidth: 80 },
-  option: { height: 52, radius: 12, pressDepth: 4, labelSize: 16, defaultWidth: 300 },
-};
-
-// ─── Props ───────────────────────────────────────────────────────────────────
-
-interface ButtonProps {
-  label?: string;
-  variant?: Variant;
-  size?: Size;
-  fullWidth?: boolean;
-  width?: number;
-  onPress?: () => void;
-  disabled?: boolean;
-  loading?: boolean;
-  leftIcon?: ReactElement;
-  rightIcon?: ReactElement;
-  accessibilityLabel?: string;
-  haptic?: "none" | "light" | "medium";
-  className?: string;
-  labelClassName?: string;
-}
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
@@ -147,6 +20,8 @@ export function Button({
   label = "",
   variant = "primary",
   size = "lg",
+  round = false,
+  height,
   fullWidth = true,
   width,
   onPress,
@@ -157,9 +32,16 @@ export function Button({
   accessibilityLabel,
   haptic = "light",
   className = "",
+  labelClassName = "",
 }: ButtonProps) {
   const sizeConfig = SIZES[size];
   const isDisabled = disabled || loading;
+  const isFlexGrow = className.includes("flex-1") || className.includes("flex-grow") || className.includes("flex-shrink");
+  const shouldBeFullWidth = fullWidth || isFlexGrow;
+  const computedWidth = shouldBeFullWidth ? "100%" : (width ?? sizeConfig.defaultWidth);
+  const computedHeight = height ?? (round && width ? width : sizeConfig.height);
+  const radius = round ? 9999 : (variant === "pill" ? 9999 : sizeConfig.radius);
+  const pressDepth = round && width && width <= 56 ? 3 : sizeConfig.pressDepth;
 
   const pressY = useSharedValue(0);
 
@@ -167,7 +49,7 @@ export function Button({
     if (isDisabled) return;
     if (haptic === "light") Haptics.selectionAsync();
     if (haptic === "medium") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    pressY.value = withTiming(sizeConfig.pressDepth, { duration: 20 });
+    pressY.value = withTiming(pressDepth, { duration: 20 });
   };
 
   const handlePressOut = () => {
@@ -184,10 +66,6 @@ export function Button({
     transform: [{ translateY: pressY.value }],
   }));
 
-  const isFlexGrow = className.includes("flex-1") || className.includes("flex-grow") || className.includes("flex-shrink");
-  const shouldBeFullWidth = fullWidth || isFlexGrow;
-  const computedWidth = shouldBeFullWidth ? "100%" : (width ?? sizeConfig.defaultWidth);
-
   // Ghost variant — plain pressable, no depth
   if (variant === "ghost") {
     return (
@@ -199,7 +77,7 @@ export function Button({
         accessibilityState={{ disabled: isDisabled, busy: loading }}
         className={className}
         style={{
-          height: sizeConfig.height,
+          height: computedHeight,
           alignItems: "center",
           justifyContent: "center",
           opacity: isDisabled ? 0.5 : 1,
@@ -213,6 +91,7 @@ export function Button({
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
             {leftIcon}
             <Text
+              className={labelClassName}
               style={{
                 fontFamily: APP_FONT_FAMILIES.bold,
                 fontSize: sizeConfig.labelSize,
@@ -230,14 +109,13 @@ export function Button({
     );
   }
 
-  // All other variants — SvgAppButton with 3D depth
+  // All other variants — 3D tactile button
   const config = VARIANTS[variant];
   const faceColor = isDisabled ? config.disabledFaceColor : config.faceColor;
   const rimColor = isDisabled ? config.disabledRimColor : config.rimColor;
   const labelColor = isDisabled 
     ? (config.disabledLabelColor ?? config.labelColor)
     : config.labelColor;
-  const radius = variant === "pill" ? 9999 : sizeConfig.radius;
 
   return (
     <View
@@ -257,8 +135,8 @@ export function Button({
           position: "absolute",
           left: 0,
           right: 0,
-          top: sizeConfig.pressDepth,
-          height: sizeConfig.height,
+          top: pressDepth,
+          height: computedHeight,
           backgroundColor: rimColor,
           borderRadius: radius,
         }}
@@ -272,16 +150,16 @@ export function Button({
         disabled={isDisabled}
         style={[
           {
-            height: sizeConfig.height,
+            height: computedHeight,
             backgroundColor: faceColor,
             borderRadius: radius,
             borderColor: config.faceStrokeColor || rimColor,
-            borderWidth: config.faceStrokeWidth ? config.faceStrokeWidth / 2 : 1, // Optional face border
+            borderWidth: config.faceStrokeWidth ? config.faceStrokeWidth / 2 : 1,
             justifyContent: "center",
             alignItems: "center",
           },
           !config.faceStrokeWidth && {
-            borderWidth: 0, // No border for primary/other buttons if not specified
+            borderWidth: 0,
           },
           animatedStyle,
         ]}
@@ -292,6 +170,7 @@ export function Button({
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
             {leftIcon}
             <Text
+              className={labelClassName}
               style={{
                 fontFamily: APP_FONT_FAMILIES.bold,
                 fontSize: sizeConfig.labelSize,
@@ -310,3 +189,4 @@ export function Button({
     </View>
   );
 }
+
