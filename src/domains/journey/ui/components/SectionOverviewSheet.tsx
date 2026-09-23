@@ -26,20 +26,19 @@ function SectionCard({
 
   const cardVariant = "answer";
   const lockStatusStr = !section.isUnlocked
-    ? "Locked"
+    ? "Locked (Preview available)"
     : isComplete
     ? "Completed"
     : "Available";
 
   return (
+    // ponytail: enable section preview for all sections including locked
     <Card
       variant={cardVariant}
       radius="xl"
       onPress={() => onPress(section.id)}
-      disabled={!section.isUnlocked}
-      accessibilityLabel={`${section.title}, ${unitRangeLabel}. Status: ${lockStatusStr}.`}
-      accessibilityState={{ disabled: !section.isUnlocked }}
-      className={`mb-4 ${section.isUnlocked ? "opacity-100" : "opacity-80"}`}
+      accessibilityLabel={`${section.title}, ${unitRangeLabel}. Status: ${lockStatusStr}. Tap to preview section.`}
+      className={`mb-4 ${section.isUnlocked ? "opacity-100" : "opacity-90"}`}
       contentClassName="gap-4 p-5"
     >
       <View className="flex-row items-start justify-between gap-3">
@@ -103,7 +102,7 @@ function SectionCard({
                 className="text-xs uppercase tracking-widest"
               >
                 {!section.isUnlocked
-                  ? "Locked"
+                  ? "Preview →"
                   : isComplete
                   ? "Review →"
                   : "Enter →"}

@@ -13,6 +13,8 @@
     "lint:fix": "oxlint --fix",
     "lint:complexity:strict": "oxlint --deny complexity --quiet",
     "test": "jest --watchAll",
+    "laya:start": ".venv/bin/python scripts/laya_service.py",
+    "test:laya": "npx tsx scripts/test_app_with_laya.ts",
     "types": "npx supabase gen types typescript --project-id xaqeueshxpehijtxwklo > database.types.ts",
     "prewidget": "EXPO_NO_GIT_STATUS=1 npx expo prebuild --template ./node_modules/@bacons/apple-targets/prebuild-blank.tgz --clean"
   },
