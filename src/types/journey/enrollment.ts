@@ -96,3 +96,24 @@ export interface JourneySwitcherItem {
     /** Enrollment status */
     status: EnrollmentStatus;
 }
+
+// ---------------------------------------------------------------------------
+// Course V5 Enrollment & Capacity Types
+// ---------------------------------------------------------------------------
+
+export interface UnenrollCourseArgs {
+  courseId: string;
+}
+
+export interface UnenrollCourseResponse {
+  success: boolean;
+  courseId: string;
+}
+
+export interface CourseCapacityState {
+  inProgressCount: number;
+  maxCapacityLimit: number;
+  isAtCapacityLimit: boolean;
+  canEnroll: boolean;
+}
+

@@ -1,19 +1,30 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
-import React from "react";
+import React, { useMemo } from "react";
 import { Text, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import MochiMascot from "../components/MochiMascot";
 import LoadingTaskRow from "../components/LoadingTaskRow";
 import { useAutoAdvance } from "../hooks/useAutoAdvance";
+import { getBuildingJourneyConfig } from "../config/buildingJourneyConfig";
+import type { MotivationAnswer, StressLevel } from "../types";
 
 interface BuildingJourneyStepProps {
   onComplete: () => void;
+  motivation?: MotivationAnswer;
+  stressLevel?: StressLevel;
 }
 
 const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
   onComplete,
+  motivation,
+  stressLevel,
 }) => {
-  const { tasks } = useAutoAdvance(onComplete);
+  // ponytail: resolve config based on motivation/stress level selections
+  const config = useMemo(
+    () => getBuildingJourneyConfig(motivation, stressLevel),
+    [motivation, stressLevel],
+  );
+  const { tasks } = useAutoAdvance(onComplete, config.tasks);
 
   return (
     <View className="flex-1 items-center justify-center px-6">
@@ -27,10 +38,10 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
           className="text-center text-2xl text-ink"
         >
-          Building your journey...
+          {config.title}
         </Text>
         <Text className="mt-2 text-center text-sm text-ink-soft">
-          Personalizing based on your answers
+          {config.subtitle}
         </Text>
       </Animated.View>
 

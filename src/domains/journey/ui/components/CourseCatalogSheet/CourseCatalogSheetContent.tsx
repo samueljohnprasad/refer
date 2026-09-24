@@ -29,6 +29,10 @@ interface CourseCatalogModel {
   isCourseTreeLoading: boolean;
   hasCourseTreeError: boolean;
   isStartingCourse: boolean;
+  isUnenrolling?: boolean;
+  isAtCapacityLimit: boolean;
+  maxCapacityLimit: number;
+  inProgressCount: number;
   enrollmentError: string | null;
 }
 
@@ -36,6 +40,7 @@ interface CourseCatalogActions {
   handleCoursePress: (courseId: string) => void;
   handleCourseBack: () => void;
   handlePrimaryActionPress: (courseId: string) => void;
+  handleUnenrollCourse: (courseId: string) => void;
   retryCourseTree: () => void;
   onClose: () => void;
 }
@@ -83,11 +88,16 @@ export function CourseCatalogSheetContent({
               )?.status === "completed"
             }
             isStartingCourse={model.isStartingCourse}
+            isUnenrolling={model.isUnenrolling}
+            isAtCapacityLimit={model.isAtCapacityLimit}
+            maxCapacityLimit={model.maxCapacityLimit}
+            currentInProgressCount={model.inProgressCount}
             enrollmentError={model.enrollmentError}
             onBack={actions.handleCourseBack}
             onClose={actions.onClose}
             onRetry={actions.retryCourseTree}
             onPrimaryActionPress={actions.handlePrimaryActionPress}
+            onUnenrollPress={actions.handleUnenrollCourse}
           />
         </Animated.View>
       ) : (

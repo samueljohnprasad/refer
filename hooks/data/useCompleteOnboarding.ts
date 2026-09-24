@@ -6,7 +6,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback } from "react";
 import type { OnboardingFormData } from "@/src/screens/OnboardingScreen/types";
 import { useStartCourseMutation } from "@/src/domains/journey/data/journeyApi";
-import { MOTIVATION_COURSE_MAP } from "@/src/screens/OnboardingScreen/constants";
+import { fetchCourseCatalog } from "@/src/domains/journey/data/courseServerQueries";
+import { resolveCourseForMotivation } from "@/src/screens/OnboardingScreen/utils/courseResolver";
+import { setActiveCourse } from "@/src/domains/journey/state/journeySlice";
+import { useAppDispatch } from "@/src/store/hooks";
 import type { MotivationAnswer } from "@/src/screens/OnboardingScreen/types";
 
 export const ONBOARDING_KEY = "onboarding_completed";
@@ -25,6 +28,7 @@ type CompleteOnboardingData = Pick<
 
 export const useCompleteOnboarding = () => {
   const { user } = useAuth();
+  const dispatch = useAppDispatch();
   const [startCourse] = useStartCourseMutation();
 
   const markCompleted = useCallback(
@@ -60,21 +64,21 @@ export const useCompleteOnboarding = () => {
 
       if (profileError) throw profileError;
 
-      // Enroll user in their personalized course immediately.
-      // When MOTIVATION_COURSE_MAP is replaced by a Supabase-driven lookup,
-      // swap this line with: const courseId = await fetchCourseIdByMotivation(motivation)
-      const courseId =
-        MOTIVATION_COURSE_MAP[onBoardingData.motivation ?? "anxiety"].courseId;
-      await startCourse(courseId)
-        .unwrap()
-        .catch((error: unknown) => {
-          console.warn("[Onboarding] Course enrollment deferred:", error);
-          // Non-fatal: useActiveCourse will auto-enroll on first journey tab visit.
-        });
+      // Resolve user's personalized course from catalog and enroll immediately
+      try {
+        const catalog = await fetchCourseCatalog();
+        const courseId = resolveCourseForMotivation(onBoardingData.motivation, catalog);
+        if (courseId) {
+          await startCourse(courseId).unwrap();
+          dispatch(setActiveCourse(courseId));
+        }
+      } catch (error) {
+        console.warn("[Onboarding] Course enrollment deferred:", error);
+      }
 
       await AsyncStorage.setItem(ONBOARDING_KEY, "true");
     },
-    [startCourse, user],
+    [dispatch, startCourse, user],
   );
 
   return { markCompleted };

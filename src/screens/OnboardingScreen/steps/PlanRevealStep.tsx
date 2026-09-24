@@ -1,94 +1,29 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
-import React from "react";
+import React, { useMemo } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, View, ScrollView, Platform } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
-
-import { MotivationAnswer, StressLevel } from "../types";
+import { Skeleton } from "@/src/components/ui/Skeleton";
+import { CourseOutline } from "@/src/domains/journey/ui/components/CourseCatalogSheet/CourseOutline";
+import {
+  useGetCourseCatalogQuery,
+  useGetCourseTreeQuery,
+} from "@/src/domains/journey/data/journeyApi";
+import { buildCourseOverview } from "@/src/domains/journey/model/courseOverview";
+import { resolveCourseForMotivation } from "../utils/courseResolver";
+import {
+  PLAN_META,
+  getWhyThisCourse,
+  formatCount,
+  resolveCourseSummary,
+} from "../utils/planMeta";
+import type { MotivationAnswer, StressLevel } from "../types";
 
 interface PlanRevealStepProps {
   planName: string;
   motivation?: MotivationAnswer;
   stressLevel?: StressLevel;
-}
-
-const PLAN_META: Record<
-  MotivationAnswer,
-  {
-    subtitle: string;
-    practiceItems: readonly string[];
-  }
-> = {
-  anxiety: {
-    subtitle: "From racing thoughts to steadier ground.",
-    practiceItems: [
-      "Understanding the anxiety loop",
-      "Settling the body’s alert response",
-      "Catching patterns earlier",
-    ],
-  },
-  mood: {
-    subtitle: "From heavy days to steadier light.",
-    practiceItems: [
-      "Identifying subtle mood triggers",
-      "Practicing tiny daily anchors",
-      "Finding steadier responses to hard moments",
-    ],
-  },
-  stress: {
-    subtitle: "From pressure to steadier ground.",
-    practiceItems: [
-      "Recognizing tension before it peaks",
-      "Decompressing the nervous system",
-      "Resetting when pressure mounts",
-    ],
-  },
-  self_understanding: {
-    subtitle: "From confusion to clearer patterns.",
-    practiceItems: [
-      "Uncovering repetitive thought loops",
-      "Naming what you actually feel",
-      "Aligning daily choices with your needs",
-    ],
-  },
-  sleep: {
-    subtitle: "From restless nights to gentler wind-downs.",
-    practiceItems: [
-      "Quieting late-night racing thoughts",
-      "Releasing physical tension before bed",
-      "Creating a predictable wind-down rhythm",
-    ],
-  },
-};
-
-function getWhyThisCourse(
-  motivation: MotivationAnswer,
-  stressLevel?: StressLevel,
-): string {
-  switch (motivation) {
-    case "anxiety":
-      if (stressLevel === "heavy") {
-        return "You told us anxiety feels like a constant weight, so we’ll start with understanding what keeps the alert system switched on and making it easier to settle.";
-      }
-      if (stressLevel === "moderate") {
-        return "You told us anxiety feels like regular tension, so we’ll start with understanding what keeps the alert system switched on and making it easier to settle.";
-      }
-      if (stressLevel === "overwhelming") {
-        return "You told us anxiety feels like it takes over some days, so we’ll start with understanding the alert response and giving you tools to find space.";
-      }
-      return "Based on what you shared, we’ll start by helping you understand what keeps the alert system switched on and practice ways to settle it.";
-    case "mood":
-      return "Based on what you shared, we’ll start with small anchors that help you notice what lifts your day.";
-    case "stress":
-      return "Based on what you shared, we’ll focus on catching pressure before it builds up and giving your nervous system room to decompress.";
-    case "self_understanding":
-      return "Based on what you shared, we’ll help you decode emotional patterns and find clearer language for what you experience.";
-    case "sleep":
-      return "Based on what you shared, we’ll focus on evening unwinding practices to help your body signal safety before bed.";
-    default:
-      return "Based on what you shared, we’ll start with foundational practices tailored to where you are right now.";
-  }
 }
 
 const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
@@ -100,6 +35,34 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
   const planMeta = PLAN_META[motivation];
   const displayPlanName = planName.replace(/\.$/, "");
   const contentTopPadding = Platform.OS === "ios" ? 100 : insets.top + 100;
+
+  // ponytail: query catalog and course tree to show real full course outline
+  const { data: catalogCourses = [] } = useGetCourseCatalogQuery();
+  const resolvedCourseId = useMemo(
+    () => resolveCourseForMotivation(motivation, catalogCourses),
+    [motivation, catalogCourses],
+  );
+  const { data: courseTree, isLoading: isTreeLoading } = useGetCourseTreeQuery(
+    resolvedCourseId ?? "",
+    { skip: !resolvedCourseId },
+  );
+
+  const overview = useMemo(
+    () => (courseTree ? buildCourseOverview(courseTree) : null),
+    [courseTree],
+  );
+
+  const courseTitle = overview?.title ?? displayPlanName;
+  // ponytail: use concise 'You’ll learn...' phrasing instead of syllabus objectives
+  const courseDescription = resolveCourseSummary(
+    overview?.description,
+    planMeta.youWillLearn,
+  );
+
+  // ponytail: replace legacy days concept with sections, units, lessons & session pacing
+  const hierarchyMeta = overview
+    ? `${formatCount(overview.sectionCount, "section")} · ${formatCount(overview.unitCount, "unit")} · ${formatCount(overview.lessonCount, "lesson")} · ~5 min/lesson`
+    : "Self-paced · ~5 min/lesson";
 
   return (
     <ScrollView
@@ -141,14 +104,14 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
             style={{ fontFamily: APP_FONT_FAMILIES.bold }}
             className="text-[26px] leading-[1.15] text-white"
           >
-            {displayPlanName}
+            {courseTitle}
           </Text>
 
           <Text
             style={{ fontFamily: APP_FONT_FAMILIES.regular }}
             className="mt-2 text-[15px] leading-relaxed text-white/80"
           >
-            {planMeta.subtitle}
+            {courseDescription}
           </Text>
 
           <View className="mt-5 flex-row items-center border-t border-white/10 pt-4">
@@ -156,7 +119,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
               style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="text-xs font-semibold tracking-wide text-sage-200"
             >
-              7 days · about 5 min/day
+              {hierarchyMeta}
             </Text>
           </View>
         </LinearGradient>
@@ -178,30 +141,66 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
         </Text>
       </Animated.View>
 
-      {/* You'll Practice - Open content */}
-      <Animated.View entering={FadeIn.duration(180).delay(280)} className="mt-6">
-        <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="text-xs font-semibold uppercase tracking-wider text-sage-600"
-        >
-          You’ll practice
-        </Text>
-        <View className="mt-3 gap-2.5">
-          {planMeta.practiceItems.map((item, idx) => (
-            <View key={idx} className="flex-row items-start gap-3">
-              <View className="mt-2 h-1.5 w-1.5 rounded-full bg-sage-500" />
-              <Text
-                style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-                className="flex-1 text-[15px] leading-relaxed text-ink"
-              >
-                {item}
-              </Text>
-            </View>
-          ))}
+      {/* Full Course Outline matching Course Catalog */}
+      <Animated.View entering={FadeIn.duration(180).delay(280)} className="mt-7">
+        <View className="mb-2 flex-row items-center justify-between">
+          <Text
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
+            className="text-xs font-semibold uppercase tracking-wider text-sage-600"
+          >
+            Course outline
+          </Text>
+          {overview?.lessonCount ? (
+            <Text
+              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
+              className="text-xs text-sage-600"
+            >
+              {formatCount(overview.lessonCount, "lesson")}
+            </Text>
+          ) : null}
         </View>
+
+        {isTreeLoading ? (
+          <CourseOutlineSkeleton />
+        ) : overview?.sections && overview.sections.length > 0 ? (
+          <CourseOutline sections={overview.sections} />
+        ) : (
+          <View className="mt-3 gap-2.5">
+            {planMeta.practiceItems.map((item, idx) => (
+              <View key={idx} className="flex-row items-start gap-3">
+                <View className="mt-2 h-1.5 w-1.5 rounded-full bg-sage-500" />
+                <Text
+                  style={{ fontFamily: APP_FONT_FAMILIES.regular }}
+                  className="flex-1 text-[15px] leading-relaxed text-ink"
+                >
+                  {item}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
       </Animated.View>
     </ScrollView>
   );
 };
+
+function CourseOutlineSkeleton(): React.JSX.Element {
+  return (
+    <View className="mt-2 gap-4 py-2" accessibilityLabel="Loading course outline">
+      {Array.from({ length: 3 }).map((_, index) => (
+        <View
+          key={index}
+          className="flex-row items-center gap-3 border-b border-slate-100 py-3.5"
+        >
+          <Skeleton width={22} height={22} radius={6} />
+          <View className="flex-1 gap-1.5">
+            <Skeleton width="55%" height={16} radius={6} />
+            <Skeleton width="35%" height={12} radius={4} />
+          </View>
+        </View>
+      ))}
+    </View>
+  );
+}
 
 export default React.memo(PlanRevealStep);

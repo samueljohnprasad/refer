@@ -75,7 +75,7 @@ FROM jsonb_to_recordset($tag$[
     "source_id": "anxiety-quieting-the-storm",
     "title": "Quieting the Storm",
     "description": "By the end, the learner can describe what anxiety actually feels like and recognize it as near-universal, recognize anxiety as a protective alarm rather than proof of danger, catch a catastrophic threat prediction and check it against real evidence and their own ability to cope, recognize a safety behavior or avoided moment and choose a small approach step instead, tell worry driven by intolerance of uncertainty apart from productive problem-solving, relabel a panic surge as time-limited, and check for real danger before reappraising anything.",
-    "icon_url": null,
+    "icon_url": "anxiety-storm",
     "color_hex": "6B8FA3",
     "order_index": 3,
     "is_published": false,

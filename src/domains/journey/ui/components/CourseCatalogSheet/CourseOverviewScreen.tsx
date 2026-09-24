@@ -1,5 +1,5 @@
-import React from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import React, { useCallback } from "react";
+import { Alert, Pressable, ScrollView, View } from "react-native";
 import { Image } from "expo-image";
 import { Button } from "@/src/components/ui/Button";
 import { Skeleton } from "@/src/components/ui/Skeleton";
@@ -23,11 +23,16 @@ interface CourseOverviewScreenProps {
   isEnrolled: boolean;
   isCompleted?: boolean;
   isStartingCourse: boolean;
+  isUnenrolling?: boolean;
+  isAtCapacityLimit?: boolean;
+  maxCapacityLimit?: number;
+  currentInProgressCount?: number;
   enrollmentError: string | null;
   onBack: () => void;
   onClose: () => void;
   onRetry: () => void;
   onPrimaryActionPress: (courseId: string) => void;
+  onUnenrollPress?: (courseId: string) => void;
 }
 
 export function CourseOverviewScreen({
@@ -39,18 +44,46 @@ export function CourseOverviewScreen({
   isEnrolled,
   isCompleted,
   isStartingCourse,
+  isUnenrolling,
+  isAtCapacityLimit,
+  maxCapacityLimit = 3,
+  currentInProgressCount = 0,
   enrollmentError,
   onBack,
   onClose,
   onRetry,
   onPrimaryActionPress,
+  onUnenrollPress,
 }: CourseOverviewScreenProps): React.JSX.Element {
-  const canStartCourse = Boolean(overview && overview.lessonCount > 0) && !hasError;
+  const isBlockedByCapacity = !isEnrolled && Boolean(isAtCapacityLimit);
+  const canStartCourse =
+    Boolean(overview && overview.lessonCount > 0) &&
+    !hasError &&
+    !isBlockedByCapacity;
+
   const primaryLabel = isCompleted
     ? "Open Journey"
     : isEnrolled
       ? "Continue journey"
-      : "Start journey";
+      : isBlockedByCapacity
+        ? `Limit reached (${currentInProgressCount}/${maxCapacityLimit})`
+        : "Start journey";
+
+  // ponytail: native alert confirmation for drop course
+  const handleConfirmUnenroll = useCallback(() => {
+    Alert.alert(
+      `Unenroll from ${course.title}?`,
+      "Your progress in this journey will be reset so you can free up an active journey slot.",
+      [
+        { text: "Keep journey", style: "cancel" },
+        {
+          text: "Unenroll",
+          style: "destructive",
+          onPress: () => onUnenrollPress?.(course.id),
+        },
+      ],
+    );
+  }, [course.id, course.title, onUnenrollPress]);
 
   return (
     <View className="flex-1 bg-white" style={{ paddingTop: Math.max(insets.top, 12) }}>
@@ -58,7 +91,7 @@ export function CourseOverviewScreen({
       <ScrollView
         className="flex-1"
         contentContainerClassName="px-5 pt-4"
-        contentContainerStyle={{ paddingBottom: 136 + insets.bottom }}
+        contentContainerStyle={{ paddingBottom: 160 + insets.bottom }}
         showsVerticalScrollIndicator={false}
       >
         {isLoading ? <CourseOverviewSkeleton /> : null}
@@ -81,6 +114,14 @@ export function CourseOverviewScreen({
           >
             {enrollmentError}
           </Text>
+        ) : isBlockedByCapacity ? (
+          <Text
+            variant="caption"
+            className="mb-3 text-center text-amber-700 font-nunito-semibold"
+            accessibilityRole="alert"
+          >
+            You’ve reached the limit of {maxCapacityLimit} active journeys. Complete or unenroll from an active journey to start another.
+          </Text>
         ) : null}
         <Button
           label={primaryLabel}
@@ -88,6 +129,19 @@ export function CourseOverviewScreen({
           loading={isStartingCourse}
           onPress={() => onPrimaryActionPress(course.id)}
         />
+        {isEnrolled && !isCompleted && onUnenrollPress ? (
+          <Pressable
+            onPress={handleConfirmUnenroll}
+            disabled={isUnenrolling}
+            className="mt-2 min-h-11 items-center justify-center py-2"
+            accessibilityRole="button"
+            accessibilityLabel={`Unenroll from ${course.title}`}
+          >
+            <Text variant="label" className="text-rose-600 font-nunito-semibold">
+              {isUnenrolling ? "Unenrolling..." : "Unenroll from journey"}
+            </Text>
+          </Pressable>
+        ) : null}
       </View>
     </View>
   );

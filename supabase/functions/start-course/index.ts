@@ -47,15 +47,35 @@ Deno.serve(async (req: Request) => {
 
   if (courseError || !course) return err("Course not found", 404);
 
-  // ── 3. Check if already started ──────────────────────────────────────────
+  // ── 3. Check if already started or at capacity ───────────────────────────
   const { data: existingProgress } = await supabase
     .from("user_course_progress")
-    .select("course_id")
+    .select("course_id, status")
     .eq("user_id", user.id)
     .eq("course_id", courseId)
     .maybeSingle();
 
   const alreadyStarted = existingProgress !== null;
+
+  if (!alreadyStarted) {
+    const MAX_IN_PROGRESS_COURSES = 3;
+    const { count, error: countError } = await supabase
+      .from("user_course_progress")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("status", "in_progress");
+
+    if (countError) {
+      return err(`Failed to verify active course limit: ${countError.message}`, 500);
+    }
+
+    if (count !== null && count >= MAX_IN_PROGRESS_COURSES) {
+      return err(
+        `Maximum of ${MAX_IN_PROGRESS_COURSES} active courses in progress reached. Complete or unenroll from an active course first.`,
+        400,
+      );
+    }
+  }
 
   // ── 4. Resolve the first node in the course (section → unit → node) ─────
   const { data: firstSection, error: firstSectionError } = await supabase

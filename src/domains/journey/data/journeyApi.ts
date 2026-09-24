@@ -6,6 +6,7 @@ import {
   fetchEnrolledCourses,
   markServerCourseFinaleSeen,
   startServerLearningSession,
+  unenrollServerCourse,
 } from "@/src/domains/journey/data/courseServerQueries";
 import {
   callEdgeFunction,
@@ -20,6 +21,7 @@ import type {
   GetCourseProgressResponse,
   GetCourseTreeResponse,
   StartCourseResponse,
+  UnenrollCourseResponse,
 } from "@/src/types/journeyV5";
 import type {
   StartV1LearningSessionArgs,
@@ -225,6 +227,20 @@ export const journeyApi = createApi({
           { courseId },
         ),
     }),
+
+    unenrollCourse: builder.mutation<UnenrollCourseResponse, string>({
+      invalidatesTags: (_, __, courseId) => [
+        { type: "CourseProgress", id: courseId },
+        { type: "CourseTree", id: courseId },
+        "EnrolledCourses",
+      ],
+      queryFn: (courseId) =>
+        runServerQuery(
+          "unenroll_course",
+          () => unenrollServerCourse(courseId),
+          { courseId },
+        ),
+    }),
   }),
 });
 
@@ -237,6 +253,7 @@ export const {
   useGetCourseProgressQuery,
   useStartLearningSessionQuery,
   useStartCourseMutation,
+  useUnenrollCourseMutation,
   useCompleteNodeMutation,
   useMarkCourseFinaleSeenMutation,
 } = journeyApi;

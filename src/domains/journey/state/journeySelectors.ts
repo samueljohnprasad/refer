@@ -771,4 +771,10 @@ export const selectPendingCelebration = createSelector(
 );
 
 export { selectNextCourseRecommendation } from "./courseRecommendationSelectors";
+export {
+  selectEnrolledCoursesList,
+  selectInProgressCoursesCount,
+  selectCanEnrollInCourse,
+  selectCourseCapacityState,
+} from "./courseEnrollmentSelectors";
 

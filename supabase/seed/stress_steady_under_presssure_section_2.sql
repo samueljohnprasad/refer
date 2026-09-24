@@ -71,7 +71,7 @@ FROM jsonb_to_recordset($tag$[
     "source_id": "stress-steady-under-pressure",
     "title": "Steady Under Pressure",
     "description": "By the end, the learner can explain why the stress response exists and what it runs on, recognize their own tells that it has tipped, read their appraisal of a stressor and choose the coping strategy that fits, reach the parasympathetic brake directly with a practiced body tool, and sustain the practice through recovery, support, and a rehearsed maintenance commitment.",
-    "icon_url": null,
+    "icon_url": "steady-pressure",
     "color_hex": "6B8F71",
     "order_index": 1,
     "is_published": false,

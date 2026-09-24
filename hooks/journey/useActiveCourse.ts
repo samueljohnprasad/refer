@@ -20,6 +20,7 @@ export interface UseActiveCourseResult {
   setActiveCourseId: (courseId: string | null) => void;
 }
 
+// ponytail: prioritize user-selected active course, fall back to enrolled courses, never auto-select un-enrolled catalog[0]
 function resolveActiveCourseId(
   activeCourseId: string | null,
   enrolledIds: string[] | undefined,
@@ -30,19 +31,23 @@ function resolveActiveCourseId(
     return null;
   }
 
-  const availableCourseIds = [...(enrolledIds ?? []), ...(catalogIds ?? [])];
-
-  if (activeCourseId) {
-    if (isLoading) {
-      return activeCourseId;
-    }
-
-    if (availableCourseIds.includes(activeCourseId)) {
-      return activeCourseId;
-    }
+  // 1. If active course is an enrolled course, preserve it
+  if (activeCourseId && enrolledIds?.includes(activeCourseId)) {
+    return activeCourseId;
   }
 
-  return availableCourseIds[0] ?? null;
+  // 2. If active course was explicitly set and exists in catalog (e.g. selected in onboarding), preserve it
+  if (activeCourseId && catalogIds?.includes(activeCourseId)) {
+    return activeCourseId;
+  }
+
+  // 3. Fall back to user's enrolled courses if available
+  if (enrolledIds && enrolledIds.length > 0) {
+    return enrolledIds[0];
+  }
+
+  // 4. If user has no enrollments and no active choice, return null (never auto-enroll catalog[0])
+  return null;
 }
 
 export function useActiveCourse(

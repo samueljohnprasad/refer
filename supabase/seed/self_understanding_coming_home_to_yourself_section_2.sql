@@ -75,7 +75,7 @@ FROM jsonb_to_recordset($tag$[
     "source_id": "self-understanding-coming-home-to-yourself",
     "title": "Coming Home to Yourself",
     "description": "By the end, the learner can describe what understanding yourself actually looks like and why it's genuinely hard for everyone; ask 'what' instead of 'why' when trying to understand a reaction; catch their own self-focus tipping from curious reflection into threat-driven rumination and redirect out of it; name a feeling with real precision; notice a recurring pattern in their own life; use a short structured writing practice to process something unclear; and distinguish a genuine value from a should, checking whether a goal actually fits what they care about.",
-    "icon_url": null,
+    "icon_url": "coming-home",
     "color_hex": "6B8F71",
     "order_index": 2,
     "is_published": false,

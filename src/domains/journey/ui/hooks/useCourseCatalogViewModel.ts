@@ -5,7 +5,9 @@ import {
   useGetCourseCatalogQuery,
   useGetCourseTreeQuery,
   useStartCourseMutation,
+  useUnenrollCourseMutation,
 } from "@/src/domains/journey/data/journeyApi";
+import { ENROLLMENT_POLICY } from "@/src/domains/journey/config/enrollmentConfig";
 import { buildCourseOverview } from "@/src/domains/journey/model/courseOverview";
 import type {
   CourseCatalogListItem,
@@ -44,6 +46,14 @@ export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
     [enrolledCourses],
   );
 
+  const inProgressCourses = useMemo(
+    () => (enrolledCourses ?? []).filter((c) => c.status === "in_progress"),
+    [enrolledCourses],
+  );
+  const inProgressCount = inProgressCourses.length;
+  const maxCapacityLimit = ENROLLMENT_POLICY.MAX_IN_PROGRESS_COURSES;
+  const isAtCapacityLimit = inProgressCount >= maxCapacityLimit;
+
   // ponytail: keep the catalog light; load the full published tree on selection.
   const courseTreeQuery = useGetCourseTreeQuery(selectedCourseId ?? "", {
     skip: !isPresented || !selectedCourseId,
@@ -56,6 +66,8 @@ export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
 
   const [startCourse, { isLoading: isStartingCourse }] =
     useStartCourseMutation();
+  const [unenrollCourse, { isLoading: isUnenrolling }] =
+    useUnenrollCourseMutation();
 
   const handleCoursePress = useCallback((courseId: string) => {
     setEnrollmentError(null);
@@ -75,6 +87,12 @@ export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
 
       try {
         if (!enrolledCourseIds.has(courseId)) {
+          if (isAtCapacityLimit) {
+            setEnrollmentError(
+              `Maximum of ${maxCapacityLimit} active courses reached. Complete or unenroll from an active course to start a new one.`,
+            );
+            return;
+          }
           await startCourse(courseId).unwrap();
         }
         onCourseSelect?.(courseId);
@@ -83,7 +101,20 @@ export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
         setEnrollmentError(getErrorMessage(error));
       }
     },
-    [catalogCourses, enrolledCourseIds, onClose, onCourseSelect, startCourse],
+    [catalogCourses, enrolledCourseIds, isAtCapacityLimit, maxCapacityLimit, onClose, onCourseSelect, startCourse],
+  );
+
+  const handleUnenrollCourse = useCallback(
+    async (courseId: string) => {
+      setEnrollmentError(null);
+      try {
+        await unenrollCourse(courseId).unwrap();
+        setSelectedCourseId(null);
+      } catch (error) {
+        setEnrollmentError(getErrorMessage(error));
+      }
+    },
+    [unenrollCourse],
   );
 
   return {
@@ -102,12 +133,17 @@ export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
       isCourseTreeLoading: courseTreeQuery.isFetching,
       hasCourseTreeError: courseTreeQuery.isError,
       isStartingCourse,
+      isUnenrolling,
+      isAtCapacityLimit,
+      maxCapacityLimit,
+      inProgressCount,
       enrollmentError,
     },
     actions: {
       handleCoursePress,
       handleCourseBack,
       handlePrimaryActionPress,
+      handleUnenrollCourse,
       retryCourseTree: courseTreeQuery.refetch,
       onClose,
     },

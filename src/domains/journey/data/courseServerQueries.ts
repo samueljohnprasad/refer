@@ -1,6 +1,4 @@
 import { supabase } from "@/src/network/auth/supabase";
-import { resolveCourseExerciseCategory } from "@/src/domains/journey/learning/courseExerciseCategoryResolver";
-import { isCourseExerciseCategory } from "@/src/types/courseExercises";
 import { V1NodeSessionKindEnum } from "@/src/types/journeyLearning";
 import type {
   CourseCatalogListItem,
@@ -9,49 +7,19 @@ import type {
   Exercise,
 } from "@/src/types/journeyV5";
 import type { V1LearningSessionResult } from "@/src/types/journeyLearning";
+import {
+  mapCourse,
+  mapExercise,
+  assertSupportedExercises,
+  type CourseRow,
+  type ExerciseRow,
+  type CourseNodeRow,
+} from "./courseServerHelpers";
 
 interface EnrollmentRow {
   course_id: string;
   started_at: string | null;
   status: CourseStatus;
-}
-
-interface CourseRow {
-  id: string;
-  title: string;
-  description: string | null;
-  icon_url: string | null;
-  color_hex: string;
-  order_index: number;
-}
-
-interface ExerciseRow {
-  id: string;
-  node_id: string;
-  order_index: number;
-  type: string;
-  phase: string | null;
-  duration_seconds: number | null;
-  scaffold_level: number | null;
-  difficulty: number | null;
-  is_scored: boolean;
-  concept: string | null;
-  content: Record<string, unknown> | null;
-}
-
-interface CourseNodeRow {
-  id: string;
-  order_index: number;
-  units: CourseUnitRelation | CourseUnitRelation[];
-}
-
-interface CourseUnitRelation {
-  order_index: number;
-  sections: CourseSectionRelation | CourseSectionRelation[];
-}
-
-interface CourseSectionRelation {
-  order_index: number;
 }
 
 const database = supabase as any;
@@ -132,14 +100,14 @@ export async function startServerLearningSession(
 
       if (error) throw new Error(error.message);
 
-  const exercises = ((data ?? []) as ExerciseRow[]).map(mapExercise);
-  if (exercises.length === 0) {
-    throw new Error(`No exercises found for node ${nodeId}.`);
-  }
+      const exercises = ((data ?? []) as ExerciseRow[]).map(mapExercise);
+      if (exercises.length === 0) {
+        throw new Error(`No exercises found for node ${nodeId}.`);
+      }
 
       assertSupportedExercises(exercises);
 
-      return {
+      const sessionResult: V1LearningSessionResult = {
         kind: V1NodeSessionKindEnum.V1Session,
         nodeId,
         sessionId: `server:${nodeId}`,
@@ -147,43 +115,66 @@ export async function startServerLearningSession(
         requiredResolvedItemCount: exercises.length,
         source: "server",
       };
+      return sessionResult;
     })(),
-    new Promise<V1LearningSessionResult>((_, reject) =>
-      setTimeout(() => reject(new Error("Network timeout loading exercises")), 15000)
-    )
+    new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error("Loading learning session timed out. Check your connection.")),
+        10000,
+      ),
+    ),
   ]);
 }
 
-export async function fetchCourseExercises(
-  courseId: string,
-): Promise<Exercise[]> {
-  const courseNodes = await fetchCourseNodes(courseId);
-  if (courseNodes.length === 0) return [];
-
+export async function fetchCourseExercises(courseId: string): Promise<Exercise[]> {
   const { data, error } = await database
     .from("exercises")
     .select(
-      "id, node_id, order_index, type, phase, duration_seconds, scaffold_level, difficulty, is_scored, concept, content",
+      "id, node_id, order_index, type, phase, duration_seconds, scaffold_level, difficulty, is_scored, concept, content, nodes!inner(units!inner(sections!inner(course_id)))",
     )
-    .in(
-      "node_id",
-      courseNodes.map((node) => node.id),
-    );
+    .eq("nodes.units.sections.course_id", courseId)
+    .order("order_index", { ascending: true });
 
   if (error) throw new Error(error.message);
 
-  const nodeOrder = buildNodeOrder(courseNodes);
-  const exercises = ((data ?? []) as ExerciseRow[])
-    .map(mapExercise)
-    .sort(
-      (left, right) =>
-        (nodeOrder.get(left.nodeId) ?? 0) -
-          (nodeOrder.get(right.nodeId) ?? 0) ||
-        left.orderIndex - right.orderIndex,
-    );
-
+  const exercises = ((data ?? []) as ExerciseRow[]).map(mapExercise);
   assertSupportedExercises(exercises);
   return exercises;
+}
+
+// ponytail: unenroll from an in-progress course, deleting progress record
+export async function unenrollServerCourse(
+  courseId: string,
+): Promise<{ success: boolean; courseId: string }> {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (userError || !user) throw new Error("User must be authenticated to unenroll.");
+
+  const { data: enrollment, error: fetchError } = await database
+    .from("user_course_progress")
+    .select("status")
+    .eq("user_id", user.id)
+    .eq("course_id", courseId)
+    .maybeSingle();
+
+  if (fetchError) throw new Error(fetchError.message);
+  if (!enrollment) throw new Error("Course is not enrolled.");
+  if (enrollment.status === "completed") {
+    throw new Error("Cannot unenroll from a completed course.");
+  }
+
+  const { error: deleteError } = await database
+    .from("user_course_progress")
+    .delete()
+    .eq("user_id", user.id)
+    .eq("course_id", courseId)
+    .eq("status", "in_progress");
+
+  if (deleteError) throw new Error(deleteError.message);
+
+  return { success: true, courseId };
 }
 
 async function fetchEnrollmentRows(): Promise<EnrollmentRow[]> {
@@ -193,10 +184,12 @@ async function fetchEnrollmentRows(): Promise<EnrollmentRow[]> {
     .order("started_at", { ascending: true });
 
   if (error) throw new Error(error.message);
-  return ((data ?? []) as EnrollmentRow[]).filter((row) => row.course_id);
+  return (data ?? []) as EnrollmentRow[];
 }
 
 async function fetchCoursesById(courseIds: string[]): Promise<CourseRow[]> {
+  if (courseIds.length === 0) return [];
+
   const { data, error } = await database
     .from("courses")
     .select("id, title, description, icon_url, color_hex, order_index")
@@ -228,64 +221,4 @@ async function assertNodeBelongsToCourse(courseId: string, nodeId: string) {
 
   if (error) throw new Error(error.message);
   if (!data) throw new Error("Node does not belong to this course.");
-}
-
-function mapCourse(course: CourseRow) {
-  return {
-    id: course.id,
-    title: course.title,
-    description: course.description ?? "",
-    iconUrl: course.icon_url,
-    colorHex: course.color_hex,
-    orderIndex: course.order_index,
-  };
-}
-
-function mapExercise(row: ExerciseRow): Exercise {
-  return {
-    id: row.id,
-    nodeId: row.node_id,
-    orderIndex: row.order_index,
-    type: row.type,
-    phase: row.phase ?? undefined,
-    durationSeconds: row.duration_seconds ?? undefined,
-    scaffoldLevel: row.scaffold_level ?? undefined,
-    difficulty: row.difficulty,
-    isScored: row.is_scored,
-    concept: row.concept,
-    content: row.content ?? {},
-  };
-}
-
-function hasSupportedCategory(exercise: Exercise): boolean {
-  const category = resolveCourseExerciseCategory(exercise);
-  return category !== null && isCourseExerciseCategory(category);
-}
-
-function assertSupportedExercises(exercises: Exercise[]): void {
-  if (exercises.every(hasSupportedCategory)) return;
-  throw new Error("Course contains unsupported exercise categories.");
-}
-
-function buildNodeOrder(nodes: CourseNodeRow[]): Map<string, number> {
-  return new Map(
-    [...nodes].sort(compareCourseNodes).map((node, index) => [node.id, index]),
-  );
-}
-
-function compareCourseNodes(left: CourseNodeRow, right: CourseNodeRow): number {
-  const leftUnit = firstRelation(left.units);
-  const rightUnit = firstRelation(right.units);
-  const leftSection = firstRelation(leftUnit?.sections);
-  const rightSection = firstRelation(rightUnit?.sections);
-
-  return (
-    (leftSection?.order_index ?? 0) - (rightSection?.order_index ?? 0) ||
-    (leftUnit?.order_index ?? 0) - (rightUnit?.order_index ?? 0) ||
-    left.order_index - right.order_index
-  );
-}
-
-function firstRelation<T>(relation: T | T[] | null | undefined): T | undefined {
-  return Array.isArray(relation) ? relation[0] : (relation ?? undefined);
 }

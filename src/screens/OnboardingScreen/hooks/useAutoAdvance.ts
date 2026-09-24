@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { LOADING_TASKS } from "../constants";
+import type { LoadingTask } from "../types";
+import { DEFAULT_BUILDING_JOURNEY_CONFIG } from "../config/buildingJourneyConfig";
 
 interface TaskState {
   id: string;
@@ -15,9 +16,10 @@ interface UseAutoAdvanceReturn {
 
 export const useAutoAdvance = (
   onComplete: () => void,
+  tasksConfig: readonly LoadingTask[] = DEFAULT_BUILDING_JOURNEY_CONFIG.tasks,
 ): UseAutoAdvanceReturn => {
-  const [tasks, setTasks] = useState<TaskState[]>(
-    LOADING_TASKS.map((t) => ({
+  const [tasks, setTasks] = useState<TaskState[]>(() =>
+    tasksConfig.map((t) => ({
       id: t.id,
       label: t.label,
       completed: false,
@@ -34,7 +36,7 @@ export const useAutoAdvance = (
 
     let elapsed = 0;
 
-    LOADING_TASKS.forEach((task, index) => {
+    tasksConfig.forEach((task, index) => {
       const startTimer = setTimeout(() => {
         setTasks((prev) =>
           prev.map((t, i) => (i === index ? { ...t, inProgress: true } : t)),
@@ -51,7 +53,7 @@ export const useAutoAdvance = (
           ),
         );
 
-        if (index === LOADING_TASKS.length - 1) {
+        if (index === tasksConfig.length - 1) {
           setAllComplete(true);
           const advanceTimer = setTimeout(onComplete, 600);
           timersRef.current.push(advanceTimer);
@@ -59,7 +61,7 @@ export const useAutoAdvance = (
       }, elapsed);
       timersRef.current.push(completeTimer);
     });
-  }, [onComplete]);
+  }, [onComplete, tasksConfig]);
 
   useEffect(() => {
     startSequence();

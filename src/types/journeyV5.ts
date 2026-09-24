@@ -267,6 +267,11 @@ export interface StartCourseResponse {
   alreadyStarted: boolean;
 }
 
+export interface UnenrollCourseResponse {
+  success: boolean;
+  courseId: string;
+}
+
 export interface CompleteNodeArgs {
   nodeId: string;
   courseId: string;
