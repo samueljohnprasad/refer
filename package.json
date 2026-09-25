@@ -17,10 +17,11 @@
     "test:laya": "npx tsx scripts/test_app_with_laya.ts",
     "types": "npx supabase gen types typescript --project-id xaqeueshxpehijtxwklo > database.types.ts",
     "prewidget": "EXPO_NO_GIT_STATUS=1 npx expo prebuild --template ./node_modules/@bacons/apple-targets/prebuild-blank.tgz --clean",
-    "postinstall": "node ./node_modules/llama.rn/install/download-native-artifacts.js",
-    "eas-build-post-install": "node ./node_modules/llama.rn/install/download-native-artifacts.js"
+    "postinstall": "node ./node_modules/@shopify/react-native-skia/scripts/install-libs.js && node ./node_modules/llama.rn/install/download-native-artifacts.js",
+    "eas-build-post-install": "node ./node_modules/@shopify/react-native-skia/scripts/install-libs.js && node ./node_modules/llama.rn/install/download-native-artifacts.js"
   },
   "trustedDependencies": [
+    "@shopify/react-native-skia",
     "llama.rn"
   ],
   "jest": {
