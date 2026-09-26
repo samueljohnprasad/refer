@@ -4,7 +4,7 @@
     "slug": "happy",
     "version": "1.5.0",
     "orientation": "portrait",
-    "icon": "./assets/icons/icon.png",
+    "icon": "./assets/icons/icon-panda.png",
     "scheme": "happy",
     "userInterfaceStyle": "automatic",
     "ios": {
@@ -29,7 +29,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icons/icon.png",
+        "foregroundImage": "./assets/icons/icon-panda.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.samuelprasad.happy",
@@ -68,11 +68,11 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#232323",
-          "image": "./assets/icons/icon.png",
+          "backgroundColor": "#ffffff",
+          "image": "./assets/icons/icon-panda.png",
           "dark": {
-            "image": "./assets/icons/icon.png",
-            "backgroundColor": "#000000"
+            "image": "./assets/icons/icon-panda.png",
+            "backgroundColor": "#ffffff"
           },
           "imageWidth": 100
         }
