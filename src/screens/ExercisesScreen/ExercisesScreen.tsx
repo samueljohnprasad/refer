@@ -52,7 +52,6 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
 import {
   ArrowRight01Icon,
-  BookmarkAdd01Icon,
   Brain01Icon,
   CheckmarkBadge01Icon,
   SparklesIcon,
@@ -93,6 +92,7 @@ import { useXPOptional } from "@/src/context/XPContext";
 import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
 import { pickerStyle, tag, tint } from "@expo/ui/swift-ui/modifiers";
 import { GlassView } from "expo-glass-effect";
+import { TouchableGlass } from "@/src/components/touchable-glass";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { CircularRevealWrapper } from "@/src/components/CircularRevealWrapper";
 import { useCircularRevealNavigate } from "@/src/hooks/useCircularRevealNavigate";
@@ -1093,22 +1093,23 @@ export default function ExercisesScreen(): ReactElement {
                             </Text>
                           </View>
                         ) : null}
-                        <Pressable
+                        {/* ponytail: animated glass view touchable for coping cards */}
+                        <TouchableGlass
                           onPress={() =>
                             router.push("/tabs/screens/coping-cards" as never)
                           }
                           accessibilityRole="button"
                           accessibilityLabel="My Coping Cards"
                           hitSlop={8}
-                          className="w-9 h-9 rounded-full bg-transparent items-center justify-center active:opacity-70"
+                          className="w-9 h-9 rounded-full items-center justify-center"
                         >
-                          <HugeiconsIcon
-                            icon={BookmarkAdd01Icon}
+                          <SymbolView
+                            name="bookmark"
                             size={18}
-                            color={SEMANTIC_COLORS.brand.pressed}
-                            strokeWidth={2}
+                            tintColor={SEMANTIC_COLORS.brand.pressed}
+                            weight="medium"
                           />
-                        </Pressable>
+                        </TouchableGlass>
                       </View>
                     </View>
                   </View>
