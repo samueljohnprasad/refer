@@ -1,6 +1,5 @@
 import {
   ActivityIndicator,
-  Modal,
   Platform,
   Pressable,
   StyleSheet,
@@ -306,15 +305,12 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
     premiumRecovery || accountConflict ? 380 : showSkipButton ? 285 : 245;
 
   return (
-    <Modal
-      visible={isOpen}
-      transparent
-      animationType="none"
-      statusBarTranslucent
-      onRequestClose={handleSheetDismiss}
+    // ponytail: remove Modal wrapper to avoid native UIKit modal collision with SwiftUI sheet
+    <Host
+      style={isOpen ? StyleSheet.absoluteFill : undefined}
+      pointerEvents={isOpen ? "auto" : "none"}
     >
-      <Host style={StyleSheet.absoluteFill}>
-        <BottomSheet
+      <BottomSheet
           isPresented={isOpen}
           onIsPresentedChange={(val: boolean) => {
             if (!val) {
@@ -557,6 +553,5 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
           </Group>
         </BottomSheet>
       </Host>
-    </Modal>
   );
 });
