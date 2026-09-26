@@ -4,6 +4,7 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Tick01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/src/components/ui/Button";
 import WhisperUI from "@/src/components/ui/swiftui";
+import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
 
 interface KeyboardJournalBottomBarProps {
   paddingBottom: number;
@@ -27,6 +28,8 @@ export const KeyboardJournalBottomBar: React.FC<KeyboardJournalBottomBarProps> =
     onVoiceStop,
     onSubmit,
   }) => {
+    const { isVoiceEnabled, isLocalTranscription } = useVoiceFeature();
+
     return (
       // ponytail: seamless transparent bottom toolbar matching warm page background
       <View
@@ -34,12 +37,17 @@ export const KeyboardJournalBottomBar: React.FC<KeyboardJournalBottomBarProps> =
         style={{ paddingBottom }}
       >
         <View className="flex-row items-center justify-between">
-          <WhisperUI
-            setRealtimeResult={setRealtimeResult}
-            onStop={onVoiceStop}
-            isRealtimeActive={isRealtimeActive}
-            setIsRealtimeActive={setIsRealtimeActive}
-          />
+          {isVoiceEnabled && isLocalTranscription ? (
+            <WhisperUI
+              setRealtimeResult={setRealtimeResult}
+              onStop={onVoiceStop}
+              isRealtimeActive={isRealtimeActive}
+              setIsRealtimeActive={setIsRealtimeActive}
+            />
+          ) : (
+            // ponytail: empty placeholder preserves right-aligned Done button
+            <View />
+          )}
 
           <Button
             disabled={isSubmitDisabled || isRealtimeActive}

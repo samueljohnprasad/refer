@@ -3,6 +3,7 @@ import { View, Text, Pressable } from "react-native";
 import * as Haptics from "expo-haptics";
 import { SymbolView } from "expo-symbols";
 import { Button } from "@/src/components/ui/Button";
+import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
 
 interface RecordActionClusterProps {
   onScanJournal: () => void;
@@ -13,6 +14,8 @@ interface RecordActionClusterProps {
 // ponytail: unified capture selector where both 3D tactile Button and labels respond to press
 export const RecordActionCluster = React.memo<RecordActionClusterProps>(
   ({ onScanJournal, onOpenRecorder, onOpenKeyboard }) => {
+    const { isVoiceEnabled } = useVoiceFeature();
+
     const handlePhotoPress = useCallback(() => {
       Haptics.selectionAsync();
       onScanJournal();
@@ -64,57 +67,60 @@ export const RecordActionCluster = React.memo<RecordActionClusterProps>(
           </Pressable>
         </View>
 
-        {/* Primary Voice Action Column */}
-        <View className="items-center">
-          <View className="h-[76px] items-center justify-center">
-            <Button
-              label=""
-              variant="primary"
-              width={68}
-              round
-              fullWidth={false}
-              accessibilityLabel="Record voice"
-              haptic="light"
-              leftIcon={
-                <SymbolView
-                  name="mic.fill"
-                  size={30}
-                  weight="medium"
-                  tintColor="#ffffff"
-                />
-              }
+        {/* Primary Voice Action Column (Hidden when voice disabled) */}
+        {isVoiceEnabled ? (
+          <View className="items-center">
+            <View className="h-[76px] items-center justify-center">
+              <Button
+                label=""
+                variant="primary"
+                width={68}
+                round
+                fullWidth={false}
+                accessibilityLabel="Record voice"
+                haptic="light"
+                leftIcon={
+                  <SymbolView
+                    name="mic.fill"
+                    size={30}
+                    weight="medium"
+                    tintColor="#ffffff"
+                  />
+                }
+                onPress={handleVoicePress}
+              />
+            </View>
+            <Pressable
               onPress={handleVoicePress}
-            />
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel="Record voice"
+              className="active:opacity-60"
+            >
+              <Text className="mt-2 text-[12px] text-[#2D4D28] happy-font-body-bold">
+                Voice
+              </Text>
+            </Pressable>
           </View>
-          <Pressable
-            onPress={handleVoicePress}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel="Record voice"
-            className="active:opacity-60"
-          >
-            <Text className="mt-2 text-[12px] text-[#2D4D28] happy-font-body-bold">
-              Voice
-            </Text>
-          </Pressable>
-        </View>
+        ) : null}
 
-        {/* Text Action Column */}
+        {/* Text Action Column (Promoted to primary when voice disabled) */}
         <View className="items-center">
           <View className="h-[76px] items-center justify-center">
             <Button
               label=""
-              variant="secondary"
-              width={52}
+              variant={isVoiceEnabled ? "secondary" : "primary"}
+              width={isVoiceEnabled ? 52 : 68}
               round
               fullWidth={false}
               accessibilityLabel="Write text"
+              haptic={isVoiceEnabled ? undefined : "light"}
               leftIcon={
                 <SymbolView
                   name="square.and.pencil"
-                  size={22}
+                  size={isVoiceEnabled ? 22 : 28}
                   weight="medium"
-                  tintColor="#142414"
+                  tintColor={isVoiceEnabled ? "#142414" : "#ffffff"}
                 />
               }
               onPress={handleTextPress}
@@ -127,7 +133,11 @@ export const RecordActionCluster = React.memo<RecordActionClusterProps>(
             accessibilityLabel="Write text"
             className="active:opacity-60"
           >
-            <Text className="mt-2 text-[12px] text-[#736B63] happy-font-body-bold">
+            <Text
+              className={`mt-2 text-[12px] happy-font-body-bold ${
+                isVoiceEnabled ? "text-[#736B63]" : "text-[#2D4D28]"
+              }`}
+            >
               Text
             </Text>
           </Pressable>

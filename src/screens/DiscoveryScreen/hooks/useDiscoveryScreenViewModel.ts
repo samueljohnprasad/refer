@@ -10,6 +10,7 @@ import { useAppDispatch } from "@/src/store/hooks";
 import { setVisible as setAssistantVisible } from "@/src/store/slices/happyAssistantSlice";
 import { startRecordingAtom } from "../../DailyNotesScreen/atoms";
 import { selectedDateDiscoveryAtom } from "../helpers";
+import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
 
 export interface DiscoveryScreenViewModel {
   currentStreak: number;
@@ -72,14 +73,18 @@ export function useDiscoveryScreenViewModel(): DiscoveryScreenViewModel {
     };
   }, [dispatch]);
 
+  const { journalRoute, isVoiceEnabled } = useVoiceFeature();
+
   const onOpenRecorder = useCallback((): void => {
-    if (shouldShowPaywall) {
+    if (shouldShowPaywall && isVoiceEnabled) {
       presentPaywall();
       return;
     }
-    setStartRecording(true);
-    router.push("/tabs/screens/voice-recorder");
-  }, [shouldShowPaywall, presentPaywall, router, setStartRecording]);
+    if (isVoiceEnabled) {
+      setStartRecording(true);
+    }
+    router.push(journalRoute);
+  }, [shouldShowPaywall, isVoiceEnabled, presentPaywall, setStartRecording, router, journalRoute]);
 
   const onOpenKeyboard = useCallback((): void => {
     if (shouldShowPaywall) {

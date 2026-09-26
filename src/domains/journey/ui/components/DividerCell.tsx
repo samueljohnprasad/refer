@@ -58,6 +58,7 @@ export const DividerCellView = React.memo(function DividerCellView({
           title={item.title}
           screenWidth={screenWidth}
           accentColor={item.accentColor}
+          isProOnly={item.isProOnly}
         />
       </View>
     </View>

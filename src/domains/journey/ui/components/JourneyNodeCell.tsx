@@ -24,6 +24,7 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
   item,
   nodeState,
+  isProGated,
   nodePosition,
   segmentColor,
   pathStrokeWidth,
@@ -37,9 +38,10 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
     item.type === "checkpoint" ||
     item.type === "trophy";
   const isAccessible =
-    nodeState === "current" ||
-    nodeState === "completed" ||
-    nodeState === "available";
+    !isProGated &&
+    (nodeState === "current" ||
+      nodeState === "completed" ||
+      nodeState === "available");
   const shouldRouteToFlow = !isModalNodeType && isAccessible;
 
   return (

@@ -43,10 +43,27 @@ const ALL_CONFIGS: ExerciseConfig<any>[] = [
   attentionTrainingConfig,
 ];
 
+// ponytail: central set of gated Pro exercises for Model A
+export const PRO_EXERCISE_TYPES: ReadonlySet<ExerciseType> = new Set<ExerciseType>([
+  "abc_analysis",
+  "breathing_478",
+  "grounding_54321",
+  "body_scan_pmr",
+  "decatastrophizing",
+  "worry_decision_tree",
+  "detached_mindfulness",
+  "attention_training",
+]);
+
 // ─── Lookup Maps ────────────────────────────────────────────────────────────
 
 const configMap = new Map<ExerciseType, ExerciseConfig<any>>();
-ALL_CONFIGS.forEach((c) => configMap.set(c.type, c));
+ALL_CONFIGS.forEach((c) => {
+  if (PRO_EXERCISE_TYPES.has(c.type)) {
+    c.isProOnly = true;
+  }
+  configMap.set(c.type, c);
+});
 
 // ─── Public API ─────────────────────────────────────────────────────────────
 

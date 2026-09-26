@@ -20,6 +20,7 @@ import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useJournalLimit } from "@/hooks/useJournalLimit";
+import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
 
 // Extended prompts list with more options with gorgeous, premium pastel tones
 export const ALL_PROMPTS: QuickJournalPrompt[] = [
@@ -197,23 +198,27 @@ export default function AllPromptsScreen() {
   const { setPrompt } = useJournalEntry();
   const { presentPaywall } = useRevenueCat();
   const { shouldShowPaywall } = useJournalLimit(new Date());
+  const { journalRoute, isVoiceEnabled } = useVoiceFeature();
 
   const handlePromptPress = useCallback(
     (prompt: QuickJournalPrompt) => {
-      if (shouldShowPaywall) {
+      if (shouldShowPaywall && isVoiceEnabled) {
         presentPaywall();
         return;
       }
       setPrompt(prompt.description);
-      setStartRecording(true);
-      router.push("/tabs/screens/voice-recorder");
+      if (isVoiceEnabled) {
+        setStartRecording(true);
+      }
+      router.push(journalRoute);
     },
     [
       shouldShowPaywall,
+      isVoiceEnabled,
       presentPaywall,
       setPrompt,
       setStartRecording,
-      setRecorderOpen,
+      journalRoute,
     ],
   );
 

@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/src/network/auth/supabase";
 import { useAuth } from "@/src/context/AuthContext";
+import { useFreemiumGate } from "@/src/hooks/useFreemiumGate";
 import type { CopingCard, ExerciseType } from "@/src/types/exerciseFlow";
 
 // ─── Query key ───────────────────────────────────────────────────────────────
@@ -224,9 +225,18 @@ export const useCopingCards = (
 
   // ── Stable callbacks ──────────────────────────────────────────────────────
 
+  const { requirePro } = useFreemiumGate();
+
   const saveCard = useCallback(
-    (card: NewCopingCard) => saveMutation.mutateAsync(card),
-    [saveMutation],
+    async (card: NewCopingCard) => {
+      const activeCardsCount = (query.data ?? []).filter((c) => !c.archived).length;
+      const canSave = await requirePro("coping_cards", activeCardsCount);
+      if (!canSave) {
+        throw new Error("PRO_LIMIT_REACHED");
+      }
+      return saveMutation.mutateAsync(card);
+    },
+    [requirePro, query.data, saveMutation],
   );
 
   const toggleStar = useCallback(

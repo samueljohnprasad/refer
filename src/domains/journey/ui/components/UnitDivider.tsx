@@ -23,6 +23,8 @@ export interface UnitDividerProps {
   screenWidth: number;
   /** Dynamic accent color derived from the unit theme (optional) */
   accentColor?: string;
+  /** Whether this unit requires Pro */
+  isProOnly?: boolean;
 }
 
 interface DividerLineProps {
@@ -51,6 +53,7 @@ function UnitDivider({
   title,
   screenWidth,
   accentColor,
+  isProOnly,
 }: UnitDividerProps): React.JSX.Element {
   const baseColor = accentColor || DIVIDER_LAYOUT.titlePillColor;
 
@@ -86,14 +89,16 @@ function UnitDivider({
             paddingVertical: 8,
           }}
         >
-          <Text
-            variant="label-bold"
-            className="text-ink text-center"
-            numberOfLines={1}
-            accessibilityRole="header"
-          >
-            {title}
-          </Text>
+          <View className="flex-row items-center justify-center">
+            <Text
+              variant="label-bold"
+              className="text-ink text-center"
+              numberOfLines={1}
+              accessibilityRole="header"
+            >
+              {title}
+            </Text>
+          </View>
         </GlassView>
       </View>
     </View>

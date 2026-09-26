@@ -130,6 +130,7 @@ function createDividerItem(
   previousNodeVisualStatus: NodeVisualStatus | null,
   previousNodeGlobalIndex: number | undefined,
   colorThemeKey: string,
+  unitIndex?: number,
 ): JourneyDividerItem {
   const theme =
     DEFAULT_JOURNEY_CONFIG.colorThemes[colorThemeKey] ??
@@ -140,6 +141,8 @@ function createDividerItem(
     itemType: "divider",
     cellHeight: DIVIDER_LAYOUT.cellHeight,
     title: unit.title,
+    unitIndex,
+    isProOnly: unitIndex !== undefined ? unitIndex > 0 : false,
     accentColor,
     connectorLaneX: resolveDividerConnectorLaneX(entryX, exitX),
     segmentD: buildDividerSegmentD(entryX, exitX, DIVIDER_LAYOUT.cellHeight),
@@ -238,6 +241,7 @@ function createJourneyNodeItem(
   cellHeight: number,
   colorThemeKey: string,
   visualStatus: NodeVisualStatus,
+  unitIndex?: number,
 ): JourneyNode {
   return {
     id: node.id,
@@ -259,6 +263,7 @@ function createJourneyNodeItem(
     rewards: [],
     rewardContent: node.rewardContent,
     unitId: node.unitId,
+    unitIndex,
     prevX: segmentStartX,
   };
 }
@@ -367,6 +372,7 @@ export function buildJourneyFlashListData(
             previousNodeVisualStatus,
             lastNodeGlobalIndex >= 0 ? lastNodeGlobalIndex : undefined,
             colorThemeKey,
+            globalUnitNumber - 1,
           ),
         );
       }
@@ -409,6 +415,7 @@ export function buildJourneyFlashListData(
             cellHeight,
             colorThemeKey,
             visualStatus,
+            globalUnitNumber - 1,
           ),
         );
         pathNodeDataList.push(

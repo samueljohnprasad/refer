@@ -29,6 +29,7 @@ import * as Haptics from "expo-haptics";
 import useAudioRecording from "@/hooks/useAudioRecording";
 import { useTranscribeAudio } from "@/hooks/useTranscribeAudio";
 import { Text } from "@/src/components/ui/Text";
+import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
 
 const canvasPadding = 50;
 const borderRadius = 20;
@@ -286,8 +287,10 @@ function SingleComposer(props: SingleComposerProps) {
     autoFocus = true,
   } = props;
 
+  const { isVoiceEnabled } = useVoiceFeature();
+
   const footer = useMemo(() => {
-    const hasFooterActions = showVoice;
+    const hasFooterActions = showVoice && isVoiceEnabled;
 
     if (!hasFooterActions) return null;
 
@@ -421,12 +424,17 @@ function ListComposer(props: ListComposerProps) {
     statusVisible,
     autoFocus = true,
   } = props;
+  const { isVoiceEnabled } = useVoiceFeature();
   const [value, setValue] = useState("");
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const { recordedStatus, recordingCurrentState, record, stopRecording } =
     useAudioRecording();
   const { transcribeAudio, isTranscribing } = useTranscribeAudio();
   const processedRecordingUrlRef = useRef<string | null>(null);
+  const effectivePlaceholder =
+    !isVoiceEnabled && placeholder === "Type or use voice..."
+      ? "Type an item..."
+      : placeholder;
 
   const isRecording = recordingCurrentState === "recording";
   const hasReachedMaxItems = maxItems !== undefined && items.length >= maxItems;
@@ -477,6 +485,7 @@ function ListComposer(props: ListComposerProps) {
   }, [recordedStatus, transcribeAudio]);
 
   const handleToggleRecording = async () => {
+    if (!isVoiceEnabled) return;
     setVoiceError(null);
 
     if (isRecording) {
@@ -549,7 +558,7 @@ function ListComposer(props: ListComposerProps) {
                 setValue(nextValue);
               }
             }}
-            placeholder={isRecording ? "Listening..." : placeholder}
+            placeholder={isRecording ? "Listening..." : effectivePlaceholder}
             minHeight={minHeight}
             autoFocus={autoFocus}
             onSubmitEditing={() => commitValue(value)}
@@ -559,34 +568,36 @@ function ListComposer(props: ListComposerProps) {
             submitBehavior="submit"
             footer={
               <View style={styles.footer}>
-                <Pressable
-                  onPress={handleToggleRecording}
-                  disabled={isTranscribing || (hasReachedMaxItems && !isRecording)}
-                  accessibilityRole="button"
-                  accessibilityLabel={
-                    isRecording ? "Stop recording item" : "Start voice input"
-                  }
-                  accessibilityState={{
-                    busy: isTranscribing,
-                    selected: isRecording,
-                  }}
-                  style={({ pressed }) => [
-                    styles.waveButton,
-                    isRecording && styles.waveButtonRecording,
-                    pressed && styles.pressed,
-                  ]}
-                >
-                  {isTranscribing ? (
-                    <ActivityIndicator size="small" color={SEMANTIC_COLORS.text.secondary} />
-                  ) : (
-                    <HugeiconsIcon
-                      icon={isRecording ? StopCircleIcon : AudioWave01Icon}
-                      size={20}
-                      color={isRecording ? SEMANTIC_COLORS.surface.primary : SEMANTIC_COLORS.text.secondary}
-                      strokeWidth={2}
-                    />
-                  )}
-                </Pressable>
+                {isVoiceEnabled ? (
+                  <Pressable
+                    onPress={handleToggleRecording}
+                    disabled={isTranscribing || (hasReachedMaxItems && !isRecording)}
+                    accessibilityRole="button"
+                    accessibilityLabel={
+                      isRecording ? "Stop recording item" : "Start voice input"
+                    }
+                    accessibilityState={{
+                      busy: isTranscribing,
+                      selected: isRecording,
+                    }}
+                    style={({ pressed }) => [
+                      styles.waveButton,
+                      isRecording && styles.waveButtonRecording,
+                      pressed && styles.pressed,
+                    ]}
+                  >
+                    {isTranscribing ? (
+                      <ActivityIndicator size="small" color={SEMANTIC_COLORS.text.secondary} />
+                    ) : (
+                      <HugeiconsIcon
+                        icon={isRecording ? StopCircleIcon : AudioWave01Icon}
+                        size={20}
+                        color={isRecording ? SEMANTIC_COLORS.surface.primary : SEMANTIC_COLORS.text.secondary}
+                        strokeWidth={2}
+                      />
+                    )}
+                  </Pressable>
+                ) : null}
 
                 <Pressable
                   onPress={() => commitValue(value)}

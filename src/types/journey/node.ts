@@ -109,6 +109,8 @@ export interface JourneyNode {
     | null;
   /** Parent unit ID */
   unitId: string;
+  /** 0-based unit index within course (0 = Unit 1, 1 = Unit 2, etc.) */
+  unitIndex?: number;
   /** X position of the previous node (needed for segment start in local coords) */
   prevX: number;
 }
@@ -125,6 +127,10 @@ export interface JourneyDividerItem {
   cellHeight: number;
   /** Divider title text */
   title: string;
+  /** 0-based unit index within course */
+  unitIndex?: number;
+  /** Whether this unit is Pro-only */
+  isProOnly?: boolean;
 
   /** Accent color for the divider */
   accentColor?: string;

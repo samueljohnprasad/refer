@@ -12,6 +12,7 @@ import {
 } from "expo-file-system/legacy";
 import { initWhisper, initWhisperVad } from "whisper.rn/index.js";
 import type { WhisperContext } from "whisper.rn/index.js";
+import { GLOBAL_VOICE_CONFIG } from "@/src/constants/voice";
 
 export interface WhisperModel {
   id: string;
@@ -82,6 +83,12 @@ export function useWhisperModels() {
 
   const downloadModel = useCallback(
     async (model: WhisperModel) => {
+      // ponytail: guard against downloading model when voice or local transcription disabled
+      if (!GLOBAL_VOICE_CONFIG.ENABLE_VOICE || !GLOBAL_VOICE_CONFIG.ENABLE_LOCAL_VOICE_TRANSCRIPTION) {
+        console.warn("Whisper model download skipped: voice or local transcription disabled");
+        return "";
+      }
+
       const directory = await getModelDirectory();
       const file = new File(directory, model.filename);
 
@@ -173,6 +180,12 @@ export function useWhisperModels() {
 
   const initializeWhisperModel = useCallback(
     async (modelId: string, options?: { initVad?: boolean }) => {
+      // ponytail: guard against initializing Whisper when voice or local transcription disabled
+      if (!GLOBAL_VOICE_CONFIG.ENABLE_VOICE || !GLOBAL_VOICE_CONFIG.ENABLE_LOCAL_VOICE_TRANSCRIPTION) {
+        console.warn("Whisper model initialization skipped: voice or local transcription disabled");
+        return null;
+      }
+
       const model = WHISPER_MODELS.find((m) => m.id === modelId);
       if (!model) throw new Error("Invalid model selected");
 
@@ -295,6 +308,11 @@ export function useWhisperModels() {
   );
 
   useEffect(() => {
+    // ponytail: skip model scanning when voice or local transcription disabled
+    if (!GLOBAL_VOICE_CONFIG.ENABLE_VOICE || !GLOBAL_VOICE_CONFIG.ENABLE_LOCAL_VOICE_TRANSCRIPTION) {
+      return;
+    }
+
     let isMounted = true;
 
     const loadExistingModels = async () => {

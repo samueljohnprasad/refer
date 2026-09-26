@@ -6,6 +6,7 @@ import type {
 } from "@/src/types/journey";
 import { NodeStatus, NodeState } from "@/src/types/journey";
 import { useHighContrast } from "@/src/hooks/useHighContrast";
+import { useFreemiumGate } from "@/src/hooks/useFreemiumGate";
 
 export const NODE_VERTICAL_POSITION_RATIO = 0.85;
 export const HUGEICON_SIZE_RATIO = 0.6;
@@ -42,6 +43,10 @@ export function useJourneyNodeCellViewModel({
   onNodePress,
   completedNodeId,
 }: JourneyNodeCellProps) {
+  const { hasPro, requirePro } = useFreemiumGate();
+  // ponytail: Model A - Unit 1 (index 0) free, Unit 2+ requires Pro
+  const isProGated = (item.unitIndex ?? 0) > 0 && !hasPro;
+
   const { pathColors, pathStrokeWidth } = useHighContrast();
   const isProgressSegment =
     item.status === NodeStatus.COMPLETED ||
@@ -56,6 +61,7 @@ export function useJourneyNodeCellViewModel({
   const pathNodeData = toPathNodeData(item);
 
   // Map existing NodeStatus to NodeState
+  // ponytail: preserve natural progress visual states (CURRENT/AVAILABLE) so users invest before paywall
   let nodeState = NodeState.LOCKED;
   if (item.status === NodeStatus.ACTIVE) {
     nodeState = NodeState.CURRENT;
@@ -68,17 +74,30 @@ export function useJourneyNodeCellViewModel({
   }
 
   const handlePress = useCallback(
-    (event?: any) => {
+    async (event?: any) => {
+      // ponytail: locked progression nodes show normal progression warning
+      if (item.status === NodeStatus.LOCKED) {
+        onNodePress(pathNodeData, event, undefined);
+        return;
+      }
+
+      // ponytail: reached/active pro-gated nodes open paywall on tap
+      if (isProGated) {
+        await requirePro("journey_unit");
+        return;
+      }
+
       // Pass faceColor as undefined, letting the new system handle it
       onNodePress(pathNodeData, event, undefined);
     },
-    [onNodePress, pathNodeData],
+    [item.status, isProGated, requirePro, onNodePress, pathNodeData],
   );
 
   return {
     item,
     courseId,
     nodeState,
+    isProGated,
     pathNodeData,
     nodePosition,
     segmentColor,

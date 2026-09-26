@@ -96,6 +96,7 @@ import { TouchableGlass } from "@/src/components/touchable-glass";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { CircularRevealWrapper } from "@/src/components/CircularRevealWrapper";
 import { useCircularRevealNavigate } from "@/src/hooks/useCircularRevealNavigate";
+import { useFreemiumGate } from "@/src/hooks/useFreemiumGate";
 import { Href } from "expo-router";
 
 type TabKey = "discover" | "log";
@@ -246,17 +247,28 @@ const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
   onPress,
   customSubtitle,
 }: LayoutCardProps): ReactElement {
+  const { hasPro, requirePro } = useFreemiumGate();
+  const isGated = !!exercise.isProOnly && !hasPro;
   const icon = getExerciseIcon(exercise.type);
   const badgeTheme = getCategoryBadgeTheme(exercise.category);
+
+  const handlePress = useCallback(async () => {
+    if (isGated) {
+      await requirePro("exercise");
+      return;
+    }
+    onPress(exercise);
+  }, [isGated, requirePro, onPress, exercise]);
 
   return (
     <CircularRevealWrapper
       href={buildExerciseRoute(exercise.type)}
       color={badgeTheme.bg}
       duration={800}
+      disabled={isGated}
     >
       <Pressable
-        onPress={() => onPress(exercise)}
+        onPress={handlePress}
         style={({ pressed }) => [
           {
             backgroundColor: badgeTheme.bg,
@@ -280,6 +292,11 @@ const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
             color={badgeTheme.iconColor}
           />
           <View style={{ flex: 1 }} />
+          {isGated ? (
+            <View className="bg-amber-500/20 px-2 py-0.5 rounded-full mr-2">
+              <Text className="text-[10px] font-bold text-amber-700">PRO</Text>
+            </View>
+          ) : null}
           <View
             style={[
               nutrieStyles.inlinePill,
@@ -329,17 +346,28 @@ const ExerciseShelfCard = memo(function ExerciseShelfCard({
   exercise,
   onPress,
 }: LayoutCardProps): ReactElement {
+  const { hasPro, requirePro } = useFreemiumGate();
+  const isGated = !!exercise.isProOnly && !hasPro;
   const icon = getExerciseIcon(exercise.type);
   const badgeTheme = getCategoryBadgeTheme(exercise.category);
+
+  const handlePress = useCallback(async () => {
+    if (isGated) {
+      await requirePro("exercise");
+      return;
+    }
+    onPress(exercise);
+  }, [isGated, requirePro, onPress, exercise]);
 
   return (
     <CircularRevealWrapper
       href={buildExerciseRoute(exercise.type)}
       color={badgeTheme.bg}
       duration={800}
+      disabled={isGated}
     >
       <Pressable
-        onPress={() => onPress(exercise)}
+        onPress={handlePress}
         style={({ pressed }) => [
           {
             backgroundColor: "#FFFFFF",
@@ -358,13 +386,24 @@ const ExerciseShelfCard = memo(function ExerciseShelfCard({
         ]}
       >
         <View
-          style={{ marginBottom: 12, height: 40, justifyContent: "center" }}
+          style={{
+            marginBottom: 12,
+            height: 40,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
         >
           <ExerciseIcon
             type={exercise.type}
             size={24}
             color={badgeTheme.iconColor}
           />
+          {isGated ? (
+            <View className="bg-amber-500/20 px-2 py-0.5 rounded-full">
+              <Text className="text-[10px] font-bold text-amber-700">PRO</Text>
+            </View>
+          ) : null}
         </View>
         <Text style={nutrieStyles.exerciseTitle} numberOfLines={2}>
           {exercise.title}
@@ -387,17 +426,28 @@ const CompactExerciseRow = memo(function CompactExerciseRow({
   exercise,
   onPress,
 }: LayoutCardProps): ReactElement {
+  const { hasPro, requirePro } = useFreemiumGate();
+  const isGated = !!exercise.isProOnly && !hasPro;
   const icon = getExerciseIcon(exercise.type);
   const badgeTheme = getCategoryBadgeTheme(exercise.category);
+
+  const handlePress = useCallback(async () => {
+    if (isGated) {
+      await requirePro("exercise");
+      return;
+    }
+    onPress(exercise);
+  }, [isGated, requirePro, onPress, exercise]);
 
   return (
     <CircularRevealWrapper
       href={buildExerciseRoute(exercise.type)}
       color={badgeTheme.bg}
       duration={800}
+      disabled={isGated}
     >
       <Pressable
-        onPress={() => onPress(exercise)}
+        onPress={handlePress}
         style={({ pressed }) => [
           {
             flexDirection: "row",
@@ -429,12 +479,19 @@ const CompactExerciseRow = memo(function CompactExerciseRow({
         </View>
 
         <View style={{ flex: 1, minWidth: 0, justifyContent: "center" }}>
-          <Text
-            style={[nutrieStyles.exerciseTitle, { marginBottom: 0 }]}
-            numberOfLines={1}
-          >
-            {exercise.title}
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text
+              style={[nutrieStyles.exerciseTitle, { marginBottom: 0, flexShrink: 1 }]}
+              numberOfLines={1}
+            >
+              {exercise.title}
+            </Text>
+            {isGated ? (
+              <View className="bg-amber-500/20 px-2 py-0.5 rounded-full ml-2">
+                <Text className="text-[10px] font-bold text-amber-700">PRO</Text>
+              </View>
+            ) : null}
+          </View>
           <Text
             style={[nutrieStyles.exerciseSubtitle, { fontSize: 13 }]}
             numberOfLines={1}
@@ -974,11 +1031,18 @@ export default function ExercisesScreen(): ReactElement {
   }, [params.tab]);
 
   const { data: completedCount = 0 } = useCompletedExercisesCount();
-  const xp = useXPOptional();
+  const { hasPro, requirePro } = useFreemiumGate();
 
-  const handleExercisePress = useCallback((exercise: ExerciseConfig<any>) => {
-    trackRecentExercise(exercise.type);
-  }, []);
+  const handleExercisePress = useCallback(
+    async (exercise: ExerciseConfig<any>) => {
+      if (exercise.isProOnly && !hasPro) {
+        await requirePro("exercise");
+        return;
+      }
+      trackRecentExercise(exercise.type);
+    },
+    [hasPro, requirePro],
+  );
 
   const handleTabPress = useCallback((tab: TabKey): void => {
     setActiveTab(tab);

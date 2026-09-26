@@ -18,6 +18,7 @@ import { useSetAtom } from "jotai";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { ContinueJourneyCard } from "@/src/components/ContinueJourneyCard/ContinueJourneyCard";
+import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
 
 
 // Re-export for backward compat from other files that import from here.
@@ -110,13 +111,17 @@ export default function JournalCalendarScreen() {
     router.push("/tabs/screens/settings");
   }, []);
 
+  const { journalRoute, isVoiceEnabled } = useVoiceFeature();
+
   const handleQuickJournalPress = useCallback(
     (prompt: QuickJournalPrompt) => {
       setPrompt(prompt.description);
-      setStartRecording(true);
-      router.push("/tabs/screens/voice-recorder");
+      if (isVoiceEnabled) {
+        setStartRecording(true);
+      }
+      router.push(journalRoute);
     },
-    [setPrompt, setStartRecording],
+    [setPrompt, setStartRecording, isVoiceEnabled, journalRoute],
   );
 
 

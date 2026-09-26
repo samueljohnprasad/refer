@@ -269,6 +269,8 @@ export interface ExerciseConfig<T = Record<string, any>> {
    * Migrate old response data to the latest schema version.
    * Called when loading a saved entry whose schema_version < this config's schemaVersion.
    */
+  /** Whether this exercise is gated for Pro subscribers */
+  isProOnly?: boolean;
   migrate?: (oldResponse: any, fromVersion: number) => T;
 }
 

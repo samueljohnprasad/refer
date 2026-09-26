@@ -1,6 +1,7 @@
 import { supabase } from "./auth/supabase";
 import { InsightsType } from "./genAi";
 import { createLogger } from "@/src/lib/logger";
+import { GLOBAL_VOICE_CONFIG } from "@/src/constants/voice";
 
 const log = createLogger("AudioTranscription");
 
@@ -24,6 +25,14 @@ export async function callMyFunction({
   journal,
   isAudio,
 }: CallMyFunctionParams): Promise<InsightsType> {
+  // ponytail: guard network audio invocation when voice disabled
+  if (isAudio && !GLOBAL_VOICE_CONFIG.ENABLE_VOICE) {
+    log.warn("Blocked audio transcription request: voice feature is disabled");
+    throw new EdgeFunctionError(
+      "Voice features are disabled; audio processing is unavailable."
+    );
+  }
+
   log.info("Invoking save-journal-ai-insights edge function...", { isAudio, length: journal.length });
   try {
     const { data, error } = await supabase.functions.invoke<InsightsType>(

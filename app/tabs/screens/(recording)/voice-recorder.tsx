@@ -9,11 +9,25 @@ import JournalEntryScreen from "@/src/screens/JournalEntryScreen/JournalEntryScr
 import EmotionAnalysisLoadingScreen from "@/src/screens/DiscoveryScreen/EmotionAnalysisLoadingScreen";
 import Animated, { FadeIn, FadeOut, Easing } from "react-native-reanimated";
 
+import { useJournalLimit } from "@/hooks/useJournalLimit";
+import { useRevenueCat } from "@/src/context/RevenueCatProvider";
+import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
+
 export default function VoiceRecorderScreen() {
   const router = useRouter();
+  const { isVoiceEnabled } = useVoiceFeature();
   const [stepper, setStepper] = useState(0);
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
   const [insights, setInsights] = useState<JournalEntry>();
+  const { shouldShowPaywall, isLoading } = useJournalLimit(new Date());
+  const { presentPaywall } = useRevenueCat();
+
+  // ponytail: immediately divert to keyboard recorder if voice features are turned off
+  React.useEffect(() => {
+    if (!isVoiceEnabled) {
+      router.replace("/tabs/screens/keyboard-recorder");
+    }
+  }, [isVoiceEnabled, router]);
 
   const onClose = () => {
     if (router.canGoBack()) {
@@ -22,6 +36,17 @@ export default function VoiceRecorderScreen() {
       router.push("/tabs/(tabs)/home");
     }
   };
+
+  React.useEffect(() => {
+    if (!isLoading && shouldShowPaywall && isVoiceEnabled) {
+      presentPaywall();
+      onClose();
+    }
+  }, [isLoading, shouldShowPaywall, isVoiceEnabled]);
+
+  if (!isVoiceEnabled) {
+    return null;
+  }
 
   return (
     <View className="flex-1 bg-brand-surface">

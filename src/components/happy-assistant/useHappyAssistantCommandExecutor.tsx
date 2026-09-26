@@ -28,6 +28,7 @@ import {
   clearCommand,
   type HappyAssistantCommand,
 } from "@/src/store/slices/happyAssistantSlice";
+import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
 import { getLatestIncompleteExercise } from "./assistantHistory";
 import {
   buildExerciseFlowRoute,
@@ -89,6 +90,8 @@ export function useHappyAssistantCommandExecutor(): UseHappyAssistantCommandExec
     setMoodSheetVisible(false);
   }, []);
 
+  const { journalRoute, isVoiceEnabled } = useVoiceFeature();
+
   const commandHandlers = useMemo<
     Record<HappyAssistantCommand, AssistantCommandHandler>
   >(
@@ -97,8 +100,10 @@ export function useHappyAssistantCommandExecutor(): UseHappyAssistantCommandExec
         signInSheetRef.current?.present();
       },
       [HappyAssistantCommandEnum.VoiceJournal]: () => {
-        setStartRecording(true);
-        router.push("/tabs/screens/voice-recorder");
+        if (isVoiceEnabled) {
+          setStartRecording(true);
+        }
+        router.push(journalRoute);
       },
       [HappyAssistantCommandEnum.KeyboardJournal]: () => {
         router.push("/tabs/screens/keyboard-recorder");

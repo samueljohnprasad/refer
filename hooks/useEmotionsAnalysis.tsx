@@ -11,6 +11,8 @@ import { JournalEntry } from "./data/types";
 import { getAudioDuration } from "@/src/utils/date";
 import { useToast } from "heroui-native";
 import { createLogger } from "@/src/lib/logger";
+import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
+import { useTranscribeAudio } from "@/hooks/useTranscribeAudio";
 
 const log = createLogger("EmotionAnalysis");
 
@@ -38,6 +40,8 @@ const useEmotionsAnalysis = ({
 }: UseEmotionsAnalysisProps) => {
   const [, setRecorderOpen] = useAtom(recorderOpenAtom);
   const { toast } = useToast();
+  const { isVoiceEnabled, isLocalTranscription } = useVoiceFeature();
+  const { transcribeAudio } = useTranscribeAudio();
 
   const [processingPhase, setProcessingPhase] = React.useState<ProcessingPhase>(
     ProcessingPhase.TRANSCRIBING
@@ -57,9 +61,28 @@ const useEmotionsAnalysis = ({
   const uploadAndTranscribe = async (): Promise<JournalEntry | null> => {
     log.info("Starting journal upload & transcription...", { isAudio: !!uri });
 
-    const journalEntry: string | undefined = uri
-      ? getBase64Audio(uri)
-      : journalText;
+    // ponytail: skip base64 audio encoding when voice disabled or local transcription enabled
+    let journalEntry: string | undefined = journalText;
+    let isAudioPayload = false;
+    let localTranscript = "";
+
+    if (uri && isVoiceEnabled) {
+      if (isLocalTranscription) {
+        const localResult = await transcribeAudio(uri);
+        localTranscript = localResult.transcript;
+        journalEntry = localTranscript || journalText;
+        isAudioPayload = false;
+      } else {
+        journalEntry = getBase64Audio(uri);
+        isAudioPayload = true;
+      }
+    } else if (uri && !isVoiceEnabled) {
+      log.warn("Audio URI provided but voice feature is disabled");
+      if (!journalEntry) {
+        throw new Error("Voice features are disabled and no text was provided.");
+      }
+    }
+
     if (!journalEntry) {
       log.warn("No journal content provided to uploadAndTranscribe");
       throw new Error("No journal content provided");
@@ -67,7 +90,7 @@ const useEmotionsAnalysis = ({
 
     const insights = await callMyFunction({
       journal: journalEntry,
-      isAudio: uri ? true : false,
+      isAudio: isAudioPayload,
     });
 
     const duration: number = uri ? await getAudioDuration(uri) : 0;
@@ -81,7 +104,7 @@ const useEmotionsAnalysis = ({
     const formattedEntry: JournalEntry = {
       ...(insights as any),
       duration_seconds: (insights as any)?.duration_seconds ?? Math.round(duration),
-      transcripts: (insights as any)?.transcripts || (insights as any)?.enrichedTranscript || journalText || "",
+      transcripts: (insights as any)?.transcripts || (insights as any)?.enrichedTranscript || localTranscript || journalText || "",
       journal_ai: (insights as any)?.journal_ai || (summaryText ? { summary: summaryText } : null),
     };
 

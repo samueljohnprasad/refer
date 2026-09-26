@@ -5,6 +5,7 @@ import { isFuture } from "date-fns";
 import { useHabits } from "@/hooks/data/useHabits";
 import { useHabitCompletions } from "@/hooks/data/useHabitCompletions";
 import { useHabitStreaks } from "@/src/hooks/data/useHabitStreaks";
+import { useFreemiumGate } from "@/src/hooks/useFreemiumGate";
 
 import { HabitCard } from "@/src/components/habits/HabitCard";
 import { EmptyState } from "@/src/components/ui/EmptyState";
@@ -61,8 +62,12 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
     refetchStreaks();
   };
 
-  const handleAddHabitPress = () => {
+  const { requirePro } = useFreemiumGate();
+
+  const handleAddHabitPress = async () => {
     Haptics.selectionAsync();
+    const canAdd = await requirePro("habits", habits.length);
+    if (!canAdd) return;
     router.push("/tabs/screens/habits-modal/add" as never);
   };
 

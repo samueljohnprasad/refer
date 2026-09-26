@@ -34,6 +34,7 @@ import { EmotionChip } from "@/src/screens/ThoughtReframingScreen/components/Emo
 import { DistortionCard } from "@/src/screens/ThoughtReframingScreen/components/DistortionCard";
 import useAudioRecording from "@/hooks/useAudioRecording";
 import { useTranscribeAudio } from "@/hooks/useTranscribeAudio";
+import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
 import * as Haptics from "expo-haptics";
 import { EMOTION_OPTIONS } from "@/src/screens/ThoughtReframingScreen/data/emotions";
 import { COGNITIVE_DISTORTIONS } from "@/src/screens/ThoughtReframingScreen/data/cognitiveDistortions";
@@ -278,7 +279,7 @@ export function TRSituationStep({
   isAiLoading,
   aiError,
 }: StepProps<ThoughtReframingResponse>) {
-  const isCompactViewport = useCompactExerciseViewport();
+  const { isVoiceEnabled } = useVoiceFeature();
   const [showSituationExamples, setShowSituationExamples] = useState(false);
   const { recordingCurrentState, record, stopRecording } = useAudioRecording();
   const { transcribeAudio, isTranscribing } = useTranscribeAudio();
@@ -320,7 +321,7 @@ export function TRSituationStep({
     canOfferExamples && showSituationExamples && !isAiLoading;
 
   const handleToggleRecording = useCallback(async (): Promise<void> => {
-    if (readOnly) return;
+    if (readOnly || !isVoiceEnabled) return;
 
     setVoiceError(null);
     if (isRecording) {
@@ -348,7 +349,7 @@ export function TRSituationStep({
     } catch {
       setVoiceError("Voice input unavailable. You can type this instead.");
     }
-  }, [isRecording, onUpdate, readOnly, record, response.situation, stopRecording, transcribeAudio]);
+  }, [isRecording, onUpdate, readOnly, isVoiceEnabled, record, response.situation, stopRecording, transcribeAudio]);
 
   return (
     <StepShell
@@ -379,7 +380,7 @@ export function TRSituationStep({
         onWavePress={handleToggleRecording}
         isRecording={isRecording}
         isTranscribing={isTranscribing}
-        showVoice={!readOnly}
+        showVoice={!readOnly && isVoiceEnabled}
       />
 
       {voiceError ? (
@@ -445,7 +446,7 @@ export function TRAutomaticThoughtStep({
   isAiLoading,
   aiError,
 }: StepProps<ThoughtReframingResponse>) {
-  const isCompactViewport = useCompactExerciseViewport();
+  const { isVoiceEnabled } = useVoiceFeature();
   const [showThoughtSuggestions, setShowThoughtSuggestions] = useState(false);
   const { recordingCurrentState, record, stopRecording } = useAudioRecording();
   const { transcribeAudio, isTranscribing } = useTranscribeAudio();
@@ -496,7 +497,7 @@ export function TRAutomaticThoughtStep({
   );
 
   const handleToggleRecording = useCallback(async (): Promise<void> => {
-    if (readOnly) return;
+    if (readOnly || !isVoiceEnabled) return;
 
     setVoiceError(null);
     if (isRecording) {
@@ -524,7 +525,7 @@ export function TRAutomaticThoughtStep({
     } catch {
       setVoiceError("Voice input unavailable. You can type this instead.");
     }
-  }, [isRecording, onUpdate, readOnly, record, response.automaticThought, stopRecording, transcribeAudio]);
+  }, [isRecording, onUpdate, readOnly, isVoiceEnabled, record, response.automaticThought, stopRecording, transcribeAudio]);
 
   return (
     <StepShell
@@ -579,7 +580,7 @@ export function TRAutomaticThoughtStep({
         onWavePress={handleToggleRecording}
         isRecording={isRecording}
         isTranscribing={isTranscribing}
-        showVoice={!readOnly}
+        showVoice={!readOnly && isVoiceEnabled}
       />
 
       {voiceError ? (
@@ -1350,7 +1351,7 @@ export function TRBalancedThoughtStep({
   progress,
   onClose,
 }: StepProps<ThoughtReframingResponse>) {
-  const isCompactViewport = useCompactExerciseViewport();
+  const { isVoiceEnabled } = useVoiceFeature();
   const { recordingCurrentState, record, stopRecording } = useAudioRecording();
   const { transcribeAudio, isTranscribing } = useTranscribeAudio();
   const [voiceError, setVoiceError] = useState<string | null>(null);
@@ -1389,7 +1390,7 @@ export function TRBalancedThoughtStep({
   );
 
   const handleToggleRecording = useCallback(async (): Promise<void> => {
-    if (readOnly) return;
+    if (readOnly || !isVoiceEnabled) return;
 
     setVoiceError(null);
     if (isRecording) {
@@ -1424,6 +1425,7 @@ export function TRBalancedThoughtStep({
     isRecording,
     onUpdate,
     readOnly,
+    isVoiceEnabled,
     record,
     response.balancedThought,
     stopRecording,
@@ -1483,7 +1485,7 @@ export function TRBalancedThoughtStep({
         onWavePress={handleToggleRecording}
         isRecording={isRecording}
         isTranscribing={isTranscribing}
-        showVoice={!readOnly}
+        showVoice={!readOnly && isVoiceEnabled}
       />
 
       {voiceError ? (
