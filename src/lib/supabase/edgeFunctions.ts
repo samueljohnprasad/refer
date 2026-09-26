@@ -4,7 +4,14 @@
 
 import { supabase } from "@/src/network/auth/supabase";
 
-const FUNCTIONS_BASE = `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1`;
+const SUPABASE_URL =
+  process.env.EXPO_PUBLIC_SUPABASE_URL ||
+  "https://xaqeueshxpehijtxwklo.supabase.co";
+export const SUPABASE_ANON_KEY =
+  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ||
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcWV1ZXNoeHBlaGlqdHh3a2xvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1OTY2ODMsImV4cCI6MjA2ODE3MjY4M30.hKxftlcs-j4W1TrsbdycfT2tK9qowc3ZrgG1ZJoFwo4";
+
+const FUNCTIONS_BASE = `${SUPABASE_URL}/functions/v1`;
 
 /** All Journey Map Edge Function endpoints. */
 export const EDGE_FUNCTION_URLS = {
@@ -45,7 +52,7 @@ export async function callEdgeFunction<TRequest, TResponse>(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      apikey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!,
+      apikey: SUPABASE_ANON_KEY,
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: JSON.stringify(payload),

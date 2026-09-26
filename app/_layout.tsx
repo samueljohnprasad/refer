@@ -99,7 +99,9 @@ export default function RootLayout() {
     if (fontsReady) {
       // Initialize premium haptic system
       void HapticManager.initialize().catch(() => {});
-      Presets.System.impactHeavy();
+      try {
+        Presets.System.impactHeavy();
+      } catch {}
 
       // Disable Expo Dev Menu floating action button so it does not obstruct onboarding or CTAs
       try {
