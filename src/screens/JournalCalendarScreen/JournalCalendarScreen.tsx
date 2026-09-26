@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useCallback, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { SymbolView } from "expo-symbols";
+import { View, Text, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
@@ -146,32 +145,29 @@ export default function JournalCalendarScreen() {
 
   return (
     <>
-      {/* ponytail: standard stack header instead of crashing composition components */}
       <Stack.Screen
         options={{
           headerShown: true,
           headerTitle: "",
-          headerTransparent: true,
-          headerShadowVisible: false,
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={handleSettingsPress}
-              accessibilityRole="button"
-              accessibilityLabel="Settings"
-              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-              activeOpacity={0.7}
-              className="mr-3"
-            >
-              <SymbolView
-                name="gearshape"
-                size={22}
-                tintColor={SEMANTIC_COLORS.text.tertiary}
-                weight="medium"
-              />
-            </TouchableOpacity>
-          ),
         }}
       />
+      <Stack.Header
+        transparent
+        style={{
+          backgroundColor: 'transparent',
+          color: SEMANTIC_COLORS.text.primary,
+          shadowColor: 'transparent',
+        }}
+      />
+      {/* ponytail: subtle tertiary settings action in header toolbar */}
+      <Stack.Toolbar placement="right" tintColor={SEMANTIC_COLORS.text.tertiary}>
+        <Stack.Toolbar.Button
+          icon="gearshape"
+          accessibilityLabel="Settings"
+          tintColor={SEMANTIC_COLORS.text.tertiary}
+          onPress={handleSettingsPress}
+        />
+      </Stack.Toolbar>
       <ScrollView
         className="flex-1 bg-brand-canvas"
         style={{
