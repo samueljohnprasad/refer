@@ -26,6 +26,10 @@ import { useGetCourseCatalogQuery } from "@/src/domains/journey/data/journeyApi"
 import { resolveCourseForMotivation } from "./utils/courseResolver";
 import { setActiveCourse } from "@/src/domains/journey/state/journeySlice";
 import { useAppDispatch } from "@/src/store/hooks";
+import { useAtomValue } from "jotai";
+import { cfgAtom } from "@/src/components/notifications/store";
+import { handleNotificationPermissionOnContinue } from "./utils/onboardingNotifications";
+import { useAuth } from "@/src/context/AuthContext";
 
 interface OnboardingScreenProps {
   onComplete: (skipped?: boolean) => Promise<void>;
@@ -41,6 +45,8 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const analytics = useOnboardingAnalytics();
   const { markCompleted } = useCompleteOnboarding();
   const { presentPaywall } = useRevenueCat();
+  const { user } = useAuth();
+  const remindersCfg = useAtomValue(cfgAtom);
   const [loading, setLoading] = React.useState(false);
   const [isStepActionReady, setIsStepActionReady] = React.useState(false);
   const xp = useXP();
@@ -108,27 +114,15 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   }));
 
   useEffect(() => {
-    if (!showContinueButton) {
-      setIsStepActionReady(false);
-      footerOpacity.value = 0;
-      footerTranslateY.value = STEP_CTA_REVEAL_OFFSET;
-      return;
-    }
-
     setIsStepActionReady(false);
     footerOpacity.value = 0;
     footerTranslateY.value = STEP_CTA_REVEAL_OFFSET;
+    if (!showContinueButton) return;
 
     const revealFooter = () => {
       setIsStepActionReady(true);
-      footerOpacity.value = withTiming(1, {
-        duration: STEP_CTA_REVEAL_DURATION_MS,
-        easing: Easing.out(Easing.cubic),
-      });
-      footerTranslateY.value = withTiming(0, {
-        duration: STEP_CTA_REVEAL_DURATION_MS,
-        easing: Easing.out(Easing.cubic),
-      });
+      footerOpacity.value = withTiming(1, { duration: STEP_CTA_REVEAL_DURATION_MS, easing: Easing.out(Easing.cubic) });
+      footerTranslateY.value = withTiming(0, { duration: STEP_CTA_REVEAL_DURATION_MS, easing: Easing.out(Easing.cubic) });
     };
 
     if (currentStep !== "welcome") {
@@ -146,15 +140,26 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
 
       analytics.trackStepCompleted(currentStep, currentStepIndex);
 
+      if (currentStep === "notification_permission" && !skipped) {
+        await handleNotificationPermissionOnContinue(user?.id, remindersCfg);
+      }
+
       if (isLastStep) {
         try {
           setLoading(true);
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          // ponytail: save real configured reminders from onboarding, fallback to motivation time
+          const finalCfg =
+            Object.keys(remindersCfg).length > 0
+              ? remindersCfg
+              : buildReminderConfig(formData.notificationTime);
+          const hasAnyEnabled = Object.values(finalCfg).some((c) => c.enabled);
+
           await markCompleted({
             name: "",
             reasons: formData.motivation ? [formData.motivation] : [],
-            cfg: buildReminderConfig(formData.notificationTime),
-            reminderEnabled: formData.notificationTime !== undefined,
+            cfg: finalCfg,
+            reminderEnabled: hasAnyEnabled,
             motivation: formData.motivation,
           });
 
@@ -194,6 +199,8 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
       xp,
       onComplete,
       goNext,
+      user?.id,
+      remindersCfg,
     ],
   );
 
@@ -256,27 +263,18 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
             className="w-full gap-3"
           >
             <TactileButton
-              label={
-                loading ? "Setting up..." : currentStepConfig.continueButtonLabel
-              }
+              label={loading ? "Setting up..." : currentStepConfig.continueButtonLabel}
               onPress={() => handleContinue(false)}
               disabled={isContinueDisabled}
-              rightIcon={
-                currentStepConfig.name === "welcome" ? (
-                  <SymbolImage name="arrow.up" size={18} tintColor="#FFFFFF" />
-                ) : undefined
-              }
+              rightIcon={currentStepConfig.name === "welcome" ? <SymbolImage name="arrow.up" size={18} tintColor="#FFFFFF" /> : undefined}
             />
             {currentStepConfig.canSkip && (
               <TactileButton
                 label={currentStepConfig.skipButtonLabel ?? "Skip for now"}
                 onPress={() => {
                   analytics.trackStepSkipped(currentStep);
-                  if (isLastStep) {
-                    handleContinue(true);
-                  } else {
-                    goNext();
-                  }
+                  if (isLastStep) handleContinue(true);
+                  else goNext();
                 }}
                 variant="secondary"
               />
