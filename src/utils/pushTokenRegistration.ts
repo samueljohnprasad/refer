@@ -3,30 +3,42 @@ import * as Device from "expo-device";
 import { Platform } from "react-native";
 import { getLocales } from "expo-localization";
 import { supabase } from "@/src/network/auth/supabase";
+import { createLogger } from "@/src/lib/logger";
+
+const log = createLogger("PushToken");
 
 const PROJECT_ID = "b87a1855-bf48-4992-9004-1ec817a4a5de";
 
 /**
  * Register for push notifications and store the Expo push token in Supabase.
- * Should be called after user signs in.
+ * Passive by default: will only register if permissions are ALREADY granted.
+ * Pass requestPermission: true only on explicit user actions (e.g. Onboarding Continue).
  */
-export async function registerPushToken(userId: string): Promise<string | null> {
+export async function registerPushToken(
+    userId: string,
+    requestPermission: boolean = false
+): Promise<string | null> {
     try {
         if (!Device.isDevice) {
-            console.log("Push notifications require a physical device");
+            log.info("Push notifications require a physical device");
             return null;
         }
 
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
 
+        // ponytail: never prompt for permission on app start or passive sync
         if (existingStatus !== "granted") {
+            if (!requestPermission) {
+                log.debug("Push notification permission not granted yet (passive check skipped)");
+                return null;
+            }
             const { status } = await Notifications.requestPermissionsAsync();
             finalStatus = status;
         }
 
         if (finalStatus !== "granted") {
-            console.log("Push notification permission not granted");
+            log.info("Push notification permission not granted by user");
             return null;
         }
 
@@ -63,7 +75,7 @@ export async function registerPushToken(userId: string): Promise<string | null> 
         );
 
         if (error) {
-            console.error("Error storing push token:", error);
+            log.error("Error storing push token in Supabase:", error);
             return null;
         }
 
@@ -76,10 +88,10 @@ export async function registerPushToken(userId: string): Promise<string | null> 
             { onConflict: "user_id" }
         );
 
-        console.log("Push token registered:", expoPushToken);
+        log.info("Push token registered successfully:", expoPushToken);
         return expoPushToken;
     } catch (error) {
-        console.error("Error registering push token:", error);
+        log.error("Error registering push token:", error);
         return null;
     }
 }
@@ -94,6 +106,6 @@ export async function unregisterPushToken(userId: string): Promise<void> {
             .update({ is_valid: false })
             .eq("user_id", userId);
     } catch (error) {
-        console.error("Error unregistering push token:", error);
+        log.error("Error unregistering push token:", error);
     }
 }
