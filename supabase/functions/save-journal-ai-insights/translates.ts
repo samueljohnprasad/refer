@@ -1,80 +1,57 @@
-//@ts-ignore
-import axios, { AxiosResponse } from "https://esm.sh/axios@1.10.0";
+import { geminiClient } from "../_shared/reflection-engine/ai/client.ts";
 
-interface SpeechRecognitionConfig {
-  encoding: "MP3" | "LINEAR16" | "FLAC";
-  sampleRateHertz: number;
-  languageCode: string;
-}
-
-interface SpeechRecognitionAudio {
-  content: string; // base64-encoded audio
-}
-interface SpeechRecognitionAlternative {
-  transcript: string;
-  confidence?: number;
-}
-
-interface SpeechRecognitionRequest {
-  config: SpeechRecognitionConfig;
-  audio: SpeechRecognitionAudio;
-}
-
-interface SpeechRecognitionResult {
-  alternatives: SpeechRecognitionAlternative[];
-  resultEndTime?: string;
-  languageCode?: string;
-}
-
-interface SpeechRecognitionResponse {
-  results: SpeechRecognitionResult[];
-  totalBilledTime?: string;
-  requestId?: string;
+function detectAudioMime(base64: string): string {
+  if (base64.startsWith("UklGR")) return "audio/wav";
+  if (base64.startsWith("SUQz") || base64.startsWith("//tQ") || base64.startsWith("//uQ")) return "audio/mp3";
+  if (base64.startsWith("OggS")) return "audio/ogg";
+  return "audio/m4a";
 }
 
 export async function transcribeAudio(
-  apiKey: string,
+  _apiKey: string,
   journal: string,
-  isAudio: boolean
+  isAudio: boolean,
+  reqTag: string = "default"
 ): Promise<string[]> {
   if (!isAudio) return [journal];
 
-  const url = `https://speech.googleapis.com/v1/speech:recognize?key=${apiKey}`;
-  // console.log("base64Audio", base64Audio);
-  const payload: SpeechRecognitionRequest = {
-    config: {
-      encoding: "MP3",
-      sampleRateHertz: 16000,
-      languageCode: "en-US",
-    },
-    audio: {
-      content: journal,
-    },
-  };
-
+  // ponytail: transcribe directly using Gemini 2.5 Flash multimodal audio
+  const tag = `[transcribeAudio][${reqTag}]`;
+  const startTime = Date.now();
   try {
-    const response: AxiosResponse<SpeechRecognitionResponse> = await axios.post(
-      url,
-      payload,
+    const mimeType = detectAudioMime(journal);
+    const estKb = Math.round((journal.length * 0.75) / 1024);
+    console.log(`${tag} Audio MIME detected: "${mimeType}", size: ~${estKb} KB (${journal.length} chars)`);
+    console.log(`${tag} Base64 head: ${journal.slice(0, 30)}...`);
+
+    console.log(`${tag} Dispatching audio payload to Gemini 2.5 Flash multimodal...`);
+    const model = geminiClient.getModel("gemini-2.5-flash");
+    const result = await model.generateContent([
       {
-        headers: {
-          "Content-Type": "application/json",
+        inlineData: {
+          mimeType,
+          data: journal,
         },
-      }
-    );
+      },
+      {
+        text: "Transcribe the spoken words in this audio recording exactly. Output ONLY the raw transcription text. Do not add markdown, quotes, explanations, or filler. If no speech is detected or if only silence/noise, output nothing.",
+      },
+    ]);
 
-    const transcripts = response.data?.results?.map(
-      (result: SpeechRecognitionResult) =>
-        result.alternatives[0]?.transcript || ""
-    );
+    const transcript = result.response.text().trim();
+    const elapsedMs = Date.now() - startTime;
+    console.log(`${tag} Gemini STT completed in ${elapsedMs}ms. Transcript length: ${transcript.length}`);
+    if (transcript) {
+      console.log(`${tag} Transcript: "${transcript.length > 200 ? transcript.slice(0, 200) + '...' : transcript}"`);
+    } else {
+      console.log(`${tag} No speech detected (Gemini returned empty text)`);
+    }
 
-    return transcripts || [];
-  } catch (error: any) {
-    console.error(
-      "Error calling Speech-to-Text API:",
-      error.response?.data || error.message
-    );
-
+    return transcript ? [transcript] : [];
+  } catch (error) {
+    const elapsedMs = Date.now() - startTime;
+    console.error(`${tag} Gemini STT failed in ${elapsedMs}ms:`, error);
     throw error;
   }
 }
+

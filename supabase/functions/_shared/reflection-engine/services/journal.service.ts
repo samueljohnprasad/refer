@@ -28,18 +28,19 @@ export class JournalService {
     } = input;
 
     console.log(
-      `Generating AI reflection for user: ${userId}. Content length: ${content.length}`,
+      `[JournalService] Step 1/5: Generating AI reflection for user: ${userId} (content length: ${content.length})...`,
     );
 
     // 1. Generate Reflection via AI Engine
-    console.log("Calling reflectionEngine.generateJournalReflection...");
+    const reflectionStart = Date.now();
     const aiResult = await reflectionEngine.generateJournalReflection(content);
+    const reflectionElapsed = Date.now() - reflectionStart;
     console.log(
-      "AI result received:",
-      JSON.stringify(aiResult).substring(0, 200) + "...",
+      `[JournalService] Step 1/5 complete in ${reflectionElapsed}ms: Title="${aiResult.title}", MoodScore=${aiResult.moodScore}`,
     );
 
     // 2. Insert journal_records row with AI fields merged in
+    console.log(`[JournalService] Step 2/5: Inserting journal_records row...`);
     const { data, error } = await this.supabase
       .from("journal_records")
       .insert({
@@ -55,11 +56,13 @@ export class JournalService {
       .single();
 
     if (error) {
-      console.error("Error saving journal record:", error);
+      console.error("[JournalService] Error saving journal record:", error);
       throw error;
     }
+    console.log(`[JournalService] Step 2/5 complete: Saved journal_records id=${data.id}`);
 
     // 3. Also store in journal_ai table
+    console.log(`[JournalService] Step 3/5: Storing structured summary in journal_ai for id=${data.id}...`);
     const { error: aiError } = await this.supabase.from("journal_ai").insert({
       journal_id: String(data.id),
       user_id: userId,
@@ -69,7 +72,9 @@ export class JournalService {
     });
 
     if (aiError) {
-      console.error("Error saving to journal_ai:", aiError);
+      console.error("[JournalService] Error saving to journal_ai:", aiError);
+    } else {
+      console.log(`[JournalService] Step 3/5 complete: Saved journal_ai record`);
     }
 
     // 4. Store in the mood table
@@ -88,6 +93,7 @@ export class JournalService {
       moodMap[score ?? 3] ?? "fine";
 
     const score = aiResult.moodScore ?? 3;
+    console.log(`[JournalService] Step 4/5: Upserting mood score=${score} (${getMoodEnum(score)}) for journal_entry_id=${data.id}...`);
     const { error: moodError } = await this.supabase.from("moods").upsert(
       {
         user_id: userId,
@@ -101,10 +107,13 @@ export class JournalService {
     );
 
     if (moodError) {
-      console.error("Error saving to moods table:", moodError);
+      console.error("[JournalService] Error saving to moods table:", moodError);
+    } else {
+      console.log(`[JournalService] Step 4/5 complete: Upserted moods record`);
     }
 
     // 5. Update user streak in profiles
+    console.log(`[JournalService] Step 5/5: Updating user streak for user=${userId}...`);
     try {
       const { data: profile } = await this.supabase
         .from("profiles")
@@ -145,6 +154,9 @@ export class JournalService {
               last_journal_date: new Date().toISOString(),
             })
             .eq("id", userId);
+          console.log(`[JournalService] Step 5/5: Profile streak updated: current=${newStreak}, longest=${newLongest}`);
+        } else {
+          console.log(`[JournalService] Step 5/5: Profile streak already updated today (${todayStr})`);
         }
       }
 
@@ -152,14 +164,16 @@ export class JournalService {
       // so doing a journal counts towards the global app streak
       const { error: rpcError } = await this.supabase.rpc('update_user_streak');
       if (rpcError) {
-        console.error("Error updating user_streaks via RPC:", rpcError);
+        console.error("[JournalService] Error updating user_streaks via RPC:", rpcError);
+      } else {
+        console.log(`[JournalService] Step 5/5: Global app streak updated via RPC`);
       }
 
     } catch (e) {
-      console.error("Error updating streak in profile:", e);
+      console.error("[JournalService] Error updating streak in profile:", e);
     }
 
-    console.log(`Saved journal record id: ${data.id}, journal_ai, and moods`);
+    console.log(`[JournalService] Complete: Successfully saved journal record id=${data.id}`);
     return {
       ...data,
       journal_ai: {

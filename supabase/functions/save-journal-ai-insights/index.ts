@@ -22,9 +22,16 @@ async function parseJson<T>(req: Request): Promise<T> {
 }
 //@ts-ignore
 Deno.serve(async (req: Request) => {
+  const reqId = crypto.randomUUID().slice(0, 8);
+  const reqStart = Date.now();
+  const logPrefix = `[save-journal][${reqId}]`;
+
+  console.log(`${logPrefix} >>> Request received: ${req.method} ${req.url}`);
+
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
+      console.warn(`${logPrefix} Authentication failed: Missing or invalid Authorization header`);
       return new Response(
         JSON.stringify({ error: "Missing or invalid Authorization header" }),
         { status: 401, headers: { "Content-Type": "application/json" } },
@@ -38,68 +45,84 @@ Deno.serve(async (req: Request) => {
       error: userError,
     } = await supabase.auth.getUser(token);
     if (userError || !user) {
-      console.error("User verification failed:", userError);
+      console.error(`${logPrefix} User authentication failed:`, userError?.message || "User not found");
       return new Response(
         JSON.stringify({ error: "Invalid token or user not found" }),
         { status: 401, headers: { "Content-Type": "application/json" } },
       );
     }
 
+    console.log(`${logPrefix} Authenticated user: ${user.id} (${user.email ?? "no email"})`);
+
     const body = await parseJson<JournalEntry>(req);
-    // FE sends durationSeconds, isAudio, etc.
     const { isAudio, journal, selectedDate, inputType, durationSeconds } = body;
 
-    console.log("Starting transcription...");
+    console.log(`${logPrefix} Payload: isAudio=${isAudio}, inputType=${inputType ?? "voice"}, duration=${durationSeconds ?? 0}s, date=${selectedDate ?? "now"}, payloadChars=${journal?.length ?? 0}`);
+
     //@ts-ignore
-    const apiKey = Deno.env.get("EXPO_PUBLIC_GEMINI_API_KEY") || "";
+    // ponytail: fallback between key env names
+    const apiKey =
+      Deno.env.get("EXPO_PUBLIC_GEMINI_API_KEY") ||
+      Deno.env.get("GEMINI_API_KEY") ||
+      "";
     if (!apiKey && isAudio) {
-      console.warn("No EXPO_PUBLIC_GEMINI_API_KEY found in environment!");
+      console.warn(`${logPrefix} WARNING: No Gemini API key found in Deno.env!`);
+    } else {
+      console.log(`${logPrefix} Gemini API key verified present`);
     }
 
-    const transcripts = await transcribeAudio(apiKey, journal, isAudio);
+    const transcribeStart = Date.now();
+    console.log(`${logPrefix} Starting transcription (isAudio=${isAudio})...`);
+    const transcripts = await transcribeAudio(apiKey, journal, isAudio, reqId);
+    console.log(`${logPrefix} Transcription finished in ${Date.now() - transcribeStart}ms. Segments: ${transcripts.length}`);
 
-    console.log("Transcribe results:", JSON.stringify(transcripts));
+    const rawContent = transcripts.join(" ").trim();
+    // ponytail: strip whisper non-speech tokens
+    const content = rawContent
+      .replace(/^(\[(?:SOUND|BLANK_AUDIO|MUSIC)\]|\((?:silence|music)\))\s*/gi, "")
+      .trim();
 
-    const content = transcripts.join(" ").trim();
+    const wordsCount = content.split(/\s+/).filter((word) => word.length > 0).length;
     console.log(
-      "Combined content length:",
-      content.length,
-      "Content:",
-      content.substring(0, 100) + "...",
+      `${logPrefix} Content cleaned. Length: ${content.length} chars, Words: ${wordsCount}. Preview: "${content.substring(0, 100)}${content.length > 100 ? "..." : ""}"`
     );
 
     if (!content) {
       // ponytail: block empty entries early
-      console.warn("Blocked empty journal entry.");
+      console.warn(`${logPrefix} Blocked empty or non-speech entry after filtering`);
       return new Response(
-        JSON.stringify({ error: "No content provided or speech detected" }),
+        JSON.stringify({ error: "No audible speech detected in recording" }),
         { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
-    console.log("Initializing JournalService...");
+    console.log(`${logPrefix} Initializing JournalService...`);
     const journalService = new JournalService(supabase);
 
-    console.log("Calling processJournalCompleted...");
+    const serviceStart = Date.now();
+    console.log(`${logPrefix} Executing processJournalCompleted...`);
     const insights = await journalService.processJournalCompleted({
       userId: user.id,
       content,
       selectedDate,
       inputType,
       durationSeconds,
-      wordsCount: content.split(/\s+/).filter((word) => word.length > 0).length,
+      wordsCount,
     });
     console.log(
-      "Finished processJournalCompleted, insights:",
-      JSON.stringify(insights),
+      `${logPrefix} processJournalCompleted finished in ${Date.now() - serviceStart}ms. Record saved successfully.`
     );
+
+    const totalElapsed = Date.now() - reqStart;
+    console.log(`${logPrefix} <<< Completed 200 OK in ${totalElapsed}ms`);
 
     return new Response(JSON.stringify(insights), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Unhandled error in function:", error);
+    const totalElapsed = Date.now() - reqStart;
+    console.error(`${logPrefix} <<< Unhandled server error in ${totalElapsed}ms:`, error);
     return new Response(
       JSON.stringify({
         error: "Internal server error",

@@ -5,9 +5,12 @@ export class GeminiClient {
 
   private getAI(): GoogleGenerativeAI {
     if (!this.ai) {
-      const apiKey = Deno.env.get("EXPO_PUBLIC_GEMINI_API_KEY");
+      // ponytail: accept either secret name for resilience
+      const apiKey =
+        Deno.env.get("EXPO_PUBLIC_GEMINI_API_KEY") ||
+        Deno.env.get("GEMINI_API_KEY");
       if (!apiKey) {
-        throw new Error("EXPO_PUBLIC_GEMINI_API_KEY environment variable is missing.");
+        throw new Error("Neither EXPO_PUBLIC_GEMINI_API_KEY nor GEMINI_API_KEY is set.");
       }
       this.ai = new GoogleGenerativeAI(apiKey);
     }
