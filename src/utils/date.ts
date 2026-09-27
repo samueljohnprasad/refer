@@ -15,20 +15,31 @@ export const formattedDateTime = (inputDate?: string | null | Date): string => {
   return dayjs(inputDate || new Date()).format("MMM D, YYYY • h:mm A");
 };
 
-export async function getAudioDuration(source: string) {
-  const player = createAudioPlayer(source);
-  await new Promise((resolve) => {
-    const check = setInterval(() => {
-      if (player.isLoaded) {
-        clearInterval(check);
-        resolve(1);
-      }
-    }, 100);
-  });
+export async function getAudioDuration(source: string): Promise<number> {
+  // ponytail: safe duration check with timeout to avoid blocking
+  try {
+    const player = createAudioPlayer(source);
+    await Promise.race([
+      new Promise((resolve) => {
+        const check = setInterval(() => {
+          if (player.isLoaded) {
+            clearInterval(check);
+            resolve(1);
+          }
+        }, 100);
+      }),
+      new Promise((resolve) => setTimeout(resolve, 800)),
+    ]);
 
-  const duration = player.duration;
-  player.remove();
-  return duration;
+    const duration = player.duration || 0;
+    try {
+      player.remove();
+    } catch {}
+    return duration;
+  } catch (err) {
+    console.warn("Could not determine audio duration:", err);
+    return 0;
+  }
 }
 
 export const getDuration = (durationSeconds?: number | null) => {

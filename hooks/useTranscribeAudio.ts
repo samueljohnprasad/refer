@@ -4,6 +4,9 @@ import { File } from "expo-file-system";
 import { getAudioDuration } from "@/src/utils/date";
 import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
 import { useWhisperModels } from "@/hooks/ai/useWhisperModels";
+import { createLogger } from "@/src/lib/logger";
+
+const log = createLogger("TranscribeAudio");
 
 interface TranscribeResult {
   transcript: string;
@@ -37,13 +40,18 @@ export const useTranscribeAudio = () => {
             if (context) {
               const { promise } = context.transcribe(uri);
               const whisperResult = await promise;
+              // ponytail: clean whisper non-speech artifact tokens
+              const rawTranscript = (whisperResult?.result || "").trim();
+              const transcript = rawTranscript
+                .replace(/^(\[(?:SOUND|BLANK_AUDIO|MUSIC)\]|\((?:silence|music)\))\s*/gi, "")
+                .trim();
               return {
-                transcript: (whisperResult?.result || "").trim(),
+                transcript,
                 duration,
               };
             }
           } catch (localError) {
-            console.warn("Local transcription failed, falling back to cloud:", localError);
+            log.warn("Local transcription failed, falling back to cloud:", localError);
           }
         }
 

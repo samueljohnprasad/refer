@@ -8,6 +8,9 @@ const log = createLogger("AudioTranscription");
 interface CallMyFunctionParams {
   journal: string;
   isAudio: boolean;
+  selectedDate?: string;
+  inputType?: string;
+  durationSeconds?: number;
 }
 
 export class EdgeFunctionError extends Error {
@@ -24,6 +27,9 @@ export class EdgeFunctionError extends Error {
 export async function callMyFunction({
   journal,
   isAudio,
+  selectedDate,
+  inputType,
+  durationSeconds,
 }: CallMyFunctionParams): Promise<InsightsType> {
   // ponytail: guard network audio invocation when voice disabled
   if (isAudio && !GLOBAL_VOICE_CONFIG.ENABLE_VOICE) {
@@ -33,17 +39,27 @@ export async function callMyFunction({
     );
   }
 
-  log.info("Invoking save-journal-ai-insights edge function...", { isAudio, length: journal.length });
+  const startTime = Date.now();
+  log.info("Invoking save-journal-ai-insights edge function...", {
+    isAudio,
+    payloadLength: journal.length,
+    inputType: inputType ?? "unknown",
+    durationSeconds: durationSeconds ?? 0,
+    selectedDate: selectedDate ?? "now",
+  });
+
   try {
     const { data, error } = await supabase.functions.invoke<InsightsType>(
       "save-journal-ai-insights",
       {
-        body: { journal, isAudio },
+        body: { journal, isAudio, selectedDate, inputType, durationSeconds },
       }
     );
 
+    const elapsedMs = Date.now() - startTime;
+
     if (error) {
-      log.error("Edge function returned error", error);
+      log.error("Edge function returned error", { elapsedMs, error });
       const errorMessage = error.message || "Unknown error occurred";
       const isNetworkError =
         errorMessage.includes("Network request failed") ||
@@ -59,16 +75,26 @@ export async function callMyFunction({
     }
 
     if (!data) {
-      log.error("Edge function returned empty response data");
+      log.error("Edge function returned empty response data", { elapsedMs });
       throw new EdgeFunctionError(
         "No data received from AI processing. Please try again."
       );
     }
 
-    log.info("Edge function response received successfully", { title: data.title });
+    log.info("Edge function response received successfully", {
+      elapsedMs,
+      id: (data as any)?.id,
+      title: data.title,
+      mood: (data as any)?.moods?.main_mood,
+      wordsCount: (data as any)?.words_count,
+    });
     return data;
   } catch (err) {
-    log.error("Failed to invoke save-journal-ai-insights edge function", err);
+    const elapsedMs = Date.now() - startTime;
+    log.error("Failed to invoke save-journal-ai-insights edge function", {
+      elapsedMs,
+      error: err instanceof Error ? err.message : String(err),
+    });
     // Re-throw EdgeFunctionError
     if (err instanceof EdgeFunctionError) {
       throw err;

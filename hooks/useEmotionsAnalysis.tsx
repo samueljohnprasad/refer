@@ -5,14 +5,12 @@ import {
 } from "@/src/network/transcribeAudio";
 import { ProcessingPhase } from "@/src/screens/DiscoveryScreen/types";
 import { File } from "expo-file-system";
-import { recorderOpenAtom } from "@/src/screens/DiscoveryScreen/helpers";
-import { useAtom } from "jotai";
+import { recorderOpenAtom, selectedDateDiscoveryAtom } from "@/src/screens/DiscoveryScreen/helpers";
+import { useAtom, useAtomValue } from "jotai";
 import { JournalEntry } from "./data/types";
 import { getAudioDuration } from "@/src/utils/date";
 import { useToast } from "heroui-native";
 import { createLogger } from "@/src/lib/logger";
-import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
-import { useTranscribeAudio } from "@/hooks/useTranscribeAudio";
 
 const log = createLogger("EmotionAnalysis");
 
@@ -39,9 +37,8 @@ const useEmotionsAnalysis = ({
   onAnalysisError,
 }: UseEmotionsAnalysisProps) => {
   const [, setRecorderOpen] = useAtom(recorderOpenAtom);
+  const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
   const { toast } = useToast();
-  const { isVoiceEnabled, isLocalTranscription } = useVoiceFeature();
-  const { transcribeAudio } = useTranscribeAudio();
 
   const [processingPhase, setProcessingPhase] = React.useState<ProcessingPhase>(
     ProcessingPhase.TRANSCRIBING
@@ -52,48 +49,56 @@ const useEmotionsAnalysis = ({
     if (!uri.startsWith("file://") && !uri.startsWith("content://")) {
       absoluteUri = `file://${uri}`;
     }
+    log.info("Encoding audio file to base64...", { uri: absoluteUri });
     const audioFile = new File(absoluteUri);
     const base64Audio = audioFile.base64Sync();
+    log.info("Audio file encoded to base64 successfully", {
+      base64Length: base64Audio.length,
+      estimatedKB: Math.round((base64Audio.length * 0.75) / 1024),
+    });
 
     return base64Audio;
   };
 
   const uploadAndTranscribe = async (): Promise<JournalEntry | null> => {
-    log.info("Starting journal upload & transcription...", { isAudio: !!uri });
+    log.info("Starting journal upload & transcription pipeline...", { isAudio: !!uri });
 
-    // ponytail: skip base64 audio encoding when voice disabled or local transcription enabled
-    let journalEntry: string | undefined = journalText;
-    let isAudioPayload = false;
-    let localTranscript = "";
-
-    if (uri && isVoiceEnabled) {
-      if (isLocalTranscription) {
-        const localResult = await transcribeAudio(uri);
-        localTranscript = localResult.transcript;
-        journalEntry = localTranscript || journalText;
-        isAudioPayload = false;
-      } else {
-        journalEntry = getBase64Audio(uri);
-        isAudioPayload = true;
-      }
-    } else if (uri && !isVoiceEnabled) {
-      log.warn("Audio URI provided but voice feature is disabled");
-      if (!journalEntry) {
-        throw new Error("Voice features are disabled and no text was provided.");
-      }
-    }
+    // ponytail: journal uses Expo Audio directly to cloud backend; text journal passes text
+    const isAudioPayload = Boolean(uri);
+    const journalEntry: string | undefined = uri
+      ? getBase64Audio(uri)
+      : journalText?.trim();
 
     if (!journalEntry) {
       log.warn("No journal content provided to uploadAndTranscribe");
       throw new Error("No journal content provided");
     }
 
-    const insights = await callMyFunction({
+    let duration = 0;
+    if (uri) {
+      log.info("Calculating audio duration from file...", { uri });
+      duration = await getAudioDuration(uri);
+      log.info("Audio duration determined", { durationSeconds: Math.round(duration) });
+    }
+
+    const payload = {
       journal: journalEntry,
       isAudio: isAudioPayload,
+      selectedDate: selectedDate ? new Date(selectedDate).toISOString() : undefined,
+      inputType: uri ? "voice" : "typing",
+      durationSeconds: Math.round(duration),
+    };
+
+    log.info("Dispatching journal to save-journal-ai-insights edge function...", {
+      isAudio: payload.isAudio,
+      inputType: payload.inputType,
+      durationSeconds: payload.durationSeconds,
+      selectedDate: payload.selectedDate,
+      payloadLength: payload.journal.length,
     });
 
-    const duration: number = uri ? await getAudioDuration(uri) : 0;
+    const insights = await callMyFunction(payload);
+
     const rawAi = (insights as any)?.journal_ai;
     const summaryText =
       rawAi?.summary ||
@@ -104,17 +109,23 @@ const useEmotionsAnalysis = ({
     const formattedEntry: JournalEntry = {
       ...(insights as any),
       duration_seconds: (insights as any)?.duration_seconds ?? Math.round(duration),
-      transcripts: (insights as any)?.transcripts || (insights as any)?.enrichedTranscript || localTranscript || journalText || "",
+      transcripts: (insights as any)?.transcripts || (insights as any)?.enrichedTranscript || journalText || "",
       journal_ai: (insights as any)?.journal_ai || (summaryText ? { summary: summaryText } : null),
     };
 
-    log.debug("Successfully formatted AI journal entry", { id: formattedEntry.id, title: formattedEntry.title });
+    log.info("Successfully formatted AI journal entry from server response", {
+      id: formattedEntry.id,
+      title: formattedEntry.title,
+      mood: (formattedEntry as any)?.moods?.main_mood,
+      hasSummary: Boolean(summaryText),
+    });
     return formattedEntry;
   };
 
   useEffect(() => {
     const fetch = async (): Promise<void> => {
       try {
+        log.info("Pipeline Step 1/4: TRANSCRIBING");
         setProcessingPhase(ProcessingPhase.TRANSCRIBING);
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -124,17 +135,22 @@ const useEmotionsAnalysis = ({
           throw new Error("Failed to process journal entry");
         }
 
+        log.info("Pipeline Step 2/4: ANALYZING_EMOTIONS");
         setProcessingPhase(ProcessingPhase.ANALYZING_EMOTIONS);
         await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        log.info("Pipeline Step 3/4: GENERATING_INSIGHTS");
         setProcessingPhase(ProcessingPhase.GENERATING_INSIGHTS);
         await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        log.info("Pipeline Step 4/4: FINALIZING");
         setProcessingPhase(ProcessingPhase.FINALIZING);
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        log.info("Emotion analysis pipeline finished successfully");
+        log.info("Emotion analysis pipeline finished successfully", { id: insights.id, title: insights.title });
         onAnalysisCompleted({ insights });
       } catch (error) {
-        log.error("Error in emotion analysis pipeline", error);
+        log.error("Error in emotion analysis pipeline:", error);
         // Close the recorder
         setRecorderOpen(false);
 
