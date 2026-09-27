@@ -91,7 +91,7 @@ export default function Home(): React.JSX.Element {
 
         <View
           pointerEvents="box-none"
-          className="absolute bottom-16 left-1/2 -translate-x-1/3"
+          className="absolute bottom-16 left-8 right-8"
         >
           <Animated.View className="w-full gap-2" style={buttonAnimatedStyle}>
             <BeginButton

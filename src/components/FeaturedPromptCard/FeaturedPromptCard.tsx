@@ -5,7 +5,7 @@ import { Text, View, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { SymbolView } from "expo-symbols";
 import { Card } from "@/src/components/ui/Card";
-import BeginButton from "@/src/components/BeginButton";
+import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 
 
 import type { QuickJournalPrompt } from "@/src/screens/DiscoveryScreen/QuickJournalSection";
@@ -35,13 +35,13 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
   if (!currentPrompt || prompts.length === 0) return null;
 
   return (
-    // ponytail: compact reflection card with tightened vertical rhythm
+    // ponytail: compact reflection card with tightened vertical rhythm and tactile lesson button
     <Card
       variant="tile"
       radius="lg"
       showDepth={false}
       haptic="none"
-      contentClassName="p-3.5 pt-3 pb-3"
+      contentClassName="p-3.5 pt-3 pb-3.5"
       faceStyle={{ borderWidth: 1 }}
     >
       <View className="absolute right-1 top-1 z-10">
@@ -70,28 +70,25 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
         </Text>
       </View>
 
-      <BeginButton
-        name="Start reflection"
-        showIcon={false}
-        leadingIcon={
-          <SymbolView
-            name="mic"
-            size={18}
-            tintColor={SEMANTIC_COLORS.surface.primary}
-            weight="medium"
-            style={{ width: 18, height: 18 }}
-          />
-        }
-        onPress={() => onPress(currentPrompt)}
-        accessibilityLabel={`Start reflection: ${currentPrompt.description}`}
-        style={{
-          minHeight: 46,
-          marginTop: 8,
-          paddingHorizontal: 24,
-          backgroundColor: SEMANTIC_COLORS.brand.primary,
-        }}
-        labelStyle={{ fontFamily: APP_FONT_FAMILIES.bold, fontSize: 16 }}
-      />
+      {/* ponytail: exact 3D tactile button and styling from lesson screen footer */}
+      <View className="mt-2.5">
+        <CourseExercisePrimaryButton
+          label="Start reflection"
+          height={52}
+          fontSize={17}
+          pressDepth={5}
+          leftIcon={
+            <SymbolView
+              name="mic"
+              size={18}
+              tintColor="#FFFFFF"
+              weight="medium"
+              style={{ width: 18, height: 18 }}
+            />
+          }
+          onPress={() => onPress(currentPrompt)}
+        />
+      </View>
     </Card>
   );
 };

@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, Modal, TouchableOpacity } from 'react-native';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { Cancel01Icon } from '@hugeicons/core-free-icons';
+import { CourseExercisePrimaryButton } from '@/src/components/exercise/CourseExerciseShell';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -80,12 +81,12 @@ export const HealthScoreModal: React.FC<HealthScoreModalProps> = ({
           <Text className="text-gray-700 leading-6">{reasoning}</Text>
         </View>
 
-        <TouchableOpacity
+        <CourseExercisePrimaryButton
+          label="Got it!"
           onPress={onClose}
-          className="bg-[#7B61FF] rounded-xl py-3 items-center"
-        >
-          <Text className="text-white font-semibold">Got it!</Text>
-        </TouchableOpacity>
+          height={52}
+          fontSize={16}
+        />
       </TouchableOpacity>
     </TouchableOpacity>
   </Modal>

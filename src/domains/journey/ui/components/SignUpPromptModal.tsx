@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Modal, Pressable } from "react-native";
 import { SafeAreaView } from "@/src/components/tw";
 import Animated from "react-native-reanimated";
-import { PressableScale } from "@/src/components/ui/PressableScale";
+import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 import {
   useSignUpPromptModalViewModel,
   type SignUpPromptModalProps,
@@ -99,27 +99,14 @@ export const SignUpPromptModalView = React.memo(
               </Text>
             </View>
 
-            <PressableScale
-              onPress={onSignUp}
-              scale={0.97}
-              hapticStyle="medium"
-              style={{
-                backgroundColor: "#7B61FF",
-                paddingVertical: 16,
-                borderRadius: 16,
-                alignItems: "center",
-                justifyContent: "center",
-                borderBottomWidth: 4,
-                borderBottomColor: "#5B41DF",
-                marginBottom: 12,
-              }}
-              accessibilityLabel="Sign up to save progress"
-              accessibilityRole="button"
-            >
-              <Text className="text-base font-bold text-white">
-                Sign Up & Save Progress
-              </Text>
-            </PressableScale>
+            <View className="mb-3">
+              <CourseExercisePrimaryButton
+                label="Sign Up & Save Progress"
+                onPress={onSignUp}
+                height={58}
+                fontSize={16}
+              />
+            </View>
 
             <Pressable
               onPress={onDismiss}

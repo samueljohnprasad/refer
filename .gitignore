@@ -33,6 +33,8 @@ lint_results.json
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+.env
+
 
 # macOS
 .DS_Store

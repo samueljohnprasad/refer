@@ -1,5 +1,6 @@
 import React from "react";
-import { TouchableOpacity, Text, ActivityIndicator, View } from "react-native";
+import { View } from "react-native";
+import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 
 interface ContinueButtonProps {
   onPress: () => void;
@@ -8,8 +9,7 @@ interface ContinueButtonProps {
 }
 
 /**
- * Continue/Save button at bottom of screen
- * Minimal design with professional styling
+ * // ponytail: standardize to tactile 3D button used across the app
  */
 export const ContinueButton = React.memo<ContinueButtonProps>(({
   onPress,
@@ -20,22 +20,14 @@ export const ContinueButton = React.memo<ContinueButtonProps>(({
   if (!isEditing) return null;
 
   return (
-    <View className="absolute bottom-0 left-0 right-0 bg-transparent px-4 pb-8 pt-2">
-      <TouchableOpacity
-        onPress={onPress}
+    <View className="absolute bottom-0 left-0 right-0 bg-transparent px-6 pb-8 pt-2">
+      <CourseExercisePrimaryButton
+        label="Save"
         disabled={loading}
-        className="bg-theme-purple-deep rounded-full py-4 items-center justify-center opacity-95"
-        activeOpacity={0.8}
-        accessibilityRole="button"
-        accessibilityLabel="Save journal"
-        accessibilityState={{ busy: loading }}
-      >
-        {loading ? (
-          <ActivityIndicator color="white" size="small" />
-        ) : (
-          <Text className="text-white text-base font-semibold">Save</Text>
-        )}
-      </TouchableOpacity>
+        loading={loading}
+        onPress={onPress}
+        height={60}
+      />
     </View>
   );
 });

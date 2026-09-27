@@ -6,6 +6,7 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { LockIcon, SparklesIcon } from "@hugeicons/core-free-icons";
 import ShortBottomModal from "@/src/components/ShortBottomModal";
 import SignInBottomSheet from "@/src/components/SignInBottomSheet";
+import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 import {
   useGuestSignUpSheetViewModel,
   type GuestSignUpSheetProps,
@@ -74,17 +75,14 @@ export const GuestSignUpSheetView = React.memo(function GuestSignUpSheetView({
             </View>
           )}
 
-          <TouchableOpacity
-            onPress={handleSaveProgress}
-            activeOpacity={0.8}
-            className="w-full bg-sage-700 rounded-full h-14 items-center justify-center mb-3"
-            accessibilityRole="button"
-            accessibilityLabel="Save my progress and create account"
-          >
-            <Text className="text-white font-semibold text-base">
-              Save My Progress
-            </Text>
-          </TouchableOpacity>
+          <View className="w-full mb-3">
+            <CourseExercisePrimaryButton
+              label="Save My Progress"
+              onPress={handleSaveProgress}
+              height={56}
+              fontSize={16}
+            />
+          </View>
 
           <TouchableOpacity
             onPress={handleNotNow}

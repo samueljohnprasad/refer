@@ -11,6 +11,7 @@ import { Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
+import * as Haptics from "expo-haptics";
 import {
   COURSE_EXERCISE_FONTS,
   SEMANTIC_COLORS,
@@ -117,14 +118,37 @@ export function CourseExercisePrimaryButton({
   disabled = false,
   loading = false,
   onPress,
+  leftIcon,
+  rightIcon,
+  height = 64,
+  fontSize,
+  pressDepth = 6,
+  faceColor,
+  rimColor,
 }: {
   label: string;
   disabled?: boolean;
   loading?: boolean;
-  onPress: () => void;
+  onPress?: () => void;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  height?: number;
+  fontSize?: number;
+  pressDepth?: number;
+  faceColor?: string;
+  rimColor?: string;
 }) {
   const isDisabled = disabled || loading;
-  const colors = getPrimaryButtonColors(isDisabled);
+  const defaultColors = getPrimaryButtonColors(isDisabled);
+  const color = faceColor && !isDisabled ? faceColor : (defaultColors.face as string);
+  const backgroundColor = rimColor && !isDisabled ? rimColor : (defaultColors.rim as string);
+  const radius = height / 2;
+
+  const handlePressIn = () => {
+    if (!isDisabled) {
+      Haptics.selectionAsync();
+    }
+  };
 
   return (
     <View
@@ -132,18 +156,19 @@ export function CourseExercisePrimaryButton({
       accessibilityLabel={label}
       accessibilityRole="button"
       accessibilityState={{ busy: loading, disabled: isDisabled }}
-      style={styles.primaryButton}
+      style={[styles.primaryButton, { height: height + pressDepth }]}
     >
       <SvgAppButton
         width="100%"
-        height={64}
-        leftRadius={32}
-        rightRadius={32}
-        pressDepth={6}
-        color={colors.face}
-        backgroundColor={colors.rim}
+        height={height}
+        leftRadius={radius}
+        rightRadius={radius}
+        pressDepth={pressDepth}
+        color={color}
+        backgroundColor={backgroundColor}
         disabled={isDisabled}
-        onPress={onPress}
+        onPress={onPress ?? (() => {})}
+        onPressIn={handlePressIn}
         contentContainerStyle={styles.primaryButtonContent}
       >
         {loading ? (
@@ -152,9 +177,19 @@ export function CourseExercisePrimaryButton({
             size="small"
           />
         ) : (
-          <Text style={[styles.primaryLabel, disabled && styles.disabledLabel]}>
-            {label}
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            {leftIcon}
+            <Text
+              style={[
+                styles.primaryLabel,
+                fontSize ? { fontSize } : null,
+                disabled && styles.disabledLabel,
+              ]}
+            >
+              {label}
+            </Text>
+            {rightIcon}
+          </View>
         )}
       </SvgAppButton>
     </View>

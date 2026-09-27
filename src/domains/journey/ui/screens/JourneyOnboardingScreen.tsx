@@ -3,6 +3,7 @@ import { View, Pressable, ScrollView } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { SafeAreaView } from "@/src/components/tw";
 import { Feather } from "@expo/vector-icons";
+import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 import {
   useJourneyOnboardingViewModel,
   type JourneyOnboardingScreenProps,
@@ -38,16 +39,14 @@ function WelcomeHero({ onStart }: { onStart: () => void }): React.JSX.Element {
         start your mental wellness practice.
       </Text>
 
-      <Pressable
-        onPress={onStart}
-        className="bg-purple-600 rounded-2xl py-4 px-10 mb-4"
-        accessibilityRole="button"
-        accessibilityLabel="Start quiz to find your journey"
-      >
-        <Text className="text-base font-bold text-white">
-          Let's Get Started
-        </Text>
-      </Pressable>
+      <View className="w-full mb-4">
+        <CourseExercisePrimaryButton
+          label="Let's Get Started"
+          onPress={onStart}
+          height={58}
+          fontSize={17}
+        />
+      </View>
 
       <Text className="text-sm text-ink-muted">Takes less than 30 seconds</Text>
     </View>

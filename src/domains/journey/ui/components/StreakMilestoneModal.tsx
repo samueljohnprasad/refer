@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Modal } from "react-native";
 import { SafeAreaView } from "@/src/components/tw";
 import Animated from "react-native-reanimated";
-import { PressableScale } from "@/src/components/ui/PressableScale";
+import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 import { ConfettiExplosion } from "@/src/components/animations/ConfettiExplosion";
 import {
   useMilestoneBadgeViewModel,
@@ -146,26 +146,14 @@ export const StreakMilestoneModalView = React.memo(
           </View>
 
           <View className="px-5 pb-4 pt-2">
-            <PressableScale
+            <CourseExercisePrimaryButton
+              label="Keep it going! 🔥"
               onPress={() => void handlePressKeepGoing()}
-              scale={0.96}
-              hapticStyle="medium"
-              style={{
-                backgroundColor: "#EA580C",
-                paddingVertical: 16,
-                borderRadius: 16,
-                alignItems: "center",
-                justifyContent: "center",
-                borderBottomWidth: 4,
-                borderBottomColor: "#C2410C",
-              }}
-              accessibilityLabel="Keep it going"
-              accessibilityRole="button"
-            >
-              <Text className="text-base font-bold text-white">
-                Keep it going! 🔥
-              </Text>
-            </PressableScale>
+              faceColor="#EA580C"
+              rimColor="#C2410C"
+              height={58}
+              fontSize={17}
+            />
           </View>
         </SafeAreaView>
       </Modal>

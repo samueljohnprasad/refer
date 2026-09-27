@@ -1,10 +1,10 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View } from "react-native";
+import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 import { SaveButtonProps } from "../types";
 
 /**
- * Presentational component for save button
- * Sticky footer button with loading state
+ * // ponytail: presentational sticky footer save button with tactile 3D styling
  */
 export const SaveButton = React.memo<SaveButtonProps>(
   ({
@@ -22,24 +22,14 @@ export const SaveButton = React.memo<SaveButtonProps>(
           onLayout(nativeEvent.layout.height)
         }
       >
-        <TouchableOpacity
-          style={[saving && { opacity: 0.6 }]}
-          className="bg-[#FFD24A] rounded-xl p-4 items-center shadow-soft-2"
-          onPress={onSave}
+        <CourseExercisePrimaryButton
+          label={saving ? "Saving…" : "Continue"}
           disabled={saving}
-          activeOpacity={0.8}
-        >
-          <View className="flex-row items-center justify-center">
-            {saving && (
-              <View className="mr-2">
-                <ActivityIndicator color="#fff" size="small" />
-              </View>
-            )}
-            <Text className="text-typography-black text-lg font-bold">
-              {saving ? "Saving…" : "Continue"}
-            </Text>
-          </View>
-        </TouchableOpacity>
+          loading={saving}
+          onPress={onSave}
+          height={56}
+          fontSize={18}
+        />
       </View>
     );
   }

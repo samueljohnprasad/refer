@@ -8,6 +8,7 @@ import {
   type BottomSheetBackdropProps,
 } from "@gorhom/bottom-sheet";
 import { PressableScale } from "@/src/components/ui/PressableScale";
+import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 import type { JourneyReward } from "@/src/types/journey/node";
 import {
   useRewardBadgeViewModel,
@@ -128,24 +129,14 @@ export const NodeCompletionModalView = React.memo(
                 </View>
               )}
 
-              <PressableScale
+              <CourseExercisePrimaryButton
+                label="CONTINUE"
                 onPress={() => void handleContinue()}
-                scale={0.95}
-                hapticStyle="heavy"
-                className="w-full"
-                style={{
-                  backgroundColor: "#58CC02",
-                  paddingVertical: 16,
-                  borderRadius: 16,
-                  borderBottomWidth: 4,
-                  borderBottomColor: "#45A802",
-                  alignItems: "center",
-                }}
-              >
-                <Text className="text-lg font-extrabold text-white">
-                  CONTINUE
-                </Text>
-              </PressableScale>
+                faceColor="#58CC02"
+                rimColor="#45A802"
+                height={58}
+                fontSize={18}
+              />
             </>
           )}
         </BottomSheetView>

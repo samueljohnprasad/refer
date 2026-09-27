@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
+import { Button } from "@/src/components/ui/Button";
 import { CheckpointSingleChoice, CheckpointOrdering, CheckpointMatching, CheckpointRecall } from "./checkpointContent";
 import { CheckpointResponse } from "./checkpointResponse";
 
@@ -22,9 +23,7 @@ export const SingleChoiceAdapter: React.FC<AdapterProps<CheckpointSingleChoice>>
           <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider mb-2">Worked Support</Text>
           <Text className="text-lg font-geist text-ink">{item.workedSupport}</Text>
         </View>
-        <TouchableOpacity onPress={() => onComplete(false)} className="p-4 bg-ink rounded-full items-center">
-          <Text className="text-white font-geist font-bold text-lg">Next</Text>
-        </TouchableOpacity>
+        <Button label="Next" onPress={() => onComplete(false)} size="lg" />
       </View>
     );
   }
@@ -60,9 +59,7 @@ export const OrderingAdapter: React.FC<AdapterProps<CheckpointOrdering>> = ({ it
           <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider mb-2">Worked Support</Text>
           <Text className="text-lg font-geist text-ink">{item.workedSupport}</Text>
         </View>
-        <TouchableOpacity onPress={() => onComplete(false)} className="p-4 bg-ink rounded-full items-center">
-          <Text className="text-white font-geist font-bold text-lg">Next</Text>
-        </TouchableOpacity>
+        <Button label="Next" onPress={() => onComplete(false)} size="lg" />
       </View>
     );
   }
@@ -105,9 +102,9 @@ export const OrderingAdapter: React.FC<AdapterProps<CheckpointOrdering>> = ({ it
           );
         })}
       </View>
-      <TouchableOpacity onPress={handleCheck} className="p-4 bg-ink rounded-full items-center mt-4">
-        <Text className="text-white font-geist font-bold text-lg">Check Order</Text>
-      </TouchableOpacity>
+      <View className="mt-4">
+        <Button label="Check Order" onPress={handleCheck} size="lg" />
+      </View>
     </View>
   );
 };
@@ -128,9 +125,7 @@ export const MatchingAdapter: React.FC<AdapterProps<CheckpointMatching>> = ({ it
           <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider mb-2">Worked Support</Text>
           <Text className="text-lg font-geist text-ink">{item.workedSupport}</Text>
         </View>
-        <TouchableOpacity onPress={() => onComplete(false)} className="p-4 bg-ink rounded-full items-center">
-          <Text className="text-white font-geist font-bold text-lg">Next</Text>
-        </TouchableOpacity>
+        <Button label="Next" onPress={() => onComplete(false)} size="lg" />
       </View>
     );
   }
@@ -223,13 +218,23 @@ export const RecallAdapter: React.FC<AdapterProps<CheckpointRecall>> = ({ item, 
       </View>
       
       {revealed && (
-        <View className="flex-row space-x-4">
-          <TouchableOpacity onPress={() => onComplete(false)} className="flex-1 p-4 bg-white border border-sage-200 rounded-xl items-center">
-            <Text className="text-ink font-geist font-bold text-lg">Need Practice</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => onComplete(true)} className="flex-1 p-4 bg-ink rounded-xl items-center">
-            <Text className="text-white font-geist font-bold text-lg">Got It</Text>
-          </TouchableOpacity>
+        <View className="flex-row gap-3">
+          <View className="flex-1">
+            <Button
+              label="Need Practice"
+              variant="secondary"
+              onPress={() => onComplete(false)}
+              size="lg"
+            />
+          </View>
+          <View className="flex-1">
+            <Button
+              label="Got It"
+              variant="primary"
+              onPress={() => onComplete(true)}
+              size="lg"
+            />
+          </View>
         </View>
       )}
     </View>

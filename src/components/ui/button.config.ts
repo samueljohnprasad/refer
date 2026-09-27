@@ -27,12 +27,12 @@ export interface VariantConfig {
 
 export const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
   primary: {
-    faceColor: SEMANTIC_COLORS.brand.primary,
-    rimColor: SEMANTIC_COLORS.brand.onSoft,
-    labelColor: SEMANTIC_COLORS.surface.primary,
-    disabledFaceColor: "#F3F6FA",
-    disabledRimColor: "#E9EEF5",
-    disabledLabelColor: "#64748B",
+    faceColor: "#7C3AED",
+    rimColor: "#5B21B6",
+    labelColor: "#FFFFFF",
+    disabledFaceColor: "#E2E8F0",
+    disabledRimColor: "#CBD5E1",
+    disabledLabelColor: "#94A3B8",
   },
   secondary: {
     faceColor: SEMANTIC_COLORS.surface.primary,
@@ -107,7 +107,7 @@ export interface SizeConfig {
 export const SIZES: Record<Size, SizeConfig> = {
   sm: { height: 44, radius: 22, pressDepth: 3, labelSize: 15, defaultWidth: 120 },
   md: { height: 48, radius: 22, pressDepth: 4, labelSize: 16, defaultWidth: 150 },
-  lg: { height: 56, radius: 22, pressDepth: 4, labelSize: 17, defaultWidth: 200 },
+  lg: { height: 56, radius: 28, pressDepth: 6, labelSize: 17, defaultWidth: 200 },
   xl: { height: 80, radius: 40, pressDepth: 6, labelSize: 20, defaultWidth: 80 },
   option: { height: 52, radius: 12, pressDepth: 4, labelSize: 16, defaultWidth: 300 },
 };

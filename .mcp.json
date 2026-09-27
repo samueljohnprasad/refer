@@ -6,6 +6,10 @@
       "args": [
         "mcp"
       ]
+    },
+    "Mobbin": {
+      "serverUrl": "https://api.mobbin.com/mcp",
+      "url": "https://api.mobbin.com/mcp"
     }
   }
 }
