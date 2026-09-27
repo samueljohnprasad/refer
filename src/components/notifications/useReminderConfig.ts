@@ -23,12 +23,18 @@ type UseReminderConfigReturn = {
   toggleSelected: (id: string) => Promise<void>;
 };
 
+interface UseReminderConfigOptions {
+  requestPermissionsOnToggle?: boolean;
+}
+
 /**
  * Custom hook to manage reminder configuration state and operations
  */
 export const useReminderConfig = (
-  defaultItems: ReminderItem[]
+  defaultItems: ReminderItem[],
+  options?: UseReminderConfigOptions
 ): UseReminderConfigReturn => {
+  const requestPermissionsOnToggle = options?.requestPermissionsOnToggle ?? true;
   const [items, setItems] = useState<ReminderItem[]>(defaultItems);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [cfg, setCfg] = useAtom(cfgAtom);
@@ -43,13 +49,13 @@ export const useReminderConfig = (
 
       let initialCfg = { ...stored };
 
-      // If no config exists, default to 1 recommended reminder (Evening Wind-down)
+      // ponytail: default all reminders to enabled locally
       if (Object.keys(stored).length === 0) {
         defaultItems.forEach((it) => {
           initialCfg[it.id] = {
             hour: it.hour,
             minute: it.minute,
-            enabled: it.id === "3",
+            enabled: true,
             title: it.title,
             body: it.notificationBody,
           };
@@ -165,21 +171,23 @@ export const useReminderConfig = (
       return;
     }
 
-    // Turn ON - request permissions first
-    const granted = await ensureNotificationPermissions();
-    if (!granted) {
-      Alert.alert(
-        "Notification Permission Needed",
-        "Please enable notification access in Settings to receive reminders.",
-        [
-          {
-            text: "Open Settings",
-            onPress: () => Linking.openURL("app-settings:"),
-          },
-          { text: "Cancel", style: "cancel" },
-        ]
-      );
-      return;
+    // Turn ON - request permissions first if requested
+    if (requestPermissionsOnToggle) {
+      const granted = await ensureNotificationPermissions();
+      if (!granted) {
+        Alert.alert(
+          "Notification Permission Needed",
+          "Please enable notification access in Settings to receive reminders.",
+          [
+            {
+              text: "Open Settings",
+              onPress: () => Linking.openURL("app-settings:"),
+            },
+            { text: "Cancel", style: "cancel" },
+          ]
+        );
+        return;
+      }
     }
 
     const nextCfg: RemindersConfig = {

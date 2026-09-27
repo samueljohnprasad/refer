@@ -21,12 +21,13 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   const insets = useSafeAreaInsets();
   const contentTopPadding = Platform.OS === "ios" ? 100 : insets.top + 100;
   
+  // ponytail: do not prompt OS dialog while toggling in onboarding; prompt on Continue click
   const {
     items,
     cfg,
     handleTimeChange,
     toggleSelected,
-  } = useReminderConfig(DEFAULT_REMINDERS);
+  } = useReminderConfig(DEFAULT_REMINDERS, { requestPermissionsOnToggle: false });
 
   // Notify parent that a time is "selected" if any reminder is enabled
   useEffect(() => {
