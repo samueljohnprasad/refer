@@ -9,6 +9,7 @@ export interface RecordPromptSectionProps {
   prompt: string;
   onShufflePrompt: () => void;
   onOpenOptions: () => void;
+  headerRight?: React.ReactNode;
 }
 
 // ponytail: thin container component delegating prompt section state to ViewModel hook and rendering presentational view

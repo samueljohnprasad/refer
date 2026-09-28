@@ -20,12 +20,15 @@ interface UseRecordPromptSectionOptions {
   prompt: string;
   onShufflePrompt: () => void;
   onOpenOptions: () => void;
+  headerRight?: React.ReactNode;
 }
 
 export interface RecordPromptSectionViewModel {
   menuConfig: GlassMenuConfig;
   displayedPrompt: string;
   promptAnimStyle: AnimatedTextStyle;
+  onShufflePrompt: () => void;
+  headerRight?: React.ReactNode;
 }
 
 // ponytail: prompt section hook with mount guard, fast ease-out exit (100ms), and subtle spring scale enter (0.98 -> 1)
@@ -36,6 +39,7 @@ export function useRecordPromptSectionViewModel({
   prompt,
   onShufflePrompt,
   onOpenOptions,
+  headerRight,
 }: UseRecordPromptSectionOptions): RecordPromptSectionViewModel {
   const reducedMotion = useReducedMotion();
   const isFirstMount = useRef(true);
@@ -169,5 +173,7 @@ export function useRecordPromptSectionViewModel({
     menuConfig,
     displayedPrompt,
     promptAnimStyle,
+    onShufflePrompt,
+    headerRight,
   };
 }

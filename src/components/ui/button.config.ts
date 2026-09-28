@@ -12,6 +12,7 @@ export type Variant =
   | "streak"
   | "ghost"
   | "pill"
+  | "purple"
   | "danger";
 
 export interface VariantConfig {
@@ -27,12 +28,12 @@ export interface VariantConfig {
 
 export const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
   primary: {
-    faceColor: "#7C3AED",
-    rimColor: "#5B21B6",
-    labelColor: "#FFFFFF",
-    disabledFaceColor: "#E2E8F0",
-    disabledRimColor: "#CBD5E1",
-    disabledLabelColor: "#94A3B8",
+    faceColor: SEMANTIC_COLORS.brand.primary,
+    rimColor: SEMANTIC_COLORS.brand.onSoft,
+    labelColor: SEMANTIC_COLORS.surface.primary,
+    disabledFaceColor: "#F3F6FA",
+    disabledRimColor: "#E9EEF5",
+    disabledLabelColor: "#64748B",
   },
   secondary: {
     faceColor: SEMANTIC_COLORS.surface.primary,
@@ -91,6 +92,14 @@ export const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
     labelColor: SEMANTIC_COLORS.text.primary,
     disabledFaceColor: "#F7F7F7",
     disabledRimColor: "#E5E5E5",
+  },
+  purple: {
+    faceColor: "#7C3AED",
+    rimColor: "#5B21B6",
+    labelColor: "#FFFFFF",
+    disabledFaceColor: "#E2E8F0",
+    disabledRimColor: "#CBD5E1",
+    disabledLabelColor: "#94A3B8",
   },
 };
 

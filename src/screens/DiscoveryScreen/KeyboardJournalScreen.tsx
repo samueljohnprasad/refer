@@ -141,9 +141,14 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   const showCharacterCount = combinedLength >= CHAR_COUNT_THRESHOLD;
   const isNearLimit = combinedLength >= CHAR_COUNT_WARNING;
 
+  const wordCount = useMemo(() => {
+    const raw = (journalText + realtimeResult).trim();
+    return raw ? raw.split(/\s+/).filter(Boolean).length : 0;
+  }, [journalText, realtimeResult]);
+
   // ponytail: flexible canvas height filling available viewport gracefully
   const canvasMinHeight = useMemo(
-    () => Math.max(260, Math.round(windowHeight * 0.45)),
+    () => Math.max(260, Math.round(windowHeight * 0.46)),
     [windowHeight]
   );
 
@@ -159,7 +164,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         className="flex-1"
       >
-        {/* Apple SwiftUI Native Header - aligned glass controls */}
+        {/* Apple SwiftUI Native Header */}
         <View
           className="flex-row justify-between items-center px-4 pb-2"
           style={{ paddingTop: Math.max(insets.top + 4, 16) }}
@@ -230,14 +235,14 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
             paddingBottom: 16,
           }}
         >
-          {/* Prompt Block */}
+          {/* Prompt Section */}
           <JournalPromptRow prompt={currentPrompt} onShuffle={shufflePrompt} />
 
-          {/* Writing Canvas - warm paper surface filling available space */}
+          {/* Premium Paper Writing Canvas */}
           <Pressable
             onPress={() => textInputRef.current?.focus()}
-            className={`bg-white/85 rounded-2xl p-5 border relative shadow-sm flex-1 ${
-              isFocused ? "border-sage-500/80" : "border-ink/8"
+            className={`bg-white rounded-[26px] p-6 border relative flex-1 shadow-xs transition-all ${
+              isFocused ? "border-sage-400/90 shadow-sm" : "border-[#EAE5D8]"
             }`}
             style={{ minHeight: canvasMinHeight }}
           >
@@ -249,27 +254,35 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
               onChangeText={setJournalText}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
-              placeholder="Start writing…"
-              placeholderTextColor="rgba(20, 36, 20, 0.4)"
+              placeholder="Start writing here…"
+              placeholderTextColor="rgba(20, 36, 20, 0.35)"
               multiline
               textAlignVertical="top"
-              className="text-ink text-[17px] leading-7 happy-font-body pb-6"
+              className="text-ink text-[18px] leading-[28px] happy-font-body pb-8"
               style={{ flex: 1, minHeight: 180 }}
               autoFocus
             />
 
-            {/* Character Counter (visible only >= 80% limit) */}
-            {showCharacterCount && (
-              <View className="absolute bottom-3 right-4">
+            {/* Bottom info row inside canvas */}
+            <View className="absolute bottom-3.5 left-6 right-6 flex-row justify-between items-center">
+              {showCharacterCount ? (
                 <Text
-                  className={`text-[11px] happy-font-body-medium ${
+                  className={`text-[11px] happy-font-caption font-semibold ${
                     isNearLimit ? "text-terracotta-500" : "text-ink-muted"
                   }`}
                 >
                   {combinedLength.toLocaleString()} / {MAX_JOURNAL_LENGTH.toLocaleString()}
                 </Text>
-              </View>
-            )}
+              ) : (
+                <View />
+              )}
+
+              {wordCount > 0 && (
+                <Text className="text-[12px] text-ink-muted happy-font-caption font-medium">
+                  {wordCount} {wordCount === 1 ? "word" : "words"}
+                </Text>
+              )}
+            </View>
           </Pressable>
         </ScrollView>
 

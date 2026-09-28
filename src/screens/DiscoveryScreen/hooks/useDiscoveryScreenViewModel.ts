@@ -18,6 +18,7 @@ export interface DiscoveryScreenViewModel {
   selectedDate: Date;
   currentPrompt: string;
   allPrompts: string[];
+  isVoiceEnabled: boolean;
   isCalendarVisible: boolean;
   isOptionsVisible: boolean;
   isImageJournalVisible: boolean;
@@ -142,6 +143,7 @@ export function useDiscoveryScreenViewModel(): DiscoveryScreenViewModel {
     selectedDate,
     currentPrompt,
     allPrompts,
+    isVoiceEnabled,
     isCalendarVisible,
     isOptionsVisible,
     isImageJournalVisible,

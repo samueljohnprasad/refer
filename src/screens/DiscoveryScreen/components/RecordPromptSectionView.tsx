@@ -1,6 +1,7 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
+import { SymbolView } from "expo-symbols";
 import {
   ConfigurableGlassMenu,
   type GlassMenuConfig,
@@ -12,27 +13,62 @@ export interface RecordPromptSectionViewProps {
   menuConfig: GlassMenuConfig;
   displayedPrompt: string;
   promptAnimStyle: AnimatedTextStyle;
+  onShufflePrompt?: () => void;
+  headerRight?: React.ReactNode;
 }
 
-// ponytail: pure presentational prompt section with 100% Tailwind CSS classes
+// ponytail: pure presentational prompt section with unified header and quick-shuffle affordance
 export const RecordPromptSectionView: React.FC<RecordPromptSectionViewProps> =
-  React.memo(({ menuConfig, displayedPrompt, promptAnimStyle }) => {
-    return (
-      <View className="pt-0">
-        <View className="-ml-1 flex-row items-center">
-          <ConfigurableGlassMenu config={menuConfig} />
-        </View>
+  React.memo(
+    ({
+      menuConfig,
+      displayedPrompt,
+      promptAnimStyle,
+      onShufflePrompt,
+      headerRight,
+    }) => {
+      return (
+        <View className="pt-0">
+          {/* Top Row: Date Menu on Left, Header/Streak on Right */}
+          <View className="flex-row items-center justify-between">
+            <View className="-ml-1 flex-row items-center">
+              <ConfigurableGlassMenu config={menuConfig} />
+            </View>
+            {headerRight}
+          </View>
 
-        {/* ponytail: 30px display token with 36px leading gives breathing room while keeping 3-line hero dominance */}
-        <Animated.Text
-          style={promptAnimStyle}
-          className="mt-1 text-[30px] leading-[36px] tracking-tight text-ink happy-font-heading-bold"
-        >
-          {displayedPrompt}
-        </Animated.Text>
-      </View>
-    );
-  });
+          {/* Prompt Hero Title */}
+          <Animated.Text
+            style={promptAnimStyle}
+            className="mt-2 text-[27px] leading-[33px] tracking-tight text-ink happy-font-heading-bold"
+          >
+            {displayedPrompt}
+          </Animated.Text>
+
+          {/* Quick Shuffle Trigger */}
+          {onShufflePrompt ? (
+            <Pressable
+              onPress={onShufflePrompt}
+              hitSlop={8}
+              className="flex-row items-center gap-1.5 self-start mt-2 px-2.5 py-1 rounded-full bg-black/[0.04] active:bg-black/[0.08]"
+              accessibilityRole="button"
+              accessibilityLabel="Shuffle prompt"
+            >
+              <SymbolView
+                name="arrow.triangle.2.circlepath"
+                size={12}
+                weight="semibold"
+                tintColor="#616D5F"
+              />
+              <Text className="text-xs text-[#616D5F] happy-font-body-bold">
+                Shuffle prompt
+              </Text>
+            </Pressable>
+          ) : null}
+        </View>
+      );
+    }
+  );
 
 RecordPromptSectionView.displayName = "RecordPromptSectionView";
 export default RecordPromptSectionView;

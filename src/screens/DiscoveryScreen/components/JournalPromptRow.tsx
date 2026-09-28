@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { CircleArrowReload01Icon } from "@hugeicons/core-free-icons";
+import { CircleArrowReload01Icon, StarsIcon } from "@hugeicons/core-free-icons";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
 interface JournalPromptRowProps {
@@ -22,8 +22,8 @@ export const JournalPromptRow: React.FC<JournalPromptRowProps> = memo(
     const handlePress = useCallback(() => {
       void Haptics.selectionAsync().catch(() => {});
       rotation.value = withSpring(rotation.value + 360, {
-        damping: 20,
-        stiffness: 100,
+        damping: 18,
+        stiffness: 120,
         overshootClamping: true,
       });
       onShuffle();
@@ -34,26 +34,37 @@ export const JournalPromptRow: React.FC<JournalPromptRowProps> = memo(
     }));
 
     return (
-      // ponytail: tightened prompt -> canvas gap by 6pt (mb-3.5 = 14px)
-      <View className="flex-row justify-between items-start mb-3.5">
-        <Text className="flex-1 text-ink text-[22px] leading-[26px] pr-2 happy-font-heading-medium">
+      <View className="mb-4">
+        {/* Context metadata & Shuffle action */}
+        <View className="flex-row items-center justify-between mb-2">
+          <View className="flex-row items-center gap-1.5">
+            <HugeiconsIcon icon={StarsIcon} size={14} color="#D97706" />
+            <Text className="text-[12px] text-ink-soft happy-font-caption font-semibold">
+              Daily Reflection • +10 XP
+            </Text>
+          </View>
+
+          <Pressable
+            onPress={handlePress}
+            accessibilityLabel="Shuffle prompt"
+            accessibilityRole="button"
+            className="w-8 h-8 items-center justify-center rounded-full bg-white/80 border border-ink/8 active:scale-95 shadow-2xs"
+            style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+          >
+            <Animated.View style={rotateStyle}>
+              <HugeiconsIcon
+                icon={CircleArrowReload01Icon}
+                size={16}
+                color={SEMANTIC_COLORS.text.secondary}
+              />
+            </Animated.View>
+          </Pressable>
+        </View>
+
+        {/* Hero prompt text */}
+        <Text className="text-ink text-[24px] leading-[31px] happy-font-heading-medium tracking-tight">
           {prompt}
         </Text>
-        <Pressable
-          onPress={handlePress}
-          accessibilityLabel="Try another prompt"
-          accessibilityRole="button"
-          className="w-11 h-11 items-center justify-center -mr-2"
-          style={({ pressed }) => ({ opacity: pressed ? 0.45 : 0.85 })}
-        >
-          <Animated.View style={rotateStyle}>
-            <HugeiconsIcon
-              icon={CircleArrowReload01Icon}
-              size={21}
-              color={SEMANTIC_COLORS.text.secondary}
-            />
-          </Animated.View>
-        </Pressable>
       </View>
     );
   }
