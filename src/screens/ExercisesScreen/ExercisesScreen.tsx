@@ -54,6 +54,7 @@ import {
   ArrowRight01Icon,
   Brain01Icon,
   CheckmarkBadge01Icon,
+  PlayIcon,
   SparklesIcon,
   Time02Icon,
   ZapIcon,
@@ -85,6 +86,7 @@ import { TimelineSkeleton } from "../../../src/components/ui/Timeline/TimelineSk
 import { ExerciseTimeline } from "./components/ExerciseTimeline";
 import { JumpBackInCard } from "./components/JumpBackInCard";
 import { Card } from "@/src/components/ui/Card";
+import { Button } from "@/src/components/ui/Button";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
@@ -154,6 +156,7 @@ interface NutrieBadgeTheme {
   bg: string;
   text: string;
   iconColor: string;
+  rim: string;
   sf: string;
   feather: string;
 }
@@ -163,6 +166,7 @@ const CATEGORY_BADGE_THEME: Record<ExerciseCategory, NutrieBadgeTheme> = {
     bg: "#E8FBF0",
     text: "#22C55E",
     iconColor: "#22C55E",
+    rim: "#16A34A",
     sf: "brain.head.profile",
     feather: "cpu",
   },
@@ -170,6 +174,7 @@ const CATEGORY_BADGE_THEME: Record<ExerciseCategory, NutrieBadgeTheme> = {
     bg: "#E4F6FC",
     text: "#00A3D9",
     iconColor: "#00A3D9",
+    rim: "#0084B4",
     sf: "leaf",
     feather: "feather",
   },
@@ -177,6 +182,7 @@ const CATEGORY_BADGE_THEME: Record<ExerciseCategory, NutrieBadgeTheme> = {
     bg: "#FFEDE8",
     text: "#FF6B4A",
     iconColor: "#FF6B4A",
+    rim: "#E04B2A",
     sf: "cloud",
     feather: "cloud",
   },
@@ -184,6 +190,7 @@ const CATEGORY_BADGE_THEME: Record<ExerciseCategory, NutrieBadgeTheme> = {
     bg: "#F0EDFF",
     text: "#6B5CE7",
     iconColor: "#6B5CE7",
+    rim: "#5243C7",
     sf: "sparkles",
     feather: "zap",
   },
@@ -234,7 +241,7 @@ const CAROUSEL_PEEK = 20;
 // Fit ~1.85 cards across the screen so exercise titles wrap cleanly on 2 lines
 const SHELF_CARD_WIDTH =
   (SCREEN_WIDTH - CAROUSEL_PEEK * 2 - CAROUSEL_GAP * 2) / 1.85;
-const JUMP_BACK_CARD_WIDTH = (SCREEN_WIDTH - CAROUSEL_PEEK * 2) / 2.55;
+const JUMP_BACK_CARD_WIDTH = (SCREEN_WIDTH - CAROUSEL_PEEK * 2) / 2.3;
 
 interface LayoutCardProps {
   exercise: ExerciseConfig<any>;
@@ -249,7 +256,6 @@ const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
 }: LayoutCardProps): ReactElement {
   const { hasPro, requirePro } = useFreemiumGate();
   const isGated = !!exercise.isProOnly && !hasPro;
-  const icon = getExerciseIcon(exercise.type);
   const badgeTheme = getCategoryBadgeTheme(exercise.category);
 
   const handlePress = useCallback(async () => {
@@ -267,28 +273,34 @@ const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
       duration={800}
       disabled={isGated}
     >
-      <Pressable
+      <Card
+        variant="solid"
+        radius="lg"
+        showDepth={true}
         onPress={handlePress}
-        style={({ pressed }) => [
-          {
-            backgroundColor: badgeTheme.bg,
-            borderRadius: 16,
-            padding: 24,
-            marginBottom: 24,
-          },
-          pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] },
-        ]}
+        faceStyle={{
+          backgroundColor: badgeTheme.bg,
+          borderWidth: 2,
+          borderColor: "rgba(0,0,0,0.06)",
+        }}
+        rimStyle={{
+          backgroundColor: badgeTheme.text,
+          top: 4,
+          bottom: -4,
+        }}
+        contentClassName="p-4"
+        className="mb-4"
       >
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginBottom: 16,
+            marginBottom: 12,
           }}
         >
           <ExerciseIcon
             type={exercise.type}
-            size={28}
+            size={26}
             color={badgeTheme.iconColor}
           />
           <View style={{ flex: 1 }} />
@@ -300,7 +312,7 @@ const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
           <View
             style={[
               nutrieStyles.inlinePill,
-              { backgroundColor: "transparent", borderWidth: 0 },
+              { backgroundColor: "rgba(255,255,255,0.7)", borderWidth: 0 },
             ]}
           >
             {Platform.OS === "ios" ? (
@@ -315,7 +327,7 @@ const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
             <Text
               style={[
                 nutrieStyles.inlinePillText,
-                { color: badgeTheme.iconColor, fontWeight: "600" },
+                { color: badgeTheme.iconColor, fontWeight: "700" },
               ]}
             >
               {exercise.duration}
@@ -326,18 +338,46 @@ const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
         <Text
           style={[
             nutrieStyles.exerciseTitle,
-            { fontSize: 20, marginBottom: 4 },
+            { fontSize: 18, marginBottom: 4 },
           ]}
         >
           {exercise.title}
         </Text>
         <Text
-          style={[nutrieStyles.exerciseSubtitle, { color: "rgba(0,0,0,0.6)" }]}
+          style={[nutrieStyles.exerciseSubtitle, { color: "rgba(0,0,0,0.65)", marginBottom: 10 }]}
           numberOfLines={2}
         >
           {customSubtitle ?? exercise.subtitle}
         </Text>
-      </Pressable>
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingTop: 10,
+            borderTopWidth: 1,
+            borderTopColor: "rgba(0,0,0,0.06)",
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+            <HugeiconsIcon icon={ZapIcon} size={15} color="#C89400" />
+            <Text style={{ fontSize: 13, fontWeight: "800", color: "#A67C00" }}>
+              +{exercise.xp} XP
+            </Text>
+          </View>
+          <Button
+            label="Start"
+            size="sm"
+            height={32}
+            fullWidth={false}
+            leftIcon={<HugeiconsIcon icon={PlayIcon} size={13} color="#FFFFFF" />}
+            faceColor={badgeTheme.text}
+            rimColor={badgeTheme.rim}
+            onPress={handlePress}
+          />
+        </View>
+      </Card>
     </CircularRevealWrapper>
   );
 });
@@ -348,7 +388,6 @@ const ExerciseShelfCard = memo(function ExerciseShelfCard({
 }: LayoutCardProps): ReactElement {
   const { hasPro, requirePro } = useFreemiumGate();
   const isGated = !!exercise.isProOnly && !hasPro;
-  const icon = getExerciseIcon(exercise.type);
   const badgeTheme = getCategoryBadgeTheme(exercise.category);
 
   const handlePress = useCallback(async () => {
@@ -366,29 +405,22 @@ const ExerciseShelfCard = memo(function ExerciseShelfCard({
       duration={800}
       disabled={isGated}
     >
-      <Pressable
+      <Card
+        variant="tile"
+        radius="lg"
+        showDepth={true}
         onPress={handlePress}
-        style={({ pressed }) => [
-          {
-            backgroundColor: "#FFFFFF",
-            borderRadius: 12,
-            padding: 16,
-            width: SHELF_CARD_WIDTH,
-            borderWidth: 1,
-            borderColor: "rgba(0,0,0,0.04)",
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.04,
-            shadowRadius: 2,
-            elevation: 1,
-          },
-          pressed && { opacity: 0.92, transform: [{ scale: 0.96 }] },
-        ]}
+        style={{ width: SHELF_CARD_WIDTH }}
+        rimStyle={{ backgroundColor: "#D4D4D4" }}
+        faceStyle={{
+          minHeight: 130,
+        }}
+        contentClassName="p-4 justify-between flex-1"
       >
         <View
           style={{
-            marginBottom: 12,
-            height: 40,
+            marginBottom: 10,
+            height: 32,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
@@ -417,7 +449,7 @@ const ExerciseShelfCard = memo(function ExerciseShelfCard({
         >
           {exercise.subtitle}
         </Text>
-      </Pressable>
+      </Card>
     </CircularRevealWrapper>
   );
 });
@@ -452,24 +484,29 @@ const CompactExerciseRow = memo(function CompactExerciseRow({
           {
             flexDirection: "row",
             alignItems: "center",
-            paddingVertical: 12,
-            borderBottomWidth: 1,
-            borderBottomColor: "rgba(0,0,0,0.04)",
+            paddingVertical: 11,
+            paddingHorizontal: 14,
+            backgroundColor: "#FFFFFF",
+            borderRadius: 16,
+            borderWidth: 1.5,
+            borderColor: "rgba(0,0,0,0.06)",
+            borderBottomWidth: 3,
+            borderBottomColor: "rgba(0,0,0,0.10)",
+            marginBottom: 8,
           },
-          pressed && { opacity: 0.7 },
+          pressed && { opacity: 0.85, transform: [{ scale: 0.99 }] },
         ]}
       >
         <View
-          style={[
-            nutrieStyles.exerciseIconWell,
-            {
-              backgroundColor: "transparent",
-              width: 40,
-              height: 40,
-              borderRadius: 10,
-              marginRight: 12,
-            },
-          ]}
+          style={{
+            backgroundColor: badgeTheme.bg,
+            width: 38,
+            height: 38,
+            borderRadius: 10,
+            alignItems: "center",
+            justifyContent: "center",
+            marginRight: 12,
+          }}
         >
           <ExerciseIcon
             type={exercise.type}
@@ -481,7 +518,7 @@ const CompactExerciseRow = memo(function CompactExerciseRow({
         <View style={{ flex: 1, minWidth: 0, justifyContent: "center" }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text
-              style={[nutrieStyles.exerciseTitle, { marginBottom: 0, flexShrink: 1 }]}
+              style={[nutrieStyles.exerciseTitle, { fontSize: 15, marginBottom: 2, flexShrink: 1 }]}
               numberOfLines={1}
             >
               {exercise.title}
@@ -500,7 +537,7 @@ const CompactExerciseRow = memo(function CompactExerciseRow({
           </Text>
         </View>
 
-        <HugeiconsIcon icon={ArrowRight01Icon} size={16} color="#C4C4CC" />
+        <HugeiconsIcon icon={ArrowRight01Icon} size={16} color="#A1A1AA" />
       </Pressable>
     </CircularRevealWrapper>
   );
@@ -508,51 +545,28 @@ const CompactExerciseRow = memo(function CompactExerciseRow({
 
 // ─── END NEW LAYOUT COMPONENTS ──────────────────────────────────────────────
 
-// ponytail: recent exercises shelf replacing pinned favorites
+// ponytail: recent exercises shelf with deduplication against sections below
 function JumpBackInShelf({
-  exercises,
+  items,
   onPress,
 }: {
-  exercises: ExerciseConfig<any>[];
+  items: ExerciseConfig<any>[];
   onPress: (exercise: ExerciseConfig<any>) => void;
 }) {
-  const { recentIds } = useRecentExercises();
-
-  // Map IDs to actual exercise config objects
-  // Pad with defaults if fewer than 2 recent exercises
-  const defaultIds = [
-    "thought_catcher",
-    "mindful_breathing_1min",
-    "thought_reframing",
-  ];
-  const displayIds = Array.from(new Set([...recentIds, ...defaultIds])).slice(
-    0,
-    2,
-  );
-
-  const items = displayIds
-    .map((id) => exercises.find((ex) => ex.type === id))
-    .filter(Boolean) as ExerciseConfig<any>[];
+  if (items.length === 0) return null;
 
   return (
-    <View style={{ marginBottom: 40 }}>
-      <View style={[nutrieStyles.sectionHeader, { paddingTop: 16 }]}>
-        <View
-          style={[
-            nutrieStyles.categoryBadge,
-            { backgroundColor: "transparent", paddingHorizontal: 0 },
-          ]}
-        >
-          <Text style={[nutrieStyles.categoryBadgeText, { color: SEMANTIC_COLORS.text.tertiary }]}>
-            Jump Back In
-          </Text>
-        </View>
+    <View style={{ marginBottom: 20 }}>
+      <View style={[nutrieStyles.sectionHeader, { paddingTop: 8 }]}>
+        <Text style={nutrieStyles.cleanSectionTitle}>
+          Jump Back In
+        </Text>
       </View>
 
       <View
         style={{
           marginHorizontal: -CAROUSEL_PEEK,
-          marginTop: 12,
+          marginTop: 10,
         }}
       >
         <ScrollView
@@ -561,19 +575,20 @@ function JumpBackInShelf({
           contentContainerStyle={{
             gap: CAROUSEL_GAP,
             paddingHorizontal: CAROUSEL_PEEK,
+            paddingTop: 4,
+            paddingBottom: 8,
           }}
           snapToInterval={JUMP_BACK_CARD_WIDTH + CAROUSEL_GAP}
           decelerationRate="fast"
         >
-          {items.map((item, index) => (
+          {items.map((item) => (
             <View
               key={item.type}
-              style={{ width: JUMP_BACK_CARD_WIDTH }}
+              style={{ width: JUMP_BACK_CARD_WIDTH, paddingBottom: 4 }}
             >
               <JumpBackInCard
                 exercise={item}
                 width={JUMP_BACK_CARD_WIDTH}
-                blurred={index > 1}
                 onPress={onPress}
               />
             </View>
@@ -588,6 +603,7 @@ interface DiscoverSectionProps {
   label: string;
   category: ExerciseCategory;
   exercises: ExerciseConfig<any>[];
+  excludedExerciseTypes?: ReadonlySet<string>;
   onPress: (exercise: ExerciseConfig<any>) => void;
   isFirst?: boolean;
 }
@@ -596,16 +612,25 @@ const DiscoverSection = memo(function DiscoverSection({
   label,
   category,
   exercises,
+  excludedExerciseTypes,
   onPress,
   isFirst = false,
 }: DiscoverSectionProps): ReactElement {
-  const categoryMeta = getCategoryMeta(category);
   const badgeTheme = getCategoryBadgeTheme(category);
 
+  // ponytail: filter out exercises already shown in Jump Back In to prevent confusing duplicates
+  const availableExercises = useMemo(() => {
+    if (!excludedExerciseTypes || excludedExerciseTypes.size === 0) {
+      return exercises;
+    }
+    const filtered = exercises.filter((ex) => !excludedExerciseTypes.has(ex.type));
+    return filtered.length > 0 ? filtered : exercises;
+  }, [exercises, excludedExerciseTypes]);
+
   // Slice the exercises to create the varied layout
-  const featuredExercise = exercises[0];
-  const shelfExercises = exercises.slice(1, 4);
-  const catalogExercises = exercises.slice(4);
+  const featuredExercise = availableExercises[0];
+  const shelfExercises = availableExercises.slice(1, 4);
+  const catalogExercises = availableExercises.slice(4);
 
   return (
     <View style={{ marginBottom: 32 }}>
@@ -621,37 +646,33 @@ const DiscoverSection = memo(function DiscoverSection({
           {Platform.OS === "ios" ? (
             <SymbolView
               name={badgeTheme.sf as any}
-              size={12}
+              size={16}
               tintColor={badgeTheme.text}
-              weight="semibold"
-              style={{ width: 14, height: 14 }}
+              weight="bold"
+              style={{ width: 18, height: 18 }}
             />
           ) : (
             <Feather
               name={badgeTheme.feather as any}
-              size={12}
+              size={16}
               color={badgeTheme.text}
             />
           )}
           <Text
             style={[nutrieStyles.categoryBadgeText, { color: badgeTheme.text }]}
           >
-            {label} • {exercises.length}
+            {label} • {availableExercises.length}
           </Text>
         </View>
       </View>
-
-      <Text style={nutrieStyles.sectionDescription}>
-        {categoryMeta.description}
-      </Text>
 
       {/* 1. The Hero */}
       {featuredExercise && (
         <FeaturedExerciseHero exercise={featuredExercise} onPress={onPress} />
       )}
 
-      {/* 2. The Horizontal Shelf */}
-      {shelfExercises.length > 0 && (
+      {/* 2. The Horizontal Shelf (if 2+ cards) or Single Row */}
+      {shelfExercises.length >= 2 ? (
         <View style={{ marginHorizontal: -CAROUSEL_PEEK, marginBottom: 24 }}>
           <ScrollView
             horizontal
@@ -659,21 +680,33 @@ const DiscoverSection = memo(function DiscoverSection({
             contentContainerStyle={{
               gap: CAROUSEL_GAP,
               paddingHorizontal: CAROUSEL_PEEK,
-              backgroundColor: "white",
+              paddingTop: 4,
+              paddingBottom: 8,
             }}
             snapToInterval={SHELF_CARD_WIDTH + CAROUSEL_GAP}
             decelerationRate="fast"
           >
             {shelfExercises.map((exercise) => (
-              <ExerciseShelfCard
+              <View
                 key={exercise.type}
-                exercise={exercise}
-                onPress={onPress}
-              />
+                style={{ width: SHELF_CARD_WIDTH, paddingBottom: 4 }}
+              >
+                <ExerciseShelfCard
+                  exercise={exercise}
+                  onPress={onPress}
+                />
+              </View>
             ))}
           </ScrollView>
         </View>
-      )}
+      ) : shelfExercises.length === 1 ? (
+        <View style={{ marginTop: 0, marginBottom: 8 }}>
+          <CompactExerciseRow
+            exercise={shelfExercises[0]}
+            onPress={onPress}
+          />
+        </View>
+      ) : null}
 
       {/* 3. The Dense List */}
       {catalogExercises.length > 0 && (
@@ -721,7 +754,7 @@ function formatStatus(item: HistoryLogItem): StatusInfo {
     return {
       label: "Completed",
       isComplete: true,
-      badgeIconColor: SEMANTIC_COLORS.brand.pressed,
+      badgeIconColor: String(SEMANTIC_COLORS.brand.pressed),
       badgeClassName: "bg-sage-pill",
       badgeTextClassName: "text-sage-600",
       cardBorderClassName: "border-sage-200 border-b-sage-300",
@@ -733,7 +766,7 @@ function formatStatus(item: HistoryLogItem): StatusInfo {
     return {
       label: "Ready to Reframe",
       isComplete: false,
-      badgeIconColor: SEMANTIC_COLORS.warning.foreground,
+      badgeIconColor: String(SEMANTIC_COLORS.warning.foreground),
       badgeClassName: "bg-gold/15",
       badgeTextClassName: "text-ink-soft",
       cardBorderClassName: "border-sage-100 border-b-sage-200",
@@ -744,7 +777,7 @@ function formatStatus(item: HistoryLogItem): StatusInfo {
   return {
     label: "Resume",
     isComplete: false,
-    badgeIconColor: SEMANTIC_COLORS.text.tertiary,
+    badgeIconColor: String(SEMANTIC_COLORS.text.tertiary),
     badgeClassName: "bg-sage-50",
     badgeTextClassName: "text-ink-muted",
     cardBorderClassName: "border-sage-100 border-b-sage-200",
@@ -1032,6 +1065,29 @@ export default function ExercisesScreen(): ReactElement {
 
   const { data: completedCount = 0 } = useCompletedExercisesCount();
   const { hasPro, requirePro } = useFreemiumGate();
+  const { recentIds } = useRecentExercises();
+
+  const allExercises = useMemo(
+    () => exerciseGroups.flatMap((g) => g.exercises),
+    [exerciseGroups],
+  );
+
+  const defaultJumpBackInIds = useMemo(
+    () => ["mindful_breathing_1min", "thought_reframing"],
+    [],
+  );
+
+  const jumpBackInItems = useMemo(() => {
+    const ids = Array.from(new Set([...recentIds, ...defaultJumpBackInIds])).slice(0, 2);
+    return ids
+      .map((id) => allExercises.find((ex) => ex.type === id))
+      .filter(Boolean) as ExerciseConfig<any>[];
+  }, [recentIds, defaultJumpBackInIds, allExercises]);
+
+  const jumpBackInTypesSet = useMemo(
+    () => new Set(jumpBackInItems.map((item) => item.type)),
+    [jumpBackInItems],
+  );
 
   const handleExercisePress = useCallback(
     async (exercise: ExerciseConfig<any>) => {
@@ -1246,7 +1302,7 @@ export default function ExercisesScreen(): ReactElement {
           scrollEventThrottle={16}
           contentContainerStyle={{
             paddingTop: headerHeight - insets.top + 16,
-            paddingBottom: 160,
+            paddingBottom: 220,
             paddingHorizontal: 20,
           }}
           showsVerticalScrollIndicator={false}
@@ -1265,7 +1321,7 @@ export default function ExercisesScreen(): ReactElement {
               {/* Insert Jump Back In shelf at the very top */}
               <Animated.View entering={FadeInDown.duration(400).delay(100)}>
                 <JumpBackInShelf
-                  exercises={exerciseGroups.flatMap((g) => g.exercises)}
+                  items={jumpBackInItems}
                   onPress={handleExercisePress}
                 />
               </Animated.View>
@@ -1279,6 +1335,7 @@ export default function ExercisesScreen(): ReactElement {
                     label={group.label}
                     category={group.category}
                     exercises={group.exercises}
+                    excludedExerciseTypes={jumpBackInTypesSet}
                     onPress={handleExercisePress}
                     isFirst={i === 0}
                   />
@@ -1382,16 +1439,21 @@ const nutrieStyles = StyleSheet.create({
   categoryBadge: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: 8,
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 8,
   },
   categoryBadgeText: {
-    fontSize: 12,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-    textTransform: "uppercase",
+    fontSize: 15,
+    fontWeight: "800",
+    letterSpacing: -0.2,
+  },
+  cleanSectionTitle: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#142414",
+    letterSpacing: -0.3,
   },
   countBadge: {
     paddingHorizontal: 10,
