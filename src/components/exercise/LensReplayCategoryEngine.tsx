@@ -104,7 +104,7 @@ export function LensReplayCategoryEngine({
         title={readString(content.title) ?? "Replay the Scene"}
         instruction={
           readString(content.instruction) ??
-          "Tap the highlighted parts to see what you noticed — and what your mind added."
+          "Tap the highlighted parts to see what you noticed, and what your mind added."
         }
       />
 

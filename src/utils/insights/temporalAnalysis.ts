@@ -42,14 +42,14 @@ const DAY_NAMES = [
   "Saturday",
 ];
 const HOUR_LABELS: Record<number, string> = {
-  0: "midnight–3am",
-  3: "3–6am",
-  6: "6–9am",
-  9: "9am–noon",
-  12: "noon–3pm",
-  15: "3–6pm",
-  18: "6–9pm",
-  21: "9pm–midnight",
+  0: "midnight-3am",
+  3: "3-6am",
+  6: "6-9am",
+  9: "9am-noon",
+  12: "noon-3pm",
+  15: "3-6pm",
+  18: "6-9pm",
+  21: "9pm-midnight",
 };
 
 // ─── Extract temporal data from entries ──────────────────────────────────────
@@ -153,7 +153,7 @@ export function detectTimeOfDayPattern(
     offPeakAvgIntensity: Math.round(offPeakAvg * 10) / 10,
     confidence,
     bestExercise: bestExercise ?? null,
-    label: `Peak: ${HOUR_LABELS[peakStart] ?? `${peakStart}:00–${peakStart + 3}:00`} (${Math.round(percentage * 100)}% of exercises)`,
+    label: `Peak: ${HOUR_LABELS[peakStart] ?? `${peakStart}:00-${peakStart + 3}:00`} (${Math.round(percentage * 100)}% of exercises)`,
   };
 }
 

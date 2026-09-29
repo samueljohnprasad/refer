@@ -47,9 +47,9 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
       : CheckmarkCircle01Icon;
 
     const formatValue = (val: SummaryField["value"]): string => {
-      if (val === null || val === undefined) return "—";
+      if (val === null || val === undefined) return "";
       if (typeof val === "boolean") return val ? "Yes" : "No";
-      if (Array.isArray(val)) return val.length > 0 ? val.join(", ") : "—";
+      if (Array.isArray(val)) return val.length > 0 ? val.join(", ") : "";
       return String(val);
     };
 
@@ -92,7 +92,7 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
             >
               {fields.map((field, i) => {
                 const display = formatValue(field.value);
-                if (display === "—" || !display.trim()) return null;
+                if (!display || !display.trim()) return null;
                 const isLast = i === fields.length - 1;
 
                 return (

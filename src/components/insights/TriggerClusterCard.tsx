@@ -49,7 +49,7 @@ function ClusterRow({ cluster }: { cluster: TriggerCluster }) {
         {cluster.peakHours.length > 0 && (
           <View className="bg-blue-50 px-2 py-0.5 rounded-full">
             <Text className="text-[10px] font-semibold text-blue-600">
-              Peak: {cluster.peakHours[0]}–{cluster.peakHours[2] + 1}h
+              Peak: {cluster.peakHours[0]}-{cluster.peakHours[2] + 1}h
             </Text>
           </View>
         )}

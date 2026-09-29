@@ -85,7 +85,7 @@ export function validateReframeBuilderContent(
     return;
   }
   if (trays.length < 2 || trays.length > 3) {
-    issues.push({ path: "trays", message: `Must contain 2–3 items; found ${trays.length}.` });
+    issues.push({ path: "trays", message: `Must contain 2-3 items; found ${trays.length}.` });
   }
 
   const ids = new Set<string>();
@@ -195,7 +195,7 @@ function validateOptions(
     return;
   }
   if (value.length < 2 || value.length > 3) {
-    issues.push({ path, message: `Must contain 2–3 items; found ${value.length}.` });
+    issues.push({ path, message: `Must contain 2-3 items; found ${value.length}.` });
   }
   value.forEach((item, optionIndex) => {
     const optionPath = `${path}[${optionIndex}]`;

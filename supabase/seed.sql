@@ -82,20 +82,20 @@ ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, type = EXCLUDED.type;
 INSERT INTO lesson_contents (node_id, screens) VALUES (
   '00000003-0001-0001-0000-000000000001',
   '[
-    {"order":1,"type":"text","body":"Anxiety is your brain''s alarm system. It evolved to protect you from danger — like a smoke detector for your mind."},
+    {"order":1,"type":"text","body":"Anxiety is your brain''s alarm system. It evolved to protect you from danger, like a smoke detector for your mind."},
     {"order":2,"type":"text","body":"When the alarm goes off, your body floods with adrenaline. Heart races, palms sweat, breathing speeds up. This is the fight-or-flight response."},
     {"order":3,"type":"text","body":"The problem? Your brain can''t tell the difference between a tiger and a work email. It triggers the same alarm for both."},
-    {"order":4,"type":"text","body":"Anxiety isn''t a flaw — it''s a feature that''s misfiring. You don''t need to eliminate it. You need to recalibrate the alarm."},
-    {"order":5,"type":"text","body":"Key Takeaway: Anxiety is your brain''s protection system working overtime. The goal isn''t to remove it — it''s to turn down the sensitivity."}
+    {"order":4,"type":"text","body":"Anxiety isn''t a flaw, it''s a feature that''s misfiring. You don''t need to eliminate it. You need to recalibrate the alarm."},
+    {"order":5,"type":"text","body":"Key Takeaway: Anxiety is your brain''s protection system working overtime. The goal isn''t to remove it, it''s to turn down the sensitivity."}
   ]'
 ) ON CONFLICT (node_id) DO UPDATE SET screens = EXCLUDED.screens;
 
 INSERT INTO lesson_contents (node_id, screens) VALUES (
   '00000003-0001-0001-0000-000000000002',
   '[
-    {"order":1,"type":"text","body":"Anxiety works in a cycle — like three gears turning together. A thought triggers a feeling, which drives an action, which creates a new thought."},
+    {"order":1,"type":"text","body":"Anxiety works in a cycle, like three gears turning together. A thought triggers a feeling, which drives an action, which creates a new thought."},
     {"order":2,"type":"text","body":"Example: You think ''I''ll embarrass myself'' (thought) → You feel dread and nausea (feeling) → You cancel plans (action)."},
-    {"order":3,"type":"text","body":"Canceling feels like relief — but it teaches your brain the situation WAS dangerous. Next time, the alarm is even louder."},
+    {"order":3,"type":"text","body":"Canceling feels like relief, but it teaches your brain the situation WAS dangerous. Next time, the alarm is even louder."},
     {"order":4,"type":"text","body":"The good news: you can interrupt the cycle at ANY gear. Change the thought, manage the feeling, OR choose a different action."},
     {"order":5,"type":"text","body":"Key Takeaway: Anxiety is a cycle of thoughts → feelings → avoidance. Breaking any part of the cycle weakens the whole loop."}
   ]'
@@ -112,7 +112,7 @@ INSERT INTO quiz_contents (node_id, questions) VALUES (
      "explanation":"Avoidance teaches your brain the situation was truly dangerous, making the alarm louder next time."},
     {"id":"q3","order":3,"type":"true_false","text":"You can interrupt the anxiety cycle by changing just one part of it.",
      "options":[{"id":"true","text":"True","isCorrect":true},{"id":"false","text":"False","isCorrect":false}],
-     "explanation":"Breaking any gear in the cycle — thought, feeling, or action — weakens the whole loop."}
+     "explanation":"Breaking any gear in the cycle, thought, feeling, or action, weakens the whole loop."}
   ]'
 ) ON CONFLICT (node_id) DO UPDATE SET questions = EXCLUDED.questions;
 
@@ -184,7 +184,7 @@ ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, type = EXCLUDED.type;
 INSERT INTO lesson_contents (node_id, screens) VALUES (
   '00000003-0002-0001-0000-000000000001',
   '[
-    {"order":1,"type":"text","body":"Thinking traps are automatic thought patterns that make anxiety worse. They feel true — but they distort reality."},
+    {"order":1,"type":"text","body":"Thinking traps are automatic thought patterns that make anxiety worse. They feel true, but they distort reality."},
     {"order":2,"type":"text","body":"Catastrophising: Expecting the worst outcome. ''I''ll fail this presentation and lose my job.''"},
     {"order":3,"type":"text","body":"Mind reading: Assuming you know what others think. ''Everyone thinks I''m incompetent.''"},
     {"order":4,"type":"text","body":"All-or-nothing thinking: Seeing things as black or white. ''If I''m not perfect, I''m a failure.''"},
@@ -197,11 +197,11 @@ INSERT INTO exercise_contents (node_id, instruction, steps) VALUES (
   '00000003-0002-0001-0000-000000000002',
   'Practice identifying thinking traps in your own thoughts.',
   '[
-    {"order":1,"type":"text","body":"Recall a recent anxious thought — something that worried you this week."},
+    {"order":1,"type":"text","body":"Recall a recent anxious thought, something that worried you this week."},
     {"order":2,"type":"prompt","body":"Write the anxious thought.","responseType":"free_text"},
     {"order":3,"type":"prompt","body":"Which thinking trap does it match? (catastrophising / mind reading / all-or-nothing / overgeneralising)","responseType":"free_text"},
     {"order":4,"type":"prompt","body":"How strongly do you believe this thought? (1 = barely, 5 = completely)","responseType":"scale"},
-    {"order":5,"type":"text","body":"Great — you''ve named the trap. In the next unit, you''ll learn to challenge it with evidence."}
+    {"order":5,"type":"text","body":"Great, you''ve named the trap. In the next unit, you''ll learn to challenge it with evidence."}
   ]'
 ) ON CONFLICT (node_id) DO UPDATE SET instruction = EXCLUDED.instruction, steps = EXCLUDED.steps;
 
@@ -210,7 +210,7 @@ INSERT INTO quiz_contents (node_id, questions) VALUES (
   '[
     {"id":"q1","order":1,"type":"single_choice","text":"''Everyone noticed me stumble on stage. They all think I''m a fool.'' This is an example of...",
      "options":[{"id":"a","text":"Catastrophising","isCorrect":false},{"id":"b","text":"Mind reading","isCorrect":true},{"id":"c","text":"Overgeneralising","isCorrect":false},{"id":"d","text":"All-or-nothing","isCorrect":false}],
-     "explanation":"Mind reading means assuming you know what others are thinking — usually something negative."},
+     "explanation":"Mind reading means assuming you know what others are thinking, usually something negative."},
     {"id":"q2","order":2,"type":"single_choice","text":"''I got one answer wrong, so I completely failed the test.'' This is...",
      "options":[{"id":"a","text":"Mind reading","isCorrect":false},{"id":"b","text":"All-or-nothing","isCorrect":true},{"id":"c","text":"Catastrophising","isCorrect":false},{"id":"d","text":"Overgeneralising","isCorrect":false}],
      "explanation":"All-or-nothing thinking sees only total success or total failure, ignoring the middle ground."}
@@ -228,7 +228,7 @@ ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, type = EXCLUDED.type;
 
 INSERT INTO exercise_contents (node_id, instruction, steps) VALUES (
   '00000003-0002-0002-0000-000000000001',
-  'Challenge an anxious thought using the evidence test — a core CBT technique.',
+  'Challenge an anxious thought using the evidence test, a core CBT technique.',
   '[
     {"order":1,"type":"text","body":"The evidence test asks: what facts support this thought, and what facts contradict it?"},
     {"order":2,"type":"prompt","body":"Write an anxious thought you have.","responseType":"free_text"},
@@ -241,9 +241,9 @@ INSERT INTO exercise_contents (node_id, instruction, steps) VALUES (
 
 INSERT INTO exercise_contents (node_id, instruction, steps) VALUES (
   '00000003-0002-0002-0000-000000000002',
-  'Practice reframing — turning a distorted thought into a balanced one.',
+  'Practice reframing, turning a distorted thought into a balanced one.',
   '[
-    {"order":1,"type":"text","body":"A balanced thought isn''t blindly positive — it''s realistic. It holds both the fear and the evidence."},
+    {"order":1,"type":"text","body":"A balanced thought isn''t blindly positive, it''s realistic. It holds both the fear and the evidence."},
     {"order":2,"type":"prompt","body":"Write the anxious thought you tested.","responseType":"free_text"},
     {"order":3,"type":"prompt","body":"Now write a more balanced version that includes both perspectives.","responseType":"free_text"},
     {"order":4,"type":"prompt","body":"How much calmer do you feel with the balanced thought? (1-5)","responseType":"scale"}
@@ -285,10 +285,10 @@ ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, type = EXCLUDED.type;
 INSERT INTO lesson_contents (node_id, screens) VALUES (
   '00000003-0003-0001-0000-000000000001',
   '[
-    {"order":1,"type":"text","body":"Anxiety doesn''t just live in your mind — it lives in your body. Tight chest, shallow breathing, tense shoulders are all anxiety signals."},
+    {"order":1,"type":"text","body":"Anxiety doesn''t just live in your mind, it lives in your body. Tight chest, shallow breathing, tense shoulders are all anxiety signals."},
     {"order":2,"type":"text","body":"This mind-body connection runs both ways. Calm the body, and you can calm the mind."},
     {"order":3,"type":"text","body":"Your nervous system has two modes: fight-or-flight (sympathetic) and rest-and-digest (parasympathetic). Anxiety is stuck in fight-or-flight."},
-    {"order":4,"type":"text","body":"Breathing, grounding, and progressive relaxation all activate the parasympathetic system — your body''s built-in off switch."},
+    {"order":4,"type":"text","body":"Breathing, grounding, and progressive relaxation all activate the parasympathetic system, your body''s built-in off switch."},
     {"order":5,"type":"text","body":"Key Takeaway: Calming the body is not a distraction from anxiety. It is a direct intervention in the anxiety cycle."}
   ]'
 ) ON CONFLICT (node_id) DO UPDATE SET screens = EXCLUDED.screens;
@@ -323,9 +323,9 @@ INSERT INTO practice_contents (node_id, instruction, steps, repeat_count) VALUES
   '[
     {"order":1,"type":"instruction","instruction":"Box breathing: inhale for 4, hold for 4, exhale for 4, hold for 4. We''ll do 4 rounds."},
     {"order":2,"type":"timed","instruction":"Inhale slowly through your nose for 4 counts.","durationSecs":4},
-    {"order":3,"type":"timed","instruction":"Hold your breath — don''t tense up.","durationSecs":4},
+    {"order":3,"type":"timed","instruction":"Hold your breath, don''t tense up.","durationSecs":4},
     {"order":4,"type":"timed","instruction":"Exhale slowly through your mouth.","durationSecs":4},
-    {"order":5,"type":"timed","instruction":"Hold — empty lungs, stay relaxed.","durationSecs":4},
+    {"order":5,"type":"timed","instruction":"Hold, empty lungs, stay relaxed.","durationSecs":4},
     {"order":6,"type":"instruction","instruction":"That''s one round. Repeat 3 more times at your own pace."}
   ]',
   4
@@ -362,7 +362,7 @@ INSERT INTO practice_contents (node_id, instruction, steps, repeat_count) VALUES
     {"order":1,"type":"instruction","instruction":"Find a comfortable position. We''ll tense and release each muscle group. Tense for 5 sec, release, notice the difference."},
     {"order":2,"type":"timed","instruction":"Clench your fists tightly. Feel the tension.","durationSecs":5},
     {"order":3,"type":"timed","instruction":"Release. Feel the warmth and relaxation flood your hands.","durationSecs":10},
-    {"order":4,"type":"timed","instruction":"Tense your shoulders — shrug them up to your ears.","durationSecs":5},
+    {"order":4,"type":"timed","instruction":"Tense your shoulders, shrug them up to your ears.","durationSecs":5},
     {"order":5,"type":"timed","instruction":"Drop your shoulders. Feel the release.","durationSecs":10},
     {"order":6,"type":"timed","instruction":"Tighten your stomach muscles.","durationSecs":5},
     {"order":7,"type":"timed","instruction":"Release and breathe.","durationSecs":10},
@@ -394,7 +394,7 @@ ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, type = EXCLUDED.type;
 
 INSERT INTO exercise_contents (node_id, instruction, steps) VALUES (
   '00000003-0004-0001-0000-000000000001',
-  'Build your personal anxiety toolkit — a list of go-to strategies that work for you.',
+  'Build your personal anxiety toolkit, a list of go-to strategies that work for you.',
   '[
     {"order":1,"type":"text","body":"A personal toolkit means you don''t have to think under pressure. You have a pre-built list of strategies to reach for."},
     {"order":2,"type":"prompt","body":"Which thinking technique helped you most? (e.g. evidence test, reframing)","responseType":"free_text"},
@@ -409,12 +409,12 @@ INSERT INTO exercise_contents (node_id, instruction, steps) VALUES (
   '00000003-0004-0001-0000-000000000002',
   'Create a step-by-step emergency action plan for your next anxiety spike.',
   '[
-    {"order":1,"type":"text","body":"An emergency plan removes decision-making in the moment — when anxiety is high and thinking is hard."},
+    {"order":1,"type":"text","body":"An emergency plan removes decision-making in the moment, when anxiety is high and thinking is hard."},
     {"order":2,"type":"prompt","body":"Step 1 (30 seconds): What will you do first when anxiety spikes?","responseType":"free_text"},
     {"order":3,"type":"prompt","body":"Step 2 (2 minutes): Which calming technique will you use?","responseType":"free_text"},
     {"order":4,"type":"prompt","body":"Step 3 (5 minutes): How will you challenge the anxious thought?","responseType":"free_text"},
     {"order":5,"type":"prompt","body":"Who can you message or call if the plan isn''t working?","responseType":"free_text"},
-    {"order":6,"type":"text","body":"Save this plan. Read it before a situation you know triggers anxiety. Review it after — does it need adjusting?"}
+    {"order":6,"type":"text","body":"Save this plan. Read it before a situation you know triggers anxiety. Review it after, does it need adjusting?"}
   ]'
 ) ON CONFLICT (node_id) DO UPDATE SET instruction = EXCLUDED.instruction, steps = EXCLUDED.steps;
 
@@ -436,7 +436,7 @@ INSERT INTO story_contents (node_id, dialogues) VALUES (
     {"order":5,"type":"dialogue","speaker":"character","text":"Evidence against: I''ve done presentations before. I prepared well. My manager said I''m ready."},
     {"order":6,"type":"choice","text":"You still feel anxious. What next?","options":[{"text":"Try box breathing","next":"breathe"},{"text":"Scroll social media","next":"scroll"}]},
     {"order":7,"type":"dialogue","speaker":"narrator","text":"After box breathing, your heart rate drops. You feel grounded enough to prepare."},
-    {"order":8,"type":"dialogue","speaker":"character","text":"I used my toolkit — and it worked. I''m ready."}
+    {"order":8,"type":"dialogue","speaker":"character","text":"I used my toolkit, and it worked. I''m ready."}
   ]'
 ) ON CONFLICT (node_id) DO UPDATE SET dialogues = EXCLUDED.dialogues;
 
@@ -445,7 +445,7 @@ INSERT INTO story_contents (node_id, dialogues) VALUES (
 -- ============================================================================
 
 INSERT INTO nodes (id, unit_id, title, type, content_type, pass_threshold, order_index, estimated_mins) VALUES
-  ('00000003-0004-0003-0000-000000000001', '00000002-0004-0000-0000-000000000003', 'Anxiety Toolkit — Final Boss', 'boss', 'quiz', 80, 1, 8)
+  ('00000003-0004-0003-0000-000000000001', '00000002-0004-0000-0000-000000000003', 'Anxiety Toolkit, Final Boss', 'boss', 'quiz', 80, 1, 8)
 ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, type = EXCLUDED.type;
 
 INSERT INTO quiz_contents (node_id, questions) VALUES (
@@ -462,7 +462,7 @@ INSERT INTO quiz_contents (node_id, questions) VALUES (
      "explanation":"Overgeneralising draws broad sweeping conclusions from single events (''always'', ''never'', ''everyone'')."},
     {"id":"q4","order":4,"type":"true_false","text":"The goal of CBT is to eliminate anxiety completely.",
      "options":[{"id":"true","text":"True","isCorrect":false},{"id":"false","text":"False","isCorrect":true}],
-     "explanation":"The goal is to recalibrate anxiety — to turn down the sensitivity of your alarm system, not remove it."},
+     "explanation":"The goal is to recalibrate anxiety, to turn down the sensitivity of your alarm system, not remove it."},
     {"id":"q5","order":5,"type":"single_choice","text":"What does the 5-4-3-2-1 grounding technique primarily target?",
      "options":[{"id":"a","text":"Thinking traps","isCorrect":false},{"id":"b","text":"Your 5 senses","isCorrect":true},{"id":"c","text":"Muscle tension","isCorrect":false},{"id":"d","text":"Breathing rhythm","isCorrect":false}],
      "explanation":"5-4-3-2-1 anchors you to the present through your 5 senses: sight, touch, hearing, smell, taste."}

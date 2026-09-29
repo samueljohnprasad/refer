@@ -1,17 +1,18 @@
 import { memo } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { View, Text, StyleSheet, Platform } from "react-native";
 import { SymbolView } from "expo-symbols";
 import { Feather } from "@expo/vector-icons";
-import { PlayIcon } from "@hugeicons/core-free-icons";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { PlayIcon, ZapIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 
 import { CircularRevealWrapper } from "@/src/components/CircularRevealWrapper";
 import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
 import { Card } from "@/src/components/ui/Card";
-import { Button } from "@/src/components/ui/Button";
 import type { ExerciseCategory, ExerciseConfig } from "@/src/types/exerciseFlow";
 
-// ponytail: reusable Card + Button without corner-halo depth artifact
+// ponytail: calm therapeutic palette anchored in Happy sage design system
 interface CategoryCardTheme {
   iconBg: string;
   accent: string;
@@ -20,24 +21,24 @@ interface CategoryCardTheme {
 
 const CATEGORY_THEME: Record<ExerciseCategory, CategoryCardTheme> = {
   cbt_core: {
-    iconBg: "#E8FBF0",
-    accent: "#22C55E",
-    rim: "#16A34A",
+    iconBg: "rgba(95, 127, 88, 0.12)",
+    accent: "#44633F",
+    rim: "#29452A",
   },
   mindfulness: {
-    iconBg: "#E4F6FC",
-    accent: "#00A3D9",
-    rim: "#0084B4",
+    iconBg: "rgba(74, 119, 157, 0.12)",
+    accent: "#36688D",
+    rim: "#244B68",
   },
   anxiety: {
-    iconBg: "#FFEDE8",
-    accent: "#FF6B4A",
-    rim: "#E04B2A",
+    iconBg: "rgba(184, 93, 54, 0.12)",
+    accent: "#B85D36",
+    rim: "#8D4324",
   },
   overthinking: {
-    iconBg: "#F0EDFF",
-    accent: "#6B5CE7",
-    rim: "#5243C7",
+    iconBg: "rgba(103, 77, 160, 0.12)",
+    accent: "#674DA0",
+    rim: "#4E387D",
   },
 };
 
@@ -69,7 +70,7 @@ export const JumpBackInCard = memo(function JumpBackInCard({
         radius="lg"
         showDepth={true}
         onPress={handlePress}
-        style={{ width, height: 160 }}
+        style={{ width, height: 148 }}
         rimStyle={{ backgroundColor: "#D4D4D4" }}
         faceStyle={{
           height: "100%",
@@ -96,21 +97,33 @@ export const JumpBackInCard = memo(function JumpBackInCard({
         </View>
 
         <View style={styles.content}>
-          <Text style={styles.title} numberOfLines={3}>
+          <Text style={styles.title} numberOfLines={2}>
             {exercise.title}
           </Text>
         </View>
 
-        <Button
-          label="Start"
-          size="sm"
-          height={32}
-          fullWidth={true}
-          leftIcon={<HugeiconsIcon icon={PlayIcon} size={13} color="#FFFFFF" />}
-          faceColor={theme.accent}
-          rimColor={theme.rim}
-          onPress={handlePress}
-        />
+        {/* Integrated Action Row (Card is whole touch target) */}
+        <View className="flex-row items-center justify-between pt-1">
+          <View className="flex-row items-center gap-1">
+            <HugeiconsIcon icon={ZapIcon} size={13} color="#C89400" />
+            <Text
+              style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+              className="text-[12px] text-amber-700"
+            >
+              +{exercise.xp} XP
+            </Text>
+          </View>
+
+          <View className="h-7 px-2.5 rounded-full bg-sage-600 flex-row items-center gap-1">
+            <HugeiconsIcon icon={PlayIcon} size={11} color="#FFFFFF" />
+            <Text
+              style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+              className="text-[11px] text-white"
+            >
+              Start
+            </Text>
+          </View>
+        </View>
       </Card>
     </CircularRevealWrapper>
   );

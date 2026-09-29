@@ -1,5 +1,5 @@
-import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 // @ts-nocheck
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import Animated, {

@@ -1,9 +1,6 @@
-import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useEffect } from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, Image } from "react-native";
 import { SafeAreaView } from "@/src/components/tw";
-import { LinearGradient as ExpoLinearGradient } from "expo-linear-gradient";
-import { GrainyGradient } from "@/src/components/grainy-gradient";
 import useEmotionsAnalysis, {
   AnalysisCompletedType,
 } from "@/hooks/useEmotionsAnalysis";
@@ -16,11 +13,11 @@ import Animated, {
   withRepeat,
   withTiming,
   withSequence,
-  withDelay,
+  Easing,
 } from "react-native-reanimated";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 import { Feather } from "@expo/vector-icons";
+import { ProcessingPhase } from "./types";
 
 interface EmotionAnalysisLoadingScreenProps {
   onAnalysisCompleted: (data: AnalysisCompletedType) => void;
@@ -29,70 +26,100 @@ interface EmotionAnalysisLoadingScreenProps {
   onCancel?: () => void;
 }
 
-// Progress dots with pulse & scale animations
-const ProgressDots = () => {
-  const dots = [0, 1, 2];
+// ponytail: 4-step progress mapping for visual reassurance
+const PHASE_CONFIG: Record<
+  ProcessingPhase,
+  { step: number; label: string; progress: number }
+> = {
+  [ProcessingPhase.TRANSCRIBING]: {
+    step: 1,
+    label: "Transcribing audio",
+    progress: 0.25,
+  },
+  [ProcessingPhase.ANALYZING_EMOTIONS]: {
+    step: 2,
+    label: "Understanding feelings",
+    progress: 0.5,
+  },
+  [ProcessingPhase.GENERATING_INSIGHTS]: {
+    step: 3,
+    label: "Generating CBT insights",
+    progress: 0.75,
+  },
+  [ProcessingPhase.FINALIZING]: {
+    step: 4,
+    label: "Preparing reflection",
+    progress: 1.0,
+  },
+};
+
+// ponytail: 4-second therapeutic breath halo (inhale 2s, exhale 2s) with gentle panda pulse
+const BreathingAura = () => {
+  const scale = useSharedValue(0.95);
+  const opacity = useSharedValue(0.45);
+  const pandaScale = useSharedValue(0.97);
+
+  useEffect(() => {
+    scale.value = withRepeat(
+      withSequence(
+        withTiming(1.12, { duration: 2200, easing: Easing.inOut(Easing.ease) }),
+        withTiming(0.95, { duration: 2200, easing: Easing.inOut(Easing.ease) })
+      ),
+      -1,
+      true
+    );
+    opacity.value = withRepeat(
+      withSequence(
+        withTiming(0.7, { duration: 2200, easing: Easing.inOut(Easing.ease) }),
+        withTiming(0.4, { duration: 2200, easing: Easing.inOut(Easing.ease) })
+      ),
+      -1,
+      true
+    );
+    pandaScale.value = withRepeat(
+      withSequence(
+        withTiming(1.03, { duration: 2200, easing: Easing.inOut(Easing.ease) }),
+        withTiming(0.97, { duration: 2200, easing: Easing.inOut(Easing.ease) })
+      ),
+      -1,
+      true
+    );
+  }, [scale, opacity, pandaScale]);
+
+  const auraStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
+  }));
+
+  const pandaStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pandaScale.value }],
+  }));
 
   return (
-    <View style={{ flexDirection: "row", marginTop: 32, gap: 10 }}>
-      {dots.map((index) => {
-        const opacity = useSharedValue(0.3);
-        const scale = useSharedValue(1);
-
-        useEffect(() => {
-          opacity.value = withDelay(
-            index * 250,
-            withRepeat(
-              withSequence(
-                withTiming(1, { duration: 600 }),
-                withTiming(0.3, { duration: 600 }),
-              ),
-              -1,
-              true,
-            ),
-          );
-          scale.value = withDelay(
-            index * 250,
-            withRepeat(
-              withSequence(
-                withTiming(1.3, { duration: 600 }),
-                withTiming(1, { duration: 600 }),
-              ),
-              -1,
-              true,
-            ),
-          );
-        }, []);
-
-        const animatedStyle = useAnimatedStyle(() => ({
-          opacity: opacity.value,
-          transform: [{ scale: scale.value }],
-        }));
-
-        return (
-          <Animated.View
-            key={index}
-            style={[
-              {
-                width: 9,
-                height: 9,
-                borderRadius: 4.5,
-                backgroundColor: "#FFFFFF",
-              },
-              animatedStyle,
-            ]}
+    <View className="items-center justify-center">
+      {/* Outer soft breath circle */}
+      <Animated.View
+        className="absolute w-56 h-56 rounded-full bg-emerald-500/[0.12]"
+        style={auraStyle}
+      />
+      {/* Inner subtle glow */}
+      <View className="w-44 h-44 rounded-full bg-emerald-500/[0.08] items-center justify-center">
+        <Animated.View style={pandaStyle}>
+          <Image
+            source={require("@/assets/images/panda/panda-notes.png")}
+            className="w-28 h-28"
+            resizeMode="contain"
+            accessibilityLabel="Reflecting panda"
           />
-        );
-      })}
+        </Animated.View>
+      </View>
     </View>
   );
 };
 
-const EmotionAnalysisLoadingScreen: React.FC<
+export const EmotionAnalysisLoadingScreen: React.FC<
   EmotionAnalysisLoadingScreenProps
 > = ({ onAnalysisCompleted, recordingUri, journalText, onCancel }) => {
-  const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
-
   const { processingPhase } = useEmotionsAnalysis({
     uri: recordingUri,
     journalText,
@@ -102,100 +129,91 @@ const EmotionAnalysisLoadingScreen: React.FC<
     },
   });
 
-  return (
-    <View style={{ flex: 1, backgroundColor: SEMANTIC_COLORS.surface.primary }}>
-      {/* Vibrant Grainy Gradient Background */}
-      <GrainyGradient
-        colors={["#E11D48", "#7C3AED", "#4F46E5", "#F97316", "#EC4899"]}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-        }}
-      />
+  const currentPhase =
+    PHASE_CONFIG[processingPhase] || PHASE_CONFIG[ProcessingPhase.TRANSCRIBING];
 
-      {/* Cancel Button */}
-      <SafeAreaView
-        edges={["top"]}
-        style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 10 }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "flex-end",
-            padding: 24,
-          }}
-        >
-          {onCancel && (
+  return (
+    <View
+      className="flex-1"
+      style={{
+        backgroundColor:
+          SEMANTIC_COLORS.surface.canvas === "#0f1a0f"
+            ? "#0f1a0f"
+            : "#FAF8F5",
+      }}
+    >
+      {/* Top Header: Clean [✕] with Dynamic Island clearance */}
+      <SafeAreaView edges={["top"]}>
+        <View className="flex-row items-center justify-between h-14 px-6 pt-2">
+          {onCancel ? (
             <TouchableOpacity
               onPress={onCancel}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                backgroundColor: "rgba(255,255,255,0.2)",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+              className="w-10 h-10 items-center justify-center rounded-full bg-black/[0.04] active:opacity-60"
               accessibilityLabel="Cancel analysis"
+              accessibilityRole="button"
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
             >
-              <Feather name="x" size={20} color="#FFFFFF" />
+              <Feather
+                name="x"
+                size={20}
+                color={SEMANTIC_COLORS.text.secondary as string}
+              />
             </TouchableOpacity>
+          ) : (
+            <View className="w-10 h-10" />
           )}
+
+          {/* Right Spacer for balance */}
+          <View className="w-10 h-10" />
         </View>
       </SafeAreaView>
 
-      {/* Main content */}
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          paddingHorizontal: 40,
-        }}
-      >
-        {/* Date */}
-        <Text
-          style={{
-            fontFamily: APP_FONT_FAMILIES.semiBold,
-            color: "rgba(255, 255, 255, 0.8)",
-            fontSize: 14,
-            textAlign: "center",
-          }}
-        >
-          {dayjs(selectedDate).format("MMMM D, YYYY")}
-        </Text>
+      {/* Main Content: Therapeutic Breathing Aura + Progress */}
+      <View className="flex-1 items-center justify-center px-8 -mt-10">
+        {/* Breathing Mascot Aura */}
+        <View className="mb-7">
+          <BreathingAura />
+        </View>
 
-        {/* Processing phase text */}
+        {/* Phase Heading */}
         <Text
-          style={{
-            fontFamily: APP_FONT_FAMILIES.extraBold,
-            color: "#FFFFFF",
-            fontSize: 32,
-            textAlign: "center",
-            marginTop: 18,
-            lineHeight: 40,
-          }}
+          className="text-[26px] leading-[32px] tracking-tight happy-font-body-bold text-center"
+          style={{ color: SEMANTIC_COLORS.text.primary }}
         >
           {processingPhase}
         </Text>
 
-        {/* Progress dots */}
-        <ProgressDots />
+        {/* ponytail: 4-segment tactile progress bar (Duolingo style) */}
+        <View className="w-72 flex-row gap-2 mt-6">
+          {[1, 2, 3, 4].map((stepNum) => {
+            const isFilled = currentPhase.step >= stepNum;
 
-        {/* Subtle hint text */}
+            return (
+              <View
+                key={stepNum}
+                className="flex-1 h-2 rounded-full overflow-hidden"
+                style={{
+                  backgroundColor: isFilled
+                    ? (SEMANTIC_COLORS.brand.primary as string)
+                    : "rgba(0, 0, 0, 0.08)",
+                }}
+              />
+            );
+          })}
+        </View>
+
+        {/* Step Indicator */}
         <Text
-          style={{
-            fontFamily: APP_FONT_FAMILIES.semiBold,
-            color: "rgba(255, 255, 255, 0.85)",
-            fontSize: 15,
-            textAlign: "center",
-            marginTop: 28,
-            lineHeight: 22,
-            maxWidth: 300,
-          }}
+          className="text-xs happy-font-body-semibold mt-3 tracking-wide"
+          style={{ color: SEMANTIC_COLORS.text.secondary }}
+        >
+          Step {currentPhase.step} of 4 • {currentPhase.label}
+        </Text>
+
+        {/* Calming reassurance copy */}
+        <Text
+          className="text-[14px] leading-5 text-center mt-7 max-w-[280px] happy-font-body-medium"
+          style={{ color: "#4B5563" }}
         >
           Taking a moment to reflect on your entry...
         </Text>

@@ -76,7 +76,7 @@ FROM jsonb_to_recordset($tag$[
     "order_index": 1,
     "is_published": false,
     "domain": "stress_resilience",
-    "target_audience": "Adults dealing with everyday or work-related stress — not diagnosed anxiety, depression, or clinical burnout",
+    "target_audience": "Adults dealing with everyday or work-related stress, not diagnosed anxiety, depression, or clinical burnout",
     "total_lessons": 63,
     "total_duration_weeks": null,
     "sessions_per_week": null,
@@ -99,7 +99,7 @@ FROM jsonb_to_recordset($tag$[
     "course_source_id": "stress-steady-under-pressure",
     "title": "Making It Last",
     "order_index": 2,
-    "narrative_hook": "A stressor that ends is different from one that doesn't. This section builds the ending — and rehearses it.",
+    "narrative_hook": "A stressor that ends is different from one that doesn't. This section builds the ending, and rehearses it.",
     "badge_on_complete": "Built to Last",
     "difficulty_range": [
       0.35,
@@ -467,7 +467,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "The Meeting Has To Actually Stop Running",
       "variant": "myth",
       "myth": "Having free time automatically means I've recovered from the stressor.",
-      "reality": "Psychological detachment is mentally leaving a stressor during off-time — the absence of stressor-related thoughts, not merely being physically away from it. An evening on the couch replaying tomorrow's meeting isn't off the clock; it's the same clock, sitting down."
+      "reality": "Psychological detachment is mentally leaving a stressor during off-time, the absence of stressor-related thoughts, not merely being physically away from it. An evening on the couch replaying tomorrow's meeting isn't off the clock; it's the same clock, sitting down."
     }
   },
   {
@@ -484,7 +484,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Which Evening Is Recovery?",
       "instruction": "Read both cases, then pick the one that's actually recovery.",
-      "question": "Same couch, same hour off — which one is actually recovery?",
+      "question": "Same couch, same hour off, which one is actually recovery?",
       "cases": [
         {
           "id": "case1",
@@ -502,17 +502,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "b",
-          "label": "Evening B — the stressor actually stopped running"
+          "label": "Evening B, the stressor actually stopped running"
         },
         {
           "id": "a",
-          "label": "Evening A — time off the clock either way"
+          "label": "Evening A, time off the clock either way"
         }
       ],
       "feedbackMap": {
         "b": {
           "title": "Right",
-          "body": "Same activity (nothing), same location — but only in Evening B did the stressor-related thoughts actually stop. That's the detachment that counts.",
+          "body": "Same activity (nothing), same location, but only in Evening B did the stressor-related thoughts actually stop. That's the detachment that counts.",
           "chain": [
             "Both are physically off work.",
             "Only one has the mind actually leave the stressor.",
@@ -521,7 +521,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "a": {
           "title": "Not quite",
-          "body": "Being physically away from work doesn't guarantee detachment — Evening A is the same clock, just sitting down.",
+          "body": "Being physically away from work doesn't guarantee detachment, Evening A is the same clock, just sitting down.",
           "chain": [
             "Physical distance from work isn't the same as mental distance."
           ],
@@ -546,7 +546,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Detachment Is A Skill, Not An Accident",
       "instruction": "Read, then move on.",
       "message": "Detachment is the absence of stressor-related thoughts, not merely being physically away from it.",
-      "explanation": "Naming the real mechanism is what makes recovery buildable — the rest of this unit is about building it in deliberately."
+      "explanation": "Naming the real mechanism is what makes recovery buildable, the rest of this unit is about building it in deliberately."
     }
   },
   {
@@ -561,15 +561,15 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "psychological_detachment",
     "content": {
-      "prompt": "Scrolling a phone with work thoughts running underneath — is this detachment?",
+      "prompt": "Scrolling a phone with work thoughts running underneath, is this detachment?",
       "options": [
         {
           "id": "no",
-          "label": "No — the stressor-related thoughts are still running"
+          "label": "No, the stressor-related thoughts are still running"
         },
         {
           "id": "yes",
-          "label": "Yes — any activity away from the desk counts"
+          "label": "Yes, any activity away from the desk counts"
         }
       ],
       "bestOptionId": "no",
@@ -591,7 +591,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "A Bad Night Is Information, Not A Failing",
       "variant": "myth",
       "myth": "Sleep and stress are separate problems.",
-      "reality": "A short night is itself a mild activator of the stress system, lowering tomorrow's threshold — the same stressor lands harder. A bad night is a reason to expect the switch to tip more easily, not a personal failing."
+      "reality": "A short night is itself a mild activator of the stress system, lowering tomorrow's threshold, the same stressor lands harder. A bad night is a reason to expect the switch to tip more easily, not a personal failing."
     }
   },
   {
@@ -615,7 +615,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "lowers"
           ],
-          "correctFeedback": "Right — the threshold drops, so it takes less to tip the balance.",
+          "correctFeedback": "Right, the threshold drops, so it takes less to tip the balance.",
           "incorrectFeedback": "A short night lowers tomorrow's threshold, not raises it.",
           "workedExample": "A rough night means an ordinary annoyance the next day can flip the switch more easily than usual."
         }
@@ -642,7 +642,7 @@ FROM jsonb_to_recordset($tag$[
           "id": "a",
           "label": "sleep",
           "isCorrect": true,
-          "feedback": "Right — that's a legitimate next step, not a detour from this one."
+          "feedback": "Right, that's a legitimate next step, not a detour from this one."
         },
         {
           "id": "b",
@@ -667,19 +667,19 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Quick Check",
       "instruction": "Complete the line, then check it.",
-      "firstLine": "A bad night is a reason to expect the switch to tip more easily — not a personal ___.",
+      "firstLine": "A bad night is a reason to expect the switch to tip more easily, not a personal ___.",
       "options": [
         {
           "id": "a",
           "label": "failing",
           "isCorrect": true,
-          "feedback": "Right — it's information about tomorrow's threshold, not a verdict on you."
+          "feedback": "Right, it's information about tomorrow's threshold, not a verdict on you."
         },
         {
           "id": "b",
           "label": "achievement",
           "isCorrect": false,
-          "feedback": "It's neither a failing nor an achievement — just information."
+          "feedback": "It's neither a failing nor an achievement, just information."
         }
       ]
     }
@@ -699,7 +699,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "A Crowd Isn't The Same As One Person Who Gets It",
       "variant": "myth",
       "myth": "Having a lot of people around means I have support.",
-      "reality": "Functional support — someone who understands this specific demand — buffers stress specifically. Structural support (more contacts generally) improves wellbeing but doesn't buffer stress the same way."
+      "reality": "Functional support, someone who understands this specific demand, buffers stress specifically. Structural support (more contacts generally) improves wellbeing but doesn't buffer stress the same way."
     }
   },
   {
@@ -714,19 +714,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "social_support_buffering",
     "content": {
-      "prompt": "A group chat of twenty people vs. one friend who actually understands this week's specific stress — which one buffers the stress itself?",
+      "prompt": "A group chat of twenty people vs. one friend who actually understands this week's specific stress, which one buffers the stress itself?",
       "options": [
         {
           "id": "one",
-          "label": "The one friend — functional support"
+          "label": "The one friend, functional support"
         },
         {
           "id": "group",
-          "label": "The group chat — more people means more support"
+          "label": "The group chat, more people means more support"
         }
       ],
       "bestOptionId": "one",
-      "reveal": "Functional support — someone who actually understands the specific demand — is what buffers stress; structural support helps wellbeing generally but not the same way."
+      "reveal": "Functional support, someone who actually understands the specific demand, is what buffers stress; structural support helps wellbeing generally but not the same way."
     }
   },
   {
@@ -749,7 +749,7 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "unsure",
-          "label": "Not sure yet — worth thinking about"
+          "label": "Not sure yet, worth thinking about"
         },
         {
           "id": "later",
@@ -779,7 +779,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "thoughts"
           ],
-          "correctFeedback": "Right — the thoughts have to actually stop, not just the location change.",
+          "correctFeedback": "Right, the thoughts have to actually stop, not just the location change.",
           "incorrectFeedback": "It's the absence of stressor-related thoughts, not just physical distance.",
           "workedExample": "Scrolling with work thoughts still running underneath isn't detachment."
         }
@@ -802,11 +802,11 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "functional",
-          "label": "Functional — someone who understands this specific demand"
+          "label": "Functional, someone who understands this specific demand"
         },
         {
           "id": "structural",
-          "label": "Structural — simply having more contacts"
+          "label": "Structural, simply having more contacts"
         }
       ],
       "bestOptionId": "functional",
@@ -828,7 +828,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "The Demand Isn't The Message. It's That It's Never Been Named.",
       "variant": "myth",
       "myth": "Setting a boundary is scientifically proven to reduce stress by a specific amount.",
-      "reality": "An unstated boundary that's repeatedly crossed is itself a chronic, low-grade stressor. Stating one boundary is problem-focused coping applied to that recurring demand — a coherent mechanism worth doing, even though the exact effect size isn't well established."
+      "reality": "An unstated boundary that's repeatedly crossed is itself a chronic, low-grade stressor. Stating one boundary is problem-focused coping applied to that recurring demand, a coherent mechanism worth doing, even though the exact effect size isn't well established."
     }
   },
   {
@@ -853,13 +853,13 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "q2",
-          "prompt": "What's the specific pattern, stated plainly — not the whole relationship, just the pattern?",
+          "prompt": "What's the specific pattern, stated plainly, not the whole relationship, just the pattern?",
           "hint": "One sentence, aimed at the recurring cause."
         },
         {
           "id": "q3",
           "prompt": "Write the one-sentence boundary you'd actually state.",
-          "hint": "'I'll reply in the morning going forward' is the shape — specific, one sentence."
+          "hint": "'I'll reply in the morning going forward' is the shape, specific, one sentence."
         }
       ]
     }
@@ -885,8 +885,8 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "threshold"
           ],
-          "correctFeedback": "Right — the threshold, not the stressor itself, is what shifts.",
-          "incorrectFeedback": "It's the threshold that lowers — the switch tips more easily.",
+          "correctFeedback": "Right, the threshold, not the stressor itself, is what shifts.",
+          "incorrectFeedback": "It's the threshold that lowers, the switch tips more easily.",
           "workedExample": "An ordinary annoyance flips the switch more easily after a rough night."
         }
       ]
@@ -934,7 +934,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Decided Now, So It Doesn't Need Deciding Then",
       "variant": "myth",
       "myth": "Knowing a technique is the same as reliably using it under real stress.",
-      "reality": "A pre-committed 'if [cue], then [action]' plan — using a real personal trigger, ideally your own stress_signature tell — bridges the gap between knowing a technique and actually using it when stressed, which is where good intentions quietly fail."
+      "reality": "A pre-committed 'if [cue], then [action]' plan, using a real personal trigger, ideally your own stress_signature tell, bridges the gap between knowing a technique and actually using it when stressed, which is where good intentions quietly fail."
     }
   },
   {
@@ -1001,12 +1001,12 @@ FROM jsonb_to_recordset($tag$[
       "instruction": "Fill in the blank.",
       "variants": [
         {
-          "pre": "___ support — someone who understands this specific demand —",
+          "pre": "___ support, someone who understands this specific demand, ",
           "post": " is what buffers stress specifically.",
           "answers": [
             "Functional"
           ],
-          "correctFeedback": "Right — functional, not structural, support.",
+          "correctFeedback": "Right, functional, not structural, support.",
           "incorrectFeedback": "It's functional support that buffers stress, not simply having more contacts.",
           "workedExample": "One friend who actually gets the specific stress, not a large group chat."
         }
@@ -1037,7 +1037,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "nothing-left",
-      "reveal": "Deciding ahead of time removes the need to decide anything while already stressed — that's the whole bridge this closes."
+      "reveal": "Deciding ahead of time removes the need to decide anything while already stressed, that's the whole bridge this closes."
     }
   },
   {
@@ -1055,7 +1055,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "This Course's Own Honest Limitation",
       "variant": "myth",
       "myth": "Once I've built resilience by finishing a program, it's permanent.",
-      "reality": "Resilience-training gains measurably fade without spaced practice — a rigorous meta-analysis found a small overall effect that shrank further at follow-up. This is why the next unit makes you rehearse — not extra credit, the course taking its own research seriously."
+      "reality": "Resilience-training gains measurably fade without spaced practice, a rigorous meta-analysis found a small overall effect that shrank further at follow-up. This is why the next unit makes you rehearse, not extra credit, the course taking its own research seriously."
     }
   },
   {
@@ -1074,15 +1074,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — gains fade without spaced practice"
+          "label": "No, gains fade without spaced practice"
         },
         {
           "id": "yes",
-          "label": "Yes — completion locks the skills in permanently"
+          "label": "Yes, completion locks the skills in permanently"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "Not because the skills stopped being true — because nobody practiced them. That's exactly what the rehearsal unit is for."
+      "reveal": "Not because the skills stopped being true, because nobody practiced them. That's exactly what the rehearsal unit is for."
     }
   },
   {
@@ -1109,7 +1109,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "fade",
-      "reveal": "Gains fade without reinforcement — which is exactly why the next unit exists."
+      "reveal": "Gains fade without reinforcement, which is exactly why the next unit exists."
     }
   },
   {
@@ -1133,7 +1133,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "demand"
           ],
-          "correctFeedback": "Right — a boundary targets the recurring demand itself, and the plan removes in-the-moment decisions.",
+          "correctFeedback": "Right, a boundary targets the recurring demand itself, and the plan removes in-the-moment decisions.",
           "incorrectFeedback": "A boundary targets the recurring demand, not just a feeling about it.",
           "workedExample": "'I'll reply in the morning' closes the demand; 'if jaw tightens, then breathe' removes the mid-stress decision."
         }
@@ -1154,39 +1154,39 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Three Ways To Build An Ending",
       "instruction": "Order the sequence, then apply it.",
-      "message": "Detachment, sleep, and support are three different routes to the same lever — giving the response an end.",
+      "message": "Detachment, sleep, and support are three different routes to the same lever, giving the response an end.",
       "steps": [
         {
           "id": "detach",
-          "label": "Detachment — the mind actually leaves the stressor",
+          "label": "Detachment, the mind actually leaves the stressor",
           "order": 1
         },
         {
           "id": "sleep",
-          "label": "Sleep — the largest nightly recovery window",
+          "label": "Sleep, the largest nightly recovery window",
           "order": 2
         },
         {
           "id": "support",
-          "label": "Functional support — someone who understands the specific demand",
+          "label": "Functional support, someone who understands the specific demand",
           "order": 3
         }
       ],
       "transfer": {
-        "prompt": "A person is physically off work, sleeping enough, but has no one who understands this specific work stress — is their recovery complete?",
+        "prompt": "A person is physically off work, sleeping enough, but has no one who understands this specific work stress, is their recovery complete?",
         "options": [
           {
             "id": "no",
-            "label": "No — support is a separate route; missing it leaves a real gap",
+            "label": "No, support is a separate route; missing it leaves a real gap",
             "isSupported": true,
-            "response": "Right — detachment and sleep are real, but functional support is a distinct mechanism, not redundant with the other two.",
+            "response": "Right, detachment and sleep are real, but functional support is a distinct mechanism, not redundant with the other two.",
             "takeaway": "All three routes matter; none substitutes fully for another."
           },
           {
             "id": "yes",
-            "label": "Yes — detachment and sleep cover everything needed",
+            "label": "Yes, detachment and sleep cover everything needed",
             "isSupported": false,
-            "response": "Not quite — functional support buffers stress through a distinct mechanism the other two don't cover.",
+            "response": "Not quite, functional support buffers stress through a distinct mechanism the other two don't cover.",
             "takeaway": "Recovery isn't complete with only some of the routes covered."
           }
         ]
@@ -1241,18 +1241,18 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "The Practice Around the Practice — Checkpoint",
+      "title": "The Practice Around the Practice, Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Six quick checks on building an ending and pre-deciding your response.\nA miss just gives you something to revisit.",
       "introTag": "6 QUESTIONS · ~2 MIN",
-      "revisitMessage": "The marked ideas are worth a short revisit — nothing is lost, and they'll come back around.",
+      "revisitMessage": "The marked ideas are worth a short revisit, nothing is lost, and they'll come back around.",
       "solidMessage": "The ending is holding. Next: what you'll actually keep, and where this course's edges are.",
       "items": [
         {
           "concept": "Psychological Detachment",
           "prompt": "What actually counts as detachment?",
           "clue": "Not just physical distance.",
-          "worked": "The absence of stressor-related thoughts — the mind actually leaving.",
+          "worked": "The absence of stressor-related thoughts, the mind actually leaving.",
           "options": [
             {
               "label": "The absence of stressor-related thoughts",
@@ -1270,7 +1270,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Sleep as Recovery",
           "prompt": "What does a short night do to tomorrow's stress?",
           "clue": "It's about the threshold.",
-          "worked": "Lowers the threshold — the same stressor lands harder.",
+          "worked": "Lowers the threshold, the same stressor lands harder.",
           "options": [
             {
               "label": "Lowers tomorrow's stress threshold",
@@ -1288,7 +1288,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Social Support Buffering",
           "prompt": "Which kind of support buffers stress specifically?",
           "clue": "Not just having people around.",
-          "worked": "Functional support — someone who understands this specific demand.",
+          "worked": "Functional support, someone who understands this specific demand.",
           "options": [
             {
               "label": "Functional support",
@@ -1333,7 +1333,7 @@ FROM jsonb_to_recordset($tag$[
             },
             {
               "label": "It doesn't matter when it's decided",
-              "feedback": "Timing is the whole point — ahead of time, not in the moment.",
+              "feedback": "Timing is the whole point, ahead of time, not in the moment.",
               "isCorrect": false
             }
           ]
@@ -1342,7 +1342,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Resilience Needs Practice",
           "prompt": "What happens to resilience gains without spaced practice?",
           "clue": "Not permanent.",
-          "worked": "They fade — which is why the next unit makes you rehearse.",
+          "worked": "They fade, which is why the next unit makes you rehearse.",
           "options": [
             {
               "label": "They fade without reinforcement",
@@ -1406,9 +1406,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "A walk full of replaying work thoughts isn't detachment — the activity alone doesn't guarantee it."
+      "comparisonFeedback": "A walk full of replaying work thoughts isn't detachment, the activity alone doesn't guarantee it."
     }
   },
   {
@@ -1433,9 +1433,9 @@ FROM jsonb_to_recordset($tag$[
             "during",
             "in"
           ],
-          "correctFeedback": "Right — deciding ahead removes the mid-stress decision entirely.",
+          "correctFeedback": "Right, deciding ahead removes the mid-stress decision entirely.",
           "incorrectFeedback": "The plan removes the need to decide anything during the stressed moment.",
-          "workedExample": "'If jaw tightens, then breathe' — already decided, nothing left to figure out live."
+          "workedExample": "'If jaw tightens, then breathe', already decided, nothing left to figure out live."
         }
       ]
     }
@@ -1455,7 +1455,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Small, Honest, And Actually Yours",
       "variant": "myth",
       "myth": "Finishing the course means the work is done.",
-      "reality": "'Keep doing everything' is not a plan anyone follows. Naming 2-3 specific practices from the whole course — small and honest — is what has a real chance of surviving contact with an ordinary week."
+      "reality": "'Keep doing everything' is not a plan anyone follows. Naming 2-3 specific practices from the whole course, small and honest, is what has a real chance of surviving contact with an ordinary week."
     }
   },
   {
@@ -1476,12 +1476,12 @@ FROM jsonb_to_recordset($tag$[
         {
           "id": "q1",
           "prompt": "Which single tool from this course have you actually used more than once already?",
-          "hint": "Not what you meant to use — what you actually reached for."
+          "hint": "Not what you meant to use, what you actually reached for."
         },
         {
           "id": "q2",
-          "prompt": "Name one more specific practice — not a whole section, one concrete thing.",
-          "hint": "'The breath from l6' or 'the if-then plan' — specific, not general."
+          "prompt": "Name one more specific practice, not a whole section, one concrete thing.",
+          "hint": "'The breath from l6' or 'the if-then plan', specific, not general."
         },
         {
           "id": "q3",
@@ -1513,7 +1513,7 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "id": "loop",
-              "label": "Short sleep lowers the threshold — this is the loop, not poor handling"
+              "label": "Short sleep lowers the threshold, this is the loop, not poor handling"
             },
             {
               "id": "blame",
@@ -1538,7 +1538,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{claim} — {so}."
+        "template": "{claim}, {so}."
       },
       "comparisonFeedback": "A run of rough nights is the loop in action, not a verdict on how well you're coping."
     }
@@ -1564,7 +1564,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "practice"
           ],
-          "correctFeedback": "Right — spaced practice, not just one pass.",
+          "correctFeedback": "Right, spaced practice, not just one pass.",
           "incorrectFeedback": "It's spaced practice that gains fade without.",
           "workedExample": "A meta-analysis found a smaller effect at follow-up than right after a program."
         }
@@ -1583,19 +1583,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "maintenance_commitment",
     "content": {
-      "prompt": "'I'll keep doing everything from this course' — is this a workable maintenance commitment?",
+      "prompt": "'I'll keep doing everything from this course', is this a workable maintenance commitment?",
       "options": [
         {
           "id": "no",
-          "label": "No — too vague to actually follow through on"
+          "label": "No, too vague to actually follow through on"
         },
         {
           "id": "yes",
-          "label": "Yes — more coverage is always better"
+          "label": "Yes, more coverage is always better"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "A short, specific list of 2-3 practices is what survives an ordinary week — not a restatement of the whole course."
+      "reveal": "A short, specific list of 2-3 practices is what survives an ordinary week, not a restatement of the whole course."
     }
   },
   {
@@ -1613,7 +1613,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Too Much, vs. Not Enough",
       "variant": "myth",
       "myth": "Burnout is just a more severe form of being stressed.",
-      "reality": "Everyday stress is most often too much — demands, tasks, pressure. Burnout is a chronic syndrome tied to the person-job relationship, more often about too LITTLE — reward, control, fairness, community — measured on exhaustion, cynicism, and reduced effectiveness. This course teaches stress management and does not treat burnout."
+      "reality": "Everyday stress is most often too much, demands, tasks, pressure. Burnout is a chronic syndrome tied to the person-job relationship, more often about too LITTLE, reward, control, fairness, community, measured on exhaustion, cynicism, and reduced effectiveness. This course teaches stress management and does not treat burnout."
     }
   },
   {
@@ -1630,7 +1630,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Stress, Or Burnout?",
       "instruction": "Read the case, then classify it.",
-      "question": "Feeling nothing for work you used to care about, and doubting anything you do here matters — stress, or burnout?",
+      "question": "Feeling nothing for work you used to care about, and doubting anything you do here matters, stress, or burnout?",
       "cases": [
         {
           "id": "case1",
@@ -1642,25 +1642,25 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "burnout",
-          "label": "Burnout — cynicism and reduced sense of effectiveness, not just too much demand"
+          "label": "Burnout, cynicism and reduced sense of effectiveness, not just too much demand"
         },
         {
           "id": "stress",
-          "label": "Stress — just a more intense version of feeling overloaded"
+          "label": "Stress, just a more intense version of feeling overloaded"
         }
       ],
       "feedbackMap": {
         "burnout": {
           "title": "Right",
-          "body": "Cynicism toward work and doubting your own effectiveness are burnout's dimensions, not just intensified stress. This course names it, but doesn't treat it — a dedicated burnout course and professional support are the real next steps, honestly, with no fabricated in-app link here.",
+          "body": "Cynicism toward work and doubting your own effectiveness are burnout's dimensions, not just intensified stress. This course names it, but doesn't treat it, a dedicated burnout course and professional support are the real next steps, honestly, with no fabricated in-app link here.",
           "chain": [
-            "Not 'too much' demand — a change in how work feels and how effective it feels.",
-            "That's cynicism and reduced effectiveness — burnout's own dimensions."
+            "Not 'too much' demand, a change in how work feels and how effective it feels.",
+            "That's cynicism and reduced effectiveness, burnout's own dimensions."
           ]
         },
         "stress": {
           "title": "Not quite",
-          "body": "This isn't a more intense version of overload — it's a qualitatively different pattern (cynicism, doubt about effectiveness) that this course doesn't treat.",
+          "body": "This isn't a more intense version of overload, it's a qualitatively different pattern (cynicism, doubt about effectiveness) that this course doesn't treat.",
           "chain": [
             "The pattern described isn't about demand volume."
           ],
@@ -1717,7 +1717,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
       "comparisonFeedback": "A large contact list doesn't guarantee functional support for this specific stressor."
     }
@@ -1738,7 +1738,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "cynicism",
-          "label": "Exhaustion, cynicism, and reduced effectiveness — not just too much demand"
+          "label": "Exhaustion, cynicism, and reduced effectiveness, not just too much demand"
         },
         {
           "id": "intensity",
@@ -1746,7 +1746,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "cynicism",
-      "reveal": "Burnout is measured on distinct dimensions — exhaustion, cynicism, reduced effectiveness — categorically different from everyday overload."
+      "reveal": "Burnout is measured on distinct dimensions, exhaustion, cynicism, reduced effectiveness, categorically different from everyday overload."
     }
   },
   {
@@ -1764,7 +1764,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Reaching Further Is The Course Working",
       "variant": "myth",
       "myth": "Needing more support than this course means the course, or the effort, failed.",
-      "reality": "Persistent, excessive worry or panic points toward the anxiety course. Curdled into withdrawal and flat mood points toward the mood course. Sleep as the most broken part of the loop points toward the sleep course. Exhaustion, cynicism, reduced effectiveness points toward burnout support or a professional. No in-app route exists yet — that gap is named plainly, not filled with something fake."
+      "reality": "Persistent, excessive worry or panic points toward the anxiety course. Curdled into withdrawal and flat mood points toward the mood course. Sleep as the most broken part of the loop points toward the sleep course. Exhaustion, cynicism, reduced effectiveness points toward burnout support or a professional. No in-app route exists yet, that gap is named plainly, not filled with something fake."
     }
   },
   {
@@ -1781,7 +1781,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Which Route Fits?",
       "instruction": "Read the case, then pick the route.",
-      "question": "Weeks of persistent, hard-to-control worry that doesn't let up even when nothing is actively wrong — which route?",
+      "question": "Weeks of persistent, hard-to-control worry that doesn't let up even when nothing is actively wrong, which route?",
       "cases": [
         {
           "id": "case1",
@@ -1793,11 +1793,11 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "anxiety",
-          "label": "The anxiety course — persistent, excessive, hard-to-control worry"
+          "label": "The anxiety course, persistent, excessive, hard-to-control worry"
         },
         {
           "id": "sleep",
-          "label": "The sleep course — this sounds like a sleep problem"
+          "label": "The sleep course, this sounds like a sleep problem"
         }
       ],
       "feedbackMap": {
@@ -1812,7 +1812,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "sleep": {
           "title": "Not quite",
-          "body": "Nothing here specifically points to sleep — the described pattern is persistent, excessive worry, which is the anxiety course's territory.",
+          "body": "Nothing here specifically points to sleep, the described pattern is persistent, excessive worry, which is the anxiety course's territory.",
           "chain": [
             "No sleep-specific detail is mentioned."
           ],
@@ -1836,8 +1836,8 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Reaching Out Is The Plan Working",
       "instruction": "Read, then take a moment before moving on.",
-      "message": "Reaching for more support at the right signs is the course working as designed, not a sign it — or you — failed.",
-      "explanation": "This app doesn't have a built-in support route yet — that's a real gap worth naming honestly, not filling with something that doesn't exist. A professional, or the anxiety/mood/sleep courses, are real next steps."
+      "message": "Reaching for more support at the right signs is the course working as designed, not a sign it, or you, failed.",
+      "explanation": "This app doesn't have a built-in support route yet, that's a real gap worth naming honestly, not filling with something that doesn't exist. A professional, or the anxiety/mood/sleep courses, are real next steps."
     }
   },
   {
@@ -1854,7 +1854,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Recurring Demand, Again",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "A recurring 'quick favor' request keeps landing on my plate — I should just keep absorbing it, it's not a big deal each time.",
+      "hotThought": "A recurring 'quick favor' request keeps landing on my plate, I should just keep absorbing it, it's not a big deal each time.",
       "trays": [
         {
           "id": "check",
@@ -1887,7 +1887,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
       "comparisonFeedback": "Small-seeming, recurring, and unnamed is exactly the pattern a boundary is for."
     }
@@ -1913,9 +1913,9 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "specific"
           ],
-          "correctFeedback": "Right — specific, not a general restatement.",
+          "correctFeedback": "Right, specific, not a general restatement.",
           "incorrectFeedback": "It's specific practices, not a vague restatement of everything.",
-          "workedExample": "'The breath from l6 and telling one person when it's bad' — specific and small."
+          "workedExample": "'The breath from l6 and telling one person when it's bad', specific and small."
         }
       ]
     }
@@ -1965,22 +1965,22 @@ FROM jsonb_to_recordset($tag$[
         {
           "id": "burnout",
           "label": "Doesn't treat burnout",
-          "details": "Burnout is a distinct syndrome — this course teaches everyday stress management, not burnout treatment or prevention."
+          "details": "Burnout is a distinct syndrome, this course teaches everyday stress management, not burnout treatment or prevention."
         },
         {
           "id": "clinical",
           "label": "Doesn't treat anxiety or depression",
-          "details": "Persistent, clinical-level patterns belong to the anxiety and mood courses, or professional care — not generic stress content."
+          "details": "Persistent, clinical-level patterns belong to the anxiety and mood courses, or professional care, not generic stress content."
         },
         {
           "id": "physiology",
           "label": "Doesn't guarantee a specific physiological effect",
-          "details": "Techniques change mood, arousal, and reactivity — measured specific ways — not a mechanistic 'reset' or a precise percentage change."
+          "details": "Techniques change mood, arousal, and reactivity, measured specific ways, not a mechanistic 'reset' or a precise percentage change."
         },
         {
           "id": "permanent",
           "label": "Doesn't claim permanent resilience without practice",
-          "details": "Gains from a single pass fade without spaced practice — that's exactly why the rehearsal unit exists."
+          "details": "Gains from a single pass fade without spaced practice, that's exactly why the rehearsal unit exists."
         }
       ]
     }
@@ -2000,7 +2000,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Naming It Clearly Is What Makes The Map Trustworthy",
       "instruction": "Read, then move on.",
       "message": "Stating what this course doesn't claim, once, explicitly, is what makes reaching further feel like using the map correctly.",
-      "explanation": "Not like admitting the map failed — that's exactly the point of naming these limits plainly."
+      "explanation": "Not like admitting the map failed, that's exactly the point of naming these limits plainly."
     }
   },
   {
@@ -2017,7 +2017,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Ahead Of Time, Once More",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "I'll just remember to breathe next time I get stressed — no need to plan it out now.",
+      "hotThought": "I'll just remember to breathe next time I get stressed, no need to plan it out now.",
       "trays": [
         {
           "id": "check",
@@ -2050,9 +2050,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "The gap between knowing and using a technique is exactly where good intentions fail — a decided-ahead plan closes it."
+      "comparisonFeedback": "The gap between knowing and using a technique is exactly where good intentions fail, a decided-ahead plan closes it."
     }
   },
   {
@@ -2076,8 +2076,8 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "cynicism"
           ],
-          "correctFeedback": "Right — cynicism/depersonalization is one of the three distinct dimensions.",
-          "incorrectFeedback": "It's cynicism — the negative, detached stance toward work.",
+          "correctFeedback": "Right, cynicism/depersonalization is one of the three distinct dimensions.",
+          "incorrectFeedback": "It's cynicism, the negative, detached stance toward work.",
           "workedExample": "Feeling nothing for work you used to care about is the cynicism dimension."
         }
       ]
@@ -2096,11 +2096,11 @@ FROM jsonb_to_recordset($tag$[
     "concept": null,
     "content": {
       "title": "Reading Your Own Pattern",
-      "instruction": "No one sees this. Read the last few weeks honestly — a hard stretch, or something more? Nothing here is stored or scored, and you can skip this entirely.",
+      "instruction": "No one sees this. Read the last few weeks honestly, a hard stretch, or something more? Nothing here is stored or scored, and you can skip this entirely.",
       "items": [
         {
           "id": "stretch",
-          "label": "A hard stretch — challenging, but this is what it is"
+          "label": "A hard stretch, challenging, but this is what it is"
         },
         {
           "id": "more",
@@ -2127,8 +2127,8 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Reading It Honestly Is The Skill",
       "instruction": "Read, then move on at your own pace.",
-      "message": "A hard stretch or something needing more — reading your own pattern honestly is the skill, whichever it turns out to be.",
-      "explanation": "If it's more than a stretch, the routes from the last lesson — anxiety, mood, sleep, or professional support — are there, honestly, with no urgency to decide anything right now."
+      "message": "A hard stretch or something needing more, reading your own pattern honestly is the skill, whichever it turns out to be.",
+      "explanation": "If it's more than a stretch, the routes from the last lesson, anxiety, mood, sleep, or professional support, are there, honestly, with no urgency to decide anything right now."
     }
   },
   {
@@ -2152,7 +2152,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "specific"
           ],
-          "correctFeedback": "Right — small, specific, and honest.",
+          "correctFeedback": "Right, small, specific, and honest.",
           "incorrectFeedback": "It's specific practices, not a general restatement.",
           "workedExample": "The breath from l6, plus one if-then plan."
         }
@@ -2182,36 +2182,36 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "stress-if-yes",
-          "label": "If yes — everyday stress",
+          "label": "If yes, everyday stress",
           "order": 2
         },
         {
           "id": "check-dims",
-          "label": "If no — check exhaustion, cynicism, reduced effectiveness",
+          "label": "If no, check exhaustion, cynicism, reduced effectiveness",
           "order": 3
         },
         {
           "id": "burnout-if-yes",
-          "label": "If those show up — burnout, a different condition entirely",
+          "label": "If those show up, burnout, a different condition entirely",
           "order": 4
         }
       ],
       "transfer": {
-        "prompt": "Someone describes feeling 'just really busy and tired lately, but I still care about the work' — which fits better?",
+        "prompt": "Someone describes feeling 'just really busy and tired lately, but I still care about the work', which fits better?",
         "options": [
           {
             "id": "stress",
-            "label": "Everyday stress — busy and tired, but caring about the work is intact",
+            "label": "Everyday stress, busy and tired, but caring about the work is intact",
             "isSupported": true,
-            "response": "Right — the caring-about-work piece being intact points away from burnout's cynicism dimension.",
+            "response": "Right, the caring-about-work piece being intact points away from burnout's cynicism dimension.",
             "takeaway": "The dimension (does caring about the work remain), not the tiredness, is what actually distinguishes them."
           },
           {
             "id": "burnout",
-            "label": "Burnout — any tiredness at all counts",
+            "label": "Burnout, any tiredness at all counts",
             "isSupported": false,
-            "response": "Not quite — this description is missing burnout's actual dimension: cynicism toward the work itself.",
-            "takeaway": "Tiredness alone doesn't establish burnout — the dimensions do."
+            "response": "Not quite, this description is missing burnout's actual dimension: cynicism toward the work itself.",
+            "takeaway": "Tiredness alone doesn't establish burnout, the dimensions do."
           }
         ]
       }
@@ -2231,7 +2231,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Sort A New Pattern",
       "instruction": "Read the case, then decide.",
-      "question": "Weeks of flat mood, pulling back from things that used to feel worth doing, low energy that rest doesn't touch — where does this fit?",
+      "question": "Weeks of flat mood, pulling back from things that used to feel worth doing, low energy that rest doesn't touch, where does this fit?",
       "cases": [
         {
           "id": "case1",
@@ -2243,11 +2243,11 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "mood-course",
-          "label": "Needs more than this course — the mood course's territory"
+          "label": "Needs more than this course, the mood course's territory"
         },
         {
           "id": "everyday-stress",
-          "label": "Everyday stress — more breathing practice should cover it"
+          "label": "Everyday stress, more breathing practice should cover it"
         }
       ],
       "feedbackMap": {
@@ -2262,7 +2262,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "everyday-stress": {
           "title": "Not quite",
-          "body": "This isn't a stress-management gap — it's a withdrawal-and-mood pattern that this course explicitly routes elsewhere.",
+          "body": "This isn't a stress-management gap, it's a withdrawal-and-mood pattern that this course explicitly routes elsewhere.",
           "chain": [
             "More breathing practice doesn't address withdrawal and flat mood."
           ],
@@ -2284,11 +2284,11 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "Scope and Safety — Checkpoint",
+      "title": "Scope and Safety, Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Three quick checks on keeping practices and knowing the edges.\nA miss just gives you something to revisit.",
       "introTag": "3 QUESTIONS · ~1 MIN",
-      "revisitMessage": "Worth a short revisit — nothing is lost, and it'll come back around.",
+      "revisitMessage": "Worth a short revisit, nothing is lost, and it'll come back around.",
       "solidMessage": "The scope is holding. Next: rehearsing what you're keeping, before the course ends.",
       "items": [
         {
@@ -2313,7 +2313,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Stress vs. Burnout",
           "prompt": "What's burnout's key distinguishing feature?",
           "clue": "Not intensity.",
-          "worked": "Exhaustion, cynicism, and reduced effectiveness — different dimensions, not a bigger amount of stress.",
+          "worked": "Exhaustion, cynicism, and reduced effectiveness, different dimensions, not a bigger amount of stress.",
           "options": [
             {
               "label": "Distinct dimensions (exhaustion, cynicism, reduced effectiveness)",
@@ -2331,7 +2331,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "When to Reach Further",
           "prompt": "What does needing more than this course mean?",
           "clue": "Not failure.",
-          "worked": "The plan working as it should — reaching for the right kind of help at the right sign.",
+          "worked": "The plan working as it should, reaching for the right kind of help at the right sign.",
           "options": [
             {
               "label": "The plan working, not failing",
@@ -2373,11 +2373,11 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "b3",
-          "text": "Second move: pick a lever. Any tool from this course fits — a breath before responding to the next thing, or naming what's actually controllable this morning versus what isn't."
+          "text": "Second move: pick a lever. Any tool from this course fits, a breath before responding to the next thing, or naming what's actually controllable this morning versus what isn't."
         },
         {
           "id": "b4",
-          "text": "Third move: do it. Not perfectly — just reach for the lever, once, and let the morning continue."
+          "text": "Third move: do it. Not perfectly, just reach for the lever, once, and let the morning continue."
         }
       ]
     }
@@ -2396,7 +2396,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Your Turn",
       "instruction": "Read the case, then pick the lever.",
-      "question": "Fifteen minutes behind, tight chest, racing thoughts about the whole day going wrong — which lever fits first?",
+      "question": "Fifteen minutes behind, tight chest, racing thoughts about the whole day going wrong, which lever fits first?",
       "cases": [
         {
           "id": "case1",
@@ -2408,7 +2408,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "breath",
-          "label": "A breath first — arousal is high enough that thinking clearly is hard"
+          "label": "A breath first, arousal is high enough that thinking clearly is hard"
         },
         {
           "id": "plan-first",
@@ -2418,7 +2418,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "breath": {
           "title": "Right",
-          "body": "High arousal makes clear thinking harder — a quick lever on the body first makes the rest of the morning easier to actually think through.",
+          "body": "High arousal makes clear thinking harder, a quick lever on the body first makes the rest of the morning easier to actually think through.",
           "chain": [
             "Tight chest and racing thoughts signal high arousal.",
             "A breath lever reaches the body directly.",
@@ -2427,7 +2427,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "plan-first": {
           "title": "Not quite",
-          "body": "A detailed plan needs clear thinking, which is hardest exactly when arousal is this high — the breath comes first.",
+          "body": "A detailed plan needs clear thinking, which is hardest exactly when arousal is this high, the breath comes first.",
           "chain": [
             "Planning well requires some calm first."
           ],
@@ -2480,7 +2480,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Evening, Same Rule",
       "instruction": "Read the case, then apply the rule.",
-      "question": "An evening spent absorbed in cooking a real recipe, no phone nearby, work never crossing your mind — is this detachment?",
+      "question": "An evening spent absorbed in cooking a real recipe, no phone nearby, work never crossing your mind, is this detachment?",
       "cases": [
         {
           "id": "case1",
@@ -2492,17 +2492,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "yes",
-          "label": "Yes — the stressor-related thoughts actually stopped"
+          "label": "Yes, the stressor-related thoughts actually stopped"
         },
         {
           "id": "no",
-          "label": "No — cooking isn't a 'real' recovery activity"
+          "label": "No, cooking isn't a 'real' recovery activity"
         }
       ],
       "feedbackMap": {
         "yes": {
           "title": "Right",
-          "body": "The specific activity doesn't matter — what matters is that stressor-related thoughts actually stopped, which they did here.",
+          "body": "The specific activity doesn't matter, what matters is that stressor-related thoughts actually stopped, which they did here.",
           "chain": [
             "Work thoughts genuinely absent.",
             "That's the mechanism, regardless of the specific activity."
@@ -2510,7 +2510,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "no": {
           "title": "Not quite",
-          "body": "There's no fixed list of 'real' recovery activities — the test is whether the thoughts actually stopped, which they did.",
+          "body": "There's no fixed list of 'real' recovery activities, the test is whether the thoughts actually stopped, which they did.",
           "chain": [
             "The activity itself was never the criterion."
           ],
@@ -2534,7 +2534,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Small And Specific, Once More",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "My maintenance commitment is 'manage stress better' — that should cover it.",
+      "hotThought": "My maintenance commitment is 'manage stress better', that should cover it.",
       "trays": [
         {
           "id": "check",
@@ -2567,9 +2567,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "This commitment is {check} — a workable version would be {fix}."
+        "template": "This commitment is {check}, a workable version would be {fix}."
       },
-      "comparisonFeedback": "'Manage stress better' isn't a plan anyone follows — 2-3 named, specific practices is what actually survives a week."
+      "comparisonFeedback": "'Manage stress better' isn't a plan anyone follows, 2-3 named, specific practices is what actually survives a week."
     }
   },
   {
@@ -2589,19 +2589,19 @@ FROM jsonb_to_recordset($tag$[
       "beats": [
         {
           "id": "day1",
-          "text": "Monday — three stacked deadlines. Notice the tell, run the fork, reach a breath before the hardest email."
+          "text": "Monday, three stacked deadlines. Notice the tell, run the fork, reach a breath before the hardest email."
         },
         {
           "id": "day2",
-          "text": "Tuesday — better. The if-then plan actually fires when the same tell shows up."
+          "text": "Tuesday, better. The if-then plan actually fires when the same tell shows up."
         },
         {
           "id": "day3",
-          "text": "Wednesday — nothing. Exhausted, the kept practices don't happen at all today. That's a missed day, not a failed week."
+          "text": "Wednesday, nothing. Exhausted, the kept practices don't happen at all today. That's a missed day, not a failed week."
         },
         {
           "id": "day4",
-          "text": "Thursday — resuming, exactly where Tuesday left off. The missed day didn't end the run."
+          "text": "Thursday, resuming, exactly where Tuesday left off. The missed day didn't end the run."
         }
       ]
     }
@@ -2620,8 +2620,8 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Resuming Is The Skill",
       "instruction": "Read, then move on.",
-      "message": "A missed day didn't end the run on Wednesday — resuming on Thursday is exactly the skill this whole course has been building.",
-      "explanation": "No streak to protect, no penalty for the gap — just picking back up where you left off."
+      "message": "A missed day didn't end the run on Wednesday, resuming on Thursday is exactly the skill this whole course has been building.",
+      "explanation": "No streak to protect, no penalty for the gap, just picking back up where you left off."
     }
   },
   {
@@ -2638,7 +2638,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Case, Same Loop",
       "instruction": "Read the case, then apply the rule.",
-      "question": "Two rough nights in a row before a big week — does this predict anything about how the week's stressors will land?",
+      "question": "Two rough nights in a row before a big week, does this predict anything about how the week's stressors will land?",
       "cases": [
         {
           "id": "case1",
@@ -2650,17 +2650,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "yes",
-          "label": "Yes — the threshold is likely lower, so stressors may land harder than usual"
+          "label": "Yes, the threshold is likely lower, so stressors may land harder than usual"
         },
         {
           "id": "no",
-          "label": "No — sleep and the coming week's stress are unrelated"
+          "label": "No, sleep and the coming week's stress are unrelated"
         }
       ],
       "feedbackMap": {
         "yes": {
           "title": "Right",
-          "body": "Two rough nights lower the threshold — this week's ordinary stressors may land harder than they would after normal sleep, and that's information, not a personal failing.",
+          "body": "Two rough nights lower the threshold, this week's ordinary stressors may land harder than they would after normal sleep, and that's information, not a personal failing.",
           "chain": [
             "Short sleep lowers tomorrow's stress threshold.",
             "This compounds across two nights.",
@@ -2669,7 +2669,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "no": {
           "title": "Not quite",
-          "body": "The stress-sleep loop runs in both directions — two rough nights genuinely change how the coming days' stressors will land.",
+          "body": "The stress-sleep loop runs in both directions, two rough nights genuinely change how the coming days' stressors will land.",
           "chain": [
             "The loop connects sleep and stress reactivity directly."
           ],
@@ -2693,7 +2693,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Which Dimension, Again",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "A friend says they're just 'so busy' lately but still loves their job — that must be burnout starting.",
+      "hotThought": "A friend says they're just 'so busy' lately but still loves their job, that must be burnout starting.",
       "trays": [
         {
           "id": "check",
@@ -2701,7 +2701,7 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "id": "demand-only",
-              "label": "Just demand volume — no cynicism mentioned"
+              "label": "Just demand volume, no cynicism mentioned"
             },
             {
               "id": "cynicism",
@@ -2726,9 +2726,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Loving the job while being busy is missing burnout's actual dimension — cynicism toward the work itself."
+      "comparisonFeedback": "Loving the job while being busy is missing burnout's actual dimension, cynicism toward the work itself."
     }
   },
   {
@@ -2754,7 +2754,7 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "mobilize",
-          "label": "Balance tips toward sympathetic — that's the 'wired' feeling",
+          "label": "Balance tips toward sympathetic, that's the 'wired' feeling",
           "order": 2
         },
         {
@@ -2769,20 +2769,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "Given the friend can still act on how they prepare — is a problem-focused or emotion-focused lever the better first move here, and why?",
+        "prompt": "Given the friend can still act on how they prepare, is a problem-focused or emotion-focused lever the better first move here, and why?",
         "options": [
           {
             "id": "problem",
-            "label": "Problem-focused — there's still something controllable in how the remaining time is used",
+            "label": "Problem-focused, there's still something controllable in how the remaining time is used",
             "isSupported": true,
-            "response": "Right — the controllability check still applies here: there's real, controllable prep time left, so problem-focused coping fits before anything else.",
+            "response": "Right, the controllability check still applies here: there's real, controllable prep time left, so problem-focused coping fits before anything else.",
             "takeaway": "Explaining the whole chain to someone else, including the coping-selection fork, is stronger evidence of understanding than recall alone."
           },
           {
             "id": "emotion",
-            "label": "Emotion-focused — nothing about this can be changed now",
+            "label": "Emotion-focused, nothing about this can be changed now",
             "isSupported": false,
-            "response": "Not quite — there's still real prep time available, so this hasn't failed the controllability check.",
+            "response": "Not quite, there's still real prep time available, so this hasn't failed the controllability check.",
             "takeaway": "Don't default to acceptance before checking whether something is actually still controllable."
           }
         ]
@@ -2803,7 +2803,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Case, Same Rule",
       "instruction": "Read the case, then apply the rule.",
-      "question": "A large team of coworkers, but no one who's actually gone through what you're facing right now — does the team size solve the buffering gap?",
+      "question": "A large team of coworkers, but no one who's actually gone through what you're facing right now, does the team size solve the buffering gap?",
       "cases": [
         {
           "id": "case1",
@@ -2815,17 +2815,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — team size doesn't create functional support if no one understands the specific demand"
+          "label": "No, team size doesn't create functional support if no one understands the specific demand"
         },
         {
           "id": "yes",
-          "label": "Yes — a large enough group always includes functional support"
+          "label": "Yes, a large enough group always includes functional support"
         }
       ],
       "feedbackMap": {
         "no": {
           "title": "Right",
-          "body": "Functional support requires someone who understands the specific demand — a large team without that specific understanding doesn't close the gap.",
+          "body": "Functional support requires someone who understands the specific demand, a large team without that specific understanding doesn't close the gap.",
           "chain": [
             "Team size is structural, not functional, support.",
             "Functional support requires specific understanding, not just headcount."
@@ -2833,7 +2833,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "yes": {
           "title": "Not quite",
-          "body": "Size alone doesn't guarantee functional support — the specific understanding is what matters, and it's explicitly missing here.",
+          "body": "Size alone doesn't guarantee functional support, the specific understanding is what matters, and it's explicitly missing here.",
           "chain": [
             "The case states no one has gone through this specific thing."
           ],
@@ -2865,7 +2865,7 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "id": "burnout",
-              "label": "Burnout territory — exhaustion and cynicism, sustained for months"
+              "label": "Burnout territory, exhaustion and cynicism, sustained for months"
             },
             {
               "id": "stress",
@@ -2890,7 +2890,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
       "comparisonFeedback": "Sustained exhaustion and cynicism over months is exactly the signal that routes beyond this course's stress-management content."
     }
@@ -2909,7 +2909,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "A Decision You Didn't Make",
       "instruction": "Read the case, then run the fork.",
-      "question": "A manager reassigns your project to someone else with no input into the decision. Controllable, or not — and what fits?",
+      "question": "A manager reassigns your project to someone else with no input into the decision. Controllable, or not, and what fits?",
       "cases": [
         {
           "id": "case1",
@@ -2921,26 +2921,26 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "emotion",
-          "label": "Not controllable — emotion-focused coping, deciding how to relate to it, not fighting the decision itself"
+          "label": "Not controllable, emotion-focused coping, deciding how to relate to it, not fighting the decision itself"
         },
         {
           "id": "problem-force",
-          "label": "Controllable — push back until the decision is reversed"
+          "label": "Controllable, push back until the decision is reversed"
         }
       ],
       "feedbackMap": {
         "emotion": {
           "title": "Right",
-          "body": "The decision itself is genuinely outside your control here — the controllability check says no, and emotion-focused coping (not disguised avoidance — see l19) is the fit, distinct from simply going numb about it.",
+          "body": "The decision itself is genuinely outside your control here, the controllability check says no, and emotion-focused coping (not disguised avoidance, see l19) is the fit, distinct from simply going numb about it.",
           "chain": [
             "No input into the decision at all.",
             "Controllability check: no.",
-            "Emotion-focused coping fits — genuinely, not as a dodge."
+            "Emotion-focused coping fits, genuinely, not as a dodge."
           ]
         },
         "problem-force": {
           "title": "Not quite",
-          "body": "The case states there was no input into the decision — treating it as controllable mismatches what's actually available here.",
+          "body": "The case states there was no input into the decision, treating it as controllable mismatches what's actually available here.",
           "chain": [
             "The decision has already been made unilaterally."
           ],
@@ -2964,7 +2964,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Demand, Same Rule",
       "instruction": "Read the case, then apply the rule.",
-      "question": "A neighbor keeps borrowing things without asking first, repeatedly, for months — is a boundary the fit here?",
+      "question": "A neighbor keeps borrowing things without asking first, repeatedly, for months, is a boundary the fit here?",
       "cases": [
         {
           "id": "case1",
@@ -2976,17 +2976,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "yes",
-          "label": "Yes — a recurring, unnamed demand is exactly what a boundary is for"
+          "label": "Yes, a recurring, unnamed demand is exactly what a boundary is for"
         },
         {
           "id": "no",
-          "label": "No — this is too minor to ever name"
+          "label": "No, this is too minor to ever name"
         }
       ],
       "feedbackMap": {
         "yes": {
           "title": "Right",
-          "body": "Recurring and never explicitly named is the exact shape a boundary addresses — regardless of how minor any single instance seems.",
+          "body": "Recurring and never explicitly named is the exact shape a boundary addresses, regardless of how minor any single instance seems.",
           "chain": [
             "Recurring over months.",
             "Never explicitly named.",
@@ -2995,7 +2995,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "no": {
           "title": "Not quite",
-          "body": "A boundary isn't reserved for dramatic demands — recurring and unnamed is the actual criterion, however small each instance looks.",
+          "body": "A boundary isn't reserved for dramatic demands, recurring and unnamed is the actual criterion, however small each instance looks.",
           "chain": [
             "Severity of a single instance isn't the deciding factor."
           ],
@@ -3019,11 +3019,11 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Rebuild The Whole Map",
       "instruction": "Order the diagram from memory.",
-      "message": "The same picture from l5 and l7 — now yours to redraw without help.",
+      "message": "The same picture from l5 and l7, now yours to redraw without help.",
       "steps": [
         {
           "id": "read",
-          "label": "Threat read appears — real or interpreted",
+          "label": "Threat read appears, real or interpreted",
           "order": 1
         },
         {
@@ -3043,20 +3043,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "Place your own 2-3 kept practices (from l52) on this diagram — which lever(s) do they actually live on?",
+        "prompt": "Place your own 2-3 kept practices (from l52) on this diagram, which lever(s) do they actually live on?",
         "options": [
           {
             "id": "placed",
             "label": "I can place each one on a specific lever",
             "isSupported": true,
-            "response": "Right — if your kept practices each have a clear lever, the system held together, not just the individual facts.",
-            "takeaway": "Organized around the system, not a list — that was the whole design."
+            "response": "Right, if your kept practices each have a clear lever, the system held together, not just the individual facts.",
+            "takeaway": "Organized around the system, not a list, that was the whole design."
           },
           {
             "id": "unsure",
             "label": "Not sure which lever one of them belongs to",
             "isSupported": false,
-            "response": "Worth a second look — every real tool from this course lives on one of the three levers; if one doesn't fit cleanly, it's worth re-checking what it actually does."
+            "response": "Worth a second look, every real tool from this course lives on one of the three levers; if one doesn't fit cleanly, it's worth re-checking what it actually does."
           }
         ]
       }
@@ -3090,21 +3090,21 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "Sixty-three lessons later — has either of those two opening ideas changed?",
+        "prompt": "Sixty-three lessons later, has either of those two opening ideas changed?",
         "options": [
           {
             "id": "no",
-            "label": "No — they're the foundation everything else was built on",
+            "label": "No, they're the foundation everything else was built on",
             "isSupported": true,
-            "response": "Right — everything since has been detail on top of these two ideas, not a replacement for them.",
+            "response": "Right, everything since has been detail on top of these two ideas, not a replacement for them.",
             "takeaway": "The foundations from l1 and l5 are still exactly what they were."
           },
           {
             "id": "yes",
-            "label": "Yes — the later sections replaced the early framing",
+            "label": "Yes, the later sections replaced the early framing",
             "isSupported": false,
-            "response": "Not quite — Sections 2 and 3 built on these two ideas; they didn't replace them.",
-            "takeaway": "Later content added levers in practice — it didn't change the opening framework."
+            "response": "Not quite, Sections 2 and 3 built on these two ideas; they didn't replace them.",
+            "takeaway": "Later content added levers in practice, it didn't change the opening framework."
           }
         ]
       }
@@ -3151,12 +3151,12 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "Steady Under Pressure — Course Checkpoint",
+      "title": "Steady Under Pressure, Course Checkpoint",
       "introTitle": "One last look.",
       "intro": "A short close on where this course started and where it stops.\nNothing here is a grade.",
       "introTag": "3 QUESTIONS · ~1 MIN",
-      "revisitMessage": "Worth a short revisit — nothing is lost either way.",
-      "solidMessage": "Sixty-three lessons — what you keep is yours.",
+      "revisitMessage": "Worth a short revisit, nothing is lost either way.",
+      "solidMessage": "Sixty-three lessons, what you keep is yours.",
       "items": [
         {
           "concept": "The Opening Idea",
@@ -3165,12 +3165,12 @@ FROM jsonb_to_recordset($tag$[
           "worked": "It's old survival machinery, built to keep you alive, not a sign something's wrong.",
           "options": [
             {
-              "label": "No — it's survival machinery, working as designed",
+              "label": "No, it's survival machinery, working as designed",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — a healthy body wouldn't do this",
+              "label": "Yes, a healthy body wouldn't do this",
               "feedback": "This is exactly the misconception the whole course opened by correcting.",
               "isCorrect": false
             }
@@ -3198,15 +3198,15 @@ FROM jsonb_to_recordset($tag$[
           "concept": "The Closing Boundary",
           "prompt": "Does this course treat burnout or clinical anxiety/depression?",
           "clue": "It has a scope edge.",
-          "worked": "No — it teaches everyday stress management and routes elsewhere when a pattern exceeds that.",
+          "worked": "No, it teaches everyday stress management and routes elsewhere when a pattern exceeds that.",
           "options": [
             {
-              "label": "No — those route to other courses or professional support",
+              "label": "No, those route to other courses or professional support",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — it covers all of these",
+              "label": "Yes, it covers all of these",
               "feedback": "This course has an explicit, honest scope boundary.",
               "isCorrect": false
             }

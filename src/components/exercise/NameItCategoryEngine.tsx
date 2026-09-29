@@ -169,7 +169,7 @@ export function NameItCategoryEngine({
                     }
                   >
                     <Text className="happy-font-body-bold text-[15px] text-[#201E1D]">
-                      {isSelected ? `${item.word} — selected` : item.word}
+                      {isSelected ? `${item.word} (selected)` : item.word}
                     </Text>
                     <Text className="happy-font-body mt-[3px] text-[12.5px] leading-[17px] text-[#5C5549]">
                       {item.description}

@@ -32,7 +32,7 @@ Generate a weekly reflection that:
 - Focus on recurring patterns rather than isolated events.
 - Give greater weight to observations that appear across multiple days.
 - Return fewer insights when evidence is limited.
-- When last week's reflection is provided, describe differences factually — do not evaluate progress.
+- When last week's reflection is provided, describe differences factually, do not evaluate progress.
 
 ## Tone
 

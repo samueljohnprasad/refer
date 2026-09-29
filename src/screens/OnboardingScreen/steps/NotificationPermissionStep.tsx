@@ -1,12 +1,14 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Text, View, ScrollView, Platform } from "react-native";
+import { Text, ScrollView, Platform } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { NotificationTime } from "../types";
 import { ReminderCard } from "@/src/components/notifications/ReminderCard";
 import { useReminderConfig } from "@/src/components/notifications/useReminderConfig";
 import { DEFAULT_REMINDERS } from "@/src/components/notifications/constants";
+import { SymbolView } from "expo-symbols";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
 interface NotificationPermissionStepProps {
   selectedTime?: NotificationTime;
@@ -14,12 +16,13 @@ interface NotificationPermissionStepProps {
   stressTiming?: string;
 }
 
+// ponytail: benchmarked against stoic & Duolingo Mobbin flows (CBT habit proof + single-viewport no-scroll layout)
 const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   selectedTime,
   onSelectTime,
 }) => {
   const insets = useSafeAreaInsets();
-  const contentTopPadding = Platform.OS === "ios" ? 100 : insets.top + 100;
+  const contentTopPadding = Platform.OS === "ios" ? insets.top + 32 : insets.top + 28;
   
   // ponytail: do not prompt OS dialog while toggling in onboarding; prompt on Continue click
   const {
@@ -40,8 +43,9 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
+      bounces={false}
       contentContainerStyle={{
-        paddingBottom: 140,
+        paddingBottom: 24,
         paddingTop: contentTopPadding,
       }}
       contentInsetAdjustmentBehavior="automatic"
@@ -49,29 +53,33 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
     >
       <Animated.View entering={FadeIn.duration(160).delay(80)}>
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="text-xs font-semibold uppercase tracking-wider text-sage-600"
+          style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+          className="text-[11px] font-bold uppercase tracking-wider text-sage-600"
         >
           Gentle nudges
         </Text>
       </Animated.View>
 
-      <Animated.View entering={FadeIn.duration(180).delay(140)} className="mt-1.5">
+      <Animated.View entering={FadeIn.duration(180).delay(120)} className="mt-1.5">
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="text-[26px] leading-[1.15] text-ink"
+          style={{ fontFamily: APP_FONT_FAMILIES.extraBold }}
+          className="text-[28px] leading-[34px] text-ink happy-font-body-extrabold"
         >
           Daily reminders
         </Text>
-        <Text className="mt-2 text-[15px] leading-relaxed text-ink-soft">
-          Choose when you’d like a gentle nudge.
+        <Text
+          style={{ fontFamily: APP_FONT_FAMILIES.regular }}
+          className="mt-1.5 text-[15px] leading-relaxed text-ink-soft happy-font-body-medium"
+        >
+          Consistent check-ins build emotional resilience. Pick times that fit your daily flow.
         </Text>
       </Animated.View>
 
+      {/* Reminder Config List */}
       <Animated.View
-        entering={FadeIn.duration(180).delay(200)}
+        entering={FadeIn.duration(180).delay(180)}
         style={{ borderCurve: "continuous" }}
-        className="mt-6 overflow-hidden rounded-2xl border border-sage-200/80 bg-warm-white shadow-sm"
+        className="mt-5 overflow-hidden rounded-2xl border border-sage-200/80 bg-warm-white shadow-sm"
       >
         {items.map((item, index) => {
           const isSelected = cfg[item.id]?.enabled;
@@ -89,12 +97,31 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
         })}
       </Animated.View>
 
-      <Animated.View entering={FadeIn.duration(180).delay(260)} className="mt-4 px-1">
+      {/* Habit Consistency Proof Badge */}
+      <Animated.View
+        entering={FadeIn.duration(180).delay(220)}
+        className="mt-4 flex-row items-center justify-center gap-2 py-2 px-3.5 rounded-full bg-sage-100/70 border border-sage-200/70 self-center"
+      >
+        <SymbolView
+          name="chart.line.uptrend.xyaxis"
+          size={14}
+          tintColor={SEMANTIC_COLORS.brand.pressed}
+          type="hierarchical"
+        />
+        <Text
+          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
+          className="text-[12px] text-sage-800"
+        >
+          Members with reminders are 3x more consistent
+        </Text>
+      </Animated.View>
+
+      <Animated.View entering={FadeIn.duration(180).delay(260)} className="mt-2.5 px-1">
         <Text
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
           className="text-center text-[13px] leading-relaxed text-ink-soft"
         >
-          You can change these anytime in Settings.
+          You can customize or mute these anytime in Settings.
         </Text>
       </Animated.View>
     </ScrollView>

@@ -80,7 +80,7 @@ FROM jsonb_to_recordset($tag$[
     "order_index": 2,
     "is_published": false,
     "domain": "self_understanding",
-    "target_audience": "Adults who want clearer self-knowledge — patterns, values, reactions — from mild curiosity through feeling fairly lost about what they actually feel or want",
+    "target_audience": "Adults who want clearer self-knowledge, patterns, values, reactions, from mild curiosity through feeling fairly lost about what they actually feel or want",
     "total_lessons": 64,
     "total_duration_weeks": null,
     "sessions_per_week": null,
@@ -90,10 +90,10 @@ FROM jsonb_to_recordset($tag$[
     ],
     "reward_content": {
       "title": "Coming Home to Yourself",
-      "acknowledgement": "Sixty-four lessons. You didn't just think about yourself more — you learned to ask a better question, caught your own reflection turning into rumination and found the way out, named feelings with real precision, noticed your own patterns, and picked a value over a should. That's a practice, not a personality result. What you keep is yours.",
+      "acknowledgement": "Sixty-four lessons. You didn't just think about yourself more, you learned to ask a better question, caught your own reflection turning into rumination and found the way out, named feelings with real precision, noticed your own patterns, and picked a value over a should. That's a practice, not a personality result. What you keep is yours.",
       "capabilityHeading": "What you can do now",
       "capabilitySummary": [
-        "Describe what understanding yourself actually looks like, and why it's genuinely hard to get naturally — not a personal failing.",
+        "Describe what understanding yourself actually looks like, and why it's genuinely hard to get naturally, not a personal failing.",
         "Ask 'what' instead of 'why' when trying to understand a reaction, and place any new situation on the notice-sort-sharpen-check loop.",
         "Catch your own self-focus tipping from curious reflection into threat-driven rumination, and redirect out of it.",
         "Name a feeling with real precision, notice a recurring pattern in your own life, and use a short structured writing practice to process something unclear.",
@@ -178,7 +178,7 @@ FROM jsonb_to_recordset($tag$[
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now choose between naming a feeling precisely, noticing a pattern, or writing it out — matched to the moment, not applied at random.",
+      "capabilityStatement": "You can now choose between naming a feeling precisely, noticing a pattern, or writing it out, matched to the moment, not applied at random.",
       "primaryActionLabel": "Back to path"
     }
   }
@@ -191,7 +191,7 @@ FROM jsonb_to_recordset($tag$[
   {
     "source_id": "self-understanding-coming-home-to-yourself-l27",
     "unit_source_id": "self-understanding-coming-home-to-yourself-s2-u1",
-    "title": "Bad Isn't A Feeling — It's A Placeholder",
+    "title": "Bad Isn't A Feeling, It's A Placeholder",
     "type": "lesson",
     "content_id": null,
     "content_type": null,
@@ -252,7 +252,7 @@ FROM jsonb_to_recordset($tag$[
     "prerequisites": [],
     "reward_content": {
       "title": "30% more flexible, just from better words",
-      "body": "In studies measuring emotional granularity, people who could name unpleasant feelings more precisely were around 30% more flexible in how they regulated them, less likely to drink to cope, and less likely to lash out when hurt. Same feelings — better resolution on naming them. (Kashdan, Barrett & McKnight 2015 — research/03 §2)",
+      "body": "In studies measuring emotional granularity, people who could name unpleasant feelings more precisely were around 30% more flexible in how they regulated them, less likely to drink to cope, and less likely to lash out when hurt. Same feelings, better resolution on naming them. (Kashdan, Barrett & McKnight 2015, research/03 §2)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -385,7 +385,7 @@ FROM jsonb_to_recordset($tag$[
     "prerequisites": [],
     "reward_content": {
       "title": "\"I don't know why this keeps happening\" is the tell",
-      "body": "A pattern that stays vague — sensed but never named — keeps producing the same confusion every time it shows up. The functional-analysis technique behind this lesson (also behind this app's mood course) works because naming the trigger and the response, specifically, turns a recurring mystery into something you can actually see coming. (Martell, Addis & Jacobson 2001 — research/05 §1)",
+      "body": "A pattern that stays vague, sensed but never named, keeps producing the same confusion every time it shows up. The functional-analysis technique behind this lesson (also behind this app's mood course) works because naming the trigger and the response, specifically, turns a recurring mystery into something you can actually see coming. (Martell, Addis & Jacobson 2001, research/05 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -517,8 +517,8 @@ FROM jsonb_to_recordset($tag$[
     "review_concepts": [],
     "prerequisites": [],
     "reward_content": {
-      "title": "A small, real effect — 400+ studies say so",
-      "body": "Structured writing about something meaningful, 15-20 minutes at a time, has been tested in over 400 studies. The effect is real but modest — small, not transformative — which is exactly why the protocol matters: a bounded session that builds toward some understanding, not open-ended venting with nowhere to land. (Frattaroli 2006 meta-analysis — research/05 §2)",
+      "title": "A small, real effect, 400+ studies say so",
+      "body": "Structured writing about something meaningful, 15-20 minutes at a time, has been tested in over 400 studies. The effect is real but modest, small, not transformative, which is exactly why the protocol matters: a bounded session that builds toward some understanding, not open-ended venting with nowhere to land. (Frattaroli 2006 meta-analysis, research/05 §2)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -610,7 +610,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Disappointed Isn't Just Bad",
       "variant": "myth",
-      "myth": "All that matters is whether I feel good or bad — the specific word doesn't change anything.",
+      "myth": "All that matters is whether I feel good or bad, the specific word doesn't change anything.",
       "reality": "\"Bad\" or \"stressed\" is a placeholder. Disappointed, gloomy, annoyed, and aggravated are different feelings that call for different responses, not the same feeling at different intensities. The word you reach for first is rarely the most useful one available."
     }
   },
@@ -626,7 +626,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "emotional_granularity",
     "content": {
-      "prompt": "A canceled plan you were looking forward to — which word is more precise than just 'bad'?",
+      "prompt": "A canceled plan you were looking forward to, which word is more precise than just 'bad'?",
       "options": [
         {
           "id": "disappointed",
@@ -638,7 +638,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "disappointed",
-      "reveal": "Disappointed names something specific — a letdown tied to an expectation — that 'bad' doesn't capture."
+      "reveal": "Disappointed names something specific, a letdown tied to an expectation, that 'bad' doesn't capture."
     }
   },
   {
@@ -657,15 +657,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it's usually a placeholder for something more specific"
+          "label": "No, it's usually a placeholder for something more specific"
         },
         {
           "id": "yes",
-          "label": "Yes — it's already as precise as it gets"
+          "label": "Yes, it's already as precise as it gets"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "'Stressed' usually stands in for something more specific — overwhelmed, rushed, on-edge, dreading something."
+      "reveal": "'Stressed' usually stands in for something more specific, overwhelmed, rushed, on-edge, dreading something."
     }
   },
   {
@@ -718,7 +718,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": null,
     "content": {
-      "prompt": "Three deadlines land the same day, nothing else going on — which precise word fits best?",
+      "prompt": "Three deadlines land the same day, nothing else going on, which precise word fits best?",
       "options": [
         {
           "id": "overwhelmed",
@@ -730,7 +730,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "overwhelmed",
-      "reveal": "Too much at once, all landing together, is exactly the overwhelmed shape — not a single specific dread."
+      "reveal": "Too much at once, all landing together, is exactly the overwhelmed shape, not a single specific dread."
     }
   },
   {
@@ -746,7 +746,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": null,
     "content": {
       "title": "Name It, Right Now",
-      "instruction": "What's the first word for how you feel right now? Now — is there a more specific one underneath it? Nothing here is stored or scored.",
+      "instruction": "What's the first word for how you feel right now? Now, is there a more specific one underneath it? Nothing here is stored or scored.",
       "items": [
         {
           "id": "first-word",
@@ -776,13 +776,13 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "\"Bad\" or \"stressed\" is a ___",
-          "post": " — disappointed, gloomy, and aggravated are different feelings underneath it.",
+          "post": ", disappointed, gloomy, and aggravated are different feelings underneath it.",
           "answers": [
             "placeholder"
           ],
-          "correctFeedback": "Right — a placeholder for something more specific.",
+          "correctFeedback": "Right, a placeholder for something more specific.",
           "incorrectFeedback": "It's a placeholder, standing in for a more precise word.",
-          "workedExample": "The specific word was usually available — just not the first one reached for."
+          "workedExample": "The specific word was usually available, just not the first one reached for."
         }
       ]
     }
@@ -815,7 +815,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "clue": "Different precise words point toward different, more specific next moves.",
       "feedbackTitle": "PRECISION POINTS SOMEWHERE",
-      "feedback": "\"Bad\" doesn't tell you which response you need — the precise word does."
+      "feedback": "\"Bad\" doesn't tell you which response you need, the precise word does."
     }
   },
   {
@@ -832,7 +832,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Precise, Even Fast",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "Something just went wrong right before a call starts in one minute — no time to figure out what I'm feeling.",
+      "hotThought": "Something just went wrong right before a call starts in one minute, no time to figure out what I'm feeling.",
       "trays": [
         {
           "id": "check",
@@ -865,9 +865,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Precision isn't only a calm-moment skill — it's most useful exactly when there's pressure to name something fast."
+      "comparisonFeedback": "Precision isn't only a calm-moment skill, it's most useful exactly when there's pressure to name something fast."
     }
   },
   {
@@ -896,7 +896,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "rattled",
-          "label": "Rattled — thrown off balance, right before needing to perform"
+          "label": "Rattled, thrown off balance, right before needing to perform"
         },
         {
           "id": "bad",
@@ -906,7 +906,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "rattled": {
           "title": "Right",
-          "body": "Rattled captures the specific thrown-off-balance quality of the moment — more useful than 'bad' for deciding what to do about it in the next sixty seconds.",
+          "body": "Rattled captures the specific thrown-off-balance quality of the moment, more useful than 'bad' for deciding what to do about it in the next sixty seconds.",
           "chain": [
             "The timing (right before something) is specific.",
             "'Rattled' captures that specific quality.",
@@ -915,7 +915,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "bad": {
           "title": "Not quite",
-          "body": "'Bad' doesn't point anywhere useful in the sixty seconds available — a more specific word does.",
+          "body": "'Bad' doesn't point anywhere useful in the sixty seconds available, a more specific word does.",
           "chain": [
             "'Bad' is the default, not the precise option."
           ],
@@ -946,9 +946,9 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "precise"
           ],
-          "correctFeedback": "Right — the precise word is where the information lives.",
+          "correctFeedback": "Right, the precise word is where the information lives.",
           "incorrectFeedback": "It's the more precise word where the real information is.",
-          "workedExample": "Disappointed vs. bad — the gap between them is real information."
+          "workedExample": "Disappointed vs. bad, the gap between them is real information."
         }
       ]
     }
@@ -986,20 +986,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "Someone always reports feeling 'stressed' no matter what's actually going on — what's missing?",
+        "prompt": "Someone always reports feeling 'stressed' no matter what's actually going on, what's missing?",
         "options": [
           {
             "id": "precision",
-            "label": "The middle step — reaching for the more specific word underneath 'stressed'",
+            "label": "The middle step, reaching for the more specific word underneath 'stressed'",
             "isSupported": true,
-            "response": "Right — without the precise word, there's no way to know which response actually fits.",
+            "response": "Right, without the precise word, there's no way to know which response actually fits.",
             "takeaway": "Staying at the vague word skips the step that makes the whole chain useful."
           },
           {
             "id": "nothing",
-            "label": "Nothing — 'stressed' is specific enough",
+            "label": "Nothing, 'stressed' is specific enough",
             "isSupported": false,
-            "response": "Not quite — 'stressed' is exactly the kind of placeholder word this lesson is about.",
+            "response": "Not quite, 'stressed' is exactly the kind of placeholder word this lesson is about.",
             "takeaway": "'Stressed' is a starting point, not the destination."
           }
         ]
@@ -1020,7 +1020,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "A New Situation, Named Precisely",
       "instruction": "Read the case, then name it.",
-      "question": "Getting unexpectedly good news about something you'd stopped hoping for — what's a more precise word than just 'good'?",
+      "question": "Getting unexpectedly good news about something you'd stopped hoping for, what's a more precise word than just 'good'?",
       "cases": [
         {
           "id": "case1",
@@ -1042,7 +1042,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "startled-relief": {
           "title": "Right",
-          "body": "Precision works on positive feelings too — 'startled and relieved' captures something 'good' misses: the surprise of it landing after you'd stopped expecting it.",
+          "body": "Precision works on positive feelings too, 'startled and relieved' captures something 'good' misses: the surprise of it landing after you'd stopped expecting it.",
           "chain": [
             "The surprise element is specific.",
             "'Startled and relieved' captures it.",
@@ -1051,7 +1051,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "just-good": {
           "title": "Not quite",
-          "body": "'Good' misses the specific shape of this feeling — the surprise after having stopped expecting it.",
+          "body": "'Good' misses the specific shape of this feeling, the surprise after having stopped expecting it.",
           "chain": [
             "'Good' is a placeholder here too, even for positive feelings."
           ],
@@ -1073,26 +1073,26 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "Naming It Precisely — Checkpoint",
+      "title": "Naming It Precisely, Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Three quick checks on precision.\nA miss just gives you something to revisit.",
       "introTag": "3 QUESTIONS · ~1 MIN",
-      "revisitMessage": "Worth a short revisit — nothing is lost, and it'll come back around.",
+      "revisitMessage": "Worth a short revisit, nothing is lost, and it'll come back around.",
       "solidMessage": "Precision is holding. Next: noticing your own recurring patterns.",
       "items": [
         {
           "concept": "Emotional Granularity",
           "prompt": "Is 'bad' usually the most precise word available?",
           "clue": "It's a placeholder.",
-          "worked": "No — a more specific word is usually available underneath it.",
+          "worked": "No, a more specific word is usually available underneath it.",
           "options": [
             {
-              "label": "No — it's a placeholder for something more specific",
+              "label": "No, it's a placeholder for something more specific",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — it's already precise enough",
+              "label": "Yes, it's already precise enough",
               "feedback": "'Bad' is a placeholder, not the precise word.",
               "isCorrect": false
             }
@@ -1120,15 +1120,15 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Precision Under Pressure",
           "prompt": "Does precision only work when there's plenty of time?",
           "clue": "Test it fast.",
-          "worked": "No — the precise word is reachable even under time pressure.",
+          "worked": "No, the precise word is reachable even under time pressure.",
           "options": [
             {
-              "label": "No — it's reachable even quickly",
+              "label": "No, it's reachable even quickly",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — only in calm, reflective moments",
+              "label": "Yes, only in calm, reflective moments",
               "feedback": "Precision is useful especially under pressure, not only when calm.",
               "isCorrect": false
             }
@@ -1152,7 +1152,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Trigger, Then Response",
       "variant": "myth",
       "myth": "Noticing a pattern in myself means something is wrong with me.",
-      "reality": "Noticing a recurring reaction pattern in ANY domain of life — not just mood or stress specifically — using 'what triggers this, what do I tend to do' rather than 'why am I like this.' A pattern that stays vague keeps producing the same confusion every time it shows up; naming the trigger and the response turns a recurring mystery into something you can actually see coming."
+      "reality": "Noticing a recurring reaction pattern in ANY domain of life, not just mood or stress specifically, using 'what triggers this, what do I tend to do' rather than 'why am I like this.' A pattern that stays vague keeps producing the same confusion every time it shows up; naming the trigger and the response turns a recurring mystery into something you can actually see coming."
     }
   },
   {
@@ -1167,11 +1167,11 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "pattern_noticing",
     "content": {
-      "prompt": "\"I go quiet whenever plans change\" — this names the trigger and the response. What would make it clearer?",
+      "prompt": "\"I go quiet whenever plans change\", this names the trigger and the response. What would make it clearer?",
       "options": [
         {
           "id": "nothing-missing",
-          "label": "Nothing — trigger (plan changes) and response (going quiet) are both there"
+          "label": "Nothing, trigger (plan changes) and response (going quiet) are both there"
         },
         {
           "id": "why-missing",
@@ -1179,7 +1179,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "nothing-missing",
-      "reveal": "Trigger and response are the two parts that matter — 'why' isn't needed to make the pattern workable."
+      "reveal": "Trigger and response are the two parts that matter, 'why' isn't needed to make the pattern workable."
     }
   },
   {
@@ -1229,9 +1229,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "'Weird' is a placeholder just like 'bad' — there's usually a more specific word underneath it."
+      "comparisonFeedback": "'Weird' is a placeholder just like 'bad', there's usually a more specific word underneath it."
     }
   },
   {
@@ -1258,7 +1258,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "trigger-response",
-      "reveal": "Trigger and response — named separately, not blurred into one vague feeling."
+      "reveal": "Trigger and response, named separately, not blurred into one vague feeling."
     }
   },
   {
@@ -1288,7 +1288,7 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "q3",
-          "prompt": "Named separately like this — trigger, then response — is this more or less workable than 'I just get anxious about texts'?",
+          "prompt": "Named separately like this, trigger, then response, is this more or less workable than 'I just get anxious about texts'?",
           "hint": "Compare the specificity."
         }
       ]
@@ -1307,7 +1307,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": null,
     "content": {
       "title": "Your Own Pattern",
-      "instruction": "Think of something that keeps happening — a way you react, more than once, in a way that surprises you a little each time. What's the trigger? What's the response? Nothing here is stored or scored.",
+      "instruction": "Think of something that keeps happening, a way you react, more than once, in a way that surprises you a little each time. What's the trigger? What's the response? Nothing here is stored or scored.",
       "items": [
         {
           "id": "trigger",
@@ -1341,8 +1341,8 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "mood"
           ],
-          "correctFeedback": "Right — general-purpose, not scoped to any one domain.",
-          "incorrectFeedback": "It's not limited to mood — it works in any domain.",
+          "correctFeedback": "Right, general-purpose, not scoped to any one domain.",
+          "incorrectFeedback": "It's not limited to mood, it works in any domain.",
           "workedExample": "A decision-making habit or a relationship dynamic works just as well as a mood pattern."
         }
       ]
@@ -1369,7 +1369,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "safest"
           ],
-          "correctFeedback": "Right — a decision-making pattern, not a mood or stress one.",
+          "correctFeedback": "Right, a decision-making pattern, not a mood or stress one.",
           "incorrectFeedback": "The pattern here is defaulting to the safest option.",
           "workedExample": "Always taking the safest option, even when a riskier one is clearly better, is a real pattern outside mood/stress's usual territory."
         }
@@ -1390,7 +1390,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Subtler, Same Skill",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "Someone always changes the subject right when a conversation gets emotionally real — is that even a real pattern to notice?",
+      "hotThought": "Someone always changes the subject right when a conversation gets emotionally real, is that even a real pattern to notice?",
       "trays": [
         {
           "id": "check",
@@ -1398,11 +1398,11 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "id": "yes",
-              "label": "Yes — a trigger and a response are both present"
+              "label": "Yes, a trigger and a response are both present"
             },
             {
               "id": "no",
-              "label": "No — it's too subtle to count"
+              "label": "No, it's too subtle to count"
             }
           ]
         },
@@ -1423,9 +1423,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Subtlety doesn't disqualify a pattern — a real trigger and a real response are present here too."
+      "comparisonFeedback": "Subtlety doesn't disqualify a pattern, a real trigger and a real response are present here too."
     }
   },
   {
@@ -1458,13 +1458,13 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "no-pattern",
-          "label": "There's no real pattern here — just being modest"
+          "label": "There's no real pattern here, just being modest"
         }
       ],
       "feedbackMap": {
         "deflect": {
           "title": "Right",
-          "body": "A compliment (trigger) reliably produces a deflection (response) — a real pattern, even though it's quieter than an obvious reaction.",
+          "body": "A compliment (trigger) reliably produces a deflection (response), a real pattern, even though it's quieter than an obvious reaction.",
           "chain": [
             "The trigger (a compliment) is consistent.",
             "The response (deflection) is consistent.",
@@ -1473,7 +1473,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "no-pattern": {
           "title": "Not quite",
-          "body": "A consistent trigger and a consistent response is exactly what a pattern is — subtlety doesn't disqualify it.",
+          "body": "A consistent trigger and a consistent response is exactly what a pattern is, subtlety doesn't disqualify it.",
           "chain": [
             "Consistency across multiple instances is the signal, not intensity."
           ],
@@ -1504,7 +1504,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "trigger"
           ],
-          "correctFeedback": "Right — trigger and response, named separately.",
+          "correctFeedback": "Right, trigger and response, named separately.",
           "incorrectFeedback": "It's a specific trigger and response that makes a pattern workable.",
           "workedExample": "\"I go quiet\" alone is vague; \"when plans change, I go quiet\" is workable."
         }
@@ -1549,20 +1549,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "Someone says 'I just always mess up presentations' — what's missing to turn this into a real, workable pattern?",
+        "prompt": "Someone says 'I just always mess up presentations', what's missing to turn this into a real, workable pattern?",
         "options": [
           {
             "id": "specifics",
             "label": "A specific trigger and a specific response, not a global judgment",
             "isSupported": true,
-            "response": "Right — 'I always mess up' is a global judgment, not a trigger-response pattern yet.",
+            "response": "Right, 'I always mess up' is a global judgment, not a trigger-response pattern yet.",
             "takeaway": "A global judgment isn't the same as a named pattern."
           },
           {
             "id": "nothing",
-            "label": "Nothing — this is already a workable pattern",
+            "label": "Nothing, this is already a workable pattern",
             "isSupported": false,
-            "response": "Not quite — this is a global self-judgment, missing the specific trigger and response.",
+            "response": "Not quite, this is a global self-judgment, missing the specific trigger and response.",
             "takeaway": "The misconception this lesson corrects is exactly this: noticing a pattern isn't the same as judging yourself globally."
           }
         ]
@@ -1605,7 +1605,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "named": {
           "title": "Right",
-          "body": "A specific trigger (group decision moments) and a specific response (agreeing to the first suggestion) — a workable pattern, not a personality judgment.",
+          "body": "A specific trigger (group decision moments) and a specific response (agreeing to the first suggestion), a workable pattern, not a personality judgment.",
           "chain": [
             "The trigger is specific and consistent.",
             "The response is specific and consistent.",
@@ -1614,7 +1614,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "vague": {
           "title": "Not quite",
-          "body": "This is a global judgment about the person, not a named trigger-response pattern — exactly the difference this unit teaches.",
+          "body": "This is a global judgment about the person, not a named trigger-response pattern, exactly the difference this unit teaches.",
           "chain": [
             "A personality label isn't the same as a trigger-response pattern."
           ],
@@ -1636,11 +1636,11 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "Your Own Patterns — Checkpoint",
+      "title": "Your Own Patterns, Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Three quick checks on pattern noticing.\nA miss just gives you something to revisit.",
       "introTag": "3 QUESTIONS · ~1 MIN",
-      "revisitMessage": "Worth a short revisit — nothing is lost, and it'll come back around.",
+      "revisitMessage": "Worth a short revisit, nothing is lost, and it'll come back around.",
       "solidMessage": "Pattern noticing is holding. Next: a short writing practice for something bigger and unclear.",
       "items": [
         {
@@ -1665,15 +1665,15 @@ FROM jsonb_to_recordset($tag$[
           "concept": "General-Purpose Scope",
           "prompt": "Does pattern noticing only work for mood or stress patterns?",
           "clue": "Any domain.",
-          "worked": "No — it works in any domain of life.",
+          "worked": "No, it works in any domain of life.",
           "options": [
             {
-              "label": "No — any domain",
+              "label": "No, any domain",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — only mood and stress",
+              "label": "Yes, only mood and stress",
               "feedback": "It's general-purpose, not scoped to those two domains.",
               "isCorrect": false
             }
@@ -1683,15 +1683,15 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Subtle Patterns",
           "prompt": "Does a pattern need to be dramatic to count?",
           "clue": "Consistency, not intensity.",
-          "worked": "No — a consistent, quiet trigger-response pair counts just as much.",
+          "worked": "No, a consistent, quiet trigger-response pair counts just as much.",
           "options": [
             {
-              "label": "No — consistency is what matters, not drama",
+              "label": "No, consistency is what matters, not drama",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — only obvious, dramatic reactions count",
+              "label": "Yes, only obvious, dramatic reactions count",
               "feedback": "Subtle, consistent patterns count just as much.",
               "isCorrect": false
             }
@@ -1715,7 +1715,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Bounded, Not Endless",
       "variant": "myth",
       "myth": "Journaling will fix whatever is bothering me.",
-      "reality": "A short, structured writing practice — writing openly about something unclear, without worrying about grammar, for a bounded session (roughly 15-20 minutes) — is a real but modest tool, tested in over 400 studies. This isn't for writing repeatedly about something distressing without any movement — if it starts to feel like circling with no new information, that's the rumination redirect from earlier in this course, not more writing."
+      "reality": "A short, structured writing practice, writing openly about something unclear, without worrying about grammar, for a bounded session (roughly 15-20 minutes), is a real but modest tool, tested in over 400 studies. This isn't for writing repeatedly about something distressing without any movement, if it starts to feel like circling with no new information, that's the rumination redirect from earlier in this course, not more writing."
     }
   },
   {
@@ -1734,15 +1734,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — that's dwelling, not the studied protocol"
+          "label": "No, that's dwelling, not the studied protocol"
         },
         {
           "id": "yes",
-          "label": "Yes — more sessions always helps more"
+          "label": "Yes, more sessions always helps more"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "Writing repeatedly with nothing new emerging is dwelling — the same rumination tell from earlier applies here too."
+      "reveal": "Writing repeatedly with nothing new emerging is dwelling, the same rumination tell from earlier applies here too."
     }
   },
   {
@@ -1792,7 +1792,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
       "comparisonFeedback": "The specific trigger (which kind of get-together) is what makes this pattern actually workable, not just a general observation."
     }
@@ -1821,7 +1821,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "bounded",
-      "reveal": "It's a bounded, roughly 15-20 minute session — not a daily obligation."
+      "reveal": "It's a bounded, roughly 15-20 minute session, not a daily obligation."
     }
   },
   {
@@ -1837,7 +1837,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": null,
     "content": {
       "title": "Your Fifteen Minutes",
-      "instruction": "Pick something unclear — a decision, a reaction, a pattern you named earlier in this course. Write about it for about 15 minutes, freely, without editing. Nothing here is stored or scored.",
+      "instruction": "Pick something unclear, a decision, a reaction, a pattern you named earlier in this course. Write about it for about 15 minutes, freely, without editing. Nothing here is stored or scored.",
       "items": [
         {
           "id": "topic",
@@ -1860,7 +1860,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Feeling, Same Principle",
       "instruction": "Read the case, then name it.",
-      "question": "Finishing a big project and feeling something more complicated than just 'relieved' — what's a more precise pair of words?",
+      "question": "Finishing a big project and feeling something more complicated than just 'relieved', what's a more precise pair of words?",
       "cases": [
         {
           "id": "case1",
@@ -1882,7 +1882,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "relieved-empty": {
           "title": "Right",
-          "body": "Naming both parts — relief and the letdown that can follow a big finish — captures something 'relieved' alone misses.",
+          "body": "Naming both parts, relief and the letdown that can follow a big finish, captures something 'relieved' alone misses.",
           "chain": [
             "The feeling has more than one component.",
             "Naming both is more precise than naming one."
@@ -1932,13 +1932,13 @@ FROM jsonb_to_recordset($tag$[
         {
           "label": "A mixed-up feeling right after a hard conversation",
           "key": "right-now",
-          "response": "This is what precision is for — name it more specifically than 'bad.'",
+          "response": "This is what precision is for, name it more specifically than 'bad.'",
           "toolIndex": 0
         },
         {
           "label": "Noticing you always go quiet in a certain kind of moment",
           "key": "recurring",
-          "response": "Recurring across time is pattern-noticing's territory — name trigger and response.",
+          "response": "Recurring across time is pattern-noticing's territory, name trigger and response.",
           "toolIndex": 1
         },
         {
@@ -1971,7 +1971,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "bounded"
           ],
-          "correctFeedback": "Right — bounded, roughly 15-20 minutes.",
+          "correctFeedback": "Right, bounded, roughly 15-20 minutes.",
           "incorrectFeedback": "It's a bounded session, not open-ended.",
           "workedExample": "Fifteen minutes on something specific, then done for now."
         }
@@ -1992,7 +1992,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Five Fresh Moments",
       "instruction": "Read the case, then pick the best-fit tool.",
-      "question": "A tangled feeling after a family gathering that's hard to sort through in your head — which tool fits best?",
+      "question": "A tangled feeling after a family gathering that's hard to sort through in your head, which tool fits best?",
       "cases": [
         {
           "id": "case1",
@@ -2004,17 +2004,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "writing",
-          "label": "Writing — it's tangled enough to need real space to work through"
+          "label": "Writing, it's tangled enough to need real space to work through"
         },
         {
           "id": "naming",
-          "label": "Just naming it precisely — one word should cover it"
+          "label": "Just naming it precisely, one word should cover it"
         }
       ],
       "feedbackMap": {
         "writing": {
           "title": "Right",
-          "body": "Something this tangled, with a lot of pieces, is exactly what the writing tool is for — more space than a single precise word can hold.",
+          "body": "Something this tangled, with a lot of pieces, is exactly what the writing tool is for, more space than a single precise word can hold.",
           "chain": [
             "Multiple pieces are tangled together.",
             "One word won't untangle them.",
@@ -2023,7 +2023,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "naming": {
           "title": "Not quite",
-          "body": "A single precise word works for a clear, bounded feeling — this one is described as tangled, which needs more space than that.",
+          "body": "A single precise word works for a clear, bounded feeling, this one is described as tangled, which needs more space than that.",
           "chain": [
             "The word 'tangled' signals more complexity than one word can capture."
           ],
@@ -2080,9 +2080,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Naming a feeling asks 'what am I actually feeling'; pattern-noticing asks 'what triggers this'; writing works through 'what happened' — all three are what-not-why, aimed differently."
+      "comparisonFeedback": "Naming a feeling asks 'what am I actually feeling'; pattern-noticing asks 'what triggers this'; writing works through 'what happened', all three are what-not-why, aimed differently."
     }
   },
   {
@@ -2118,20 +2118,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "Someone uses the writing tool every day, but always with a self-critical, 'what's wrong with me' undertone — is this the tool working as intended?",
+        "prompt": "Someone uses the writing tool every day, but always with a self-critical, 'what's wrong with me' undertone, is this the tool working as intended?",
         "options": [
           {
             "id": "no",
-            "label": "No — the tool is being used, but the ruminative frame undermines what it's meant to do",
+            "label": "No, the tool is being used, but the ruminative frame undermines what it's meant to do",
             "isSupported": true,
-            "response": "Right — the tool itself isn't the whole story; the frame (curious vs. threatened) determines whether it actually helps.",
+            "response": "Right, the tool itself isn't the whole story; the frame (curious vs. threatened) determines whether it actually helps.",
             "takeaway": "A tool used with the wrong frame doesn't produce the intended benefit."
           },
           {
             "id": "yes",
-            "label": "Yes — using the tool regularly is what matters",
+            "label": "Yes, using the tool regularly is what matters",
             "isSupported": false,
-            "response": "Not quite — regular use with a threat-driven frame is closer to rumination than to the intended practice.",
+            "response": "Not quite, regular use with a threat-driven frame is closer to rumination than to the intended practice.",
             "takeaway": "Frequency alone doesn't guarantee the tool is working as intended."
           }
         ]
@@ -2159,7 +2159,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "bounded"
           ],
-          "correctFeedback": "Right — bounded, not endless.",
+          "correctFeedback": "Right, bounded, not endless.",
           "incorrectFeedback": "It's a bounded session, not open-ended.",
           "workedExample": "Fifteen minutes, once, on something unclear."
         }
@@ -2226,20 +2226,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "Someone names a feeling precisely as 'disappointed,' but there's clearly more to the situation than one word covers — what's the next move?",
+        "prompt": "Someone names a feeling precisely as 'disappointed,' but there's clearly more to the situation than one word covers, what's the next move?",
         "options": [
           {
             "id": "write",
-            "label": "Move to writing — precision found the starting point, writing gives it room",
+            "label": "Move to writing, precision found the starting point, writing gives it room",
             "isSupported": true,
-            "response": "Right — precision and writing aren't competing tools; precision can be the entry point into a writing session.",
+            "response": "Right, precision and writing aren't competing tools; precision can be the entry point into a writing session.",
             "takeaway": "The tools build on each other, not just sit side by side."
           },
           {
             "id": "stop",
-            "label": "Stop — one precise word is always enough",
+            "label": "Stop, one precise word is always enough",
             "isSupported": false,
-            "response": "Not quite — sometimes a precise word is just the entry point into something that needs more space.",
+            "response": "Not quite, sometimes a precise word is just the entry point into something that needs more space.",
             "takeaway": "A precise word doesn't always close the loop by itself."
           }
         ]
@@ -2282,7 +2282,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "full-chain": {
           "title": "Right",
-          "body": "This uses the toolkit as designed — precision to start, a check for a relevant pattern, then writing for the space a tangled decision actually needs.",
+          "body": "This uses the toolkit as designed, precision to start, a check for a relevant pattern, then writing for the space a tangled decision actually needs.",
           "chain": [
             "Precision narrows the feeling.",
             "Pattern-noticing checks for a relevant recurring dynamic.",
@@ -2313,26 +2313,26 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "The Tools That Actually Work — Section Checkpoint",
+      "title": "The Tools That Actually Work, Section Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Four quick checks across all of Section 2.\nA miss just gives you something to revisit.",
       "introTag": "4 QUESTIONS · ~1 MIN",
-      "revisitMessage": "The marked ideas are worth a short revisit — nothing is lost, and they'll come back around.",
+      "revisitMessage": "The marked ideas are worth a short revisit, nothing is lost, and they'll come back around.",
       "solidMessage": "The toolkit is holding. Next: checking what you've noticed against what you actually value.",
       "items": [
         {
           "concept": "Emotional Granularity",
           "prompt": "Is 'bad' usually the most precise word available?",
           "clue": "It's a placeholder.",
-          "worked": "No — a more specific word is usually available underneath it.",
+          "worked": "No, a more specific word is usually available underneath it.",
           "options": [
             {
-              "label": "No — it's a placeholder",
+              "label": "No, it's a placeholder",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — already precise",
+              "label": "Yes, already precise",
               "feedback": "'Bad' is a placeholder for something more specific.",
               "isCorrect": false
             }
@@ -2393,10 +2393,10 @@ FROM jsonb_to_recordset($tag$[
       "closedTitle": "Section 2 Complete",
       "closedBody": "Tap to see what you've earned.",
       "openTitle": "You Can Sharpen What You Notice Now",
-      "openBody": "You can now name a feeling with real precision, notice your own patterns, and write through something unclear — matched to the moment, not applied at random.",
+      "openBody": "You can now name a feeling with real precision, notice your own patterns, and write through something unclear, matched to the moment, not applied at random.",
       "nextLabel": "Next up:",
       "nextTitle": "What You Actually Want",
-      "nextBody": "is about checking what you've noticed and sharpened against what you actually value — not what you feel you should want."
+      "nextBody": "is about checking what you've noticed and sharpened against what you actually value, not what you feel you should want."
     }
   }
 ]$tag$::jsonb) AS r(
@@ -2448,7 +2448,7 @@ BEGIN
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now choose between naming a feeling precisely, noticing a pattern, or writing it out — matched to the moment, not applied at random.",
+      "capabilityStatement": "You can now choose between naming a feeling precisely, noticing a pattern, or writing it out, matched to the moment, not applied at random.",
       "primaryActionLabel": "Back to path"
     }
   }
@@ -2457,7 +2457,7 @@ BEGIN
   {
     "source_id": "self-understanding-coming-home-to-yourself-l27",
     "unit_source_id": "self-understanding-coming-home-to-yourself-s2-u1",
-    "title": "Bad Isn't A Feeling — It's A Placeholder",
+    "title": "Bad Isn't A Feeling, It's A Placeholder",
     "type": "lesson",
     "content_id": null,
     "content_type": null,
@@ -2518,7 +2518,7 @@ BEGIN
     "prerequisites": [],
     "reward_content": {
       "title": "30% more flexible, just from better words",
-      "body": "In studies measuring emotional granularity, people who could name unpleasant feelings more precisely were around 30% more flexible in how they regulated them, less likely to drink to cope, and less likely to lash out when hurt. Same feelings — better resolution on naming them. (Kashdan, Barrett & McKnight 2015 — research/03 §2)",
+      "body": "In studies measuring emotional granularity, people who could name unpleasant feelings more precisely were around 30% more flexible in how they regulated them, less likely to drink to cope, and less likely to lash out when hurt. Same feelings, better resolution on naming them. (Kashdan, Barrett & McKnight 2015, research/03 §2)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -2651,7 +2651,7 @@ BEGIN
     "prerequisites": [],
     "reward_content": {
       "title": "\"I don't know why this keeps happening\" is the tell",
-      "body": "A pattern that stays vague — sensed but never named — keeps producing the same confusion every time it shows up. The functional-analysis technique behind this lesson (also behind this app's mood course) works because naming the trigger and the response, specifically, turns a recurring mystery into something you can actually see coming. (Martell, Addis & Jacobson 2001 — research/05 §1)",
+      "body": "A pattern that stays vague, sensed but never named, keeps producing the same confusion every time it shows up. The functional-analysis technique behind this lesson (also behind this app's mood course) works because naming the trigger and the response, specifically, turns a recurring mystery into something you can actually see coming. (Martell, Addis & Jacobson 2001, research/05 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -2783,8 +2783,8 @@ BEGIN
     "review_concepts": [],
     "prerequisites": [],
     "reward_content": {
-      "title": "A small, real effect — 400+ studies say so",
-      "body": "Structured writing about something meaningful, 15-20 minutes at a time, has been tested in over 400 studies. The effect is real but modest — small, not transformative — which is exactly why the protocol matters: a bounded session that builds toward some understanding, not open-ended venting with nowhere to land. (Frattaroli 2006 meta-analysis — research/05 §2)",
+      "title": "A small, real effect, 400+ studies say so",
+      "body": "Structured writing about something meaningful, 15-20 minutes at a time, has been tested in over 400 studies. The effect is real but modest, small, not transformative, which is exactly why the protocol matters: a bounded session that builds toward some understanding, not open-ended venting with nowhere to land. (Frattaroli 2006 meta-analysis, research/05 §2)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }

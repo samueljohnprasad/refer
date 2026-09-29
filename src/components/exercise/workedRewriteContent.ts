@@ -99,7 +99,7 @@ function validateArray(value: unknown, path: string, minimum: number, maximum: n
     return null;
   }
   if (value.length < minimum || value.length > maximum) {
-    issues.push({ path, message: `Must contain ${minimum}–${maximum} items; found ${value.length}.` });
+    issues.push({ path, message: `Must contain ${minimum}-${maximum} items; found ${value.length}.` });
   }
   return value;
 }

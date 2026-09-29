@@ -80,7 +80,7 @@ FROM jsonb_to_recordset($tag$[
     "order_index": 2,
     "is_published": false,
     "domain": "self_understanding",
-    "target_audience": "Adults who want clearer self-knowledge — patterns, values, reactions — from mild curiosity through feeling fairly lost about what they actually feel or want",
+    "target_audience": "Adults who want clearer self-knowledge, patterns, values, reactions, from mild curiosity through feeling fairly lost about what they actually feel or want",
     "total_lessons": 64,
     "total_duration_weeks": null,
     "sessions_per_week": null,
@@ -90,10 +90,10 @@ FROM jsonb_to_recordset($tag$[
     ],
     "reward_content": {
       "title": "Coming Home to Yourself",
-      "acknowledgement": "Sixty-four lessons. You didn't just think about yourself more — you learned to ask a better question, caught your own reflection turning into rumination and found the way out, named feelings with real precision, noticed your own patterns, and picked a value over a should. That's a practice, not a personality result. What you keep is yours.",
+      "acknowledgement": "Sixty-four lessons. You didn't just think about yourself more, you learned to ask a better question, caught your own reflection turning into rumination and found the way out, named feelings with real precision, noticed your own patterns, and picked a value over a should. That's a practice, not a personality result. What you keep is yours.",
       "capabilityHeading": "What you can do now",
       "capabilitySummary": [
-        "Describe what understanding yourself actually looks like, and why it's genuinely hard to get naturally — not a personal failing.",
+        "Describe what understanding yourself actually looks like, and why it's genuinely hard to get naturally, not a personal failing.",
         "Ask 'what' instead of 'why' when trying to understand a reaction, and place any new situation on the notice-sort-sharpen-check loop.",
         "Catch your own self-focus tipping from curious reflection into threat-driven rumination, and redirect out of it.",
         "Name a feeling with real precision, notice a recurring pattern in your own life, and use a short structured writing practice to process something unclear.",
@@ -117,7 +117,7 @@ FROM jsonb_to_recordset($tag$[
     "course_source_id": "self-understanding-coming-home-to-yourself",
     "title": "Seeing Clearly, Not Just More",
     "order_index": 0,
-    "narrative_hook": "You don't need to think about yourself more. You need a better question — and a picture of where it leads.",
+    "narrative_hook": "You don't need to think about yourself more. You need a better question, and a picture of where it leads.",
     "badge_on_complete": "Noticing",
     "difficulty_range": [
       0.15,
@@ -172,7 +172,7 @@ FROM jsonb_to_recordset($tag$[
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now name the difference between introspection and real insight, and ask 'what' instead of 'why' when trying to understand a reaction — even when the 'why' story feels convincing.",
+      "capabilityStatement": "You can now name the difference between introspection and real insight, and ask 'what' instead of 'why' when trying to understand a reaction, even when the 'why' story feels convincing.",
       "primaryActionLabel": "Back to path"
     }
   },
@@ -288,7 +288,7 @@ FROM jsonb_to_recordset($tag$[
     "prerequisites": [],
     "reward_content": {
       "title": "One loop, not seventeen separate facts",
-      "body": "Everything in the next 57 lessons is one of four moves on this same loop: notice, sort, sharpen, check. You just learned the whole shape before learning a single technique — which means every new tool from here on has somewhere to go, instead of being one more thing to remember on its own.",
+      "body": "Everything in the next 57 lessons is one of four moves on this same loop: notice, sort, sharpen, check. You just learned the whole shape before learning a single technique, which means every new tool from here on has somewhere to go, instead of being one more thing to remember on its own.",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -421,7 +421,7 @@ FROM jsonb_to_recordset($tag$[
     "prerequisites": [],
     "reward_content": {
       "title": "95% think they're self-aware. Research suggests about 1 in 10 actually are.",
-      "body": "That gap isn't about honesty — it's about method. The people who closed it didn't just think about themselves more; they changed what they were asking. You just learned the specific question that makes the difference. (Eurich — research/01 §1)",
+      "body": "That gap isn't about honesty, it's about method. The people who closed it didn't just think about themselves more; they changed what they were asking. You just learned the specific question that makes the difference. (Eurich, research/01 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -570,7 +570,7 @@ FROM jsonb_to_recordset($tag$[
     "prerequisites": [],
     "reward_content": {
       "title": "The paradox that confused researchers for years",
-      "body": "Studies kept finding that people who think about themselves more know themselves better AND feel worse — a contradiction, until researchers realized they'd been averaging two opposite things into one number. Split apart by motivation — curious vs. threatened — the contradiction disappears. You just learned which one to aim for. (Trapnell & Campbell 1999 — research/02 §1)",
+      "body": "Studies kept finding that people who think about themselves more know themselves better AND feel worse, a contradiction, until researchers realized they'd been averaging two opposite things into one number. Split apart by motivation, curious vs. threatened, the contradiction disappears. You just learned which one to aim for. (Trapnell & Campbell 1999, research/02 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -702,8 +702,8 @@ FROM jsonb_to_recordset($tag$[
     "review_concepts": [],
     "prerequisites": [],
     "reward_content": {
-      "title": "The clearer, the calmer — but nobody's sure which comes first",
-      "body": "People with a clearer, more stable sense of who they are report lower anxiety and a stronger sense of purpose — one of the more robust findings in personality psychology. What's still debated is which way the arrow points: does clarity produce calm, or does a calmer life produce clarity? Probably both. Either way, building it is worth doing. (Campbell et al. 1996 — research/03 §1)",
+      "title": "The clearer, the calmer, but nobody's sure which comes first",
+      "body": "People with a clearer, more stable sense of who they are report lower anxiety and a stronger sense of purpose, one of the more robust findings in personality psychology. What's still debated is which way the arrow points: does clarity produce calm, or does a calmer life produce clarity? Probably both. Either way, building it is worth doing. (Campbell et al. 1996, research/03 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -796,7 +796,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "This Is What This Course Is About",
       "variant": "myth",
       "myth": "Not understanding a reaction of mine means something is wrong with me.",
-      "reality": "Understanding yourself, in plain terms, is recognizing your own reactions, knowing what you actually want, and having patterns make sense instead of feeling random. Not understanding yourself looks like reacting and not knowing why, or being unsure what you feel or want — that's the territory, not a diagnosis."
+      "reality": "Understanding yourself, in plain terms, is recognizing your own reactions, knowing what you actually want, and having patterns make sense instead of feeling random. Not understanding yourself looks like reacting and not knowing why, or being unsure what you feel or want, that's the territory, not a diagnosis."
     }
   },
   {
@@ -844,15 +844,15 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "self_understanding_everyday",
     "content": {
-      "prompt": "Putting off a decision because you're honestly not sure what you want — is this part of what this course is about?",
+      "prompt": "Putting off a decision because you're honestly not sure what you want, is this part of what this course is about?",
       "options": [
         {
           "id": "a",
-          "label": "Yes — that's exactly the territory"
+          "label": "Yes, that's exactly the territory"
         },
         {
           "id": "b",
-          "label": "No — that's unrelated to self-understanding"
+          "label": "No, that's unrelated to self-understanding"
         }
       ],
       "bestOptionId": "a",
@@ -873,7 +873,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "This Is The Normal Case, Not The Exception",
       "variant": "myth",
-      "myth": "Other people seem to just know themselves — I must be unusually bad at this.",
+      "myth": "Other people seem to just know themselves, I must be unusually bad at this.",
       "reality": "Roughly 95 out of 100 people believe they're self-aware. Research suggests something closer to 10-15 actually are, by real measures. If this feels hard, that's close to universal, not a personal failing."
     }
   },
@@ -889,19 +889,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "why_self_knowledge_is_hard",
     "content": {
-      "prompt": "Most people who believe they're self-aware — are they, by real measures?",
+      "prompt": "Most people who believe they're self-aware, are they, by real measures?",
       "options": [
         {
           "id": "no",
-          "label": "No — the belief and the reality are usually far apart"
+          "label": "No, the belief and the reality are usually far apart"
         },
         {
           "id": "yes",
-          "label": "Yes — believing it usually means it's true"
+          "label": "Yes, believing it usually means it's true"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "That gap isn't about honesty — it's about method, which is exactly what this course changes."
+      "reveal": "That gap isn't about honesty, it's about method, which is exactly what this course changes."
     }
   },
   {
@@ -916,15 +916,15 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "self_understanding_everyday",
     "content": {
-      "prompt": "A pattern that finally makes sense instead of feeling random — is that a sign of understanding yourself?",
+      "prompt": "A pattern that finally makes sense instead of feeling random, is that a sign of understanding yourself?",
       "options": [
         {
           "id": "a",
-          "label": "Yes — patterns making sense is part of what this looks like"
+          "label": "Yes, patterns making sense is part of what this looks like"
         },
         {
           "id": "b",
-          "label": "No — patterns making sense is unrelated"
+          "label": "No, patterns making sense is unrelated"
         }
       ],
       "bestOptionId": "a",
@@ -946,7 +946,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "One Loop, Four Moves",
       "variant": "rule",
       "rule": "Notice a reaction specifically. Sort whether it's curious or threatened. If curious, sharpen it with a tool. Check it against something you actually value.",
-      "explanation": "Seeing the whole shape before learning a single technique means every later tool has somewhere to go — this is what makes the course one connected system, not a pile of separate ideas."
+      "explanation": "Seeing the whole shape before learning a single technique means every later tool has somewhere to go, this is what makes the course one connected system, not a pile of separate ideas."
     }
   },
   {
@@ -987,21 +987,21 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "A tight, irritated feeling shows up after a meeting, and you find yourself genuinely curious what set it off — which two steps are already in motion?",
+        "prompt": "A tight, irritated feeling shows up after a meeting, and you find yourself genuinely curious what set it off, which two steps are already in motion?",
         "options": [
           {
             "id": "notice-sort",
-            "label": "Notice, then sort — and it's sorting toward curious",
+            "label": "Notice, then sort, and it's sorting toward curious",
             "isSupported": true,
-            "response": "Right — the irritation was noticed specifically, and the curiosity is the sort landing on the reflective side of the fork.",
+            "response": "Right, the irritation was noticed specifically, and the curiosity is the sort landing on the reflective side of the fork.",
             "takeaway": "The loop is already running the moment you notice something specifically."
           },
           {
             "id": "sharpen-check",
-            "label": "Sharpen and check — those come first",
+            "label": "Sharpen and check, those come first",
             "isSupported": false,
-            "response": "Not quite — sharpening and checking come after noticing and sorting, not before.",
-            "takeaway": "The loop has an order — noticing and sorting always come first."
+            "response": "Not quite, sharpening and checking come after noticing and sorting, not before.",
+            "takeaway": "The loop has an order, noticing and sorting always come first."
           }
         ]
       }
@@ -1024,12 +1024,12 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "Reacting to something and not knowing ___",
-          "post": " is part of what this course is about — not a diagnosis, just the territory.",
+          "post": " is part of what this course is about, not a diagnosis, just the territory.",
           "answers": [
             "why"
           ],
-          "correctFeedback": "Right — not knowing why is the everyday shape of this course's territory.",
-          "incorrectFeedback": "It's not knowing why — that's the everyday version of this course's territory.",
+          "correctFeedback": "Right, not knowing why is the everyday shape of this course's territory.",
+          "incorrectFeedback": "It's not knowing why, that's the everyday version of this course's territory.",
           "workedExample": "Snapping at something small and not knowing why is exactly this."
         }
       ]
@@ -1047,7 +1047,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "the_loop",
     "content": {
-      "prompt": "Checking a reaction against something you actually value — which step of the loop is this?",
+      "prompt": "Checking a reaction against something you actually value, which step of the loop is this?",
       "options": [
         {
           "id": "check",
@@ -1059,7 +1059,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "check",
-      "reveal": "That's the final step — checking against a value, not the first step of noticing."
+      "reveal": "That's the final step, checking against a value, not the first step of noticing."
     }
   },
   {
@@ -1078,11 +1078,11 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "curious",
-          "label": "Curious — toward reflection"
+          "label": "Curious, toward reflection"
         },
         {
           "id": "threatened",
-          "label": "Threatened — toward rumination"
+          "label": "Threatened, toward rumination"
         }
       ],
       "bestOptionId": "curious",
@@ -1101,15 +1101,15 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": null,
     "content": {
-      "prompt": "A thought keeps circling for three days with nothing new in it — which side of the sort?",
+      "prompt": "A thought keeps circling for three days with nothing new in it, which side of the sort?",
       "options": [
         {
           "id": "threatened",
-          "label": "Threatened — toward rumination"
+          "label": "Threatened, toward rumination"
         },
         {
           "id": "curious",
-          "label": "Curious — toward reflection"
+          "label": "Curious, toward reflection"
         }
       ],
       "bestOptionId": "threatened",
@@ -1138,7 +1138,7 @@ FROM jsonb_to_recordset($tag$[
             "10-15",
             "10 to 15"
           ],
-          "correctFeedback": "Right — a gap close to universal, not a personal failing.",
+          "correctFeedback": "Right, a gap close to universal, not a personal failing.",
           "incorrectFeedback": "The real figure is closer to 10-15 out of 100.",
           "workedExample": "If this feels hard, that puts you in the large majority, not an unusual minority."
         }
@@ -1162,19 +1162,19 @@ FROM jsonb_to_recordset($tag$[
       "beats": [
         {
           "id": "b1",
-          "text": "Notice: a heavy, flat reaction after hearing the news — specifically named, not just 'feeling off.'"
+          "text": "Notice: a heavy, flat reaction after hearing the news, specifically named, not just 'feeling off.'"
         },
         {
           "id": "b2",
-          "text": "Sort: checking whether this is curiosity about what happened, or a defensive spiral starting — it lands on curious."
+          "text": "Sort: checking whether this is curiosity about what happened, or a defensive spiral starting, it lands on curious."
         },
         {
           "id": "b3",
-          "text": "Sharpen: naming the feeling precisely — disappointed, not just 'bad.'"
+          "text": "Sharpen: naming the feeling precisely, disappointed, not just 'bad.'"
         },
         {
           "id": "b4",
-          "text": "Check: does the disappointment point at something valued — growth, recognition — worth naming honestly?"
+          "text": "Check: does the disappointment point at something valued, growth, recognition, worth naming honestly?"
         }
       ]
     }
@@ -1202,7 +1202,7 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "sort",
-          "label": "Checking curious vs. defensive — lands on curious",
+          "label": "Checking curious vs. defensive, lands on curious",
           "order": 2
         },
         {
@@ -1212,7 +1212,7 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "check",
-          "label": "Checking it against a value — growth, recognition",
+          "label": "Checking it against a value, growth, recognition",
           "order": 4
         }
       ],
@@ -1221,16 +1221,16 @@ FROM jsonb_to_recordset($tag$[
         "options": [
           {
             "id": "redirect",
-            "label": "A redirect, not sharpening — Section 1's next unit covers this",
+            "label": "A redirect, not sharpening, Section 1's next unit covers this",
             "isSupported": true,
-            "response": "Right — the threatened side of the fork calls for a redirect, which the next unit teaches in depth.",
+            "response": "Right, the threatened side of the fork calls for a redirect, which the next unit teaches in depth.",
             "takeaway": "The loop only moves to sharpening when the sort lands on curious."
           },
           {
             "id": "sharpen-anyway",
             "label": "Sharpening happens either way",
             "isSupported": false,
-            "response": "Not quite — sharpening is specifically for the curious side of the fork.",
+            "response": "Not quite, sharpening is specifically for the curious side of the fork.",
             "takeaway": "The threatened side needs a different move, not more sharpening."
           }
         ]
@@ -1279,7 +1279,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": null,
     "content": {
       "title": "Your Own Moment",
-      "instruction": "Think of something from the last few days — a reaction, a decision you're sitting with. Where is it on the loop right now? Nothing here is stored or scored.",
+      "instruction": "Think of something from the last few days, a reaction, a decision you're sitting with. Where is it on the loop right now? Nothing here is stored or scored.",
       "items": [
         {
           "id": "notice",
@@ -1317,7 +1317,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "sense"
           ],
-          "correctFeedback": "Right — sense, not random.",
+          "correctFeedback": "Right, sense, not random.",
           "incorrectFeedback": "It's about patterns making sense, not feeling random.",
           "workedExample": "A reaction that used to feel random can make sense once it's actually looked at."
         }
@@ -1352,25 +1352,25 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "loop",
-          "label": "A structured loop — notice, sort, sharpen, check — gives a method instead of just more thinking",
+          "label": "A structured loop, notice, sort, sharpen, check, gives a method instead of just more thinking",
           "order": 3
         }
       ],
       "transfer": {
-        "prompt": "Someone says 'I just need to think about this more to understand myself better' — what does this unit say back?",
+        "prompt": "Someone says 'I just need to think about this more to understand myself better', what does this unit say back?",
         "options": [
           {
             "id": "method",
-            "label": "More thinking alone won't close the gap — the loop is a different, structured method",
+            "label": "More thinking alone won't close the gap, the loop is a different, structured method",
             "isSupported": true,
-            "response": "Right — the gap between believing you're self-aware and actually being it isn't closed by volume of thinking, it's closed by a different method.",
+            "response": "Right, the gap between believing you're self-aware and actually being it isn't closed by volume of thinking, it's closed by a different method.",
             "takeaway": "The loop is a method, not just more of the same thing that hasn't been working."
           },
           {
             "id": "agree",
             "label": "Yes, more thinking is exactly the fix",
             "isSupported": false,
-            "response": "Not quite — this unit's whole point is that more thinking alone isn't the fix.",
+            "response": "Not quite, this unit's whole point is that more thinking alone isn't the fix.",
             "takeaway": "Volume of introspection isn't what this course is building."
           }
         ]
@@ -1391,7 +1391,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "A New Example, On The Loop",
       "instruction": "Read the case, then place it.",
-      "question": "Someone notices they keep saying yes to plans they don't actually want to do, and feels a flicker of curiosity about why that keeps happening — which loop step are they on?",
+      "question": "Someone notices they keep saying yes to plans they don't actually want to do, and feels a flicker of curiosity about why that keeps happening, which loop step are they on?",
       "cases": [
         {
           "id": "case1",
@@ -1403,17 +1403,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "notice-sort",
-          "label": "Notice and sort — noticed specifically, sorting toward curious"
+          "label": "Notice and sort, noticed specifically, sorting toward curious"
         },
         {
           "id": "sharpen",
-          "label": "Sharpen — already past noticing and sorting"
+          "label": "Sharpen, already past noticing and sorting"
         }
       ],
       "feedbackMap": {
         "notice-sort": {
           "title": "Right",
-          "body": "The pattern is noticed specifically, and the genuine curiosity is the sort landing on the reflective side — the next move would be sharpening it with a tool.",
+          "body": "The pattern is noticed specifically, and the genuine curiosity is the sort landing on the reflective side, the next move would be sharpening it with a tool.",
           "chain": [
             "A specific pattern is noticed.",
             "Curiosity, not defensiveness, is present.",
@@ -1422,12 +1422,12 @@ FROM jsonb_to_recordset($tag$[
         },
         "sharpen": {
           "title": "Not quite",
-          "body": "Sharpening comes after noticing and sorting — this example is still at the noticing-and-sorting stage.",
+          "body": "Sharpening comes after noticing and sorting, this example is still at the noticing-and-sorting stage.",
           "chain": [
             "No specific tool has been applied yet."
           ],
           "counterTitle": "Try the sequence angle",
-          "counterBody": "Ask what's actually happened so far — has a tool been used yet?"
+          "counterBody": "Ask what's actually happened so far, has a tool been used yet?"
         }
       }
     }
@@ -1444,12 +1444,12 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "The Loop — Checkpoint",
+      "title": "The Loop, Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Three quick checks on the whole loop.\nA miss just gives you something to revisit.",
       "introTag": "3 QUESTIONS · ~1 MIN",
-      "revisitMessage": "Worth a short revisit — nothing is lost, and it'll come back around.",
-      "solidMessage": "The loop is holding. Next: the technical layer under 'notice' — and your first real tool.",
+      "revisitMessage": "Worth a short revisit, nothing is lost, and it'll come back around.",
+      "solidMessage": "The loop is holding. Next: the technical layer under 'notice', and your first real tool.",
       "items": [
         {
           "concept": "What This Actually Looks Like",
@@ -1476,12 +1476,12 @@ FROM jsonb_to_recordset($tag$[
           "worked": "About 95 in 100 believe it; closer to 10-15 actually are.",
           "options": [
             {
-              "label": "Yes — close to universal, not a personal failing",
+              "label": "Yes, close to universal, not a personal failing",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "No — only a few people have this gap",
+              "label": "No, only a few people have this gap",
               "feedback": "The gap is close to universal, not rare.",
               "isCorrect": false
             }
@@ -1555,7 +1555,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "This is {kind} — {so}."
+        "template": "This is {kind}, {so}."
       },
       "comparisonFeedback": "A recurring reaction without a known cause is precisely the everyday shape of what this course addresses."
     }
@@ -1575,7 +1575,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "The Technical Name For It",
       "variant": "myth",
       "myth": "Spending a lot of time thinking about myself means I'm self-aware.",
-      "reality": "Internal self-awareness is a clear view of your own values, patterns, and reactions — distinct from external self-awareness (how accurately you know others see you). This course builds the internal half."
+      "reality": "Internal self-awareness is a clear view of your own values, patterns, and reactions, distinct from external self-awareness (how accurately you know others see you). This course builds the internal half."
     }
   },
   {
@@ -1590,19 +1590,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "internal_self_awareness",
     "content": {
-      "prompt": "Knowing that your coworkers think you interrupt in meetings — internal or external self-awareness?",
+      "prompt": "Knowing that your coworkers think you interrupt in meetings, internal or external self-awareness?",
       "options": [
         {
           "id": "external",
-          "label": "External — it's about how others see you"
+          "label": "External, it's about how others see you"
         },
         {
           "id": "internal",
-          "label": "Internal — it's about your own values and patterns"
+          "label": "Internal, it's about your own values and patterns"
         }
       ],
       "bestOptionId": "external",
-      "reveal": "Knowing how others perceive you is external self-awareness — the half this course doesn't focus on."
+      "reveal": "Knowing how others perceive you is external self-awareness, the half this course doesn't focus on."
     }
   },
   {
@@ -1619,7 +1619,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Gap, Once More",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "I've never really sat down and thought hard about myself — that must be why I don't understand myself well.",
+      "hotThought": "I've never really sat down and thought hard about myself, that must be why I don't understand myself well.",
       "trays": [
         {
           "id": "check",
@@ -1652,9 +1652,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — so {so}."
+        "template": "{check}, so {so}."
       },
-      "comparisonFeedback": "Introspection time itself isn't what predicts self-knowledge — the method is what this course changes."
+      "comparisonFeedback": "Introspection time itself isn't what predicts self-knowledge, the method is what this course changes."
     }
   },
   {
@@ -1669,7 +1669,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "internal_self_awareness",
     "content": {
-      "prompt": "A clear sense of what you actually value — internal or external self-awareness?",
+      "prompt": "A clear sense of what you actually value, internal or external self-awareness?",
       "options": [
         {
           "id": "internal",
@@ -1699,7 +1699,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "The Hour Wasn't The Problem",
       "variant": "myth",
       "myth": "If I just think about this enough, I'll figure myself out.",
-      "reality": "More time spent introspecting doesn't reliably produce more accurate self-knowledge — in some studies, more introspection predicts worse mood, not better insight. Self-awareness is a specific skill, not a quantity of thinking."
+      "reality": "More time spent introspecting doesn't reliably produce more accurate self-knowledge, in some studies, more introspection predicts worse mood, not better insight. Self-awareness is a specific skill, not a quantity of thinking."
     }
   },
   {
@@ -1718,15 +1718,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — time spent isn't what predicts it"
+          "label": "No, time spent isn't what predicts it"
         },
         {
           "id": "yes",
-          "label": "Yes — more time always means more insight"
+          "label": "Yes, more time always means more insight"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "More introspection time doesn't reliably produce more insight — something about HOW has to change, not just how much."
+      "reveal": "More introspection time doesn't reliably produce more insight, something about HOW has to change, not just how much."
     }
   },
   {
@@ -1743,7 +1743,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Loop, Once More",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "A new technique just showed up — where does it even fit into anything I've already learned?",
+      "hotThought": "A new technique just showed up, where does it even fit into anything I've already learned?",
       "trays": [
         {
           "id": "step",
@@ -1776,9 +1776,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{step} — {so}."
+        "template": "{step}, {so}."
       },
-      "comparisonFeedback": "Every new technique in this course gets placed on the loop — this one sharpens the 'notice' step specifically."
+      "comparisonFeedback": "Every new technique in this course gets placed on the loop, this one sharpens the 'notice' step specifically."
     }
   },
   {
@@ -1793,7 +1793,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "introspection_isnt_insight",
     "content": {
-      "prompt": "An hour spent replaying a small mistake, ending no clearer and feeling worse — what does this illustrate?",
+      "prompt": "An hour spent replaying a small mistake, ending no clearer and feeling worse, what does this illustrate?",
       "options": [
         {
           "id": "a",
@@ -1805,7 +1805,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "a",
-      "reveal": "The hour wasn't the problem — what was being asked during it was."
+      "reveal": "The hour wasn't the problem, what was being asked during it was."
     }
   },
   {
@@ -1823,7 +1823,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "What Produces Data. Why Produces A Story.",
       "variant": "myth",
       "myth": "Asking myself why is the deepest, most honest way to understand a reaction.",
-      "reality": "'What' questions are concrete and checkable — 'what triggers this.' 'Why' questions invite the brain to invent a plausible but unverifiable story — 'why am I like this.' Many true motives aren't consciously accessible, so a confident 'why' answer is often a story, not a retrieved fact."
+      "reality": "'What' questions are concrete and checkable, 'what triggers this.' 'Why' questions invite the brain to invent a plausible but unverifiable story, 'why am I like this.' Many true motives aren't consciously accessible, so a confident 'why' answer is often a story, not a retrieved fact."
     }
   },
   {
@@ -1847,7 +1847,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "What"
           ],
-          "correctFeedback": "Right — 'what' produces a checkable trigger; 'why' produces an unverifiable story.",
+          "correctFeedback": "Right, 'what' produces a checkable trigger; 'why' produces an unverifiable story.",
           "incorrectFeedback": "The useful rewrite starts with 'what,' not 'why.'",
           "workedExample": "\"What happens right before\" gives you something to actually watch for next time."
         }
@@ -1875,8 +1875,8 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "reactions"
           ],
-          "correctFeedback": "Right — values, patterns, and reactions.",
-          "incorrectFeedback": "It's your own values, patterns, and reactions — the internal half.",
+          "correctFeedback": "Right, values, patterns, and reactions.",
+          "incorrectFeedback": "It's your own values, patterns, and reactions, the internal half.",
           "workedExample": "Knowing why a certain comment stung is internal; knowing how a friend perceived your reaction is external."
         }
       ]
@@ -1906,7 +1906,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "what",
-      "reveal": "'What' questions stay concrete and checkable — 'why' invites an unverifiable story."
+      "reveal": "'What' questions stay concrete and checkable, 'why' invites an unverifiable story."
     }
   },
   {
@@ -1930,7 +1930,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "what"
           ],
-          "correctFeedback": "Right — now it's checkable, something you can actually watch for.",
+          "correctFeedback": "Right, now it's checkable, something you can actually watch for.",
           "incorrectFeedback": "The rewrite starts with 'what,' turning it into something checkable.",
           "workedExample": "Once rewritten, the question can actually be answered by watching, not guessed at."
         }
@@ -1989,7 +1989,7 @@ FROM jsonb_to_recordset($tag$[
             "insight",
             "self-knowledge"
           ],
-          "correctFeedback": "Right — time spent isn't the mechanism.",
+          "correctFeedback": "Right, time spent isn't the mechanism.",
           "incorrectFeedback": "It's insight (self-knowledge) that doesn't reliably increase with more time.",
           "workedExample": "An hour of replaying something can end with more distress and no more clarity."
         }
@@ -2015,7 +2015,7 @@ FROM jsonb_to_recordset($tag$[
         {
           "id": "case1",
           "name": "The convincing story",
-          "text": "\"I'm like this because of how I grew up\" — feels true, well-reasoned, hard to argue with.",
+          "text": "\"I'm like this because of how I grew up\", feels true, well-reasoned, hard to argue with.",
           "label": "The Case"
         }
       ],
@@ -2032,7 +2032,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "what": {
           "title": "Right",
-          "body": "The 'why' story can be true and still explain nothing checkable about what happens right now — 'what' keeps the question concrete, even when the why-story feels convincing.",
+          "body": "The 'why' story can be true and still explain nothing checkable about what happens right now, 'what' keeps the question concrete, even when the why-story feels convincing.",
           "chain": [
             "The why-story feels true and well-reasoned.",
             "But it produces nothing checkable about the present.",
@@ -2041,7 +2041,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "more-why": {
           "title": "Not quite",
-          "body": "Going deeper into 'why' produces a more elaborate story, not a more checkable one — this is exactly the trap the redirect exists to catch.",
+          "body": "Going deeper into 'why' produces a more elaborate story, not a more checkable one, this is exactly the trap the redirect exists to catch.",
           "chain": [
             "More 'why' digging produces more story, not more data."
           ],
@@ -2072,7 +2072,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "values"
           ],
-          "correctFeedback": "Right — values, patterns, and reactions.",
+          "correctFeedback": "Right, values, patterns, and reactions.",
           "incorrectFeedback": "It starts with values, then patterns and reactions.",
           "workedExample": "Knowing what you actually value clearly is the internal half of self-awareness."
         }
@@ -2112,20 +2112,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "A learner spends thirty minutes asking themselves 'why do I keep doing this' with no new clarity — what's the actual fix?",
+        "prompt": "A learner spends thirty minutes asking themselves 'why do I keep doing this' with no new clarity, what's the actual fix?",
         "options": [
           {
             "id": "rewrite",
-            "label": "Rewrite it as a 'what' question — the amount of time isn't the problem",
+            "label": "Rewrite it as a 'what' question, the amount of time isn't the problem",
             "isSupported": true,
-            "response": "Right — more time on the same kind of question won't help; the question itself needs to change.",
+            "response": "Right, more time on the same kind of question won't help; the question itself needs to change.",
             "takeaway": "The fix is the method, not the amount of time spent."
           },
           {
             "id": "more-time",
             "label": "Spend even more time on the same question",
             "isSupported": false,
-            "response": "Not quite — this unit's whole point is that more time on the same kind of question doesn't reliably help.",
+            "response": "Not quite, this unit's whole point is that more time on the same kind of question doesn't reliably help.",
             "takeaway": "More of the same question isn't the fix."
           }
         ]
@@ -2146,7 +2146,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "A New Convincing Why",
       "instruction": "Read the case, then rewrite the question.",
-      "question": "\"I always sabotage good things because deep down I don't think I deserve them\" — what's the more useful question?",
+      "question": "\"I always sabotage good things because deep down I don't think I deserve them\", what's the more useful question?",
       "cases": [
         {
           "id": "case1",
@@ -2168,7 +2168,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "what": {
           "title": "Right",
-          "body": "Even a psychologically fluent story like this one produces nothing checkable — the what-question finds the actual, specific moment worth watching for.",
+          "body": "Even a psychologically fluent story like this one produces nothing checkable, the what-question finds the actual, specific moment worth watching for.",
           "chain": [
             "The story is elaborate and feels insightful.",
             "It still doesn't name a checkable trigger.",
@@ -2199,12 +2199,12 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "What, Not Why — Checkpoint",
+      "title": "What, Not Why, Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Three quick checks on this unit's technique.\nA miss just gives you something to revisit.",
       "introTag": "3 QUESTIONS · ~1 MIN",
-      "revisitMessage": "Worth a short revisit — nothing is lost, and it'll come back around.",
-      "solidMessage": "The technique is holding. Next: the fork this whole loop runs on — reflection, not rumination.",
+      "revisitMessage": "Worth a short revisit, nothing is lost, and it'll come back around.",
+      "solidMessage": "The technique is holding. Next: the fork this whole loop runs on, reflection, not rumination.",
       "items": [
         {
           "concept": "Internal Self-Awareness",
@@ -2228,15 +2228,15 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Introspection Isn't Insight",
           "prompt": "Does more introspection time reliably produce more self-knowledge?",
           "clue": "It's about method, not amount.",
-          "worked": "No — time spent isn't what predicts self-knowledge.",
+          "worked": "No, time spent isn't what predicts self-knowledge.",
           "options": [
             {
-              "label": "No — the method matters, not the time spent",
+              "label": "No, the method matters, not the time spent",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — more time is always better",
+              "label": "Yes, more time is always better",
               "feedback": "More time alone doesn't reliably help.",
               "isCorrect": false
             }
@@ -2277,7 +2277,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Example, Same Territory",
       "instruction": "Read the case, then decide.",
-      "question": "Someone catches themselves avoiding a phone call and can't quite say why — is this the course's territory?",
+      "question": "Someone catches themselves avoiding a phone call and can't quite say why, is this the course's territory?",
       "cases": [
         {
           "id": "case1",
@@ -2289,17 +2289,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "yes",
-          "label": "Yes — a reaction without a clear reason is exactly this"
+          "label": "Yes, a reaction without a clear reason is exactly this"
         },
         {
           "id": "no",
-          "label": "No — avoiding a call is too minor to count"
+          "label": "No, avoiding a call is too minor to count"
         }
       ],
       "feedbackMap": {
         "yes": {
           "title": "Right",
-          "body": "A small, everyday reaction without a clear reason is exactly the territory this course addresses — no incident needs to be dramatic to count.",
+          "body": "A small, everyday reaction without a clear reason is exactly the territory this course addresses, no incident needs to be dramatic to count.",
           "chain": [
             "A reaction is present.",
             "The reason isn't clear.",
@@ -2308,7 +2308,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "no": {
           "title": "Not quite",
-          "body": "The territory isn't about how big the reaction is — it's about not knowing why, whatever the scale.",
+          "body": "The territory isn't about how big the reaction is, it's about not knowing why, whatever the scale.",
           "chain": [
             "Size isn't the criterion here."
           ],
@@ -2332,7 +2332,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Internal, Once More",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "A friend tells me I seem more confident lately — that must mean I've built self-awareness.",
+      "hotThought": "A friend tells me I seem more confident lately, that must mean I've built self-awareness.",
       "trays": [
         {
           "id": "kind",
@@ -2340,11 +2340,11 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "id": "external",
-              "label": "External — it's about how someone else sees you"
+              "label": "External, it's about how someone else sees you"
             },
             {
               "id": "internal",
-              "label": "Internal — it's your own view of your values"
+              "label": "Internal, it's your own view of your values"
             }
           ]
         },
@@ -2365,9 +2365,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{kind} — {so}."
+        "template": "{kind}, {so}."
       },
-      "comparisonFeedback": "Feedback from someone else is external self-awareness — useful, but not the same as the internal clarity this course builds."
+      "comparisonFeedback": "Feedback from someone else is external self-awareness, useful, but not the same as the internal clarity this course builds."
     }
   },
   {
@@ -2400,7 +2400,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "reflection_vs_rumination",
     "content": {
-      "prompt": "Wondering what actually happened in a hard conversation, out of curiosity, to handle the next one better — reflection or rumination?",
+      "prompt": "Wondering what actually happened in a hard conversation, out of curiosity, to handle the next one better, reflection or rumination?",
       "options": [
         {
           "id": "reflection",
@@ -2429,7 +2429,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Framing, Same Gap",
       "instruction": "Read the case, then apply the rule.",
-      "question": "A learner feels behind because they're '30 and still figuring themselves out' — what does the actual research say about this?",
+      "question": "A learner feels behind because they're '30 and still figuring themselves out', what does the actual research say about this?",
       "cases": [
         {
           "id": "case1",
@@ -2441,7 +2441,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "normal",
-          "label": "This is close to the normal case — most people are in the same position"
+          "label": "This is close to the normal case, most people are in the same position"
         },
         {
           "id": "behind",
@@ -2451,7 +2451,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "normal": {
           "title": "Right",
-          "body": "The gap between believing you're self-aware and actually being it is close to universal, at any age — 'still figuring it out' describes most people, not an unusual minority.",
+          "body": "The gap between believing you're self-aware and actually being it is close to universal, at any age, 'still figuring it out' describes most people, not an unusual minority.",
           "chain": [
             "Most people believe they're self-aware.",
             "Few actually are, by real measures.",
@@ -2484,7 +2484,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Paradox, Once More",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "I journal every night for an hour — I must have great self-knowledge by now.",
+      "hotThought": "I journal every night for an hour, I must have great self-knowledge by now.",
       "trays": [
         {
           "id": "check",
@@ -2517,9 +2517,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "An hour of the wrong kind of question doesn't reliably build insight — the method matters more than the volume."
+      "comparisonFeedback": "An hour of the wrong kind of question doesn't reliably build insight, the method matters more than the volume."
     }
   },
   {
@@ -2547,7 +2547,7 @@ FROM jsonb_to_recordset($tag$[
           "id": "threat",
           "label": "A 'what's wrong with me' undertone",
           "detail": "A THREAT-FLAVORED FRAME",
-          "body": "Rumination is driven by a sense of threat, loss, or injustice — the frame is often self-critical, not curious."
+          "body": "Rumination is driven by a sense of threat, loss, or injustice, the frame is often self-critical, not curious."
         },
         {
           "id": "not-resolving",
@@ -2570,19 +2570,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "rumination_tells",
     "content": {
-      "prompt": "Ten minutes analyzing the same exchange, no new information showing up, and a growing sense something is wrong with you specifically — is this the tell?",
+      "prompt": "Ten minutes analyzing the same exchange, no new information showing up, and a growing sense something is wrong with you specifically, is this the tell?",
       "options": [
         {
           "id": "yes",
-          "label": "Yes — repetition plus a threat-flavored frame"
+          "label": "Yes, repetition plus a threat-flavored frame"
         },
         {
           "id": "no",
-          "label": "No — this is normal reflection"
+          "label": "No, this is normal reflection"
         }
       ],
       "bestOptionId": "yes",
-      "reveal": "That combination — no new information, plus a threat-flavored frame — is exactly the tell to watch for."
+      "reveal": "That combination, no new information, plus a threat-flavored frame, is exactly the tell to watch for."
     }
   },
   {
@@ -2611,17 +2611,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "sharpen",
-          "label": "Possibly — if it helps sharpen a curious reflection, it's a 'sharpen' tool"
+          "label": "Possibly, if it helps sharpen a curious reflection, it's a 'sharpen' tool"
         },
         {
           "id": "nowhere",
-          "label": "No — anything not taught in this course has nowhere to go"
+          "label": "No, anything not taught in this course has nowhere to go"
         }
       ],
       "feedbackMap": {
         "sharpen": {
           "title": "Right",
-          "body": "Any real tool that helps turn a noticed, curious reaction into something more specific can be placed on the loop's 'sharpen' step — the loop isn't limited to only the tools named in this course.",
+          "body": "Any real tool that helps turn a noticed, curious reaction into something more specific can be placed on the loop's 'sharpen' step, the loop isn't limited to only the tools named in this course.",
           "chain": [
             "The loop is a general shape, not a closed list.",
             "A new tool can be located on it by what it actually does."
@@ -2686,7 +2686,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "This invites {issue} — the more useful version is {fix}."
+        "template": "This invites {issue}, the more useful version is {fix}."
       },
       "comparisonFeedback": "The 'what' rewrite finds something specific and checkable; the deeper 'why' just produces a harsher story."
     }
@@ -2706,7 +2706,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "A Different Move, Not A Better Analysis",
       "variant": "myth",
       "myth": "The way out of overthinking is to think it through more carefully.",
-      "reality": "The moment a rumination tell shows up, the move is a concrete redirect — a 'what' question, a values-based next step, or deliberately closing the loop for now — not more careful analysis. If this pattern doesn't shift even with the redirect, that's worth more support than this course alone — Section 3 covers that route, with no urgency here."
+      "reality": "The moment a rumination tell shows up, the move is a concrete redirect, a 'what' question, a values-based next step, or deliberately closing the loop for now, not more careful analysis. If this pattern doesn't shift even with the redirect, that's worth more support than this course alone, Section 3 covers that route, with no urgency here."
     }
   },
   {
@@ -2769,7 +2769,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "motivation",
-          "label": "What's driving it — curiosity vs. threat"
+          "label": "What's driving it, curiosity vs. threat"
         },
         {
           "id": "duration",
@@ -2792,7 +2792,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": null,
     "content": {
-      "prompt": "Turning over a hard decision, weighing options, moving toward a choice — reflection or rumination?",
+      "prompt": "Turning over a hard decision, weighing options, moving toward a choice, reflection or rumination?",
       "options": [
         {
           "id": "reflection",
@@ -2804,7 +2804,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "reflection",
-      "reveal": "Moving toward a choice, even slowly, is the reflective side — it's going somewhere."
+      "reveal": "Moving toward a choice, even slowly, is the reflective side, it's going somewhere."
     }
   },
   {
@@ -2819,7 +2819,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": null,
     "content": {
-      "prompt": "Rehearsing the same apology in your head for the tenth time, each time feeling more certain you're a bad person — reflection or rumination?",
+      "prompt": "Rehearsing the same apology in your head for the tenth time, each time feeling more certain you're a bad person, reflection or rumination?",
       "options": [
         {
           "id": "rumination",
@@ -2831,7 +2831,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "rumination",
-      "reveal": "Repetition, a self-critical frame, and nothing new emerging — that's rumination, not reflection."
+      "reveal": "Repetition, a self-critical frame, and nothing new emerging, that's rumination, not reflection."
     }
   },
   {
@@ -2924,7 +2924,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "redirect"
           ],
-          "correctFeedback": "Right — a different move, not a deeper dive.",
+          "correctFeedback": "Right, a different move, not a deeper dive.",
           "incorrectFeedback": "It's a redirect, not more analysis.",
           "workedExample": "A what-question, a values-based step, or deliberately closing it for now."
         }
@@ -2945,7 +2945,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Same Tool, Two Uses",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "Mid-spiral on 'why do I always do this' — is there a fast way out?",
+      "hotThought": "Mid-spiral on 'why do I always do this', is there a fast way out?",
       "trays": [
         {
           "id": "swap",
@@ -2971,14 +2971,14 @@ FROM jsonb_to_recordset($tag$[
             },
             {
               "id": "nothing",
-              "label": "Nothing — it's a separate, unrelated tool"
+              "label": "Nothing, it's a separate, unrelated tool"
             }
           ]
         }
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "The swap is {swap} — it {does}."
+        "template": "The swap is {swap}, it {does}."
       },
       "comparisonFeedback": "The technique from Unit 2 and the safety skill from Unit 3 are the same move, applied to two different problems."
     }
@@ -3004,9 +3004,9 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "motivation"
           ],
-          "correctFeedback": "Right — what's driving it, not how long it lasts.",
+          "correctFeedback": "Right, what's driving it, not how long it lasts.",
           "incorrectFeedback": "It's the motivation behind the self-focus, not the duration.",
-          "workedExample": "Curious wondering vs. threat-driven circling — same activity, opposite direction."
+          "workedExample": "Curious wondering vs. threat-driven circling, same activity, opposite direction."
         }
       ]
     }
@@ -3044,20 +3044,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "Someone notices they've been circling the same self-critical thought for twenty minutes but doesn't act on it yet — what's missing?",
+        "prompt": "Someone notices they've been circling the same self-critical thought for twenty minutes but doesn't act on it yet, what's missing?",
         "options": [
           {
             "id": "act",
-            "label": "Noticing the tell isn't enough on its own — the redirect step still has to actually happen",
+            "label": "Noticing the tell isn't enough on its own, the redirect step still has to actually happen",
             "isSupported": true,
-            "response": "Right — noticing is step one; the skill isn't complete until the redirect is actually used.",
+            "response": "Right, noticing is step one; the skill isn't complete until the redirect is actually used.",
             "takeaway": "Recognition without redirection doesn't close the loop."
           },
           {
             "id": "enough",
             "label": "Noticing it is already the whole skill",
             "isSupported": false,
-            "response": "Not quite — noticing is necessary but not sufficient; the redirect has to actually happen.",
+            "response": "Not quite, noticing is necessary but not sufficient; the redirect has to actually happen.",
             "takeaway": "The redirect is a separate, required step."
           }
         ]
@@ -3090,28 +3090,28 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "redirect",
-          "label": "This is rumination — use a concrete redirect, not more analysis"
+          "label": "This is rumination, use a concrete redirect, not more analysis"
         },
         {
           "id": "keep-analyzing",
-          "label": "This is reflection — keep thinking it through carefully"
+          "label": "This is reflection, keep thinking it through carefully"
         }
       ],
       "feedbackMap": {
         "redirect": {
           "title": "Right",
-          "body": "Repetition, worsening mood, and nothing new emerging over three days is the rumination pattern — the move is a redirect, not more careful analysis.",
+          "body": "Repetition, worsening mood, and nothing new emerging over three days is the rumination pattern, the move is a redirect, not more careful analysis.",
           "chain": [
             "Three days of repetition.",
             "No new information emerging.",
-            "Feeling worse each time — that's rumination, calling for a redirect."
+            "Feeling worse each time, that's rumination, calling for a redirect."
           ]
         },
         "keep-analyzing": {
           "title": "Not quite",
-          "body": "This has all three rumination tells — more careful analysis is exactly what won't help here.",
+          "body": "This has all three rumination tells, more careful analysis is exactly what won't help here.",
           "chain": [
-            "Repetition, worsening mood, no new information — none of these are reflection's signature."
+            "Repetition, worsening mood, no new information, none of these are reflection's signature."
           ],
           "counterTitle": "Try the tells angle",
           "counterBody": "Check this against the three tells from l15 directly."
@@ -3131,18 +3131,18 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "Reflection, Not Rumination — Checkpoint",
+      "title": "Reflection, Not Rumination, Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Three quick checks on the safety fork.\nA miss just gives you something to revisit.",
       "introTag": "3 QUESTIONS · ~1 MIN",
-      "revisitMessage": "Worth a short revisit — nothing is lost, and it'll come back around.",
-      "solidMessage": "The fork is holding. Next: what all of this builds toward — a self you can actually describe.",
+      "revisitMessage": "Worth a short revisit, nothing is lost, and it'll come back around.",
+      "solidMessage": "The fork is holding. Next: what all of this builds toward, a self you can actually describe.",
       "items": [
         {
           "concept": "Reflection vs. Rumination",
           "prompt": "What separates reflection from rumination?",
           "clue": "Not duration.",
-          "worked": "The motivation — curiosity vs. threat.",
+          "worked": "The motivation, curiosity vs. threat.",
           "options": [
             {
               "label": "What's driving it, not how long it takes",
@@ -3178,7 +3178,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Stopping and Redirecting",
           "prompt": "What's the move when a tell shows up?",
           "clue": "Not more thinking.",
-          "worked": "A concrete redirect — a what-question, a values-based step, or deliberately closing it for now.",
+          "worked": "A concrete redirect, a what-question, a values-based step, or deliberately closing it for now.",
           "options": [
             {
               "label": "A concrete redirect",
@@ -3242,9 +3242,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Duration alone doesn't tell reflection from rumination apart — the actual tells do."
+      "comparisonFeedback": "Duration alone doesn't tell reflection from rumination apart, the actual tells do."
     }
   },
   {
@@ -3262,7 +3262,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Not What You Believe. How Clearly You Hold It.",
       "variant": "myth",
       "myth": "Self-concept clarity means having a fixed, permanent personality.",
-      "reality": "Self-concept clarity is how clearly, confidently, and consistently your beliefs about yourself are held — distinct from what those beliefs actually are. \"I value honesty\" held the same way on a good week and a bad one is clear. A belief that flips depending on the day is shifting — same kind of statement, very different clarity."
+      "reality": "Self-concept clarity is how clearly, confidently, and consistently your beliefs about yourself are held, distinct from what those beliefs actually are. \"I value honesty\" held the same way on a good week and a bad one is clear. A belief that flips depending on the day is shifting, same kind of statement, very different clarity."
     }
   },
   {
@@ -3277,7 +3277,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "self_concept_clarity",
     "content": {
-      "prompt": "\"I'm a patient person\" — true on calm days, completely reversed on hard ones. Clearly held, or shifting?",
+      "prompt": "\"I'm a patient person\", true on calm days, completely reversed on hard ones. Clearly held, or shifting?",
       "options": [
         {
           "id": "shifting",
@@ -3306,7 +3306,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Case, Same Distinction",
       "instruction": "Read the case, then decide.",
-      "question": "Noticing that you feel most alive doing creative work, on your own, without anyone telling you — internal or external self-awareness?",
+      "question": "Noticing that you feel most alive doing creative work, on your own, without anyone telling you, internal or external self-awareness?",
       "cases": [
         {
           "id": "case1",
@@ -3318,17 +3318,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "internal",
-          "label": "Internal — it's your own observation about your own patterns"
+          "label": "Internal, it's your own observation about your own patterns"
         },
         {
           "id": "external",
-          "label": "External — it's about how others perceive you"
+          "label": "External, it's about how others perceive you"
         }
       ],
       "feedbackMap": {
         "internal": {
           "title": "Right",
-          "body": "This is a self-generated observation about your own reactions and values — exactly the internal half of self-awareness.",
+          "body": "This is a self-generated observation about your own reactions and values, exactly the internal half of self-awareness.",
           "chain": [
             "No one else's perception is involved.",
             "It's your own noticing of your own pattern."
@@ -3336,7 +3336,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "external": {
           "title": "Not quite",
-          "body": "External self-awareness is specifically about how others see you — this is entirely self-observed.",
+          "body": "External self-awareness is specifically about how others see you, this is entirely self-observed.",
           "chain": [
             "No outside perspective is present here."
           ],
@@ -3393,9 +3393,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Whether something new emerges is the actual tell — not simply how much time has gone by."
+      "comparisonFeedback": "Whether something new emerges is the actual tell, not simply how much time has gone by."
     }
   },
   {
@@ -3410,7 +3410,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "self_concept_clarity",
     "content": {
-      "prompt": "\"I care about being reliable\" — held the same way whether things are going well or badly. Clear, or shifting?",
+      "prompt": "\"I care about being reliable\", held the same way whether things are going well or badly. Clear, or shifting?",
       "options": [
         {
           "id": "clear",
@@ -3422,7 +3422,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "clear",
-      "reveal": "Held the same way regardless of circumstances — that's exactly what clarity looks like."
+      "reveal": "Held the same way regardless of circumstances, that's exactly what clarity looks like."
     }
   },
   {
@@ -3451,17 +3451,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — the volume of time doesn't guarantee it"
+          "label": "No, the volume of time doesn't guarantee it"
         },
         {
           "id": "yes",
-          "label": "Yes — a whole weekend should be more than enough"
+          "label": "Yes, a whole weekend should be more than enough"
         }
       ],
       "feedbackMap": {
         "no": {
           "title": "Right",
-          "body": "The amount of time spent doesn't reliably predict the amount of insight gained — what matters is the kind of question being asked during that time.",
+          "body": "The amount of time spent doesn't reliably predict the amount of insight gained, what matters is the kind of question being asked during that time.",
           "chain": [
             "A large amount of time is being spent.",
             "But time itself isn't the mechanism.",
@@ -3470,7 +3470,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "yes": {
           "title": "Not quite",
-          "body": "This treats volume of time as the mechanism, which the research doesn't support — insight depends on the method, not the hours logged.",
+          "body": "This treats volume of time as the mechanism, which the research doesn't support, insight depends on the method, not the hours logged.",
           "chain": [
             "More hours doesn't guarantee more insight."
           ],
@@ -3502,7 +3502,7 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "id": "redirect",
-              "label": "A concrete redirect — a what-question or a values step"
+              "label": "A concrete redirect, a what-question or a values step"
             },
             {
               "id": "harder",
@@ -3527,7 +3527,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "The move is {move} — {so}."
+        "template": "The move is {move}, {so}."
       },
       "comparisonFeedback": "An hour stuck on the same thought is exactly the signal to redirect, not push further into the same kind of thinking."
     }
@@ -3544,15 +3544,15 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": null,
     "content": {
-      "prompt": "Someone clearly and consistently knows they struggle with patience — not loving it, but holding it steadily. Clarity, or esteem?",
+      "prompt": "Someone clearly and consistently knows they struggle with patience, not loving it, but holding it steadily. Clarity, or esteem?",
       "options": [
         {
           "id": "clarity",
-          "label": "Clarity — held steadily, whether or not it's liked"
+          "label": "Clarity, held steadily, whether or not it's liked"
         },
         {
           "id": "esteem",
-          "label": "Esteem — it's about feeling good"
+          "label": "Esteem, it's about feeling good"
         }
       ],
       "bestOptionId": "clarity",
@@ -3573,7 +3573,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "A New Why, Rewritten",
       "instruction": "Read the case, then rewrite the question.",
-      "question": "\"Why do I always freeze up when asked to speak up in a group?\" — what's the more useful rewrite?",
+      "question": "\"Why do I always freeze up when asked to speak up in a group?\", what's the more useful rewrite?",
       "cases": [
         {
           "id": "case1",
@@ -3595,7 +3595,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "what": {
           "title": "Right",
-          "body": "This finds a specific, checkable moment to watch for next time — the rewrite that makes the question actually answerable.",
+          "body": "This finds a specific, checkable moment to watch for next time, the rewrite that makes the question actually answerable.",
           "chain": [
             "The original why-question invites a sweeping comparison.",
             "The what-rewrite finds a specific, checkable moment instead."
@@ -3603,7 +3603,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "why-deeper": {
           "title": "Not quite",
-          "body": "This produces a broader, harsher comparison, not something checkable — exactly the trap the rewrite technique exists to avoid.",
+          "body": "This produces a broader, harsher comparison, not something checkable, exactly the trap the rewrite technique exists to avoid.",
           "chain": [
             "A deeper why produces a bigger story, not more data."
           ],
@@ -3634,7 +3634,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "consistently"
           ],
-          "correctFeedback": "Right — clearly and consistently, regardless of content.",
+          "correctFeedback": "Right, clearly and consistently, regardless of content.",
           "incorrectFeedback": "It's about being held clearly and consistently, not the content of the belief.",
           "workedExample": "Two people can hold different beliefs about themselves with the same degree of clarity."
         }
@@ -3674,20 +3674,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "Someone examines the same self-belief every week, but always with a 'why am I like this' frame that leaves them feeling worse — does this build clarity?",
+        "prompt": "Someone examines the same self-belief every week, but always with a 'why am I like this' frame that leaves them feeling worse, does this build clarity?",
         "options": [
           {
             "id": "no",
-            "label": "No — the rumination frame undermines what repeated examination could otherwise build",
+            "label": "No, the rumination frame undermines what repeated examination could otherwise build",
             "isSupported": true,
-            "response": "Right — repeated examination alone isn't enough; a threat-driven frame gets in the way of the clarity it could otherwise build.",
+            "response": "Right, repeated examination alone isn't enough; a threat-driven frame gets in the way of the clarity it could otherwise build.",
             "takeaway": "The frame (curious vs. threatened) matters as much as the repetition."
           },
           {
             "id": "yes",
-            "label": "Yes — repeated examination always builds clarity eventually",
+            "label": "Yes, repeated examination always builds clarity eventually",
             "isSupported": false,
-            "response": "Not quite — a ruminative frame can repeat indefinitely without ever producing the clarity a curious frame would.",
+            "response": "Not quite, a ruminative frame can repeat indefinitely without ever producing the clarity a curious frame would.",
             "takeaway": "Repetition alone, without the right frame, doesn't reliably build clarity."
           }
         ]
@@ -3772,7 +3772,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "universal"
           ],
-          "correctFeedback": "Right — close to universal, and the loop is the method.",
+          "correctFeedback": "Right, close to universal, and the loop is the method.",
           "incorrectFeedback": "The gap is close to universal, not rare.",
           "workedExample": "Almost everyone has this gap; the loop is the structured way through it."
         }
@@ -3812,20 +3812,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "A learner says 'I've thought about why I'm like this for years and still don't get it, so maybe I just can't be self-aware' — what does this chain say back?",
+        "prompt": "A learner says 'I've thought about why I'm like this for years and still don't get it, so maybe I just can't be self-aware', what does this chain say back?",
         "options": [
           {
             "id": "method",
-            "label": "The years of 'why' thinking were never going to work — the method needed to change, not the effort",
+            "label": "The years of 'why' thinking were never going to work, the method needed to change, not the effort",
             "isSupported": true,
-            "response": "Right — this isn't a capacity problem, it's a method problem, and the fix is switching to 'what.'",
+            "response": "Right, this isn't a capacity problem, it's a method problem, and the fix is switching to 'what.'",
             "takeaway": "Years of the wrong question don't predict anything about whether the right one will work."
           },
           {
             "id": "cant",
             "label": "Some people genuinely can't build self-awareness",
             "isSupported": false,
-            "response": "Not quite — nothing in this chain supports that; it points at the method, not a fixed limit.",
+            "response": "Not quite, nothing in this chain supports that; it points at the method, not a fixed limit.",
             "takeaway": "The evidence points at a fixable method problem, not a fixed inability."
           }
         ]
@@ -3862,7 +3862,7 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "keep-going",
-          "label": "Keep thinking it through — three evenings isn't that long"
+          "label": "Keep thinking it through, three evenings isn't that long"
         }
       ],
       "feedbackMap": {
@@ -3872,12 +3872,12 @@ FROM jsonb_to_recordset($tag$[
           "chain": [
             "Repetition across three evenings.",
             "A worsening, certainty-building frame.",
-            "That's rumination — redirect, don't continue analyzing."
+            "That's rumination, redirect, don't continue analyzing."
           ]
         },
         "keep-going": {
           "title": "Not quite",
-          "body": "The pattern already shows the rumination tells clearly — continuing the same kind of thinking is exactly what won't help.",
+          "body": "The pattern already shows the rumination tells clearly, continuing the same kind of thinking is exactly what won't help.",
           "chain": [
             "Three evenings of repetition with worsening certainty already qualifies."
           ],
@@ -3899,11 +3899,11 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "Seeing Clearly, Not Just More — Section Checkpoint",
+      "title": "Seeing Clearly, Not Just More, Section Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Ten quick checks across the whole of Section 1.\nA miss just gives you something to revisit.",
       "introTag": "10 QUESTIONS · ~2 MIN",
-      "revisitMessage": "The marked ideas are worth a short revisit — nothing is lost, and they'll come back around.",
+      "revisitMessage": "The marked ideas are worth a short revisit, nothing is lost, and they'll come back around.",
       "solidMessage": "The picture is holding. Next: three concrete tools for sharpening what you notice.",
       "items": [
         {
@@ -3931,12 +3931,12 @@ FROM jsonb_to_recordset($tag$[
           "worked": "About 95 in 100 believe it; closer to 10-15 actually are.",
           "options": [
             {
-              "label": "Yes — close to universal",
+              "label": "Yes, close to universal",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "No — rare",
+              "label": "No, rare",
               "feedback": "The gap is close to universal.",
               "isCorrect": false
             }
@@ -3982,7 +3982,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Introspection Isn't Insight",
           "prompt": "Does more time reliably produce more insight?",
           "clue": "It's about method.",
-          "worked": "No — the method matters more than the time spent.",
+          "worked": "No, the method matters more than the time spent.",
           "options": [
             {
               "label": "No",
@@ -4018,7 +4018,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Reflection vs. Rumination",
           "prompt": "What separates them?",
           "clue": "Not duration.",
-          "worked": "The motivation — curiosity vs. threat.",
+          "worked": "The motivation, curiosity vs. threat.",
           "options": [
             {
               "label": "The motivation behind it",
@@ -4108,7 +4108,7 @@ FROM jsonb_to_recordset($tag$[
       "openBody": "You can now describe the whole loop this course teaches, ask what instead of why, tell reflection from rumination, and examine a belief for clarity.",
       "nextLabel": "Next up:",
       "nextTitle": "The Tools That Actually Work",
-      "nextBody": "is about three concrete tools for sharpening what you notice — naming it precisely, spotting the pattern, or writing it out."
+      "nextBody": "is about three concrete tools for sharpening what you notice, naming it precisely, spotting the pattern, or writing it out."
     }
   }
 ]$tag$::jsonb) AS r(
@@ -4147,7 +4147,7 @@ BEGIN
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now name the difference between introspection and real insight, and ask 'what' instead of 'why' when trying to understand a reaction — even when the 'why' story feels convincing.",
+      "capabilityStatement": "You can now name the difference between introspection and real insight, and ask 'what' instead of 'why' when trying to understand a reaction, even when the 'why' story feels convincing.",
       "primaryActionLabel": "Back to path"
     }
   },
@@ -4259,7 +4259,7 @@ BEGIN
     "prerequisites": [],
     "reward_content": {
       "title": "One loop, not seventeen separate facts",
-      "body": "Everything in the next 57 lessons is one of four moves on this same loop: notice, sort, sharpen, check. You just learned the whole shape before learning a single technique — which means every new tool from here on has somewhere to go, instead of being one more thing to remember on its own.",
+      "body": "Everything in the next 57 lessons is one of four moves on this same loop: notice, sort, sharpen, check. You just learned the whole shape before learning a single technique, which means every new tool from here on has somewhere to go, instead of being one more thing to remember on its own.",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -4392,7 +4392,7 @@ BEGIN
     "prerequisites": [],
     "reward_content": {
       "title": "95% think they're self-aware. Research suggests about 1 in 10 actually are.",
-      "body": "That gap isn't about honesty — it's about method. The people who closed it didn't just think about themselves more; they changed what they were asking. You just learned the specific question that makes the difference. (Eurich — research/01 §1)",
+      "body": "That gap isn't about honesty, it's about method. The people who closed it didn't just think about themselves more; they changed what they were asking. You just learned the specific question that makes the difference. (Eurich, research/01 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -4541,7 +4541,7 @@ BEGIN
     "prerequisites": [],
     "reward_content": {
       "title": "The paradox that confused researchers for years",
-      "body": "Studies kept finding that people who think about themselves more know themselves better AND feel worse — a contradiction, until researchers realized they'd been averaging two opposite things into one number. Split apart by motivation — curious vs. threatened — the contradiction disappears. You just learned which one to aim for. (Trapnell & Campbell 1999 — research/02 §1)",
+      "body": "Studies kept finding that people who think about themselves more know themselves better AND feel worse, a contradiction, until researchers realized they'd been averaging two opposite things into one number. Split apart by motivation, curious vs. threatened, the contradiction disappears. You just learned which one to aim for. (Trapnell & Campbell 1999, research/02 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -4673,8 +4673,8 @@ BEGIN
     "review_concepts": [],
     "prerequisites": [],
     "reward_content": {
-      "title": "The clearer, the calmer — but nobody's sure which comes first",
-      "body": "People with a clearer, more stable sense of who they are report lower anxiety and a stronger sense of purpose — one of the more robust findings in personality psychology. What's still debated is which way the arrow points: does clarity produce calm, or does a calmer life produce clarity? Probably both. Either way, building it is worth doing. (Campbell et al. 1996 — research/03 §1)",
+      "title": "The clearer, the calmer, but nobody's sure which comes first",
+      "body": "People with a clearer, more stable sense of who they are report lower anxiety and a stronger sense of purpose, one of the more robust findings in personality psychology. What's still debated is which way the arrow points: does clarity produce calm, or does a calmer life produce clarity? Probably both. Either way, building it is worth doing. (Campbell et al. 1996, research/03 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }

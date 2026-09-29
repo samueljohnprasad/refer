@@ -123,7 +123,7 @@ export function validateExplorableModelContent(
     return issues;
   }
   if (value.stages.length < 2 || value.stages.length > 3) {
-    issues.push({ path: "stages", message: `Must contain 2–3 items; found ${value.stages.length}.` });
+    issues.push({ path: "stages", message: `Must contain 2-3 items; found ${value.stages.length}.` });
   }
   const stageIds = new Set<string>();
   const inputs = new Set<string>();

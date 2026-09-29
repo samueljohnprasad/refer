@@ -327,7 +327,7 @@ export function SurgeDiagramCategoryEngine({
 
       {/* Illustrative Qualifier Footnote */}
       <Text className="happy-font-body mt-4 text-center text-[12px] text-[#8A8A85]">
-        {readString(content.note) ?? "Illustrative pattern — timing and intensity vary."}
+        {readString(content.note) ?? "Illustrative pattern, timing and intensity vary."}
       </Text>
     </View>
   );

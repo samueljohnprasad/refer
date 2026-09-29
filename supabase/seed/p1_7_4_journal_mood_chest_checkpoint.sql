@@ -18,7 +18,7 @@
 -- --------------------------------------------------------------------------
 UPDATE journey_template_nodes
 SET content = '{
-  "prompt": "Write about a worry that keeps coming back. Don''t filter or edit — just let the words out. What does this worry say to you? When does it show up most?",
+  "prompt": "Write about a worry that keeps coming back. Don''t filter or edit, just let the words out. What does this worry say to you? When does it show up most?",
   "mood_before": true,
   "mood_after": true,
   "voice_enabled": false,
@@ -56,7 +56,7 @@ WHERE task_id = 'journal_letter_to_self'
 -- --------------------------------------------------------------------------
 UPDATE journey_template_nodes
 SET content = '{
-  "prompt": "Anxiety makes us zoom in on what went wrong. Today, zoom out. Write three things that went OK — even small ones. A meal you enjoyed, a task you finished, a moment of calm.",
+  "prompt": "Anxiety makes us zoom in on what went wrong. Today, zoom out. Write three things that went OK, even small ones. A meal you enjoyed, a task you finished, a moment of calm.",
   "mood_before": false,
   "mood_after": true,
   "voice_enabled": false,
@@ -75,7 +75,7 @@ WHERE task_id = 'journal_three_ok_things'
 -- --------------------------------------------------------------------------
 UPDATE journey_template_nodes
 SET content = '{
-  "prompt": "If anxiety disappeared for one day, what would you do differently? Be specific — describe the day, the actions, the feelings. This isn''t fantasy; it''s a map of what matters to you.",
+  "prompt": "If anxiety disappeared for one day, what would you do differently? Be specific, describe the day, the actions, the feelings. This isn''t fantasy; it''s a map of what matters to you.",
   "mood_before": true,
   "mood_after": true,
   "voice_enabled": false,
@@ -94,7 +94,7 @@ WHERE task_id = 'journal_without_fear'
 -- --------------------------------------------------------------------------
 UPDATE journey_template_nodes
 SET content = '{
-  "prompt": "Anxiety isn''t all bad — it often carries information. What has living with anxiety taught you? About yourself, about what you care about, about your strength?",
+  "prompt": "Anxiety isn''t all bad, it often carries information. What has living with anxiety taught you? About yourself, about what you care about, about your strength?",
   "mood_before": false,
   "mood_after": true,
   "voice_enabled": false,
@@ -118,7 +118,7 @@ WHERE task_id = 'journal_anxiety_taught_me'
 -- --------------------------------------------------------------------------
 UPDATE journey_template_nodes
 SET content = '{
-  "prompt": "Before we begin — how anxious do you feel right now? There are no wrong answers.",
+  "prompt": "Before we begin, how anxious do you feel right now? There are no wrong answers.",
   "scale": 5,
   "note_enabled": true,
   "labels": ["Not at all", "A little", "Moderate", "Quite a bit", "Very much"]
@@ -136,7 +136,7 @@ WHERE task_id = 'mood_check_baseline'
 -- --------------------------------------------------------------------------
 UPDATE journey_template_nodes
 SET content = '{
-  "prompt": "Now that you understand the anxiety cycle — how does your anxiety feel compared to when you started?",
+  "prompt": "Now that you understand the anxiety cycle, how does your anxiety feel compared to when you started?",
   "scale": 5,
   "note_enabled": true,
   "labels": ["Much less", "A bit less", "About the same", "A bit more", "Much more"],
@@ -218,7 +218,7 @@ SET content = '{
   "reward_type": "prompt",
   "reward_key": "prompt_calm_morning",
   "reward_name": "Calm Morning Prompt",
-  "reward_description": "A special guided journal prompt: ''Describe your ideal calm morning — engage all five senses.'' Use it anytime from your journal library.",
+  "reward_description": "A special guided journal prompt: ''Describe your ideal calm morning, engage all five senses.'' Use it anytime from your journal library.",
   "rarity": "common"
 }'::jsonb,
 title = 'Treasure Chest',
@@ -285,7 +285,7 @@ UPDATE journey_template_nodes
 SET content = '{
   "badge_key": "anxiety_toolkit_master",
   "badge_name": "Anxiety Toolkit Master",
-  "badge_description": "You''ve completed the full Anxiety Toolkit — thought tools, body tools, and your personal emergency plan. You''re equipped to face anxious moments with confidence.",
+  "badge_description": "You''ve completed the full Anxiety Toolkit, thought tools, body tools, and your personal emergency plan. You''re equipped to face anxious moments with confidence.",
   "skills_recap": [
     "Identifying all 5 major cognitive distortions",
     "Completing a full CBT Thought Record",

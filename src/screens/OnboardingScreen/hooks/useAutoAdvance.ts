@@ -55,7 +55,7 @@ export const useAutoAdvance = (
 
         if (index === tasksConfig.length - 1) {
           setAllComplete(true);
-          const advanceTimer = setTimeout(onComplete, 600);
+          const advanceTimer = setTimeout(onComplete, 800);
           timersRef.current.push(advanceTimer);
         }
       }, elapsed);

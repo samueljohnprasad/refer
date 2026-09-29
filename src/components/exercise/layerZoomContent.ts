@@ -55,7 +55,7 @@ function validateImage(value: unknown, issues: MicrolearningContentIssue[]): voi
 
 function validateArray(value: unknown, path: string, minimum: number, maximum: number, issues: MicrolearningContentIssue[]): unknown[] | null {
   if (!Array.isArray(value)) { issues.push({ path, message: "Must be an array." }); return null; }
-  if (value.length < minimum || value.length > maximum) issues.push({ path, message: `Must contain ${minimum}–${maximum} items; found ${value.length}.` });
+  if (value.length < minimum || value.length > maximum) issues.push({ path, message: `Must contain ${minimum}-${maximum} items; found ${value.length}.` });
   return value;
 }
 

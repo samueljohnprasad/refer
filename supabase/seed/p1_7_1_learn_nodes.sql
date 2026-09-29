@@ -15,11 +15,11 @@ UPDATE journey_template_nodes
 SET content = '{
   "cards": [
     {
-      "text": "Anxiety is your brain''s smoke alarm. It''s built to protect you — but sometimes it goes off when there''s no fire. That''s normal, and it''s fixable.",
+      "text": "Anxiety is your brain''s smoke alarm. It''s built to protect you, but sometimes it goes off when there''s no fire. That''s normal, and it''s fixable.",
       "visual_key": "smoke_alarm"
     },
     {
-      "text": "Everyone experiences anxiety. It''s not a character flaw. Think of it like a volume knob — some people''s is turned up higher than others.",
+      "text": "Everyone experiences anxiety. It''s not a character flaw. Think of it like a volume knob, some people''s is turned up higher than others.",
       "visual_key": "volume_knob"
     },
     {
@@ -31,7 +31,7 @@ SET content = '{
       "visual_key": "three_levers"
     },
     {
-      "text": "You don''t need to eliminate anxiety — just turn the volume down to a useful level. Let''s start by understanding how it works.",
+      "text": "You don''t need to eliminate anxiety, just turn the volume down to a useful level. Let''s start by understanding how it works.",
       "visual_key": "dial_down"
     }
   ]
@@ -51,7 +51,7 @@ UPDATE journey_template_nodes
 SET content = '{
   "cards": [
     {
-      "text": "Anxiety runs in a cycle — like three gears turning together. A thought triggers a feeling, the feeling drives a behavior, and the behavior feeds the thought.",
+      "text": "Anxiety runs in a cycle, like three gears turning together. A thought triggers a feeling, the feeling drives a behavior, and the behavior feeds the thought.",
       "visual_key": "three_gears"
     },
     {
@@ -59,7 +59,7 @@ SET content = '{
       "visual_key": "gear_thoughts"
     },
     {
-      "text": "Gear 2: Feelings. That thought fires up your body — racing heart, sweaty palms, tight stomach. Your alarm system is now online.",
+      "text": "Gear 2: Feelings. That thought fires up your body, racing heart, sweaty palms, tight stomach. Your alarm system is now online.",
       "visual_key": "gear_feelings"
     },
     {
@@ -87,7 +87,7 @@ UPDATE journey_template_nodes
 SET content = '{
   "cards": [
     {
-      "text": "Cognitive distortions are thinking traps — patterns your brain falls into that make anxiety worse. They feel true, but they''re tricks of perspective.",
+      "text": "Cognitive distortions are thinking traps, patterns your brain falls into that make anxiety worse. They feel true, but they''re tricks of perspective.",
       "visual_key": "thinking_traps"
     },
     {
@@ -95,7 +95,7 @@ SET content = '{
       "visual_key": "catastrophizing"
     },
     {
-      "text": "Fortune Telling: predicting the future with certainty. ''I just know this is going to go badly.'' But you''re not a psychic — you''re anxious.",
+      "text": "Fortune Telling: predicting the future with certainty. ''I just know this is going to go badly.'' But you''re not a psychic, you''re anxious.",
       "visual_key": "fortune_telling"
     },
     {
@@ -145,7 +145,7 @@ SET content = '{
   ]
 }'::jsonb,
 title = 'Top 5 Anxiety Distortions',
-description = 'One card per distortion — spot them in your own thinking.',
+description = 'One card per distortion, spot them in your own thinking.',
 xp_reward = 10,
 estimated_minutes = 3,
 variant_key = 'learn'
@@ -159,11 +159,11 @@ UPDATE journey_template_nodes
 SET content = '{
   "cards": [
     {
-      "text": "Your body and mind are teammates, not opponents. When anxiety fires in your brain, your body gets the memo instantly — tight muscles, shallow breathing.",
+      "text": "Your body and mind are teammates, not opponents. When anxiety fires in your brain, your body gets the memo instantly, tight muscles, shallow breathing.",
       "visual_key": "body_mind_link"
     },
     {
-      "text": "The trick? It works both ways. Calm the body and the mind follows. That''s why breathing exercises actually work — you''re sending a ''safe'' signal upstream.",
+      "text": "The trick? It works both ways. Calm the body and the mind follows. That''s why breathing exercises actually work, you''re sending a ''safe'' signal upstream.",
       "visual_key": "bidirectional"
     },
     {
@@ -171,7 +171,7 @@ SET content = '{
       "visual_key": "vagus_nerve"
     },
     {
-      "text": "Coming up: you''ll try breathing, grounding, and muscle relaxation — three body-based tools that calm anxiety in under 5 minutes.",
+      "text": "Coming up: you''ll try breathing, grounding, and muscle relaxation, three body-based tools that calm anxiety in under 5 minutes.",
       "visual_key": "three_body_tools"
     }
   ]
@@ -203,7 +203,7 @@ SET content = '{
       "visual_key": "personal_fit"
     },
     {
-      "text": "Next up: you''ll build your own Emergency Plan — your go-to 3-step response for when anxiety spikes. Ready?",
+      "text": "Next up: you''ll build your own Emergency Plan, your go-to 3-step response for when anxiety spikes. Ready?",
       "visual_key": "emergency_plan"
     }
   ]

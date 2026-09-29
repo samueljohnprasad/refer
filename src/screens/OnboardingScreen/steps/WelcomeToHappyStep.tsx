@@ -1,3 +1,4 @@
+// ponytail: Duolingo-style gamified milestone tiles + top login escape + personalized daily goal
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { Text, View, ScrollView, Pressable } from "react-native";
@@ -5,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Book01Icon, LockIcon, FireIcon } from "@hugeicons/core-free-icons";
+import { Card } from "@/src/components/ui/Card";
 import MochiMascot from "../components/MochiMascot";
 import { DailyGoalMinutes } from "../types";
 
@@ -20,127 +22,199 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
   onLoginPress,
 }) => {
   const insets = useSafeAreaInsets();
-  const displayPlanName = planName.replace(/\.$/, "");
+  const displayPlanName = planName.replace(/\.$/, "") || "Personal Plan";
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        paddingTop: insets.top + 20,
-        paddingBottom: 160,
+        paddingTop: insets.top + 4,
+        paddingBottom: 24,
       }}
       contentInsetAdjustmentBehavior="automatic"
+      bounces={false}
       className="flex-1 px-6"
     >
-      <View className="items-center">
-        <MochiMascot expression="peaceful" size={110} delay={40} />
-      </View>
-
-      <Animated.View entering={FadeIn.duration(180).delay(100)} className="mt-5">
-        <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="text-[26px] leading-[1.15] text-ink"
-        >
-          Keep your progress with you
-        </Text>
-        <Text className="mt-2 text-[15px] leading-relaxed text-ink-soft">
-          Save your course, reflections, and streak across devices.
-        </Text>
-      </Animated.View>
-
-      {/* Utility card */}
-      <Animated.View
-        entering={FadeIn.duration(180).delay(180)}
-        style={{ borderCurve: "continuous" }}
-        className="mt-6 gap-3.5 rounded-2xl border border-sage-200/80 bg-warm-white p-5 shadow-sm"
-      >
-        <View className="flex-row items-center gap-3.5">
-          <View className="h-8 w-8 items-center justify-center rounded-full bg-sage-100/70">
-            <HugeiconsIcon icon={Book01Icon} size={17} color="#4F6E49" strokeWidth={2} />
-          </View>
-          <View className="flex-1">
-            <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-              className="text-[14px] text-ink"
-            >
-              {displayPlanName}
-            </Text>
-            <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-              className="text-[12px] text-ink-soft"
-            >
-              Tailored 7-day course ready to begin
-            </Text>
-          </View>
-        </View>
-
-        <View className="h-[1px] bg-sage-200/40" />
-
-        <View className="flex-row items-center gap-3.5">
-          <View className="h-8 w-8 items-center justify-center rounded-full bg-sage-100/70">
-            <HugeiconsIcon icon={LockIcon} size={17} color="#4F6E49" strokeWidth={2} />
-          </View>
-          <View className="flex-1">
-            <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-              className="text-[14px] text-ink"
-            >
-              Private reflections
-            </Text>
-            <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-              className="text-[12px] text-ink-soft"
-            >
-              Synced securely to your personal profile
-            </Text>
-          </View>
-        </View>
-
-        <View className="h-[1px] bg-sage-200/40" />
-
-        <View className="flex-row items-center gap-3.5">
-          <View className="h-8 w-8 items-center justify-center rounded-full bg-sage-100/70">
-            <HugeiconsIcon icon={FireIcon} size={17} color="#4F6E49" strokeWidth={2} />
-          </View>
-          <View className="flex-1">
-            <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-              className="text-[14px] text-ink"
-            >
-              Streak & momentum
-            </Text>
-            <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-              className="text-[12px] text-ink-soft"
-            >
-              Keep your streak and habit history
-            </Text>
-          </View>
-        </View>
-      </Animated.View>
-
-      {/* Existing account escape */}
-      {onLoginPress && (
-        <Animated.View
-          entering={FadeIn.duration(180).delay(260)}
-          className="mt-6 items-center"
-        >
+      {/* Top Bar Escape Hatch */}
+      <View className="flex-row items-center justify-end h-7 mb-1">
+        {onLoginPress && (
           <Pressable
             onPress={onLoginPress}
             hitSlop={12}
-            className="py-1"
+            className="flex-row items-center rounded-full bg-sage-100/80 px-3 py-1 active:opacity-70"
             accessibilityRole="button"
             accessibilityLabel="Already have an account? Log in"
           >
             <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-              className="text-[14px] text-sage-700 underline"
+              style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+              className="text-[12px] text-sage-800"
             >
-              Already have an account? Log in
+              Log in
             </Text>
           </Pressable>
-        </Animated.View>
-      )}
+        )}
+      </View>
+
+      {/* Mascot Hero */}
+      <View className="items-center">
+        <MochiMascot expression="peaceful" size={82} delay={40} />
+      </View>
+
+      {/* Header Copy */}
+      <Animated.View entering={FadeIn.duration(200).delay(100)} className="mt-2.5 items-center">
+        <View className="rounded-full bg-sage-100/90 px-2.5 py-0.5 mb-1.5 border border-sage-200/60">
+          <Text
+            style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+            className="text-[10px] font-bold uppercase tracking-wider text-sage-700"
+          >
+            Lock In Your Progress
+          </Text>
+        </View>
+
+        <Text
+          style={{ fontFamily: APP_FONT_FAMILIES.extraBold }}
+          className="text-center text-[26px] leading-[32px] text-ink"
+        >
+          Keep your progress with you
+        </Text>
+        <Text
+          style={{ fontFamily: APP_FONT_FAMILIES.regular }}
+          className="mt-1 text-center text-[14px] leading-snug text-ink-soft px-3"
+        >
+          Save your tailored plan, streak, and private notes before starting Day 1.
+        </Text>
+      </Animated.View>
+
+      {/* Tactile Gamified Milestone Cards */}
+      <Animated.View
+        entering={FadeIn.duration(220).delay(180)}
+        className="mt-4 gap-2.5"
+      >
+        {/* Course Card */}
+        <Card
+          variant="tile"
+          radius="lg"
+          contentClassName="p-3"
+          onPress={() => {}}
+          haptic="medium"
+          accessibilityRole="button"
+          accessibilityLabel={`${displayPlanName}, Ready, Tailored 7-day course`}
+        >
+          <View className="flex-row items-center gap-3">
+            <View className="h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 border border-emerald-200/70">
+              <HugeiconsIcon icon={Book01Icon} size={18} color="#059669" strokeWidth={2.2} />
+            </View>
+            <View className="flex-1 justify-center">
+              <View className="flex-row items-center justify-between">
+                <Text
+                  style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+                  className="text-[15px] text-ink"
+                  numberOfLines={1}
+                >
+                  {displayPlanName}
+                </Text>
+                <View className="rounded-full bg-emerald-100/80 px-2 py-0.5">
+                  <Text
+                    style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+                    className="text-[10px] text-emerald-800 uppercase tracking-wide"
+                  >
+                    Ready
+                  </Text>
+                </View>
+              </View>
+              <Text
+                style={{ fontFamily: APP_FONT_FAMILIES.regular }}
+                className="mt-0.5 text-[12px] text-ink-soft"
+              >
+                Tailored 7-day course • {dailyGoal}m daily
+              </Text>
+            </View>
+          </View>
+        </Card>
+
+        {/* Streak Card */}
+        <Card
+          variant="tile"
+          radius="lg"
+          contentClassName="p-3"
+          onPress={() => {}}
+          haptic="medium"
+          accessibilityRole="button"
+          accessibilityLabel="Streak & momentum, Day 1, Lock in today's habit history"
+        >
+          <View className="flex-row items-center gap-3">
+            <View className="h-10 w-10 items-center justify-center rounded-xl bg-amber-50 border border-amber-200/70">
+              <HugeiconsIcon icon={FireIcon} size={18} color="#D97706" strokeWidth={2.2} />
+            </View>
+            <View className="flex-1 justify-center">
+              <View className="flex-row items-center justify-between">
+                <Text
+                  style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+                  className="text-[15px] text-ink"
+                >
+                  Streak & momentum
+                </Text>
+                <View className="rounded-full bg-amber-100/80 px-2 py-0.5">
+                  <Text
+                    style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+                    className="text-[10px] text-amber-800 uppercase tracking-wide"
+                  >
+                    Day 1
+                  </Text>
+                </View>
+              </View>
+              <Text
+                style={{ fontFamily: APP_FONT_FAMILIES.regular }}
+                className="mt-0.5 text-[12px] text-ink-soft"
+              >
+                Lock in today&apos;s habit history
+              </Text>
+            </View>
+          </View>
+        </Card>
+
+        {/* Private Reflections Card */}
+        <Card
+          variant="tile"
+          radius="lg"
+          contentClassName="p-3"
+          onPress={() => {}}
+          haptic="medium"
+          accessibilityRole="button"
+          accessibilityLabel="Private reflections, Encrypted, Synced securely to your personal profile"
+        >
+          <View className="flex-row items-center gap-3">
+            <View className="h-10 w-10 items-center justify-center rounded-xl bg-sky-50 border border-sky-200/70">
+              <HugeiconsIcon icon={LockIcon} size={18} color="#0284C7" strokeWidth={2.2} />
+            </View>
+            <View className="flex-1 justify-center">
+              <View className="flex-row items-center justify-between">
+                <Text
+                  style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+                  className="text-[15px] text-ink"
+                >
+                  Private reflections
+                </Text>
+                <View className="rounded-full bg-sky-100/80 px-2 py-0.5">
+                  <Text
+                    style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+                    className="text-[10px] text-sky-800 uppercase tracking-wide"
+                  >
+                    Encrypted
+                  </Text>
+                </View>
+              </View>
+              <Text
+                style={{ fontFamily: APP_FONT_FAMILIES.regular }}
+                className="mt-0.5 text-[12px] text-ink-soft"
+              >
+                Synced securely to your personal profile
+              </Text>
+            </View>
+          </View>
+        </Card>
+      </Animated.View>
+
     </ScrollView>
   );
 };

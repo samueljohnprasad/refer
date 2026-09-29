@@ -80,7 +80,7 @@ export function validateArrayCount(
   if (value.length < minimum || value.length > maximum) {
     issues.push({
       path,
-      message: `Must contain ${minimum}–${maximum} items; found ${value.length}.`,
+      message: `Must contain ${minimum}-${maximum} items; found ${value.length}.`,
     });
   }
   return value;

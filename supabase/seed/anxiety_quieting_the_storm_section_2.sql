@@ -81,7 +81,7 @@ FROM jsonb_to_recordset($tag$[
     "order_index": 3,
     "is_published": false,
     "domain": "anxiety_management",
-    "target_audience": "Adults with everyday-to-moderate anxiety and worry — racing thoughts, catastrophic predictions, avoidance, or occasional panic — including someone with no prior mental-health vocabulary or self-understanding of what they're feeling. Not diagnosed panic disorder with agoraphobia, OCD, or PTSD requiring specialist treatment; not a crisis tool or a diagnostic instrument.",
+    "target_audience": "Adults with everyday-to-moderate anxiety and worry, racing thoughts, catastrophic predictions, avoidance, or occasional panic, including someone with no prior mental-health vocabulary or self-understanding of what they're feeling. Not diagnosed panic disorder with agoraphobia, OCD, or PTSD requiring specialist treatment; not a crisis tool or a diagnostic instrument.",
     "total_lessons": 69,
     "total_duration_weeks": null,
     "sessions_per_week": null,
@@ -91,14 +91,14 @@ FROM jsonb_to_recordset($tag$[
     ],
     "reward_content": {
       "title": "Quieting the Storm",
-      "acknowledgement": "Sixty-nine lessons. You learned what this feeling actually is before learning a single technique, read the alarm without treating it as proof, caught the catastrophic story your mind adds and checked it against real evidence, noticed when a safety behavior or an avoided moment was quietly keeping a fear alive, chose to approach instead, sat with worry's underlying uncertainty instead of letting it spiral, and recognized a panic surge for what it is — intense, uncomfortable, and time-limited. That's a practice, not a promise of permanent calm. What you keep is yours.",
+      "acknowledgement": "Sixty-nine lessons. You learned what this feeling actually is before learning a single technique, read the alarm without treating it as proof, caught the catastrophic story your mind adds and checked it against real evidence, noticed when a safety behavior or an avoided moment was quietly keeping a fear alive, chose to approach instead, sat with worry's underlying uncertainty instead of letting it spiral, and recognized a panic surge for what it is, intense, uncomfortable, and time-limited. That's a practice, not a promise of permanent calm. What you keep is yours.",
       "capabilityHeading": "What you can do now",
       "capabilitySummary": [
         "Describe what anxiety actually feels like, and recognize it as a near-universal experience, not a personal flaw.",
-        "Recognize anxiety as a protective alarm — a possible-threat signal, not proof that danger is present.",
+        "Recognize anxiety as a protective alarm, a possible-threat signal, not proof that danger is present.",
         "Catch a catastrophic threat prediction and check it against real evidence and your own ability to cope.",
         "Notice a safety behavior or avoided moment that's quietly keeping a fear alive, and choose a small approach step instead.",
-        "Tell worry driven by intolerance of uncertainty apart from productive problem-solving, and recognize a panic surge for what it is — time-limited, not dangerous."
+        "Tell worry driven by intolerance of uncertainty apart from productive problem-solving, and recognize a panic surge for what it is, time-limited, not dangerous."
       ],
       "reviewActionLabel": "Review the course",
       "doneActionLabel": "Done"
@@ -118,7 +118,7 @@ FROM jsonb_to_recordset($tag$[
     "course_source_id": "anxiety-quieting-the-storm",
     "title": "Teaching It To Stand Down",
     "order_index": 1,
-    "narrative_hook": "Approach instead of avoid, in general — and in the two fastest, most common forms this loop takes.",
+    "narrative_hook": "Approach instead of avoid, in general, and in the two fastest, most common forms this loop takes.",
     "badge_on_complete": "Facing It",
     "difficulty_range": [
       0.3,
@@ -169,7 +169,7 @@ FROM jsonb_to_recordset($tag$[
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now tell problem-solving worry from looping worry, and name intolerance of uncertainty — not just bad odds — as what's actually driving a worry.",
+      "capabilityStatement": "You can now tell problem-solving worry from looping worry, and name intolerance of uncertainty, not just bad odds, as what's actually driving a worry.",
       "primaryActionLabel": "Back to path"
     }
   },
@@ -272,7 +272,7 @@ FROM jsonb_to_recordset($tag$[
     "prerequisites": [],
     "reward_content": {
       "title": "Fear fades through new learning, not through feeling calm first",
-      "body": "Deliberately, gradually approaching a feared situation — while staying present rather than escaping or using a safety behavior — lets a new 'this wasn't as dangerous as predicted' association form alongside the old fear. The amount of calm felt during a single approach step predicts the outcome less reliably than whether the step was actually completed. (Foa & Kozak 1986 — research/04 §1-2)",
+      "body": "Deliberately, gradually approaching a feared situation, while staying present rather than escaping or using a safety behavior, lets a new 'this wasn't as dangerous as predicted' association form alongside the old fear. The amount of calm felt during a single approach step predicts the outcome less reliably than whether the step was actually completed. (Foa & Kozak 1986, research/04 §1-2)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -421,7 +421,7 @@ FROM jsonb_to_recordset($tag$[
     "prerequisites": [],
     "reward_content": {
       "title": "Worry can be a way of avoiding a feeling, not facing it",
-      "body": "Because worry is mostly word-based rather than vivid and image-based, it can actually suppress the fuller emotional reaction that imagining the same outcome clearly would produce — meaning worry can function as a subtle way of dodging a harder feeling (raw uncertainty) rather than resolving it. (Borkovec — research/05 §1)",
+      "body": "Because worry is mostly word-based rather than vivid and image-based, it can actually suppress the fuller emotional reaction that imagining the same outcome clearly would produce, meaning worry can function as a subtle way of dodging a harder feeling (raw uncertainty) rather than resolving it. (Borkovec, research/05 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -569,8 +569,8 @@ FROM jsonb_to_recordset($tag$[
     "review_concepts": [],
     "prerequisites": [],
     "reward_content": {
-      "title": "Panic peaks and comes down — the physiology can't sustain it",
-      "body": "What escalates or prolongs a panic episode is the ongoing catastrophic misinterpretation, not the physiology running away unchecked — the sympathetic arousal driving it has a real ceiling and the body's own systems bring it back down within roughly 20-30 minutes, even with no intervention. (Clark 1986 — research/06 §1-2)",
+      "title": "Panic peaks and comes down, the physiology can't sustain it",
+      "body": "What escalates or prolongs a panic episode is the ongoing catastrophic misinterpretation, not the physiology running away unchecked, the sympathetic arousal driving it has a real ceiling and the body's own systems bring it back down within roughly 20-30 minutes, even with no intervention. (Clark 1986, research/06 §1-2)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -663,7 +663,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Small Steps, In Order",
       "variant": "myth",
       "myth": "Facing a fear means jumping straight to the hardest version of it.",
-      "reality": "A feared situation broken into a small, ordered ladder of approach steps is actually reachable. Not \"make the hard phone call\" in one step — instead: look up the number, dial and hang up before it rings, dial and let it ring once, have the call."
+      "reality": "A feared situation broken into a small, ordered ladder of approach steps is actually reachable. Not \"make the hard phone call\" in one step, instead: look up the number, dial and hang up before it rings, dial and let it ring once, have the call."
     }
   },
   {
@@ -692,17 +692,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "ordered",
-          "label": "B, C, D, A — look up the number, then dial-and-hang-up, then dial-and-ring-once, then have the call"
+          "label": "B, C, D, A, look up the number, then dial-and-hang-up, then dial-and-ring-once, then have the call"
         },
         {
           "id": "reversed",
-          "label": "A, B, C, D — have the call first, then work backward"
+          "label": "A, B, C, D, have the call first, then work backward"
         }
       ],
       "feedbackMap": {
         "ordered": {
           "title": "Right",
-          "body": "Each step is a small increase in difficulty over the last — that's what makes a ladder actually climbable.",
+          "body": "Each step is a small increase in difficulty over the last, that's what makes a ladder actually climbable.",
           "chain": [
             "Looking up the number is the smallest, easiest step.",
             "Each following step adds a little more exposure."
@@ -710,7 +710,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "reversed": {
           "title": "Not quite",
-          "body": "Starting with the hardest version defeats the purpose of a ladder — smaller steps need to come first.",
+          "body": "Starting with the hardest version defeats the purpose of a ladder, smaller steps need to come first.",
           "chain": [
             "A ladder needs to start small and build up, not start at the top."
           ],
@@ -742,7 +742,7 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "id": "problem-fix",
-              "label": "The same mechanism, seen from two sides — one is the problem, the other is the fix"
+              "label": "The same mechanism, seen from two sides, one is the problem, the other is the fix"
             },
             {
               "id": "unrelated",
@@ -767,9 +767,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Graded approach is built specifically to interrupt the avoidance cycle — completing a small step, instead of avoiding, breaks the relief-now/louder-later pattern."
+      "comparisonFeedback": "Graded approach is built specifically to interrupt the avoidance cycle, completing a small step, instead of avoiding, breaks the relief-now/louder-later pattern."
     }
   },
   {
@@ -808,7 +808,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "graded": {
           "title": "Right",
-          "body": "Each step increases exposure gradually — writing it down, then a private ask, then a small out-loud ask, then a real one.",
+          "body": "Each step increases exposure gradually, writing it down, then a private ask, then a small out-loud ask, then a real one.",
           "chain": [
             "Each step is only a small increase over the last.",
             "That's what makes the ladder actually climbable."
@@ -841,7 +841,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Completed, Not Calm",
       "variant": "myth",
       "myth": "If I still feel anxious afterward, the approach step didn't work.",
-      "reality": "An approach step worked if it was completed without a safety behavior — not if the anxiety dropped. Two people both make the hard call. One feels anxious the entire time but makes it without hanging up early. The other feels calm because they rehearsed exactly what to say for an hour first (a safety behavior). The first one is the real success."
+      "reality": "An approach step worked if it was completed without a safety behavior, not if the anxiety dropped. Two people both make the hard call. One feels anxious the entire time but makes it without hanging up early. The other feels calm because they rehearsed exactly what to say for an hour first (a safety behavior). The first one is the real success."
     }
   },
   {
@@ -862,13 +862,13 @@ FROM jsonb_to_recordset($tag$[
       "rows": [
         {
           "question": "Anxious the whole call, but made it without hanging up early",
-          "left": "Completed without a safety behavior — real success",
+          "left": "Completed without a safety behavior, real success",
           "right": ""
         },
         {
           "question": "Felt calm, but only because of an hour of rehearsal beforehand",
           "left": "",
-          "right": "A safety behavior was used — not the real success marker"
+          "right": "A safety behavior was used, not the real success marker"
         }
       ]
     }
@@ -891,17 +891,17 @@ FROM jsonb_to_recordset($tag$[
       "rows": [
         {
           "question": "Went to the gathering anxious the whole time, stayed the full hour",
-          "left": "Completed — real success",
+          "left": "Completed, real success",
           "right": ""
         },
         {
           "question": "Went to the gathering but left after ten minutes, still anxious",
-          "right": "Avoided part of it — not yet a full completion",
+          "right": "Avoided part of it, not yet a full completion",
           "left": ""
         },
         {
           "question": "Sent the email anxious, without re-reading it twenty times first",
-          "left": "Completed without a safety behavior — real success",
+          "left": "Completed without a safety behavior, real success",
           "right": ""
         },
         {
@@ -929,11 +929,11 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "A feared situation broken into a small, ordered ",
-          "post": " of steps is reachable — jumping to the hardest version usually isn't.",
+          "post": " of steps is reachable, jumping to the hardest version usually isn't.",
           "answers": [
             "ladder"
           ],
-          "correctFeedback": "Right — a ladder.",
+          "correctFeedback": "Right, a ladder.",
           "incorrectFeedback": "The word is ladder.",
           "workedExample": "Look up the number, then dial and hang up, then let it ring, then have the call."
         }
@@ -984,7 +984,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "wait-calm": {
           "title": "Not quite",
-          "body": "Waiting for the dread to disappear first usually means never starting — completion, not calm, is what to aim for.",
+          "body": "Waiting for the dread to disappear first usually means never starting, completion, not calm, is what to aim for.",
           "chain": [
             "Calm isn't a prerequisite for a successful attempt."
           ],
@@ -1007,7 +1007,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": null,
     "content": {
       "title": "Your Own Ladder, Started",
-      "instruction": "Think of something real you've been avoiding. What's a ladder toward it — and what's the first, smallest step, small enough to actually be doable this week? Nothing here is stored or scored.",
+      "instruction": "Think of something real you've been avoiding. What's a ladder toward it, and what's the first, smallest step, small enough to actually be doable this week? Nothing here is stored or scored.",
       "items": [
         {
           "id": "first-step",
@@ -1033,11 +1033,11 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "An approach step worked if it was ",
-          "post": " without a safety behavior — not if the anxiety dropped.",
+          "post": " without a safety behavior, not if the anxiety dropped.",
           "answers": [
             "completed"
           ],
-          "correctFeedback": "Right — completed, not calm.",
+          "correctFeedback": "Right, completed, not calm.",
           "incorrectFeedback": "The word is completed.",
           "workedExample": "Anxious the whole time and completed still counts as success."
         }
@@ -1080,7 +1080,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "graded": {
           "title": "Right",
-          "body": "Gradual increases in exposure, smallest to largest — a real, climbable ladder.",
+          "body": "Gradual increases in exposure, smallest to largest, a real, climbable ladder.",
           "chain": [
             "Each step is a small increase over the last."
           ]
@@ -1115,7 +1115,7 @@ FROM jsonb_to_recordset($tag$[
       "rows": [
         {
           "question": "Made the comment in the group, heart pounding the whole time",
-          "left": "Completed without a safety behavior — real success",
+          "left": "Completed without a safety behavior, real success",
           "right": ""
         },
         {
@@ -1152,17 +1152,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "yes",
-          "label": "Yes — completed without a safety behavior is the real success marker, regardless of how anxious it felt"
+          "label": "Yes, completed without a safety behavior is the real success marker, regardless of how anxious it felt"
         },
         {
           "id": "no",
-          "label": "No — feeling anxious the whole time means it didn't really work"
+          "label": "No, feeling anxious the whole time means it didn't really work"
         }
       ],
       "feedbackMap": {
         "yes": {
           "title": "Right",
-          "body": "Completion without a safety behavior is exactly the success marker this unit teaches — feeling calm was never the requirement.",
+          "body": "Completion without a safety behavior is exactly the success marker this unit teaches, feeling calm was never the requirement.",
           "chain": [
             "The step was completed.",
             "No safety behavior was used.",
@@ -1171,9 +1171,9 @@ FROM jsonb_to_recordset($tag$[
         },
         "no": {
           "title": "Not quite",
-          "body": "This is exactly the misconception the unit corrects — feeling anxious the whole time doesn't undo a genuine completion.",
+          "body": "This is exactly the misconception the unit corrects, feeling anxious the whole time doesn't undo a genuine completion.",
           "chain": [
-            "Calm was never the success marker — completion was."
+            "Calm was never the success marker, completion was."
           ],
           "counterTitle": "Try the completion angle",
           "counterBody": "Ask whether the step was completed and whether a safety behavior was used."
@@ -1196,7 +1196,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Circling, Or Moving?",
       "variant": "myth",
       "myth": "Worrying about something more means I'm handling it more responsibly.",
-      "reality": "Problem-solving worry produces a next action. Looping worry produces neither resolution nor a plan — just more worry. Worrying about a work deadline and deciding to block an hour tomorrow to start it resolves somewhere. Worrying about the same deadline for the fifth time tonight, with nothing new emerging, is just circling."
+      "reality": "Problem-solving worry produces a next action. Looping worry produces neither resolution nor a plan, just more worry. Worrying about a work deadline and deciding to block an hour tomorrow to start it resolves somewhere. Worrying about the same deadline for the fifth time tonight, with nothing new emerging, is just circling."
     }
   },
   {
@@ -1211,19 +1211,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "worry_as_avoidance",
     "content": {
-      "prompt": "Worrying about a health symptom, then deciding to book a doctor's appointment tomorrow — problem-solving or looping?",
+      "prompt": "Worrying about a health symptom, then deciding to book a doctor's appointment tomorrow, problem-solving or looping?",
       "options": [
         {
           "id": "problem-solving",
-          "label": "Problem-solving — it produced a next action"
+          "label": "Problem-solving, it produced a next action"
         },
         {
           "id": "looping",
-          "label": "Looping — it just circled"
+          "label": "Looping, it just circled"
         }
       ],
       "bestOptionId": "problem-solving",
-      "reveal": "Problem-solving — the worry led to a concrete next action, which is what separates it from looping."
+      "reveal": "Problem-solving, the worry led to a concrete next action, which is what separates it from looping."
     }
   },
   {
@@ -1262,7 +1262,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "small": {
           "title": "Right",
-          "body": "A wave and nod is a genuinely small first step — the kind a working ladder starts with.",
+          "body": "A wave and nod is a genuinely small first step, the kind a working ladder starts with.",
           "chain": [
             "It's a small increase in exposure, not a big jump."
           ]
@@ -1295,7 +1295,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "repeat",
-          "label": "It can run on repeat — chronic worry is catastrophizing's ongoing, everyday form"
+          "label": "It can run on repeat, chronic worry is catastrophizing's ongoing, everyday form"
         },
         {
           "id": "once",
@@ -1303,7 +1303,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "repeat",
-      "reveal": "Catastrophizing can run on repeat — chronic worry is the same overestimated prediction, just looping instead of appearing once."
+      "reveal": "Catastrophizing can run on repeat, chronic worry is the same overestimated prediction, just looping instead of appearing once."
     }
   },
   {
@@ -1318,19 +1318,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "worry_as_avoidance",
     "content": {
-      "prompt": "Replaying the same financial worry for the tenth time tonight, nothing new emerging — problem-solving or looping?",
+      "prompt": "Replaying the same financial worry for the tenth time tonight, nothing new emerging, problem-solving or looping?",
       "options": [
         {
           "id": "looping",
-          "label": "Looping — nothing new, just circling"
+          "label": "Looping, nothing new, just circling"
         },
         {
           "id": "problem-solving",
-          "label": "Problem-solving — the repetition is productive"
+          "label": "Problem-solving, the repetition is productive"
         }
       ],
       "bestOptionId": "looping",
-      "reveal": "Looping — repetition with no new information or plan is the tell."
+      "reveal": "Looping, repetition with no new information or plan is the tell."
     }
   },
   {
@@ -1345,19 +1345,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "worry_as_avoidance",
     "content": {
-      "prompt": "Worrying about a friendship, then deciding to send a text to check in — problem-solving or looping?",
+      "prompt": "Worrying about a friendship, then deciding to send a text to check in, problem-solving or looping?",
       "options": [
         {
           "id": "problem-solving",
-          "label": "Problem-solving — produced a next action"
+          "label": "Problem-solving, produced a next action"
         },
         {
           "id": "looping",
-          "label": "Looping — no next action"
+          "label": "Looping, no next action"
         }
       ],
       "bestOptionId": "problem-solving",
-      "reveal": "Problem-solving — a concrete next action (sending the text) resolves somewhere."
+      "reveal": "Problem-solving, a concrete next action (sending the text) resolves somewhere."
     }
   },
   {
@@ -1372,7 +1372,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "worry_as_avoidance",
     "content": {
-      "prompt": "Circling the same symptom worry for the fourth night in a row with no new information and no plan made — problem-solving or looping?",
+      "prompt": "Circling the same symptom worry for the fourth night in a row with no new information and no plan made, problem-solving or looping?",
       "options": [
         {
           "id": "looping",
@@ -1384,7 +1384,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "looping",
-      "reveal": "Looping — four nights with nothing new and no plan is circling, not solving."
+      "reveal": "Looping, four nights with nothing new and no plan is circling, not solving."
     }
   },
   {
@@ -1402,7 +1402,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Not About The Odds",
       "variant": "myth",
       "myth": "I'll stop worrying once I've thought about it enough to feel sure.",
-      "reality": "Underneath a lot of chronic worry isn't a specific bad-odds prediction — it's not being able to tolerate not knowing, even when the odds are fine. The odds a text left on read means something is wrong are genuinely low, and the worry can persist anyway, because it's not really about the odds. It's about not being able to sit with not knowing yet."
+      "reality": "Underneath a lot of chronic worry isn't a specific bad-odds prediction, it's not being able to tolerate not knowing, even when the odds are fine. The odds a text left on read means something is wrong are genuinely low, and the worry can persist anyway, because it's not really about the odds. It's about not being able to sit with not knowing yet."
     }
   },
   {
@@ -1417,11 +1417,11 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "intolerance_of_uncertainty",
     "content": {
-      "prompt": "Someone knows, accurately, that the odds of a specific bad outcome are low — and still can't stop worrying about it. What's actually driving the worry?",
+      "prompt": "Someone knows, accurately, that the odds of a specific bad outcome are low, and still can't stop worrying about it. What's actually driving the worry?",
       "options": [
         {
           "id": "uncertainty",
-          "label": "Intolerance of not-knowing — the odds aren't the real issue"
+          "label": "Intolerance of not-knowing, the odds aren't the real issue"
         },
         {
           "id": "odds",
@@ -1429,7 +1429,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "uncertainty",
-      "reveal": "Since the odds are already known to be low, something else is driving it — not being able to tolerate the remaining uncertainty."
+      "reveal": "Since the odds are already known to be low, something else is driving it, not being able to tolerate the remaining uncertainty."
     }
   },
   {
@@ -1450,7 +1450,7 @@ FROM jsonb_to_recordset($tag$[
       "rows": [
         {
           "question": "Sent the message anxious, without rereading it fifteen times first",
-          "left": "Completed without a safety behavior — real success",
+          "left": "Completed without a safety behavior, real success",
           "right": ""
         },
         {
@@ -1478,12 +1478,12 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "Problem-solving worry produces a next action; looping worry produces ",
-          "post": " — just more worry.",
+          "post": ", just more worry.",
           "answers": [
             "neither",
             "nothing"
           ],
-          "correctFeedback": "Right — neither resolution nor a plan.",
+          "correctFeedback": "Right, neither resolution nor a plan.",
           "incorrectFeedback": "Looping worry produces neither a resolution nor a plan.",
           "workedExample": "Circling the same thought with nothing new is looping."
         }
@@ -1502,11 +1502,11 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "intolerance_of_uncertainty",
     "content": {
-      "prompt": "Worrying about a rare medical event even after a doctor confirms the odds are extremely low — driven by bad odds, or by intolerance of not-knowing?",
+      "prompt": "Worrying about a rare medical event even after a doctor confirms the odds are extremely low, driven by bad odds, or by intolerance of not-knowing?",
       "options": [
         {
           "id": "uncertainty",
-          "label": "Intolerance of not-knowing — the odds are already known to be low"
+          "label": "Intolerance of not-knowing, the odds are already known to be low"
         },
         {
           "id": "odds",
@@ -1529,11 +1529,11 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "intolerance_of_uncertainty",
     "content": {
-      "prompt": "Worrying about a situation where the actual odds of a bad outcome are genuinely high and unclear — driven mainly by bad odds, or by intolerance of not-knowing?",
+      "prompt": "Worrying about a situation where the actual odds of a bad outcome are genuinely high and unclear, driven mainly by bad odds, or by intolerance of not-knowing?",
       "options": [
         {
           "id": "odds",
-          "label": "Bad odds — this calls for a decatastrophizing-style probability check first"
+          "label": "Bad odds, this calls for a decatastrophizing-style probability check first"
         },
         {
           "id": "uncertainty",
@@ -1541,7 +1541,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "odds",
-      "reveal": "When the odds themselves are genuinely concerning, that's the decatastrophizing check's territory — not every worry is about intolerance of uncertainty."
+      "reveal": "When the odds themselves are genuinely concerning, that's the decatastrophizing check's territory, not every worry is about intolerance of uncertainty."
     }
   },
   {
@@ -1557,7 +1557,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": null,
     "content": {
       "title": "Sitting With It, On Purpose",
-      "instruction": "Pick something small and genuinely uncertain right now — an unanswered message, an undecided plan. Set a timer for two minutes and just notice the not-knowing, without checking or reassuring yourself. Nothing here is stored or scored.",
+      "instruction": "Pick something small and genuinely uncertain right now, an unanswered message, an undecided plan. Set a timer for two minutes and just notice the not-knowing, without checking or reassuring yourself. Nothing here is stored or scored.",
       "items": [
         {
           "id": "uncertainty-practice",
@@ -1592,7 +1592,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "looping-uncertainty",
-          "label": "This is looping worry (nothing new for six days), driven by intolerance of uncertainty (the odds are already known to be low) — sitting with the not-knowing, on purpose, is what actually helps here"
+          "label": "This is looping worry (nothing new for six days), driven by intolerance of uncertainty (the odds are already known to be low), sitting with the not-knowing, on purpose, is what actually helps here"
         },
         {
           "id": "more-thinking",
@@ -1602,7 +1602,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "looping-uncertainty": {
           "title": "Right",
-          "body": "Both diagnoses point the same direction: this is looping (no new information across six days) driven by intolerance of uncertainty (odds already known) — more thinking won't resolve it, but practicing sitting with the uncertainty can.",
+          "body": "Both diagnoses point the same direction: this is looping (no new information across six days) driven by intolerance of uncertainty (odds already known), more thinking won't resolve it, but practicing sitting with the uncertainty can.",
           "chain": [
             "Six days with nothing new is the looping tell.",
             "Known-low odds mean uncertainty tolerance is the real driver."
@@ -1610,9 +1610,9 @@ FROM jsonb_to_recordset($tag$[
         },
         "more-thinking": {
           "title": "Not quite",
-          "body": "This is exactly the pattern this unit warns against — more thinking, once the odds are already known, tends to loop rather than resolve.",
+          "body": "This is exactly the pattern this unit warns against, more thinking, once the odds are already known, tends to loop rather than resolve.",
           "chain": [
-            "The odds are already known — more thinking about probability won't add anything new."
+            "The odds are already known, more thinking about probability won't add anything new."
           ],
           "counterTitle": "Try the sitting-with-it angle",
           "counterBody": "Ask whether the actual driver here is bad odds or intolerance of not-knowing."
@@ -1636,15 +1636,15 @@ FROM jsonb_to_recordset($tag$[
       "instruction": "Fill in the blank.",
       "variants": [
         {
-          "pre": "A lot of chronic worry isn't really about the odds — it's about not being able to tolerate ",
+          "pre": "A lot of chronic worry isn't really about the odds, it's about not being able to tolerate ",
           "post": ".",
           "answers": [
             "not knowing",
             "uncertainty"
           ],
-          "correctFeedback": "Right — not being able to tolerate not knowing.",
+          "correctFeedback": "Right, not being able to tolerate not knowing.",
           "incorrectFeedback": "The driver is intolerance of not-knowing, not the odds.",
-          "workedExample": "Known-low odds, and the worry persists anyway — that's the tell."
+          "workedExample": "Known-low odds, and the worry persists anyway, that's the tell."
         }
       ]
     }
@@ -1665,15 +1665,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it produces neither resolution nor a plan"
+          "label": "No, it produces neither resolution nor a plan"
         },
         {
           "id": "yes",
-          "label": "Yes — looping worry always produces a plan"
+          "label": "Yes, looping worry always produces a plan"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "Looping worry produces neither resolution nor a plan — that's what separates it from problem-solving worry."
+      "reveal": "Looping worry produces neither resolution nor a plan, that's what separates it from problem-solving worry."
     }
   },
   {
@@ -1697,7 +1697,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "uncertainty"
           ],
-          "correctFeedback": "Right — uncertainty.",
+          "correctFeedback": "Right, uncertainty.",
           "incorrectFeedback": "The word is uncertainty.",
           "workedExample": "Known-low odds don't guarantee the worry resolves."
         }
@@ -1730,7 +1730,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "both",
-          "label": "This is looping (a week, no new information) driven by intolerance of uncertainty (risk already known to be low) — both diagnoses point toward practicing sitting with the not-knowing"
+          "label": "This is looping (a week, no new information) driven by intolerance of uncertainty (risk already known to be low), both diagnoses point toward practicing sitting with the not-knowing"
         },
         {
           "id": "odds-check",
@@ -1740,7 +1740,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "both": {
           "title": "Right",
-          "body": "A week of repetition with no new information is the looping tell, and known-low risk points to intolerance of uncertainty as the real driver — both together, not just one.",
+          "body": "A week of repetition with no new information is the looping tell, and known-low risk points to intolerance of uncertainty as the real driver, both together, not just one.",
           "chain": [
             "A week with nothing new is looping.",
             "Known-low risk means the odds aren't the real issue."
@@ -1748,7 +1748,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "odds-check": {
           "title": "Not quite",
-          "body": "The risk is already known to be low — running the same probability check again is likely to just loop further, not resolve it.",
+          "body": "The risk is already known to be low, running the same probability check again is likely to just loop further, not resolve it.",
           "chain": [
             "The odds question has already been answered."
           ],
@@ -1773,7 +1773,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "The Same Thing A Hard Run Does",
       "variant": "myth",
       "myth": "A racing heart and breathlessness during panic prove something physically dangerous is happening.",
-      "reality": "Panic comes from misreading an ordinary, harmless body sensation — a racing heart, breathlessness, dizziness — as evidence of something catastrophic, rather than as the normal product of anxious arousal. A racing heart during panic is doing the same thing it does during a hard run — it isn't evidence of a heart attack, even though it can feel exactly like one."
+      "reality": "Panic comes from misreading an ordinary, harmless body sensation, a racing heart, breathlessness, dizziness, as evidence of something catastrophic, rather than as the normal product of anxious arousal. A racing heart during panic is doing the same thing it does during a hard run, it isn't evidence of a heart attack, even though it can feel exactly like one."
     }
   },
   {
@@ -1788,7 +1788,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "catastrophic_misreading",
     "content": {
-      "prompt": "A racing heart and tight chest show up out of nowhere — what's the far more likely explanation?",
+      "prompt": "A racing heart and tight chest show up out of nowhere, what's the far more likely explanation?",
       "options": [
         {
           "id": "arousal",
@@ -1800,7 +1800,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "arousal",
-      "reveal": "Almost always, this is the body's normal anxious-arousal response — the same kind of racing heart a hard run produces, not a sign of physical danger."
+      "reveal": "Almost always, this is the body's normal anxious-arousal response, the same kind of racing heart a hard run produces, not a sign of physical danger."
     }
   },
   {
@@ -1824,7 +1824,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "ladder"
           ],
-          "correctFeedback": "Right — a ladder.",
+          "correctFeedback": "Right, a ladder.",
           "incorrectFeedback": "The word is ladder.",
           "workedExample": "Small steps, in order, still true here."
         }
@@ -1843,7 +1843,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "catastrophic_misreading",
     "content": {
-      "prompt": "A tight throat and trouble swallowing show up suddenly — what's the far more likely explanation?",
+      "prompt": "A tight throat and trouble swallowing show up suddenly, what's the far more likely explanation?",
       "options": [
         {
           "id": "arousal",
@@ -1870,7 +1870,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "catastrophic_misreading",
     "content": {
-      "prompt": "Sudden dizziness during a stressful moment — what's the far more likely explanation?",
+      "prompt": "Sudden dizziness during a stressful moment, what's the far more likely explanation?",
       "options": [
         {
           "id": "arousal",
@@ -1897,7 +1897,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "catastrophic_misreading",
     "content": {
-      "prompt": "Breathlessness during a panic spike — what's the far more likely explanation?",
+      "prompt": "Breathlessness during a panic spike, what's the far more likely explanation?",
       "options": [
         {
           "id": "arousal",
@@ -1924,16 +1924,16 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "catastrophizing",
     "content": {
-      "title": "Overestimated, Underestimated — Still",
+      "title": "Overestimated, Underestimated, Still",
       "instruction": "Fill in the blank.",
       "variants": [
         {
           "pre": "Catastrophizing overestimates probability and severity while underestimating ",
-          "post": " ability — the same pattern shows up in a panic sensation misread as danger.",
+          "post": " ability, the same pattern shows up in a panic sensation misread as danger.",
           "answers": [
             "coping"
           ],
-          "correctFeedback": "Right — coping ability.",
+          "correctFeedback": "Right, coping ability.",
           "incorrectFeedback": "The underestimated part is coping ability.",
           "workedExample": "The same three-part pattern from Section 1, now applied to a body sensation."
         }
@@ -1955,7 +1955,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "It Runs Its Course",
       "variant": "myth",
       "myth": "A panic attack will just keep getting worse until something is done to stop it.",
-      "reality": "A panic spike has a physiological ceiling — it typically peaks and comes back down within around 20-30 minutes, even with no intervention. The body's own systems bring it back down, the same way they bring your heart rate down after a hard run — it doesn't need to be stopped, it runs its course."
+      "reality": "A panic spike has a physiological ceiling, it typically peaks and comes back down within around 20-30 minutes, even with no intervention. The body's own systems bring it back down, the same way they bring your heart rate down after a hard run, it doesn't need to be stopped, it runs its course."
     }
   },
   {
@@ -1979,7 +1979,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "minutes"
           ],
-          "correctFeedback": "Right — minutes, not hours.",
+          "correctFeedback": "Right, minutes, not hours.",
           "incorrectFeedback": "The timeframe is around 20-30 minutes.",
           "workedExample": "The body's own systems bring it back down, the same way a heart rate settles after a hard run."
         }
@@ -2003,11 +2003,11 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "An approach step worked if it was ",
-          "post": " without a safety behavior — not if the anxiety dropped.",
+          "post": " without a safety behavior, not if the anxiety dropped.",
           "answers": [
             "completed"
           ],
-          "correctFeedback": "Right — completed, not calm.",
+          "correctFeedback": "Right, completed, not calm.",
           "incorrectFeedback": "The word is completed.",
           "workedExample": "Still true here, fourteen lessons later."
         }
@@ -2053,20 +2053,20 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "panic_is_time_limited",
     "content": {
-      "title": "Still Escalating — Then What?",
+      "title": "Still Escalating, Then What?",
       "instruction": "Fill in the blank.",
       "variants": [
         {
           "pre": "A panic spike that's still escalating right now will, within around 20-30 minutes, ",
-          "post": " — it has a physiological ceiling.",
+          "post": ", it has a physiological ceiling.",
           "answers": [
             "peak and come down",
             "come back down",
             "peak and subside"
           ],
-          "correctFeedback": "Right — it peaks and comes back down.",
+          "correctFeedback": "Right, it peaks and comes back down.",
           "incorrectFeedback": "It peaks and comes back down within around 20-30 minutes.",
-          "workedExample": "It doesn't need to be stopped — it runs its course."
+          "workedExample": "It doesn't need to be stopped, it runs its course."
         }
       ]
     }
@@ -2083,7 +2083,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "catastrophic_misreading",
     "content": {
-      "prompt": "What actually escalates or prolongs a panic episode — the sensations themselves, or the catastrophic story about them?",
+      "prompt": "What actually escalates or prolongs a panic episode, the sensations themselves, or the catastrophic story about them?",
       "options": [
         {
           "id": "story",
@@ -2095,7 +2095,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "story",
-      "reveal": "It's the ongoing catastrophic misinterpretation that escalates or prolongs it — not the physiology running away unchecked."
+      "reveal": "It's the ongoing catastrophic misinterpretation that escalates or prolongs it, not the physiology running away unchecked."
     }
   },
   {
@@ -2124,7 +2124,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "both-skills",
-          "label": "Relabel it as anxious arousal, not danger, and remember it has a physiological ceiling — it will peak and come back down within around 20-30 minutes"
+          "label": "Relabel it as anxious arousal, not danger, and remember it has a physiological ceiling, it will peak and come back down within around 20-30 minutes"
         },
         {
           "id": "worsen",
@@ -2134,7 +2134,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "both-skills": {
           "title": "Right",
-          "body": "Both skills together — the accurate relabel, and knowing there's a ceiling — directly counter the panic spiral.",
+          "body": "Both skills together, the accurate relabel, and knowing there's a ceiling, directly counter the panic spiral.",
           "chain": [
             "The sensation is relabeled correctly.",
             "The ceiling fact counters 'it'll just get worse.'"
@@ -2142,7 +2142,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "worsen": {
           "title": "Not quite",
-          "body": "This is the exact prediction l45 corrects — panic has a physiological ceiling and comes back down on its own.",
+          "body": "This is the exact prediction l45 corrects, panic has a physiological ceiling and comes back down on its own.",
           "chain": [
             "The 'just keeps getting worse' prediction is the misconception this unit addresses."
           ],
@@ -2199,9 +2199,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Panic is body_alarm's fastest, most intense form — the same 'preparation, not prophecy' idea from l9 still applies, just at higher intensity."
+      "comparisonFeedback": "Panic is body_alarm's fastest, most intense form, the same 'preparation, not prophecy' idea from l9 still applies, just at higher intensity."
     }
   },
   {
@@ -2243,11 +2243,11 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "Panic has a physiological ",
-          "post": " — it comes back down on its own.",
+          "post": ", it comes back down on its own.",
           "answers": [
             "ceiling"
           ],
-          "correctFeedback": "Right — a ceiling.",
+          "correctFeedback": "Right, a ceiling.",
           "incorrectFeedback": "The word is ceiling.",
           "workedExample": "It runs its course within around 20-30 minutes."
         }
@@ -2270,15 +2270,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it's the normal product of anxious arousal, misread as danger"
+          "label": "No, it's the normal product of anxious arousal, misread as danger"
         },
         {
           "id": "yes",
-          "label": "Yes — it proves physical danger"
+          "label": "Yes, it proves physical danger"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "It's the normal product of anxious arousal — the same racing heart a hard run produces."
+      "reveal": "It's the normal product of anxious arousal, the same racing heart a hard run produces."
     }
   },
   {
@@ -2302,7 +2302,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "physiology"
           ],
-          "correctFeedback": "Right — the physiology has a ceiling.",
+          "correctFeedback": "Right, the physiology has a ceiling.",
           "incorrectFeedback": "The word is physiology.",
           "workedExample": "The story, not the sensation, is what escalates it."
         }
@@ -2335,7 +2335,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "both",
-          "label": "Relabel the sensations as anxious arousal, not danger, and remember they have a physiological ceiling — this will peak and come back down within around 20-30 minutes"
+          "label": "Relabel the sensations as anxious arousal, not danger, and remember they have a physiological ceiling, this will peak and come back down within around 20-30 minutes"
         },
         {
           "id": "emergency",
@@ -2345,7 +2345,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "both": {
           "title": "Right",
-          "body": "Both panic skills together — accurate relabeling and knowing the ceiling — directly address this scenario.",
+          "body": "Both panic skills together, accurate relabeling and knowing the ceiling, directly address this scenario.",
           "chain": [
             "The sensations are relabeled as arousal, not danger.",
             "The ceiling fact counters the escalation prediction."
@@ -2353,7 +2353,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "emergency": {
           "title": "Not quite",
-          "body": "This treats ordinary anxious-arousal sensations as proof of danger and assumes no ceiling — both are exactly the misconceptions this unit corrects.",
+          "body": "This treats ordinary anxious-arousal sensations as proof of danger and assumes no ceiling, both are exactly the misconceptions this unit corrects.",
           "chain": [
             "The sensations described match ordinary anxious arousal, not a distinct emergency."
           ],
@@ -2399,7 +2399,7 @@ BEGIN
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now tell problem-solving worry from looping worry, and name intolerance of uncertainty — not just bad odds — as what's actually driving a worry.",
+      "capabilityStatement": "You can now tell problem-solving worry from looping worry, and name intolerance of uncertainty, not just bad odds, as what's actually driving a worry.",
       "primaryActionLabel": "Back to path"
     }
   },
@@ -2498,7 +2498,7 @@ BEGIN
     "prerequisites": [],
     "reward_content": {
       "title": "Fear fades through new learning, not through feeling calm first",
-      "body": "Deliberately, gradually approaching a feared situation — while staying present rather than escaping or using a safety behavior — lets a new 'this wasn't as dangerous as predicted' association form alongside the old fear. The amount of calm felt during a single approach step predicts the outcome less reliably than whether the step was actually completed. (Foa & Kozak 1986 — research/04 §1-2)",
+      "body": "Deliberately, gradually approaching a feared situation, while staying present rather than escaping or using a safety behavior, lets a new 'this wasn't as dangerous as predicted' association form alongside the old fear. The amount of calm felt during a single approach step predicts the outcome less reliably than whether the step was actually completed. (Foa & Kozak 1986, research/04 §1-2)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -2647,7 +2647,7 @@ BEGIN
     "prerequisites": [],
     "reward_content": {
       "title": "Worry can be a way of avoiding a feeling, not facing it",
-      "body": "Because worry is mostly word-based rather than vivid and image-based, it can actually suppress the fuller emotional reaction that imagining the same outcome clearly would produce — meaning worry can function as a subtle way of dodging a harder feeling (raw uncertainty) rather than resolving it. (Borkovec — research/05 §1)",
+      "body": "Because worry is mostly word-based rather than vivid and image-based, it can actually suppress the fuller emotional reaction that imagining the same outcome clearly would produce, meaning worry can function as a subtle way of dodging a harder feeling (raw uncertainty) rather than resolving it. (Borkovec, research/05 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -2795,8 +2795,8 @@ BEGIN
     "review_concepts": [],
     "prerequisites": [],
     "reward_content": {
-      "title": "Panic peaks and comes down — the physiology can't sustain it",
-      "body": "What escalates or prolongs a panic episode is the ongoing catastrophic misinterpretation, not the physiology running away unchecked — the sympathetic arousal driving it has a real ceiling and the body's own systems bring it back down within roughly 20-30 minutes, even with no intervention. (Clark 1986 — research/06 §1-2)",
+      "title": "Panic peaks and comes down, the physiology can't sustain it",
+      "body": "What escalates or prolongs a panic episode is the ongoing catastrophic misinterpretation, not the physiology running away unchecked, the sympathetic arousal driving it has a real ceiling and the body's own systems bring it back down within roughly 20-30 minutes, even with no intervention. (Clark 1986, research/06 §1-2)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }

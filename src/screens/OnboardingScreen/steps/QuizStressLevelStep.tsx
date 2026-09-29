@@ -18,6 +18,7 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
   selected,
   motivation = "anxiety",
   onSelect,
+  onAdvance,
 }) => {
   const insets = useSafeAreaInsets();
   const followup = MOTIVATION_FOLLOWUP[motivation];
@@ -26,8 +27,12 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
   const handleSelect = useCallback(
     (id: StressLevel) => {
       onSelect(id);
+      // ponytail: 360ms lets user enjoy bouncy tactile feedback before smooth advance
+      if (onAdvance) {
+        setTimeout(onAdvance, 360);
+      }
     },
-    [onSelect],
+    [onSelect, onAdvance],
   );
 
   const cleanQuestion = followup.question.replace(/\?$/, "");
@@ -37,7 +42,7 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        paddingBottom: 120,
+        paddingBottom: 40,
         paddingTop: contentTopPadding,
       }}
       contentInsetAdjustmentBehavior="automatic"
@@ -45,30 +50,30 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
     >
       <Animated.Text
         entering={FadeIn.duration(160).delay(80)}
-        className="text-xs font-semibold text-sage-600"
+        className="text-[11px] font-bold uppercase tracking-wider text-sage-600"
       >
         Set the pace
       </Animated.Text>
 
-      <Animated.View entering={FadeIn.duration(180).delay(140)} className="mt-1.5">
+      <Animated.View entering={FadeIn.duration(180).delay(140)} className="mt-2">
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="text-[26px] leading-[1.18] text-ink"
+          style={{ fontFamily: APP_FONT_FAMILIES.extraBold }}
+          className="text-[28px] leading-[34px] text-ink happy-font-body-extrabold"
         >
-          {questionMain}
+          {questionMain}{" "}
           <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-            className="italic text-sage-500"
+            style={{ fontFamily: APP_FONT_FAMILIES.extraBold }}
+            className="text-sage-600"
           >
             {questionItalic}?
           </Text>
         </Text>
-        <Text className="mt-2 text-[15px] leading-relaxed text-ink-soft">
+        <Text className="mt-2 text-[15px] leading-relaxed text-ink-soft happy-font-body-medium">
           {followup.subtext}
         </Text>
       </Animated.View>
 
-      <View className="mt-5 gap-2.5">
+      <View className="mt-5 gap-3.5">
         {followup.options.map((option, index) => (
           <OptionCard
             key={option.id}

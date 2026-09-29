@@ -143,7 +143,7 @@ export function getTeachBackChainHint(
     if (orderedStepIds.length === 1) {
       return "The body reacts after the mind gives the uncertainty a threatening meaning.";
     }
-    return "Checking evidence is how you can respond to the alarm — not what creates it.";
+    return "Checking evidence is how you can respond to the alarm, not what creates it.";
   }
 
   return previous

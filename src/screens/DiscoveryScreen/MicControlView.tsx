@@ -55,8 +55,8 @@ const MicControlView: React.FC<MicControlViewProps> = ({
 
   return (
     <View className="w-full items-center justify-center">
-      <HStack className="justify-center items-center gap-8 h-24 w-full">
-        {/* Left Action: Delete / Cancel Slot */}
+      <HStack className="justify-center items-center gap-7 h-24 w-full">
+        {/* Left Action: Delete / Cancel Slot (56px) */}
         {!isRecording ? (
           <Animated.View
             entering={FadeIn.duration(200)}
@@ -66,7 +66,8 @@ const MicControlView: React.FC<MicControlViewProps> = ({
               label=""
               variant="secondary"
               size="md"
-              width={52}
+              width={56}
+              round
               fullWidth={false}
               accessibilityLabel={isPaused ? "Discard recording" : "Cancel recording"}
               leftIcon={
@@ -76,7 +77,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
                   <Feather
                     name="x"
                     size={20}
-                    color={String(SEMANTIC_COLORS.text.secondary)}
+                    color="#71717A"
                   />
                 )
               }
@@ -91,30 +92,31 @@ const MicControlView: React.FC<MicControlViewProps> = ({
             />
           </Animated.View>
         ) : (
-          /* Empty spacer to keep Center button centered */
-          <View className="w-[52px] h-12 bg-transparent" />
+          /* Symmetrical empty spacer to keep Center button centered */
+          <View className="w-[56px] h-[56px] bg-transparent" />
         )}
 
-        {/* Center Primary Action: Pause while recording, Resume while paused */}
+        {/* Center Primary Action: Pause while recording, Resume while paused (72px) */}
         <Button
           label=""
           variant="primary"
           size="xl"
-          width={76}
+          width={72}
+          round
           fullWidth={false}
           leftIcon={
             isRecording ? (
               <HugeiconsIcon
                 icon={PauseIcon}
-                size={34}
-                color={String(SEMANTIC_COLORS.surface.primary)}
+                size={30}
+                color="#FFFFFF"
               />
             ) : (
-              // ponytail: plain mic for resume without overloaded AI sparkles
+              // ponytail: crisp white mic on brand green for maximum contrast
               <HugeiconsIcon
                 icon={Mic01Icon}
-                size={34}
-                color={String(SEMANTIC_COLORS.surface.primary)}
+                size={32}
+                color="#FFFFFF"
               />
             )
           }
@@ -123,25 +125,26 @@ const MicControlView: React.FC<MicControlViewProps> = ({
           accessibilityLabel={isRecording ? "Pause recording" : "Resume recording"}
         />
 
-        {/* Right Action: Done Button Slot */}
+        {/* Right Action: Done Button Slot (56px) */}
         {isPaused ? (
           <Animated.View
             entering={FadeIn.duration(200)}
             exiting={FadeOut.duration(150)}
           >
-            {/* ponytail: medium Done button with text and icon, secondary to Resume */}
+            {/* ponytail: secondary tactile 56px finish button with green checkmark to prevent 2 solid green buttons fighting */}
             <Button
-              label="Done"
-              variant="primary"
+              label=""
+              variant="secondary"
               size="md"
-              width={88}
+              width={56}
+              round
               fullWidth={false}
               accessibilityLabel="Finish recording"
               leftIcon={
                 <HugeiconsIcon
                   icon={Tick01Icon}
-                  size={18}
-                  color={String(SEMANTIC_COLORS.surface.primary)}
+                  size={24}
+                  color="#587C51"
                 />
               }
               // ponytail: Button handles press-in haptic; no haptic on pressout/release
@@ -149,8 +152,8 @@ const MicControlView: React.FC<MicControlViewProps> = ({
             />
           </Animated.View>
         ) : (
-          /* Empty spacer to keep Center button centered */
-          <View className="w-[88px] h-12 bg-transparent" />
+          /* Symmetrical empty spacer to keep Center button centered */
+          <View className="w-[56px] h-[56px] bg-transparent" />
         )}
       </HStack>
     </View>

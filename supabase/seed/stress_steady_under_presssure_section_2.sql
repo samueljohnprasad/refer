@@ -76,7 +76,7 @@ FROM jsonb_to_recordset($tag$[
     "order_index": 1,
     "is_published": false,
     "domain": "stress_resilience",
-    "target_audience": "Adults dealing with everyday or work-related stress — not diagnosed anxiety, depression, or clinical burnout",
+    "target_audience": "Adults dealing with everyday or work-related stress, not diagnosed anxiety, depression, or clinical burnout",
     "total_lessons": 63,
     "total_duration_weeks": null,
     "sessions_per_week": null,
@@ -447,7 +447,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "The Exhale Is The Lever, Not The Count",
       "variant": "myth",
       "myth": "Only one specific breathing ratio works; the exact count matters more than the pace.",
-      "reality": "Any slow breath with a longer exhale reaches the parasympathetic brake through the vagus nerve. Cyclic sighing and box breathing look different — one has two inhales, one has equal counts — but both work because of the same thing: a slow pace with a real exhale."
+      "reality": "Any slow breath with a longer exhale reaches the parasympathetic brake through the vagus nerve. Cyclic sighing and box breathing look different, one has two inhales, one has equal counts, but both work because of the same thing: a slow pace with a real exhale."
     }
   },
   {
@@ -462,19 +462,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "slow_breathing_general",
     "content": {
-      "prompt": "The specific count in box breathing (4-4-4-4) — is that what makes it work?",
+      "prompt": "The specific count in box breathing (4-4-4-4), is that what makes it work?",
       "options": [
         {
           "id": "no",
-          "label": "No — the slow pace and real exhale are the active ingredient"
+          "label": "No, the slow pace and real exhale are the active ingredient"
         },
         {
           "id": "yes",
-          "label": "Yes — the exact count matters more than the pace"
+          "label": "Yes, the exact count matters more than the pace"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "The count is a structure to hold attention, not the active ingredient — a longer exhale is what stimulates the vagus nerve."
+      "reveal": "The count is a structure to hold attention, not the active ingredient, a longer exhale is what stimulates the vagus nerve."
     }
   },
   {
@@ -522,7 +522,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Recognize It Anywhere",
       "instruction": "Read, then move on.",
-      "message": "Any new breathing pattern you encounter anywhere — a slow pace with a real exhale — is this same lever.",
+      "message": "Any new breathing pattern you encounter anywhere, a slow pace with a real exhale, is this same lever.",
       "explanation": "You don't need to learn a new mechanism for every new pattern; you just need to recognize the one you already know."
     }
   },
@@ -550,7 +550,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "exhale",
-      "reveal": "The exhale is the active ingredient — the count is just a structure to hold onto."
+      "reveal": "The exhale is the active ingredient, the count is just a structure to hold onto."
     }
   },
   {
@@ -567,7 +567,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Real Dose",
       "instruction": "Read, then practice.",
-      "message": "The study that found cyclic sighing beat meditation on mood used five minutes a day for a month — not five minutes once.",
+      "message": "The study that found cyclic sighing beat meditation on mood used five minutes a day for a month, not five minutes once.",
       "explanation": "Today's practice is the first of those five minutes. A technique tried once and never again isn't the technique that was actually studied."
     }
   },
@@ -601,8 +601,8 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "A Count To Hold Onto",
       "variant": "rule",
-      "rule": "Box breathing: inhale 4, hold 4, exhale 4, hold 4 — a countable structure for a moment that needs one, like a wait before a hard conversation.",
-      "explanation": "Skip the holds — breathe slowly without pausing — if you're pregnant, have a heart or blood-pressure condition, or holding your breath makes you dizzy or anxious. The slow pace is what matters; the hold is optional, and skipping it is the correct choice for those learners."
+      "rule": "Box breathing: inhale 4, hold 4, exhale 4, hold 4, a countable structure for a moment that needs one, like a wait before a hard conversation.",
+      "explanation": "Skip the holds, breathe slowly without pausing, if you're pregnant, have a heart or blood-pressure condition, or holding your breath makes you dizzy or anxious. The slow pace is what matters; the hold is optional, and skipping it is the correct choice for those learners."
     }
   },
   {
@@ -666,12 +666,12 @@ FROM jsonb_to_recordset($tag$[
       "instruction": "Fill in the blank.",
       "variants": [
         {
-          "pre": "Any slow breathing technique works through the same lever — a longer ___",
+          "pre": "Any slow breathing technique works through the same lever, a longer ___",
           "post": " stimulating the vagus nerve.",
           "answers": [
             "exhale"
           ],
-          "correctFeedback": "Right — the exhale, not the specific pattern, is the mechanism.",
+          "correctFeedback": "Right, the exhale, not the specific pattern, is the mechanism.",
           "incorrectFeedback": "It's the longer exhale that stimulates the vagus nerve, regardless of the specific pattern.",
           "workedExample": "Cyclic sighing and box breathing both work through this same exhale-vagus mechanism."
         }
@@ -724,7 +724,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Two Tools, One Choosing Rule",
       "instruction": "Read, then move on.",
       "message": "Cyclic sighing when nothing else is needed but calm. Box breathing when a countable structure helps hold attention through a wait.",
-      "explanation": "Two tools without a rule for choosing between them just sit unused — now you have the rule."
+      "explanation": "Two tools without a rule for choosing between them just sit unused, now you have the rule."
     }
   },
   {
@@ -741,7 +741,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Which Breath, Under Pressure",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "A flight delay just became a missed connection — there's no time to think about breathing.",
+      "hotThought": "A flight delay just became a missed connection, there's no time to think about breathing.",
       "trays": [
         {
           "id": "fits",
@@ -749,11 +749,11 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "id": "box",
-              "label": "Box breathing — a count to hold attention"
+              "label": "Box breathing, a count to hold attention"
             },
             {
               "id": "nothing",
-              "label": "Nothing — breathing doesn't help under real pressure"
+              "label": "Nothing, breathing doesn't help under real pressure"
             }
           ]
         },
@@ -774,9 +774,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{fits} — {why}."
+        "template": "{fits}, {why}."
       },
-      "comparisonFeedback": "The mechanism works under real pressure — that's the actual use case, not a nice-to-have for calm moments only."
+      "comparisonFeedback": "The mechanism works under real pressure, that's the actual use case, not a nice-to-have for calm moments only."
     }
   },
   {
@@ -798,30 +798,30 @@ FROM jsonb_to_recordset($tag$[
         {
           "id": "s1",
           "name": "Stage 1",
-          "text": "A flight delay — mildly annoying, nothing urgent yet.",
+          "text": "A flight delay, mildly annoying, nothing urgent yet.",
           "label": "Stage 1"
         },
         {
           "id": "s2",
           "name": "Stage 2",
-          "text": "A gate change with a tight connection — arousal rising.",
+          "text": "A gate change with a tight connection, arousal rising.",
           "label": "Stage 2"
         },
         {
           "id": "s3",
           "name": "Stage 3",
-          "text": "The connection is now missed — arousal is high, thinking is hard.",
+          "text": "The connection is now missed, arousal is high, thinking is hard.",
           "label": "Stage 3"
         }
       ],
       "options": [
         {
           "id": "box",
-          "label": "Box breathing — a count to hold attention while rebooking"
+          "label": "Box breathing, a count to hold attention while rebooking"
         },
         {
           "id": "none",
-          "label": "No breath needed — just start rebooking immediately"
+          "label": "No breath needed, just start rebooking immediately"
         }
       ],
       "feedbackMap": {
@@ -863,11 +863,11 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "Both cyclic sighing and box breathing work through the same ___",
-          "post": " — a longer exhale reaching the vagus nerve.",
+          "post": ", a longer exhale reaching the vagus nerve.",
           "answers": [
             "mechanism"
           ],
-          "correctFeedback": "Right — one mechanism, two structures.",
+          "correctFeedback": "Right, one mechanism, two structures.",
           "incorrectFeedback": "It's the same mechanism underneath both patterns.",
           "workedExample": "Different counts, same lever."
         }
@@ -912,20 +912,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "A new breathing app teaches a 'triangle breath' — inhale, hold, exhale, no second hold. Does the same mechanism apply?",
+        "prompt": "A new breathing app teaches a 'triangle breath', inhale, hold, exhale, no second hold. Does the same mechanism apply?",
         "options": [
           {
             "id": "yes",
-            "label": "Yes — it still has a slow pace with a real exhale",
+            "label": "Yes, it still has a slow pace with a real exhale",
             "isSupported": true,
-            "response": "Right — any new pattern with a slow pace and a real exhale is this same lever, whatever it's branded as.",
+            "response": "Right, any new pattern with a slow pace and a real exhale is this same lever, whatever it's branded as.",
             "takeaway": "You can recognize a new pattern as this mechanism without ever having seen its name before."
           },
           {
             "id": "no",
-            "label": "No — it's a different technique entirely",
+            "label": "No, it's a different technique entirely",
             "isSupported": false,
-            "response": "Not quite — the shape differs, but the mechanism (slow pace, real exhale) is the same one.",
+            "response": "Not quite, the shape differs, but the mechanism (slow pace, real exhale) is the same one.",
             "takeaway": "Different branding, same underlying lever."
           }
         ]
@@ -958,17 +958,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "yes",
-          "label": "Yes — the exhale is twice the inhale, a real longer exhale"
+          "label": "Yes, the exhale is twice the inhale, a real longer exhale"
         },
         {
           "id": "no",
-          "label": "No — it's not one of the two patterns taught in this course"
+          "label": "No, it's not one of the two patterns taught in this course"
         }
       ],
       "feedbackMap": {
         "yes": {
           "title": "Right",
-          "body": "A longer exhale relative to the inhale is exactly the mechanism — this pattern qualifies even though it was never named in this course.",
+          "body": "A longer exhale relative to the inhale is exactly the mechanism, this pattern qualifies even though it was never named in this course.",
           "chain": [
             "Exhale (6) is longer than inhale (3).",
             "That's the exhale-vagus mechanism.",
@@ -977,7 +977,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "no": {
           "title": "Not quite",
-          "body": "The lever isn't defined by matching one of two named patterns — it's defined by a slow pace with a real, longer exhale, which this pattern has.",
+          "body": "The lever isn't defined by matching one of two named patterns, it's defined by a slow pace with a real, longer exhale, which this pattern has.",
           "chain": [
             "The mechanism generalizes beyond the two named patterns."
           ],
@@ -999,18 +999,18 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "Breath as a Tool — Checkpoint",
+      "title": "Breath as a Tool, Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Three quick checks on the breathing lever.\nA miss just gives you something to revisit.",
       "introTag": "3 QUESTIONS · ~1 MIN",
-      "revisitMessage": "Worth a short revisit — nothing is lost, and it'll come back around.",
+      "revisitMessage": "Worth a short revisit, nothing is lost, and it'll come back around.",
       "solidMessage": "The breathing lever is holding. Next: releasing tension the body's been holding onto.",
       "items": [
         {
           "concept": "Slow Breathing (General Mechanism)",
           "prompt": "What's the active ingredient in any slow breathing pattern?",
           "clue": "Not the count.",
-          "worked": "A longer exhale, stimulating the vagus nerve — the count is just structure.",
+          "worked": "A longer exhale, stimulating the vagus nerve, the count is just structure.",
           "options": [
             {
               "label": "A slow pace with a longer exhale",
@@ -1028,7 +1028,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Cyclic Sighing vs. Box Breathing",
           "prompt": "When does box breathing's countable structure help most?",
           "clue": "Think about a wait.",
-          "worked": "A wait before something hard — the count gives attention somewhere to go.",
+          "worked": "A wait before something hard, the count gives attention somewhere to go.",
           "options": [
             {
               "label": "A moment needing a countable structure to hold attention",
@@ -1037,14 +1037,14 @@ FROM jsonb_to_recordset($tag$[
             },
             {
               "label": "Only when completely alone and calm",
-              "feedback": "Cyclic sighing fits that moment better — box breathing is for structured waits.",
+              "feedback": "Cyclic sighing fits that moment better, box breathing is for structured waits.",
               "isCorrect": false
             }
           ]
         },
         {
           "concept": "Recognizing New Patterns",
-          "prompt": "A brand-new breathing pattern you've never heard named — how do you know if it's this same lever?",
+          "prompt": "A brand-new breathing pattern you've never heard named, how do you know if it's this same lever?",
           "clue": "Check the exhale, not the name.",
           "worked": "If it has a slow pace and a real, longer exhale, it's this mechanism, regardless of its name.",
           "options": [
@@ -1077,8 +1077,8 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Contrast Is The Point",
       "variant": "myth",
-      "myth": "Relaxation is just 'not being tense' — there's nothing to actually practice.",
-      "reality": "Tensing a muscle on purpose, then releasing it completely, teaches what release actually feels like — many chronically tense people have lost the ability to notice tension building on its own. Don't tense any area that's injured, in pain, or recently operated on — skip that group entirely. Tense gently; the point is noticing the contrast, not squeezing hard."
+      "myth": "Relaxation is just 'not being tense', there's nothing to actually practice.",
+      "reality": "Tensing a muscle on purpose, then releasing it completely, teaches what release actually feels like, many chronically tense people have lost the ability to notice tension building on its own. Don't tense any area that's injured, in pain, or recently operated on, skip that group entirely. Tense gently; the point is noticing the contrast, not squeezing hard."
     }
   },
   {
@@ -1117,7 +1117,7 @@ FROM jsonb_to_recordset($tag$[
           "id": "a",
           "label": "release",
           "isCorrect": true,
-          "feedback": "Right — most people can't name that feeling until they've felt it taken away and come back."
+          "feedback": "Right, most people can't name that feeling until they've felt it taken away and come back."
         },
         {
           "id": "b",
@@ -1142,7 +1142,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Mechanism, Once More",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "A friend's app teaches counting backward from 10 while breathing — that's not a real technique like the ones I learned.",
+      "hotThought": "A friend's app teaches counting backward from 10 while breathing, that's not a real technique like the ones I learned.",
       "trays": [
         {
           "id": "check",
@@ -1175,7 +1175,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
       "comparisonFeedback": "The mechanism, not the branding, is what determines whether a pattern is this lever."
     }
@@ -1204,7 +1204,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "contrast",
-      "reveal": "The contrast — feeling tension, then feeling it drop away — is what teaches you to recognize release."
+      "reveal": "The contrast, feeling tension, then feeling it drop away, is what teaches you to recognize release."
     }
   },
   {
@@ -1222,7 +1222,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "The Wandering Is Not The Failure",
       "variant": "myth",
       "myth": "If my mind wanders during a mindfulness exercise, I'm doing it wrong.",
-      "reality": "Noticing attention wandering and gently coming back, without self-criticism, is the actual skill — not 'clearing the mind,' which isn't achievable on demand. A meditator with decades of practice still has a wandering mind; they've just gotten faster at noticing."
+      "reality": "Noticing attention wandering and gently coming back, without self-criticism, is the actual skill, not 'clearing the mind,' which isn't achievable on demand. A meditator with decades of practice still has a wandering mind; they've just gotten faster at noticing."
     }
   },
   {
@@ -1237,19 +1237,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "mindful_noticing",
     "content": {
-      "prompt": "The goal of mindful noticing is to stop your mind from wandering — true or false?",
+      "prompt": "The goal of mindful noticing is to stop your mind from wandering, true or false?",
       "options": [
         {
           "id": "false",
-          "label": "False — noticing the wander and returning is the skill"
+          "label": "False, noticing the wander and returning is the skill"
         },
         {
           "id": "true",
-          "label": "True — a wandering mind means it's not working"
+          "label": "True, a wandering mind means it's not working"
         }
       ],
       "bestOptionId": "false",
-      "reveal": "A wandering mind isn't a malfunction — noticing it and coming back, without judgment, is the entire practice."
+      "reveal": "A wandering mind isn't a malfunction, noticing it and coming back, without judgment, is the entire practice."
     }
   },
   {
@@ -1272,13 +1272,13 @@ FROM jsonb_to_recordset($tag$[
           "id": "a",
           "label": "rep of the skill",
           "isCorrect": true,
-          "feedback": "Right — every wander-and-return is the practice working, not failing."
+          "feedback": "Right, every wander-and-return is the practice working, not failing."
         },
         {
           "id": "b",
           "label": "sign of failure",
           "isCorrect": false,
-          "feedback": "It's not a sign of failure — it's the skill happening exactly as designed."
+          "feedback": "It's not a sign of failure, it's the skill happening exactly as designed."
         }
       ]
     }
@@ -1304,7 +1304,7 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "b2",
-          "text": "The instinct is to feel like you've failed the exercise — that a 'real' meditator wouldn't have wandered."
+          "text": "The instinct is to feel like you've failed the exercise, that a 'real' meditator wouldn't have wandered."
         },
         {
           "id": "b3",
@@ -1326,7 +1326,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": null,
     "content": {
       "title": "Try It, Expecting To Wander",
-      "instruction": "Sit for two to three minutes, attention on your breath. When your mind wanders — and it will — just notice, and come back. That noticing is the whole practice."
+      "instruction": "Sit for two to three minutes, attention on your breath. When your mind wanders, and it will, just notice, and come back. That noticing is the whole practice."
     }
   },
   {
@@ -1350,9 +1350,9 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "contrast"
           ],
-          "correctFeedback": "Right — the contrast is what makes release recognizable.",
+          "correctFeedback": "Right, the contrast is what makes release recognizable.",
           "incorrectFeedback": "It's the contrast between tensed and released that's the actual skill.",
-          "workedExample": "Clench, then let go — the drop after is what release feels like."
+          "workedExample": "Clench, then let go, the drop after is what release feels like."
         }
       ]
     }
@@ -1374,15 +1374,15 @@ FROM jsonb_to_recordset($tag$[
       "beats": [
         {
           "id": "b1",
-          "text": "Zone 1 — head and shoulders: tense on purpose, then release. Notice the drop."
+          "text": "Zone 1, head and shoulders: tense on purpose, then release. Notice the drop."
         },
         {
           "id": "b2",
-          "text": "Zone 2 — torso and hands: just notice, no tensing. Whatever's there, without judging it."
+          "text": "Zone 2, torso and hands: just notice, no tensing. Whatever's there, without judging it."
         },
         {
           "id": "b3",
-          "text": "Zone 3 — legs and feet: just notice again. A body scan is PMR's contrast plus mindful noticing's non-judgment, run together."
+          "text": "Zone 3, legs and feet: just notice again. A body scan is PMR's contrast plus mindful noticing's non-judgment, run together."
         }
       ]
     }
@@ -1473,9 +1473,9 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "contrast"
           ],
-          "correctFeedback": "Right — the contrast is the PMR skill; non-judgment is the noticing skill.",
+          "correctFeedback": "Right, the contrast is the PMR skill; non-judgment is the noticing skill.",
           "incorrectFeedback": "PMR's skill is the tense-release contrast.",
-          "workedExample": "A body scan combines both — contrast in one zone, plain noticing in the others."
+          "workedExample": "A body scan combines both, contrast in one zone, plain noticing in the others."
         }
       ]
     }
@@ -1524,14 +1524,14 @@ FROM jsonb_to_recordset($tag$[
             "id": "one-zone",
             "label": "Tense and release just the jaw, once, right there",
             "isSupported": true,
-            "response": "Right — the skill scales down to one zone, one contrast, wherever you are.",
+            "response": "Right, the skill scales down to one zone, one contrast, wherever you are.",
             "takeaway": "You don't need the full three-zone version every time."
           },
           {
             "id": "skip",
-            "label": "Skip it entirely — it only works as the full scan",
+            "label": "Skip it entirely, it only works as the full scan",
             "isSupported": false,
-            "response": "Not quite — a single tense-release cycle on one muscle group still works.",
+            "response": "Not quite, a single tense-release cycle on one muscle group still works.",
             "takeaway": "The contrast principle works at any scale."
           }
         ]
@@ -1564,17 +1564,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "yes",
-          "label": "Yes — notice the drift, return to the task, without self-criticism"
+          "label": "Yes, notice the drift, return to the task, without self-criticism"
         },
         {
           "id": "no",
-          "label": "No — this skill only applies during formal meditation practice"
+          "label": "No, this skill only applies during formal meditation practice"
         }
       ],
       "feedbackMap": {
         "yes": {
           "title": "Right",
-          "body": "The skill isn't limited to formal meditation — noticing a drift and returning without self-criticism works for a wandering mind anywhere, task-focus included.",
+          "body": "The skill isn't limited to formal meditation, noticing a drift and returning without self-criticism works for a wandering mind anywhere, task-focus included.",
           "chain": [
             "Attention drifted from the task.",
             "Noticing it is a successful rep, not a failure.",
@@ -1583,12 +1583,12 @@ FROM jsonb_to_recordset($tag$[
         },
         "no": {
           "title": "Not quite",
-          "body": "This skill generalizes well beyond formal meditation — any wandering-and-return moment is the same practice.",
+          "body": "This skill generalizes well beyond formal meditation, any wandering-and-return moment is the same practice.",
           "chain": [
             "The mechanism (notice, return, no judgment) doesn't require a formal sitting practice."
           ],
           "counterTitle": "Try the generalization angle",
-          "counterBody": "Ask what's actually required for this skill to apply — a breath, or the noticing itself?"
+          "counterBody": "Ask what's actually required for this skill to apply, a breath, or the noticing itself?"
         }
       }
     }
@@ -1605,18 +1605,18 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "Release and Notice — Checkpoint",
+      "title": "Release and Notice, Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Two quick checks on this unit's tools.\nA miss just gives you something to revisit.",
       "introTag": "2 QUESTIONS · ~1 MIN",
-      "revisitMessage": "Worth a short revisit — nothing is lost, and it'll come back around.",
+      "revisitMessage": "Worth a short revisit, nothing is lost, and it'll come back around.",
       "solidMessage": "Release and notice are holding. Next: finishing the mobilization with movement, and your whole toolkit.",
       "items": [
         {
           "concept": "Progressive Muscle Relaxation",
           "prompt": "What's PMR's actual skill?",
           "clue": "Not just relaxing.",
-          "worked": "The contrast between tensed and released — recognizing what release feels like.",
+          "worked": "The contrast between tensed and released, recognizing what release feels like.",
           "options": [
             {
               "label": "Noticing the tense-release contrast",
@@ -1634,7 +1634,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Mindful Noticing",
           "prompt": "What should you do when your mind wanders during practice?",
           "clue": "No scorekeeping.",
-          "worked": "Notice it happened, and come back — without judging yourself for it.",
+          "worked": "Notice it happened, and come back, without judging yourself for it.",
           "options": [
             {
               "label": "Notice and return, without self-criticism",
@@ -1643,7 +1643,7 @@ FROM jsonb_to_recordset($tag$[
             },
             {
               "label": "Try harder to stop it from happening again",
-              "feedback": "That treats wandering as a failure — it's actually the practice working as designed.",
+              "feedback": "That treats wandering as a failure, it's actually the practice working as designed.",
               "isCorrect": false
             }
           ]
@@ -1665,8 +1665,8 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Discharge The Zebra Gets For Free",
       "variant": "myth",
-      "myth": "Exercise only helps mood in general — it doesn't do anything specific for stress reactivity.",
-      "reality": "Movement done AHEAD of time measurably blunts your body's reaction to the NEXT stressor — it's the physical discharge the response was built for. Size it to what your body can already do today; anyone with a medical condition or who hasn't been active recently should keep it gentle and check with a clinician before increasing intensity. A ten-minute walk is the reference, not a workout."
+      "myth": "Exercise only helps mood in general, it doesn't do anything specific for stress reactivity.",
+      "reality": "Movement done AHEAD of time measurably blunts your body's reaction to the NEXT stressor, it's the physical discharge the response was built for. Size it to what your body can already do today; anyone with a medical condition or who hasn't been active recently should keep it gentle and check with a clinician before increasing intensity. A ten-minute walk is the reference, not a workout."
     }
   },
   {
@@ -1685,15 +1685,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it works by changing reactivity to what comes NEXT"
+          "label": "No, it works by changing reactivity to what comes NEXT"
         },
         {
           "id": "yes",
-          "label": "Yes — exercising during a stressor resolves it"
+          "label": "Yes, exercising during a stressor resolves it"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "A walk this morning doesn't fix this afternoon's hard meeting while it's happening — it changes how hard your body reacts to it, before it even starts."
+      "reveal": "A walk this morning doesn't fix this afternoon's hard meeting while it's happening, it changes how hard your body reacts to it, before it even starts."
     }
   },
   {
@@ -1761,7 +1761,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{skill} — {so}."
+        "template": "{skill}, {so}."
       },
       "comparisonFeedback": "The contrast principle works on any muscle group, not just the ones already practiced."
     }
@@ -1778,7 +1778,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "exercise_as_stress_buffer",
     "content": {
-      "prompt": "A walk this morning — what does it change about this afternoon's hard meeting?",
+      "prompt": "A walk this morning, what does it change about this afternoon's hard meeting?",
       "options": [
         {
           "id": "reactivity",
@@ -1840,7 +1840,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Pattern, Same Lever",
       "instruction": "Read the case, then decide.",
-      "question": "A yoga instructor teaches 'ocean breath' — a long, audible exhale through a slightly closed throat. Does this count as the same lever taught in this course?",
+      "question": "A yoga instructor teaches 'ocean breath', a long, audible exhale through a slightly closed throat. Does this count as the same lever taught in this course?",
       "cases": [
         {
           "id": "case1",
@@ -1852,17 +1852,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "yes",
-          "label": "Yes — a slow pace with a real, extended exhale"
+          "label": "Yes, a slow pace with a real, extended exhale"
         },
         {
           "id": "no",
-          "label": "No — it wasn't one of the named patterns in this course"
+          "label": "No, it wasn't one of the named patterns in this course"
         }
       ],
       "feedbackMap": {
         "yes": {
           "title": "Right",
-          "body": "An extended, controlled exhale is exactly the mechanism — the specific name or technique origin doesn't matter.",
+          "body": "An extended, controlled exhale is exactly the mechanism, the specific name or technique origin doesn't matter.",
           "chain": [
             "The exhale here is deliberately extended.",
             "That's the exhale-vagus mechanism.",
@@ -1871,7 +1871,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "no": {
           "title": "Not quite",
-          "body": "The mechanism generalizes to any pattern with a slow pace and a real exhale — it isn't limited to two named techniques.",
+          "body": "The mechanism generalizes to any pattern with a slow pace and a real exhale, it isn't limited to two named techniques.",
           "chain": [
             "Recognizing the mechanism matters more than recognizing the name."
           ],
@@ -1895,7 +1895,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Notice And Return, Again",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "I keep losing focus during this walk, thinking about tomorrow's meeting instead of the walk itself — I'm bad at this.",
+      "hotThought": "I keep losing focus during this walk, thinking about tomorrow's meeting instead of the walk itself, I'm bad at this.",
       "trays": [
         {
           "id": "reframe",
@@ -1903,7 +1903,7 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "id": "normal",
-              "label": "A normal wander — noticing it is the successful rep"
+              "label": "A normal wander, noticing it is the successful rep"
             },
             {
               "id": "failing",
@@ -1928,9 +1928,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{reframe} — {next}."
+        "template": "{reframe}, {next}."
       },
-      "comparisonFeedback": "The wandering itself was never the problem — noticing and returning, without judgment, is the whole skill."
+      "comparisonFeedback": "The wandering itself was never the problem, noticing and returning, without judgment, is the whole skill."
     }
   },
   {
@@ -1950,7 +1950,7 @@ FROM jsonb_to_recordset($tag$[
       "tools": [
         {
           "label": "Cyclic sighing",
-          "use": "Fast-acting — for when you just need calm, right now."
+          "use": "Fast-acting, for when you just need calm, right now."
         },
         {
           "label": "Box breathing",
@@ -1966,14 +1966,14 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "label": "Movement",
-          "use": "Done ahead of time — buffers reactivity to what's coming."
+          "use": "Done ahead of time, buffers reactivity to what's coming."
         }
       ],
       "moments": [
         {
           "label": "Racing thoughts right now, need calm fast",
           "key": "racing",
-          "response": "This is what cyclic sighing is for — no equipment, no setup.",
+          "response": "This is what cyclic sighing is for, no equipment, no setup.",
           "toolIndex": 0
         },
         {
@@ -2020,11 +2020,11 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "Exercise done ahead of time changes how hard your body ___",
-          "post": " to the next stressor — it doesn't fix a stressor already in progress.",
+          "post": " to the next stressor, it doesn't fix a stressor already in progress.",
           "answers": [
             "reacts"
           ],
-          "correctFeedback": "Right — it's a buffering effect on reactivity, not an in-the-moment fix.",
+          "correctFeedback": "Right, it's a buffering effect on reactivity, not an in-the-moment fix.",
           "incorrectFeedback": "It changes reactivity to the next stressor, not the current one.",
           "workedExample": "A walk this morning changes how hard this afternoon's meeting lands."
         }
@@ -2045,7 +2045,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Five Fresh Moments",
       "instruction": "Read the case, then pick the best-fit tool.",
-      "question": "A tense shoulder and a racing mind, both at once, right before a call in two minutes — which tool fits best, given the time you actually have?",
+      "question": "A tense shoulder and a racing mind, both at once, right before a call in two minutes, which tool fits best, given the time you actually have?",
       "cases": [
         {
           "id": "case1",
@@ -2057,17 +2057,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "breath",
-          "label": "A quick cyclic sigh — fast, no equipment, fits the two minutes"
+          "label": "A quick cyclic sigh, fast, no equipment, fits the two minutes"
         },
         {
           "id": "pmr",
-          "label": "A full PMR body scan — thorough, but takes longer than two minutes"
+          "label": "A full PMR body scan, thorough, but takes longer than two minutes"
         }
       ],
       "feedbackMap": {
         "breath": {
           "title": "Right",
-          "body": "With only two minutes, the fastest-acting tool that needs no setup is the best fit — even though PMR would also help, it doesn't fit the time available.",
+          "body": "With only two minutes, the fastest-acting tool that needs no setup is the best fit, even though PMR would also help, it doesn't fit the time available.",
           "chain": [
             "Only two minutes available.",
             "Breath is the fastest lever with no setup.",
@@ -2076,7 +2076,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "pmr": {
           "title": "Not quite",
-          "body": "PMR is a real tool, but a full scan doesn't fit inside two minutes — the time constraint itself is part of choosing well.",
+          "body": "PMR is a real tool, but a full scan doesn't fit inside two minutes, the time constraint itself is part of choosing well.",
           "chain": [
             "Time available is a real constraint on tool choice."
           ],
@@ -2098,9 +2098,9 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "acute_stress_response",
     "content": {
-      "title": "Fast Or Slow — And Now, Which Tool",
+      "title": "Fast Or Slow, And Now, Which Tool",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "A lingering, keyed-up feeling an hour after a hard call — is a body tool even still useful this late?",
+      "hotThought": "A lingering, keyed-up feeling an hour after a hard call, is a body tool even still useful this late?",
       "trays": [
         {
           "id": "layer",
@@ -2108,11 +2108,11 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "id": "hpa",
-              "label": "HPA — the slower wave, still clearing"
+              "label": "HPA, the slower wave, still clearing"
             },
             {
               "id": "gone",
-              "label": "Neither — this shouldn't still be happening"
+              "label": "Neither, this shouldn't still be happening"
             }
           ]
         },
@@ -2122,20 +2122,20 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "id": "breath-or-pmr",
-              "label": "A breath or PMR — body-level tools help while HPA is still clearing"
+              "label": "A breath or PMR, body-level tools help while HPA is still clearing"
             },
             {
               "id": "none",
-              "label": "None — nothing helps once the jolt has passed"
+              "label": "None, nothing helps once the jolt has passed"
             }
           ]
         }
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "This is the {layer} layer — {tool}."
+        "template": "This is the {layer} layer, {tool}."
       },
-      "comparisonFeedback": "A body-level tool still helps while the slower HPA wave is clearing — it doesn't only work in the first few seconds."
+      "comparisonFeedback": "A body-level tool still helps while the slower HPA wave is clearing, it doesn't only work in the first few seconds."
     }
   },
   {
@@ -2152,7 +2152,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Your Tell, Your Tool",
       "instruction": "Order the sequence, then apply it to your own tell.",
-      "message": "The tells aren't just for self-awareness — they're the trigger for which lever to reach for.",
+      "message": "The tells aren't just for self-awareness, they're the trigger for which lever to reach for.",
       "steps": [
         {
           "id": "notice",
@@ -2171,20 +2171,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "A tight jaw (a body-channel tell) — which tool is the most direct match?",
+        "prompt": "A tight jaw (a body-channel tell), which tool is the most direct match?",
         "options": [
           {
             "id": "body-tool",
-            "label": "A body-channel tool — breath or PMR",
+            "label": "A body-channel tool, breath or PMR",
             "isSupported": true,
-            "response": "Right — a body-channel tell points most directly to a body-channel tool, faster than trying to think your way out first.",
+            "response": "Right, a body-channel tell points most directly to a body-channel tool, faster than trying to think your way out first.",
             "takeaway": "Matching the channel is faster than defaulting to whichever tool comes to mind first."
           },
           {
             "id": "unrelated",
-            "label": "Any tool — the channel doesn't matter",
+            "label": "Any tool, the channel doesn't matter",
             "isSupported": false,
-            "response": "Not quite — a body-channel tell points most directly to a body-channel tool.",
+            "response": "Not quite, a body-channel tell points most directly to a body-channel tool.",
             "takeaway": "The channel a tell shows up in is a real clue, not incidental."
           }
         ]
@@ -2212,7 +2212,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "next"
           ],
-          "correctFeedback": "Right — a buffering effect on the next stressor.",
+          "correctFeedback": "Right, a buffering effect on the next stressor.",
           "incorrectFeedback": "It buffers the next stressor, not the current one.",
           "workedExample": "A morning walk changes how the afternoon meeting lands, not the meeting itself."
         }
@@ -2285,14 +2285,14 @@ FROM jsonb_to_recordset($tag$[
             "id": "reactivity",
             "label": "Without it, this same trigger might have landed harder",
             "isSupported": true,
-            "response": "Right — the walk buffered reactivity; it doesn't mean nothing can still trigger irritability, just that it likely lands somewhat softer.",
+            "response": "Right, the walk buffered reactivity; it doesn't mean nothing can still trigger irritability, just that it likely lands somewhat softer.",
             "takeaway": "Buffering is a real but modest effect, not immunity."
           },
           {
             "id": "immune",
             "label": "The walk should have made them immune to irritability today",
             "isSupported": false,
-            "response": "Not quite — buffering is a modest, real effect, not immunity from stress reactions.",
+            "response": "Not quite, buffering is a modest, real effect, not immunity from stress reactions.",
             "takeaway": "Don't overclaim what a buffering effect actually guarantees."
           }
         ]
@@ -2335,7 +2335,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "buffer-now": {
           "title": "Right",
-          "body": "This uses the toolkit as designed — movement done ahead buffers reactivity, and a fast body-channel tool is kept in reserve for the moment itself.",
+          "body": "This uses the toolkit as designed, movement done ahead buffers reactivity, and a fast body-channel tool is kept in reserve for the moment itself.",
           "chain": [
             "Movement's effect is about ahead-of-time buffering, not in-the-moment fixing.",
             "A breath or PMR check is still available right before.",
@@ -2344,7 +2344,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "wait": {
           "title": "Not quite",
-          "body": "Movement's buffering effect specifically works when it's done AHEAD of the stressor — saving it for right before misses that window entirely.",
+          "body": "Movement's buffering effect specifically works when it's done AHEAD of the stressor, saving it for right before misses that window entirely.",
           "chain": [
             "Exercise as stress buffer requires advance timing, not last-minute use."
           ],
@@ -2366,11 +2366,11 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "Calming Your Body — Section Checkpoint",
+      "title": "Calming Your Body, Section Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Four quick checks across all of Section 2.\nA miss just gives you something to revisit.",
       "introTag": "4 QUESTIONS · ~1 MIN",
-      "revisitMessage": "The marked ideas are worth a short revisit — nothing is lost, and they'll come back around.",
+      "revisitMessage": "The marked ideas are worth a short revisit, nothing is lost, and they'll come back around.",
       "solidMessage": "The body toolkit is holding. Next: giving the response an actual end.",
       "items": [
         {
@@ -2422,7 +2422,7 @@ FROM jsonb_to_recordset($tag$[
             },
             {
               "label": "Try harder to prevent wandering",
-              "feedback": "Wandering isn't the failure — the return is the skill.",
+              "feedback": "Wandering isn't the failure, the return is the skill.",
               "isCorrect": false
             }
           ]
@@ -2464,10 +2464,10 @@ FROM jsonb_to_recordset($tag$[
       "closedTitle": "Section 2 Complete",
       "closedBody": "Tap to see what you've earned.",
       "openTitle": "You Can Reach The Brake Directly Now",
-      "openBody": "You can now reach the brake directly with breath, body, or movement — matched to the moment, not just known in theory.",
+      "openBody": "You can now reach the brake directly with breath, body, or movement, matched to the moment, not just known in theory.",
       "nextLabel": "Next up:",
       "nextTitle": "Making It Last",
-      "nextBody": "is about giving the response an actual end — recovery, sleep, support, boundaries — and rehearsing what you keep before the course ends."
+      "nextBody": "is about giving the response an actual end, recovery, sleep, support, boundaries, and rehearsing what you keep before the course ends."
     }
   }
 ]$tag$::jsonb) AS r(

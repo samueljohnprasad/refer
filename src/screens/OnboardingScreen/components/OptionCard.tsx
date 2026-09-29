@@ -19,8 +19,41 @@ import {
   Timer01Icon,
   MoonCloudIcon,
   BedIcon,
+  Tick01Icon,
 } from "@hugeicons/core-free-icons";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { ZoomIn } from "react-native-reanimated";
+
+interface OptionTheme {
+  lightBg: string;
+  iconColor: string;
+  activeBg: string;
+}
+
+// ponytail: Ahead-style category palette for emotional recognition
+export function getOptionTheme(id: string): OptionTheme {
+  switch (id) {
+    case "anxiety":
+      return { lightBg: "bg-sky-50", iconColor: "#0284C7", activeBg: "bg-sky-500" };
+    case "mood":
+      return { lightBg: "bg-amber-50", iconColor: "#D97706", activeBg: "bg-amber-500" };
+    case "stress":
+      return { lightBg: "bg-emerald-50", iconColor: "#059669", activeBg: "bg-emerald-500" };
+    case "self_understanding":
+      return { lightBg: "bg-purple-50", iconColor: "#7C3AED", activeBg: "bg-purple-500" };
+    case "sleep":
+      return { lightBg: "bg-indigo-50", iconColor: "#4F46E5", activeBg: "bg-indigo-500" };
+    case "light":
+      return { lightBg: "bg-emerald-50", iconColor: "#059669", activeBg: "bg-emerald-500" };
+    case "moderate":
+      return { lightBg: "bg-sky-50", iconColor: "#0284C7", activeBg: "bg-sky-500" };
+    case "heavy":
+      return { lightBg: "bg-amber-50", iconColor: "#D97706", activeBg: "bg-amber-500" };
+    case "overwhelming":
+      return { lightBg: "bg-rose-50", iconColor: "#E11D48", activeBg: "bg-rose-500" };
+    default:
+      return { lightBg: "bg-sage-50", iconColor: "#587C51", activeBg: "bg-sage-500" };
+  }
+}
 
 export function getQuizIcon(id: string) {
   switch (id) {
@@ -82,53 +115,61 @@ function OptionCardInner<T extends string>({
   onSelect,
   index,
 }: OptionCardProps<T>) {
+  const theme = getOptionTheme(option.id);
+
   return (
-    <Animated.View entering={FadeIn.delay(140 + index * 60).duration(220)}>
+    <Animated.View entering={FadeIn.delay(120 + index * 50).duration(200)}>
+      {/* ponytail: showDepth=true delivers Duolingo/Ahead tactile 3D physical rim */}
       <Card
         variant={isSelected ? "answer-selected" : "answer"}
         radius="lg"
         onPress={onSelect}
-        accessibilityRole="radio"
+        accessibilityRole="button"
         accessibilityState={{ selected: isSelected }}
         accessibilityLabel={`${option.title}, ${option.subtitle}`}
         className="w-full"
-        contentClassName="flex-row items-center gap-3.5 px-4 py-3"
-        showDepth={false}
+        contentClassName="flex-row items-center gap-4 px-4 py-3.5"
+        showDepth={true}
+        haptic="medium"
       >
         <View
-          className={`h-11 w-11 items-center justify-center rounded-xl ${
-            isSelected ? "bg-sage-500" : "bg-sage-50"
+          className={`h-12 w-12 items-center justify-center rounded-2xl ${
+            isSelected ? theme.activeBg : theme.lightBg
           }`}
         >
           <HugeiconsIcon
             icon={getQuizIcon(option.id)}
-            size={22}
-            color={isSelected ? "#FFFFFF" : SEMANTIC_COLORS.brand.pressed}
+            size={24}
+            color={isSelected ? "#FFFFFF" : theme.iconColor}
           />
         </View>
+
         <View className="flex-1 pr-1">
           <Text
-            className={`happy-font-body-semibold text-[15px] font-semibold ${
-              isSelected ? "text-sage-700" : "text-ink"
+            className={`happy-font-body-bold text-[16px] leading-tight ${
+              isSelected ? "text-sage-800" : "text-ink"
             }`}
           >
             {option.title}
           </Text>
-          <Text className="happy-font-body mt-0.5 text-xs text-ink-soft">
+          <Text
+            className={`happy-font-body mt-1 text-[13px] leading-snug ${
+              isSelected ? "text-sage-600" : "text-ink-soft"
+            }`}
+          >
             {option.subtitle}
           </Text>
         </View>
-        <View
-          className={`h-5 w-5 items-center justify-center rounded-full border-[1.5px] ${
-            isSelected
-              ? "border-sage-500 bg-white"
-              : "border-neutral-300 bg-transparent"
-          }`}
-        >
-          {isSelected && (
-            <View className="h-2.5 w-2.5 rounded-full bg-sage-500" />
-          )}
-        </View>
+
+        {/* ponytail: Ahead pattern - no dead unselected radios; bouncy confirmation badge on select */}
+        {isSelected && (
+          <Animated.View
+            entering={ZoomIn.duration(160)}
+            className="h-7 w-7 items-center justify-center rounded-full bg-sage-500"
+          >
+            <HugeiconsIcon icon={Tick01Icon} size={16} color="#FFFFFF" />
+          </Animated.View>
+        )}
       </Card>
     </Animated.View>
   );

@@ -33,7 +33,7 @@ Generate a monthly reflection that:
 - Prioritize observations supported across multiple weeks.
 - Reserve definitive statements for patterns seen in 3+ weeks.
 - Return fewer insights when evidence is limited.
-- When last month's reflection is provided, describe evolution factually — do not evaluate progress.
+- When last month's reflection is provided, describe evolution factually, do not evaluate progress.
 
 ## Tone
 

@@ -53,7 +53,7 @@ SET content = '{
       "input_type": "multi_choice",
       "options": ["Catastrophizing", "Mind Reading", "Overgeneralizing", "Labeling"],
       "correct_index": 1,
-      "explanation": "This is Mind Reading — assuming you know what someone else is thinking without evidence. They could be tired, busy, or sick!"
+      "explanation": "This is Mind Reading, assuming you know what someone else is thinking without evidence. They could be tired, busy, or sick!"
     },
     {
       "prompt": "You make one mistake in a presentation. You think: ''That was a complete disaster.'' Which distortion?",
@@ -67,7 +67,7 @@ SET content = '{
       "input_type": "multi_choice",
       "options": ["Labeling", "Catastrophizing", "Fortune Telling", "Overgeneralizing"],
       "correct_index": 2,
-      "explanation": "Fortune Telling is predicting the future with certainty. You''re not a psychic — you''re anxious. The interview hasn''t happened yet!"
+      "explanation": "Fortune Telling is predicting the future with certainty. You''re not a psychic, you''re anxious. The interview hasn''t happened yet!"
     },
     {
       "prompt": "You feel nervous at a party. You think: ''I feel awkward, so everyone must see how awkward I am.'' Which distortion?",
@@ -129,7 +129,7 @@ SET content = '{
       "label_max": "Overwhelming"
     },
     {
-      "prompt": "What evidence supports this thought? Be honest — only facts, not feelings.",
+      "prompt": "What evidence supports this thought? Be honest, only facts, not feelings.",
       "input_type": "text",
       "placeholder": "e.g. I did stumble over my words last time…"
     },
@@ -146,7 +146,7 @@ SET content = '{
   ],
   "exercise_type": "standard"
 }'::jsonb,
-title = 'Thought Record — A Real Worry',
+title = 'Thought Record, A Real Worry',
 description = 'Walk through a full CBT thought record with one of your real worries.',
 xp_reward = 20,
 estimated_minutes = 8,
@@ -240,7 +240,7 @@ SET content = '{
       { "name": "Upper Arms", "tense_seconds": 5, "release_seconds": 10, "instruction": "Flex your biceps like a bodybuilder. Hold the tension, then relax." },
       { "name": "Shoulders", "tense_seconds": 5, "release_seconds": 10, "instruction": "Shrug your shoulders up to your ears. Hold, then drop them down." },
       { "name": "Neck", "tense_seconds": 5, "release_seconds": 10, "instruction": "Gently press your head back against an imaginary wall. Hold, then release." },
-      { "name": "Face", "tense_seconds": 5, "release_seconds": 10, "instruction": "Scrunch your entire face — eyes, nose, mouth. Hold, then relax and let your jaw drop." },
+      { "name": "Face", "tense_seconds": 5, "release_seconds": 10, "instruction": "Scrunch your entire face, eyes, nose, mouth. Hold, then relax and let your jaw drop." },
       { "name": "Chest", "tense_seconds": 5, "release_seconds": 10, "instruction": "Take a deep breath and hold it, tensing your chest. Then exhale slowly." },
       { "name": "Stomach", "tense_seconds": 5, "release_seconds": 10, "instruction": "Tighten your stomach muscles like bracing for impact. Hold, then release." },
       { "name": "Legs", "tense_seconds": 5, "release_seconds": 10, "instruction": "Press your thighs together and tense your legs. Hold, then let them go heavy." },
@@ -280,17 +280,17 @@ SET content = '{
       "allow_multiple": true
     },
     {
-      "prompt": "Step 1 — what do you do FIRST when you notice anxiety rising? (The fastest calming tool)",
+      "prompt": "Step 1, what do you do FIRST when you notice anxiety rising? (The fastest calming tool)",
       "input_type": "text",
       "placeholder": "e.g. 3 rounds of box breathing to slow down…"
     },
     {
-      "prompt": "Step 2 — once you''re a bit calmer, what do you do next? (The thinking tool)",
+      "prompt": "Step 2, once you''re a bit calmer, what do you do next? (The thinking tool)",
       "input_type": "text",
       "placeholder": "e.g. Ask myself: what distortion am I caught in?…"
     },
     {
-      "prompt": "Step 3 — what''s your action step? (What behavior replaces avoidance?)",
+      "prompt": "Step 3, what''s your action step? (What behavior replaces avoidance?)",
       "input_type": "text",
       "placeholder": "e.g. Do the thing I''m avoiding for just 2 minutes…"
     }
@@ -317,26 +317,26 @@ SET content = '{
       "placeholder": "Take a moment to read, then describe what you notice…"
     },
     {
-      "prompt": "STEP 1 — BODY: Which body calming technique would you use right now?",
+      "prompt": "STEP 1, BODY: Which body calming technique would you use right now?",
       "input_type": "multi_choice",
       "options": ["Box Breathing", "5-4-3-2-1 Grounding", "Progressive Muscle Relaxation", "Deep belly breathing"],
       "correct_index": 0,
       "explanation": "Any of these would work! Box Breathing is a great first choice because it''s fast (under 2 minutes) and you can do it anywhere."
     },
     {
-      "prompt": "STEP 2 — THOUGHTS: Identify the distortions in ''What if I freeze up? Everyone will think I''m incompetent.''",
+      "prompt": "STEP 2, THOUGHTS: Identify the distortions in ''What if I freeze up? Everyone will think I''m incompetent.''",
       "input_type": "multi_choice",
       "options": ["Fortune Telling + Mind Reading", "Labeling + Overgeneralizing", "Catastrophizing + Should Statements", "Emotional Reasoning + All-or-Nothing"],
       "correct_index": 0,
       "explanation": "Fortune Telling (predicting you''ll freeze) and Mind Reading (assuming everyone will judge you). Two traps, one sentence!"
     },
     {
-      "prompt": "STEP 3 — REFRAME: Rewrite the anxious thought in a more balanced way.",
+      "prompt": "STEP 3, REFRAME: Rewrite the anxious thought in a more balanced way.",
       "input_type": "text",
       "placeholder": "e.g. I''ve prepared well. I might be nervous, but I usually find my flow once I start…"
     },
     {
-      "prompt": "STEP 4 — ACTION: Instead of calling in sick, what''s one small action you could take tonight to feel more prepared?",
+      "prompt": "STEP 4, ACTION: Instead of calling in sick, what''s one small action you could take tonight to feel more prepared?",
       "input_type": "text",
       "placeholder": "e.g. Do one practice run-through of my key slides…"
     }

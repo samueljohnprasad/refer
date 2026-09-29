@@ -603,7 +603,7 @@ WITH curriculum AS (
             },
             {
               "id": "fixed-length",
-              "label": "They fill a required 60–90 minute window",
+              "label": "They fill a required 60-90 minute window",
               "feedback": "A longer window can suit some evenings, but there is no required length. The shift in demand is the key."
             },
             {
@@ -715,7 +715,7 @@ WITH curriculum AS (
           "completionMode": "direct",
           "title": "Use a range, not a rule",
           "instruction": "Replace one rigid idea with a flexible one.",
-          "myth": "A wind-down only counts if it lasts 60–90 minutes.",
+          "myth": "A wind-down only counts if it lasts 60-90 minutes.",
           "reality": "A wind-down can be a range: a smaller version for crowded nights and a fuller version when time allows. Sixty to ninety minutes is one example, not a requirement.",
           "note": "Keep the purpose; resize the routine. Length does not determine whether sleep begins.",
           "variant": "myth"
@@ -2360,8 +2360,8 @@ WITH curriculum AS (
               "sceneLabel": "10:40 PM",
               "scene": "Mina keeps remembering an unfinished work task as her usual transition cue begins. She wants to keep thinking until she has the perfect answer.",
               "prompt": "What is the most useful first move?",
-              "clue": "Look for a brief record plus a daytime action—not a complete solution.",
-              "worked": "Write: ‘Budget question—email Sam after breakfast.’ Then return to the wind-down. If writing ramps things up, stop and choose a non-writing option.",
+              "clue": "Look for a brief record plus a daytime action, not a complete solution.",
+              "worked": "Write: ‘Budget question, email Sam after breakfast.’ Then return to the wind-down. If writing ramps things up, stop and choose a non-writing option.",
               "options": [
                 {
                   "id": "brief-capture",
@@ -2412,7 +2412,7 @@ WITH curriculum AS (
             "stop the exercise and choose no writing"
           ],
           "feedbackTitle": "A plan, not an assignment",
-          "feedback": "Capture stays optional and brief. The aim is a parking place and one next step—not a solved worry or a test of whether sleep follows. If writing becomes activating, stop writing and switch to quiet reading, a familiar relaxation practice, or no exercise."
+          "feedback": "Capture stays optional and brief. The aim is a parking place and one next step, not a solved worry or a test of whether sleep follows. If writing becomes activating, stop writing and switch to quiet reading, a familiar relaxation practice, or no exercise."
         }
       },
       {
@@ -2525,7 +2525,7 @@ WITH curriculum AS (
               "scene": "Dev starts a worry note, but after two lines feels more alert and pulled into analysis. Quiet reading has felt neutral before.",
               "prompt": "What fits the choice rule?",
               "clue": "A tool is optional; activation is a reason to stop, not to try harder.",
-              "worked": "Close the note and switch to familiar quiet reading—or choose no exercise. The goal is a fitting option, not completion.",
+              "worked": "Close the note and switch to familiar quiet reading, or choose no exercise. The goal is a fitting option, not completion.",
               "options": [
                 {
                   "id": "switch-or-stop",
@@ -2852,7 +2852,7 @@ WITH curriculum AS (
             {
               "concept": "Stimulus control",
               "context": "After a long wakeful stretch, bed is starting to feel like a place for effort and planning.",
-              "prompt": "Which response best protects the bed–sleep association?",
+              "prompt": "Which response best protects the bed-sleep association?",
               "clue": "Recall what to do when wakeful struggle has taken over the bed.",
               "worked": "Leave the bed, choose a quiet activity, and return when sleepy, while still protecting health and mobility needs.",
               "options": [

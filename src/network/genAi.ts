@@ -29,7 +29,7 @@ export type InsightsType = {
   triggers: string[] | null; // Identified mood triggers (positive or negative)
   copingStrategies: string[] | null; // Coping mechanisms used
   physicalSymptoms: string[] | null; // Physical health mentions
-  sleepQuality: number | null; // 1-5: Sleep quality — null if not explicitly mentioned
+  sleepQuality: number | null; // 1-5: Sleep quality, null if not explicitly mentioned
   goals: string[] | null; // Goals or intentions mentioned
   worries: string[] | null; // Recurring worries or anxieties
   achievements: string[] | null; // Wins and accomplishments

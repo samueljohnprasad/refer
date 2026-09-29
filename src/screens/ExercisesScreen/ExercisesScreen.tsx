@@ -86,7 +86,6 @@ import { TimelineSkeleton } from "../../../src/components/ui/Timeline/TimelineSk
 import { ExerciseTimeline } from "./components/ExerciseTimeline";
 import { JumpBackInCard } from "./components/JumpBackInCard";
 import { Card } from "@/src/components/ui/Card";
-import { Button } from "@/src/components/ui/Button";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
@@ -157,6 +156,8 @@ interface NutrieBadgeTheme {
   text: string;
   iconColor: string;
   rim: string;
+  // ponytail: soft light tone-matched depth for solid hero cards
+  cardRim: string;
   sf: string;
   feather: string;
 }
@@ -167,6 +168,7 @@ const CATEGORY_BADGE_THEME: Record<ExerciseCategory, NutrieBadgeTheme> = {
     text: "#22C55E",
     iconColor: "#22C55E",
     rim: "#16A34A",
+    cardRim: "#C4EED4",
     sf: "brain.head.profile",
     feather: "cpu",
   },
@@ -175,6 +177,7 @@ const CATEGORY_BADGE_THEME: Record<ExerciseCategory, NutrieBadgeTheme> = {
     text: "#00A3D9",
     iconColor: "#00A3D9",
     rim: "#0084B4",
+    cardRim: "#BCE5F5",
     sf: "leaf",
     feather: "feather",
   },
@@ -183,6 +186,7 @@ const CATEGORY_BADGE_THEME: Record<ExerciseCategory, NutrieBadgeTheme> = {
     text: "#FF6B4A",
     iconColor: "#FF6B4A",
     rim: "#E04B2A",
+    cardRim: "#FED2C7",
     sf: "cloud",
     feather: "cloud",
   },
@@ -191,6 +195,7 @@ const CATEGORY_BADGE_THEME: Record<ExerciseCategory, NutrieBadgeTheme> = {
     text: "#6B5CE7",
     iconColor: "#6B5CE7",
     rim: "#5243C7",
+    cardRim: "#DDD2FC",
     sf: "sparkles",
     feather: "zap",
   },
@@ -284,7 +289,7 @@ const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
           borderColor: "rgba(0,0,0,0.06)",
         }}
         rimStyle={{
-          backgroundColor: badgeTheme.text,
+          backgroundColor: badgeTheme.cardRim,
           top: 4,
           bottom: -4,
         }}
@@ -350,14 +355,13 @@ const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
           {customSubtitle ?? exercise.subtitle}
         </Text>
 
+        {/* ponytail: integrated action row without separator line or nested button */}
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            paddingTop: 10,
-            borderTopWidth: 1,
-            borderTopColor: "rgba(0,0,0,0.06)",
+            paddingTop: 4,
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
@@ -366,16 +370,22 @@ const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
               +{exercise.xp} XP
             </Text>
           </View>
-          <Button
-            label="Start"
-            size="sm"
-            height={32}
-            fullWidth={false}
-            leftIcon={<HugeiconsIcon icon={PlayIcon} size={13} color="#FFFFFF" />}
-            faceColor={badgeTheme.text}
-            rimColor={badgeTheme.rim}
-            onPress={handlePress}
-          />
+          <View
+            style={{
+              backgroundColor: badgeTheme.text,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 4,
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 9999,
+            }}
+          >
+            <HugeiconsIcon icon={PlayIcon} size={12} color="#FFFFFF" />
+            <Text style={{ color: "#FFFFFF", fontSize: 12, fontWeight: "800" }}>
+              Start
+            </Text>
+          </View>
         </View>
       </Card>
     </CircularRevealWrapper>

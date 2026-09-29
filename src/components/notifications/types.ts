@@ -1,4 +1,5 @@
 import type { ComponentProps } from "react";
+import type { OpaqueColorValue } from "react-native";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
 export type FeatherName = ComponentProps<typeof Feather>["name"];
@@ -24,8 +25,8 @@ export type ReminderItem = FeItem | McItem;
  * Color scheme for reminder cards
  */
 export type ReminderColorScheme = {
-  bg: string;
-  border: string;
-  text: string;
-  icon: string;
+  bg: string | OpaqueColorValue;
+  border: string | OpaqueColorValue;
+  text: string | OpaqueColorValue;
+  icon: string | OpaqueColorValue;
 };

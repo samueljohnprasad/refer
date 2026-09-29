@@ -209,7 +209,7 @@ function readExactArray(
     return null;
   }
   if (value.length < minimum || value.length > maximum) {
-    const range = minimum === maximum ? `${minimum}` : `${minimum}–${maximum}`;
+    const range = minimum === maximum ? `${minimum}` : `${minimum}-${maximum}`;
     issues.push({ path, message: `Must contain ${range} items; found ${value.length}.` });
   }
   return value;

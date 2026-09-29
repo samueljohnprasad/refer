@@ -46,7 +46,7 @@ export async function migrateGuestProgress(_userId: string): Promise<void> {
       progress.completedNodeIds.length,
       'completed nodes in',
       progress.journeySlug,
-      '— DB migration pending P1.1 tables.',
+      ', DB migration pending P1.1 tables.',
     );
   } catch (err) {
     console.warn('[migrateGuestProgress] Unexpected error during migration:', err);

@@ -81,7 +81,7 @@ FROM jsonb_to_recordset($tag$[
     "order_index": 3,
     "is_published": false,
     "domain": "anxiety_management",
-    "target_audience": "Adults with everyday-to-moderate anxiety and worry — racing thoughts, catastrophic predictions, avoidance, or occasional panic — including someone with no prior mental-health vocabulary or self-understanding of what they're feeling. Not diagnosed panic disorder with agoraphobia, OCD, or PTSD requiring specialist treatment; not a crisis tool or a diagnostic instrument.",
+    "target_audience": "Adults with everyday-to-moderate anxiety and worry, racing thoughts, catastrophic predictions, avoidance, or occasional panic, including someone with no prior mental-health vocabulary or self-understanding of what they're feeling. Not diagnosed panic disorder with agoraphobia, OCD, or PTSD requiring specialist treatment; not a crisis tool or a diagnostic instrument.",
     "total_lessons": 69,
     "total_duration_weeks": null,
     "sessions_per_week": null,
@@ -91,14 +91,14 @@ FROM jsonb_to_recordset($tag$[
     ],
     "reward_content": {
       "title": "Quieting the Storm",
-      "acknowledgement": "Sixty-nine lessons. You learned what this feeling actually is before learning a single technique, read the alarm without treating it as proof, caught the catastrophic story your mind adds and checked it against real evidence, noticed when a safety behavior or an avoided moment was quietly keeping a fear alive, chose to approach instead, sat with worry's underlying uncertainty instead of letting it spiral, and recognized a panic surge for what it is — intense, uncomfortable, and time-limited. That's a practice, not a promise of permanent calm. What you keep is yours.",
+      "acknowledgement": "Sixty-nine lessons. You learned what this feeling actually is before learning a single technique, read the alarm without treating it as proof, caught the catastrophic story your mind adds and checked it against real evidence, noticed when a safety behavior or an avoided moment was quietly keeping a fear alive, chose to approach instead, sat with worry's underlying uncertainty instead of letting it spiral, and recognized a panic surge for what it is, intense, uncomfortable, and time-limited. That's a practice, not a promise of permanent calm. What you keep is yours.",
       "capabilityHeading": "What you can do now",
       "capabilitySummary": [
         "Describe what anxiety actually feels like, and recognize it as a near-universal experience, not a personal flaw.",
-        "Recognize anxiety as a protective alarm — a possible-threat signal, not proof that danger is present.",
+        "Recognize anxiety as a protective alarm, a possible-threat signal, not proof that danger is present.",
         "Catch a catastrophic threat prediction and check it against real evidence and your own ability to cope.",
         "Notice a safety behavior or avoided moment that's quietly keeping a fear alive, and choose a small approach step instead.",
-        "Tell worry driven by intolerance of uncertainty apart from productive problem-solving, and recognize a panic surge for what it is — time-limited, not dangerous."
+        "Tell worry driven by intolerance of uncertainty apart from productive problem-solving, and recognize a panic surge for what it is, time-limited, not dangerous."
       ],
       "reviewActionLabel": "Review the course",
       "doneActionLabel": "Done"
@@ -118,7 +118,7 @@ FROM jsonb_to_recordset($tag$[
     "course_source_id": "anxiety-quieting-the-storm",
     "title": "Keeping It Quiet",
     "order_index": 2,
-    "narrative_hook": "Check real danger first, put the whole system together, then keep it quiet — knowing what to practice and where this course's edges are.",
+    "narrative_hook": "Check real danger first, put the whole system together, then keep it quiet, knowing what to practice and where this course's edges are.",
     "badge_on_complete": "Steady Ground",
     "difficulty_range": [
       0.3,
@@ -168,7 +168,7 @@ FROM jsonb_to_recordset($tag$[
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now name the practices you're keeping, tell everyday anxiety apart from a pattern worth professional attention, and recognize when a pattern needs more than this course — without reading that as failure.",
+      "capabilityStatement": "You can now name the practices you're keeping, tell everyday anxiety apart from a pattern worth professional attention, and recognize when a pattern needs more than this course, without reading that as failure.",
       "primaryActionLabel": "Back to path"
     }
   },
@@ -181,7 +181,7 @@ FROM jsonb_to_recordset($tag$[
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now run the whole alarm sequence against a fresh moment — a prediction, a safety behavior mid-habit, worry, or panic — without the course walking you through it, and explain the whole system to someone else.",
+      "capabilityStatement": "You can now run the whole alarm sequence against a fresh moment, a prediction, a safety behavior mid-habit, worry, or panic, without the course walking you through it, and explain the whole system to someone else.",
       "primaryActionLabel": "Back to path"
     }
   }
@@ -271,7 +271,7 @@ FROM jsonb_to_recordset($tag$[
     "prerequisites": [],
     "reward_content": {
       "title": "Fear (now) and anxiety (maybe later) call for different first moves",
-      "body": "Fear responds to a threat that's actually here — the right first move is often to act. Anxiety responds to a threat that might happen — the right first move is to check the prediction, not to treat the alarm as proof or to act on the urge as a command. Confusing the two is one of the most common ways good tools get misapplied.",
+      "body": "Fear responds to a threat that's actually here, the right first move is often to act. Anxiety responds to a threat that might happen, the right first move is to check the prediction, not to treat the alarm as proof or to act on the urge as a command. Confusing the two is one of the most common ways good tools get misapplied.",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -387,8 +387,8 @@ FROM jsonb_to_recordset($tag$[
     "review_concepts": [],
     "prerequisites": [],
     "reward_content": {
-      "title": "Everyday anxiety is near-universal — and often goes untreated",
-      "body": "Generalized anxiety disorder affects roughly 5-6% of people over a lifetime, panic disorder around 4-5%, and about a quarter of people have at least one panic attack without necessarily having panic disorder — a large share of people fall in the gap this course is built for: real skill-building, available before or alongside professional care. (WHO; Harvard Health — research/07 §1)",
+      "title": "Everyday anxiety is near-universal, and often goes untreated",
+      "body": "Generalized anxiety disorder affects roughly 5-6% of people over a lifetime, panic disorder around 4-5%, and about a quarter of people have at least one panic attack without necessarily having panic disorder, a large share of people fall in the gap this course is built for: real skill-building, available before or alongside professional care. (WHO; Harvard Health, research/07 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -553,7 +553,7 @@ FROM jsonb_to_recordset($tag$[
     "prerequisites": [],
     "reward_content": {
       "title": "Why the rehearsal, not a badge, is the actual ending",
-      "body": "The same research this course is built on found skills-training programs' gains fade substantially between right-after and a later follow-up — not because the skills stopped being true, because nobody practiced them. The rehearsals you just ran aren't extra credit; they're this course taking its own research seriously. (Vanhove et al. 2016, the same finding cited in the stress and self-understanding courses' own rehearsal units)",
+      "body": "The same research this course is built on found skills-training programs' gains fade substantially between right-after and a later follow-up, not because the skills stopped being true, because nobody practiced them. The rehearsals you just ran aren't extra credit; they're this course taking its own research seriously. (Vanhove et al. 2016, the same finding cited in the stress and self-understanding courses' own rehearsal units)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -646,7 +646,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Act, Or Reappraise?",
       "variant": "myth",
       "myth": "These tools mean I should question or reappraise every fear, even fear of something actually happening right now.",
-      "reality": "Before applying any reappraisal tool from this course, check — is this a real, present threat (act on it), or anxiety about something uncertain or future (use the tools)? A car swerving into your lane right now is real danger — act, don't reappraise. Wondering whether a car might swerve on tomorrow's drive is anxiety — that's what these tools are for."
+      "reality": "Before applying any reappraisal tool from this course, check, is this a real, present threat (act on it), or anxiety about something uncertain or future (use the tools)? A car swerving into your lane right now is real danger, act, don't reappraise. Wondering whether a car might swerve on tomorrow's drive is anxiety, that's what these tools are for."
     }
   },
   {
@@ -662,28 +662,28 @@ FROM jsonb_to_recordset($tag$[
     "concept": "real_danger_comes_first",
     "content": {
       "title": "Act, Or Use The Tools?",
-      "leftHeading": "Real Danger — Act",
-      "rightHeading": "Anxiety — Use The Tools",
+      "leftHeading": "Real Danger, Act",
+      "rightHeading": "Anxiety, Use The Tools",
       "rows": [
         {
           "question": "A car swerves into your lane right now",
-          "left": "Real, present threat — act",
+          "left": "Real, present threat, act",
           "right": ""
         },
         {
           "question": "Wondering whether a car might swerve tomorrow",
           "left": "",
-          "right": "Anticipated, uncertain — use the tools"
+          "right": "Anticipated, uncertain, use the tools"
         },
         {
           "question": "Someone is shouting and advancing toward you right now",
-          "left": "Real, present threat — act",
+          "left": "Real, present threat, act",
           "right": ""
         },
         {
           "question": "Dreading how a difficult conversation might go next week",
           "left": "",
-          "right": "Anticipated, uncertain — use the tools"
+          "right": "Anticipated, uncertain, use the tools"
         }
       ]
     }
@@ -700,7 +700,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": "fear_and_anxiety",
     "content": {
-      "title": "Fear, Or Anxiety — Fifty Lessons In",
+      "title": "Fear, Or Anxiety, Fifty Lessons In",
       "leftHeading": "Fear (present)",
       "rightHeading": "Anxiety (anticipated)",
       "rows": [
@@ -735,23 +735,23 @@ FROM jsonb_to_recordset($tag$[
       "rows": [
         {
           "question": "A dog is lunging at you right now, teeth bared",
-          "left": "Real, present threat — act",
+          "left": "Real, present threat, act",
           "right": ""
         },
         {
           "question": "Wondering whether a dog might be at the park tomorrow",
           "left": "",
-          "right": "Anticipated — use the tools"
+          "right": "Anticipated, use the tools"
         },
         {
           "question": "Someone grabs your arm forcefully right now",
-          "left": "Real, present threat — act",
+          "left": "Real, present threat, act",
           "right": ""
         },
         {
           "question": "Worrying about how an upcoming presentation will go",
           "left": "",
-          "right": "Anticipated — use the tools"
+          "right": "Anticipated, use the tools"
         }
       ]
     }
@@ -770,21 +770,21 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Whole Course, In Order",
       "instruction": "Order the sequence, then apply it.",
-      "message": "Notice the alarm, check the prediction, notice the urge, choose to approach — that's the whole course, in order.",
+      "message": "Notice the alarm, check the prediction, notice the urge, choose to approach, that's the whole course, in order.",
       "steps": [
         {
           "id": "notice",
-          "label": "Notice the alarm — a body sensation, a signal, not proof",
+          "label": "Notice the alarm, a body sensation, a signal, not proof",
           "order": 1
         },
         {
           "id": "check",
-          "label": "Check the prediction — is it catastrophizing? Run the two-question check",
+          "label": "Check the prediction, is it catastrophizing? Run the two-question check",
           "order": 2
         },
         {
           "id": "urge",
-          "label": "Notice the urge — information, not a command",
+          "label": "Notice the urge, information, not a command",
           "order": 3
         },
         {
@@ -800,14 +800,14 @@ FROM jsonb_to_recordset($tag$[
             "id": "danger-check",
             "label": "Check whether this is real, present danger or anxiety about something uncertain",
             "isSupported": true,
-            "response": "Right — real_danger_comes_first is the gate before the sequence, not a fifth step inside it.",
+            "response": "Right, real_danger_comes_first is the gate before the sequence, not a fifth step inside it.",
             "takeaway": "The danger check happens before the sequence, not as part of it."
           },
           {
             "id": "none",
-            "label": "Nothing — jump straight into the four steps",
+            "label": "Nothing, jump straight into the four steps",
             "isSupported": false,
-            "response": "Not quite — checking for real danger first is what keeps the sequence safely scoped to anxiety.",
+            "response": "Not quite, checking for real danger first is what keeps the sequence safely scoped to anxiety.",
             "takeaway": "Skipping the danger check risks misapplying these tools to a real threat."
           }
         ]
@@ -828,11 +828,11 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Where Protective Alarm Fits",
       "instruction": "Order the sequence, then apply it.",
-      "message": "Protective alarm — from l8 — is exactly the 'notice' step of the assembled sequence.",
+      "message": "Protective alarm, from l8, is exactly the 'notice' step of the assembled sequence.",
       "steps": [
         {
           "id": "signal",
-          "label": "The alarm fires — a signal, not proof",
+          "label": "The alarm fires, a signal, not proof",
           "order": 1
         },
         {
@@ -846,16 +846,16 @@ FROM jsonb_to_recordset($tag$[
         "options": [
           {
             "id": "no",
-            "label": "No — the whole sequence depends on treating the alarm as a signal, not proof",
+            "label": "No, the whole sequence depends on treating the alarm as a signal, not proof",
             "isSupported": true,
-            "response": "Right — this is the same idea from l8, still load-bearing forty-four lessons later.",
+            "response": "Right, this is the same idea from l8, still load-bearing forty-four lessons later.",
             "takeaway": "The alarm-as-signal idea underlies the entire assembled sequence."
           },
           {
             "id": "yes",
-            "label": "Yes — later steps assume the alarm was correct",
+            "label": "Yes, later steps assume the alarm was correct",
             "isSupported": false,
-            "response": "Not quite — every later step depends on NOT treating the alarm as proof.",
+            "response": "Not quite, every later step depends on NOT treating the alarm as proof.",
             "takeaway": "Treating the alarm as proof would undermine the whole sequence."
           }
         ]
@@ -876,7 +876,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Where Threat Prediction Fits",
       "instruction": "Order the sequence, then apply it.",
-      "message": "Threat prediction — from l10 — is the 'check the prediction' step, where catastrophizing gets caught.",
+      "message": "Threat prediction, from l10, is the 'check the prediction' step, where catastrophizing gets caught.",
       "steps": [
         {
           "id": "story",
@@ -894,16 +894,16 @@ FROM jsonb_to_recordset($tag$[
         "options": [
           {
             "id": "yes",
-            "label": "Yes — running the check is still worthwhile; it just confirms the prediction rather than correcting it",
+            "label": "Yes, running the check is still worthwhile; it just confirms the prediction rather than correcting it",
             "isSupported": true,
-            "response": "Right — the check works either way; it either corrects an overestimate or confirms an accurate read.",
+            "response": "Right, the check works either way; it either corrects an overestimate or confirms an accurate read.",
             "takeaway": "The check is useful regardless of the outcome, not just when catastrophizing is present."
           },
           {
             "id": "no",
-            "label": "No — the check is only needed when the prediction is wrong",
+            "label": "No, the check is only needed when the prediction is wrong",
             "isSupported": false,
-            "response": "Not quite — running the check is still useful even for an accurate prediction, since it confirms rather than just assumes.",
+            "response": "Not quite, running the check is still useful even for an accurate prediction, since it confirms rather than just assumes.",
             "takeaway": "The check applies to any prediction, not just exaggerated ones."
           }
         ]
@@ -946,7 +946,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "sequence": {
           "title": "Right",
-          "body": "This runs the full assembled sequence — notice, check, notice the urge, choose — and lands on a measured response instead of an urgent, safety-seeking one.",
+          "body": "This runs the full assembled sequence, notice, check, notice the urge, choose, and lands on a measured response instead of an urgent, safety-seeking one.",
           "chain": [
             "The alarm and prediction are identified without being treated as proof.",
             "The urge is noticed as information, and a different choice is made."
@@ -954,7 +954,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "react": {
           "title": "Not quite",
-          "body": "Multiple urgent follow-up texts is the urge acted on as a command — exactly the pattern this sequence is built to interrupt.",
+          "body": "Multiple urgent follow-up texts is the urge acted on as a command, exactly the pattern this sequence is built to interrupt.",
           "chain": [
             "Sending texts immediately skips the check-the-prediction step."
           ],
@@ -983,11 +983,11 @@ FROM jsonb_to_recordset($tag$[
         {
           "question": "A vague, last-minute cancellation text",
           "left": "",
-          "right": "Anticipated, uncertain — use the tools"
+          "right": "Anticipated, uncertain, use the tools"
         },
         {
           "question": "Someone actively threatening you right now",
-          "left": "Real, present threat — act",
+          "left": "Real, present threat, act",
           "right": ""
         }
       ]
@@ -1029,7 +1029,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Four Urges, Fifty-Four Lessons In",
       "instruction": "Tap the chips in order.",
-      "prompt": "Fight, flight, freeze, and ___ — still the four protective urges.",
+      "prompt": "Fight, flight, freeze, and ___, still the four protective urges.",
       "chips": [
         "safety-seeking",
         "curiosity",
@@ -1097,7 +1097,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "arousal",
-      "reveal": "More likely the normal product of anxious arousal — the same idea from the panic unit, still true here."
+      "reveal": "More likely the normal product of anxious arousal, the same idea from the panic unit, still true here."
     }
   },
   {
@@ -1112,7 +1112,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": "real_danger_comes_first",
     "content": {
-      "title": "Act, Or Use The Tools — Assessed",
+      "title": "Act, Or Use The Tools, Assessed",
       "leftHeading": "Real Danger",
       "rightHeading": "Anxiety",
       "rows": [
@@ -1143,7 +1143,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Sequence, From Memory",
       "instruction": "Order the four steps from memory.",
-      "message": "Notice, check, notice the urge, choose — rebuild it once more.",
+      "message": "Notice, check, notice the urge, choose, rebuild it once more.",
       "steps": [
         {
           "id": "notice",
@@ -1171,16 +1171,16 @@ FROM jsonb_to_recordset($tag$[
         "options": [
           {
             "id": "before",
-            "label": "Before them — it's a gate, not a fifth step in the sequence",
+            "label": "Before them, it's a gate, not a fifth step in the sequence",
             "isSupported": true,
-            "response": "Right — real danger comes first, as a check before the sequence even starts.",
+            "response": "Right, real danger comes first, as a check before the sequence even starts.",
             "takeaway": "The danger check gates the whole sequence, rather than being one of its steps."
           },
           {
             "id": "inside",
             "label": "Inside them, as a fifth step",
             "isSupported": false,
-            "response": "Not quite — it's a prior check, not a step within the four-part sequence.",
+            "response": "Not quite, it's a prior check, not a step within the four-part sequence.",
             "takeaway": "The danger check happens before the sequence begins."
           }
         ]
@@ -1213,7 +1213,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "sequence",
-          "label": "First check: this is anxiety about something uncertain, not real danger. Then run the sequence — notice the alarm, check the prediction (likely catastrophized), notice the urge, and choose a calm, normal reply"
+          "label": "First check: this is anxiety about something uncertain, not real danger. Then run the sequence, notice the alarm, check the prediction (likely catastrophized), notice the urge, and choose a calm, normal reply"
         },
         {
           "id": "urgent-reply",
@@ -1223,7 +1223,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "sequence": {
           "title": "Right",
-          "body": "This runs the danger check first, then the full assembled sequence — exactly what the unit teaches.",
+          "body": "This runs the danger check first, then the full assembled sequence, exactly what the unit teaches.",
           "chain": [
             "Real danger is checked first and ruled out.",
             "The full four-step sequence follows."
@@ -1256,7 +1256,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Gains Fade Without Use",
       "variant": "myth",
       "myth": "Once I've learned these skills, they stay sharp on their own.",
-      "reality": "These skills fade without ongoing use, the same way skills from the app's other courses do. Skills training research consistently finds gains measured right after a program are smaller by the time of a later follow-up — not because the skills stopped being true, because nobody practiced them. That's exactly what the next unit is for."
+      "reality": "These skills fade without ongoing use, the same way skills from the app's other courses do. Skills training research consistently finds gains measured right after a program are smaller by the time of a later follow-up, not because the skills stopped being true, because nobody practiced them. That's exactly what the next unit is for."
     }
   },
   {
@@ -1275,15 +1275,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — they fade without ongoing use"
+          "label": "No, they fade without ongoing use"
         },
         {
           "id": "yes",
-          "label": "Yes — learning them once is enough"
+          "label": "Yes, learning them once is enough"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "They fade without ongoing use — the same fading-effect pattern skills research consistently finds."
+      "reveal": "They fade without ongoing use, the same fading-effect pattern skills research consistently finds."
     }
   },
   {
@@ -1298,7 +1298,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": "real_danger_comes_first",
     "content": {
-      "title": "Act, Or Use The Tools — Recalled",
+      "title": "Act, Or Use The Tools, Recalled",
       "leftHeading": "Real Danger",
       "rightHeading": "Anxiety",
       "rows": [
@@ -1330,7 +1330,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Small, Honest, Actually Yours",
       "variant": "myth",
       "myth": "Keeping 'everything' from the course is a realistic plan.",
-      "reality": "Naming a small, honest set of 2-3 practices from the WHOLE course — not a restatement of everything — is what actually continues after it ends. Not 'I'll keep doing the whole ladder system plus the whole compass.' More like: 'checking the coping question when a prediction feels catastrophic, and building a ladder for one avoided thing a month.' Small, honest, and actually yours."
+      "reality": "Naming a small, honest set of 2-3 practices from the WHOLE course, not a restatement of everything, is what actually continues after it ends. Not 'I'll keep doing the whole ladder system plus the whole compass.' More like: 'checking the coping question when a prediction feels catastrophic, and building a ladder for one avoided thing a month.' Small, honest, and actually yours."
     }
   },
   {
@@ -1358,7 +1358,7 @@ FROM jsonb_to_recordset($tag$[
             "relabeling a panic sensation",
             "sorting worry as problem-solving or looping"
           ],
-          "correctFeedback": "Good — specific and small is what survives an ordinary week.",
+          "correctFeedback": "Good, specific and small is what survives an ordinary week.",
           "incorrectFeedback": "Try naming one specific tool from the course, not everything at once.",
           "workedExample": "\"Checking the coping question when a prediction feels catastrophic\" is specific enough to actually remember and use."
         }
@@ -1389,7 +1389,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "no-practice",
-      "reveal": "Gains fade because nobody practices the skills — not because the skills stopped being true."
+      "reveal": "Gains fade because nobody practices the skills, not because the skills stopped being true."
     }
   },
   {
@@ -1407,7 +1407,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Persistent, Disproportionate, Impairing",
       "variant": "myth",
       "myth": "Any anxiety I feel regularly must mean something is wrong with me.",
-      "reality": "The line isn't a specific worry topic or a single bad day — it's whether anxiety has become persistent (most days, for weeks), disproportionate to the situation, and impairing (interferes with work, relationships, or daily tasks). Feeling nervous most days before a genuinely demanding week isn't the line. Anxiety that's constant, disproportionate, and getting in the way for weeks — that crosses it."
+      "reality": "The line isn't a specific worry topic or a single bad day, it's whether anxiety has become persistent (most days, for weeks), disproportionate to the situation, and impairing (interferes with work, relationships, or daily tasks). Feeling nervous most days before a genuinely demanding week isn't the line. Anxiety that's constant, disproportionate, and getting in the way for weeks, that crosses it."
     }
   },
   {
@@ -1422,11 +1422,11 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "normal_anxiety_vs_persistent_difficulty",
     "content": {
-      "prompt": "Nervous most days during a genuinely demanding, unusually busy two-week stretch at work — everyday anxiety, or crossing the line?",
+      "prompt": "Nervous most days during a genuinely demanding, unusually busy two-week stretch at work, everyday anxiety, or crossing the line?",
       "options": [
         {
           "id": "everyday",
-          "label": "Everyday anxiety — proportionate to a genuinely demanding stretch"
+          "label": "Everyday anxiety, proportionate to a genuinely demanding stretch"
         },
         {
           "id": "line",
@@ -1434,7 +1434,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "everyday",
-      "reveal": "This is proportionate to a real, demanding situation — everyday anxiety, not crossing the line."
+      "reveal": "This is proportionate to a real, demanding situation, everyday anxiety, not crossing the line."
     }
   },
   {
@@ -1458,7 +1458,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "specific"
           ],
-          "correctFeedback": "Right — 2-3 specific practices.",
+          "correctFeedback": "Right, 2-3 specific practices.",
           "incorrectFeedback": "The word is specific.",
           "workedExample": "\"Building a ladder for one avoided thing a month\" is specific enough to actually keep."
         }
@@ -1478,7 +1478,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": null,
     "content": {
       "title": "Sort Your Own Pattern, Honestly",
-      "instruction": "No one sees this. Has anxiety, for you, mostly stayed proportionate and manageable — or has it crossed into persistent, disproportionate, or in-the-way territory? If it's crossed that line, the next lesson names the route plainly.",
+      "instruction": "No one sees this. Has anxiety, for you, mostly stayed proportionate and manageable, or has it crossed into persistent, disproportionate, or in-the-way territory? If it's crossed that line, the next lesson names the route plainly.",
       "items": [
         {
           "id": "pattern-check",
@@ -1509,7 +1509,7 @@ FROM jsonb_to_recordset($tag$[
             "use",
             "practice"
           ],
-          "correctFeedback": "Right — practice, not because the skills stopped being true.",
+          "correctFeedback": "Right, practice, not because the skills stopped being true.",
           "incorrectFeedback": "Skills fade without ongoing practice or use.",
           "workedExample": "Gains measured right after training shrink by a later follow-up when nobody keeps practicing."
         }
@@ -1540,7 +1540,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "pattern",
-      "reveal": "The line is about the pattern — persistent, disproportionate, impairing — not the specific topic."
+      "reveal": "The line is about the pattern, persistent, disproportionate, impairing, not the specific topic."
     }
   },
   {
@@ -1558,7 +1558,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Reaching Further Is The Tools Working",
       "variant": "myth",
       "myth": "Needing more support than this course means these tools didn't work.",
-      "reality": "If anxiety has stayed persistent, disproportionate, or in-the-way despite using what this course teaches, or if panic attacks are already limiting where you go or what you do — that's a professional's territory, or the mood or self-understanding course's, and reaching for it at that point is these tools working exactly as they should. No in-app support route exists yet here — naming that gap plainly is more honest than inventing one."
+      "reality": "If anxiety has stayed persistent, disproportionate, or in-the-way despite using what this course teaches, or if panic attacks are already limiting where you go or what you do, that's a professional's territory, or the mood or self-understanding course's, and reaching for it at that point is these tools working exactly as they should. No in-app support route exists yet here, naming that gap plainly is more honest than inventing one."
     }
   },
   {
@@ -1575,7 +1575,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Which Route Fits",
       "instruction": "Read the case, then choose the best-fit route.",
-      "question": "Someone finds that panic attacks have started limiting where they'll go — skipping places they used to go without a second thought. What fits best?",
+      "question": "Someone finds that panic attacks have started limiting where they'll go, skipping places they used to go without a second thought. What fits best?",
       "cases": [
         {
           "id": "case1",
@@ -1587,7 +1587,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "professional",
-          "label": "Professional support — panic that's already limiting daily life is past what self-guided psychoeducation alone is built for"
+          "label": "Professional support, panic that's already limiting daily life is past what self-guided psychoeducation alone is built for"
         },
         {
           "id": "more-course",
@@ -1605,7 +1605,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "more-course": {
           "title": "Not quite",
-          "body": "This course's scope is everyday anxiety psychoeducation, not treating a pattern that's already limiting daily functioning — professional support fits better.",
+          "body": "This course's scope is everyday anxiety psychoeducation, not treating a pattern that's already limiting daily functioning, professional support fits better.",
           "chain": [
             "Functional impairment (limiting where someone goes) is a clinical-threshold signal."
           ],
@@ -1637,7 +1637,7 @@ FROM jsonb_to_recordset($tag$[
             "small",
             "small and honest"
           ],
-          "correctFeedback": "Right — small and specific.",
+          "correctFeedback": "Right, small and specific.",
           "incorrectFeedback": "It should be small and specific, not everything at once.",
           "workedExample": "2-3 named practices, not the whole toolkit."
         }
@@ -1660,15 +1660,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it doesn't claim any of those"
+          "label": "No, it doesn't claim any of those"
         },
         {
           "id": "yes",
-          "label": "Yes — completing it guarantees those outcomes"
+          "label": "Yes, completing it guarantees those outcomes"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "This course taught you to read the alarm, catch the story, notice the urge, and choose. It didn't promise a fixed cure, a diagnosis, or permanent skill without practice — naming that clearly is what makes the routes in the previous lesson make sense, not undermine the last 61 lessons."
+      "reveal": "This course taught you to read the alarm, catch the story, notice the urge, and choose. It didn't promise a fixed cure, a diagnosis, or permanent skill without practice, naming that clearly is what makes the routes in the previous lesson make sense, not undermine the last 61 lessons."
     }
   },
   {
@@ -1687,15 +1687,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it doesn't diagnose or treat clinical disorders"
+          "label": "No, it doesn't diagnose or treat clinical disorders"
         },
         {
           "id": "yes",
-          "label": "Yes — it treats clinical anxiety disorders"
+          "label": "Yes, it treats clinical anxiety disorders"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "This course doesn't diagnose or treat clinical anxiety disorders — persistent, disproportionate, impairing patterns route to professional support instead."
+      "reveal": "This course doesn't diagnose or treat clinical anxiety disorders, persistent, disproportionate, impairing patterns route to professional support instead."
     }
   },
   {
@@ -1714,15 +1714,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — occasional anxiety alone doesn't cross the line"
+          "label": "No, occasional anxiety alone doesn't cross the line"
         },
         {
           "id": "yes",
-          "label": "Yes — any anxiety at all crosses the line"
+          "label": "Yes, any anxiety at all crosses the line"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "Occasional anxiety alone doesn't cross the line — the line is about persistence, disproportion, and impairment together."
+      "reveal": "Occasional anxiety alone doesn't cross the line, the line is about persistence, disproportion, and impairment together."
     }
   },
   {
@@ -1739,7 +1739,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Reaching Further, Recalled",
       "instruction": "Read the case, then choose.",
-      "question": "Someone uses the tools from this course consistently, and anxiety stays within the everyday range — proportionate, not impairing. What's the appropriate next step?",
+      "question": "Someone uses the tools from this course consistently, and anxiety stays within the everyday range, proportionate, not impairing. What's the appropriate next step?",
       "cases": [
         {
           "id": "case1",
@@ -1751,7 +1751,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "keep-going",
-          "label": "Keep practicing the kept practices from l58 — no need to reach further right now"
+          "label": "Keep practicing the kept practices from l58, no need to reach further right now"
         },
         {
           "id": "reach-anyway",
@@ -1761,7 +1761,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "keep-going": {
           "title": "Right",
-          "body": "When anxiety stays within the everyday, proportionate range, continuing the kept practices is exactly the right next step — reaching further is for when the line gets crossed.",
+          "body": "When anxiety stays within the everyday, proportionate range, continuing the kept practices is exactly the right next step, reaching further is for when the line gets crossed.",
           "chain": [
             "The pattern described stays within everyday, proportionate anxiety.",
             "That's not the persistent/disproportionate/impairing line."
@@ -1769,7 +1769,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "reach-anyway": {
           "title": "Not quite",
-          "body": "Reaching for professional support is for when the line gets crossed — staying within the everyday range doesn't call for it.",
+          "body": "Reaching for professional support is for when the line gets crossed, staying within the everyday range doesn't call for it.",
           "chain": [
             "The described pattern doesn't cross the checkable line."
           ],
@@ -1800,7 +1800,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "specific"
           ],
-          "correctFeedback": "Right — specific practices.",
+          "correctFeedback": "Right, specific practices.",
           "incorrectFeedback": "The word is specific.",
           "workedExample": "A small, honest, specific list is what survives an ordinary week."
         }
@@ -1823,15 +1823,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it's these tools working exactly as they should"
+          "label": "No, it's these tools working exactly as they should"
         },
         {
           "id": "yes",
-          "label": "Yes — it means the tools failed"
+          "label": "Yes, it means the tools failed"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "Reaching further is these tools working, not failing — the same honest close from l61."
+      "reveal": "Reaching further is these tools working, not failing, the same honest close from l61."
     }
   },
   {
@@ -1860,7 +1860,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "working",
-          "label": "The kept practices are working as intended — no need to reach further right now, just keep the practice going"
+          "label": "The kept practices are working as intended, no need to reach further right now, just keep the practice going"
         },
         {
           "id": "not-enough",
@@ -1870,7 +1870,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "working": {
           "title": "Right",
-          "body": "Specific, kept practices with proportionate, non-impairing anxiety is exactly what this course aims for — continuing the practice is the right move.",
+          "body": "Specific, kept practices with proportionate, non-impairing anxiety is exactly what this course aims for, continuing the practice is the right move.",
           "chain": [
             "The practices are specific and kept, per l58.",
             "Anxiety stays within the everyday, non-impairing range."
@@ -1878,7 +1878,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "not-enough": {
           "title": "Not quite",
-          "body": "Nothing in this pattern crosses the persistent/disproportionate/impairing line — reaching further isn't called for just because time has passed.",
+          "body": "Nothing in this pattern crosses the persistent/disproportionate/impairing line, reaching further isn't called for just because time has passed.",
           "chain": [
             "The line is about the pattern, not a fixed duration."
           ],
@@ -1905,11 +1905,11 @@ FROM jsonb_to_recordset($tag$[
       "beats": [
         {
           "id": "b1",
-          "text": "A message arrives asking to 'discuss the project sometime this week' — vague, no urgency stated."
+          "text": "A message arrives asking to 'discuss the project sometime this week', vague, no urgency stated."
         },
         {
           "id": "b2",
-          "text": "First move: notice the alarm firing, and catch the prediction forming — what story is the mind adding?"
+          "text": "First move: notice the alarm firing, and catch the prediction forming, what story is the mind adding?"
         },
         {
           "id": "b3",
@@ -1954,7 +1954,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "checked": {
           "title": "Right",
-          "body": "This runs both questions — realistic probability and a real coping plan — instead of assuming the worst.",
+          "body": "This runs both questions, realistic probability and a real coping plan, instead of assuming the worst.",
           "chain": [
             "The probability of a serious problem is being checked, not assumed.",
             "A coping plan exists even in the less likely case."
@@ -2011,7 +2011,7 @@ FROM jsonb_to_recordset($tag$[
       "beats": [
         {
           "id": "b1",
-          "text": "Halfway through rehearsing exactly what to say before a phone call — again — for the third time this week."
+          "text": "Halfway through rehearsing exactly what to say before a phone call, again, for the third time this week."
         },
         {
           "id": "b2",
@@ -2019,11 +2019,11 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "b3",
-          "text": "On Tuesday, the ladder step didn't happen — the call got put off entirely. That's fine; the next step is available whenever it's used, not just the first time it's needed."
+          "text": "On Tuesday, the ladder step didn't happen, the call got put off entirely. That's fine; the next step is available whenever it's used, not just the first time it's needed."
         },
         {
           "id": "b4",
-          "text": "Today: choose the next ladder step instead of the full rehearsal — make the call with only a brief note of what to cover."
+          "text": "Today: choose the next ladder step instead of the full rehearsal, make the call with only a brief note of what to cover."
         }
       ]
     }
@@ -2054,7 +2054,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "redirect",
-          "label": "Stop the full rehearsal and make the call with only a brief note — the next ladder step"
+          "label": "Stop the full rehearsal and make the call with only a brief note, the next ladder step"
         },
         {
           "id": "finish-rehearsing",
@@ -2072,7 +2072,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "finish-rehearsing": {
           "title": "Not quite",
-          "body": "Finishing the full rehearsal keeps the safety behavior running — the point is to redirect to a smaller approach step instead.",
+          "body": "Finishing the full rehearsal keeps the safety behavior running, the point is to redirect to a smaller approach step instead.",
           "chain": [
             "Completing the rehearsal doesn't interrupt the pattern."
           ],
@@ -2103,7 +2103,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "specific"
           ],
-          "correctFeedback": "Right — specific practices.",
+          "correctFeedback": "Right, specific practices.",
           "incorrectFeedback": "The word is specific.",
           "workedExample": "Small, honest, and actually yours."
         }
@@ -2136,24 +2136,24 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "panic",
-          "label": "Panic — relabel the sensations as arousal, not danger, and remember they have a physiological ceiling"
+          "label": "Panic, relabel the sensations as arousal, not danger, and remember they have a physiological ceiling"
         },
         {
           "id": "worry",
-          "label": "Worry — sort it as problem-solving or looping"
+          "label": "Worry, sort it as problem-solving or looping"
         }
       ],
       "feedbackMap": {
         "panic": {
           "title": "Right",
-          "body": "Sudden, intense, fast-onset physical sensations are panic's signature — relabeling and the time-limited fact are the matching skills.",
+          "body": "Sudden, intense, fast-onset physical sensations are panic's signature, relabeling and the time-limited fact are the matching skills.",
           "chain": [
             "The description matches panic's fast, intense, physical onset, not worry's ongoing verbal loop."
           ]
         },
         "worry": {
           "title": "Not quite",
-          "body": "This describes a fast, intense physical spike, not an ongoing verbal loop — that's panic's territory, not worry's.",
+          "body": "This describes a fast, intense physical spike, not an ongoing verbal loop, that's panic's territory, not worry's.",
           "chain": [
             "Worry is mostly word-based and ongoing; this is a fast, intense physical spike."
           ],
@@ -2175,7 +2175,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": null,
     "content": {
-      "title": "Worry, Or Panic? — A Second Case",
+      "title": "Worry, Or Panic?, A Second Case",
       "instruction": "Read the case, then choose the matching skill.",
       "question": "The same thought about a decision has been circling for six nights, with nothing new emerging, no sudden physical spike. Which skill applies?",
       "cases": [
@@ -2189,17 +2189,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "worry",
-          "label": "Worry — this is looping, and likely driven by intolerance of uncertainty rather than bad odds"
+          "label": "Worry, this is looping, and likely driven by intolerance of uncertainty rather than bad odds"
         },
         {
           "id": "panic",
-          "label": "Panic — relabel the sensations"
+          "label": "Panic, relabel the sensations"
         }
       ],
       "feedbackMap": {
         "worry": {
           "title": "Right",
-          "body": "Six nights of circling with nothing new, no physical spike — that's the worry loop's signature, not panic's.",
+          "body": "Six nights of circling with nothing new, no physical spike, that's the worry loop's signature, not panic's.",
           "chain": [
             "No sudden physical spike is described.",
             "Repetition with nothing new over days is the looping tell."
@@ -2207,7 +2207,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "panic": {
           "title": "Not quite",
-          "body": "There's no physical spike described here — this is an ongoing verbal loop, worry's territory, not panic's.",
+          "body": "There's no physical spike described here, this is an ongoing verbal loop, worry's territory, not panic's.",
           "chain": [
             "Panic is a fast, intense physical spike; this is a slow, ongoing loop."
           ],
@@ -2233,15 +2233,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it's about persistence, disproportion, and impairment over time"
+          "label": "No, it's about persistence, disproportion, and impairment over time"
         },
         {
           "id": "yes",
-          "label": "Yes — one bad day crosses the line"
+          "label": "Yes, one bad day crosses the line"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "The line is about a pattern over time — persistent, disproportionate, impairing — not a single bad day."
+      "reveal": "The line is about a pattern over time, persistent, disproportionate, impairing, not a single bad day."
     }
   },
   {
@@ -2262,7 +2262,7 @@ FROM jsonb_to_recordset($tag$[
       "steps": [
         {
           "id": "notice",
-          "label": "Name what's happening: the alarm firing — a signal, not proof of danger",
+          "label": "Name what's happening: the alarm firing, a signal, not proof of danger",
           "order": 1
         },
         {
@@ -2277,20 +2277,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "The friend asks: \"but how do I know if it's just nerves or something actually wrong?\" — what's the honest answer, drawing on this course?",
+        "prompt": "The friend asks: \"but how do I know if it's just nerves or something actually wrong?\", what's the honest answer, drawing on this course?",
         "options": [
           {
             "id": "check",
-            "label": "Check for real, present danger first — if there isn't any, run the alarm sequence: notice, check the prediction, notice the urge, choose",
+            "label": "Check for real, present danger first, if there isn't any, run the alarm sequence: notice, check the prediction, notice the urge, choose",
             "isSupported": true,
-            "response": "Right — that's the actual decision rule this course taught, not a vague reassurance.",
+            "response": "Right, that's the actual decision rule this course taught, not a vague reassurance.",
             "takeaway": "Explaining the real-danger check first is what makes the answer usable."
           },
           {
             "id": "vague",
             "label": "Just tell them it's probably fine",
             "isSupported": false,
-            "response": "Not quite — this course gave a concrete, checkable decision rule; a vague reassurance doesn't actually help the friend use it.",
+            "response": "Not quite, this course gave a concrete, checkable decision rule; a vague reassurance doesn't actually help the friend use it.",
             "takeaway": "A real explanation names the specific check, not a feeling of probably-fine."
           }
         ]
@@ -2311,44 +2311,44 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Rebuild The Loop",
       "instruction": "Order the loop from memory.",
-      "message": "The same picture from l3 — now yours to redraw without help.",
+      "message": "The same picture from l3, now yours to redraw without help.",
       "steps": [
         {
           "id": "notice",
-          "label": "Notice — the alarm fires, a signal not proof",
+          "label": "Notice, the alarm fires, a signal not proof",
           "order": 1
         },
         {
           "id": "predict",
-          "label": "Predict — the mind adds a threat story, sometimes overestimated",
+          "label": "Predict, the mind adds a threat story, sometimes overestimated",
           "order": 2
         },
         {
           "id": "urge",
-          "label": "Urge — fight, flight, freeze, or safety-seek shows up, as information not command",
+          "label": "Urge, fight, flight, freeze, or safety-seek shows up, as information not command",
           "order": 3
         },
         {
           "id": "choose",
-          "label": "Choose — approach in graded steps, judged by completion, not calm",
+          "label": "Choose, approach in graded steps, judged by completion, not calm",
           "order": 4
         }
       ],
       "transfer": {
-        "prompt": "Place your own 2-3 kept practices (from l58) on this loop — which step(s) do they actually live on?",
+        "prompt": "Place your own 2-3 kept practices (from l58) on this loop, which step(s) do they actually live on?",
         "options": [
           {
             "id": "placed",
             "label": "I can place each one on a specific step",
             "isSupported": true,
-            "response": "Right — if your kept practices each have a clear step, the system held together, not just the individual facts.",
-            "takeaway": "Organized around the system, not a list — that was the whole design."
+            "response": "Right, if your kept practices each have a clear step, the system held together, not just the individual facts.",
+            "takeaway": "Organized around the system, not a list, that was the whole design."
           },
           {
             "id": "unsure",
             "label": "Not sure which step one of them belongs to",
             "isSupported": false,
-            "response": "Worth a second look — every real tool from this course lives on one of the four loop steps; if one doesn't fit cleanly, it's worth re-checking what it actually does."
+            "response": "Worth a second look, every real tool from this course lives on one of the four loop steps; if one doesn't fit cleanly, it's worth re-checking what it actually does."
           }
         ]
       }
@@ -2380,7 +2380,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "reach",
-          "label": "Reach for professional support, or the mood or self-understanding course if that fits better — this course working as intended"
+          "label": "Reach for professional support, or the mood or self-understanding course if that fits better, this course working as intended"
         },
         {
           "id": "failed",
@@ -2390,7 +2390,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "reach": {
           "title": "Right",
-          "body": "A pattern that's still persistent, disproportionate, and impairing after using this course's tools is exactly the signal to reach further — and that's the tools working, not failing.",
+          "body": "A pattern that's still persistent, disproportionate, and impairing after using this course's tools is exactly the signal to reach further, and that's the tools working, not failing.",
           "chain": [
             "The pattern still crosses the checkable line.",
             "Reaching further is the correct, honest next step."
@@ -2398,7 +2398,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "failed": {
           "title": "Not quite",
-          "body": "This isn't a dead end — it's exactly the signal this course names for reaching further, framed as the course working as intended.",
+          "body": "This isn't a dead end, it's exactly the signal this course names for reaching further, framed as the course working as intended.",
           "chain": [
             "The course explicitly names this exact situation as a route, not a failure."
           ],
@@ -2431,26 +2431,26 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "loop",
-          "label": "The loop — notice, predict, urge, choose — is a workable system, not a mystery",
+          "label": "The loop, notice, predict, urge, choose, is a workable system, not a mystery",
           "order": 2
         }
       ],
       "transfer": {
-        "prompt": "Sixty-nine lessons later — has either of those two opening ideas changed?",
+        "prompt": "Sixty-nine lessons later, has either of those two opening ideas changed?",
         "options": [
           {
             "id": "no",
-            "label": "No — they're the foundation everything else was built on",
+            "label": "No, they're the foundation everything else was built on",
             "isSupported": true,
-            "response": "Right — everything since has been detail on top of these two ideas, not a replacement for them.",
+            "response": "Right, everything since has been detail on top of these two ideas, not a replacement for them.",
             "takeaway": "The foundations from l1 and l3 are still exactly what they were."
           },
           {
             "id": "yes",
-            "label": "Yes — the later sections replaced the early framing",
+            "label": "Yes, the later sections replaced the early framing",
             "isSupported": false,
-            "response": "Not quite — Sections 2 and 3 built tools onto this loop; they didn't replace it.",
-            "takeaway": "Later content added tools in practice — it didn't change the opening framework."
+            "response": "Not quite, Sections 2 and 3 built tools onto this loop; they didn't replace it.",
+            "takeaway": "Later content added tools in practice, it didn't change the opening framework."
           }
         ]
       }
@@ -2497,26 +2497,26 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "Quieting the Storm — Course Checkpoint",
+      "title": "Quieting the Storm, Course Checkpoint",
       "introTitle": "One last look.",
       "intro": "A short close on where this course started and where it stops.\nNothing here is a grade.",
       "introTag": "3 QUESTIONS · ~1 MIN",
-      "revisitMessage": "Worth a short revisit — nothing is lost either way.",
-      "solidMessage": "Sixty-nine lessons — what you keep is yours.",
+      "revisitMessage": "Worth a short revisit, nothing is lost either way.",
+      "solidMessage": "Sixty-nine lessons, what you keep is yours.",
       "items": [
         {
           "concept": "The Opening Idea",
           "prompt": "Is anxiety a rare, unusual experience?",
           "clue": "It's near-universal.",
-          "worked": "No — it's near-universal, not a personal flaw or a rare experience.",
+          "worked": "No, it's near-universal, not a personal flaw or a rare experience.",
           "options": [
             {
-              "label": "No — near-universal",
+              "label": "No, near-universal",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — most people don't experience it",
+              "label": "Yes, most people don't experience it",
               "feedback": "This is exactly the misconception the whole course opened by correcting.",
               "isCorrect": false
             }
@@ -2526,7 +2526,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "The Alarm Loop",
           "prompt": "How many steps does this course's loop have?",
           "clue": "Notice, predict, urge, choose.",
-          "worked": "Four — notice, predict, urge, choose.",
+          "worked": "Four, notice, predict, urge, choose.",
           "options": [
             {
               "label": "Four",
@@ -2544,15 +2544,15 @@ FROM jsonb_to_recordset($tag$[
           "concept": "The Closing Boundary",
           "prompt": "Does this course diagnose or treat a clinical anxiety disorder?",
           "clue": "It has a scope edge.",
-          "worked": "No — it teaches everyday anxiety management and routes elsewhere when a pattern exceeds that.",
+          "worked": "No, it teaches everyday anxiety management and routes elsewhere when a pattern exceeds that.",
           "options": [
             {
-              "label": "No — those route to professional support or other courses",
+              "label": "No, those route to professional support or other courses",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — it covers all of these",
+              "label": "Yes, it covers all of these",
               "feedback": "This course has an explicit, honest scope boundary.",
               "isCorrect": false
             }
@@ -2616,7 +2616,7 @@ BEGIN
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now name the practices you're keeping, tell everyday anxiety apart from a pattern worth professional attention, and recognize when a pattern needs more than this course — without reading that as failure.",
+      "capabilityStatement": "You can now name the practices you're keeping, tell everyday anxiety apart from a pattern worth professional attention, and recognize when a pattern needs more than this course, without reading that as failure.",
       "primaryActionLabel": "Back to path"
     }
   },
@@ -2629,7 +2629,7 @@ BEGIN
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now run the whole alarm sequence against a fresh moment — a prediction, a safety behavior mid-habit, worry, or panic — without the course walking you through it, and explain the whole system to someone else.",
+      "capabilityStatement": "You can now run the whole alarm sequence against a fresh moment, a prediction, a safety behavior mid-habit, worry, or panic, without the course walking you through it, and explain the whole system to someone else.",
       "primaryActionLabel": "Back to path"
     }
   }
@@ -2715,7 +2715,7 @@ BEGIN
     "prerequisites": [],
     "reward_content": {
       "title": "Fear (now) and anxiety (maybe later) call for different first moves",
-      "body": "Fear responds to a threat that's actually here — the right first move is often to act. Anxiety responds to a threat that might happen — the right first move is to check the prediction, not to treat the alarm as proof or to act on the urge as a command. Confusing the two is one of the most common ways good tools get misapplied.",
+      "body": "Fear responds to a threat that's actually here, the right first move is often to act. Anxiety responds to a threat that might happen, the right first move is to check the prediction, not to treat the alarm as proof or to act on the urge as a command. Confusing the two is one of the most common ways good tools get misapplied.",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -2831,8 +2831,8 @@ BEGIN
     "review_concepts": [],
     "prerequisites": [],
     "reward_content": {
-      "title": "Everyday anxiety is near-universal — and often goes untreated",
-      "body": "Generalized anxiety disorder affects roughly 5-6% of people over a lifetime, panic disorder around 4-5%, and about a quarter of people have at least one panic attack without necessarily having panic disorder — a large share of people fall in the gap this course is built for: real skill-building, available before or alongside professional care. (WHO; Harvard Health — research/07 §1)",
+      "title": "Everyday anxiety is near-universal, and often goes untreated",
+      "body": "Generalized anxiety disorder affects roughly 5-6% of people over a lifetime, panic disorder around 4-5%, and about a quarter of people have at least one panic attack without necessarily having panic disorder, a large share of people fall in the gap this course is built for: real skill-building, available before or alongside professional care. (WHO; Harvard Health, research/07 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -2997,7 +2997,7 @@ BEGIN
     "prerequisites": [],
     "reward_content": {
       "title": "Why the rehearsal, not a badge, is the actual ending",
-      "body": "The same research this course is built on found skills-training programs' gains fade substantially between right-after and a later follow-up — not because the skills stopped being true, because nobody practiced them. The rehearsals you just ran aren't extra credit; they're this course taking its own research seriously. (Vanhove et al. 2016, the same finding cited in the stress and self-understanding courses' own rehearsal units)",
+      "body": "The same research this course is built on found skills-training programs' gains fade substantially between right-after and a later follow-up, not because the skills stopped being true, because nobody practiced them. The rehearsals you just ran aren't extra credit; they're this course taking its own research seriously. (Vanhove et al. 2016, the same finding cited in the stress and self-understanding courses' own rehearsal units)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }

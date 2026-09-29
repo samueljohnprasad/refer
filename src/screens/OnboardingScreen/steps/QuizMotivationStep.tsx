@@ -29,7 +29,8 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
   const handleSelect = useCallback(
     (id: MotivationAnswer) => {
       onSelect(id);
-      setTimeout(onAdvance, 400);
+      // ponytail: 360ms lets user enjoy bouncy tactile feedback before smooth advance
+      setTimeout(onAdvance, 360);
     },
     [onSelect, onAdvance],
   );
@@ -39,40 +40,34 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
       contentInsetAdjustmentBehavior="automatic"
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        paddingBottom: 24,
-        paddingTop: headerHeight - insets.top,
+        paddingBottom: 40,
+        paddingTop: Math.max(headerHeight - insets.top, 16),
       }}
       className="flex-1 px-6"
     >
       <Animated.Text
         entering={FadeIn.duration(160).delay(STEP_LABEL_ENTER_DELAY_MS)}
-        className="text-xs font-semibold text-sage-600"
+        className="text-[11px] font-bold uppercase tracking-wider text-sage-600"
       >
         Start with what feels most true
       </Animated.Text>
 
       <Animated.Text
         entering={FadeIn.duration(180).delay(TITLE_ENTER_DELAY_MS)}
-        style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-        className="mt-2 text-[30px] leading-[1.1] text-ink"
+        style={{ fontFamily: APP_FONT_FAMILIES.extraBold }}
+        className="mt-2 text-[30px] leading-[36px] text-ink happy-font-body-extrabold"
       >
-        What brings you here,{" "}
-        <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="italic text-sage-500"
-        >
-          friend?
-        </Text>
+        What brings you here, friend?
       </Animated.Text>
 
       <Animated.Text
         entering={FadeIn.duration(180).delay(DESCRIPTION_ENTER_DELAY_MS)}
-        className="mt-3 text-[15px] leading-relaxed text-ink-soft"
+        className="mt-2 text-[15px] leading-relaxed text-ink-soft happy-font-body-medium"
       >
         Pick the one that resonates most. No wrong answers.
       </Animated.Text>
 
-      <View className="mt-6 gap-3">
+      <View className="mt-6 gap-3.5">
         {MOTIVATION_OPTIONS.map((option, index) => (
           <OptionCard
             key={option.id}

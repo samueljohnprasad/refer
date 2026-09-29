@@ -22,7 +22,7 @@ SET content = '{
         "A personality trait you''re born with"
       ],
       "correct_index": 1,
-      "explanation": "Anxiety is like a smoke alarm — it''s a built-in protection system. It''s not broken; sometimes it just fires when there''s no real danger. And you can learn to adjust its sensitivity."
+      "explanation": "Anxiety is like a smoke alarm, it''s a built-in protection system. It''s not broken; sometimes it just fires when there''s no real danger. And you can learn to adjust its sensitivity."
     },
     {
       "text": "The ''Anxiety Cycle'' runs through three gears. What are they?",
@@ -33,10 +33,10 @@ SET content = '{
         "Stress → Anxiety → Depression"
       ],
       "correct_index": 1,
-      "explanation": "The three gears are Thoughts (what your brain says), Feelings (what your body does), and Behaviors (what you do or avoid). They keep each other spinning — but you can break the cycle at any gear."
+      "explanation": "The three gears are Thoughts (what your brain says), Feelings (what your body does), and Behaviors (what you do or avoid). They keep each other spinning, but you can break the cycle at any gear."
     },
     {
-      "text": "You think: ''My friend didn''t text back — they must hate me.'' Which cognitive distortion is this?",
+      "text": "You think: ''My friend didn''t text back, they must hate me.'' Which cognitive distortion is this?",
       "options": [
         "Catastrophizing",
         "Overgeneralizing",
@@ -44,7 +44,7 @@ SET content = '{
         "Should Statements"
       ],
       "correct_index": 2,
-      "explanation": "Mind Reading is assuming you know what someone else is thinking without evidence. Your friend could be busy, asleep, or just forgot — there are dozens of explanations more likely than ''they hate me.''"
+      "explanation": "Mind Reading is assuming you know what someone else is thinking without evidence. Your friend could be busy, asleep, or just forgot, there are dozens of explanations more likely than ''they hate me.''"
     },
     {
       "text": "Which statement about anxiety is TRUE?",
@@ -55,7 +55,7 @@ SET content = '{
         "Avoiding feared situations is the best long-term strategy"
       ],
       "correct_index": 2,
-      "explanation": "You don''t need to eliminate anxiety — just turn it down to a useful level. You can intervene at thoughts (reframe), feelings (calm the body), or behaviors (face the fear gradually). Avoidance actually makes anxiety worse over time."
+      "explanation": "You don''t need to eliminate anxiety, just turn it down to a useful level. You can intervene at thoughts (reframe), feelings (calm the body), or behaviors (face the fear gradually). Avoidance actually makes anxiety worse over time."
     }
   ]
 }'::jsonb,
@@ -82,7 +82,7 @@ SET content = '{
         "Labeling"
       ],
       "correct_index": 1,
-      "explanation": "All-or-Nothing Thinking sees only two categories: perfect or failure. A B+ is actually a strong result — but this distortion erases the middle ground."
+      "explanation": "All-or-Nothing Thinking sees only two categories: perfect or failure. A B+ is actually a strong result, but this distortion erases the middle ground."
     },
     {
       "text": "After one awkward date, you think: ''I''ll never find anyone. I always ruin things.'' Identify the trap.",
@@ -126,18 +126,18 @@ SET content = '{
         "All-or-Nothing + Overgeneralizing"
       ],
       "correct_index": 0,
-      "explanation": "''I should'' is a Should Statement — rigid rules that create guilt. ''Everyone else handles stress fine'' is Mind Reading — you''re assuming you know others'' inner experience. Most people struggle; they just hide it."
+      "explanation": "''I should'' is a Should Statement, rigid rules that create guilt. ''Everyone else handles stress fine'' is Mind Reading, you''re assuming you know others'' inner experience. Most people struggle; they just hide it."
     },
     {
       "text": "You made a mistake at work. The most helpful self-talk is:",
       "options": [
-        "''I''m such an idiot — I can''t do anything right.''",
+        "''I''m such an idiot, I can''t do anything right.''",
         "''It doesn''t matter, mistakes don''t mean anything.''",
         "''I made a mistake. That''s normal. What can I learn from this?''",
-        "''I should never make mistakes — I need to be perfect.''"
+        "''I should never make mistakes, I need to be perfect.''"
       ],
       "correct_index": 2,
-      "explanation": "Option C is balanced thinking — acknowledging the mistake without Labeling (''I''m an idiot''), dismissing (''doesn''t matter''), or Should Statements (''I should be perfect''). It''s honest and forward-looking."
+      "explanation": "Option C is balanced thinking, acknowledging the mistake without Labeling (''I''m an idiot''), dismissing (''doesn''t matter''), or Should Statements (''I should be perfect''). It''s honest and forward-looking."
     }
   ]
 }'::jsonb,

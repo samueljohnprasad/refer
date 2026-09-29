@@ -1,21 +1,22 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useMemo } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Text, View, ScrollView, Platform } from "react-native";
+import { Text, View, ScrollView, Platform, Image } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
 import { Skeleton } from "@/src/components/ui/Skeleton";
-import { CourseOutline } from "@/src/domains/journey/ui/components/CourseCatalogSheet/CourseOutline";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { SparklesIcon } from "@hugeicons/core-free-icons";
 import {
   useGetCourseCatalogQuery,
   useGetCourseTreeQuery,
 } from "@/src/domains/journey/data/journeyApi";
 import { buildCourseOverview } from "@/src/domains/journey/model/courseOverview";
+import { getCourseImageSource } from "@/src/domains/journey/model/courseVisuals";
 import { resolveCourseForMotivation } from "../utils/courseResolver";
 import {
   PLAN_META,
   getWhyThisCourse,
-  formatCount,
   resolveCourseSummary,
 } from "../utils/planMeta";
 import type { MotivationAnswer, StressLevel } from "../types";
@@ -36,7 +37,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
   const displayPlanName = planName.replace(/\.$/, "");
   const contentTopPadding = Platform.OS === "ios" ? 100 : insets.top + 100;
 
-  // ponytail: query catalog and course tree to show real full course outline
+  // ponytail: query catalog and course tree to resolve actual course and visual asset
   const { data: catalogCourses = [] } = useGetCourseCatalogQuery();
   const resolvedCourseId = useMemo(
     () => resolveCourseForMotivation(motivation, catalogCourses),
@@ -53,130 +54,230 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
   );
 
   const courseTitle = overview?.title ?? displayPlanName;
-  // ponytail: use concise 'You’ll learn...' phrasing instead of syllabus objectives
   const courseDescription = resolveCourseSummary(
     overview?.description,
     planMeta.youWillLearn,
   );
+  const mascotArt = getCourseImageSource(motivation);
 
-  // ponytail: replace legacy days concept with sections, units, lessons & session pacing
-  const hierarchyMeta = overview
-    ? `${formatCount(overview.sectionCount, "section")} · ${formatCount(overview.unitCount, "unit")} · ${formatCount(overview.lessonCount, "lesson")} · ~5 min/lesson`
-    : "Self-paced · ~5 min/lesson";
+  // ponytail: Ahead/Finch benchmark - present 3 gentle milestones rather than dense 89-lesson syllabus
+  const milestones = useMemo(() => {
+    if (overview?.sections && overview.sections.length > 0) {
+      const phaseSubtitles = [
+        "Foundation & Awareness",
+        "Skill Building & Practice",
+        "Integration & Lasting Calm",
+      ];
+      return overview.sections.slice(0, 3).map((section, idx) => ({
+        title: section.title,
+        subtitle: phaseSubtitles[idx] || `${section.units.length} units`,
+      }));
+    }
+    return planMeta.practiceItems.map((item, idx) => ({
+      title: item,
+      subtitle: idx === 0 ? "Initial focus" : idx === 1 ? "Core practice" : "Long-term anchor",
+    }));
+  }, [overview, planMeta]);
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        paddingBottom: 120,
+        paddingBottom: 140,
         paddingTop: contentTopPadding,
       }}
       contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6"
     >
+      {/* Eyebrow */}
       <Animated.View entering={FadeIn.duration(160).delay(60)}>
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="text-xs font-semibold uppercase tracking-wider text-sage-600"
+          style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+          className="text-[11px] font-bold uppercase tracking-wider text-sage-600"
         >
           Built around your goal
         </Text>
       </Animated.View>
 
-      {/* Hero Course Card */}
+      {/* Hero Course Card - Luminous brand gradient with cute mascot art */}
       <Animated.View entering={FadeInDown.duration(220).delay(120)}>
         <LinearGradient
-          colors={["#243e26", "#182c19"]}
+          // ponytail: uplifting forest emerald gradient replacing dark somber box
+          colors={["#3D6536", "#2B4B25"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{
             marginTop: 12,
             overflow: "hidden",
-            borderRadius: 20,
-            borderCurve: "continuous",
-            paddingHorizontal: 22,
-            paddingVertical: 24,
+            borderRadius: 24,
+            paddingHorizontal: 20,
+            paddingVertical: 22,
             borderWidth: 1,
-            borderColor: "rgba(95, 127, 88, 0.25)",
+            borderColor: "rgba(255, 255, 255, 0.15)",
           }}
         >
-          <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.bold }}
-            className="text-[26px] leading-[1.15] text-white"
-          >
-            {courseTitle}
-          </Text>
+          <View className="flex-row items-start justify-between">
+            <View className="flex-1 pr-2">
+              <Text
+                style={{ fontFamily: APP_FONT_FAMILIES.extraBold }}
+                className="text-[26px] leading-[32px] text-white happy-font-body-extrabold"
+              >
+                {courseTitle}
+              </Text>
+              <Text
+                style={{ fontFamily: APP_FONT_FAMILIES.regular }}
+                className="mt-2 text-[14px] leading-relaxed text-emerald-50/90 happy-font-body"
+              >
+                {courseDescription}
+              </Text>
+            </View>
 
-          <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-            className="mt-2 text-[15px] leading-relaxed text-white/80"
-          >
-            {courseDescription}
-          </Text>
+            {mascotArt && (
+              <Image
+                source={mascotArt}
+                className="h-20 w-20 -mr-1"
+                resizeMode="contain"
+                accessibilityLabel={`${courseTitle} illustration`}
+              />
+            )}
+          </View>
 
-          <View className="mt-5 flex-row items-center border-t border-white/10 pt-4">
-            <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-              className="text-xs font-semibold tracking-wide text-sage-200"
-            >
-              {hierarchyMeta}
-            </Text>
+          {/* Low-friction pacing badges - single row guaranteed */}
+          <View className="mt-4 flex-row items-center justify-between border-t border-white/15 pt-3">
+            <View className="rounded-full bg-white/20 px-2.5 py-1">
+              <Text className="text-[11px] happy-font-body-bold text-white">
+                ⏱ ~5 min/day
+              </Text>
+            </View>
+            <View className="rounded-full bg-white/20 px-2.5 py-1">
+              <Text className="text-[11px] happy-font-body-bold text-white">
+                🌱 3 Milestones
+              </Text>
+            </View>
+            <View className="rounded-full bg-white/20 px-2.5 py-1">
+              <Text className="text-[11px] happy-font-body-bold text-white">
+                ✨ Self-paced
+              </Text>
+            </View>
           </View>
         </LinearGradient>
       </Animated.View>
 
-      {/* Why This Course - Open content */}
-      <Animated.View entering={FadeIn.duration(180).delay(220)} className="mt-7">
+      {/* Why This Course - Personalized Insight Card */}
+      <Animated.View entering={FadeIn.duration(180).delay(200)} className="mt-6">
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="text-xs font-semibold uppercase tracking-wider text-sage-600"
+          style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+          className="text-[11px] font-bold uppercase tracking-wider text-sage-600 mb-2.5"
         >
           Why this course
         </Text>
-        <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-          className="mt-2 text-[15px] leading-relaxed text-ink"
-        >
-          {getWhyThisCourse(motivation, stressLevel)}
-        </Text>
+        <View className="rounded-2xl border border-sage-200/80 bg-white p-4 shadow-sm">
+          <View className="flex-row items-start gap-3">
+            <View className="h-8 w-8 items-center justify-center rounded-xl bg-sage-100">
+              <HugeiconsIcon icon={SparklesIcon} size={18} color="#587C51" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-xs happy-font-body-bold text-sage-800 uppercase tracking-wide">
+                Tailored to what you shared
+              </Text>
+              <Text
+                style={{ fontFamily: APP_FONT_FAMILIES.regular }}
+                className="mt-1 text-[14px] leading-relaxed text-ink-soft happy-font-body"
+              >
+                {getWhyThisCourse(motivation, stressLevel)}
+              </Text>
+            </View>
+          </View>
+        </View>
       </Animated.View>
 
-      {/* Full Course Outline matching Course Catalog */}
-      <Animated.View entering={FadeIn.duration(180).delay(280)} className="mt-7">
-        <View className="mb-2 flex-row items-center justify-between">
+      {/* 3 Milestones Roadmap */}
+      <Animated.View entering={FadeIn.duration(180).delay(260)} className="mt-6">
+        <View className="mb-3 flex-row items-center justify-between">
           <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-            className="text-xs font-semibold uppercase tracking-wider text-sage-600"
+            style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+            className="text-[11px] font-bold uppercase tracking-wider text-sage-600"
           >
-            Course outline
+            Your 3 Milestones
           </Text>
-          {overview?.lessonCount ? (
-            <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-              className="text-xs text-sage-600"
-            >
-              {formatCount(overview.lessonCount, "lesson")}
-            </Text>
-          ) : null}
+          <Text className="text-xs happy-font-body-semibold text-sage-600">
+            Step-by-step
+          </Text>
         </View>
 
         {isTreeLoading ? (
           <CourseOutlineSkeleton />
-        ) : overview?.sections && overview.sections.length > 0 ? (
-          <CourseOutline sections={overview.sections} />
         ) : (
-          <View className="mt-3 gap-2.5">
-            {planMeta.practiceItems.map((item, idx) => (
-              <View key={idx} className="flex-row items-start gap-3">
-                <View className="mt-2 h-1.5 w-1.5 rounded-full bg-sage-500" />
-                <Text
-                  style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-                  className="flex-1 text-[15px] leading-relaxed text-ink"
+          <View className="gap-3">
+            {milestones.map((milestone, idx) => {
+              const isFirst = idx === 0;
+              const isSecond = idx === 1;
+
+              return (
+                <View
+                  key={idx}
+                  className={`flex-row items-start gap-3.5 rounded-2xl border p-4 ${
+                    isFirst
+                      ? "border-sage-300 bg-sage-50/70"
+                      : "border-neutral-200/80 bg-white"
+                  }`}
                 >
-                  {item}
-                </Text>
-              </View>
-            ))}
+                  {/* Step Number Badge */}
+                  <View
+                    className={`h-9 w-9 items-center justify-center rounded-full mt-0.5 ${
+                      isFirst
+                        ? "bg-sage-600"
+                        : "bg-neutral-100 border border-neutral-200"
+                    }`}
+                  >
+                    <Text
+                      className={`text-sm happy-font-body-bold ${
+                        isFirst ? "text-white" : "text-ink-muted"
+                      }`}
+                    >
+                      {idx + 1}
+                    </Text>
+                  </View>
+
+                  {/* Title & Badge */}
+                  <View className="flex-1 pr-1">
+                    <View className="flex-row items-start justify-between gap-2">
+                      <Text
+                        numberOfLines={2}
+                        className="flex-1 text-[15px] leading-snug happy-font-body-bold text-ink"
+                      >
+                        {milestone.title}
+                      </Text>
+                      {isFirst ? (
+                        <View className="rounded-full bg-emerald-100 px-2 py-0.5 mt-0.5">
+                          <Text className="text-[10px] happy-font-body-bold text-emerald-800">
+                            START HERE
+                          </Text>
+                        </View>
+                      ) : isSecond ? (
+                        <View className="rounded-full bg-neutral-100 px-2 py-0.5 mt-0.5">
+                          <Text className="text-[10px] happy-font-body-semibold text-ink-muted">
+                            PHASE 2
+                          </Text>
+                        </View>
+                      ) : (
+                        <View className="rounded-full bg-sage-100 px-2 py-0.5 mt-0.5">
+                          <Text className="text-[10px] happy-font-body-semibold text-sage-700">
+                            MASTERY
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+                    <Text
+                      numberOfLines={1}
+                      className="mt-1 text-xs happy-font-body text-ink-muted"
+                    >
+                      {milestone.subtitle}
+                    </Text>
+                  </View>
+                </View>
+              );
+            })}
           </View>
         )}
       </Animated.View>
@@ -186,16 +287,16 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
 
 function CourseOutlineSkeleton(): React.JSX.Element {
   return (
-    <View className="mt-2 gap-4 py-2" accessibilityLabel="Loading course outline">
+    <View className="mt-2 gap-3" accessibilityLabel="Loading milestones">
       {Array.from({ length: 3 }).map((_, index) => (
         <View
           key={index}
-          className="flex-row items-center gap-3 border-b border-slate-100 py-3.5"
+          className="flex-row items-center gap-3 rounded-2xl border border-neutral-200/80 bg-white p-4"
         >
-          <Skeleton width={22} height={22} radius={6} />
+          <Skeleton width={36} height={36} radius={18} />
           <View className="flex-1 gap-1.5">
-            <Skeleton width="55%" height={16} radius={6} />
-            <Skeleton width="35%" height={12} radius={4} />
+            <Skeleton width="60%" height={16} radius={6} />
+            <Skeleton width="40%" height={12} radius={4} />
           </View>
         </View>
       ))}

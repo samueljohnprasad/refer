@@ -80,7 +80,7 @@ FROM jsonb_to_recordset($tag$[
     "order_index": 2,
     "is_published": false,
     "domain": "self_understanding",
-    "target_audience": "Adults who want clearer self-knowledge — patterns, values, reactions — from mild curiosity through feeling fairly lost about what they actually feel or want",
+    "target_audience": "Adults who want clearer self-knowledge, patterns, values, reactions, from mild curiosity through feeling fairly lost about what they actually feel or want",
     "total_lessons": 64,
     "total_duration_weeks": null,
     "sessions_per_week": null,
@@ -90,10 +90,10 @@ FROM jsonb_to_recordset($tag$[
     ],
     "reward_content": {
       "title": "Coming Home to Yourself",
-      "acknowledgement": "Sixty-four lessons. You didn't just think about yourself more — you learned to ask a better question, caught your own reflection turning into rumination and found the way out, named feelings with real precision, noticed your own patterns, and picked a value over a should. That's a practice, not a personality result. What you keep is yours.",
+      "acknowledgement": "Sixty-four lessons. You didn't just think about yourself more, you learned to ask a better question, caught your own reflection turning into rumination and found the way out, named feelings with real precision, noticed your own patterns, and picked a value over a should. That's a practice, not a personality result. What you keep is yours.",
       "capabilityHeading": "What you can do now",
       "capabilitySummary": [
-        "Describe what understanding yourself actually looks like, and why it's genuinely hard to get naturally — not a personal failing.",
+        "Describe what understanding yourself actually looks like, and why it's genuinely hard to get naturally, not a personal failing.",
         "Ask 'what' instead of 'why' when trying to understand a reaction, and place any new situation on the notice-sort-sharpen-check loop.",
         "Catch your own self-focus tipping from curious reflection into threat-driven rumination, and redirect out of it.",
         "Name a feeling with real precision, notice a recurring pattern in your own life, and use a short structured writing practice to process something unclear.",
@@ -117,7 +117,7 @@ FROM jsonb_to_recordset($tag$[
     "course_source_id": "self-understanding-coming-home-to-yourself",
     "title": "What You Actually Want",
     "order_index": 2,
-    "narrative_hook": "Notice, sort, sharpen — now check it against what you actually value, not what you feel you should want.",
+    "narrative_hook": "Notice, sort, sharpen, now check it against what you actually value, not what you feel you should want.",
     "badge_on_complete": "Coming Home",
     "difficulty_range": [
       0.35,
@@ -169,7 +169,7 @@ FROM jsonb_to_recordset($tag$[
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now name the practices you're keeping, hold typing systems for what they're actually worth, and recognize when a pattern needs more than this course — without reading that as failure.",
+      "capabilityStatement": "You can now name the practices you're keeping, hold typing systems for what they're actually worth, and recognize when a pattern needs more than this course, without reading that as failure.",
       "primaryActionLabel": "Back to path"
     }
   },
@@ -182,7 +182,7 @@ FROM jsonb_to_recordset($tag$[
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now run your kept practices against a fresh moment — a feeling, a pattern mid-spiral, or a plain decision — without the course walking you through it, and explain the whole system to someone else.",
+      "capabilityStatement": "You can now run your kept practices against a fresh moment, a feeling, a pattern mid-spiral, or a plain decision, without the course walking you through it, and explain the whole system to someone else.",
       "primaryActionLabel": "Back to path"
     }
   }
@@ -271,8 +271,8 @@ FROM jsonb_to_recordset($tag$[
     "review_concepts": [],
     "prerequisites": [],
     "reward_content": {
-      "title": "The goal that pays off — and the one that doesn't",
-      "body": "People chasing a goal that genuinely matches their own values put in more sustained effort, are more likely to actually reach it, AND get more real satisfaction from reaching it. People chasing the same goal for external or internalized pressure can attain it and feel surprisingly little. The goal isn't the variable — the reason is. (Sheldon & Elliot 1999 — research/04 §3)",
+      "title": "The goal that pays off, and the one that doesn't",
+      "body": "People chasing a goal that genuinely matches their own values put in more sustained effort, are more likely to actually reach it, AND get more real satisfaction from reaching it. People chasing the same goal for external or internalized pressure can attain it and feel surprisingly little. The goal isn't the variable, the reason is. (Sheldon & Elliot 1999, research/04 §3)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -389,7 +389,7 @@ FROM jsonb_to_recordset($tag$[
     "prerequisites": [],
     "reward_content": {
       "title": "A shared language isn't the same as a scientific map",
-      "body": "MBTI sorts people into strict either-or categories — strictly introvert or extravert — but real personality traits are continuous, not binary, and a meaningful share of people get a different type on retest. That doesn't make typing systems useless as a shared vocabulary for talking about yourself with others — it just means they're a conversation starter, not a validated instrument. (Myers-Briggs Foundation's own reliability research — research/06 §1)",
+      "body": "MBTI sorts people into strict either-or categories, strictly introvert or extravert, but real personality traits are continuous, not binary, and a meaningful share of people get a different type on retest. That doesn't make typing systems useless as a shared vocabulary for talking about yourself with others, it just means they're a conversation starter, not a validated instrument. (Myers-Briggs Foundation's own reliability research, research/06 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -554,7 +554,7 @@ FROM jsonb_to_recordset($tag$[
     "prerequisites": [],
     "reward_content": {
       "title": "Why the rehearsal, not a badge, is the actual ending",
-      "body": "The same research this course is built on found resilience- and skill-training programs' gains fade substantially between right-after and a later follow-up — not because the skills stopped being true, because nobody practiced them. The rehearsals you just ran aren't extra credit; they're this course taking its own research seriously. (Vanhove et al. 2016, parallel finding cited in the stress course — research/05 §3)",
+      "body": "The same research this course is built on found resilience- and skill-training programs' gains fade substantially between right-after and a later follow-up, not because the skills stopped being true, because nobody practiced them. The rehearsals you just ran aren't extra credit; they're this course taking its own research seriously. (Vanhove et al. 2016, parallel finding cited in the stress course, research/05 §3)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -647,7 +647,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Never Finished, On Purpose",
       "variant": "myth",
       "myth": "My values are basically the same thing as my goals.",
-      "reality": "A goal can be completed — finish the project. A value is an ongoing quality of action, never finished — being someone who follows through. Full version: get promoted. That's a goal — it finishes. Underneath it, maybe: being someone who takes on hard things. That's a value — it doesn't finish, it keeps directing what comes next even after the promotion happens or doesn't."
+      "reality": "A goal can be completed, finish the project. A value is an ongoing quality of action, never finished, being someone who follows through. Full version: get promoted. That's a goal, it finishes. Underneath it, maybe: being someone who takes on hard things. That's a value, it doesn't finish, it keeps directing what comes next even after the promotion happens or doesn't."
     }
   },
   {
@@ -662,19 +662,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "values_vs_goals",
     "content": {
-      "prompt": "\"Being someone who shows up for people\" — is this a value or a goal?",
+      "prompt": "\"Being someone who shows up for people\", is this a value or a goal?",
       "options": [
         {
           "id": "value",
-          "label": "A value — it's ongoing, never finished"
+          "label": "A value, it's ongoing, never finished"
         },
         {
           "id": "goal",
-          "label": "A goal — it can be completed"
+          "label": "A goal, it can be completed"
         }
       ],
       "bestOptionId": "value",
-      "reveal": "It's a value — it never finishes, it keeps directing choices indefinitely, unlike a goal that can be checked off."
+      "reveal": "It's a value, it never finishes, it keeps directing choices indefinitely, unlike a goal that can be checked off."
     }
   },
   {
@@ -692,7 +692,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Same Gym, Different Source",
       "variant": "myth",
       "myth": "If I'm getting something done, it doesn't matter why I'm doing it.",
-      "reality": "One honest question sorts most commitments: do I actually want this, or do I feel I should want it. Going to the gym because moving your body genuinely matters to you (autonomous) looks identical from outside to going because you feel guilty for skipping (controlled) — same gym, same day, very different source. The source predicts whether it holds up without continuous external pressure."
+      "reality": "One honest question sorts most commitments: do I actually want this, or do I feel I should want it. Going to the gym because moving your body genuinely matters to you (autonomous) looks identical from outside to going because you feel guilty for skipping (controlled), same gym, same day, very different source. The source predicts whether it holds up without continuous external pressure."
     }
   },
   {
@@ -707,19 +707,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "autonomous_vs_controlled_motivation",
     "content": {
-      "prompt": "Someone keeps a weekly call with a friend because they'd miss the friend otherwise, not because they feel obligated — is this autonomous or controlled?",
+      "prompt": "Someone keeps a weekly call with a friend because they'd miss the friend otherwise, not because they feel obligated, is this autonomous or controlled?",
       "options": [
         {
           "id": "autonomous",
-          "label": "Autonomous — it comes from genuine interest"
+          "label": "Autonomous, it comes from genuine interest"
         },
         {
           "id": "controlled",
-          "label": "Controlled — it's driven by obligation"
+          "label": "Controlled, it's driven by obligation"
         }
       ],
       "bestOptionId": "autonomous",
-      "reveal": "Autonomous — the motivation comes from genuinely valuing the friendship, not from external or internalized pressure."
+      "reveal": "Autonomous, the motivation comes from genuinely valuing the friendship, not from external or internalized pressure."
     }
   },
   {
@@ -738,15 +738,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it keeps directing action indefinitely"
+          "label": "No, it keeps directing action indefinitely"
         },
         {
           "id": "yes",
-          "label": "Yes — a value gets checked off like a goal"
+          "label": "Yes, a value gets checked off like a goal"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "A value never finishes — that's what separates it from a goal."
+      "reveal": "A value never finishes, that's what separates it from a goal."
     }
   },
   {
@@ -764,7 +764,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "The Reason Is The Variable",
       "variant": "myth",
       "myth": "Attaining a goal feels good regardless of why I was pursuing it.",
-      "reality": "Checking whether a real goal actually expresses a personal value (self-concordant), versus mainly external or internalized pressure, matters. Two people reach the same promotion. One pursued it because leading a team genuinely matters to them — real, lasting satisfaction. The other pursued it mainly because it was expected — attainment, and surprisingly little payoff. The goal itself isn't the variable; the reason behind pursuing it is."
+      "reality": "Checking whether a real goal actually expresses a personal value (self-concordant), versus mainly external or internalized pressure, matters. Two people reach the same promotion. One pursued it because leading a team genuinely matters to them, real, lasting satisfaction. The other pursued it mainly because it was expected, attainment, and surprisingly little payoff. The goal itself isn't the variable; the reason behind pursuing it is."
     }
   },
   {
@@ -781,7 +781,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Same Goal, Different Reason",
       "instruction": "Read the case, then decide.",
-      "question": "Someone is training for a race mainly because a friend group is doing it and they don't want to be left out — is this goal self-concordant?",
+      "question": "Someone is training for a race mainly because a friend group is doing it and they don't want to be left out, is this goal self-concordant?",
       "cases": [
         {
           "id": "case1",
@@ -793,17 +793,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — the reason is mostly external, not a genuine personal value"
+          "label": "No, the reason is mostly external, not a genuine personal value"
         },
         {
           "id": "yes",
-          "label": "Yes — training for a race is always self-concordant"
+          "label": "Yes, training for a race is always self-concordant"
         }
       ],
       "feedbackMap": {
         "no": {
           "title": "Right",
-          "body": "The goal itself (training for a race) isn't what determines self-concordance — the reason behind it is, and \"not wanting to be left out\" is external pressure, not a genuine personal value.",
+          "body": "The goal itself (training for a race) isn't what determines self-concordance, the reason behind it is, and \"not wanting to be left out\" is external pressure, not a genuine personal value.",
           "chain": [
             "The reason is mostly external.",
             "Self-concordance depends on the reason, not the goal itself."
@@ -811,7 +811,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "yes": {
           "title": "Not quite",
-          "body": "The same goal can be self-concordant or not depending entirely on the reason behind it — this one is driven by social pressure, not a genuine value.",
+          "body": "The same goal can be self-concordant or not depending entirely on the reason behind it, this one is driven by social pressure, not a genuine value.",
           "chain": [
             "The stated reason is about avoiding exclusion, not genuine interest."
           ],
@@ -845,7 +845,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "want",
-      "reveal": "Do I actually want this, or do I feel I should want it — that's the sorting question."
+      "reveal": "Do I actually want this, or do I feel I should want it, that's the sorting question."
     }
   },
   {
@@ -865,12 +865,12 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "\"Lose ten pounds\" rewritten as an ongoing value might be ",
-          "post": " — the first finishes; the second keeps directing choices long after any specific number.",
+          "post": ", the first finishes; the second keeps directing choices long after any specific number.",
           "answers": [
             "taking care of my body",
             "caring for my body"
           ],
-          "correctFeedback": "Right — that's a quality of action that never finishes.",
+          "correctFeedback": "Right, that's a quality of action that never finishes.",
           "incorrectFeedback": "Try phrasing it as an ongoing quality of action, not a number to hit.",
           "workedExample": "\"Taking care of my body\" doesn't finish the way \"lose ten pounds\" does."
         }
@@ -901,7 +901,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "reason",
-      "reveal": "The reason is the variable — the same goal can be self-concordant or not depending on why it's pursued."
+      "reveal": "The reason is the variable, the same goal can be self-concordant or not depending on why it's pursued."
     }
   },
   {
@@ -947,7 +947,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "autonomous"
           ],
-          "correctFeedback": "Right — autonomous.",
+          "correctFeedback": "Right, autonomous.",
           "incorrectFeedback": "The word for genuinely-interest-driven motivation is autonomous.",
           "workedExample": "Autonomous motivation comes from within; controlled motivation comes from pressure."
         }
@@ -993,14 +993,14 @@ FROM jsonb_to_recordset($tag$[
             "id": "value-first",
             "label": "Name the value underneath it before anything else",
             "isSupported": true,
-            "response": "Right — the value comes first; motivation type and self-concordance are checked against it.",
+            "response": "Right, the value comes first; motivation type and self-concordance are checked against it.",
             "takeaway": "The compass starts with the value, not the motivation check."
           },
           {
             "id": "concordance-first",
             "label": "Run the self-concordance check first, skip the value",
             "isSupported": false,
-            "response": "Not quite — self-concordance is checked against a named value, so the value has to come first.",
+            "response": "Not quite, self-concordance is checked against a named value, so the value has to come first.",
             "takeaway": "Self-concordance can't be checked without a named value to check against."
           }
         ]
@@ -1029,7 +1029,7 @@ FROM jsonb_to_recordset($tag$[
             "personal value",
             "value"
           ],
-          "correctFeedback": "Right — a personal value.",
+          "correctFeedback": "Right, a personal value.",
           "incorrectFeedback": "Self-concordance means the goal expresses a genuine personal value.",
           "workedExample": "The goal has to connect to something you actually value, not just what's expected."
         }
@@ -1058,8 +1058,8 @@ FROM jsonb_to_recordset($tag$[
             "finishes",
             "finished"
           ],
-          "correctFeedback": "Right — a value never finishes.",
-          "incorrectFeedback": "A value never finishes — that's what separates it from a goal.",
+          "correctFeedback": "Right, a value never finishes.",
+          "incorrectFeedback": "A value never finishes, that's what separates it from a goal.",
           "workedExample": "\"Being someone who follows through\" never finishes; \"finish the project\" does."
         }
       ]
@@ -1098,20 +1098,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "Someone attends a class every week and says they'd feel guilty skipping it — what does the source-question reveal?",
+        "prompt": "Someone attends a class every week and says they'd feel guilty skipping it, what does the source-question reveal?",
         "options": [
           {
             "id": "controlled",
-            "label": "This sounds like controlled motivation — driven by guilt, not genuine interest",
+            "label": "This sounds like controlled motivation, driven by guilt, not genuine interest",
             "isSupported": true,
-            "response": "Right — \"guilty if I skip\" points to controlled, not autonomous, motivation.",
+            "response": "Right, \"guilty if I skip\" points to controlled, not autonomous, motivation.",
             "takeaway": "The feeling behind the commitment reveals the source, not the commitment itself."
           },
           {
             "id": "autonomous",
             "label": "Attending every week always means it's autonomous",
             "isSupported": false,
-            "response": "Not quite — consistency alone doesn't reveal the source; the stated reason (guilt) does.",
+            "response": "Not quite, consistency alone doesn't reveal the source; the stated reason (guilt) does.",
             "takeaway": "Frequency of a behavior doesn't reveal its motivational source."
           }
         ]
@@ -1132,7 +1132,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "A Fresh Commitment",
       "instruction": "Read the case, then decide.",
-      "question": "Someone takes on a new project at work mainly because turning it down might look bad, though they have no real interest in it — is this self-concordant?",
+      "question": "Someone takes on a new project at work mainly because turning it down might look bad, though they have no real interest in it, is this self-concordant?",
       "cases": [
         {
           "id": "case1",
@@ -1144,17 +1144,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — the reason is about appearances, not a genuine personal value"
+          "label": "No, the reason is about appearances, not a genuine personal value"
         },
         {
           "id": "yes",
-          "label": "Yes — any new project at work counts as self-concordant"
+          "label": "Yes, any new project at work counts as self-concordant"
         }
       ],
       "feedbackMap": {
         "no": {
           "title": "Right",
-          "body": "The reason here — avoiding looking bad — is external pressure, not a genuine value, so this goal is not self-concordant even though the goal itself (taking on a project) sounds ambitious.",
+          "body": "The reason here, avoiding looking bad, is external pressure, not a genuine value, so this goal is not self-concordant even though the goal itself (taking on a project) sounds ambitious.",
           "chain": [
             "The stated reason is about appearances, not genuine interest.",
             "Self-concordance depends on the reason, not the goal."
@@ -1162,7 +1162,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "yes": {
           "title": "Not quite",
-          "body": "The goal (taking on a project) doesn't determine self-concordance by itself — the reason behind it does, and this reason is external pressure.",
+          "body": "The goal (taking on a project) doesn't determine self-concordance by itself, the reason behind it does, and this reason is external pressure.",
           "chain": [
             "\"Might look bad\" is an external-pressure reason, not a value."
           ],
@@ -1187,7 +1187,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Gains Fade Without Use",
       "variant": "myth",
       "myth": "Once I've learned these skills, they stay sharp on their own.",
-      "reality": "Self-understanding skills — what-not-why, catching rumination, granularity, pattern-noticing — fade without ongoing use, the same way the mood and stress courses' own skills do. Skills training research consistently finds gains measured right after a program are smaller by the time of a later follow-up — not because the skills stopped being true, because nobody practiced them. That's exactly what the next unit is for."
+      "reality": "Self-understanding skills, what-not-why, catching rumination, granularity, pattern-noticing, fade without ongoing use, the same way the mood and stress courses' own skills do. Skills training research consistently finds gains measured right after a program are smaller by the time of a later follow-up, not because the skills stopped being true, because nobody practiced them. That's exactly what the next unit is for."
     }
   },
   {
@@ -1206,15 +1206,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — they fade without ongoing use"
+          "label": "No, they fade without ongoing use"
         },
         {
           "id": "yes",
-          "label": "Yes — learning them once is enough"
+          "label": "Yes, learning them once is enough"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "They fade without ongoing use — the same fading-effect pattern skills research consistently finds."
+      "reveal": "They fade without ongoing use, the same fading-effect pattern skills research consistently finds."
     }
   },
   {
@@ -1264,9 +1264,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "\"Being a reliable friend\" never finishes — that's the value. \"Text back within a day\" is a specific, completable action in service of it."
+      "comparisonFeedback": "\"Being a reliable friend\" never finishes, that's the value. \"Text back within a day\" is a specific, completable action in service of it."
     }
   },
   {
@@ -1284,7 +1284,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Small, Honest, Actually Yours",
       "variant": "myth",
       "myth": "Finishing the course means the work of understanding myself is done.",
-      "reality": "Naming a small, honest set of 2-3 practices from the whole course — not a restatement of everything — is what actually continues after it ends. Not \"I'll keep doing all of Section 2's tools plus the whole compass.\" More like: \"what-not-why when something feels off, and checking one goal a month for self-concordance.\" Small, honest, and actually yours."
+      "reality": "Naming a small, honest set of 2-3 practices from the whole course, not a restatement of everything, is what actually continues after it ends. Not \"I'll keep doing all of Section 2's tools plus the whole compass.\" More like: \"what-not-why when something feels off, and checking one goal a month for self-concordance.\" Small, honest, and actually yours."
     }
   },
   {
@@ -1312,7 +1312,7 @@ FROM jsonb_to_recordset($tag$[
             "pattern noticing",
             "expressive writing"
           ],
-          "correctFeedback": "Good — specific and small is what survives an ordinary week.",
+          "correctFeedback": "Good, specific and small is what survives an ordinary week.",
           "incorrectFeedback": "Try naming one specific tool from the course, not everything at once.",
           "workedExample": "\"What-not-why when something feels off\" is specific enough to actually remember and use."
         }
@@ -1366,9 +1366,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Sustained practice without external checking is a sign the motivation is autonomous — that's what predicts it holding up."
+      "comparisonFeedback": "Sustained practice without external checking is a sign the motivation is autonomous, that's what predicts it holding up."
     }
   },
   {
@@ -1395,7 +1395,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "no-practice",
-      "reveal": "Gains fade because nobody practices the skills — not because the skills stopped being true."
+      "reveal": "Gains fade because nobody practices the skills, not because the skills stopped being true."
     }
   },
   {
@@ -1413,7 +1413,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Conversation Starter, Not Lab Result",
       "variant": "myth",
       "myth": "My MBTI type or Enneagram number is a scientifically proven fact about who I am.",
-      "reality": "Popular personality-typing systems (MBTI, Enneagram) are genuinely useful for a shared vocabulary and a fun starting conversation — they're not scientifically validated maps of a fixed identity. MBTI sorts people into strict either-or categories, but real personality traits are continuous, and a meaningful share of people get a different type on retest. That doesn't make it useless for a shared vocabulary with friends — it just means it's a conversation starter, not a lab result."
+      "reality": "Popular personality-typing systems (MBTI, Enneagram) are genuinely useful for a shared vocabulary and a fun starting conversation, they're not scientifically validated maps of a fixed identity. MBTI sorts people into strict either-or categories, but real personality traits are continuous, and a meaningful share of people get a different type on retest. That doesn't make it useless for a shared vocabulary with friends, it just means it's a conversation starter, not a lab result."
     }
   },
   {
@@ -1432,15 +1432,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — reliability and validity are limited"
+          "label": "No, reliability and validity are limited"
         },
         {
           "id": "yes",
-          "label": "Yes — it's a proven scientific measurement"
+          "label": "Yes, it's a proven scientific measurement"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "No — test-retest reliability is limited and specific scales show weak validity; it's a shared vocabulary, not a validated measurement."
+      "reveal": "No, test-retest reliability is limited and specific scales show weak validity; it's a shared vocabulary, not a validated measurement."
     }
   },
   {
@@ -1490,9 +1490,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Repeated hollow feelings on attainment are a real signal — the goal may not connect to a genuine value, even though it keeps getting reached."
+      "comparisonFeedback": "Repeated hollow feelings on attainment are a real signal, the goal may not connect to a genuine value, even though it keeps getting reached."
     }
   },
   {
@@ -1511,15 +1511,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — a small, specific list is what survives an ordinary week"
+          "label": "No, a small, specific list is what survives an ordinary week"
         },
         {
           "id": "yes",
-          "label": "Yes — more practices kept is always better"
+          "label": "Yes, more practices kept is always better"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "\"Everything\" isn't a plan anyone follows — 2-3 specific practices is what actually continues."
+      "reveal": "\"Everything\" isn't a plan anyone follows, 2-3 specific practices is what actually continues."
     }
   },
   {
@@ -1537,7 +1537,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Reaching Further Is The Course Working",
       "variant": "myth",
       "myth": "Needing more support than this course means the reflection work failed.",
-      "reality": "If self-focus has stayed threat-flavored for weeks despite using the redirects from Section 1, or if \"confusion about myself\" turns out to be persistent low mood or worry that doesn't let up — that's the anxiety or mood course's territory, or a professional's, and reaching for it at that point is this course working exactly as it should. No in-app support route exists yet here — naming that gap plainly is more honest than inventing one."
+      "reality": "If self-focus has stayed threat-flavored for weeks despite using the redirects from Section 1, or if \"confusion about myself\" turns out to be persistent low mood or worry that doesn't let up, that's the anxiety or mood course's territory, or a professional's, and reaching for it at that point is this course working exactly as it should. No in-app support route exists yet here, naming that gap plainly is more honest than inventing one."
     }
   },
   {
@@ -1554,7 +1554,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Which Route Fits",
       "instruction": "Read the case, then choose the best-fit route.",
-      "question": "Someone finds that \"confusion about myself\" is actually a persistent worry that doesn't let up, most days, for weeks — what fits best?",
+      "question": "Someone finds that \"confusion about myself\" is actually a persistent worry that doesn't let up, most days, for weeks, what fits best?",
       "cases": [
         {
           "id": "case1",
@@ -1566,7 +1566,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "anxiety",
-          "label": "The anxiety course, or professional support — this sounds like more than self-reflection alone"
+          "label": "The anxiety course, or professional support, this sounds like more than self-reflection alone"
         },
         {
           "id": "more-course",
@@ -1576,7 +1576,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "anxiety": {
           "title": "Right",
-          "body": "Persistent, most-days worry over weeks is the anxiety course's territory (or professional support) — this course's scope is self-understanding, not treating a clinical pattern.",
+          "body": "Persistent, most-days worry over weeks is the anxiety course's territory (or professional support), this course's scope is self-understanding, not treating a clinical pattern.",
           "chain": [
             "The pattern described is persistent worry, not confusion.",
             "That's outside what self-reflection alone addresses."
@@ -1584,7 +1584,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "more-course": {
           "title": "Not quite",
-          "body": "This course's scope is self-understanding, not treating persistent worry — the anxiety course or professional support fits this pattern better.",
+          "body": "This course's scope is self-understanding, not treating persistent worry, the anxiety course or professional support fits this pattern better.",
           "chain": [
             "Persistent, most-days worry over weeks is a clinical-pattern signal, not a self-understanding gap."
           ],
@@ -1616,7 +1616,7 @@ FROM jsonb_to_recordset($tag$[
             "use",
             "practice"
           ],
-          "correctFeedback": "Right — practice, not because the skills stopped being true.",
+          "correctFeedback": "Right, practice, not because the skills stopped being true.",
           "incorrectFeedback": "Skills fade without ongoing practice or use.",
           "workedExample": "Gains measured right after training shrink by a later follow-up when nobody keeps practicing."
         }
@@ -1647,7 +1647,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "vocab",
-      "reveal": "It's genuinely useful as a shared vocabulary — not a validated map of a fixed identity."
+      "reveal": "It's genuinely useful as a shared vocabulary, not a validated map of a fixed identity."
     }
   },
   {
@@ -1663,7 +1663,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": null,
     "content": {
       "title": "Reading Your Own Pattern",
-      "instruction": "No one sees this. Has self-reflection, for you, mostly felt curious — or has it mostly felt like circling? If it's felt like circling for weeks, the anxiety or mood course, or a professional, may fit better than more reflection alone.",
+      "instruction": "No one sees this. Has self-reflection, for you, mostly felt curious, or has it mostly felt like circling? If it's felt like circling for weeks, the anxiety or mood course, or a professional, may fit better than more reflection alone.",
       "items": [
         {
           "id": "pattern-check",
@@ -1695,8 +1695,8 @@ FROM jsonb_to_recordset($tag$[
             "two or three",
             "2 or 3"
           ],
-          "correctFeedback": "Right — 2-3 specific practices.",
-          "incorrectFeedback": "A workable list is small — 2-3 specific practices.",
+          "correctFeedback": "Right, 2-3 specific practices.",
+          "incorrectFeedback": "A workable list is small, 2-3 specific practices.",
           "workedExample": "\"What-not-why, and checking one goal a month\" is small and specific enough to keep."
         }
       ]
@@ -1718,11 +1718,11 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it's this course working exactly as it should"
+          "label": "No, it's this course working exactly as it should"
         },
         {
           "id": "yes",
-          "label": "Yes — it means the reflection work failed"
+          "label": "Yes, it means the reflection work failed"
         }
       ],
       "bestOptionId": "no",
@@ -1745,15 +1745,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it doesn't claim any of those"
+          "label": "No, it doesn't claim any of those"
         },
         {
           "id": "yes",
-          "label": "Yes — completing it guarantees those outcomes"
+          "label": "Yes, completing it guarantees those outcomes"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "This course taught you to notice, sort, sharpen, and check against values. It didn't promise a fixed personality result, a cure for a clinical pattern, or permanent skill without practice — naming that clearly is what makes the routes in l55 make sense, not undermine the last 56 lessons."
+      "reveal": "This course taught you to notice, sort, sharpen, and check against values. It didn't promise a fixed personality result, a cure for a clinical pattern, or permanent skill without practice, naming that clearly is what makes the routes in l55 make sense, not undermine the last 56 lessons."
     }
   },
   {
@@ -1772,15 +1772,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it doesn't diagnose or type"
+          "label": "No, it doesn't diagnose or type"
         },
         {
           "id": "yes",
-          "label": "Yes — it produces a diagnosis or type"
+          "label": "Yes, it produces a diagnosis or type"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "This course doesn't diagnose or type — the caution in the previous lesson is explicit about that."
+      "reveal": "This course doesn't diagnose or type, the caution in the previous lesson is explicit about that."
     }
   },
   {
@@ -1800,12 +1800,12 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "MBTI sorts people into strict either-or categories, but real personality traits are ",
-          "post": " — and a meaningful share of people get a different type on retest.",
+          "post": ", and a meaningful share of people get a different type on retest.",
           "answers": [
             "continuous",
             "continuously distributed"
           ],
-          "correctFeedback": "Right — continuous, not either-or.",
+          "correctFeedback": "Right, continuous, not either-or.",
           "incorrectFeedback": "Real personality traits are continuous, not strict either-or categories.",
           "workedExample": "The either-or framing conflicts with how traits are actually distributed."
         }
@@ -1834,7 +1834,7 @@ FROM jsonb_to_recordset($tag$[
             "small",
             "small and honest"
           ],
-          "correctFeedback": "Right — small and specific.",
+          "correctFeedback": "Right, small and specific.",
           "incorrectFeedback": "It should be small and specific, not everything at once.",
           "workedExample": "2-3 named practices, not the whole toolkit."
         }
@@ -1855,7 +1855,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "What A Type Is Good For",
       "instruction": "Order the sequence, then apply it.",
-      "message": "A personality type is a conversation starter with real limits — knowing both halves is what makes it useful.",
+      "message": "A personality type is a conversation starter with real limits, knowing both halves is what makes it useful.",
       "steps": [
         {
           "id": "vocab",
@@ -1874,20 +1874,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "A friend says \"I can't change, I'm just an [type]\" — what's the honest response?",
+        "prompt": "A friend says \"I can't change, I'm just an [type]\", what's the honest response?",
         "options": [
           {
             "id": "push-back",
             "label": "Gently note the type is a conversation starter, not a scientifically fixed identity",
             "isSupported": true,
-            "response": "Right — that's exactly the caution this unit teaches.",
+            "response": "Right, that's exactly the caution this unit teaches.",
             "takeaway": "The type explains a vocabulary, not a fixed limit on change."
           },
           {
             "id": "agree",
-            "label": "Agree — the type does prove they can't change",
+            "label": "Agree, the type does prove they can't change",
             "isSupported": false,
-            "response": "Not quite — that treats an unvalidated label as scientific proof, which is the exact misconception this unit corrects.",
+            "response": "Not quite, that treats an unvalidated label as scientific proof, which is the exact misconception this unit corrects.",
             "takeaway": "A type label isn't evidence of a fixed, unchangeable trait."
           }
         ]
@@ -1908,7 +1908,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Sort The Pattern",
       "instruction": "Read the case, then choose.",
-      "question": "Someone has spent months insisting their Enneagram number explains why they can never form close friendships, and feels stuck about it — what's the best-fit route?",
+      "question": "Someone has spent months insisting their Enneagram number explains why they can never form close friendships, and feels stuck about it, what's the best-fit route?",
       "cases": [
         {
           "id": "case1",
@@ -1920,7 +1920,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "typing-confusion",
-          "label": "This is the typing-systems misconception — leaning on the label as a fixed excuse instead of examining the actual pattern"
+          "label": "This is the typing-systems misconception, leaning on the label as a fixed excuse instead of examining the actual pattern"
         },
         {
           "id": "curious",
@@ -1930,7 +1930,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "typing-confusion": {
           "title": "Right",
-          "body": "Using an unvalidated type label as a fixed, unchangeable explanation is exactly the misconception l54 corrects — the label is being used to avoid examining the real pattern.",
+          "body": "Using an unvalidated type label as a fixed, unchangeable explanation is exactly the misconception l54 corrects, the label is being used to avoid examining the real pattern.",
           "chain": [
             "The type is being treated as a fixed, final truth.",
             "That's the typing-systems misconception, not genuine reflection."
@@ -1940,7 +1940,7 @@ FROM jsonb_to_recordset($tag$[
           "title": "Not quite",
           "body": "Genuine curious reflection would examine the pattern itself, not use a label to explain it away as unchangeable.",
           "chain": [
-            "Treating a type as an unchangeable excuse isn't curiosity — it avoids examining the pattern."
+            "Treating a type as an unchangeable excuse isn't curiosity, it avoids examining the pattern."
           ],
           "counterTitle": "Try the label-as-excuse angle",
           "counterBody": "Ask whether the type is being used to explore the pattern, or to avoid looking at it."
@@ -1960,26 +1960,26 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "Keeping It, and Knowing the Edges — Unit Checkpoint",
+      "title": "Keeping It, and Knowing the Edges, Unit Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Three quick checks on keeping practices and the scope edges.\nA miss just gives you something to revisit.",
       "introTag": "3 QUESTIONS · ~1 MIN",
-      "revisitMessage": "The marked ideas are worth a short revisit — nothing is lost, and they'll come back around.",
+      "revisitMessage": "The marked ideas are worth a short revisit, nothing is lost, and they'll come back around.",
       "solidMessage": "This is holding. Next: rehearsing the whole loop before the finale.",
       "items": [
         {
           "concept": "Maintenance Commitment",
           "prompt": "Does \"keep doing everything\" work as a plan?",
           "clue": "It's not specific.",
-          "worked": "No — a small, specific list of 2-3 practices is what actually survives.",
+          "worked": "No, a small, specific list of 2-3 practices is what actually survives.",
           "options": [
             {
-              "label": "No — needs to be small and specific",
+              "label": "No, needs to be small and specific",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — more kept practices is always better",
+              "label": "Yes, more kept practices is always better",
               "feedback": "Vague, all-encompassing plans don't survive an ordinary week.",
               "isCorrect": false
             }
@@ -1989,15 +1989,15 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Typing Systems Caution",
           "prompt": "Is a personality type a validated scientific measurement?",
           "clue": "Reliability is limited.",
-          "worked": "No — it's a useful shared vocabulary, not a validated measurement.",
+          "worked": "No, it's a useful shared vocabulary, not a validated measurement.",
           "options": [
             {
-              "label": "No — limited validity and reliability",
+              "label": "No, limited validity and reliability",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — it's scientifically validated",
+              "label": "Yes, it's scientifically validated",
               "feedback": "Reliability and validity of these systems is limited.",
               "isCorrect": false
             }
@@ -2007,15 +2007,15 @@ FROM jsonb_to_recordset($tag$[
           "concept": "When Reflection Needs More",
           "prompt": "Does needing more support than this course mean the reflection work failed?",
           "clue": "It's the course working.",
-          "worked": "No — reaching for more support at that point is this course working as intended.",
+          "worked": "No, reaching for more support at that point is this course working as intended.",
           "options": [
             {
-              "label": "No — it means the course is working",
+              "label": "No, it means the course is working",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — it means the work failed",
+              "label": "Yes, it means the work failed",
               "feedback": "Reaching further is intended, not a failure.",
               "isCorrect": false
             }
@@ -2041,11 +2041,11 @@ FROM jsonb_to_recordset($tag$[
       "beats": [
         {
           "id": "b1",
-          "text": "A conversation with a friend wrapped up fine on the surface — no conflict, nothing said wrong — but something feels unsettled afterward."
+          "text": "A conversation with a friend wrapped up fine on the surface, no conflict, nothing said wrong, but something feels unsettled afterward."
         },
         {
           "id": "b2",
-          "text": "First move: reach for a precise word, not 'off' or 'weird.' What's actually underneath — something closer to unheard, or overlooked, or something else entirely?"
+          "text": "First move: reach for a precise word, not 'off' or 'weird.' What's actually underneath, something closer to unheard, or overlooked, or something else entirely?"
         },
         {
           "id": "b3",
@@ -2080,7 +2080,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "overlooked",
-          "label": "A little overlooked — like something you said didn't quite land"
+          "label": "A little overlooked, like something you said didn't quite land"
         },
         {
           "id": "just-off",
@@ -2090,7 +2090,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "overlooked": {
           "title": "Right",
-          "body": "\"Overlooked\" is more precise than \"off\" — it points to something specific that can be checked against a pattern, or just noted and left.",
+          "body": "\"Overlooked\" is more precise than \"off\", it points to something specific that can be checked against a pattern, or just noted and left.",
           "chain": [
             "A vague word like 'off' hides the real content.",
             "A more specific word makes it checkable."
@@ -2098,12 +2098,12 @@ FROM jsonb_to_recordset($tag$[
         },
         "just-off": {
           "title": "Not quite",
-          "body": "\"Off\" is the placeholder word this whole section has been teaching you to move past — there's almost always a more precise word underneath.",
+          "body": "\"Off\" is the placeholder word this whole section has been teaching you to move past, there's almost always a more precise word underneath.",
           "chain": [
             "'Off' is a vague placeholder, not a precise feeling word."
           ],
           "counterTitle": "Try reaching further",
-          "counterBody": "Ask what specifically feels unsettled — heard, seen, overlooked, something else."
+          "counterBody": "Ask what specifically feels unsettled, heard, seen, overlooked, something else."
         }
       }
     }
@@ -2122,7 +2122,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Value Or Goal, Fresh Case",
       "instruction": "Read the case, then decide.",
-      "question": "\"Being someone people can count on\" — is this a value or a goal?",
+      "question": "\"Being someone people can count on\", is this a value or a goal?",
       "cases": [
         {
           "id": "case1",
@@ -2134,24 +2134,24 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "value",
-          "label": "A value — it never finishes"
+          "label": "A value, it never finishes"
         },
         {
           "id": "goal",
-          "label": "A goal — it can be completed"
+          "label": "A goal, it can be completed"
         }
       ],
       "feedbackMap": {
         "value": {
           "title": "Right",
-          "body": "\"Being someone people can count on\" is an ongoing quality of action — it never finishes, unlike a goal.",
+          "body": "\"Being someone people can count on\" is an ongoing quality of action, it never finishes, unlike a goal.",
           "chain": [
             "It describes an ongoing way of being, not a completable task."
           ]
         },
         "goal": {
           "title": "Not quite",
-          "body": "This never finishes — that's what makes it a value, not a goal.",
+          "body": "This never finishes, that's what makes it a value, not a goal.",
           "chain": [
             "A goal can be checked off; this can't."
           ],
@@ -2208,9 +2208,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Unprompted rehearsal is exactly what counters the fading effect from l52 — skills only stay sharp if they're actually used, not just recognized."
+      "comparisonFeedback": "Unprompted rehearsal is exactly what counters the fading effect from l52, skills only stay sharp if they're actually used, not just recognized."
     }
   },
   {
@@ -2234,11 +2234,11 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "b2",
-          "text": "First move: notice the tell — same loop, no new information, more drained than clearer."
+          "text": "First move: notice the tell, same loop, no new information, more drained than clearer."
         },
         {
           "id": "b3",
-          "text": "On day two, the redirect didn't happen — the spiral ran longer than it should have. That's fine; the redirect is available whenever it's used, not just the first time it's needed."
+          "text": "On day two, the redirect didn't happen, the spiral ran longer than it should have. That's fine; the redirect is available whenever it's used, not just the first time it's needed."
         },
         {
           "id": "b4",
@@ -2261,7 +2261,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Catch It Mid-Spiral",
       "instruction": "Read the case, then choose the better move.",
-      "question": "Someone notices they've replayed the same mistake for the fourth time today, no new information emerging — what's the better next move?",
+      "question": "Someone notices they've replayed the same mistake for the fourth time today, no new information emerging, what's the better next move?",
       "cases": [
         {
           "id": "case1",
@@ -2277,13 +2277,13 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "keep-going",
-          "label": "Keep replaying — the fifth time might surface something new"
+          "label": "Keep replaying, the fifth time might surface something new"
         }
       ],
       "feedbackMap": {
         "redirect": {
           "title": "Right",
-          "body": "No new information after four passes is the clearest possible tell — redirecting toward one specific question breaks the loop.",
+          "body": "No new information after four passes is the clearest possible tell, redirecting toward one specific question breaks the loop.",
           "chain": [
             "No new information across repeated passes is the rumination tell.",
             "The redirect is what breaks the loop."
@@ -2291,7 +2291,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "keep-going": {
           "title": "Not quite",
-          "body": "Four passes with no new information is exactly the tell that signals rumination, not useful reflection — more passes won't change that.",
+          "body": "Four passes with no new information is exactly the tell that signals rumination, not useful reflection, more passes won't change that.",
           "chain": [
             "The tell (no new information) has already appeared multiple times."
           ],
@@ -2315,7 +2315,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Genuine Or Pressured, Fresh Case",
       "instruction": "Read the case, then decide.",
-      "question": "Someone volunteers at the same event every year because they genuinely look forward to it, not because anyone expects it of them — is this autonomous or controlled?",
+      "question": "Someone volunteers at the same event every year because they genuinely look forward to it, not because anyone expects it of them, is this autonomous or controlled?",
       "cases": [
         {
           "id": "case1",
@@ -2327,11 +2327,11 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "autonomous",
-          "label": "Autonomous — it comes from genuine interest"
+          "label": "Autonomous, it comes from genuine interest"
         },
         {
           "id": "controlled",
-          "label": "Controlled — it's driven by expectation"
+          "label": "Controlled, it's driven by expectation"
         }
       ],
       "feedbackMap": {
@@ -2344,7 +2344,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "controlled": {
           "title": "Not quite",
-          "body": "The case explicitly says it's not driven by expectation — that rules out controlled motivation here.",
+          "body": "The case explicitly says it's not driven by expectation, that rules out controlled motivation here.",
           "chain": [
             "The case rules out external expectation as the driver."
           ],
@@ -2401,9 +2401,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "A kept practice with a gap and a return is still working — the redirect (like the practice itself) is available whenever it's used, not only the first time."
+      "comparisonFeedback": "A kept practice with a gap and a return is still working, the redirect (like the practice itself) is available whenever it's used, not only the first time."
     }
   },
   {
@@ -2424,7 +2424,7 @@ FROM jsonb_to_recordset($tag$[
       "steps": [
         {
           "id": "notice",
-          "label": "Name what's happening: it's rumination, not reflection — same loop, no new information",
+          "label": "Name what's happening: it's rumination, not reflection, same loop, no new information",
           "order": 1
         },
         {
@@ -2439,20 +2439,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "The friend asks: \"but how do I know if I'm reflecting or just ruminating?\" — what's the honest answer, drawing on what-not-why?",
+        "prompt": "The friend asks: \"but how do I know if I'm reflecting or just ruminating?\", what's the honest answer, drawing on what-not-why?",
         "options": [
           {
             "id": "tells",
             "label": "Check the tells: is anything new emerging, and does it feel curious or threatened?",
             "isSupported": true,
-            "response": "Right — those are the concrete tells this course taught, not a vague feeling.",
+            "response": "Right, those are the concrete tells this course taught, not a vague feeling.",
             "takeaway": "Explaining the tells, specifically, is what makes the answer usable."
           },
           {
             "id": "vague",
             "label": "You'll just know eventually",
             "isSupported": false,
-            "response": "Not quite — this course gave concrete, checkable tells; a vague answer doesn't actually help the friend.",
+            "response": "Not quite, this course gave concrete, checkable tells; a vague answer doesn't actually help the friend.",
             "takeaway": "A real explanation names the specific tells, not a feeling of eventually knowing."
           }
         ]
@@ -2473,7 +2473,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Self-Concordance, Fresh Case",
       "instruction": "Read the case, then decide.",
-      "question": "Someone takes up a hobby because it connects to something they've always found genuinely interesting, not because it's trendy — is this self-concordant?",
+      "question": "Someone takes up a hobby because it connects to something they've always found genuinely interesting, not because it's trendy, is this self-concordant?",
       "cases": [
         {
           "id": "case1",
@@ -2485,24 +2485,24 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "yes",
-          "label": "Yes — it expresses a genuine personal interest"
+          "label": "Yes, it expresses a genuine personal interest"
         },
         {
           "id": "no",
-          "label": "No — any new hobby is externally driven"
+          "label": "No, any new hobby is externally driven"
         }
       ],
       "feedbackMap": {
         "yes": {
           "title": "Right",
-          "body": "A genuine, long-standing interest is exactly what self-concordance checks for — the goal expresses a real personal value here.",
+          "body": "A genuine, long-standing interest is exactly what self-concordance checks for, the goal expresses a real personal value here.",
           "chain": [
             "The stated reason is genuine long-standing interest, not trend."
           ]
         },
         "no": {
           "title": "Not quite",
-          "body": "The case explicitly rules out trend-following as the reason — that's the sign of self-concordance, not against it.",
+          "body": "The case explicitly rules out trend-following as the reason, that's the sign of self-concordance, not against it.",
           "chain": [
             "The case names genuine interest as the driver, not external trend."
           ],
@@ -2559,9 +2559,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Used as a casual shared vocabulary, a personality type reference is fine — the caution is about treating it as validated proof, not about using it at all."
+      "comparisonFeedback": "Used as a casual shared vocabulary, a personality type reference is fine, the caution is about treating it as validated proof, not about using it at all."
     }
   },
   {
@@ -2581,7 +2581,7 @@ FROM jsonb_to_recordset($tag$[
       "beats": [
         {
           "id": "b1",
-          "text": "Two job offers arrive. One pays more and is the one others expect to be chosen. The other pays less but connects to something long named as mattering — working directly with people, not managing spreadsheets about them."
+          "text": "Two job offers arrive. One pays more and is the one others expect to be chosen. The other pays less but connects to something long named as mattering, working directly with people, not managing spreadsheets about them."
         },
         {
           "id": "b2",
@@ -2589,7 +2589,7 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "b3",
-          "text": "Second move: check autonomous vs. controlled motivation for each — genuine interest, or mostly external expectation."
+          "text": "Second move: check autonomous vs. controlled motivation for each, genuine interest, or mostly external expectation."
         },
         {
           "id": "b4",
@@ -2628,13 +2628,13 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "default",
-          "label": "Take the higher-paying offer — it's the objectively better choice"
+          "label": "Take the higher-paying offer, it's the objectively better choice"
         }
       ],
       "feedbackMap": {
         "compass": {
           "title": "Right",
-          "body": "Running the full compass — value, motivation source, self-concordance — is what the whole section builds toward; it doesn't guarantee one answer, but it makes the decision an informed one instead of a default.",
+          "body": "Running the full compass, value, motivation source, self-concordance, is what the whole section builds toward; it doesn't guarantee one answer, but it makes the decision an informed one instead of a default.",
           "chain": [
             "A practical decision is exactly the domain the compass was built for.",
             "Running it produces an informed choice, not an automatic one."
@@ -2642,7 +2642,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "default": {
           "title": "Not quite",
-          "body": "Defaulting to the higher pay skips the whole compass this section taught — the point isn't that money is wrong, it's that the decision should be checked, not defaulted.",
+          "body": "Defaulting to the higher pay skips the whole compass this section taught, the point isn't that money is wrong, it's that the decision should be checked, not defaulted.",
           "chain": [
             "Skipping the value/motivation/concordance check is exactly what this section teaches against."
           ],
@@ -2699,7 +2699,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
       "comparisonFeedback": "A practical decision is exactly what the compass is for; a weeks-long low mood is a different kind of signal, and routing it elsewhere is the honest, safer response."
     }
@@ -2718,44 +2718,44 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Rebuild The Loop",
       "instruction": "Order the loop from memory.",
-      "message": "The same picture from l3 — now yours to redraw without help.",
+      "message": "The same picture from l3, now yours to redraw without help.",
       "steps": [
         {
           "id": "notice",
-          "label": "Notice — something registers before it's named",
+          "label": "Notice, something registers before it's named",
           "order": 1
         },
         {
           "id": "sort",
-          "label": "Sort — is this curious, or does it feel threatened",
+          "label": "Sort, is this curious, or does it feel threatened",
           "order": 2
         },
         {
           "id": "sharpen",
-          "label": "Sharpen — name it precisely, spot the pattern, or write it out",
+          "label": "Sharpen, name it precisely, spot the pattern, or write it out",
           "order": 3
         },
         {
           "id": "check",
-          "label": "Check against a value — not just a feeling or a should",
+          "label": "Check against a value, not just a feeling or a should",
           "order": 4
         }
       ],
       "transfer": {
-        "prompt": "Place your own 2-3 kept practices (from l53) on this loop — which step(s) do they actually live on?",
+        "prompt": "Place your own 2-3 kept practices (from l53) on this loop, which step(s) do they actually live on?",
         "options": [
           {
             "id": "placed",
             "label": "I can place each one on a specific step",
             "isSupported": true,
-            "response": "Right — if your kept practices each have a clear step, the system held together, not just the individual facts.",
-            "takeaway": "Organized around the system, not a list — that was the whole design."
+            "response": "Right, if your kept practices each have a clear step, the system held together, not just the individual facts.",
+            "takeaway": "Organized around the system, not a list, that was the whole design."
           },
           {
             "id": "unsure",
             "label": "Not sure which step one of them belongs to",
             "isSupported": false,
-            "response": "Worth a second look — every real tool from this course lives on one of the four loop steps; if one doesn't fit cleanly, it's worth re-checking what it actually does."
+            "response": "Worth a second look, every real tool from this course lives on one of the four loop steps; if one doesn't fit cleanly, it's worth re-checking what it actually does."
           }
         ]
       }
@@ -2784,26 +2784,26 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "loop",
-          "label": "The loop — notice, sort, sharpen, check — is a workable system, not a mystery",
+          "label": "The loop, notice, sort, sharpen, check, is a workable system, not a mystery",
           "order": 2
         }
       ],
       "transfer": {
-        "prompt": "Sixty-four lessons later — has either of those two opening ideas changed?",
+        "prompt": "Sixty-four lessons later, has either of those two opening ideas changed?",
         "options": [
           {
             "id": "no",
-            "label": "No — they're the foundation everything else was built on",
+            "label": "No, they're the foundation everything else was built on",
             "isSupported": true,
-            "response": "Right — everything since has been detail on top of these two ideas, not a replacement for them.",
+            "response": "Right, everything since has been detail on top of these two ideas, not a replacement for them.",
             "takeaway": "The foundations from l1 and l3 are still exactly what they were."
           },
           {
             "id": "yes",
-            "label": "Yes — the later sections replaced the early framing",
+            "label": "Yes, the later sections replaced the early framing",
             "isSupported": false,
-            "response": "Not quite — Sections 2 and 3 built tools onto this loop; they didn't replace it.",
-            "takeaway": "Later content added tools in practice — it didn't change the opening framework."
+            "response": "Not quite, Sections 2 and 3 built tools onto this loop; they didn't replace it.",
+            "takeaway": "Later content added tools in practice, it didn't change the opening framework."
           }
         ]
       }
@@ -2850,12 +2850,12 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "Coming Home to Yourself — Course Checkpoint",
+      "title": "Coming Home to Yourself, Course Checkpoint",
       "introTitle": "One last look.",
       "intro": "A short close on where this course started and where it stops.\nNothing here is a grade.",
       "introTag": "3 QUESTIONS · ~1 MIN",
-      "revisitMessage": "Worth a short revisit — nothing is lost either way.",
-      "solidMessage": "Sixty-four lessons — what you keep is yours.",
+      "revisitMessage": "Worth a short revisit, nothing is lost either way.",
+      "solidMessage": "Sixty-four lessons, what you keep is yours.",
       "items": [
         {
           "concept": "The Opening Idea",
@@ -2864,12 +2864,12 @@ FROM jsonb_to_recordset($tag$[
           "worked": "It's ordinary and near-universal, not a sign something's wrong with you.",
           "options": [
             {
-              "label": "No — it's ordinary, not a failing",
+              "label": "No, it's ordinary, not a failing",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — most people know themselves clearly",
+              "label": "Yes, most people know themselves clearly",
               "feedback": "This is exactly the misconception the whole course opened by correcting.",
               "isCorrect": false
             }
@@ -2879,7 +2879,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "The Loop",
           "prompt": "How many steps does this course's loop have?",
           "clue": "Notice, sort, sharpen, check.",
-          "worked": "Four — notice, sort, sharpen, check against a value.",
+          "worked": "Four, notice, sort, sharpen, check against a value.",
           "options": [
             {
               "label": "Four",
@@ -2897,15 +2897,15 @@ FROM jsonb_to_recordset($tag$[
           "concept": "The Closing Boundary",
           "prompt": "Does this course diagnose, type, or treat a clinical pattern?",
           "clue": "It has a scope edge.",
-          "worked": "No — it teaches self-understanding and routes elsewhere when a pattern exceeds that.",
+          "worked": "No, it teaches self-understanding and routes elsewhere when a pattern exceeds that.",
           "options": [
             {
-              "label": "No — those route to other courses or professional support",
+              "label": "No, those route to other courses or professional support",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — it covers all of these",
+              "label": "Yes, it covers all of these",
               "feedback": "This course has an explicit, honest scope boundary.",
               "isCorrect": false
             }
@@ -2969,7 +2969,7 @@ BEGIN
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now name the practices you're keeping, hold typing systems for what they're actually worth, and recognize when a pattern needs more than this course — without reading that as failure.",
+      "capabilityStatement": "You can now name the practices you're keeping, hold typing systems for what they're actually worth, and recognize when a pattern needs more than this course, without reading that as failure.",
       "primaryActionLabel": "Back to path"
     }
   },
@@ -2982,7 +2982,7 @@ BEGIN
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now run your kept practices against a fresh moment — a feeling, a pattern mid-spiral, or a plain decision — without the course walking you through it, and explain the whole system to someone else.",
+      "capabilityStatement": "You can now run your kept practices against a fresh moment, a feeling, a pattern mid-spiral, or a plain decision, without the course walking you through it, and explain the whole system to someone else.",
       "primaryActionLabel": "Back to path"
     }
   }
@@ -3067,8 +3067,8 @@ BEGIN
     "review_concepts": [],
     "prerequisites": [],
     "reward_content": {
-      "title": "The goal that pays off — and the one that doesn't",
-      "body": "People chasing a goal that genuinely matches their own values put in more sustained effort, are more likely to actually reach it, AND get more real satisfaction from reaching it. People chasing the same goal for external or internalized pressure can attain it and feel surprisingly little. The goal isn't the variable — the reason is. (Sheldon & Elliot 1999 — research/04 §3)",
+      "title": "The goal that pays off, and the one that doesn't",
+      "body": "People chasing a goal that genuinely matches their own values put in more sustained effort, are more likely to actually reach it, AND get more real satisfaction from reaching it. People chasing the same goal for external or internalized pressure can attain it and feel surprisingly little. The goal isn't the variable, the reason is. (Sheldon & Elliot 1999, research/04 §3)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -3185,7 +3185,7 @@ BEGIN
     "prerequisites": [],
     "reward_content": {
       "title": "A shared language isn't the same as a scientific map",
-      "body": "MBTI sorts people into strict either-or categories — strictly introvert or extravert — but real personality traits are continuous, not binary, and a meaningful share of people get a different type on retest. That doesn't make typing systems useless as a shared vocabulary for talking about yourself with others — it just means they're a conversation starter, not a validated instrument. (Myers-Briggs Foundation's own reliability research — research/06 §1)",
+      "body": "MBTI sorts people into strict either-or categories, strictly introvert or extravert, but real personality traits are continuous, not binary, and a meaningful share of people get a different type on retest. That doesn't make typing systems useless as a shared vocabulary for talking about yourself with others, it just means they're a conversation starter, not a validated instrument. (Myers-Briggs Foundation's own reliability research, research/06 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -3350,7 +3350,7 @@ BEGIN
     "prerequisites": [],
     "reward_content": {
       "title": "Why the rehearsal, not a badge, is the actual ending",
-      "body": "The same research this course is built on found resilience- and skill-training programs' gains fade substantially between right-after and a later follow-up — not because the skills stopped being true, because nobody practiced them. The rehearsals you just ran aren't extra credit; they're this course taking its own research seriously. (Vanhove et al. 2016, parallel finding cited in the stress course — research/05 §3)",
+      "body": "The same research this course is built on found resilience- and skill-training programs' gains fade substantially between right-after and a later follow-up, not because the skills stopped being true, because nobody practiced them. The rehearsals you just ran aren't extra credit; they're this course taking its own research seriously. (Vanhove et al. 2016, parallel finding cited in the stress course, research/05 §3)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }

@@ -391,8 +391,8 @@ WITH curriculum AS (
             "prompt": "Which state helps the body settle for sleep?",
             "correctOptionId": "settled",
             "options": [
-              {"id": "alert", "label": "ALERT — ready for action"},
-              {"id": "settled", "label": "SETTLED — ready for rest"}
+              {"id": "alert", "label": "ALERT, ready for action"},
+              {"id": "settled", "label": "SETTLED, ready for rest"}
             ]
           },
           "feedback_correct": "Right. Rest-and-digest supports the calmer state sleep needs.",
@@ -464,7 +464,7 @@ WITH curriculum AS (
               "id": "alert",
               "label": "ALERT",
               "isCorrect": true,
-              "feedback": "Yes — those clues point toward ALERT."
+              "feedback": "Yes, those clues point toward ALERT."
             },
             {
               "id": "settled",
@@ -514,7 +514,7 @@ WITH curriculum AS (
           "revealTitle": "Your alert clues",
           "revealBody": "These can show up when your system is leaning toward ALERT rather than SETTLED.",
           "noneRevealTitle": "None of these fit right now",
-          "noneRevealBody": "These are only examples — your signals may look different.",
+          "noneRevealBody": "These are only examples, your signals may look different.",
           "primaryLabel": "Continue",
           "feedbackTitle": "Clues, not failures",
           "feedback": "These signals can show that the body is still on guard. The next lesson gives you one gentle way to respond."
@@ -567,13 +567,13 @@ WITH curriculum AS (
           "options": [
             {
               "id": "settled",
-              "label": "SETTLED — rest-and-digest",
+              "label": "SETTLED, rest-and-digest",
               "isCorrect": true,
               "feedback": "Right. This is the calmer direction belly breathing supports."
             },
             {
               "id": "alert",
-              "label": "ALERT — fight-or-flight",
+              "label": "ALERT, fight-or-flight",
               "feedback": "ALERT keeps the body ready for action."
             }
           ],

@@ -45,18 +45,19 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
     <View style={[styles.container, style]} className="flex-row items-center gap-4 px-6 pt-2 pb-6">
       <TouchableOpacity
         onPress={onClose}
-        activeOpacity={0.65}
-        className="h-8 w-8 items-center justify-center"
+        activeOpacity={0.7}
+        className="h-10 w-10 items-center justify-center rounded-full bg-black/[0.04] active:bg-black/[0.08]"
         accessibilityLabel={backButtonVariant === "arrow" ? "Go back" : "Close"}
         accessibilityRole="button"
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         disabled={!onClose}
         style={{ opacity: onClose ? 1 : 0 }}
       >
         {backButtonVariant === "close-text" ? (
           <RNText
             style={{
-              fontSize: 22,
-              lineHeight: 24,
+              fontSize: 20,
+              lineHeight: 22,
               color: iconColor,
               fontWeight: "700",
             }}
@@ -66,13 +67,13 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
         ) : backButtonVariant === "close-icon" ? (
           <HugeiconsIcon
             icon={Cancel01Icon}
-            size={22}
+            size={20}
             color={iconColor}
           />
         ) : (
           <HugeiconsIcon
             icon={ArrowLeft02Icon}
-            size={18}
+            size={20}
             color={iconColor}
           />
         )}
@@ -80,14 +81,15 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
 
       <View className="flex-1">
         {typeof progress === "number" ? (
+          // ponytail: solid brand fill on soft track, no muddy gradient smear
           <AnimatedProgressBar
             progress={progress}
-            useGradient={true}
-            gradientColors={[SEMANTIC_COLORS.warning.surface, SEMANTIC_COLORS.brand.primary]}
+            useGradient={false}
             pulsate={false}
             trackColor={progressTrackColor}
             height={progressHeight}
             progressColor={progressFillColor}
+            borderRadius={progressHeight / 2}
           />
         ) : null}
       </View>
@@ -104,7 +106,7 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
           {trailingLabel}
         </RNText>
       ) : (
-        <View className="h-8 w-8" /> /* Balance spacing if no trailing label */
+        <View className="h-10 w-10" /> /* Balance spacing if no trailing label */
       )}
     </View>
   );

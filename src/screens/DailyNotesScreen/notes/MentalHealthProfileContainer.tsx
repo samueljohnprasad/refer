@@ -91,7 +91,7 @@ const MentalHealthProfileContainerComponent: React.FC<
           Taking a momentary pause
         </Text>
         <Text className="happy-font-body text-sm text-ink-muted text-center px-8 mb-8 leading-relaxed">
-          We couldn't reach your journal entries right now. Don't worry—your notes are safely saved on your device.
+          We couldn't reach your journal entries right now. Don't worry, your notes are safely saved on your device.
         </Text>
         <View className="px-12 self-stretch w-full max-w-sm">
           <Button

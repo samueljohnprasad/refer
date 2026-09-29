@@ -67,7 +67,7 @@ export function CommonTrapCategoryEngine({
         title={readString(content.title) ?? "Recognizing Common Traps"}
         instruction={
           readString(content.instruction) ??
-          "See why the trap feels helpful — then learn the counter move."
+          "See why the trap feels helpful, then learn the counter move."
         }
       />
 

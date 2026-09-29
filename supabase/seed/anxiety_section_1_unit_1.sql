@@ -785,7 +785,7 @@ WITH curriculum AS (
       "axisLabel": "Time passing",
       "rule": "THE PATTERN",
       "takeaway": "A surge can feel endless while you’re inside it.\n\nBut intensity can change over time.",
-      "note": "Illustrative pattern — timing and intensity vary."
+      "note": "Illustrative pattern, timing and intensity vary."
     }
   },
   {
@@ -1765,7 +1765,7 @@ WITH curriculum AS (
         },
         {
           "id": "balanced_evidence",
-          "label": "Check what supports the alarm — and what doesn’t",
+          "label": "Check what supports the alarm, and what doesn’t",
           "targetPosition": 88,
           "caption": "Now the conclusion comes from the whole situation, not the feeling alone.",
           "completesExercise": true

@@ -20,7 +20,7 @@ export function validateTeachBackChainContent(
 
   const steps = Array.isArray(content.steps) ? content.steps : null;
   if (!steps || steps.length < 3 || steps.length > 4) {
-    issues.push({ path: "content.steps", message: "must contain 3–4 steps" });
+    issues.push({ path: "content.steps", message: "must contain 3-4 steps" });
   } else {
     const ids = new Set<string>();
     const orders: number[] = [];
@@ -58,7 +58,7 @@ export function validateTeachBackChainContent(
   validateString(transfer.prompt, "content.transfer.prompt", 24, issues);
   const options = Array.isArray(transfer.options) ? transfer.options : null;
   if (!options || options.length < 2 || options.length > 3) {
-    issues.push({ path: "content.transfer.options", message: "must contain 2–3 options" });
+    issues.push({ path: "content.transfer.options", message: "must contain 2-3 options" });
     return issues;
   }
 

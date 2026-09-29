@@ -56,5 +56,5 @@ export const DiscoveryHeader = React.memo<DiscoveryHeaderProps>(
 DiscoveryHeader.displayName = "DiscoveryHeader";
 
 function formatStreakValue(currentStreak: number, isLoading: boolean): string {
-  return isLoading ? "—" : String(currentStreak);
+  return isLoading ? "" : String(currentStreak);
 }

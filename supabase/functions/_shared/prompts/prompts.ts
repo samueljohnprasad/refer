@@ -89,7 +89,11 @@ Never compare with:
 ## Missing Data
 
 - Use only available records.
-- Do not assume missing activities occurred.`;
+- Do not assume missing activities occurred.
+
+## Formatting
+
+- Do not use em-dashes (—) or double hyphens (--) anywhere in your responses; use commas or periods instead.`;
 
 export const TONE = `# Writing Tone by Reflection Level
 
@@ -166,13 +170,13 @@ Example: \`["started new job", "traveled to visit family"]\`
 
 export const EXAMPLES = `# Examples
 
-## Daily — Good
+## Daily: Good
 
 > Work appeared in several reflections today. Your descriptions mentioned two meetings that ran long, and you noted feeling "scattered" afterward. Habits show a walk was logged this evening.
 
 **Why it works:** Specific situations, explicit user words, connects journal + habits only where supported.
 
-## Daily — Bad
+## Daily: Bad
 
 > You had a productive day and are managing stress well.
 
@@ -180,13 +184,13 @@ export const EXAMPLES = `# Examples
 
 ---
 
-## Weekly — Good
+## Weekly: Good
 
 > Work appeared in several reflections this week. Compared with last week, your descriptions contained slightly less urgency, although more observations are needed before identifying a trend.
 
 **Why it works:** Names a pattern, compares with prior week, explicitly states uncertainty.
 
-## Weekly — Bad
+## Weekly: Bad
 
 > You are becoming more confident at work.
 
@@ -194,13 +198,13 @@ export const EXAMPLES = `# Examples
 
 ---
 
-## Monthly — Good
+## Monthly: Good
 
 > Gratitude appeared repeatedly this month, suggesting that positive moments were consistently noticed. Meal logging was limited, so nutritional observations are based on incomplete information.
 
 **Why it works:** Identifies recurring theme, acknowledges missing data, stays descriptive.
 
-## Monthly — Bad
+## Monthly: Bad
 
 > You are mentally healthier and happier now.
 
@@ -258,13 +262,13 @@ Generate a daily reflection that answers:
 - Prioritize journal entries when available.
 - Use habits, meals and CBT to provide context.
 - Connect multiple activities only when supported by evidence.
-- When yesterday's reflection is provided, describe only actual differences — do not evaluate progress.
+- When yesterday's reflection is provided, describe only actual differences, do not evaluate progress.
 
 ## Tone
 
 - Use short paragraphs (2-4 sentences).
 - Use present tense when describing today's observations.
-- Keep the voice immediate and grounded — as if gently reviewing the day together.
+- Keep the voice immediate and grounded, as if gently reviewing the day together.
 - One or two strong observations are enough.
 - When habits, meals, or CBT are mentioned, connect them to journals only when directly supported.`,
 
@@ -334,7 +338,7 @@ Generate a monthly reflection that:
 - Prioritize observations supported across multiple weeks.
 - Reserve definitive statements for patterns seen in 3+ weeks.
 - Return fewer insights when evidence is limited.
-- When last month's reflection is provided, describe evolution factually — do not evaluate progress.
+- When last month's reflection is provided, describe evolution factually, do not evaluate progress.
 
 ## Tone
 
@@ -378,7 +382,7 @@ Generate a weekly reflection that:
 - Focus on recurring patterns rather than isolated events.
 - Give greater weight to observations that appear across multiple days.
 - Return fewer insights when evidence is limited.
-- When last week's reflection is provided, describe differences factually — do not evaluate progress.
+- When last week's reflection is provided, describe differences factually, do not evaluate progress.
 
 ## Tone
 

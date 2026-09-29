@@ -76,7 +76,7 @@ FROM jsonb_to_recordset($tag$[
     "order_index": 1,
     "is_published": false,
     "domain": "stress_resilience",
-    "target_audience": "Adults dealing with everyday or work-related stress — not diagnosed anxiety, depression, or clinical burnout",
+    "target_audience": "Adults dealing with everyday or work-related stress, not diagnosed anxiety, depression, or clinical burnout",
     "total_lessons": 63,
     "total_duration_weeks": null,
     "sessions_per_week": null,
@@ -99,7 +99,7 @@ FROM jsonb_to_recordset($tag$[
     "course_source_id": "stress-steady-under-pressure",
     "title": "How Stress Actually Works",
     "order_index": 0,
-    "narrative_hook": "Your alarm isn't broken. Let's see what it's actually doing — then use that.",
+    "narrative_hook": "Your alarm isn't broken. Let's see what it's actually doing, then use that.",
     "badge_on_complete": "Clear-Eyed",
     "difficulty_range": [
       0.15,
@@ -107,7 +107,7 @@ FROM jsonb_to_recordset($tag$[
     ],
     "objectives": {
       "remember": "Name the two nervous-system branches, what tips the balance between them, and the three levers back to the brake",
-      "understand": "Explain why a system built for short physical threats becomes costly under chronic psychological ones, and that appraisal — not the event itself — is the cognitive input to the switch",
+      "understand": "Explain why a system built for short physical threats becomes costly under chronic psychological ones, and that appraisal, not the event itself, is the cognitive input to the switch",
       "apply": "Notice your own body/thought/behavior tells that the balance has tipped, pull one breathing lever on cue, and match problem-focused or emotion-focused coping to a real stressor based on whether it's changeable"
     },
     "concepts_introduced": [
@@ -590,7 +590,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Your Body Isn't Malfunctioning",
       "variant": "myth",
       "myth": "A racing heart and tight chest under pressure mean something is wrong with you.",
-      "reality": "That's the sympathetic nervous system doing exactly what it was built to do — a fast, automatic discharge that once meant a predator was nearby. Old survival machinery, not a malfunction."
+      "reality": "That's the sympathetic nervous system doing exactly what it was built to do, a fast, automatic discharge that once meant a predator was nearby. Old survival machinery, not a malfunction."
     }
   },
   {
@@ -613,13 +613,13 @@ FROM jsonb_to_recordset($tag$[
           "id": "a",
           "label": "doing exactly what it was built to do",
           "isCorrect": true,
-          "feedback": "Right — old survival machinery, working as designed."
+          "feedback": "Right, old survival machinery, working as designed."
         },
         {
           "id": "b",
           "label": "breaking down under pressure",
           "isCorrect": false,
-          "feedback": "It's not breaking down — this is the response working, not failing."
+          "feedback": "It's not breaking down, this is the response working, not failing."
         }
       ]
     }
@@ -665,7 +665,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "why_stress_exists",
     "content": {
-      "prompt": "A jolt of alertness right after someone cuts you off in traffic — what is this?",
+      "prompt": "A jolt of alertness right after someone cuts you off in traffic, what is this?",
       "options": [
         {
           "id": "a",
@@ -677,7 +677,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "a",
-      "reveal": "Same machinery that once meant a predator was near — automatic, and not a flaw."
+      "reveal": "Same machinery that once meant a predator was near, automatic, and not a flaw."
     }
   },
   {
@@ -694,8 +694,8 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Two Pedals, Always Both Pressed",
       "variant": "myth",
-      "myth": "You're either stressed or relaxed — it's one or the other.",
-      "reality": "The sympathetic branch (gas — mobilize) and parasympathetic branch (brake — restore) are both always active. What changes is the balance between them, never a full switch from one to the other."
+      "myth": "You're either stressed or relaxed, it's one or the other.",
+      "reality": "The sympathetic branch (gas, mobilize) and parasympathetic branch (brake, restore) are both always active. What changes is the balance between them, never a full switch from one to the other."
     }
   },
   {
@@ -710,19 +710,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "two_nervous_systems",
     "content": {
-      "prompt": "Heart rate climbing and pupils widening before a presentation — which branch?",
+      "prompt": "Heart rate climbing and pupils widening before a presentation, which branch?",
       "options": [
         {
           "id": "sym",
-          "label": "Sympathetic — mobilize"
+          "label": "Sympathetic, mobilize"
         },
         {
           "id": "para",
-          "label": "Parasympathetic — restore"
+          "label": "Parasympathetic, restore"
         }
       ],
       "bestOptionId": "sym",
-      "reveal": "Heart rate up, pupils wide — that's the gas pedal, sympathetic mobilization."
+      "reveal": "Heart rate up, pupils wide, that's the gas pedal, sympathetic mobilization."
     }
   },
   {
@@ -737,19 +737,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "two_nervous_systems",
     "content": {
-      "prompt": "Feeling drowsy and settled after a big meal — which branch?",
+      "prompt": "Feeling drowsy and settled after a big meal, which branch?",
       "options": [
         {
           "id": "sym",
-          "label": "Sympathetic — mobilize"
+          "label": "Sympathetic, mobilize"
         },
         {
           "id": "para",
-          "label": "Parasympathetic — restore"
+          "label": "Parasympathetic, restore"
         }
       ],
       "bestOptionId": "para",
-      "reveal": "Digestion resuming and a settled, drowsy feeling — that's the brake, parasympathetic restore."
+      "reveal": "Digestion resuming and a settled, drowsy feeling, that's the brake, parasympathetic restore."
     }
   },
   {
@@ -766,8 +766,8 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Which Way Is It Leaning?",
       "instruction": "Read, then move on.",
-      "message": "You're never fully in one mode. The real question is always which way the balance is leaning right now — not whether you're 'stressed' or 'relaxed.'",
-      "explanation": "That question — which way is it leaning, and what's leaning on it — is the one this whole course keeps coming back to."
+      "message": "You're never fully in one mode. The real question is always which way the balance is leaning right now, not whether you're 'stressed' or 'relaxed.'",
+      "explanation": "That question, which way is it leaning, and what's leaning on it, is the one this whole course keeps coming back to."
     }
   },
   {
@@ -784,19 +784,19 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Quick Check",
       "instruction": "Complete the line, then check it.",
-      "firstLine": "Sympathetic and parasympathetic are ___ active — what changes is the balance.",
+      "firstLine": "Sympathetic and parasympathetic are ___ active, what changes is the balance.",
       "options": [
         {
           "id": "a",
           "label": "always both",
           "isCorrect": true,
-          "feedback": "Right — never a full switch, always a balance."
+          "feedback": "Right, never a full switch, always a balance."
         },
         {
           "id": "b",
           "label": "only one at a time",
           "isCorrect": false,
-          "feedback": "It's never one at a time — both are always running."
+          "feedback": "It's never one at a time, both are always running."
         }
       ]
     }
@@ -815,8 +815,8 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Same Circuit, Two Kinds of Threat",
       "variant": "myth",
-      "myth": "My nervous system just happens to me — there's nothing I can do about which way it leans.",
-      "reality": "The balance tips toward sympathetic when the brain reads threat — and the same circuit fires for a real physical danger and an interpreted one, like a sharp email. It tips back when the threat resolves or a lever is pulled deliberately."
+      "myth": "My nervous system just happens to me, there's nothing I can do about which way it leans.",
+      "reality": "The balance tips toward sympathetic when the brain reads threat, and the same circuit fires for a real physical danger and an interpreted one, like a sharp email. It tips back when the threat resolves or a lever is pulled deliberately."
     }
   },
   {
@@ -844,7 +844,7 @@ FROM jsonb_to_recordset($tag$[
         {
           "id": "case2",
           "name": "A one-word reply",
-          "text": "A one-word reply from your manager — 'We need to talk' — lands in your inbox.",
+          "text": "A one-word reply from your manager, 'We need to talk', lands in your inbox.",
           "label": "Case 2"
         }
       ],
@@ -855,22 +855,22 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "unrelated",
-          "label": "They're unrelated — only the dog is a real threat"
+          "label": "They're unrelated, only the dog is a real threat"
         }
       ],
       "feedbackMap": {
         "same-circuit": {
           "title": "That's the switch",
-          "body": "The same circuit fires for a real physical danger and an interpreted one. Your body can't always tell the difference on its own — but you can influence what it's reading.",
+          "body": "The same circuit fires for a real physical danger and an interpreted one. Your body can't always tell the difference on its own, but you can influence what it's reading.",
           "chain": [
             "The dog: real physical danger.",
-            "The email: interpreted danger — no physical threat present.",
+            "The email: interpreted danger, no physical threat present.",
             "Same switch fires for both."
           ]
         },
         "unrelated": {
           "title": "Not quite",
-          "body": "The email isn't a physical danger, but the switch doesn't require one — it fires for a read of threat, real or interpreted.",
+          "body": "The email isn't a physical danger, but the switch doesn't require one, it fires for a read of threat, real or interpreted.",
           "chain": [
             "Both triggered the same sympathetic response.",
             "Only one involved actual physical risk."
@@ -895,19 +895,19 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Rule",
       "instruction": "Complete the line, then check it.",
-      "firstLine": "The switch tips toward sympathetic when the brain reads ___ — real or interpreted.",
+      "firstLine": "The switch tips toward sympathetic when the brain reads ___, real or interpreted.",
       "options": [
         {
           "id": "a",
           "label": "threat",
           "isCorrect": true,
-          "feedback": "Right — and that read is the thing you can influence."
+          "feedback": "Right, and that read is the thing you can influence."
         },
         {
           "id": "b",
           "label": "danger only",
           "isCorrect": false,
-          "feedback": "It doesn't require actual danger — an interpreted threat fires the same switch."
+          "feedback": "It doesn't require actual danger, an interpreted threat fires the same switch."
         }
       ]
     }
@@ -934,8 +934,8 @@ FROM jsonb_to_recordset($tag$[
             "survival",
             "old survival"
           ],
-          "correctFeedback": "Right — old survival machinery, doing what it was built to do.",
-          "incorrectFeedback": "It's survival machinery — automatic, and not a sign of failure.",
+          "correctFeedback": "Right, old survival machinery, doing what it was built to do.",
+          "incorrectFeedback": "It's survival machinery, automatic, and not a sign of failure.",
           "workedExample": "'My heart is racing' becomes 'my survival machinery just activated.'"
         }
       ]
@@ -953,19 +953,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "the_switch",
     "content": {
-      "prompt": "A deadline you're only imagining missing — can that flip the switch the same way a real danger can?",
+      "prompt": "A deadline you're only imagining missing, can that flip the switch the same way a real danger can?",
       "options": [
         {
           "id": "yes",
-          "label": "Yes — the switch fires for interpreted threat too"
+          "label": "Yes, the switch fires for interpreted threat too"
         },
         {
           "id": "no",
-          "label": "No — only real physical danger fires it"
+          "label": "No, only real physical danger fires it"
         }
       ],
       "bestOptionId": "yes",
-      "reveal": "The same circuit fires for a real danger and an imagined one — this is exactly what makes the switch hard to manage."
+      "reveal": "The same circuit fires for a real danger and an imagined one, this is exactly what makes the switch hard to manage."
     }
   },
   {
@@ -983,7 +983,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "A Different Kind of Stressful, Not a Bigger Amount",
       "variant": "myth",
       "myth": "Modern life is simply more stressful than the past.",
-      "reality": "It isn't more stressful in volume — it's stressful in a different KIND of way. The response was built for short, physical, resolvable threats that end and get discharged. A deadline doesn't end when you outrun it; it's still there tomorrow, and the alarm doesn't know that."
+      "reality": "It isn't more stressful in volume, it's stressful in a different KIND of way. The response was built for short, physical, resolvable threats that end and get discharged. A deadline doesn't end when you outrun it; it's still there tomorrow, and the alarm doesn't know that."
     }
   },
   {
@@ -998,23 +998,23 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "evolutionary_mismatch",
     "content": {
-      "title": "The Zebra Gets an Ending. You Don't — Unless You Build One.",
+      "title": "The Zebra Gets an Ending. You Don't, Unless You Build One.",
       "instruction": "Put the zebra's sequence in order.",
       "message": "A zebra's alarm gets an ending for free. A human stressor often doesn't.",
       "steps": [
         {
           "id": "threat",
-          "label": "Lion appears — threat",
+          "label": "Lion appears, threat",
           "order": 1
         },
         {
           "id": "mobilize",
-          "label": "Sympathetic mobilization fires — run",
+          "label": "Sympathetic mobilization fires, run",
           "order": 2
         },
         {
           "id": "discharge",
-          "label": "The chase resolves — physically discharged",
+          "label": "The chase resolves, physically discharged",
           "order": 3
         },
         {
@@ -1028,16 +1028,16 @@ FROM jsonb_to_recordset($tag$[
         "options": [
           {
             "id": "no-ending",
-            "label": "No — the deadline is still there tomorrow, nothing was physically discharged",
+            "label": "No, the deadline is still there tomorrow, nothing was physically discharged",
             "isSupported": true,
-            "response": "Right — the chase resolves for the zebra. A deadline doesn't resolve the same way, and the alarm doesn't know to stand down.",
-            "takeaway": "Modern stressors are mostly chronic, psychological, and undischarged — that's the mismatch."
+            "response": "Right, the chase resolves for the zebra. A deadline doesn't resolve the same way, and the alarm doesn't know to stand down.",
+            "takeaway": "Modern stressors are mostly chronic, psychological, and undischarged, that's the mismatch."
           },
           {
             "id": "yes-ending",
-            "label": "Yes — sending the email closes it out the same way",
+            "label": "Yes, sending the email closes it out the same way",
             "isSupported": false,
-            "response": "Not quite — sending the email doesn't physically discharge the mobilization the way running from a lion does.",
+            "response": "Not quite, sending the email doesn't physically discharge the mobilization the way running from a lion does.",
             "takeaway": "An email response is not the same kind of ending a chase provides."
           }
         ]
@@ -1058,8 +1058,8 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "This Isn't a Flaw In You",
       "instruction": "Read, then move on.",
-      "message": "Modern life is not built worse than a savanna with lions on it — it's stressful in a different kind of way, chronic and undischarged, and that kind is the one the system can't handle on its own.",
-      "explanation": "And that's exactly why the levers exist — the next lesson names them. You're not stuck with an alarm that stays on; there are real ways to reach it."
+      "message": "Modern life is not built worse than a savanna with lions on it, it's stressful in a different kind of way, chronic and undischarged, and that kind is the one the system can't handle on its own.",
+      "explanation": "And that's exactly why the levers exist, the next lesson names them. You're not stuck with an alarm that stays on; there are real ways to reach it."
     }
   },
   {
@@ -1076,7 +1076,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Rebuild The Rule",
       "instruction": "Tap the chips in order to rebuild the rule.",
-      "prompt": "Sympathetic and parasympathetic are ___ active — the question is which way the ___ leans.",
+      "prompt": "Sympathetic and parasympathetic are ___ active, the question is which way the ___ leans.",
       "chips": [
         "always both",
         "balance",
@@ -1103,19 +1103,19 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Quick Check",
       "instruction": "Complete the line, then check it.",
-      "firstLine": "Modern life isn't more stressful in volume — it's stressful in a different ___.",
+      "firstLine": "Modern life isn't more stressful in volume, it's stressful in a different ___.",
       "options": [
         {
           "id": "a",
-          "label": "kind of way — chronic and undischarged",
+          "label": "kind of way, chronic and undischarged",
           "isCorrect": true,
-          "feedback": "Right — chronic, abstract, and undischarged is the kind that's hard to handle."
+          "feedback": "Right, chronic, abstract, and undischarged is the kind that's hard to handle."
         },
         {
           "id": "b",
-          "label": "amount — just much higher",
+          "label": "amount, just much higher",
           "isCorrect": false,
-          "feedback": "It's not a bigger amount of the same thing — it's a different kind."
+          "feedback": "It's not a bigger amount of the same thing, it's a different kind."
         }
       ]
     }
@@ -1135,7 +1135,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Three Doors Back to the Brake",
       "variant": "rule",
       "rule": "You have three levers back toward the parasympathetic side: change the read, reach the brake directly, or give the response an end.",
-      "explanation": "A deadline doesn't end on its own the way a chase does — but you're not powerless. Every tool the rest of this course teaches is one of these three doors, placed here on purpose."
+      "explanation": "A deadline doesn't end on its own the way a chase does, but you're not powerless. Every tool the rest of this course teaches is one of these three doors, placed here on purpose."
     }
   },
   {
@@ -1171,7 +1171,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "clue": "One lever changes what the brain reads; one calms the body directly; one builds an ending.",
       "feedbackTitle": "THREE DOORS, ONE SYSTEM",
-      "feedback": "Every tool in this course lives on one of these three doors — that's what makes it one connected system, not a pile of separate tricks."
+      "feedback": "Every tool in this course lives on one of these three doors, that's what makes it one connected system, not a pile of separate tricks."
     }
   },
   {
@@ -1213,14 +1213,14 @@ FROM jsonb_to_recordset($tag$[
             "id": "end",
             "label": "Give the response an end",
             "isSupported": true,
-            "response": "Right — the walk is a deliberate discharge, building an ending the day wouldn't otherwise get.",
+            "response": "Right, the walk is a deliberate discharge, building an ending the day wouldn't otherwise get.",
             "takeaway": "Every new tool you meet from here gets placed on one of these three doors."
           },
           {
             "id": "read",
             "label": "Change the read",
             "isSupported": false,
-            "response": "Not quite — nothing about the walk changes how the day was appraised; it's building an ending.",
+            "response": "Not quite, nothing about the walk changes how the day was appraised; it's building an ending.",
             "takeaway": "Watch for what the action actually does, not just when it happens."
           }
         ]
@@ -1248,8 +1248,8 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "threat"
           ],
-          "correctFeedback": "Right — and that read is the part you can influence.",
-          "incorrectFeedback": "The switch tips on a read of threat — real or interpreted.",
+          "correctFeedback": "Right, and that read is the part you can influence.",
+          "incorrectFeedback": "The switch tips on a read of threat, real or interpreted.",
           "workedExample": "An ambiguous silence after you spoke can flip it the same way a real danger can."
         }
       ]
@@ -1279,7 +1279,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "a",
-      "reveal": "A slow exhale works on the body directly — no appraisal or thinking required first."
+      "reveal": "A slow exhale works on the body directly, no appraisal or thinking required first."
     }
   },
   {
@@ -1296,8 +1296,8 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Two In, One Long Out",
       "variant": "rule",
-      "rule": "Two inhales through the nose, then one long exhale through the mouth, repeated for a few minutes — the longer exhale reaches the parasympathetic brake through the vagus nerve.",
-      "explanation": "If focusing on your breath makes you MORE anxious — common for people prone to panic — skip this one for now; the movement or tension-release levers later in the course work just as well. The real finding here is improved mood and reduced arousal, not a mechanistic 'reset' of anything."
+      "rule": "Two inhales through the nose, then one long exhale through the mouth, repeated for a few minutes, the longer exhale reaches the parasympathetic brake through the vagus nerve.",
+      "explanation": "If focusing on your breath makes you MORE anxious, common for people prone to panic, skip this one for now; the movement or tension-release levers later in the course work just as well. The real finding here is improved mood and reduced arousal, not a mechanistic 'reset' of anything."
     }
   },
   {
@@ -1313,7 +1313,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": "cyclic_sighing",
     "content": {
       "title": "Try It Right Now",
-      "instruction": "Two inhales through your nose, then one long exhale through your mouth. Repeat for about a minute. Skip this if breath-focus makes you more anxious — that's a fine call to make."
+      "instruction": "Two inhales through your nose, then one long exhale through your mouth. Repeat for about a minute. Skip this if breath-focus makes you more anxious, that's a fine call to make."
     }
   },
   {
@@ -1336,7 +1336,7 @@ FROM jsonb_to_recordset($tag$[
           "id": "a",
           "label": "vagus",
           "isCorrect": true,
-          "feedback": "Right — that's the lever, in your hands, any time you need it."
+          "feedback": "Right, that's the lever, in your hands, any time you need it."
         },
         {
           "id": "b",
@@ -1359,7 +1359,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "cyclic_sighing",
     "content": {
-      "prompt": "Two inhales, one long exhale — which lever does this pull?",
+      "prompt": "Two inhales, one long exhale, which lever does this pull?",
       "options": [
         {
           "id": "a",
@@ -1371,7 +1371,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "a",
-      "reveal": "It works on the body directly through the vagus nerve — no appraisal step needed."
+      "reveal": "It works on the body directly through the vagus nerve, no appraisal step needed."
     }
   },
   {
@@ -1395,8 +1395,8 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "read"
           ],
-          "correctFeedback": "Right — read, real or interpreted, is the input to the switch.",
-          "incorrectFeedback": "It's the brain's read of threat — the balance, not a hard switch.",
+          "correctFeedback": "Right, read, real or interpreted, is the input to the switch.",
+          "incorrectFeedback": "It's the brain's read of threat, the balance, not a hard switch.",
           "workedExample": "An ambiguous email and a real danger can both flip it, because both get read as threat."
         }
       ]
@@ -1420,7 +1420,7 @@ FROM jsonb_to_recordset($tag$[
       "steps": [
         {
           "id": "threat",
-          "label": "Threat appears — real or interpreted",
+          "label": "Threat appears, real or interpreted",
           "order": 1
         },
         {
@@ -1440,20 +1440,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "A three-week stretch of overlapping deadlines, never fully resolving — is this the kind of threat the system was built for?",
+        "prompt": "A three-week stretch of overlapping deadlines, never fully resolving, is this the kind of threat the system was built for?",
         "options": [
           {
             "id": "no",
-            "label": "No — it's chronic and undischarged, the modern-mismatch case",
+            "label": "No, it's chronic and undischarged, the modern-mismatch case",
             "isSupported": true,
-            "response": "Right — this is exactly the case evolutionary mismatch describes, and it's why the levers matter.",
+            "response": "Right, this is exactly the case evolutionary mismatch describes, and it's why the levers matter.",
             "takeaway": "Naming the mismatch is the reason the rest of the course exists."
           },
           {
             "id": "yes",
-            "label": "Yes — any deadline counts as the kind of threat it was built for",
+            "label": "Yes, any deadline counts as the kind of threat it was built for",
             "isSupported": false,
-            "response": "Not quite — the system was built for short, physical, resolvable threats. A three-week stretch is the opposite of that.",
+            "response": "Not quite, the system was built for short, physical, resolvable threats. A three-week stretch is the opposite of that.",
             "takeaway": "Duration and resolution are what separate the two kinds."
           }
         ]
@@ -1500,7 +1500,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "read": {
           "title": "That's the door",
-          "body": "The list doesn't touch the body directly or build an ending — it shifts what gets noticed and appraised going in, which is changing the read.",
+          "body": "The list doesn't touch the body directly or build an ending, it shifts what gets noticed and appraised going in, which is changing the read.",
           "chain": [
             "The list changes what's salient before the meeting.",
             "That's an appraisal-level shift.",
@@ -1509,7 +1509,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "brake": {
           "title": "Not quite",
-          "body": "This isn't a body-level tool like a breath or a walk — it works on what gets noticed, not the nervous system directly.",
+          "body": "This isn't a body-level tool like a breath or a walk, it works on what gets noticed, not the nervous system directly.",
           "chain": [
             "No breath, no movement, no direct physiological lever here."
           ],
@@ -1518,7 +1518,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "end": {
           "title": "Not quite",
-          "body": "Nothing here builds an ending to a stressor — the meeting hasn't happened yet.",
+          "body": "Nothing here builds an ending to a stressor, the meeting hasn't happened yet.",
           "chain": [
             "An ending lever closes out something that occurred.",
             "This happens before anything has occurred."
@@ -1542,7 +1542,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": null,
     "content": {
       "title": "One More, Before You Go",
-      "instruction": "Two inhales, one long exhale. That's the lever — yours anytime."
+      "instruction": "Two inhales, one long exhale. That's the lever, yours anytime."
     }
   },
   {
@@ -1557,45 +1557,45 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "One System, Not Separate Facts — Checkpoint",
+      "title": "One System, Not Separate Facts, Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Six quick checks across the whole picture so far.\nA miss just gives you something to revisit.",
       "introTag": "6 QUESTIONS · ~2 MIN",
-      "revisitMessage": "The marked ideas are worth a short revisit — nothing is lost, and they'll come back around.",
+      "revisitMessage": "The marked ideas are worth a short revisit, nothing is lost, and they'll come back around.",
       "solidMessage": "The map is holding. Next: what's actually happening in your body when this fires.",
       "items": [
         {
           "concept": "Why Stress Exists",
           "prompt": "A racing heart under pressure is your body doing what?",
           "clue": "It's old machinery, not a malfunction.",
-          "worked": "The sympathetic discharge once meant a predator was near — it's automatic, not broken.",
+          "worked": "The sympathetic discharge once meant a predator was near, it's automatic, not broken.",
           "options": [
             {
               "label": "Exactly what it was built to do",
-              "feedback": "Right — survival machinery, working as designed.",
+              "feedback": "Right, survival machinery, working as designed.",
               "isCorrect": true
             },
             {
               "label": "Malfunctioning under pressure",
-              "feedback": "It's not malfunctioning — this is the response working.",
+              "feedback": "It's not malfunctioning, this is the response working.",
               "isCorrect": false
             }
           ]
         },
         {
           "concept": "Two Nervous Systems",
-          "prompt": "Sympathetic and parasympathetic — how are they active?",
+          "prompt": "Sympathetic and parasympathetic, how are they active?",
           "clue": "Never fully one or the other.",
           "worked": "Both are always running; only the balance between them shifts.",
           "options": [
             {
               "label": "Always both, in a shifting balance",
-              "feedback": "Right — never a full switch.",
+              "feedback": "Right, never a full switch.",
               "isCorrect": true
             },
             {
               "label": "Only one at a time",
-              "feedback": "They're never one at a time — both are always active.",
+              "feedback": "They're never one at a time, both are always active.",
               "isCorrect": false
             }
           ]
@@ -1604,16 +1604,16 @@ FROM jsonb_to_recordset($tag$[
           "concept": "The Switch",
           "prompt": "What tips the balance toward sympathetic?",
           "clue": "Real or interpreted.",
-          "worked": "A sharp email fires the same switch as a real danger — both get read as threat.",
+          "worked": "A sharp email fires the same switch as a real danger, both get read as threat.",
           "options": [
             {
               "label": "The brain reading threat, real or interpreted",
-              "feedback": "Right — the read is the input, not the event itself.",
+              "feedback": "Right, the read is the input, not the event itself.",
               "isCorrect": true
             },
             {
               "label": "Only actual physical danger",
-              "feedback": "It doesn't require real danger — an interpreted threat fires it too.",
+              "feedback": "It doesn't require real danger, an interpreted threat fires it too.",
               "isCorrect": false
             }
           ]
@@ -1622,16 +1622,16 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Evolutionary Mismatch",
           "prompt": "Why does a working system become a problem?",
           "clue": "Built for one kind, facing another.",
-          "worked": "A deadline doesn't end the way a chase does — the alarm doesn't know to stand down.",
+          "worked": "A deadline doesn't end the way a chase does, the alarm doesn't know to stand down.",
           "options": [
             {
               "label": "Modern threats are chronic and undischarged, not what it was built for",
-              "feedback": "Right — a different kind of stressful, not a bigger amount.",
+              "feedback": "Right, a different kind of stressful, not a bigger amount.",
               "isCorrect": true
             },
             {
               "label": "Modern life is just a much larger amount of the same threat",
-              "feedback": "It's not more of the same — it's a different kind entirely.",
+              "feedback": "It's not more of the same, it's a different kind entirely.",
               "isCorrect": false
             }
           ]
@@ -1644,11 +1644,11 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "label": "Three",
-              "feedback": "Right — one per section of this course.",
+              "feedback": "Right, one per section of this course.",
               "isCorrect": true
             },
             {
-              "label": "Just one — breathing",
+              "label": "Just one, breathing",
               "feedback": "Breathing is only one of three levers, not the only one.",
               "isCorrect": false
             }
@@ -1662,12 +1662,12 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "label": "A longer exhale stimulating the vagus nerve",
-              "feedback": "Right — the exhale length is the active ingredient.",
+              "feedback": "Right, the exhale length is the active ingredient.",
               "isCorrect": true
             },
             {
               "label": "It resets the nervous system completely",
-              "feedback": "That overstates it — the real finding is improved mood and lower arousal, not a full reset.",
+              "feedback": "That overstates it, the real finding is improved mood and lower arousal, not a full reset.",
               "isCorrect": false
             }
           ]
@@ -1689,7 +1689,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Reading The Jolt",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "My hands are shaking before this call — something must be wrong with me.",
+      "hotThought": "My hands are shaking before this call, something must be wrong with me.",
       "trays": [
         {
           "id": "kind",
@@ -1736,7 +1736,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "This is {kind} — {reason}, so {so}."
+        "template": "This is {kind}, {reason}, so {so}."
       },
       "comparisonFeedback": "Naming it as machinery, not malfunction, removes a layer of stress about the stress itself."
     }
@@ -1784,8 +1784,8 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Fast Jolt, Slower Wave",
       "variant": "rule",
-      "rule": "Mobilization has two layers: SAM (seconds — heart rate, glucose) and HPA (minutes to hours — cortisol). Both are meant to end.",
-      "explanation": "A racing heart at the jolt is SAM. The lingering, keyed-up feeling afterward is HPA — slower to clear, and that's normal, not a sign you're handling it badly."
+      "rule": "Mobilization has two layers: SAM (seconds, heart rate, glucose) and HPA (minutes to hours, cortisol). Both are meant to end.",
+      "explanation": "A racing heart at the jolt is SAM. The lingering, keyed-up feeling afterward is HPA, slower to clear, and that's normal, not a sign you're handling it badly."
     }
   },
   {
@@ -1800,19 +1800,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "acute_stress_response",
     "content": {
-      "prompt": "A sudden jolt of alertness when a car cuts you off — which layer?",
+      "prompt": "A sudden jolt of alertness when a car cuts you off, which layer?",
       "options": [
         {
           "id": "sam",
-          "label": "SAM — fast, seconds"
+          "label": "SAM, fast, seconds"
         },
         {
           "id": "hpa",
-          "label": "HPA — slower, minutes to hours"
+          "label": "HPA, slower, minutes to hours"
         }
       ],
       "bestOptionId": "sam",
-      "reveal": "That instant jolt is SAM — gone within a minute once the danger passes."
+      "reveal": "That instant jolt is SAM, gone within a minute once the danger passes."
     }
   },
   {
@@ -1827,19 +1827,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "acute_stress_response",
     "content": {
-      "prompt": "A tight, keyed-up feeling that lingers for an hour after a hard meeting — which layer?",
+      "prompt": "A tight, keyed-up feeling that lingers for an hour after a hard meeting, which layer?",
       "options": [
         {
           "id": "sam",
-          "label": "SAM — fast, seconds"
+          "label": "SAM, fast, seconds"
         },
         {
           "id": "hpa",
-          "label": "HPA — slower, minutes to hours"
+          "label": "HPA, slower, minutes to hours"
         }
       ],
       "bestOptionId": "hpa",
-      "reveal": "The lingering feeling is HPA — cortisol clearing more slowly than the initial jolt."
+      "reveal": "The lingering feeling is HPA, cortisol clearing more slowly than the initial jolt."
     }
   },
   {
@@ -1856,7 +1856,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Which Pedal, Again",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "My stomach settled and I feel drowsy after this meal — I must just be tired.",
+      "hotThought": "My stomach settled and I feel drowsy after this meal, I must just be tired.",
       "trays": [
         {
           "id": "branch",
@@ -1889,9 +1889,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "This is {branch} — {signal}."
+        "template": "This is {branch}, {signal}."
       },
-      "comparisonFeedback": "The brake, not just tiredness — restoration is exactly what the parasympathetic branch does."
+      "comparisonFeedback": "The brake, not just tiredness, restoration is exactly what the parasympathetic branch does."
     }
   },
   {
@@ -1915,9 +1915,9 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "exhale"
           ],
-          "correctFeedback": "Right — the exhale is the active ingredient, not the count.",
+          "correctFeedback": "Right, the exhale is the active ingredient, not the count.",
           "incorrectFeedback": "It's the longer exhale that does the work here.",
-          "workedExample": "Two short inhales, one long exhale — the long exhale is the lever."
+          "workedExample": "Two short inhales, one long exhale, the long exhale is the lever."
         }
       ]
     }
@@ -1934,19 +1934,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "acute_stress_response",
     "content": {
-      "prompt": "A tense, alert feeling that fades in under a minute — which layer?",
+      "prompt": "A tense, alert feeling that fades in under a minute, which layer?",
       "options": [
         {
           "id": "sam",
-          "label": "SAM — fast"
+          "label": "SAM, fast"
         },
         {
           "id": "hpa",
-          "label": "HPA — slow"
+          "label": "HPA, slow"
         }
       ],
       "bestOptionId": "sam",
-      "reveal": "Gone in under a minute — that's the fast SAM layer."
+      "reveal": "Gone in under a minute, that's the fast SAM layer."
     }
   },
   {
@@ -1968,7 +1968,7 @@ FROM jsonb_to_recordset($tag$[
           "id": "body",
           "label": "A tight jaw or shallow breath",
           "detail": "A BODY SIGN",
-          "body": "Your body often shows the tip before you consciously notice it — a clenched jaw, shoulders creeping up, breath going shallow."
+          "body": "Your body often shows the tip before you consciously notice it, a clenched jaw, shoulders creeping up, breath going shallow."
         },
         {
           "id": "thought",
@@ -1980,7 +1980,7 @@ FROM jsonb_to_recordset($tag$[
           "id": "behavior",
           "label": "Snapping at something small, or reaching for a scroll",
           "detail": "A BEHAVIOR SIGN",
-          "body": "Behavior often shows it before you'd say out loud that you're stressed — snapping, avoiding, or reaching for a distraction."
+          "body": "Behavior often shows it before you'd say out loud that you're stressed, snapping, avoiding, or reaching for a distraction."
         }
       ]
     }
@@ -1997,7 +1997,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "stress_signature",
     "content": {
-      "prompt": "Re-reading the same email three times without absorbing it — which channel?",
+      "prompt": "Re-reading the same email three times without absorbing it, which channel?",
       "options": [
         {
           "id": "thought",
@@ -2013,7 +2013,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "thought",
-      "reveal": "Racing or unfocused thought is the thought-channel tell — the switch has tipped even before the body signal is obvious."
+      "reveal": "Racing or unfocused thought is the thought-channel tell, the switch has tipped even before the body signal is obvious."
     }
   },
   {
@@ -2029,7 +2029,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": "stress_signature",
     "content": {
       "title": "Your Own Tells",
-      "instruction": "Nothing here is stored or scored — tap what fits, in each channel, or skip it.",
+      "instruction": "Nothing here is stored or scored, tap what fits, in each channel, or skip it.",
       "items": [
         {
           "id": "body-tell",
@@ -2060,7 +2060,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Real Or Interpreted, Again",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "My coworker didn't reply all day — that must mean something's wrong.",
+      "hotThought": "My coworker didn't reply all day, that must mean something's wrong.",
       "trays": [
         {
           "id": "kind",
@@ -2093,9 +2093,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "The silence is {kind} — {so}."
+        "template": "The silence is {kind}, {so}."
       },
-      "comparisonFeedback": "The switch doesn't check whether the threat is real before firing — that's exactly why the read matters."
+      "comparisonFeedback": "The switch doesn't check whether the threat is real before firing, that's exactly why the read matters."
     }
   },
   {
@@ -2118,13 +2118,13 @@ FROM jsonb_to_recordset($tag$[
           "id": "a",
           "label": "behavior",
           "isCorrect": true,
-          "feedback": "Right — the same tip shows up differently across all three."
+          "feedback": "Right, the same tip shows up differently across all three."
         },
         {
           "id": "b",
           "label": "sleep",
           "isCorrect": false,
-          "feedback": "Sleep isn't one of the three channels — body, thought, and behavior are."
+          "feedback": "Sleep isn't one of the three channels, body, thought, and behavior are."
         }
       ]
     }
@@ -2144,7 +2144,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "The Wear Comes Off",
       "variant": "myth",
       "myth": "Stress damage is permanent once it happens.",
-      "reality": "Acute stress resolves and costs almost nothing. Chronic, unrelieved stress wears — that wear is called allostatic load, and it's largely reversible when the load comes down, not fixed damage."
+      "reality": "Acute stress resolves and costs almost nothing. Chronic, unrelieved stress wears, that wear is called allostatic load, and it's largely reversible when the load comes down, not fixed damage."
     }
   },
   {
@@ -2159,7 +2159,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "allostatic_load",
     "content": {
-      "prompt": "Wear from chronic stress — is it fixed damage, or does it come off?",
+      "prompt": "Wear from chronic stress, is it fixed damage, or does it come off?",
       "options": [
         {
           "id": "reversible",
@@ -2171,7 +2171,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "reversible",
-      "reveal": "The wear is allostasis, not fixed damage — it comes off substantially with reduced demand and active recovery."
+      "reveal": "The wear is allostasis, not fixed damage, it comes off substantially with reduced demand and active recovery."
     }
   },
   {
@@ -2189,7 +2189,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "The Wear Comes Off",
       "instruction": "Read, then move on.",
       "message": "An alarm that fires once and stops costs almost nothing. One that never fully turns off costs wear over time.",
-      "explanation": "Unlike most wear, this kind comes off when the load does — which is exactly what the rest of this course is building toward."
+      "explanation": "Unlike most wear, this kind comes off when the load does, which is exactly what the rest of this course is building toward."
     }
   },
   {
@@ -2206,7 +2206,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Built For, Facing",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "Three weeks of overlapping deadlines that never fully resolve — this must mean something's wrong with me for finding it hard.",
+      "hotThought": "Three weeks of overlapping deadlines that never fully resolve, this must mean something's wrong with me for finding it hard.",
       "trays": [
         {
           "id": "built",
@@ -2261,11 +2261,11 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "The fast layer is SAM; the slower, hours-long layer runs on ___",
-          "post": " — the HPA axis.",
+          "post": ", the HPA axis.",
           "answers": [
             "cortisol"
           ],
-          "correctFeedback": "Right — cortisol is the slower HPA layer's signal.",
+          "correctFeedback": "Right, cortisol is the slower HPA layer's signal.",
           "incorrectFeedback": "The slower layer runs on cortisol, via the HPA axis.",
           "workedExample": "The instant jolt is SAM; the keyed-up feeling an hour later is HPA/cortisol."
         }
@@ -2284,7 +2284,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "allostatic_load",
     "content": {
-      "prompt": "The wear from chronic stress — what does bringing the load down do to it?",
+      "prompt": "The wear from chronic stress, what does bringing the load down do to it?",
       "options": [
         {
           "id": "reduces",
@@ -2292,11 +2292,11 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "nothing",
-          "label": "Nothing — once it's there, it's there"
+          "label": "Nothing, once it's there, it's there"
         }
       ],
       "bestOptionId": "reduces",
-      "reveal": "The wear reverses substantially when the load comes down — it's not one-way."
+      "reveal": "The wear reverses substantially when the load comes down, it's not one-way."
     }
   },
   {
@@ -2314,7 +2314,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "A Shape, Not One Intensity",
       "variant": "rule",
       "rule": "Sustained, unrelieved stress has a shape: alarm (the jolt), resistance (holding it together, at a cost), exhaustion (holding it together stops working).",
-      "explanation": "A hard stretch and full exhaustion aren't the same thing at different volumes — they're different stages, and knowing which one you're in changes what actually helps."
+      "explanation": "A hard stretch and full exhaustion aren't the same thing at different volumes, they're different stages, and knowing which one you're in changes what actually helps."
     }
   },
   {
@@ -2331,7 +2331,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Which Stage Is This?",
       "instruction": "Read the case, then place it on the trajectory.",
-      "question": "Weeks of holding it together, snapping more than usual, but still functioning — which stage?",
+      "question": "Weeks of holding it together, snapping more than usual, but still functioning, which stage?",
       "cases": [
         {
           "id": "case1",
@@ -2343,30 +2343,30 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "resistance",
-          "label": "Resistance — holding function, at a cost"
+          "label": "Resistance, holding function, at a cost"
         },
         {
           "id": "alarm",
-          "label": "Alarm — the initial jolt"
+          "label": "Alarm, the initial jolt"
         },
         {
           "id": "exhaustion",
-          "label": "Exhaustion — resources depleted, function breaking down"
+          "label": "Exhaustion, resources depleted, function breaking down"
         }
       ],
       "feedbackMap": {
         "resistance": {
           "title": "Right",
-          "body": "Still functioning, but concentration and irritability are the cost of holding it together — that's resistance, not exhaustion yet.",
+          "body": "Still functioning, but concentration and irritability are the cost of holding it together, that's resistance, not exhaustion yet.",
           "chain": [
             "Function is still holding.",
-            "But it's costing something — mood and focus.",
+            "But it's costing something, mood and focus.",
             "That's the resistance stage."
           ]
         },
         "alarm": {
           "title": "Not quite",
-          "body": "Alarm is the initial jolt, not weeks of holding on — this has already moved past that.",
+          "body": "Alarm is the initial jolt, not weeks of holding on, this has already moved past that.",
           "chain": [
             "Alarm is brief.",
             "This has lasted weeks."
@@ -2376,7 +2376,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "exhaustion": {
           "title": "Not yet",
-          "body": "Exhaustion is when holding it together stops working — this person is still functioning, at a cost. That's resistance.",
+          "body": "Exhaustion is when holding it together stops working, this person is still functioning, at a cost. That's resistance.",
           "chain": [
             "Function is still intact here.",
             "Exhaustion is the stage where it breaks down."
@@ -2401,8 +2401,8 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Recognizing It Is the Skill",
       "instruction": "Read, then take a slow breath before moving on.",
-      "message": "Recognizing which stage you're actually in — not still in alarm, not exhaustion yet, or genuinely in exhaustion — is useful information, not a failing.",
-      "explanation": "If this describes more than a hard stretch for you right now, that's worth real support beyond this course — Section 3 comes back to exactly this, honestly, with no urgency here."
+      "message": "Recognizing which stage you're actually in, not still in alarm, not exhaustion yet, or genuinely in exhaustion, is useful information, not a failing.",
+      "explanation": "If this describes more than a hard stretch for you right now, that's worth real support beyond this course, Section 3 comes back to exactly this, honestly, with no urgency here."
     }
   },
   {
@@ -2419,7 +2419,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Which Door, Again",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "A friend says naming three things they're grateful for helps before a hard meeting — that's not a real technique.",
+      "hotThought": "A friend says naming three things they're grateful for helps before a hard meeting, that's not a real technique.",
       "trays": [
         {
           "id": "changes",
@@ -2452,9 +2452,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "It shifts {changes} — that's the {door} door."
+        "template": "It shifts {changes}, that's the {door} door."
       },
-      "comparisonFeedback": "It doesn't touch the body directly or build an ending — it's an appraisal-level shift, change the read."
+      "comparisonFeedback": "It doesn't touch the body directly or build an ending, it's an appraisal-level shift, change the read."
     }
   },
   {
@@ -2506,13 +2506,13 @@ FROM jsonb_to_recordset($tag$[
           "id": "a",
           "label": "exhaustion",
           "isCorrect": true,
-          "feedback": "Right — and where you are on that shape is information, not a verdict."
+          "feedback": "Right, and where you are on that shape is information, not a verdict."
         },
         {
           "id": "b",
           "label": "recovery",
           "isCorrect": false,
-          "feedback": "Recovery isn't a stage of the trajectory itself — exhaustion is the third stage."
+          "feedback": "Recovery isn't a stage of the trajectory itself, exhaustion is the third stage."
         }
       ]
     }
@@ -2532,7 +2532,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "The Read, Not The Event",
       "variant": "myth",
       "myth": "Some events are just objectively stressful for everyone.",
-      "reality": "Whether a situation is read as a threat, a challenge, or irrelevant is the cognitive input to the switch — not a fixed property of the event itself. Two people can face the same deadline and read it completely differently."
+      "reality": "Whether a situation is read as a threat, a challenge, or irrelevant is the cognitive input to the switch, not a fixed property of the event itself. Two people can face the same deadline and read it completely differently."
     }
   },
   {
@@ -2549,7 +2549,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Threat, Challenge, or Irrelevant?",
       "instruction": "Read the case, then pick the read that fits.",
-      "question": "'Tight, but doable, and I know how to move fast' — which read is this?",
+      "question": "'Tight, but doable, and I know how to move fast', which read is this?",
       "cases": [
         {
           "id": "case1",
@@ -2561,15 +2561,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "challenge",
-          "label": "Challenge — demand feels matched by resources"
+          "label": "Challenge, demand feels matched by resources"
         },
         {
           "id": "threat",
-          "label": "Threat — demand feels like it exceeds resources"
+          "label": "Threat, demand feels like it exceeds resources"
         },
         {
           "id": "irrelevant",
-          "label": "Irrelevant — doesn't register as a stressor at all"
+          "label": "Irrelevant, doesn't register as a stressor at all"
         }
       ],
       "feedbackMap": {
@@ -2584,7 +2584,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "threat": {
           "title": "Not quite",
-          "body": "A threat read shows up as feeling outmatched by the demand — this colleague feels equipped, not outmatched.",
+          "body": "A threat read shows up as feeling outmatched by the demand, this colleague feels equipped, not outmatched.",
           "chain": [
             "'Tight but doable' signals confidence, not being outmatched."
           ],
@@ -2593,7 +2593,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "irrelevant": {
           "title": "Not quite",
-          "body": "This person is clearly engaging with the deadline as something that matters — not irrelevant.",
+          "body": "This person is clearly engaging with the deadline as something that matters, not irrelevant.",
           "chain": [
             "They're actively planning a response."
           ],
@@ -2641,20 +2641,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "Stuck in a waiting room, feeling wound up — does this lever apply here too?",
+        "prompt": "Stuck in a waiting room, feeling wound up, does this lever apply here too?",
         "options": [
           {
             "id": "yes",
-            "label": "Yes — anywhere a long exhale is possible",
+            "label": "Yes, anywhere a long exhale is possible",
             "isSupported": true,
-            "response": "Right — this lever doesn't need special equipment or circumstances, just the breath itself.",
+            "response": "Right, this lever doesn't need special equipment or circumstances, just the breath itself.",
             "takeaway": "The mechanism travels wherever you can breathe slowly."
           },
           {
             "id": "no",
-            "label": "No — it only works in calm, private settings",
+            "label": "No, it only works in calm, private settings",
             "isSupported": false,
-            "response": "Not quite — the mechanism works anywhere a slow exhale is possible, waiting rooms included.",
+            "response": "Not quite, the mechanism works anywhere a slow exhale is possible, waiting rooms included.",
             "takeaway": "It's the exhale, not the setting, that does the work."
           }
         ]
@@ -2682,8 +2682,8 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "reversible"
           ],
-          "correctFeedback": "Right — reversible, not permanent.",
-          "incorrectFeedback": "It's largely reversible, not fixed damage — that's the key claim to keep.",
+          "correctFeedback": "Right, reversible, not permanent.",
+          "incorrectFeedback": "It's largely reversible, not fixed damage, that's the key claim to keep.",
           "workedExample": "Reduced demand and active recovery bring the load down measurably."
         }
       ]
@@ -2704,7 +2704,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "The Second Question",
       "variant": "myth",
       "myth": "Once something registers as a threat, how I respond doesn't change how stressed I feel.",
-      "reality": "Secondary appraisal — assessing perceived coping resources against perceived demand — is the second half. Two people can share the same threat read and still end up differently stressed, based on what they believe they can do about it."
+      "reality": "Secondary appraisal, assessing perceived coping resources against perceived demand, is the second half. Two people can share the same threat read and still end up differently stressed, based on what they believe they can do about it."
     }
   },
   {
@@ -2719,19 +2719,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "secondary_appraisal",
     "content": {
-      "prompt": "'This is bad' (primary read) vs 'I don't love this, but I know who to call first' (secondary appraisal) — which one is secondary appraisal?",
+      "prompt": "'This is bad' (primary read) vs 'I don't love this, but I know who to call first' (secondary appraisal), which one is secondary appraisal?",
       "options": [
         {
           "id": "b",
-          "label": "'I know who to call first' — assessing what can be done"
+          "label": "'I know who to call first', assessing what can be done"
         },
         {
           "id": "a",
-          "label": "'This is bad' — the threat read itself"
+          "label": "'This is bad', the threat read itself"
         }
       ],
       "bestOptionId": "b",
-      "reveal": "Secondary appraisal is the resource question — what can actually be done about it — layered on top of the primary read."
+      "reveal": "Secondary appraisal is the resource question, what can actually be done about it, layered on top of the primary read."
     }
   },
   {
@@ -2811,9 +2811,9 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "exhaustion"
           ],
-          "correctFeedback": "Right — exhaustion is the third stage, and appraisal is the input either way.",
+          "correctFeedback": "Right, exhaustion is the third stage, and appraisal is the input either way.",
           "incorrectFeedback": "The third stage is exhaustion.",
-          "workedExample": "Alarm, resistance, exhaustion — and appraisal decides whether an event even registers as a threat."
+          "workedExample": "Alarm, resistance, exhaustion, and appraisal decides whether an event even registers as a threat."
         }
       ]
     }
@@ -2836,7 +2836,7 @@ FROM jsonb_to_recordset($tag$[
       "steps": [
         {
           "id": "sam",
-          "label": "SAM fires — the fast, seconds-level jolt",
+          "label": "SAM fires, the fast, seconds-level jolt",
           "order": 1
         },
         {
@@ -2856,20 +2856,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "Catching a tight jaw (a body tell) within the first minute of a hard call — what does that noticing actually buy you?",
+        "prompt": "Catching a tight jaw (a body tell) within the first minute of a hard call, what does that noticing actually buy you?",
         "options": [
           {
             "id": "time",
             "label": "Time to reach a lever before the balance tips further",
             "isSupported": true,
-            "response": "Right — noticing early is what makes every later lever reachable in time.",
-            "takeaway": "The tells aren't just self-awareness — they're the trigger for action."
+            "response": "Right, noticing early is what makes every later lever reachable in time.",
+            "takeaway": "The tells aren't just self-awareness, they're the trigger for action."
           },
           {
             "id": "nothing",
-            "label": "Nothing — the jolt has already happened either way",
+            "label": "Nothing, the jolt has already happened either way",
             "isSupported": false,
-            "response": "Not quite — noticing early is exactly what makes a lever reachable before things escalate further.",
+            "response": "Not quite, noticing early is exactly what makes a lever reachable before things escalate further.",
             "takeaway": "Early noticing changes what happens next, even though the jolt already fired."
           }
         ]
@@ -2890,7 +2890,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Signal, Same Rules",
       "instruction": "Read the case, then apply what you know.",
-      "question": "Three months of a demanding project, never fully switching off in the evenings — what does this course say about the wear this creates?",
+      "question": "Three months of a demanding project, never fully switching off in the evenings, what does this course say about the wear this creates?",
       "cases": [
         {
           "id": "case1",
@@ -2912,7 +2912,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "reversible": {
           "title": "Right",
-          "body": "Three months of unrelieved load is exactly the allostatic-load case — and the reversibility claim holds even for a stretch this long, once the demand actually comes down.",
+          "body": "Three months of unrelieved load is exactly the allostatic-load case, and the reversibility claim holds even for a stretch this long, once the demand actually comes down.",
           "chain": [
             "Chronic, unrelieved demand over months.",
             "That's allostatic load, not acute stress.",
@@ -2921,7 +2921,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "permanent": {
           "title": "Not quite",
-          "body": "The wear from a stretch like this is largely reversible with reduced demand and active recovery — not a one-way, permanent cost.",
+          "body": "The wear from a stretch like this is largely reversible with reduced demand and active recovery, not a one-way, permanent cost.",
           "chain": [
             "Allostatic load names wear, not damage.",
             "McEwen's own research treats it as substantially reversible."
@@ -2944,11 +2944,11 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "Reading Your Own Reaction — Checkpoint",
+      "title": "Reading Your Own Reaction, Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Six quick checks across this unit's physiology and appraisal.\nA miss just gives you something to revisit.",
       "introTag": "6 QUESTIONS · ~2 MIN",
-      "revisitMessage": "The marked ideas are worth a short revisit — nothing is lost, and they'll come back around.",
+      "revisitMessage": "The marked ideas are worth a short revisit, nothing is lost, and they'll come back around.",
       "solidMessage": "The read is holding. Next: changing the read on purpose.",
       "items": [
         {
@@ -2959,7 +2959,7 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "label": "SAM (seconds) and HPA (minutes-hours)",
-              "feedback": "Right — a fast jolt and a slower wave, both meant to end.",
+              "feedback": "Right, a fast jolt and a slower wave, both meant to end.",
               "isCorrect": true
             },
             {
@@ -2973,15 +2973,15 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Stress Signature",
           "prompt": "Across how many channels do personal tells show up?",
           "clue": "Body isn't the only one.",
-          "worked": "Body, thought, and behavior — noticing any one of them is enough to reach a lever.",
+          "worked": "Body, thought, and behavior, noticing any one of them is enough to reach a lever.",
           "options": [
             {
-              "label": "Three — body, thought, behavior",
-              "feedback": "Right — the tip shows up differently across all three.",
+              "label": "Three, body, thought, behavior",
+              "feedback": "Right, the tip shows up differently across all three.",
               "isCorrect": true
             },
             {
-              "label": "One — always the body",
+              "label": "One, always the body",
               "feedback": "The body is only one of three channels a tell can show up in.",
               "isCorrect": false
             }
@@ -2994,12 +2994,12 @@ FROM jsonb_to_recordset($tag$[
           "worked": "The wear substantially reverses with reduced demand and active recovery.",
           "options": [
             {
-              "label": "No — largely reversible when the load comes down",
-              "feedback": "Right — not fixed damage.",
+              "label": "No, largely reversible when the load comes down",
+              "feedback": "Right, not fixed damage.",
               "isCorrect": true
             },
             {
-              "label": "Yes — once it happens it's permanent",
+              "label": "Yes, once it happens it's permanent",
               "feedback": "The evidence treats it as substantially reversible, not permanent.",
               "isCorrect": false
             }
@@ -3009,11 +3009,11 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Stress Trajectory",
           "prompt": "What are the three stages, in order?",
           "clue": "The jolt, the holding-on, the breakdown.",
-          "worked": "Alarm, resistance, exhaustion — knowing which stage you're in is information, not a verdict.",
+          "worked": "Alarm, resistance, exhaustion, knowing which stage you're in is information, not a verdict.",
           "options": [
             {
               "label": "Alarm, resistance, exhaustion",
-              "feedback": "Right — a shape, not one intensity.",
+              "feedback": "Right, a shape, not one intensity.",
               "isCorrect": true
             },
             {
@@ -3027,16 +3027,16 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Primary Appraisal",
           "prompt": "What decides whether an event registers as a stressor?",
           "clue": "It's not the event itself.",
-          "worked": "The read — threat, challenge, or irrelevant — is the input, not a fixed property of the event.",
+          "worked": "The read, threat, challenge, or irrelevant, is the input, not a fixed property of the event.",
           "options": [
             {
               "label": "The read (threat/challenge/irrelevant), not the event itself",
-              "feedback": "Right — same event, different reads, different outcomes.",
+              "feedback": "Right, same event, different reads, different outcomes.",
               "isCorrect": true
             },
             {
               "label": "The objective size of the event",
-              "feedback": "Some events aren't objectively stressful for everyone — the read is what matters.",
+              "feedback": "Some events aren't objectively stressful for everyone, the read is what matters.",
               "isCorrect": false
             }
           ]
@@ -3045,16 +3045,16 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Secondary Appraisal",
           "prompt": "What does secondary appraisal add to the primary read?",
           "clue": "It's a resource question.",
-          "worked": "What can I actually do about it — assessed separately from the initial threat read.",
+          "worked": "What can I actually do about it, assessed separately from the initial threat read.",
           "options": [
             {
               "label": "An assessment of coping resources against the demand",
-              "feedback": "Right — the second half of what determines the stress response.",
+              "feedback": "Right, the second half of what determines the stress response.",
               "isCorrect": true
             },
             {
-              "label": "Nothing — the primary read already decides everything",
-              "feedback": "The primary read isn't the whole story — resources matter too.",
+              "label": "Nothing, the primary read already decides everything",
+              "feedback": "The primary read isn't the whole story, resources matter too.",
               "isCorrect": false
             }
           ]
@@ -3076,7 +3076,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Signal, Same Rule",
       "instruction": "Read the case, then apply the rule.",
-      "question": "Sweaty palms right before walking on stage — malfunction, or something else?",
+      "question": "Sweaty palms right before walking on stage, malfunction, or something else?",
       "cases": [
         {
           "id": "case1",
@@ -3098,9 +3098,9 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "machinery": {
           "title": "Right",
-          "body": "Same automatic discharge as any other perceived threat — the body preparing, not malfunctioning.",
+          "body": "Same automatic discharge as any other perceived threat, the body preparing, not malfunctioning.",
           "chain": [
-            "A threat is read — even a social one.",
+            "A threat is read, even a social one.",
             "Sympathetic mobilization fires.",
             "That's the system working as designed."
           ]
@@ -3131,7 +3131,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Fast Or Slow, Again",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "I still feel keyed up an hour after that hard conversation — something must still be wrong.",
+      "hotThought": "I still feel keyed up an hour after that hard conversation, something must still be wrong.",
       "trays": [
         {
           "id": "layer",
@@ -3139,11 +3139,11 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "id": "hpa",
-              "label": "HPA — the slower wave"
+              "label": "HPA, the slower wave"
             },
             {
               "id": "sam",
-              "label": "SAM — the fast jolt"
+              "label": "SAM, the fast jolt"
             }
           ]
         },
@@ -3164,9 +3164,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "This is {layer} — {so}."
+        "template": "This is {layer}, {so}."
       },
-      "comparisonFeedback": "The slower HPA wave taking longer to clear is expected — not evidence anything went badly."
+      "comparisonFeedback": "The slower HPA wave taking longer to clear is expected, not evidence anything went badly."
     }
   },
   {
@@ -3191,9 +3191,9 @@ FROM jsonb_to_recordset($tag$[
             "read",
             "appraisal"
           ],
-          "correctFeedback": "Right — same event, different reads, different outcomes.",
+          "correctFeedback": "Right, same event, different reads, different outcomes.",
           "incorrectFeedback": "It's the read (the appraisal), not a fixed property of the event.",
-          "workedExample": "Two people, same deadline, different reads — threat for one, challenge for the other."
+          "workedExample": "Two people, same deadline, different reads, threat for one, challenge for the other."
         }
       ]
     }
@@ -3235,24 +3235,24 @@ FROM jsonb_to_recordset($tag$[
         {
           "id": "case1",
           "name": "The short reply",
-          "text": "A one-word reply reads as anger — then you learn the manager is replying short to everyone today, between meetings.",
+          "text": "A one-word reply reads as anger, then you learn the manager is replying short to everyone today, between meetings.",
           "label": "The Case"
         }
       ],
       "options": [
         {
           "id": "read",
-          "label": "The read — new information turned threat into irrelevant"
+          "label": "The read, new information turned threat into irrelevant"
         },
         {
           "id": "event",
-          "label": "The event itself — the message changed"
+          "label": "The event itself, the message changed"
         }
       ],
       "feedbackMap": {
         "read": {
           "title": "Right",
-          "body": "The message never changed — only the read did, once new information arrived.",
+          "body": "The message never changed, only the read did, once new information arrived.",
           "chain": [
             "Same one-word message.",
             "New information about context arrived.",
@@ -3261,7 +3261,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "event": {
           "title": "Not quite",
-          "body": "The message itself never changed — only what it was read as changed.",
+          "body": "The message itself never changed, only what it was read as changed.",
           "chain": [
             "The words in the reply are identical either way."
           ],
@@ -3285,7 +3285,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Signal, Same Rule",
       "instruction": "Read the case, then apply the rule.",
-      "question": "A slow, settled breath right after finishing a hard task — which branch, and is this the only mode now?",
+      "question": "A slow, settled breath right after finishing a hard task, which branch, and is this the only mode now?",
       "cases": [
         {
           "id": "case1",
@@ -3297,25 +3297,25 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "para-balance",
-          "label": "Parasympathetic leaning stronger right now — but sympathetic is still active too"
+          "label": "Parasympathetic leaning stronger right now, but sympathetic is still active too"
         },
         {
           "id": "only-para",
-          "label": "Purely parasympathetic — sympathetic has switched off entirely"
+          "label": "Purely parasympathetic, sympathetic has switched off entirely"
         }
       ],
       "feedbackMap": {
         "para-balance": {
           "title": "Right",
-          "body": "The balance is leaning toward the brake — but both branches are still active; it's never a full switch.",
+          "body": "The balance is leaning toward the brake, but both branches are still active; it's never a full switch.",
           "chain": [
             "A settled breath signals the brake leaning stronger.",
-            "Sympathetic hasn't switched off — it's still present."
+            "Sympathetic hasn't switched off, it's still present."
           ]
         },
         "only-para": {
           "title": "Not quite",
-          "body": "Both branches are always active — this is a balance shift, not a full switch to one mode.",
+          "body": "Both branches are always active, this is a balance shift, not a full switch to one mode.",
           "chain": [
             "Neither branch ever fully switches off."
           ],
@@ -3339,7 +3339,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Which Channel, Again",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "I keep checking my phone for no reason during this meeting — that's just a bad habit.",
+      "hotThought": "I keep checking my phone for no reason during this meeting, that's just a bad habit.",
       "trays": [
         {
           "id": "channel",
@@ -3372,7 +3372,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "This is a {channel} tell — {so}."
+        "template": "This is a {channel} tell, {so}."
       },
       "comparisonFeedback": "A restless, distraction-seeking behavior can be exactly as real a tell as a tight jaw."
     }
@@ -3391,7 +3391,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Rebuild The Rule",
       "instruction": "Tap the chips in order to rebuild the rule.",
-      "prompt": "Secondary appraisal asks: what can I actually ___ about it — separate from the ___ read.",
+      "prompt": "Secondary appraisal asks: what can I actually ___ about it, separate from the ___ read.",
       "chips": [
         "do",
         "primary",
@@ -3419,7 +3419,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Belief Changes Use, Not Physiology",
       "variant": "myth",
       "myth": "Believing stress is fine for you makes the physical stress response go away.",
-      "reality": "Believing stress is generally enhancing vs. debilitating changes real outcomes — experience and performance under pressure — but not the raw SAM/HPA signal itself. A genuine lever, taught honestly."
+      "reality": "Believing stress is generally enhancing vs. debilitating changes real outcomes, experience and performance under pressure, but not the raw SAM/HPA signal itself. A genuine lever, taught honestly."
     }
   },
   {
@@ -3434,19 +3434,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "stress_mindset",
     "content": {
-      "prompt": "A stress-enhancing mindset — does it lower your actual cortisol release?",
+      "prompt": "A stress-enhancing mindset, does it lower your actual cortisol release?",
       "options": [
         {
           "id": "no",
-          "label": "No — it changes experience and performance, not the physiological signal"
+          "label": "No, it changes experience and performance, not the physiological signal"
         },
         {
           "id": "yes",
-          "label": "Yes — believing it works removes the physical response"
+          "label": "Yes, believing it works removes the physical response"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "The physiology doesn't change — what the arousal is used for and how it's experienced does."
+      "reveal": "The physiology doesn't change, what the arousal is used for and how it's experienced does."
     }
   },
   {
@@ -3463,7 +3463,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Trigger, Same Rule",
       "instruction": "Read the case, then apply the rule.",
-      "question": "A typo in an important email you already sent — can this really flip the switch the same way a real danger can?",
+      "question": "A typo in an important email you already sent, can this really flip the switch the same way a real danger can?",
       "cases": [
         {
           "id": "case1",
@@ -3475,17 +3475,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "yes",
-          "label": "Yes — an interpreted threat fires the same circuit as a real one"
+          "label": "Yes, an interpreted threat fires the same circuit as a real one"
         },
         {
           "id": "no",
-          "label": "No — it's too minor to count as a real trigger"
+          "label": "No, it's too minor to count as a real trigger"
         }
       ],
       "feedbackMap": {
         "yes": {
           "title": "Right",
-          "body": "The switch doesn't grade threats by objective size before firing — an interpreted one, however minor, can trigger the same circuit.",
+          "body": "The switch doesn't grade threats by objective size before firing, an interpreted one, however minor, can trigger the same circuit.",
           "chain": [
             "The typo is read as a threat to reputation.",
             "That read is enough to flip the switch.",
@@ -3494,9 +3494,9 @@ FROM jsonb_to_recordset($tag$[
         },
         "no": {
           "title": "Not quite",
-          "body": "The switch fires on the READ of threat, not the objective severity of the event — even a small trigger can flip it.",
+          "body": "The switch fires on the READ of threat, not the objective severity of the event, even a small trigger can flip it.",
           "chain": [
-            "Objective severity isn't the input — the read is."
+            "Objective severity isn't the input, the read is."
           ],
           "counterTitle": "Try the read angle",
           "counterBody": "Ask what the brain is reading here, regardless of actual severity."
@@ -3551,9 +3551,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "The wear is {claim} — so {so}."
+        "template": "The wear is {claim}, so {so}."
       },
-      "comparisonFeedback": "Duration doesn't remove the reversibility — reducing demand still brings the load down."
+      "comparisonFeedback": "Duration doesn't remove the reversibility, reducing demand still brings the load down."
     }
   },
   {
@@ -3571,7 +3571,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "One Question, Two Paths",
       "variant": "myth",
       "myth": "The best coping strategy works for every kind of stressor.",
-      "reality": "'Can I act on this?' is the fork that decides whether a stressor calls for problem-focused or emotion-focused coping. Problem-solving on something uncontrollable doesn't just fail to help — it can do worse than acceptance."
+      "reality": "'Can I act on this?' is the fork that decides whether a stressor calls for problem-focused or emotion-focused coping. Problem-solving on something uncontrollable doesn't just fail to help, it can do worse than acceptance."
     }
   },
   {
@@ -3586,19 +3586,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "controllability_check",
     "content": {
-      "prompt": "A flight that's already been cancelled — can you act on this right now?",
+      "prompt": "A flight that's already been cancelled, can you act on this right now?",
       "options": [
         {
           "id": "no",
-          "label": "No — nothing left to act on"
+          "label": "No, nothing left to act on"
         },
         {
           "id": "yes",
-          "label": "Yes — there's still something to fix"
+          "label": "Yes, there's still something to fix"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "Already gone — the controllability check says no, so the useful move is regulating the reaction, not replanning the impossible."
+      "reveal": "Already gone, the controllability check says no, so the useful move is regulating the reaction, not replanning the impossible."
     }
   },
   {
@@ -3613,19 +3613,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "controllability_check",
     "content": {
-      "prompt": "A deadline that's still two days out and slipping — can you act on this right now?",
+      "prompt": "A deadline that's still two days out and slipping, can you act on this right now?",
       "options": [
         {
           "id": "yes",
-          "label": "Yes — still open to act on"
+          "label": "Yes, still open to act on"
         },
         {
           "id": "no",
-          "label": "No — nothing left to do"
+          "label": "No, nothing left to do"
         }
       ],
       "bestOptionId": "yes",
-      "reveal": "Still open — the controllability check says yes, so a concrete action makes sense here."
+      "reveal": "Still open, the controllability check says yes, so a concrete action makes sense here."
     }
   },
   {
@@ -3642,7 +3642,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Stressor, Same Mismatch",
       "instruction": "Read the case, then apply the rule.",
-      "question": "A group chat argument that keeps replaying in your head for days — is this the kind of threat the system was built for?",
+      "question": "A group chat argument that keeps replaying in your head for days, is this the kind of threat the system was built for?",
       "cases": [
         {
           "id": "case1",
@@ -3654,17 +3654,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "mismatch",
-          "label": "No — chronic, abstract, self-generated, exactly the modern-mismatch case"
+          "label": "No, chronic, abstract, self-generated, exactly the modern-mismatch case"
         },
         {
           "id": "built-for",
-          "label": "Yes — this is exactly what the response evolved for"
+          "label": "Yes, this is exactly what the response evolved for"
         }
       ],
       "feedbackMap": {
         "mismatch": {
           "title": "Right",
-          "body": "A thought that replays itself is entirely self-generated and never physically discharges — the textbook modern mismatch.",
+          "body": "A thought that replays itself is entirely self-generated and never physically discharges, the textbook modern mismatch.",
           "chain": [
             "No physical threat ever existed.",
             "The mind keeps regenerating it.",
@@ -3673,7 +3673,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "built-for": {
           "title": "Not quite",
-          "body": "The system was built for short, physical, resolvable threats — a replaying argument is the opposite: chronic, abstract, self-generated.",
+          "body": "The system was built for short, physical, resolvable threats, a replaying argument is the opposite: chronic, abstract, self-generated.",
           "chain": [
             "No physical resolution ever occurs here."
           ],
@@ -3730,9 +3730,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "This is {stage} — {so}."
+        "template": "This is {stage}, {so}."
       },
-      "comparisonFeedback": "Still functioning doesn't mean nothing's costing you — resistance has a real cost worth noticing."
+      "comparisonFeedback": "Still functioning doesn't mean nothing's costing you, resistance has a real cost worth noticing."
     }
   },
   {
@@ -3756,7 +3756,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "challenge"
           ],
-          "correctFeedback": "Right — the event stays the same; only the read shifts.",
+          "correctFeedback": "Right, the event stays the same; only the read shifts.",
           "incorrectFeedback": "It shifts toward a challenge read, not because the event changed.",
           "workedExample": "Learning your manager replies short to everyone turns anger-read into irrelevant-read."
         }
@@ -3778,7 +3778,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Act On The Actual Obstacle",
       "variant": "myth",
       "myth": "Trying harder to fix something always helps, regardless of whether it's fixable.",
-      "reality": "Acting directly on the situation — plan, seek information, remove the obstacle — is what helps specifically when the controllability check says yes. This is exactly what the check exists to prevent misapplying."
+      "reality": "Acting directly on the situation, plan, seek information, remove the obstacle, is what helps specifically when the controllability check says yes. This is exactly what the check exists to prevent misapplying."
     }
   },
   {
@@ -3803,13 +3803,13 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "q2",
-          "prompt": "What's the actual obstacle — not the whole workload, just the one thing in the way?",
+          "prompt": "What's the actual obstacle, not the whole workload, just the one thing in the way?",
           "hint": "Be as specific as l21 will ask you to be."
         },
         {
           "id": "q3",
           "prompt": "Name one concrete action that targets that specific obstacle, today.",
-          "hint": "Not a feeling shift — an action on the obstacle itself."
+          "hint": "Not a feeling shift, an action on the obstacle itself."
         }
       ]
     }
@@ -3840,17 +3840,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "end",
-          "label": "Give the response an end — postponing gives the worry a stopping point"
+          "label": "Give the response an end, postponing gives the worry a stopping point"
         },
         {
           "id": "brake",
-          "label": "Reach the brake directly — it's a body-level tool"
+          "label": "Reach the brake directly, it's a body-level tool"
         }
       ],
       "feedbackMap": {
         "end": {
           "title": "Right",
-          "body": "The worry doesn't get resolved right now — it gets a scheduled stopping point, which is what 'giving the response an end' means when the stressor is a thought.",
+          "body": "The worry doesn't get resolved right now, it gets a scheduled stopping point, which is what 'giving the response an end' means when the stressor is a thought.",
           "chain": [
             "No breath, no body-level tool used.",
             "Instead: a fixed stopping point is created.",
@@ -3859,7 +3859,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "brake": {
           "title": "Not quite",
-          "body": "Nothing here touches the body directly — no breath, no movement. It's building a stopping point instead.",
+          "body": "Nothing here touches the body directly, no breath, no movement. It's building a stopping point instead.",
           "chain": [
             "No physiological lever is used."
           ],
@@ -3916,7 +3916,7 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{claim} — so {so}."
+        "template": "{claim}, so {so}."
       },
       "comparisonFeedback": "Two colleagues can read the identical reorg news completely differently, and both reads are real."
     }
@@ -3942,9 +3942,9 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "performance"
           ],
-          "correctFeedback": "Right — the signal doesn't change; how it's used and experienced does.",
+          "correctFeedback": "Right, the signal doesn't change; how it's used and experienced does.",
           "incorrectFeedback": "It changes experience and performance, not the raw physiology.",
-          "workedExample": "Same racing heart, different relationship to it — one person reads it as getting ready, not falling apart."
+          "workedExample": "Same racing heart, different relationship to it, one person reads it as getting ready, not falling apart."
         }
       ]
     }
@@ -3964,7 +3964,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Not The Same As A Dodge",
       "variant": "myth",
       "myth": "Anything that makes me feel better in the moment counts as coping.",
-      "reality": "Genuine emotion-focused coping — acceptance, deliberate regulation — is for a stressor that can't be changed. Avoidance disguised as a 'break' looks identical from outside but leaves nothing to show for it afterward. The test is what's true after, not what it looks like during."
+      "reality": "Genuine emotion-focused coping, acceptance, deliberate regulation, is for a stressor that can't be changed. Avoidance disguised as a 'break' looks identical from outside but leaves nothing to show for it afterward. The test is what's true after, not what it looks like during."
     }
   },
   {
@@ -3981,12 +3981,12 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Coping, Or A Dodge?",
       "instruction": "Read the case, then decide.",
-      "question": "A canceled flight, already gone: deciding how to spend the layover well vs. numbing out on a phone until boarding — which one is genuine emotion-focused coping?",
+      "question": "A canceled flight, already gone: deciding how to spend the layover well vs. numbing out on a phone until boarding, which one is genuine emotion-focused coping?",
       "cases": [
         {
           "id": "case1",
           "name": "Spending the layover well",
-          "text": "Deciding how to spend the unexpected layover well — a walk, a book, a call to a friend.",
+          "text": "Deciding how to spend the unexpected layover well, a walk, a book, a call to a friend.",
           "label": "Case 1"
         },
         {
@@ -3999,29 +3999,29 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "case1",
-          "label": "Case 1 — deciding how to spend the layover well"
+          "label": "Case 1, deciding how to spend the layover well"
         },
         {
           "id": "case2",
-          "label": "Case 2 — numbing out on a phone"
+          "label": "Case 2, numbing out on a phone"
         }
       ],
       "feedbackMap": {
         "case1": {
           "title": "Right",
-          "body": "This is acceptance-based coping — the stressor (the cancellation) can't be changed, and the response is a deliberate choice about how to spend the time. Something to show for it afterward.",
+          "body": "This is acceptance-based coping, the stressor (the cancellation) can't be changed, and the response is a deliberate choice about how to spend the time. Something to show for it afterward.",
           "chain": [
             "The flight can't be un-cancelled.",
             "The choice is deliberate, not a dodge.",
-            "Something happens as a result — a walk, a book, a call."
+            "Something happens as a result, a walk, a book, a call."
           ]
         },
         "case2": {
           "title": "That's the dodge",
-          "body": "This LOOKS the same — sitting still, waiting — but it removes the discomfort short-term and leaves nothing to show for the wait. That's avoidance, not coping.",
+          "body": "This LOOKS the same, sitting still, waiting, but it removes the discomfort short-term and leaves nothing to show for the wait. That's avoidance, not coping.",
           "chain": [
             "Same waiting posture as Case 1.",
-            "But nothing deliberate happens — just numbing.",
+            "But nothing deliberate happens, just numbing.",
             "Nothing to show for it afterward."
           ],
           "counterTitle": "Try the after-test",
@@ -4078,8 +4078,8 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "revised"
           ],
-          "correctFeedback": "Right — the read can shift, and mindset changes how the signal is used, not the signal itself.",
-          "incorrectFeedback": "Appraisal can be revised — that's the key word here.",
+          "correctFeedback": "Right, the read can shift, and mindset changes how the signal is used, not the signal itself.",
+          "incorrectFeedback": "Appraisal can be revised, that's the key word here.",
           "workedExample": "New context turns an angry read into an irrelevant one; a stress-enhancing mindset changes how the same racing heart is used."
         }
       ]
@@ -4108,30 +4108,30 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "changeable",
-          "label": "If yes — problem-focused coping, act on the situation",
+          "label": "If yes, problem-focused coping, act on the situation",
           "order": 2
         },
         {
           "id": "unchangeable",
-          "label": "If no — emotion-focused coping, change the relationship to it",
+          "label": "If no, emotion-focused coping, change the relationship to it",
           "order": 3
         }
       ],
       "transfer": {
-        "prompt": "A colleague's slow turnaround on a shared task, already flagged twice with no change — which family of coping actually fits, if nothing more can be done about their pace?",
+        "prompt": "A colleague's slow turnaround on a shared task, already flagged twice with no change, which family of coping actually fits, if nothing more can be done about their pace?",
         "options": [
           {
             "id": "emotion",
-            "label": "Emotion-focused — acceptance of what can't be controlled here",
+            "label": "Emotion-focused, acceptance of what can't be controlled here",
             "isSupported": true,
-            "response": "Right — once genuinely nothing more can be done about someone else's pace, acceptance-based coping fits better than more problem-solving effort.",
+            "response": "Right, once genuinely nothing more can be done about someone else's pace, acceptance-based coping fits better than more problem-solving effort.",
             "takeaway": "Running the fork correctly means recognizing when problem-solving has hit its limit."
           },
           {
             "id": "problem",
-            "label": "Problem-focused — keep pushing on the same lever",
+            "label": "Problem-focused, keep pushing on the same lever",
             "isSupported": false,
-            "response": "Not quite — problem-solving on something already established as outside your control can do worse than acceptance.",
+            "response": "Not quite, problem-solving on something already established as outside your control can do worse than acceptance.",
             "takeaway": "More effort on an uncontrollable piece isn't the fix."
           }
         ]
@@ -4152,7 +4152,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Run The Fork",
       "instruction": "Read the case, then run the full decision.",
-      "question": "A rained-out event you'd planned for weeks, happening today — controllable, and if not, what actually fits?",
+      "question": "A rained-out event you'd planned for weeks, happening today, controllable, and if not, what actually fits?",
       "cases": [
         {
           "id": "case1",
@@ -4164,17 +4164,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "accept",
-          "label": "Not controllable — emotion-focused coping, decide how to spend today well"
+          "label": "Not controllable, emotion-focused coping, decide how to spend today well"
         },
         {
           "id": "fix",
-          "label": "Controllable — problem-focused coping, find a way to force it to happen anyway"
+          "label": "Controllable, problem-focused coping, find a way to force it to happen anyway"
         }
       ],
       "feedbackMap": {
         "accept": {
           "title": "Right",
-          "body": "The weather can't be controlled — the controllability check says no, and acceptance-based coping (deciding how to actually spend today) is the fit, not more effort on the impossible.",
+          "body": "The weather can't be controlled, the controllability check says no, and acceptance-based coping (deciding how to actually spend today) is the fit, not more effort on the impossible.",
           "chain": [
             "Weather isn't controllable.",
             "Controllability check: no.",
@@ -4183,7 +4183,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "fix": {
           "title": "Not quite",
-          "body": "The weather itself can't be acted on — forcing it is exactly the mismatch the controllability check exists to prevent.",
+          "body": "The weather itself can't be acted on, forcing it is exactly the mismatch the controllability check exists to prevent.",
           "chain": [
             "No amount of effort changes the weather."
           ],
@@ -4205,11 +4205,11 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "The Right Tool for the Stressor — Checkpoint",
+      "title": "The Right Tool for the Stressor, Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Five quick checks across changing the read.\nA miss just gives you something to revisit.",
       "introTag": "5 QUESTIONS · ~2 MIN",
-      "revisitMessage": "The marked ideas are worth a short revisit — nothing is lost, and they'll come back around.",
+      "revisitMessage": "The marked ideas are worth a short revisit, nothing is lost, and they'll come back around.",
       "solidMessage": "The fork is holding. Next: working an actual problem through, step by step.",
       "items": [
         {
@@ -4219,13 +4219,13 @@ FROM jsonb_to_recordset($tag$[
           "worked": "New information about a short reply's context turned an angry read into an irrelevant one.",
           "options": [
             {
-              "label": "Yes — new information or a coping attempt can shift it",
-              "feedback": "Right — the mechanism behind everything else in this unit.",
+              "label": "Yes, new information or a coping attempt can shift it",
+              "feedback": "Right, the mechanism behind everything else in this unit.",
               "isCorrect": true
             },
             {
-              "label": "No — the first read is always the accurate one",
-              "feedback": "The first read isn't always accurate — it can and does shift.",
+              "label": "No, the first read is always the accurate one",
+              "feedback": "The first read isn't always accurate, it can and does shift.",
               "isCorrect": false
             }
           ]
@@ -4234,16 +4234,16 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Stress Mindset",
           "prompt": "Does a stress-enhancing mindset change the physiological signal itself?",
           "clue": "Experience and performance, not the raw signal.",
-          "worked": "Same racing heart — different relationship to it changes how it's used, not whether it fires.",
+          "worked": "Same racing heart, different relationship to it changes how it's used, not whether it fires.",
           "options": [
             {
-              "label": "No — it changes experience and performance, not physiology",
-              "feedback": "Right — an honest, not overstated, lever.",
+              "label": "No, it changes experience and performance, not physiology",
+              "feedback": "Right, an honest, not overstated, lever.",
               "isCorrect": true
             },
             {
-              "label": "Yes — it removes the physical response entirely",
-              "feedback": "That overstates the finding — the physiology itself doesn't change.",
+              "label": "Yes, it removes the physical response entirely",
+              "feedback": "That overstates the finding, the physiology itself doesn't change.",
               "isCorrect": false
             }
           ]
@@ -4252,11 +4252,11 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Controllability Check",
           "prompt": "What does the controllability check route toward?",
           "clue": "It's a fork, not a mood check.",
-          "worked": "Can I act on this — yes routes to problem-focused, no routes to emotion-focused.",
+          "worked": "Can I act on this, yes routes to problem-focused, no routes to emotion-focused.",
           "options": [
             {
               "label": "The right family of coping for the stressor",
-              "feedback": "Right — matching, not a universal 'best' strategy.",
+              "feedback": "Right, matching, not a universal 'best' strategy.",
               "isCorrect": true
             },
             {
@@ -4270,11 +4270,11 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Problem-Focused Coping",
           "prompt": "When does acting directly on the situation help most?",
           "clue": "It needs to be the right kind of stressor.",
-          "worked": "A changeable stressor — a still-open deadline, not an already-cancelled flight.",
+          "worked": "A changeable stressor, a still-open deadline, not an already-cancelled flight.",
           "options": [
             {
               "label": "When the stressor is genuinely changeable",
-              "feedback": "Right — matched to what the controllability check says.",
+              "feedback": "Right, matched to what the controllability check says.",
               "isCorrect": true
             },
             {
@@ -4288,16 +4288,16 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Emotion-Focused Coping",
           "prompt": "What separates genuine emotion-focused coping from disguised avoidance?",
           "clue": "Same posture, different aftermath.",
-          "worked": "Deciding how to spend a stuck layover well vs. numbing out on a phone — the test is what's true after.",
+          "worked": "Deciding how to spend a stuck layover well vs. numbing out on a phone, the test is what's true after.",
           "options": [
             {
-              "label": "What's true after — something to show for it vs. nothing",
-              "feedback": "Right — the after-test, not how it looks during.",
+              "label": "What's true after, something to show for it vs. nothing",
+              "feedback": "Right, the after-test, not how it looks during.",
               "isCorrect": true
             },
             {
               "label": "How calm it looks in the moment",
-              "feedback": "They can look identical in the moment — the after-test is what tells them apart.",
+              "feedback": "They can look identical in the moment, the after-test is what tells them apart.",
               "isCorrect": false
             }
           ]
@@ -4326,7 +4326,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "situation"
           ],
-          "correctFeedback": "Right — acting on the actual obstacle, not the feeling about it.",
+          "correctFeedback": "Right, acting on the actual obstacle, not the feeling about it.",
           "incorrectFeedback": "It's acting on the situation itself, not the feeling around it.",
           "workedExample": "Renegotiating one due date is problem-focused coping on a changeable stressor."
         }
@@ -4394,20 +4394,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "'Work is too much' — is this a workable definition, or does it need more work first?",
+        "prompt": "'Work is too much', is this a workable definition, or does it need more work first?",
         "options": [
           {
             "id": "needs-work",
-            "label": "Needs more work — too vague to generate real options from",
+            "label": "Needs more work, too vague to generate real options from",
             "isSupported": true,
-            "response": "Right — 'work is too much' resists solving; naming the specific conflict is what makes step 2 possible.",
+            "response": "Right, 'work is too much' resists solving; naming the specific conflict is what makes step 2 possible.",
             "takeaway": "The definition step, done well, is most of the work."
           },
           {
             "id": "ready",
             "label": "Ready to solve as stated",
             "isSupported": false,
-            "response": "Not quite — this is too vague to generate concrete options from yet.",
+            "response": "Not quite, this is too vague to generate concrete options from yet.",
             "takeaway": "A workable definition names the actual obstacle, not the general feeling."
           }
         ]
@@ -4456,7 +4456,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Vague Resists, Defined Can Be Worked",
       "instruction": "Read, then move on.",
       "message": "A vaguely stated stressor resists solving no matter how much effort goes into it.",
-      "explanation": "Specifically defined, the same stressor usually has a next step waiting — that's the whole value of step one."
+      "explanation": "Specifically defined, the same stressor usually has a next step waiting, that's the whole value of step one."
     }
   },
   {
@@ -4473,7 +4473,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Signal, Same Layers",
       "instruction": "Read the case, then apply the rule.",
-      "question": "Shaky hands during a presentation, gone within a minute of finishing — which layer, and is that expected?",
+      "question": "Shaky hands during a presentation, gone within a minute of finishing, which layer, and is that expected?",
       "cases": [
         {
           "id": "case1",
@@ -4485,7 +4485,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "sam-expected",
-          "label": "SAM — fast, and clearing quickly is exactly what's expected"
+          "label": "SAM, fast, and clearing quickly is exactly what's expected"
         },
         {
           "id": "problem",
@@ -4527,7 +4527,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Read Can Shift, Again",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "A friend didn't reply to my message all day — they must be upset with me.",
+      "hotThought": "A friend didn't reply to my message all day, they must be upset with me.",
       "trays": [
         {
           "id": "claim",
@@ -4539,7 +4539,7 @@ FROM jsonb_to_recordset($tag$[
             },
             {
               "id": "nothing",
-              "label": "Nothing — the read is fixed once formed"
+              "label": "Nothing, the read is fixed once formed"
             }
           ]
         },
@@ -4560,9 +4560,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{claim} — so {so}."
+        "template": "{claim}, so {so}."
       },
-      "comparisonFeedback": "The message never changed — new information about context is what would shift the read."
+      "comparisonFeedback": "The message never changed, new information about context is what would shift the read."
     }
   },
   {
@@ -4581,14 +4581,14 @@ FROM jsonb_to_recordset($tag$[
       "instruction": "Fill in the blank.",
       "variants": [
         {
-          "pre": "Genuine emotion-focused coping and disguised avoidance can look the same during — the test is what's true ___",
+          "pre": "Genuine emotion-focused coping and disguised avoidance can look the same during, the test is what's true ___",
           "post": ", once the moment has passed.",
           "answers": [
             "after"
           ],
-          "correctFeedback": "Right — the after-test, not how it looks in the moment.",
+          "correctFeedback": "Right, the after-test, not how it looks in the moment.",
           "incorrectFeedback": "It's what's true after, not how it looks during.",
-          "workedExample": "Something to show for it afterward vs. nothing — that's the tell."
+          "workedExample": "Something to show for it afterward vs. nothing, that's the tell."
         }
       ]
     }
@@ -4608,7 +4608,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Accurate, Not Positive",
       "variant": "myth",
       "myth": "A more accurate thought has to be a more positive one.",
-      "reality": "Catching a stress-specific error — catastrophizing a deadline, all-or-nothing reading a bad day, mind-reading a colleague — and rewriting it more accurately, not more positively, is the whole skill."
+      "reality": "Catching a stress-specific error, catastrophizing a deadline, all-or-nothing reading a bad day, mind-reading a colleague, and rewriting it more accurately, not more positively, is the whole skill."
     }
   },
   {
@@ -4639,7 +4639,7 @@ FROM jsonb_to_recordset($tag$[
           "stepLabel": "Bound the claim",
           "result": "It is not the same as my whole reputation being over.",
           "changedPhrase": "not the same as my whole reputation being over",
-          "rationale": "Keeps the claim honest about scale — a setback, not a total collapse."
+          "rationale": "Keeps the claim honest about scale, a setback, not a total collapse."
         }
       ],
       "recognition": {
@@ -4647,11 +4647,11 @@ FROM jsonb_to_recordset($tag$[
         "options": [
           {
             "id": "rewrite",
-            "label": "The rewrite — real cost named, not exaggerated"
+            "label": "The rewrite, real cost named, not exaggerated"
           },
           {
             "id": "original",
-            "label": "The original — 'my whole reputation is over'"
+            "label": "The original, 'my whole reputation is over'"
           }
         ]
       }
@@ -4671,7 +4671,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Tell, Same Channels",
       "instruction": "Read the case, then apply the rule.",
-      "question": "Rewriting the same short message four times before sending it — which channel is this tell in?",
+      "question": "Rewriting the same short message four times before sending it, which channel is this tell in?",
       "cases": [
         {
           "id": "case1",
@@ -4683,17 +4683,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "behavior",
-          "label": "Behavior — a repeated, stress-driven action"
+          "label": "Behavior, a repeated, stress-driven action"
         },
         {
           "id": "thought",
-          "label": "Thought — a racing internal pattern"
+          "label": "Thought, a racing internal pattern"
         }
       ],
       "feedbackMap": {
         "behavior": {
           "title": "Right",
-          "body": "Repeatedly redoing an action is a behavior-channel tell — noticing it early is what makes a lever reachable.",
+          "body": "Repeatedly redoing an action is a behavior-channel tell, noticing it early is what makes a lever reachable.",
           "chain": [
             "An observable, repeated action.",
             "That's the behavior channel."
@@ -4701,7 +4701,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "thought": {
           "title": "Close, but",
-          "body": "The rewriting itself is the observable ACTION — the internal racing behind it would be the thought channel, but the tell described here is the behavior.",
+          "body": "The rewriting itself is the observable ACTION, the internal racing behind it would be the thought channel, but the tell described here is the behavior.",
           "chain": [
             "The action (rewriting) is what's described.",
             "Not the internal experience behind it."
@@ -4759,9 +4759,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "Mindset changes {claim} — so {so}."
+        "template": "Mindset changes {claim}, so {so}."
       },
-      "comparisonFeedback": "The physiological signal doesn't vanish — what changes is how it's used and read."
+      "comparisonFeedback": "The physiological signal doesn't vanish, what changes is how it's used and read."
     }
   },
   {
@@ -4780,15 +4780,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "accurate",
-          "label": "Accurate — even if the honest cost is still real"
+          "label": "Accurate, even if the honest cost is still real"
         },
         {
           "id": "positive",
-          "label": "Positive — the goal is to feel better"
+          "label": "Positive, the goal is to feel better"
         }
       ],
       "bestOptionId": "accurate",
-      "reveal": "Accurate, not positive — the rewrite still names the real cost honestly."
+      "reveal": "Accurate, not positive, the rewrite still names the real cost honestly."
     }
   },
   {
@@ -4806,7 +4806,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "A Fixed Window, Not Suppression",
       "variant": "myth",
       "myth": "Postponing worry about anything is avoidance.",
-      "reality": "For worry that's already failed the controllability check and keeps recurring anyway, a scheduled worry window works — many postponed worries turn out to have already resolved or stopped mattering by the time the window arrives."
+      "reality": "For worry that's already failed the controllability check and keeps recurring anyway, a scheduled worry window works, many postponed worries turn out to have already resolved or stopped mattering by the time the window arrives."
     }
   },
   {
@@ -4823,7 +4823,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Contain It, Or Solve It?",
       "instruction": "Read the case, then pick the fit.",
-      "question": "A worry about a decision already made, circling at 11pm with nothing left to act on — contain it, or run the five steps?",
+      "question": "A worry about a decision already made, circling at 11pm with nothing left to act on, contain it, or run the five steps?",
       "cases": [
         {
           "id": "case1",
@@ -4835,17 +4835,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "contain",
-          "label": "Contain it — already failed the controllability check, nothing left to act on"
+          "label": "Contain it, already failed the controllability check, nothing left to act on"
         },
         {
           "id": "solve",
-          "label": "Run the five steps — still something to fix"
+          "label": "Run the five steps, still something to fix"
         }
       ],
       "feedbackMap": {
         "contain": {
           "title": "Right",
-          "body": "Nothing is left to act on — the controllability check has already failed here, which is exactly when worry containment fits, not problem-solving.",
+          "body": "Nothing is left to act on, the controllability check has already failed here, which is exactly when worry containment fits, not problem-solving.",
           "chain": [
             "Decision already made.",
             "Nothing left to act on.",
@@ -4854,7 +4854,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "solve": {
           "title": "Not quite",
-          "body": "The five steps are for something still actionable — this decision is already final, so there's nothing left to solve.",
+          "body": "The five steps are for something still actionable, this decision is already final, so there's nothing left to solve.",
           "chain": [
             "No remaining action is available here."
           ],
@@ -4878,7 +4878,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Stretch, Same Claim",
       "instruction": "Read the case, then apply the rule.",
-      "question": "A year of a demanding role, then a real reduction in hours and a proper vacation — what does the reversibility claim say happens to the accumulated wear?",
+      "question": "A year of a demanding role, then a real reduction in hours and a proper vacation, what does the reversibility claim say happens to the accumulated wear?",
       "cases": [
         {
           "id": "case1",
@@ -4890,7 +4890,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "reduces",
-          "label": "It substantially comes down — the wear isn't fixed damage"
+          "label": "It substantially comes down, the wear isn't fixed damage"
         },
         {
           "id": "stays",
@@ -4900,7 +4900,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "reduces": {
           "title": "Right",
-          "body": "The reversibility claim holds even after a year — reduced demand and active recovery bring allostatic load down substantially.",
+          "body": "The reversibility claim holds even after a year, reduced demand and active recovery bring allostatic load down substantially.",
           "chain": [
             "A year of high demand accumulated load.",
             "Demand genuinely came down.",
@@ -4909,7 +4909,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "stays": {
           "title": "Not quite",
-          "body": "This treats the wear as fixed damage — the actual finding is that it's largely reversible with reduced demand and active recovery.",
+          "body": "This treats the wear as fixed damage, the actual finding is that it's largely reversible with reduced demand and active recovery.",
           "chain": [
             "Allostatic load isn't described as permanent."
           ],
@@ -4947,20 +4947,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "Three overlapping deadlines land at once — one piece is renegotiable, one depends entirely on a colleague's pace. Does the SAME answer apply to both pieces?",
+        "prompt": "Three overlapping deadlines land at once, one piece is renegotiable, one depends entirely on a colleague's pace. Does the SAME answer apply to both pieces?",
         "options": [
           {
             "id": "split",
-            "label": "No — each piece gets its own controllability check and its own answer",
+            "label": "No, each piece gets its own controllability check and its own answer",
             "isSupported": true,
-            "response": "Right — a single stressor can contain both a controllable piece and an uncontrollable one; the check runs per piece.",
-            "takeaway": "This is exactly the integration lesson's setup — one stressor, multiple pieces, multiple levers."
+            "response": "Right, a single stressor can contain both a controllable piece and an uncontrollable one; the check runs per piece.",
+            "takeaway": "This is exactly the integration lesson's setup, one stressor, multiple pieces, multiple levers."
           },
           {
             "id": "same",
-            "label": "Yes — the whole stressor gets one answer",
+            "label": "Yes, the whole stressor gets one answer",
             "isSupported": false,
-            "response": "Not quite — the renegotiable piece and the colleague-dependent piece call for different answers.",
+            "response": "Not quite, the renegotiable piece and the colleague-dependent piece call for different answers.",
             "takeaway": "Break a stressor into its actual pieces before running the check."
           }
         ]
@@ -4989,9 +4989,9 @@ FROM jsonb_to_recordset($tag$[
             "definition",
             "define"
           ],
-          "correctFeedback": "Right — a specific, one-sentence definition is what unlocks the rest.",
+          "correctFeedback": "Right, a specific, one-sentence definition is what unlocks the rest.",
           "incorrectFeedback": "It's the definition step where vague problems resist solving.",
-          "workedExample": "'Work is too much' vs. a specific conflict between two deadlines — only the second can be worked."
+          "workedExample": "'Work is too much' vs. a specific conflict between two deadlines, only the second can be worked."
         }
       ]
     }
@@ -5013,11 +5013,11 @@ FROM jsonb_to_recordset($tag$[
       "beats": [
         {
           "id": "b1",
-          "text": "Three overlapping deadlines land the same week. Appraisal: mostly threat, but one piece — renegotiating a due date — is controllable; a colleague's slow turnaround isn't."
+          "text": "Three overlapping deadlines land the same week. Appraisal: mostly threat, but one piece, renegotiating a due date, is controllable; a colleague's slow turnaround isn't."
         },
         {
           "id": "b2",
-          "text": "One cyclic sigh before writing the renegotiation email — arousal was too high to write it well without it."
+          "text": "One cyclic sigh before writing the renegotiation email, arousal was too high to write it well without it."
         },
         {
           "id": "b3",
@@ -5066,16 +5066,16 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "right-sequence": {
           "title": "Right",
-          "body": "This is the whole chain, correctly applied per piece — appraisal, a lever if arousal is high, then the matched coping strategy for each piece separately.",
+          "body": "This is the whole chain, correctly applied per piece, appraisal, a lever if arousal is high, then the matched coping strategy for each piece separately.",
           "chain": [
-            "Spec is negotiable — controllability check: yes.",
-            "Partner timeline is fixed — controllability check: no.",
+            "Spec is negotiable, controllability check: yes.",
+            "Partner timeline is fixed, controllability check: no.",
             "Different coping strategy for each piece."
           ]
         },
         "one-strategy": {
           "title": "Not quite",
-          "body": "The two pieces have different controllability — one strategy for both mismatches at least one of them.",
+          "body": "The two pieces have different controllability, one strategy for both mismatches at least one of them.",
           "chain": [
             "A negotiable spec and a fixed timeline aren't the same kind of stressor."
           ],
@@ -5099,7 +5099,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "New Week, Same Shape",
       "instruction": "Read the case, then place it.",
-      "question": "A week where nothing is getting done, sleep is falling apart, and even small tasks feel impossible — which stage?",
+      "question": "A week where nothing is getting done, sleep is falling apart, and even small tasks feel impossible, which stage?",
       "cases": [
         {
           "id": "case1",
@@ -5111,27 +5111,27 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "exhaustion",
-          "label": "Exhaustion — function is breaking down, not just costing more"
+          "label": "Exhaustion, function is breaking down, not just costing more"
         },
         {
           "id": "resistance",
-          "label": "Resistance — still holding, at a cost"
+          "label": "Resistance, still holding, at a cost"
         }
       ],
       "feedbackMap": {
         "exhaustion": {
           "title": "Right",
-          "body": "Function itself breaking down — not just costing more effort — is the exhaustion stage, and it's worth taking seriously.",
+          "body": "Function itself breaking down, not just costing more effort, is the exhaustion stage, and it's worth taking seriously.",
           "chain": [
-            "Not just irritable or unfocused — actually not functioning.",
+            "Not just irritable or unfocused, actually not functioning.",
             "That's past resistance, into exhaustion."
           ]
         },
         "resistance": {
           "title": "Not quite",
-          "body": "Resistance is holding function at a cost. This describes function actually breaking down — exhaustion.",
+          "body": "Resistance is holding function at a cost. This describes function actually breaking down, exhaustion.",
           "chain": [
-            "Small tasks feeling impossible is more than a cost — it's a breakdown."
+            "Small tasks feeling impossible is more than a cost, it's a breakdown."
           ],
           "counterTitle": "Try the function angle",
           "counterBody": "Ask whether function is holding at a cost, or actually breaking down."
@@ -5172,20 +5172,20 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "transfer": {
-        "prompt": "A recurring interruption during focus time, from a teammate who doesn't know it's disruptive — controllable?",
+        "prompt": "A recurring interruption during focus time, from a teammate who doesn't know it's disruptive, controllable?",
         "options": [
           {
             "id": "yes",
-            "label": "Yes — a conversation could change it",
+            "label": "Yes, a conversation could change it",
             "isSupported": true,
-            "response": "Right — this is controllable through a direct conversation, so problem-focused coping fits.",
+            "response": "Right, this is controllable through a direct conversation, so problem-focused coping fits.",
             "takeaway": "Many interpersonal patterns are more controllable than they first feel."
           },
           {
             "id": "no",
-            "label": "No — nothing can be done about someone else's habits",
+            "label": "No, nothing can be done about someone else's habits",
             "isSupported": false,
-            "response": "Not quite — a direct conversation is a real, available action here.",
+            "response": "Not quite, a direct conversation is a real, available action here.",
             "takeaway": "Don't assume uncontrollable just because it involves another person."
           }
         ]
@@ -5213,9 +5213,9 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "accurate"
           ],
-          "correctFeedback": "Right — accurate, honest about the real cost, not sugarcoated.",
+          "correctFeedback": "Right, accurate, honest about the real cost, not sugarcoated.",
           "incorrectFeedback": "The goal is accuracy, not a more upbeat spin.",
-          "workedExample": "'An uncomfortable conversation and a real setback' — honest, not inflated, not sugarcoated."
+          "workedExample": "'An uncomfortable conversation and a real setback', honest, not inflated, not sugarcoated."
         }
       ]
     }
@@ -5233,7 +5233,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": null,
     "content": {
       "title": "Your Stressor, Your Call",
-      "instruction": "Think of something actually weighing on you this week — or use the neutral example if you'd rather. Nothing here is stored or scored.",
+      "instruction": "Think of something actually weighing on you this week, or use the neutral example if you'd rather. Nothing here is stored or scored.",
       "items": [
         {
           "id": "read",
@@ -5264,8 +5264,8 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "That Question Is Yours Now",
       "instruction": "Read, then take a slow breath before moving on.",
-      "message": "Can I act on this? — that question is now yours to ask about anything, starting now.",
-      "explanation": "If naming your own stressor just now brought up more than you expected, that's worth real support beyond this course — no urgency here, just naming that the option exists."
+      "message": "Can I act on this?, that question is now yours to ask about anything, starting now.",
+      "explanation": "If naming your own stressor just now brought up more than you expected, that's worth real support beyond this course, no urgency here, just naming that the option exists."
     }
   },
   {
@@ -5292,7 +5292,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "a",
-      "reveal": "It's a containment tool for the residue after the controllability check has already said no — not a first-line response."
+      "reveal": "It's a containment tool for the residue after the controllability check has already said no, not a first-line response."
     }
   },
   {
@@ -5311,15 +5311,15 @@ FROM jsonb_to_recordset($tag$[
       "instruction": "Fill in the blank.",
       "variants": [
         {
-          "pre": "The controllability check, an accurate rewrite, a defined problem, your own tells, your resources, and wear that reverses — all of it starts with noticing the ___",
+          "pre": "The controllability check, an accurate rewrite, a defined problem, your own tells, your resources, and wear that reverses, all of it starts with noticing the ___",
           "post": " before choosing a response.",
           "answers": [
             "read",
             "appraisal",
             "signal"
           ],
-          "correctFeedback": "Right — every one of these tools depends on first noticing something before acting on it.",
-          "incorrectFeedback": "Each of these starts with noticing something — a read, a tell, a resource — before acting.",
+          "correctFeedback": "Right, every one of these tools depends on first noticing something before acting on it.",
+          "incorrectFeedback": "Each of these starts with noticing something, a read, a tell, a resource, before acting.",
           "workedExample": "Noticing a tell (l9) is what makes the controllability check, the rewrite, and the definition step all reachable in time."
         }
       ]
@@ -5377,16 +5377,16 @@ FROM jsonb_to_recordset($tag$[
         "options": [
           {
             "id": "both-wrong",
-            "label": "The racing heart is normal machinery, AND the read is revisable — neither claim holds up",
+            "label": "The racing heart is normal machinery, AND the read is revisable, neither claim holds up",
             "isSupported": true,
-            "response": "Right — both halves of that statement are exactly what this unit corrects.",
-            "takeaway": "The physiology isn't a malfunction, and the read isn't fixed — both are true at once."
+            "response": "Right, both halves of that statement are exactly what this unit corrects.",
+            "takeaway": "The physiology isn't a malfunction, and the read isn't fixed, both are true at once."
           },
           {
             "id": "half-right",
             "label": "The racing heart claim is right, but the read really is fixed",
             "isSupported": false,
-            "response": "Not quite — the read is genuinely revisable; that's the whole basis for everything from l15 onward.",
+            "response": "Not quite, the read is genuinely revisable; that's the whole basis for everything from l15 onward.",
             "takeaway": "Appraisal being revisable is a repeatedly-supported claim, not a hopeful guess."
           }
         ]
@@ -5407,12 +5407,12 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Whole System, On A Fresh Case",
       "instruction": "Read the case, then work it with what you've learned.",
-      "question": "A month of back-to-back reorgs at work — irritable, unfocused, but still getting things done, and dreading the next all-hands. What does this section say to do?",
+      "question": "A month of back-to-back reorgs at work, irritable, unfocused, but still getting things done, and dreading the next all-hands. What does this section say to do?",
       "cases": [
         {
           "id": "case1",
           "name": "The reorg month",
-          "text": "A month of back-to-back reorgs — irritable, unfocused, still getting things done, dreading the next all-hands.",
+          "text": "A month of back-to-back reorgs, irritable, unfocused, still getting things done, dreading the next all-hands.",
           "label": "The Case"
         }
       ],
@@ -5423,7 +5423,7 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "ignore",
-          "label": "Push through without naming any of it — it'll resolve on its own"
+          "label": "Push through without naming any of it, it'll resolve on its own"
         }
       ],
       "feedbackMap": {
@@ -5431,14 +5431,14 @@ FROM jsonb_to_recordset($tag$[
           "title": "Right",
           "body": "This runs the whole system: the balance (both branches active), the switch (the all-hands read), a lever if arousal is high, and the fork applied to whatever's actually controllable in the reorg.",
           "chain": [
-            "Tells noticed — resistance stage, at a cost.",
+            "Tells noticed, resistance stage, at a cost.",
             "A breath reaches the brake if needed.",
             "The fork sorts what's controllable from what isn't."
           ]
         },
         "ignore": {
           "title": "Not quite",
-          "body": "This is exactly the modern mismatch — it won't resolve on its own the way a physical threat would; that's the whole reason the levers exist.",
+          "body": "This is exactly the modern mismatch, it won't resolve on its own the way a physical threat would; that's the whole reason the levers exist.",
           "chain": [
             "Chronic, undischarged stressors don't self-resolve.",
             "That's the mismatch this whole section explains."
@@ -5461,11 +5461,11 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "How Stress Actually Works — Section Checkpoint",
+      "title": "How Stress Actually Works, Section Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Twenty quick checks across the whole of Section 1.\nA miss just gives you something to revisit.",
       "introTag": "20 QUESTIONS · ~4 MIN",
-      "revisitMessage": "The marked ideas are worth a short revisit — nothing is lost, and they'll come back around.",
+      "revisitMessage": "The marked ideas are worth a short revisit, nothing is lost, and they'll come back around.",
       "solidMessage": "The system is holding. Next: calming your body directly, for when appraisal alone isn't enough.",
       "items": [
         {
@@ -5481,7 +5481,7 @@ FROM jsonb_to_recordset($tag$[
             },
             {
               "label": "The body malfunctioning",
-              "feedback": "It's not malfunctioning — this is the system working.",
+              "feedback": "It's not malfunctioning, this is the system working.",
               "isCorrect": false
             }
           ]
@@ -5499,7 +5499,7 @@ FROM jsonb_to_recordset($tag$[
             },
             {
               "label": "Only one at a time",
-              "feedback": "Never one at a time — both are always active.",
+              "feedback": "Never one at a time, both are always active.",
               "isCorrect": false
             }
           ]
@@ -5526,7 +5526,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Evolutionary Mismatch",
           "prompt": "Why does a working system become a problem?",
           "clue": "A different kind, not a bigger amount.",
-          "worked": "Modern stressors are chronic and undischarged — not what the system was built for.",
+          "worked": "Modern stressors are chronic and undischarged, not what the system was built for.",
           "options": [
             {
               "label": "Modern threats are chronic and undischarged",
@@ -5619,12 +5619,12 @@ FROM jsonb_to_recordset($tag$[
           "worked": "Largely reversible when the load comes down.",
           "options": [
             {
-              "label": "No — largely reversible",
+              "label": "No, largely reversible",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — permanent",
+              "label": "Yes, permanent",
               "feedback": "It's treated as substantially reversible.",
               "isCorrect": false
             }
@@ -5652,7 +5652,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Primary Appraisal",
           "prompt": "What decides if an event registers as a stressor?",
           "clue": "Not the event itself.",
-          "worked": "The read — threat, challenge, or irrelevant.",
+          "worked": "The read, threat, challenge, or irrelevant.",
           "options": [
             {
               "label": "The read, not the event itself",
@@ -5696,7 +5696,7 @@ FROM jsonb_to_recordset($tag$[
               "isCorrect": true
             },
             {
-              "label": "No — the first read is final",
+              "label": "No, the first read is final",
               "feedback": "The first read isn't final.",
               "isCorrect": false
             }
@@ -5760,7 +5760,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Emotion-Focused Coping",
           "prompt": "What separates it from disguised avoidance?",
           "clue": "Same posture, different aftermath.",
-          "worked": "What's true after — something to show for it vs. nothing.",
+          "worked": "What's true after, something to show for it vs. nothing.",
           "options": [
             {
               "label": "What's true after",
@@ -5769,7 +5769,7 @@ FROM jsonb_to_recordset($tag$[
             },
             {
               "label": "How it looks during",
-              "feedback": "They can look identical during — the after-test is the tell.",
+              "feedback": "They can look identical during, the after-test is the tell.",
               "isCorrect": false
             }
           ]
@@ -5778,7 +5778,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Problem-Solving Steps",
           "prompt": "Where do most real attempts fail?",
           "clue": "Step one.",
-          "worked": "The definition step — too vague to generate real options from.",
+          "worked": "The definition step, too vague to generate real options from.",
           "options": [
             {
               "label": "The definition step",
@@ -5847,10 +5847,10 @@ FROM jsonb_to_recordset($tag$[
       "closedTitle": "Section 1 Complete",
       "closedBody": "Tap to see what you've earned.",
       "openTitle": "You Can See The Whole Picture Now",
-      "openBody": "You can now explain why the stress response exists, what it runs on, and change the read on it — appraisal, mindset, and coping selection, all yours to use.",
+      "openBody": "You can now explain why the stress response exists, what it runs on, and change the read on it, appraisal, mindset, and coping selection, all yours to use.",
       "nextLabel": "Next up:",
       "nextTitle": "Calming Your Body",
-      "nextBody": "is about reaching the brake directly — breath, tension release, and movement — for when appraisal alone isn't enough."
+      "nextBody": "is about reaching the brake directly, breath, tension release, and movement, for when appraisal alone isn't enough."
     }
   }
 ]$tag$::jsonb) AS r(

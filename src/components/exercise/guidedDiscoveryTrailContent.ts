@@ -66,7 +66,7 @@ export function validateDiscoveryQuestions(
   if (value.length < 3 || value.length > 4) {
     issues.push({
       path: "questions",
-      message: `Must contain 3–4 items; found ${value.length}.`,
+      message: `Must contain 3-4 items; found ${value.length}.`,
     });
   }
 
@@ -96,7 +96,7 @@ function validateOptions(
     return;
   }
   if (value.length < 2 || value.length > 3) {
-    issues.push({ path, message: `Must contain 2–3 items; found ${value.length}.` });
+    issues.push({ path, message: `Must contain 2-3 items; found ${value.length}.` });
   }
   value.forEach((item, optionIndex) => {
     const optionPath = `${path}[${optionIndex}]`;

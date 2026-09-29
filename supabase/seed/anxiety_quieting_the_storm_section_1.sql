@@ -80,7 +80,7 @@ FROM jsonb_to_recordset($tag$[
     "order_index": 3,
     "is_published": false,
     "domain": "anxiety_management",
-    "target_audience": "Adults with everyday-to-moderate anxiety and worry — racing thoughts, catastrophic predictions, avoidance, or occasional panic — including someone with no prior mental-health vocabulary or self-understanding of what they're feeling. Not diagnosed panic disorder with agoraphobia, OCD, or PTSD requiring specialist treatment; not a crisis tool or a diagnostic instrument.",
+    "target_audience": "Adults with everyday-to-moderate anxiety and worry, racing thoughts, catastrophic predictions, avoidance, or occasional panic, including someone with no prior mental-health vocabulary or self-understanding of what they're feeling. Not diagnosed panic disorder with agoraphobia, OCD, or PTSD requiring specialist treatment; not a crisis tool or a diagnostic instrument.",
     "total_lessons": 69,
     "total_duration_weeks": null,
     "sessions_per_week": null,
@@ -90,14 +90,14 @@ FROM jsonb_to_recordset($tag$[
     ],
     "reward_content": {
       "title": "Quieting the Storm",
-      "acknowledgement": "Sixty-nine lessons. You learned what this feeling actually is before learning a single technique, read the alarm without treating it as proof, caught the catastrophic story your mind adds and checked it against real evidence, noticed when a safety behavior or an avoided moment was quietly keeping a fear alive, chose to approach instead, sat with worry's underlying uncertainty instead of letting it spiral, and recognized a panic surge for what it is — intense, uncomfortable, and time-limited. That's a practice, not a promise of permanent calm. What you keep is yours.",
+      "acknowledgement": "Sixty-nine lessons. You learned what this feeling actually is before learning a single technique, read the alarm without treating it as proof, caught the catastrophic story your mind adds and checked it against real evidence, noticed when a safety behavior or an avoided moment was quietly keeping a fear alive, chose to approach instead, sat with worry's underlying uncertainty instead of letting it spiral, and recognized a panic surge for what it is, intense, uncomfortable, and time-limited. That's a practice, not a promise of permanent calm. What you keep is yours.",
       "capabilityHeading": "What you can do now",
       "capabilitySummary": [
         "Describe what anxiety actually feels like, and recognize it as a near-universal experience, not a personal flaw.",
-        "Recognize anxiety as a protective alarm — a possible-threat signal, not proof that danger is present.",
+        "Recognize anxiety as a protective alarm, a possible-threat signal, not proof that danger is present.",
         "Catch a catastrophic threat prediction and check it against real evidence and your own ability to cope.",
         "Notice a safety behavior or avoided moment that's quietly keeping a fear alive, and choose a small approach step instead.",
-        "Tell worry driven by intolerance of uncertainty apart from productive problem-solving, and recognize a panic surge for what it is — time-limited, not dangerous."
+        "Tell worry driven by intolerance of uncertainty apart from productive problem-solving, and recognize a panic surge for what it is, time-limited, not dangerous."
       ],
       "reviewActionLabel": "Review the course",
       "doneActionLabel": "Done"
@@ -161,7 +161,7 @@ FROM jsonb_to_recordset($tag$[
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now describe what anxiety actually feels like, in plain terms, and place a new moment on the whole alarm loop — before learning a single technique.",
+      "capabilityStatement": "You can now describe what anxiety actually feels like, in plain terms, and place a new moment on the whole alarm loop, before learning a single technique.",
       "primaryActionLabel": "Back to path"
     }
   },
@@ -174,7 +174,7 @@ FROM jsonb_to_recordset($tag$[
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now explain the alarm sequence — body prepares, mind predicts, an urge appears — and apply it accurately to a new situation instead of treating the alarm as proof.",
+      "capabilityStatement": "You can now explain the alarm sequence, body prepares, mind predicts, an urge appears, and apply it accurately to a new situation instead of treating the alarm as proof.",
       "primaryActionLabel": "Back to path"
     }
   },
@@ -200,7 +200,7 @@ FROM jsonb_to_recordset($tag$[
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now recognize a safety behavior or an avoided moment for what it does — trading short-term relief for a louder fear next time — instead of just noticing it feels protective.",
+      "capabilityStatement": "You can now recognize a safety behavior or an avoided moment for what it does, trading short-term relief for a louder fear next time, instead of just noticing it feels protective.",
       "primaryActionLabel": "Back to path"
     }
   }
@@ -289,8 +289,8 @@ FROM jsonb_to_recordset($tag$[
     "review_concepts": [],
     "prerequisites": [],
     "reward_content": {
-      "title": "You're not imagining it — almost everyone has this",
-      "body": "Anxiety disorders alone affect a meaningful share of adults over a lifetime, and everyday anxious moments — racing thoughts before something hard, a tight chest before a deadline — are close to universal. Naming it plainly, without a label, is the first real step. (WHO; Harvard Health — research/07 §1)",
+      "title": "You're not imagining it, almost everyone has this",
+      "body": "Anxiety disorders alone affect a meaningful share of adults over a lifetime, and everyday anxious moments, racing thoughts before something hard, a tight chest before a deadline, are close to universal. Naming it plainly, without a label, is the first real step. (WHO; Harvard Health, research/07 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -439,7 +439,7 @@ FROM jsonb_to_recordset($tag$[
     "prerequisites": [],
     "reward_content": {
       "title": "A smoke alarm can be sensitive and still be doing its job",
-      "body": "Anxiety is designed to protect quickly — it can react to uncertainty, memories, or predictions before the facts are clear, the same way a smoke alarm can go off from burnt toast. A sensitive alarm deserves attention. It doesn't get the final vote on whether there's actually a fire.",
+      "body": "Anxiety is designed to protect quickly, it can react to uncertainty, memories, or predictions before the facts are clear, the same way a smoke alarm can go off from burnt toast. A sensitive alarm deserves attention. It doesn't get the final vote on whether there's actually a fire.",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -587,8 +587,8 @@ FROM jsonb_to_recordset($tag$[
     "review_concepts": [],
     "prerequisites": [],
     "reward_content": {
-      "title": "Decatastrophizing isn't 'think positive' — it's two specific questions",
-      "body": "The technique isn't about feeling better on purpose. It pairs an evidence question (how likely is this, really, based on track record) with a coping question (what would I actually do if it happened) — because probability alone leaves the 'but what if it DOES happen' fear unanswered. (Beck & Haigh — research/02 §2)",
+      "title": "Decatastrophizing isn't 'think positive', it's two specific questions",
+      "body": "The technique isn't about feeling better on purpose. It pairs an evidence question (how likely is this, really, based on track record) with a coping question (what would I actually do if it happened), because probability alone leaves the 'but what if it DOES happen' fear unanswered. (Beck & Haigh, research/02 §2)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -737,7 +737,7 @@ FROM jsonb_to_recordset($tag$[
     "prerequisites": [],
     "reward_content": {
       "title": "Holding onto a railing 'just in case' can keep a fear alive",
-      "body": "A person who reads a weak feeling in the legs as a sign of collapsing might grab a railing, tense up, or sit down to prevent it — which prevents the fear from ever being disconfirmed. Same mechanism behind avoiding eye contact, over-preparing to prevent any failure, or checking a phone repeatedly to avoid bad news. (Salkovskis 1991 — research/03 §1)",
+      "body": "A person who reads a weak feeling in the legs as a sign of collapsing might grab a railing, tense up, or sit down to prevent it, which prevents the fear from ever being disconfirmed. Same mechanism behind avoiding eye contact, over-preparing to prevent any failure, or checking a phone repeatedly to avoid bad news. (Salkovskis 1991, research/03 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -830,7 +830,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "This Is What This Course Is About",
       "variant": "myth",
       "myth": "Feeling anxious regularly means something is uniquely wrong with me.",
-      "reality": "Anxiety, in plain terms, is a racing heart, a tight chest, restlessness that won't settle, a thought that keeps replaying — the night before a hard conversation, lying awake rehearsing what you'll say. Almost everyone has felt some version of this. That's the territory this course is about, not a diagnosis."
+      "reality": "Anxiety, in plain terms, is a racing heart, a tight chest, restlessness that won't settle, a thought that keeps replaying, the night before a hard conversation, lying awake rehearsing what you'll say. Almost everyone has felt some version of this. That's the territory this course is about, not a diagnosis."
     }
   },
   {
@@ -878,19 +878,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "anxiety_is_common",
     "content": {
-      "prompt": "A deadline is two days out and it's hard to think about anything else — is this the same territory this course is about?",
+      "prompt": "A deadline is two days out and it's hard to think about anything else, is this the same territory this course is about?",
       "options": [
         {
           "id": "yes",
-          "label": "Yes — same territory, different moment"
+          "label": "Yes, same territory, different moment"
         },
         {
           "id": "no",
-          "label": "No — that's a completely different kind of feeling"
+          "label": "No, that's a completely different kind of feeling"
         }
       ],
       "bestOptionId": "yes",
-      "reveal": "Same territory — a deadline pulling at your attention is just as much this course's territory as any other moment."
+      "reveal": "Same territory, a deadline pulling at your attention is just as much this course's territory as any other moment."
     }
   },
   {
@@ -905,19 +905,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "anxiety_is_common",
     "content": {
-      "prompt": "A text is left on read for a few hours and it's hard to stop checking — same territory?",
+      "prompt": "A text is left on read for a few hours and it's hard to stop checking, same territory?",
       "options": [
         {
           "id": "yes",
-          "label": "Yes — same territory"
+          "label": "Yes, same territory"
         },
         {
           "id": "no",
-          "label": "No — different territory"
+          "label": "No, different territory"
         }
       ],
       "bestOptionId": "yes",
-      "reveal": "Same territory — the same restless, hard-to-settle feeling, just triggered by something different."
+      "reveal": "Same territory, the same restless, hard-to-settle feeling, just triggered by something different."
     }
   },
   {
@@ -932,19 +932,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "anxiety_is_common",
     "content": {
-      "prompt": "A first day somewhere new, replaying what to say — same territory?",
+      "prompt": "A first day somewhere new, replaying what to say, same territory?",
       "options": [
         {
           "id": "yes",
-          "label": "Yes — same territory"
+          "label": "Yes, same territory"
         },
         {
           "id": "no",
-          "label": "No — different territory"
+          "label": "No, different territory"
         }
       ],
       "bestOptionId": "yes",
-      "reveal": "Same territory again — a deadline, a text, a first day: different triggers, same feeling."
+      "reveal": "Same territory again, a deadline, a text, a first day: different triggers, same feeling."
     }
   },
   {
@@ -960,7 +960,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": null,
     "content": {
       "title": "Has This Happened To You?",
-      "instruction": "No one sees this. Has one of these — or something like it — happened to you this week?",
+      "instruction": "No one sees this. Has one of these, or something like it, happened to you this week?",
       "items": [
         {
           "id": "own-moment",
@@ -984,7 +984,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Four Moves, Always In That Order",
       "variant": "myth",
       "myth": "Anxiety is just one random, disconnected reaction, not a repeatable pattern.",
-      "reality": "Notice something → the mind predicts → an urge shows up → you choose — and that choice makes it louder or quieter next time. Four moves, always in that order, whatever the trigger. Every later lesson in this course locates itself somewhere on this loop."
+      "reality": "Notice something → the mind predicts → an urge shows up → you choose, and that choice makes it louder or quieter next time. Four moves, always in that order, whatever the trigger. Every later lesson in this course locates itself somewhere on this loop."
     }
   },
   {
@@ -1001,26 +1001,26 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Loop, In Order",
       "instruction": "Order the four steps.",
-      "message": "Notice, predict, urge, choose — the whole loop, in one picture.",
+      "message": "Notice, predict, urge, choose, the whole loop, in one picture.",
       "steps": [
         {
           "id": "notice",
-          "label": "Notice — something registers",
+          "label": "Notice, something registers",
           "order": 1
         },
         {
           "id": "predict",
-          "label": "Predict — the mind adds a threat story",
+          "label": "Predict, the mind adds a threat story",
           "order": 2
         },
         {
           "id": "urge",
-          "label": "Urge — fight, flight, freeze, or safety-seek shows up",
+          "label": "Urge, fight, flight, freeze, or safety-seek shows up",
           "order": 3
         },
         {
           "id": "choose",
-          "label": "Choose — what you do next makes it louder or quieter",
+          "label": "Choose, what you do next makes it louder or quieter",
           "order": 4
         }
       ],
@@ -1029,16 +1029,16 @@ FROM jsonb_to_recordset($tag$[
         "options": [
           {
             "id": "no",
-            "label": "No — the four moves are always in this order, whatever the trigger",
+            "label": "No, the four moves are always in this order, whatever the trigger",
             "isSupported": true,
-            "response": "Right — the trigger changes, the sequence doesn't.",
+            "response": "Right, the trigger changes, the sequence doesn't.",
             "takeaway": "The loop is one repeatable pattern, not a random reaction."
           },
           {
             "id": "yes",
-            "label": "Yes — the order depends on what triggered it",
+            "label": "Yes, the order depends on what triggered it",
             "isSupported": false,
-            "response": "Not quite — the sequence itself stays the same; what changes is the trigger and the content at each step.",
+            "response": "Not quite, the sequence itself stays the same; what changes is the trigger and the content at each step.",
             "takeaway": "The loop's order is fixed; its content varies."
           }
         ]
@@ -1062,12 +1062,12 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "Anxiety, in plain terms, is a racing heart, a tight chest, and restlessness that won't ",
-          "post": " — and almost everyone has felt some version of it.",
+          "post": ", and almost everyone has felt some version of it.",
           "answers": [
             "settle"
           ],
-          "correctFeedback": "Right — restlessness that won't settle.",
-          "incorrectFeedback": "The word is 'settle' — restlessness that won't settle.",
+          "correctFeedback": "Right, restlessness that won't settle.",
+          "incorrectFeedback": "The word is 'settle', restlessness that won't settle.",
           "workedExample": "A tight chest before a deadline is the same territory."
         }
       ]
@@ -1087,7 +1087,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Where Does This Go?",
       "instruction": "Read the case, then place it on the loop.",
-      "question": "Heart racing right before a hard phone call — which step of the loop is this?",
+      "question": "Heart racing right before a hard phone call, which step of the loop is this?",
       "cases": [
         {
           "id": "case1",
@@ -1099,17 +1099,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "urge-or-notice",
-          "label": "Notice or urge — the body registering something"
+          "label": "Notice or urge, the body registering something"
         },
         {
           "id": "predict",
-          "label": "Predict — a threat story being told"
+          "label": "Predict, a threat story being told"
         }
       ],
       "feedbackMap": {
         "urge-or-notice": {
           "title": "Right",
-          "body": "A body sensation showing up is the notice step — something registering before it's put into words.",
+          "body": "A body sensation showing up is the notice step, something registering before it's put into words.",
           "chain": [
             "A racing heart is a body sensation, not a story.",
             "That's the notice step."
@@ -1117,7 +1117,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "predict": {
           "title": "Not quite",
-          "body": "A racing heart is a sensation, not yet a threat story — that's the notice step, before any prediction.",
+          "body": "A racing heart is a sensation, not yet a threat story, that's the notice step, before any prediction.",
           "chain": [
             "The predict step is a story ('this will go badly'), not a sensation."
           ],
@@ -1141,7 +1141,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Where Does This Go?",
       "instruction": "Read the case, then place it on the loop.",
-      "question": "Replaying an email over and over, imagining it going badly — which step of the loop is this?",
+      "question": "Replaying an email over and over, imagining it going badly, which step of the loop is this?",
       "cases": [
         {
           "id": "case1",
@@ -1153,17 +1153,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "predict",
-          "label": "Predict — the mind telling a story about the outcome"
+          "label": "Predict, the mind telling a story about the outcome"
         },
         {
           "id": "notice",
-          "label": "Notice — a body sensation"
+          "label": "Notice, a body sensation"
         }
       ],
       "feedbackMap": {
         "predict": {
           "title": "Right",
-          "body": "Imagining how it goes badly is the mind adding a threat story — that's the predict step.",
+          "body": "Imagining how it goes badly is the mind adding a threat story, that's the predict step.",
           "chain": [
             "Imagining a bad outcome is a story, not a sensation.",
             "That's the predict step."
@@ -1171,7 +1171,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "notice": {
           "title": "Not quite",
-          "body": "This is a story about an outcome, not a body sensation — that's the predict step, not notice.",
+          "body": "This is a story about an outcome, not a body sensation, that's the predict step, not notice.",
           "chain": [
             "Notice is a raw sensation; this is already a story."
           ],
@@ -1195,7 +1195,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Where Does This Go?",
       "instruction": "Read the case, then place it on the loop.",
-      "question": "Deciding to skip the phone call entirely — which step of the loop is this?",
+      "question": "Deciding to skip the phone call entirely, which step of the loop is this?",
       "cases": [
         {
           "id": "case1",
@@ -1207,17 +1207,17 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "choose",
-          "label": "Choose — the move made in response to the urge"
+          "label": "Choose, the move made in response to the urge"
         },
         {
           "id": "urge",
-          "label": "Urge — the pull to avoid"
+          "label": "Urge, the pull to avoid"
         }
       ],
       "feedbackMap": {
         "choose": {
           "title": "Right",
-          "body": "Deciding to skip the call is the choose step — what actually gets done in response to the urge to avoid.",
+          "body": "Deciding to skip the call is the choose step, what actually gets done in response to the urge to avoid.",
           "chain": [
             "The urge to avoid shows up first.",
             "Deciding to act on it is the choose step."
@@ -1252,19 +1252,19 @@ FROM jsonb_to_recordset($tag$[
       "beats": [
         {
           "id": "notice",
-          "text": "An unread message shows up. A small jolt — that's the notice step."
+          "text": "An unread message shows up. A small jolt, that's the notice step."
         },
         {
           "id": "predict",
-          "text": "The mind adds a story: 'this is bad news.' That's the predict step — a story, not a fact yet."
+          "text": "The mind adds a story: 'this is bad news.' That's the predict step, a story, not a fact yet."
         },
         {
           "id": "urge",
-          "text": "An urge shows up — check it obsessively, or avoid it entirely. That's the urge step."
+          "text": "An urge shows up, check it obsessively, or avoid it entirely. That's the urge step."
         },
         {
           "id": "choose",
-          "text": "Choosing to open it calmly, at a normal pace — that's the choose step. Next time, a little easier."
+          "text": "Choosing to open it calmly, at a normal pace, that's the choose step. Next time, a little easier."
         }
       ]
     }
@@ -1292,7 +1292,7 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "predict",
-          "label": "\"This is bad news\" — a story, not a fact yet",
+          "label": "\"This is bad news\", a story, not a fact yet",
           "order": 2
         },
         {
@@ -1311,16 +1311,16 @@ FROM jsonb_to_recordset($tag$[
         "options": [
           {
             "id": "easier-not-guaranteed",
-            "label": "No guarantee — but it does tend to get a little easier next time",
+            "label": "No guarantee, but it does tend to get a little easier next time",
             "isSupported": true,
-            "response": "Right — the loop gets quieter over time with this kind of choice, not instantly resolved.",
+            "response": "Right, the loop gets quieter over time with this kind of choice, not instantly resolved.",
             "takeaway": "Change here is gradual, not a one-time fix."
           },
           {
             "id": "guaranteed",
-            "label": "Yes — one calm choice fixes it permanently",
+            "label": "Yes, one calm choice fixes it permanently",
             "isSupported": false,
-            "response": "Not quite — it's a gradual quieting, not a permanent fix from one instance.",
+            "response": "Not quite, it's a gradual quieting, not a permanent fix from one instance.",
             "takeaway": "The loop quiets with repetition, not a single instance."
           }
         ]
@@ -1340,7 +1340,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": null,
     "content": {
       "title": "Your Own Moment, On The Loop",
-      "instruction": "Think of a moment this week — even a small one. Where does it start on the loop? Nothing here is stored or scored.",
+      "instruction": "Think of a moment this week, even a small one. Where does it start on the loop? Nothing here is stored or scored.",
       "items": [
         {
           "id": "moment",
@@ -1365,15 +1365,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it's near-universal, not a personal flaw"
+          "label": "No, it's near-universal, not a personal flaw"
         },
         {
           "id": "yes",
-          "label": "Yes — it means something's uniquely wrong"
+          "label": "Yes, it means something's uniquely wrong"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "It's near-universal — almost everyone has felt some version of it."
+      "reveal": "It's near-universal, almost everyone has felt some version of it."
     }
   },
   {
@@ -1390,7 +1390,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Loop, Rebuilt",
       "instruction": "Order the four steps, then apply them.",
-      "message": "Notice, predict, urge, choose — rebuild it once more.",
+      "message": "Notice, predict, urge, choose, rebuild it once more.",
       "steps": [
         {
           "id": "notice",
@@ -1418,16 +1418,16 @@ FROM jsonb_to_recordset($tag$[
         "options": [
           {
             "id": "notice",
-            "label": "Notice — a body sensation, before any story or urge",
+            "label": "Notice, a body sensation, before any story or urge",
             "isSupported": true,
-            "response": "Right — a stomach drop is a raw sensation, the notice step.",
+            "response": "Right, a stomach drop is a raw sensation, the notice step.",
             "takeaway": "The first step is always a sensation, not yet a story."
           },
           {
             "id": "predict",
-            "label": "Predict — already a story about the caller",
+            "label": "Predict, already a story about the caller",
             "isSupported": false,
-            "response": "Not quite — a stomach drop alone is a sensation; the predict step would be a specific story about who called and why.",
+            "response": "Not quite, a stomach drop alone is a sensation; the predict step would be a specific story about who called and why.",
             "takeaway": "A sensation alone is notice, not yet predict."
           }
         ]
@@ -1446,26 +1446,26 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "What This Actually Feels Like — Unit Checkpoint",
+      "title": "What This Actually Feels Like, Unit Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Two quick checks before Section 1 goes technical.\nA miss just gives you something to revisit.",
       "introTag": "2 QUESTIONS · ~1 MIN",
-      "revisitMessage": "The marked ideas are worth a short revisit — nothing is lost, and they'll come back around.",
+      "revisitMessage": "The marked ideas are worth a short revisit, nothing is lost, and they'll come back around.",
       "solidMessage": "The basics are holding. Next: the technical names for each part of the loop.",
       "items": [
         {
           "concept": "Anxiety Is Common",
           "prompt": "Is anxiety a near-universal experience?",
           "clue": "Almost everyone has it.",
-          "worked": "Yes — a near-universal experience, not a diagnosis or a personal flaw.",
+          "worked": "Yes, a near-universal experience, not a diagnosis or a personal flaw.",
           "options": [
             {
-              "label": "Yes — near-universal",
+              "label": "Yes, near-universal",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "No — it's rare and unusual",
+              "label": "No, it's rare and unusual",
               "feedback": "It's actually near-universal.",
               "isCorrect": false
             }
@@ -1534,7 +1534,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "A Sensitive Alarm Can Still Work",
       "variant": "myth",
       "myth": "If anxiety is strong, the danger must be serious.",
-      "reality": "Anxiety is designed to protect quickly. It can react to uncertainty, memories, or predictions before the facts are clear — the same way a smoke alarm can go off from burnt toast. A sensitive alarm deserves attention. It doesn't get the final vote on whether there's actually a fire."
+      "reality": "Anxiety is designed to protect quickly. It can react to uncertainty, memories, or predictions before the facts are clear, the same way a smoke alarm can go off from burnt toast. A sensitive alarm deserves attention. It doesn't get the final vote on whether there's actually a fire."
     }
   },
   {
@@ -1573,7 +1573,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "alarm": {
           "title": "Right",
-          "body": "The body response is real, while the meaning is still uncertain. An alarm reports possible danger — it doesn't prove danger.",
+          "body": "The body response is real, while the meaning is still uncertain. An alarm reports possible danger, it doesn't prove danger.",
           "chain": [
             "An uncertain email triggered the alarm.",
             "The alarm reacting doesn't confirm the outcome."
@@ -1581,7 +1581,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "proof": {
           "title": "Not quite",
-          "body": "A body signal can't confirm what the email means — it only signals that something uncertain is worth attention.",
+          "body": "A body signal can't confirm what the email means, it only signals that something uncertain is worth attention.",
           "chain": [
             "A stomach drop is the alarm reacting, not evidence about the outcome."
           ],
@@ -1613,7 +1613,7 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "id": "name-only",
-              "label": "Just the name — a technical label for the same near-universal feeling"
+              "label": "Just the name, a technical label for the same near-universal feeling"
             },
             {
               "id": "new-thing",
@@ -1638,9 +1638,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "\"Protective alarm\" is just the technical name for the same everyday feeling — not a new or rarer thing."
+      "comparisonFeedback": "\"Protective alarm\" is just the technical name for the same everyday feeling, not a new or rarer thing."
     }
   },
   {
@@ -1658,7 +1658,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "The Body Moves First",
       "variant": "myth",
       "myth": "An uncomfortable body sensation predicts what will happen next.",
-      "reality": "Heart rate and breathing shift before you've consciously registered why. Racing heart, tight chest, and other sensations are the body's short-term preparation for action — not evidence that something bad is about to happen."
+      "reality": "Heart rate and breathing shift before you've consciously registered why. Racing heart, tight chest, and other sensations are the body's short-term preparation for action, not evidence that something bad is about to happen."
     }
   },
   {
@@ -1673,11 +1673,11 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "body_alarm",
     "content": {
-      "prompt": "A racing heart before a hard conversation — what is it preparing you for?",
+      "prompt": "A racing heart before a hard conversation, what is it preparing you for?",
       "options": [
         {
           "id": "action",
-          "label": "Quick action, if it's needed — preparation, not a verdict"
+          "label": "Quick action, if it's needed, preparation, not a verdict"
         },
         {
           "id": "outcome",
@@ -1685,7 +1685,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "action",
-      "reveal": "The body is preparing for possible action — it isn't predicting a specific outcome."
+      "reveal": "The body is preparing for possible action, it isn't predicting a specific outcome."
     }
   },
   {
@@ -1704,15 +1704,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — strength of the alarm isn't proof of danger"
+          "label": "No, strength of the alarm isn't proof of danger"
         },
         {
           "id": "yes",
-          "label": "Yes — a strong alarm means serious danger"
+          "label": "Yes, a strong alarm means serious danger"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "A sensitive alarm can be strong and still just be doing its job — it isn't proof."
+      "reveal": "A sensitive alarm can be strong and still just be doing its job, it isn't proof."
     }
   },
   {
@@ -1769,7 +1769,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "separate": {
           "title": "Right",
-          "body": "The event (no reply yet) and the prediction (a specific story about why) are two separate things — the second isn't confirmed by the first.",
+          "body": "The event (no reply yet) and the prediction (a specific story about why) are two separate things, the second isn't confirmed by the first.",
           "chain": [
             "The event is neutral: no reply yet.",
             "\"They're upset\" is an added story, not a fact."
@@ -1777,7 +1777,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "fact": {
           "title": "Not quite",
-          "body": "Three hours of silence has many possible explanations — treating one story as proven fact skips past the actual event.",
+          "body": "Three hours of silence has many possible explanations, treating one story as proven fact skips past the actual event.",
           "chain": [
             "The event alone doesn't confirm any single story."
           ],
@@ -1834,9 +1834,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Threat prediction is exactly the loop's own predict step, just given its technical name — nothing new to relearn."
+      "comparisonFeedback": "Threat prediction is exactly the loop's own predict step, just given its technical name, nothing new to relearn."
     }
   },
   {
@@ -1855,11 +1855,11 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it's preparation, not prophecy"
+          "label": "No, it's preparation, not prophecy"
         },
         {
           "id": "yes",
-          "label": "Yes — the sensation predicts the outcome"
+          "label": "Yes, the sensation predicts the outcome"
         }
       ],
       "bestOptionId": "no",
@@ -1881,7 +1881,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Meet Four Protective Urges",
       "variant": "myth",
       "myth": "A protective urge is a command or proof that the situation is unsafe.",
-      "reality": "Fight, flight, freeze, and safety-seeking are all attempts to reduce possible danger — information about what the alarm is suggesting, not commands that have to be obeyed."
+      "reality": "Fight, flight, freeze, and safety-seeking are all attempts to reduce possible danger, information about what the alarm is suggesting, not commands that have to be obeyed."
     }
   },
   {
@@ -1935,8 +1935,8 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "prove"
           ],
-          "correctFeedback": "Right — it reports possible danger, it doesn't prove it.",
-          "incorrectFeedback": "The alarm reports possible danger — it doesn't prove danger.",
+          "correctFeedback": "Right, it reports possible danger, it doesn't prove it.",
+          "incorrectFeedback": "The alarm reports possible danger, it doesn't prove danger.",
           "workedExample": "A smoke alarm going off from burnt toast reports smoke, not a confirmed fire."
         }
       ]
@@ -1958,15 +1958,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — repetition and vividness don't make it a fact"
+          "label": "No, repetition and vividness don't make it a fact"
         },
         {
           "id": "yes",
-          "label": "Yes — repeating it enough makes it true"
+          "label": "Yes, repeating it enough makes it true"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "A prediction stays a prediction no matter how vivid or repeated — it isn't automatically a fact."
+      "reveal": "A prediction stays a prediction no matter how vivid or repeated, it isn't automatically a fact."
     }
   },
   {
@@ -1984,7 +1984,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Same Alarm, Different Timing",
       "variant": "myth",
       "myth": "Fear and anxiety are different only because one feels stronger.",
-      "reality": "A dog lunging at you right now is fear — a present threat. Wondering whether a dog might be at the park tomorrow is anxiety — an anticipated threat. Same alarm, different timing, and the timing changes what to do next."
+      "reality": "A dog lunging at you right now is fear, a present threat. Wondering whether a dog might be at the park tomorrow is anxiety, an anticipated threat. Same alarm, different timing, and the timing changes what to do next."
     }
   },
   {
@@ -2005,23 +2005,23 @@ FROM jsonb_to_recordset($tag$[
       "rows": [
         {
           "question": "A car swerves toward you right now",
-          "left": "The threat is here — fear",
+          "left": "The threat is here, fear",
           "right": ""
         },
         {
           "question": "Wondering if traffic will be bad tomorrow",
           "left": "",
-          "right": "The threat is possible, later — anxiety"
+          "right": "The threat is possible, later, anxiety"
         },
         {
           "question": "A dog lunges at you right now",
-          "left": "The threat is here — fear",
+          "left": "The threat is here, fear",
           "right": ""
         },
         {
           "question": "Wondering whether a dog might be at the park tomorrow",
           "left": "",
-          "right": "The threat is possible, later — anxiety"
+          "right": "The threat is possible, later, anxiety"
         }
       ]
     }
@@ -2047,8 +2047,8 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "preparation"
           ],
-          "correctFeedback": "Right — preparation, not prophecy.",
-          "incorrectFeedback": "The word is preparation — sensations prepare the body, they don't predict outcomes.",
+          "correctFeedback": "Right, preparation, not prophecy.",
+          "incorrectFeedback": "The word is preparation, sensations prepare the body, they don't predict outcomes.",
           "workedExample": "A racing heart is preparation, not proof of what happens next."
         }
       ]
@@ -2070,15 +2070,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it's information, not a command"
+          "label": "No, it's information, not a command"
         },
         {
           "id": "yes",
-          "label": "Yes — the urge must be followed"
+          "label": "Yes, the urge must be followed"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "A protective urge is information about what the alarm suggests — not a command that has to be obeyed."
+      "reveal": "A protective urge is information about what the alarm suggests, not a command that has to be obeyed."
     }
   },
   {
@@ -2096,7 +2096,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Place A Bet",
       "variant": "myth",
       "myth": "Anxiety rated eight out of ten means danger is eight out of ten.",
-      "reality": "How strong the anxiety feels and how likely the danger actually is are two separate numbers. Rate how strong the feeling is, then separately rate how much real evidence supports the fear — they're often not the same number."
+      "reality": "How strong the anxiety feels and how likely the danger actually is are two separate numbers. Rate how strong the feeling is, then separately rate how much real evidence supports the fear, they're often not the same number."
     }
   },
   {
@@ -2116,13 +2116,13 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "Feeling an 8-out-of-10 anxiety about a work email does not mean the danger is also ",
-          "post": " out of 10 — they're separate numbers.",
+          "post": " out of 10, they're separate numbers.",
           "answers": [
             "8",
             "eight"
           ],
-          "correctFeedback": "Right — intensity and evidence are separate numbers.",
-          "incorrectFeedback": "The point is they're NOT automatically the same number — try again.",
+          "correctFeedback": "Right, intensity and evidence are separate numbers.",
+          "incorrectFeedback": "The point is they're NOT automatically the same number, try again.",
           "workedExample": "A strong feeling (8/10) can coexist with weak evidence of real danger (2/10)."
         }
       ]
@@ -2149,8 +2149,8 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "prediction"
           ],
-          "correctFeedback": "Right — event and prediction, marked separately.",
-          "incorrectFeedback": "The word is prediction — separate the event from the prediction added to it.",
+          "correctFeedback": "Right, event and prediction, marked separately.",
+          "incorrectFeedback": "The word is prediction, separate the event from the prediction added to it.",
           "workedExample": "\"No reply yet\" is the event; \"they're upset\" is the prediction."
         }
       ]
@@ -2172,7 +2172,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "might",
-          "label": "One that might happen — anticipated"
+          "label": "One that might happen, anticipated"
         },
         {
           "id": "now",
@@ -2180,7 +2180,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "might",
-      "reveal": "Anxiety responds to an anticipated, possible threat — fear responds to one that's present right now."
+      "reveal": "Anxiety responds to an anticipated, possible threat, fear responds to one that's present right now."
     }
   },
   {
@@ -2200,11 +2200,11 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "The alarm reports possible danger; the body's sensations are short-term ",
-          "post": " for action — neither one is proof.",
+          "post": " for action, neither one is proof.",
           "answers": [
             "preparation"
           ],
-          "correctFeedback": "Right — preparation, not proof.",
+          "correctFeedback": "Right, preparation, not proof.",
           "incorrectFeedback": "The word is preparation.",
           "workedExample": "A racing heart prepares the body; it doesn't prove anything."
         }
@@ -2255,7 +2255,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "fact": {
           "title": "Not quite",
-          "body": "A missed call alone doesn't prove anything — the story and the urge that followed are the alarm sequence at work, not evidence.",
+          "body": "A missed call alone doesn't prove anything, the story and the urge that followed are the alarm sequence at work, not evidence.",
           "chain": [
             "The event (a missed call) is neutral by itself."
           ],
@@ -2283,13 +2283,13 @@ FROM jsonb_to_recordset($tag$[
       "rows": [
         {
           "question": "A dog lunging at you right now, teeth bared",
-          "left": "Present threat, strong real evidence — fear",
+          "left": "Present threat, strong real evidence, fear",
           "right": ""
         },
         {
           "question": "An 8/10 anxious feeling about a meeting with no actual bad signs so far",
           "left": "",
-          "right": "Anticipated threat, weak real evidence — anxiety, intensity ≠ evidence"
+          "right": "Anticipated threat, weak real evidence, anxiety, intensity ≠ evidence"
         }
       ]
     }
@@ -2320,7 +2320,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "sequence",
-          "label": "The alarm fired (racing heart), the mind added a worst-case prediction, and the urge to search for hours is a safety-seeking response — none of this proves the actual result"
+          "label": "The alarm fired (racing heart), the mind added a worst-case prediction, and the urge to search for hours is a safety-seeking response, none of this proves the actual result"
         },
         {
           "id": "proof",
@@ -2330,7 +2330,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "sequence": {
           "title": "Right",
-          "body": "This runs the whole alarm sequence — alarm, prediction, urge — without any of those steps confirming the actual test result.",
+          "body": "This runs the whole alarm sequence, alarm, prediction, urge, without any of those steps confirming the actual test result.",
           "chain": [
             "Each step of the sequence is identifiable.",
             "None of them are evidence about the real outcome."
@@ -2338,7 +2338,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "proof": {
           "title": "Not quite",
-          "body": "The intensity of the reaction is a separate number from the actual evidence about the result — this is exactly what l13 warned against.",
+          "body": "The intensity of the reaction is a separate number from the actual evidence about the result, this is exactly what l13 warned against.",
           "chain": [
             "Intensity and evidence are separate numbers."
           ],
@@ -2360,26 +2360,26 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "The Alarm System — Unit Checkpoint",
+      "title": "The Alarm System, Unit Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Six quick checks across the whole alarm sequence.\nA miss just gives you something to revisit.",
       "introTag": "6 QUESTIONS · ~2 MIN",
-      "revisitMessage": "The marked ideas are worth a short revisit — nothing is lost, and they'll come back around.",
+      "revisitMessage": "The marked ideas are worth a short revisit, nothing is lost, and they'll come back around.",
       "solidMessage": "The alarm sequence is holding. Next: where the mind's predictions can overshoot.",
       "items": [
         {
           "concept": "Protective Alarm",
           "prompt": "Does anxiety appearing prove danger is real?",
           "clue": "It's a signal, not proof.",
-          "worked": "No — it reports possible danger, it doesn't prove it.",
+          "worked": "No, it reports possible danger, it doesn't prove it.",
           "options": [
             {
-              "label": "No — a signal, not proof",
+              "label": "No, a signal, not proof",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — anxiety proves danger",
+              "label": "Yes, anxiety proves danger",
               "feedback": "Anxiety is a signal, not proof.",
               "isCorrect": false
             }
@@ -2389,15 +2389,15 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Body Alarm",
           "prompt": "Do body sensations predict what will happen?",
           "clue": "Preparation, not prophecy.",
-          "worked": "No — they're short-term preparation for action.",
+          "worked": "No, they're short-term preparation for action.",
           "options": [
             {
-              "label": "No — preparation, not prophecy",
+              "label": "No, preparation, not prophecy",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — sensations predict outcomes",
+              "label": "Yes, sensations predict outcomes",
               "feedback": "Sensations prepare the body; they don't predict.",
               "isCorrect": false
             }
@@ -2407,15 +2407,15 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Threat Prediction",
           "prompt": "Is a vivid prediction automatically a fact?",
           "clue": "Event vs. story.",
-          "worked": "No — the event and the added prediction are two separate things.",
+          "worked": "No, the event and the added prediction are two separate things.",
           "options": [
             {
-              "label": "No — event and prediction differ",
+              "label": "No, event and prediction differ",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — vividness makes it a fact",
+              "label": "Yes, vividness makes it a fact",
               "feedback": "Vividness doesn't make a prediction a fact.",
               "isCorrect": false
             }
@@ -2425,15 +2425,15 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Protective Urges",
           "prompt": "Must a protective urge be obeyed?",
           "clue": "Information, not command.",
-          "worked": "No — it's information about possible danger, not a command.",
+          "worked": "No, it's information about possible danger, not a command.",
           "options": [
             {
-              "label": "No — information, not a command",
+              "label": "No, information, not a command",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — urges must be followed",
+              "label": "Yes, urges must be followed",
               "feedback": "Urges are information, not commands.",
               "isCorrect": false
             }
@@ -2443,7 +2443,7 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Fear and Anxiety",
           "prompt": "Does fear respond to a present or anticipated threat?",
           "clue": "Timing is the difference.",
-          "worked": "Present — fear is now, anxiety is anticipated.",
+          "worked": "Present, fear is now, anxiety is anticipated.",
           "options": [
             {
               "label": "Present",
@@ -2461,15 +2461,15 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Intensity vs. Probability",
           "prompt": "Does an 8/10 feeling mean 8/10 real danger?",
           "clue": "Two separate numbers.",
-          "worked": "No — intensity and evidence are rated separately.",
+          "worked": "No, intensity and evidence are rated separately.",
           "options": [
             {
-              "label": "No — separate numbers",
+              "label": "No, separate numbers",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
-              "label": "Yes — they're the same number",
+              "label": "Yes, they're the same number",
               "feedback": "Intensity and real evidence are separate.",
               "isCorrect": false
             }
@@ -2493,7 +2493,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Three Exaggerations, Stacked",
       "variant": "myth",
       "myth": "If I can imagine a bad outcome vividly, it must be likely.",
-      "reality": "Catastrophizing overestimates how likely and how bad an outcome is, while underestimating your own ability to cope. One late reply from a friend becomes \"they're upset with me, this could end the friendship, and I won't know how to fix it\" — three separate exaggerations stacked on one small event."
+      "reality": "Catastrophizing overestimates how likely and how bad an outcome is, while underestimating your own ability to cope. One late reply from a friend becomes \"they're upset with me, this could end the friendship, and I won't know how to fix it\", three separate exaggerations stacked on one small event."
     }
   },
   {
@@ -2508,19 +2508,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "catastrophizing",
     "content": {
-      "prompt": "\"If I stumble over one word in this presentation, everyone will think I'm incompetent\" — what's exaggerated here?",
+      "prompt": "\"If I stumble over one word in this presentation, everyone will think I'm incompetent\", what's exaggerated here?",
       "options": [
         {
           "id": "severity",
-          "label": "The severity — one stumble becoming proof of incompetence"
+          "label": "The severity, one stumble becoming proof of incompetence"
         },
         {
           "id": "accurate",
-          "label": "Nothing — this is an accurate, proportionate read"
+          "label": "Nothing, this is an accurate, proportionate read"
         }
       ],
       "bestOptionId": "severity",
-      "reveal": "The severity is stacked way beyond the actual event — one stumble doesn't add up to incompetence."
+      "reveal": "The severity is stacked way beyond the actual event, one stumble doesn't add up to incompetence."
     }
   },
   {
@@ -2535,19 +2535,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "anxiety_is_common",
     "content": {
-      "prompt": "Fourteen lessons in, technical concepts like catastrophizing keep building — is this still the same near-universal territory from lesson 1?",
+      "prompt": "Fourteen lessons in, technical concepts like catastrophizing keep building, is this still the same near-universal territory from lesson 1?",
       "options": [
         {
           "id": "yes",
-          "label": "Yes — same territory, just with more precise language now"
+          "label": "Yes, same territory, just with more precise language now"
         },
         {
           "id": "no",
-          "label": "No — this is a separate, rarer topic"
+          "label": "No, this is a separate, rarer topic"
         }
       ],
       "bestOptionId": "yes",
-      "reveal": "Same territory — catastrophizing is just a precise name for a common way the predict step overshoots."
+      "reveal": "Same territory, catastrophizing is just a precise name for a common way the predict step overshoots."
     }
   },
   {
@@ -2566,13 +2566,13 @@ FROM jsonb_to_recordset($tag$[
       "instruction": "Fill in the blank.",
       "variants": [
         {
-          "pre": "The alarm reports possible danger — it never ",
+          "pre": "The alarm reports possible danger, it never ",
           "post": " danger, no matter how strong it feels.",
           "answers": [
             "proves"
           ],
-          "correctFeedback": "Right — it reports, it never proves.",
-          "incorrectFeedback": "The word is proves — the alarm reports, it never proves.",
+          "correctFeedback": "Right, it reports, it never proves.",
+          "incorrectFeedback": "The word is proves, the alarm reports, it never proves.",
           "workedExample": "A loud alarm can still be reacting to burnt toast, not a real fire."
         }
       ]
@@ -2594,7 +2594,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "might",
-          "label": "One that might happen — it's about anticipated outcomes"
+          "label": "One that might happen, it's about anticipated outcomes"
         },
         {
           "id": "now",
@@ -2602,7 +2602,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "might",
-      "reveal": "Catastrophizing is about anticipated outcomes — it's the predict step of anxiety, not fear."
+      "reveal": "Catastrophizing is about anticipated outcomes, it's the predict step of anxiety, not fear."
     }
   },
   {
@@ -2628,8 +2628,8 @@ FROM jsonb_to_recordset($tag$[
           "options": [
             {
               "id": "opt-probability",
-              "label": "The probability — treating a routine check-in as a near-certainty of firing",
-              "response": "Right — a vague meeting request doesn't make firing likely; this is the probability being overestimated."
+              "label": "The probability, treating a routine check-in as a near-certainty of firing",
+              "response": "Right, a vague meeting request doesn't make firing likely; this is the probability being overestimated."
             },
             {
               "id": "opt-none",
@@ -2640,13 +2640,13 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "q-severity",
-          "prompt": "\"If I get some feedback, it'll be devastating and I won't recover\" — what's exaggerated?",
+          "prompt": "\"If I get some feedback, it'll be devastating and I won't recover\", what's exaggerated?",
           "summary": "How bad the outcome would be",
           "options": [
             {
               "id": "opt-severity",
-              "label": "The severity — feedback being treated as devastating and unrecoverable",
-              "response": "Right — feedback, even critical feedback, rarely reaches 'devastating and unrecoverable.'"
+              "label": "The severity, feedback being treated as devastating and unrecoverable",
+              "response": "Right, feedback, even critical feedback, rarely reaches 'devastating and unrecoverable.'"
             },
             {
               "id": "opt-none",
@@ -2657,13 +2657,13 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "q-coping",
-          "prompt": "\"If it goes badly, I'll have no idea what to do\" — what's being underestimated?",
+          "prompt": "\"If it goes badly, I'll have no idea what to do\", what's being underestimated?",
           "summary": "Your own ability to cope",
           "options": [
             {
               "id": "opt-coping",
-              "label": "Coping ability — assuming there'd be no response available at all",
-              "response": "Right — most people have more coping options available than 'no idea what to do' assumes."
+              "label": "Coping ability, assuming there'd be no response available at all",
+              "response": "Right, most people have more coping options available than 'no idea what to do' assumes."
             },
             {
               "id": "opt-none",
@@ -2696,7 +2696,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "preparation"
           ],
-          "correctFeedback": "Right — preparation.",
+          "correctFeedback": "Right, preparation.",
           "incorrectFeedback": "The word is preparation.",
           "workedExample": "A racing heart prepares the body; it doesn't forecast the result."
         }
@@ -2724,7 +2724,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "evidence"
           ],
-          "correctFeedback": "Right — evidence, rated separately from intensity.",
+          "correctFeedback": "Right, evidence, rated separately from intensity.",
           "incorrectFeedback": "The word is evidence.",
           "workedExample": "An 8/10 feeling can coexist with 2/10 real evidence."
         }
@@ -2747,7 +2747,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "all-three",
-          "label": "It can overestimate probability and severity, and underestimate coping — sometimes all at once"
+          "label": "It can overestimate probability and severity, and underestimate coping, sometimes all at once"
         },
         {
           "id": "probability-only",
@@ -2755,7 +2755,7 @@ FROM jsonb_to_recordset($tag$[
         }
       ],
       "bestOptionId": "all-three",
-      "reveal": "All three can show up together — that's why naming which one(s) are present makes a prediction checkable."
+      "reveal": "All three can show up together, that's why naming which one(s) are present makes a prediction checkable."
     }
   },
   {
@@ -2773,7 +2773,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Two Questions, Not \"It'll Be Fine\"",
       "variant": "myth",
       "myth": "Decatastrophizing just means thinking positive instead of accurately.",
-      "reality": "Not 'it'll be fine' — instead: 'realistically, how often does this actually happen (rarely), and if it did, here's exactly what I'd do.' Checking a feared outcome takes two questions — probability and coping — not one vague reassurance."
+      "reality": "Not 'it'll be fine', instead: 'realistically, how often does this actually happen (rarely), and if it did, here's exactly what I'd do.' Checking a feared outcome takes two questions, probability and coping, not one vague reassurance."
     }
   },
   {
@@ -2797,9 +2797,9 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "happened"
           ],
-          "correctFeedback": "Right — probability, then coping.",
+          "correctFeedback": "Right, probability, then coping.",
           "incorrectFeedback": "The second question asks what you'd actually do if it happened.",
-          "workedExample": "\"Rarely happens, and here's what I'd do if it did\" — both halves, together."
+          "workedExample": "\"Rarely happens, and here's what I'd do if it did\", both halves, together."
         }
       ]
     }
@@ -2818,7 +2818,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Where The Check Fits On The Loop",
       "instruction": "Order the sequence, then apply it.",
-      "message": "Notice, predict, urge, choose — the decatastrophizing check is a tool for the predict step specifically.",
+      "message": "Notice, predict, urge, choose, the decatastrophizing check is a tool for the predict step specifically.",
       "steps": [
         {
           "id": "notice",
@@ -2841,16 +2841,16 @@ FROM jsonb_to_recordset($tag$[
         "options": [
           {
             "id": "no",
-            "label": "No — the check is for a threat prediction (a story), not a raw body sensation",
+            "label": "No, the check is for a threat prediction (a story), not a raw body sensation",
             "isSupported": true,
-            "response": "Right — the check evaluates a prediction, which comes after noticing, not the sensation itself.",
+            "response": "Right, the check evaluates a prediction, which comes after noticing, not the sensation itself.",
             "takeaway": "Different loop steps need different tools."
           },
           {
             "id": "yes",
-            "label": "Yes — it works equally well on either step",
+            "label": "Yes, it works equally well on either step",
             "isSupported": false,
-            "response": "Not quite — the check is specifically built to evaluate a threat prediction, not a raw sensation.",
+            "response": "Not quite, the check is specifically built to evaluate a threat prediction, not a raw sensation.",
             "takeaway": "The check targets the predict step specifically."
           }
         ]
@@ -2893,7 +2893,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "separate": {
           "title": "Right",
-          "body": "Not saying hi has many possible explanations — distraction, not noticing, a bad day of their own — none confirmed yet.",
+          "body": "Not saying hi has many possible explanations, distraction, not noticing, a bad day of their own, none confirmed yet.",
           "chain": [
             "The event is neutral by itself.",
             "Any specific story is an added prediction."
@@ -2924,7 +2924,7 @@ FROM jsonb_to_recordset($tag$[
     "concept": "decatastrophizing_check",
     "content": {
       "title": "The Coping Question, Applied",
-      "instruction": "Fill in the blank — name a real coping response.",
+      "instruction": "Fill in the blank, name a real coping response.",
       "variants": [
         {
           "pre": "If the meeting feedback really is critical, a realistic coping response is: I would listen, take notes, and ",
@@ -2933,7 +2933,7 @@ FROM jsonb_to_recordset($tag$[
             "follow up",
             "talk"
           ],
-          "correctFeedback": "Right — naming a concrete next action closes the 'but what if it happens' gap.",
+          "correctFeedback": "Right, naming a concrete next action closes the 'but what if it happens' gap.",
           "incorrectFeedback": "Try naming one concrete thing you'd actually do next.",
           "workedExample": "\"I'd listen, take notes, and follow up\" is a real, specific coping plan."
         }
@@ -2954,7 +2954,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Both Questions, Connected",
       "instruction": "Order the sequence, then apply it.",
-      "message": "Probability alone leaves 'but what if it DOES happen' unanswered — the coping question closes that gap.",
+      "message": "Probability alone leaves 'but what if it DOES happen' unanswered, the coping question closes that gap.",
       "steps": [
         {
           "id": "probability",
@@ -2968,7 +2968,7 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "resolved",
-          "label": "Both answered — the fear is checked, not just dismissed",
+          "label": "Both answered, the fear is checked, not just dismissed",
           "order": 3
         }
       ],
@@ -2977,16 +2977,16 @@ FROM jsonb_to_recordset($tag$[
         "options": [
           {
             "id": "coping-missing",
-            "label": "The coping question — naming what they'd actually do if the unlikely thing happened anyway",
+            "label": "The coping question, naming what they'd actually do if the unlikely thing happened anyway",
             "isSupported": true,
-            "response": "Right — probability alone often isn't enough; the coping answer is what actually resolves the 'but what if' feeling.",
+            "response": "Right, probability alone often isn't enough; the coping answer is what actually resolves the 'but what if' feeling.",
             "takeaway": "Both questions are needed, not just one."
           },
           {
             "id": "nothing-missing",
-            "label": "Nothing — knowing it's unlikely should be enough",
+            "label": "Nothing, knowing it's unlikely should be enough",
             "isSupported": false,
-            "response": "In practice it often isn't enough on its own — the coping question is what closes the remaining gap.",
+            "response": "In practice it often isn't enough on its own, the coping question is what closes the remaining gap.",
             "takeaway": "Probability alone frequently leaves the fear unresolved."
           }
         ]
@@ -3034,15 +3034,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "yes",
-          "label": "Yes — the two things (probability and coping) are separate"
+          "label": "Yes, the two things (probability and coping) are separate"
         },
         {
           "id": "no",
-          "label": "No — an accurate probability estimate rules out any other exaggeration"
+          "label": "No, an accurate probability estimate rules out any other exaggeration"
         }
       ],
       "bestOptionId": "yes",
-      "reveal": "Probability and coping are separate — you can get one right and still catastrophize on the other."
+      "reveal": "Probability and coping are separate, you can get one right and still catastrophize on the other."
     }
   },
   {
@@ -3081,7 +3081,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "checked": {
           "title": "Right",
-          "body": "This runs both questions — realistic probability (most such requests go fine) and a real coping plan (apologize, try again) — instead of avoiding the situation.",
+          "body": "This runs both questions, realistic probability (most such requests go fine) and a real coping plan (apologize, try again), instead of avoiding the situation.",
           "chain": [
             "The probability of fury is being overestimated.",
             "A real coping plan exists even in the unlikely bad case."
@@ -3089,7 +3089,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "avoid": {
           "title": "Not quite",
-          "body": "Avoiding the request sidesteps the fear rather than checking it — and feeds the same avoidance pattern this course flags elsewhere.",
+          "body": "Avoiding the request sidesteps the fear rather than checking it, and feeds the same avoidance pattern this course flags elsewhere.",
           "chain": [
             "Avoiding doesn't test whether the fear was accurate."
           ],
@@ -3117,13 +3117,13 @@ FROM jsonb_to_recordset($tag$[
       "rows": [
         {
           "question": "A neighbor is yelling at you right now, mid-argument",
-          "left": "Present threat — fear",
+          "left": "Present threat, fear",
           "right": ""
         },
         {
           "question": "Dreading how a neighbor might react to a request tomorrow",
           "left": "",
-          "right": "Anticipated threat — anxiety"
+          "right": "Anticipated threat, anxiety"
         }
       ]
     }
@@ -3167,11 +3167,11 @@ FROM jsonb_to_recordset($tag$[
       "variants": [
         {
           "pre": "Rate the strength of the feeling, then separately rate the ",
-          "post": " supporting the fear — they're often not the same number.",
+          "post": " supporting the fear, they're often not the same number.",
           "answers": [
             "evidence"
           ],
-          "correctFeedback": "Right — evidence, rated separately.",
+          "correctFeedback": "Right, evidence, rated separately.",
           "incorrectFeedback": "The word is evidence.",
           "workedExample": "An 8/10 feeling with 2/10 evidence is a common, checkable mismatch."
         }
@@ -3199,9 +3199,9 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "coping"
           ],
-          "correctFeedback": "Right — coping.",
+          "correctFeedback": "Right, coping.",
           "incorrectFeedback": "The second question is the coping question.",
-          "workedExample": "Probability, then coping — both, together."
+          "workedExample": "Probability, then coping, both, together."
         }
       ]
     }
@@ -3227,7 +3227,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "coping"
           ],
-          "correctFeedback": "Right — coping ability.",
+          "correctFeedback": "Right, coping ability.",
           "incorrectFeedback": "The underestimated part is coping ability.",
           "workedExample": "Three stacked exaggerations: probability, severity, and coping."
         }
@@ -3266,16 +3266,16 @@ FROM jsonb_to_recordset($tag$[
         "options": [
           {
             "id": "coping",
-            "label": "The coping question — naming exactly what they'd do if the unlikely thing happened",
+            "label": "The coping question, naming exactly what they'd do if the unlikely thing happened",
             "isSupported": true,
-            "response": "Right — knowing it's unlikely isn't always enough; naming a real coping plan is what closes the loop.",
+            "response": "Right, knowing it's unlikely isn't always enough; naming a real coping plan is what closes the loop.",
             "takeaway": "Probability alone often isn't the whole fix."
           },
           {
             "id": "nothing",
-            "label": "Nothing — knowing the odds should be enough on its own",
+            "label": "Nothing, knowing the odds should be enough on its own",
             "isSupported": false,
-            "response": "In practice it often isn't — the coping half does real work here.",
+            "response": "In practice it often isn't, the coping half does real work here.",
             "takeaway": "Both questions matter, not just probability."
           }
         ]
@@ -3318,7 +3318,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "checked": {
           "title": "Right",
-          "body": "This names realistic odds and a real coping plan — exactly the two-question check, applied to a fresh situation.",
+          "body": "This names realistic odds and a real coping plan, exactly the two-question check, applied to a fresh situation.",
           "chain": [
             "The probability of being seen as 'difficult' is being overestimated.",
             "A real coping plan (clarify intent) exists even in the unlikely bad case."
@@ -3326,7 +3326,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "silent": {
           "title": "Not quite",
-          "body": "Staying silent avoids testing the fear rather than checking it — and could let a real mistake go unaddressed.",
+          "body": "Staying silent avoids testing the fear rather than checking it, and could let a real mistake go unaddressed.",
           "chain": [
             "Avoiding the situation doesn't check whether the fear was accurate."
           ],
@@ -3351,7 +3351,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Just In Case",
       "variant": "myth",
       "myth": "If a safety behavior helps me feel better, it's helping me get better.",
-      "reality": "A safety behavior is an action that prevents a feared outcome from ever being tested. Holding a railing 'just in case,' over-preparing to prevent any failure, checking a phone repeatedly to avoid bad news — each one feels protective, and each one prevents the fear from ever being disconfirmed."
+      "reality": "A safety behavior is an action that prevents a feared outcome from ever being tested. Holding a railing 'just in case,' over-preparing to prevent any failure, checking a phone repeatedly to avoid bad news, each one feels protective, and each one prevents the fear from ever being disconfirmed."
     }
   },
   {
@@ -3374,7 +3374,7 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "nothing",
-          "label": "Nothing — rehearsing fully is just good preparation"
+          "label": "Nothing, rehearsing fully is just good preparation"
         }
       ],
       "bestOptionId": "unrehearsed-fine",
@@ -3393,7 +3393,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "protective_alarm",
     "content": {
-      "title": "Signal, Not Proof — Still True",
+      "title": "Signal, Not Proof, Still True",
       "instruction": "Fill in the blank.",
       "variants": [
         {
@@ -3402,7 +3402,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "proves"
           ],
-          "correctFeedback": "Right — reports, never proves.",
+          "correctFeedback": "Right, reports, never proves.",
           "incorrectFeedback": "The word is proves.",
           "workedExample": "Every technical concept since l8 builds on this one signal-not-proof idea."
         }
@@ -3421,19 +3421,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "catastrophizing",
     "content": {
-      "prompt": "\"If I don't over-prepare, it'll definitely go badly\" — is this catastrophizing?",
+      "prompt": "\"If I don't over-prepare, it'll definitely go badly\", is this catastrophizing?",
       "options": [
         {
           "id": "yes",
-          "label": "Yes — it overestimates how bad an unprepared attempt would actually go"
+          "label": "Yes, it overestimates how bad an unprepared attempt would actually go"
         },
         {
           "id": "no",
-          "label": "No — this is an accurate assessment"
+          "label": "No, this is an accurate assessment"
         }
       ],
       "bestOptionId": "yes",
-      "reveal": "This overestimates the likely outcome of not over-preparing — a catastrophizing pattern feeding the safety behavior."
+      "reveal": "This overestimates the likely outcome of not over-preparing, a catastrophizing pattern feeding the safety behavior."
     }
   },
   {
@@ -3484,11 +3484,11 @@ FROM jsonb_to_recordset($tag$[
         },
         {
           "id": "nothing",
-          "label": "Nothing — avoiding eye contact has no real effect"
+          "label": "Nothing, avoiding eye contact has no real effect"
         }
       ],
       "bestOptionId": "warmer-fine",
-      "reveal": "Avoiding eye contact prevents finding out the conversation would likely go fine with it — and can actually make the person seem less warm to others, feeding the same worry it was meant to prevent."
+      "reveal": "Avoiding eye contact prevents finding out the conversation would likely go fine with it, and can actually make the person seem less warm to others, feeding the same worry it was meant to prevent."
     }
   },
   {
@@ -3512,7 +3512,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "preparation"
           ],
-          "correctFeedback": "Right — preparation, not forecast.",
+          "correctFeedback": "Right, preparation, not forecast.",
           "incorrectFeedback": "The word is preparation.",
           "workedExample": "Same idea from l9, still true here."
         }
@@ -3535,15 +3535,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it's often small and easy to miss"
+          "label": "No, it's often small and easy to miss"
         },
         {
           "id": "yes",
-          "label": "Yes — it's always big and obvious"
+          "label": "Yes, it's always big and obvious"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "Safety behaviors are often small — a glance avoided, a sentence rehearsed silently — and easy to miss."
+      "reveal": "Safety behaviors are often small, a glance avoided, a sentence rehearsed silently, and easy to miss."
     }
   },
   {
@@ -3561,7 +3561,7 @@ FROM jsonb_to_recordset($tag$[
       "title": "Relief Now, Louder Later",
       "variant": "myth",
       "myth": "Avoiding something anxious now has no effect on how anxious it feels next time.",
-      "reality": "Avoiding a feared situation brings relief right away — and teaches the alarm it was right to worry, which makes next time louder, not easier. Skipping a hard phone call brings instant relief, and a slightly stronger urge to skip the next one too."
+      "reality": "Avoiding a feared situation brings relief right away, and teaches the alarm it was right to worry, which makes next time louder, not easier. Skipping a hard phone call brings instant relief, and a slightly stronger urge to skip the next one too."
     }
   },
   {
@@ -3578,7 +3578,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Relief, Then Louder",
       "instruction": "Choose one phrase at a time.",
-      "hotThought": "Skipping the hard call today felt like the right call — nothing but relief.",
+      "hotThought": "Skipping the hard call today felt like the right call, nothing but relief.",
       "trays": [
         {
           "id": "check",
@@ -3611,9 +3611,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "The relief is real, and so is the strengthening — both halves happen together, even when only the relief is felt at the time."
+      "comparisonFeedback": "The relief is real, and so is the strengthening, both halves happen together, even when only the relief is felt at the time."
     }
   },
   {
@@ -3628,7 +3628,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": "threat_prediction",
     "content": {
-      "title": "Event, Or Story? — A Fresh Case",
+      "title": "Event, Or Story?, A Fresh Case",
       "instruction": "Read the case, then choose.",
       "question": "A manager schedules an unplanned one-on-one. What's the most accurate first reading?",
       "cases": [
@@ -3652,7 +3652,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "separate": {
           "title": "Right",
-          "body": "A scheduled meeting has many possible reasons — the event itself doesn't confirm which one.",
+          "body": "A scheduled meeting has many possible reasons, the event itself doesn't confirm which one.",
           "chain": [
             "The event is neutral by itself.",
             "Any specific story is an added prediction."
@@ -3660,7 +3660,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "fact": {
           "title": "Not quite",
-          "body": "Most unplanned meetings are routine — the event alone doesn't confirm a specific story.",
+          "body": "Most unplanned meetings are routine, the event alone doesn't confirm a specific story.",
           "chain": [
             "The event doesn't prove any single cause."
           ],
@@ -3693,7 +3693,7 @@ FROM jsonb_to_recordset($tag$[
           ],
           "correctFeedback": "Right.",
           "incorrectFeedback": "The second question asks what you'd do if it happened.",
-          "workedExample": "Probability, then coping — the whole check."
+          "workedExample": "Probability, then coping, the whole check."
         }
       ]
     }
@@ -3745,9 +3745,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Both halves happen together: real relief now, and a slightly louder alarm for next time — that's the full cycle, not just the felt half."
+      "comparisonFeedback": "Both halves happen together: real relief now, and a slightly louder alarm for next time, that's the full cycle, not just the felt half."
     }
   },
   {
@@ -3792,16 +3792,16 @@ FROM jsonb_to_recordset($tag$[
         "options": [
           {
             "id": "no",
-            "label": "No — the cycle runs the same way whether or not the avoided thing was actually risky",
+            "label": "No, the cycle runs the same way whether or not the avoided thing was actually risky",
             "isSupported": true,
-            "response": "Right — the cycle is about relief and reinforcement, not about whether the original fear was accurate.",
+            "response": "Right, the cycle is about relief and reinforcement, not about whether the original fear was accurate.",
             "takeaway": "The cycle can run on a fear that was never really justified."
           },
           {
             "id": "yes",
-            "label": "Yes — it only runs if the thing avoided was genuinely dangerous",
+            "label": "Yes, it only runs if the thing avoided was genuinely dangerous",
             "isSupported": false,
-            "response": "Not quite — the cycle runs regardless of whether the original fear was accurate.",
+            "response": "Not quite, the cycle runs regardless of whether the original fear was accurate.",
             "takeaway": "Accuracy of the original fear isn't what drives the cycle."
           }
         ]
@@ -3822,7 +3822,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "Four Urges, Fifteen Lessons Later",
       "instruction": "Tap the chips in order.",
-      "prompt": "Fight, flight, freeze, and ___ — the four protective urges, still true.",
+      "prompt": "Fight, flight, freeze, and ___, the four protective urges, still true.",
       "chips": [
         "safety-seeking",
         "excitement",
@@ -3849,15 +3849,15 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — feeling better now and the fear actually improving are two different things"
+          "label": "No, feeling better now and the fear actually improving are two different things"
         },
         {
           "id": "yes",
-          "label": "Yes — feeling better now means the fear is improving"
+          "label": "Yes, feeling better now means the fear is improving"
         }
       ],
       "bestOptionId": "no",
-      "reveal": "Feeling better in the moment and the fear actually resolving over time are different — a safety behavior can do the first without the second."
+      "reveal": "Feeling better in the moment and the fear actually resolving over time are different, a safety behavior can do the first without the second."
     }
   },
   {
@@ -3886,7 +3886,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "cycle",
-          "label": "This is the avoidance cycle, wearing a scheduling disguise — relief from a built-in excuse, and the alarm staying just as loud about gatherings"
+          "label": "This is the avoidance cycle, wearing a scheduling disguise, relief from a built-in excuse, and the alarm staying just as loud about gatherings"
         },
         {
           "id": "productive",
@@ -3896,7 +3896,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "cycle": {
           "title": "Right",
-          "body": "A built-in excuse is still an avoidance strategy — it provides relief and prevents the fear from ever being tested, just less obviously than turning down an invitation directly.",
+          "body": "A built-in excuse is still an avoidance strategy, it provides relief and prevents the fear from ever being tested, just less obviously than turning down an invitation directly.",
           "chain": [
             "The overbooking functions as a standing excuse to avoid.",
             "That's the avoidance cycle, less obviously packaged."
@@ -3926,19 +3926,19 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": "fear_and_anxiety",
     "content": {
-      "title": "Fear, Or Anxiety — A Fresh Pair",
+      "title": "Fear, Or Anxiety, A Fresh Pair",
       "leftHeading": "Fear (present)",
       "rightHeading": "Anxiety (anticipated)",
       "rows": [
         {
           "question": "Someone is currently shouting at you, right now",
-          "left": "Present threat — fear",
+          "left": "Present threat, fear",
           "right": ""
         },
         {
           "question": "Dreading a gathering scheduled for next month",
           "left": "",
-          "right": "Anticipated threat — anxiety"
+          "right": "Anticipated threat, anxiety"
         }
       ]
     }
@@ -3986,7 +3986,7 @@ FROM jsonb_to_recordset($tag$[
           "answers": [
             "numbers"
           ],
-          "correctFeedback": "Right — two separate numbers.",
+          "correctFeedback": "Right, two separate numbers.",
           "incorrectFeedback": "The word is numbers.",
           "workedExample": "Still true, all the way through Section 1."
         }
@@ -4019,7 +4019,7 @@ FROM jsonb_to_recordset($tag$[
             },
             {
               "id": "same",
-              "label": "Nothing has changed underneath — the relief is the whole story"
+              "label": "Nothing has changed underneath, the relief is the whole story"
             }
           ]
         },
@@ -4040,9 +4040,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "The relief felt each time doesn't mean nothing is happening underneath — naming the pattern is exactly what makes it visible."
+      "comparisonFeedback": "The relief felt each time doesn't mean nothing is happening underneath, naming the pattern is exactly what makes it visible."
     }
   },
   {
@@ -4061,11 +4061,11 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "no",
-          "label": "No — it can feel protective and still prevent the fear from ever being tested"
+          "label": "No, it can feel protective and still prevent the fear from ever being tested"
         },
         {
           "id": "yes",
-          "label": "Yes — feeling protective means it's helping"
+          "label": "Yes, feeling protective means it's helping"
         }
       ],
       "bestOptionId": "no",
@@ -4084,7 +4084,7 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": true,
     "concept": null,
     "content": {
-      "title": "Relief Now, Louder Later — Once More",
+      "title": "Relief Now, Louder Later, Once More",
       "instruction": "Choose one phrase at a time.",
       "hotThought": "Someone has avoided a specific kind of situation for months, and every single time it's felt like the right call.",
       "trays": [
@@ -4119,9 +4119,9 @@ FROM jsonb_to_recordset($tag$[
       ],
       "joinStrategy": {
         "type": "template",
-        "template": "{check} — {so}."
+        "template": "{check}, {so}."
       },
-      "comparisonFeedback": "Months of avoidance, each instance individually justified, is exactly what the avoidance cycle looks like from the inside — a graded approach is the direct next step."
+      "comparisonFeedback": "Months of avoidance, each instance individually justified, is exactly what the avoidance cycle looks like from the inside, a graded approach is the direct next step."
     }
   },
   {
@@ -4138,7 +4138,7 @@ FROM jsonb_to_recordset($tag$[
     "content": {
       "title": "The Whole Arc, One Fresh Situation",
       "instruction": "Read the case, then choose the most accurate reading.",
-      "question": "Someone has been putting off booking a routine dentist appointment for months — heart races at the thought of it, mind predicts something will be found wrong, and there's a strong pull to just keep not booking it. What's happening?",
+      "question": "Someone has been putting off booking a routine dentist appointment for months, heart races at the thought of it, mind predicts something will be found wrong, and there's a strong pull to just keep not booking it. What's happening?",
       "cases": [
         {
           "id": "case1",
@@ -4150,7 +4150,7 @@ FROM jsonb_to_recordset($tag$[
       "options": [
         {
           "id": "full-arc",
-          "label": "The alarm fired (racing heart), the mind added a catastrophic prediction, the urge to avoid took over, and the avoidance is now cycling — relief each time, louder alarm next time"
+          "label": "The alarm fired (racing heart), the mind added a catastrophic prediction, the urge to avoid took over, and the avoidance is now cycling, relief each time, louder alarm next time"
         },
         {
           "id": "accurate-worry",
@@ -4160,7 +4160,7 @@ FROM jsonb_to_recordset($tag$[
       "feedbackMap": {
         "full-arc": {
           "title": "Right",
-          "body": "This runs the whole Section 1 arc — alarm, prediction, urge, and now an avoidance cycle keeping it all in place — none of it confirming an actual dental problem.",
+          "body": "This runs the whole Section 1 arc, alarm, prediction, urge, and now an avoidance cycle keeping it all in place, none of it confirming an actual dental problem.",
           "chain": [
             "Each step of the sequence is identifiable.",
             "The avoidance cycle is what's kept it going for months."
@@ -4168,7 +4168,7 @@ FROM jsonb_to_recordset($tag$[
         },
         "accurate-worry": {
           "title": "Not quite",
-          "body": "A racing heart is preparation, not evidence — and months of avoidance without any actual information gathered doesn't confirm anything about the real state of things.",
+          "body": "A racing heart is preparation, not evidence, and months of avoidance without any actual information gathered doesn't confirm anything about the real state of things.",
           "chain": [
             "The racing heart is the alarm firing, not proof of a problem."
           ],
@@ -4190,11 +4190,11 @@ FROM jsonb_to_recordset($tag$[
     "is_scored": false,
     "concept": null,
     "content": {
-      "title": "The Alarm, and What Keeps It Loud — Section Checkpoint",
+      "title": "The Alarm, and What Keeps It Loud, Section Checkpoint",
       "introTitle": "Let's see what's solid.",
       "intro": "Four quick checks across all of Section 1.\nA miss just gives you something to revisit.",
       "introTag": "4 QUESTIONS · ~1 MIN",
-      "revisitMessage": "The marked ideas are worth a short revisit — nothing is lost, and they'll come back around.",
+      "revisitMessage": "The marked ideas are worth a short revisit, nothing is lost, and they'll come back around.",
       "solidMessage": "Section 1 is holding. Next: teaching the alarm to stand down.",
       "items": [
         {
@@ -4245,7 +4245,7 @@ FROM jsonb_to_recordset($tag$[
               "isCorrect": true
             },
             {
-              "label": "Nothing — it's purely helpful",
+              "label": "Nothing, it's purely helpful",
               "feedback": "It prevents the fear from being disconfirmed.",
               "isCorrect": false
             }
@@ -4255,16 +4255,16 @@ FROM jsonb_to_recordset($tag$[
           "concept": "Avoidance Cycle",
           "prompt": "Does avoiding something anxious have an effect on next time?",
           "clue": "Relief now, louder later.",
-          "worked": "Yes — relief now, and a louder alarm next time.",
+          "worked": "Yes, relief now, and a louder alarm next time.",
           "options": [
             {
-              "label": "Yes — relief now, louder next time",
+              "label": "Yes, relief now, louder next time",
               "feedback": "Right.",
               "isCorrect": true
             },
             {
               "label": "No effect on next time",
-              "feedback": "Avoidance does have an effect — it makes next time louder.",
+              "feedback": "Avoidance does have an effect, it makes next time louder.",
               "isCorrect": false
             }
           ]
@@ -4288,10 +4288,10 @@ FROM jsonb_to_recordset($tag$[
       "closedTitle": "Section 1 Complete",
       "closedBody": "Tap to see what you've earned.",
       "openTitle": "You Can Read The Whole Alarm Sequence Now",
-      "openBody": "You can now describe what anxiety actually feels like, explain the alarm sequence in technical depth, catch a catastrophic prediction and check it, and recognize a safety behavior or avoidance pattern for what it does — instead of just noticing it feels protective.",
+      "openBody": "You can now describe what anxiety actually feels like, explain the alarm sequence in technical depth, catch a catastrophic prediction and check it, and recognize a safety behavior or avoidance pattern for what it does, instead of just noticing it feels protective.",
       "nextLabel": "Next up:",
       "nextTitle": "Teaching It To Stand Down",
-      "nextBody": "is about approaching instead of avoiding — and the two fastest, most common forms this loop takes: worry and panic."
+      "nextBody": "is about approaching instead of avoiding, and the two fastest, most common forms this loop takes: worry and panic."
     }
   }
 ]$tag$::jsonb) AS r(
@@ -4317,7 +4317,7 @@ BEGIN
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now describe what anxiety actually feels like, in plain terms, and place a new moment on the whole alarm loop — before learning a single technique.",
+      "capabilityStatement": "You can now describe what anxiety actually feels like, in plain terms, and place a new moment on the whole alarm loop, before learning a single technique.",
       "primaryActionLabel": "Back to path"
     }
   },
@@ -4330,7 +4330,7 @@ BEGIN
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now explain the alarm sequence — body prepares, mind predicts, an urge appears — and apply it accurately to a new situation instead of treating the alarm as proof.",
+      "capabilityStatement": "You can now explain the alarm sequence, body prepares, mind predicts, an urge appears, and apply it accurately to a new situation instead of treating the alarm as proof.",
       "primaryActionLabel": "Back to path"
     }
   },
@@ -4356,7 +4356,7 @@ BEGIN
     "reward_content": {
       "title": "Unit complete",
       "capabilityLabel": "You can now",
-      "capabilityStatement": "You can now recognize a safety behavior or an avoided moment for what it does — trading short-term relief for a louder fear next time — instead of just noticing it feels protective.",
+      "capabilityStatement": "You can now recognize a safety behavior or an avoided moment for what it does, trading short-term relief for a louder fear next time, instead of just noticing it feels protective.",
       "primaryActionLabel": "Back to path"
     }
   }
@@ -4441,8 +4441,8 @@ BEGIN
     "review_concepts": [],
     "prerequisites": [],
     "reward_content": {
-      "title": "You're not imagining it — almost everyone has this",
-      "body": "Anxiety disorders alone affect a meaningful share of adults over a lifetime, and everyday anxious moments — racing thoughts before something hard, a tight chest before a deadline — are close to universal. Naming it plainly, without a label, is the first real step. (WHO; Harvard Health — research/07 §1)",
+      "title": "You're not imagining it, almost everyone has this",
+      "body": "Anxiety disorders alone affect a meaningful share of adults over a lifetime, and everyday anxious moments, racing thoughts before something hard, a tight chest before a deadline, are close to universal. Naming it plainly, without a label, is the first real step. (WHO; Harvard Health, research/07 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -4591,7 +4591,7 @@ BEGIN
     "prerequisites": [],
     "reward_content": {
       "title": "A smoke alarm can be sensitive and still be doing its job",
-      "body": "Anxiety is designed to protect quickly — it can react to uncertainty, memories, or predictions before the facts are clear, the same way a smoke alarm can go off from burnt toast. A sensitive alarm deserves attention. It doesn't get the final vote on whether there's actually a fire.",
+      "body": "Anxiety is designed to protect quickly, it can react to uncertainty, memories, or predictions before the facts are clear, the same way a smoke alarm can go off from burnt toast. A sensitive alarm deserves attention. It doesn't get the final vote on whether there's actually a fire.",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -4739,8 +4739,8 @@ BEGIN
     "review_concepts": [],
     "prerequisites": [],
     "reward_content": {
-      "title": "Decatastrophizing isn't 'think positive' — it's two specific questions",
-      "body": "The technique isn't about feeling better on purpose. It pairs an evidence question (how likely is this, really, based on track record) with a coping question (what would I actually do if it happened) — because probability alone leaves the 'but what if it DOES happen' fear unanswered. (Beck & Haigh — research/02 §2)",
+      "title": "Decatastrophizing isn't 'think positive', it's two specific questions",
+      "body": "The technique isn't about feeling better on purpose. It pairs an evidence question (how likely is this, really, based on track record) with a coping question (what would I actually do if it happened), because probability alone leaves the 'but what if it DOES happen' fear unanswered. (Beck & Haigh, research/02 §2)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }
@@ -4889,7 +4889,7 @@ BEGIN
     "prerequisites": [],
     "reward_content": {
       "title": "Holding onto a railing 'just in case' can keep a fear alive",
-      "body": "A person who reads a weak feeling in the legs as a sign of collapsing might grab a railing, tense up, or sit down to prevent it — which prevents the fear from ever being disconfirmed. Same mechanism behind avoiding eye contact, over-preparing to prevent any failure, or checking a phone repeatedly to avoid bad news. (Salkovskis 1991 — research/03 §1)",
+      "body": "A person who reads a weak feeling in the legs as a sign of collapsing might grab a railing, tense up, or sit down to prevent it, which prevents the fear from ever being disconfirmed. Same mechanism behind avoiding eye contact, over-preparing to prevent any failure, or checking a phone repeatedly to avoid bad news. (Salkovskis 1991, research/03 §1)",
       "claimActionLabel": "Claim insight",
       "primaryActionLabel": "Back to path"
     }

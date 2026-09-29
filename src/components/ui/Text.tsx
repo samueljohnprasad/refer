@@ -147,6 +147,31 @@ interface TextProps extends RNTextProps {
   children: React.ReactNode;
 }
 
+// ponytail: remove em-dash, en-dash, double-hyphen, and spaced clause-dashes from all app UI content
+function cleanContent(children: React.ReactNode): React.ReactNode {
+  if (typeof children === "string") {
+    if (!children.includes("—") && !children.includes("–") && !children.includes("--") && !children.includes(" - ")) {
+      return children;
+    }
+    let text = children
+      .replace(/\s*[—–]\s*/g, (match, offset, str) => {
+        if (offset === 0 || offset + match.length === str.length) return "";
+        return ", ";
+      })
+      .replace(/\s*--\s*/g, (match, offset, str) => {
+        if (offset === 0 || offset + match.length === str.length) return "";
+        return ", ";
+      })
+      .replace(/([a-zA-Z])\s+-\s+([a-zA-Z])/g, "$1, $2")
+      .replace(/,\s*,+/g, ", ");
+    return text;
+  }
+  if (Array.isArray(children)) {
+    return React.Children.map(children, cleanContent);
+  }
+  return children;
+}
+
 export function Text({
   variant,
   color,
@@ -167,7 +192,7 @@ export function Text({
       style={[{ color: resolvedColor }, style]}
       {...rest}
     >
-      {children}
+      {cleanContent(children)}
     </RNText>
   );
 }

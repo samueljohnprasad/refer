@@ -1,5 +1,7 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import { Feather } from "@expo/vector-icons";
+import VoiceWaveform from "./VoiceWaveform";
 import MicControlContainer from "./MicControlContainer";
 import { SafeAreaView } from "@/src/components/tw";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
@@ -204,16 +206,32 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
     <View className="flex-1 bg-sage-50">
       <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom"]}>
         <View className="flex-1 justify-between px-6 py-5">
-          {/* Top Header Row - Quieter metadata contrast */}
-          <View className="items-center justify-center h-10">
-            <Text className="text-ink-muted text-xs happy-font-body-semibold">
+          {/* Top Header Row with Dismiss Affordance */}
+          <View className="flex-row items-center justify-between h-11 px-1">
+            <TouchableOpacity
+              onPress={handleCloseRecorder}
+              className="w-10 h-10 items-center justify-center rounded-full active:opacity-60"
+              accessibilityLabel="Close voice recorder"
+              accessibilityRole="button"
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            >
+              <Feather name="x" size={22} color={SEMANTIC_COLORS.text.secondary as string} />
+            </TouchableOpacity>
+
+            <Text
+              className="text-xs happy-font-body-semibold"
+              style={{ color: SEMANTIC_COLORS.text.secondary }}
+            >
               {formattedDateTime(selectedDate)}
             </Text>
+
+            {/* Empty balance spacer so date stays centered */}
+            <View className="w-10 h-10" />
           </View>
 
-          {/* Center Section: Prompt Text & Optional Shuffle */}
-          <View className="flex-1 justify-center items-center py-4">
-            <View key={currentPrompt} className="px-4 mb-3 w-full">
+          {/* Center Section: Prompt, Waveform, Timer & Status */}
+          <View className="flex-1 justify-center items-center py-2">
+            <View key={currentPrompt} className="px-4 mb-2 w-full">
               <StaggeredText
                 ref={textRef}
                 text={currentPrompt}
@@ -250,11 +268,17 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
                 </Text>
               </TouchableOpacity>
             )}
-          </View>
 
-          {/* Bottom Section: Timer Display (reduced 20%, tabular) and Controls */}
-          <View className="items-center gap-5 pb-3">
-            <View className="items-center">
+            {/* ponytail: 25-bar live animated waveform */}
+            <View className="mt-6 mb-2 w-full items-center">
+              <VoiceWaveform
+                isRecording={isRecording}
+                isPaused={isPaused}
+              />
+            </View>
+
+            {/* ponytail: timer directly below waveform creates unified sound instrument (Apple Journal benchmark) */}
+            <View className="items-center mt-2">
               <Text
                 className="text-ink-soft text-[38px] leading-[44px] tracking-tight happy-font-body-bold"
                 style={{ fontVariant: ["tabular-nums"] }}
@@ -263,12 +287,15 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
               </Text>
               {isRecording && <RecordingStatus />}
               {isPaused && (
-                <Text className="text-ink-muted text-sm mt-2 happy-font-body-semibold">
+                <Text className="text-ink-muted text-sm mt-1.5 happy-font-body-semibold">
                   Paused
                 </Text>
               )}
             </View>
+          </View>
 
+          {/* Bottom Section: Controls anchored for comfortable thumb reach */}
+          <View className="items-center pb-4">
             <MicControlContainer
               isRecording={isRecording}
               isPaused={isPaused}

@@ -79,7 +79,7 @@ export function RecallWarmupCategoryEngine({
     return (
       <View className="flex-1 -mt-12 px-5 justify-center items-center">
         <Text className="happy-font-heading-bold text-[22px] leading-[30px] text-[#201E1D] text-center">
-          Nice — you tested what you could recall.
+          Nice, you tested what you could recall.
         </Text>
       </View>
     );

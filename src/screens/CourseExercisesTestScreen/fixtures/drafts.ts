@@ -10,7 +10,7 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
     content: {
       title: "Recognizing Common Traps",
       instruction:
-        "See why the trap feels helpful — then learn the counter move.",
+        "See why the trap feels helpful, then learn the counter move.",
       trapTitle: "The Perfection Trap",
       trapBody: "If it isn’t perfect, it feels like failure.",
       shortTermPayoff: "High standards can feel protective.",
@@ -22,7 +22,7 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       counterMove: {
         body: [
           "Set a stopping point before you start.",
-          "When the timer ends, stop checking — even if it still feels unfinished.",
+          "When the timer ends, stop checking, even if it still feels unfinished.",
         ],
       },
     },
@@ -171,7 +171,7 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
         },
         {
           id: "balanced_evidence",
-          label: "Check what supports the alarm — and what doesn’t",
+          label: "Check what supports the alarm, and what doesn’t",
           targetPosition: 88,
           caption:
             "Now the conclusion comes from the whole situation, not the feeling alone.",
@@ -254,7 +254,7 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
     content: {
       title: "Replay the Scene",
       instruction:
-        "Tap the highlighted parts to see what you noticed — and what your mind added.",
+        "Tap the highlighted parts to see what you noticed, and what your mind added.",
       segments: [
         {
           text: "When I walked into the room,\n",
@@ -272,7 +272,7 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
           text: "they were talking about me.",
           label: "WHAT YOUR MIND ADDED",
           response:
-            "You interpreted the silence as being about you.\n\nThat may be possible — but the scene does not prove it.",
+            "You interpreted the silence as being about you.\n\nThat may be possible, but the scene does not prove it.",
         },
         {
           text: "\nI quickly sat down and pretended to look at my phone.",
@@ -347,7 +347,7 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
         },
       ],
       rightOrder: ["p2", "p3", "p1"],
-      clue: "Hint: Look at what happens now — and what happens later.",
+      clue: "Hint: Look at what happens now, and what happens later.",
       feedbackTitle: "THE PATTERN",
       feedback:
         "What helps now is not always what helps later.\n\nAvoidance can bring quick relief while keeping fear strong.\nExposure can feel harder now while creating new learning.\nReappraisal can change how you interpret the situation.",
@@ -488,7 +488,7 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
           label: "ALARM = SIGNAL",
           beats: [
             "“My chest is tight.”",
-            "“That tells me I’m alarmed —\nnot what the meeting means.”",
+            "“That tells me I’m alarmed,\nnot what the meeting means.”",
             "Sam goes to the meeting.",
             "CHECK REALITY\nNow he can get information instead of relying on the prediction.",
           ],
@@ -522,7 +522,7 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
         },
       ],
       pattern:
-        "Both paths started with the same body alarm.\n\nOne treated it as proof.\nThe other left room to check reality.\n\nAlarm tells you something feels threatening — not what is actually true.",
+        "Both paths started with the same body alarm.\n\nOne treated it as proof.\nThe other left room to check reality.\n\nAlarm tells you something feels threatening, not what is actually true.",
     },
   },
   {
@@ -542,7 +542,7 @@ export const draftMicrolearningFixtures: readonly Exercise[] = [
       rule: "THE PATTERN",
       takeaway:
         "A surge can feel endless while you’re inside it.\n\nBut intensity can change over time.",
-      note: "Illustrative pattern — timing and intensity vary.",
+      note: "Illustrative pattern, timing and intensity vary.",
     },
   },
 ] as unknown as Exercise[];

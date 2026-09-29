@@ -211,7 +211,7 @@ export const priorityMicrolearningFixtures: readonly Exercise[] = [
         "These can show up when your system is leaning toward ALERT rather than SETTLED.",
       noneRevealTitle: "None of these fit right now",
       noneRevealBody:
-        "These are only examples — your signals may look different.",
+        "These are only examples, your signals may look different.",
       primaryLabel: "Continue",
       feedbackTitle: "Clues, not failures",
       feedback: "These signals can show that the body is still on guard.",
