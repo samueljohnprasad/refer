@@ -151,13 +151,15 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
       ],
     );
     return (
-      <View className="gap-2">
-        <View className="flex-row items-center justify-between px-1 mb-1">
-          <Text className="happy-font-body-bold text-[15px] text-ink-soft">How are you feeling?</Text>
+      <View className="gap-1.5">
+        <View className="flex-row items-center justify-between px-1 mb-0.5">
+          <Text className="text-[11px] font-semibold tracking-wider text-ink-muted/80 uppercase">
+            How are you feeling?
+          </Text>
         </View>
 
-        {/* ponytail: remove outer card and use whitespace grouping for mood */}
-        <View className="flex-row justify-between px-1 py-1">
+        {/* ponytail: contained soft card surface for mood check-in (Finch / Stoic benchmark) */}
+        <View className="bg-white rounded-2xl border border-black/[0.06] px-2 py-3 shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex-row justify-between">
           {EMOTIONS.map((emotion) => (
             <MemoizedEmotionItem
               key={emotion.id}

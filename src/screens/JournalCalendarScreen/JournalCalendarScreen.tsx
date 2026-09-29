@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useCallback, useState } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
@@ -34,28 +34,23 @@ const getGreeting = (hour: number): string => {
   return "Time to wind down";
 };
 
+// ponytail: unconstrained full-width greeting
 const Greeting = React.memo<{
   displayName?: string;
   isLoading: boolean;
 }>(({ displayName, isLoading }) => {
-  
   const greeting = useMemo(() => getGreeting(new Date().getHours()), []);
 
-  // ponytail: calibrated greeting scale to emphasize prompt hero
   return (
-    <View>
-      <View className="flex-row items-center justify-between">
-        <View className="flex-row items-center gap-2.5 flex-1 pr-2">
-          <Text
-            className="text-[22px] font-bold tracking-tight text-ink"
-            style={{ color: SEMANTIC_COLORS.text.primary }}
-            numberOfLines={1}
-            adjustsFontSizeToFit
-          >
-            {greeting}, {isLoading ? "..." : displayName || "Friend"}
-          </Text>
-        </View>
-      </View>
+    <View className="w-full">
+      <Text
+        className="text-[24px] font-bold tracking-tight text-ink"
+        style={{ color: SEMANTIC_COLORS.text.primary }}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+      >
+        {greeting}, {isLoading ? "..." : displayName || "Friend"}
+      </Text>
     </View>
   );
 });
@@ -197,8 +192,8 @@ export default function JournalCalendarScreen() {
           </View>
 
           {/* ponytail: action-first home screen hierarchy */}
-          {/* Hero: Today's Reflection */}
-          <View className="mt-8">
+          {/* Section 1 (Hero): Today's Reflection */}
+          <View className="mt-6">
             <View className="mb-1.5 px-1">
               <Text className="text-[11px] font-semibold tracking-wider text-ink-muted/80 uppercase">
                 Today's reflection
@@ -212,7 +207,7 @@ export default function JournalCalendarScreen() {
             />
           </View>
 
-          {/* Secondary: Mood Check-in */}
+          {/* Section 2 (Check-in): Contained Mood Logger */}
           <View className="mt-6">
             <EmotionLogger
               selectedDate={selectedEmotionDate}
@@ -221,17 +216,17 @@ export default function JournalCalendarScreen() {
             />
           </View>
 
-          {/* Reinforcement: Compact Streak */}
+          {/* Section 3 (Learning): Tactile Continue Journey Card */}
+          <View className="mt-6">
+            <ContinueJourneyCard />
+          </View>
+
+          {/* ponytail: Section 4 (Reinforcement) — Weekly streak progress board anchors feed */}
           <View className="mt-6">
             <WeeklyStreakWidget
               showDepth={false}
               onPress={() => router.push("/tabs/screens/xp-history")}
             />
-          </View>
-
-          {/* ponytail: secondary learning resume entry point */}
-          <View className="mt-8">
-            <ContinueJourneyCard />
           </View>
         </View>
       </ScrollView>

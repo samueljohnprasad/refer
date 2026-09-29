@@ -29,7 +29,8 @@ export interface VariantConfig {
 export const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
   primary: {
     faceColor: SEMANTIC_COLORS.brand.primary,
-    rimColor: SEMANTIC_COLORS.brand.onSoft,
+    // ponytail: match journey map & lesson screen tactile depth (SAGE[600])
+    rimColor: SEMANTIC_COLORS.brand.pressed,
     labelColor: SEMANTIC_COLORS.surface.primary,
     disabledFaceColor: "#F3F6FA",
     disabledRimColor: "#E9EEF5",
@@ -138,4 +139,6 @@ export interface ButtonProps {
   haptic?: "none" | "light" | "medium";
   className?: string;
   labelClassName?: string;
+  faceColor?: ColorValue;
+  rimColor?: ColorValue;
 }

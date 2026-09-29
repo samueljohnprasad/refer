@@ -113,12 +113,7 @@ export function ContinueJourneyCard({
             </View>
 
             {/* Primary Action Row */}
-            <View className="mt-3 pt-2 flex-row items-center justify-between">
-              <Text className="text-[13px] font-semibold text-brand-primary">
-                {state.actionLabel}
-              </Text>
-              <ArrowRight size={14} color={SEMANTIC_COLORS.brand.primary as string} />
-            </View>
+            <ContinueJourneyActionRow label={state.actionLabel} />
           </>
         )}
 
@@ -137,12 +132,8 @@ export function ContinueJourneyCard({
                 <Compass size={20} color={SEMANTIC_COLORS.brand.primary as string} />
               </View>
             </View>
-            <View className="mt-3 pt-2 flex-row items-center justify-between">
-              <Text className="text-[13px] font-semibold text-brand-primary">
-                {state.actionLabel}
-              </Text>
-              <ArrowRight size={14} color={SEMANTIC_COLORS.brand.primary as string} />
-            </View>
+            {/* Primary Action Row */}
+            <ContinueJourneyActionRow label={state.actionLabel} />
           </>
         )}
 
@@ -169,12 +160,8 @@ export function ContinueJourneyCard({
                 </View>
               )}
             </View>
-            <View className="mt-3 pt-2 flex-row items-center justify-between">
-              <Text className="text-[13px] font-semibold text-brand-primary">
-                {state.actionLabel}
-              </Text>
-              <ArrowRight size={14} color={SEMANTIC_COLORS.brand.primary as string} />
-            </View>
+            {/* Primary Action Row */}
+            <ContinueJourneyActionRow label={state.actionLabel} />
           </>
         )}
 
@@ -193,15 +180,25 @@ export function ContinueJourneyCard({
                 <Compass size={20} color={SEMANTIC_COLORS.text.secondary as string} />
               </View>
             </View>
-            <View className="mt-3 pt-2 flex-row items-center justify-between">
-              <Text className="text-[13px] font-semibold text-brand-primary">
-                {state.actionLabel}
-              </Text>
-              <ArrowRight size={14} color={SEMANTIC_COLORS.brand.primary as string} />
-            </View>
+            {/* Primary Action Row */}
+            <ContinueJourneyActionRow label={state.actionLabel} />
           </>
         )}
       </Card>
+    </View>
+  );
+}
+
+// ponytail: unified tactile arrow button for journey card CTA matching Duolingo quest patterns
+function ContinueJourneyActionRow({ label }: { label: string }) {
+  return (
+    <View className="mt-3 pt-2.5 flex-row items-center justify-between border-t border-black/[0.04]">
+      <Text className="text-[13px] font-bold text-brand-primary">
+        {label}
+      </Text>
+      <View className="w-6 h-6 rounded-full bg-brand-primary items-center justify-center shadow-xs">
+        <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.5} />
+      </View>
     </View>
   );
 }

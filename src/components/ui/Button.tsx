@@ -31,6 +31,8 @@ export function Button({
   haptic = "light",
   className = "",
   labelClassName = "",
+  faceColor: customFaceColor,
+  rimColor: customRimColor,
 }: ButtonProps) {
   const sizeConfig = SIZES[size];
   const isDisabled = disabled || loading;
@@ -98,8 +100,8 @@ export function Button({
 
   // All other variants — canonical 3D tactile button via SvgAppButton
   const config = VARIANTS[variant];
-  const faceColor = isDisabled ? config.disabledFaceColor : config.faceColor;
-  const rimColor = isDisabled ? config.disabledRimColor : config.rimColor;
+  const faceColor = isDisabled ? config.disabledFaceColor : (customFaceColor ?? config.faceColor);
+  const rimColor = isDisabled ? config.disabledRimColor : (customRimColor ?? config.rimColor);
   const labelColor = isDisabled 
     ? (config.disabledLabelColor ?? config.labelColor)
     : config.labelColor;
