@@ -62,7 +62,8 @@
         "expo-audio",
         {
           "microphonePermission": "$(PRODUCT_NAME) needs access to the microphone to record your voice for journal entries. For example, this allows you to speak your thoughts and save them as audio reflections in your daily journal.",
-          "enableBackgroundPlayback": false
+          "enableBackgroundPlayback": false,
+          "enableBackgroundRecording": false
         }
       ],
       [
