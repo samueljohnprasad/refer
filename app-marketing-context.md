@@ -2,7 +2,7 @@
 
 ## App Overview
 - **App Name:** Happy
-- **App ID (Apple):** 6479012345 (Bundle ID: `com.samuelprasad.happy`)
+- **App ID (Apple):** 6755650433 (Bundle ID: `com.samuelprasad.happy`)
 - **App ID (Google Play):** `com.samuelprasad.happy`
 - **Category:** Health & Fitness
 - **Secondary Category:** Lifestyle / Medical
@@ -31,11 +31,14 @@
 | Fabulous: Daily Habit Tracker | 1203637303 | Strong journey-based coaching | Overwhelming notifications, heavy paywall pressure, not CBT-focused |
 
 ## Current ASO State
-- **Title:** Happy: CBT Courses & Journal
-- **Subtitle:** Mood Tracker & Life Insights
-- **Keyword Field:** therapy,anxiety,relief,voice,reflection,habit,mindfulness,stress,selfcare,diary,wellness,mental,calm
+- **Title:** Happy: CBT Courses & Journey (28/30 chars)
+- **Subtitle:** Gamified Mental Health & Mood (29/30 chars)
+- **Keyword Field (100/100 chars, 0 duplicate words):**
+  `therapy,anxiety,relief,journal,depression,stress,selfcare,mindfulness,panic,overthinking,diary,sleep`
+- **Promotional Text (160/170 chars):**
+  `Level up your mental wellness. Happy turns CBT into gamified learning journeys with interactive chapter maps, 5-minute courses, and rewarding daily reflections.`
 - **Rating:** 4.8 / 5.0 target benchmark
-- **Primary Keywords:** CBT courses, mental health journey, CBT journal, mood tracker, daily weekly monthly insights, anxiety relief
+- **Primary Indexed Combos:** gamified mental health, cbt courses, mental health journey, cbt journey, gamified cbt, anxiety courses, depression journey, mood diary, therapy journal, panic relief
 
 ## Goals & KPIs
 1. **ASO Visibility:** Rank in top 3 for "CBT courses", "mental health journey", "CBT journal", "mood insights", and "gamified mood tracker".

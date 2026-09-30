@@ -39,16 +39,21 @@ export function LoadingPracticeScreen({ onClose }: { onClose?: () => void }) {
 export function PracticeDataErrorScreen({
   message,
   onClose,
+  onSkip,
 }: {
   message: string;
   onClose?: () => void;
+  onSkip?: () => void;
 }) {
+  // ponytail: ensure user is never trapped when exercise data is invalid
   return (
     <LessonScreen
       progress={0}
       onClose={onClose}
-      primaryLabel="Close"
-      onPrimaryPress={onClose ?? (() => undefined)}
+      primaryLabel={onSkip ? "Skip exercise" : "Close"}
+      onPrimaryPress={onSkip ?? onClose ?? (() => undefined)}
+      secondaryLabel={onSkip && onClose ? "Close" : undefined}
+      onSecondaryPress={onClose}
     >
       <View className="flex-1 justify-center px-8">
         <Text variant="h2" color="ink" className="mb-3">

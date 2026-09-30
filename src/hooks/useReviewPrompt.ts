@@ -14,7 +14,32 @@ interface UseReviewPromptParams {
   enabled?: boolean;
 }
 
-type Milestone = "streak_3" | "streak_7" | "streak_15";
+export type ReviewMilestone =
+  | "streak_3"
+  | "streak_7"
+  | "streak_15"
+  | "course_unit_completed"
+  | "lesson_milestone_3";
+
+// ponytail: standalone helper to request App Store review at emotional highs (course/unit completion)
+export async function requestReviewForMilestone(
+  milestone: ReviewMilestone,
+): Promise<void> {
+  try {
+    const milestoneKey = `@happy/review_prompted_${milestone}`;
+    const alreadyPrompted = await AsyncStorage.getItem(milestoneKey);
+    if (alreadyPrompted === "true") return;
+
+    const isAvailable = await StoreReview.isAvailableAsync();
+    const hasAction = await StoreReview.hasAction();
+    if (!isAvailable || !hasAction) return;
+
+    await AsyncStorage.setItem(milestoneKey, "true");
+    await StoreReview.requestReview();
+  } catch (error) {
+    console.warn("[review] request error:", error);
+  }
+}
 
 // ponytail: native in-app review prompt triggered at Day 3 (2->3), Day 7, and Day 15 milestones per Apple HIG
 export const useReviewPrompt = ({
@@ -29,7 +54,7 @@ export const useReviewPrompt = ({
   const isStreak7 = currentStreak === 7;
   const isStreak15 = currentStreak === 15;
 
-  const currentMilestone: Milestone | null = isStreak3
+  const currentMilestone: ReviewMilestone | null = isStreak3
     ? "streak_3"
     : isStreak7
       ? "streak_7"
@@ -39,39 +64,7 @@ export const useReviewPrompt = ({
 
   const requestReview = useCallback(async () => {
     if (!currentMilestone) return;
-
-    try {
-      // Check legacy single-shot key
-      const legacyRequested = await AsyncStorage.getItem(
-        LEGACY_REVIEW_REQUESTED_KEY,
-      );
-      if (legacyRequested === "true") {
-        return;
-      }
-
-      // Check if this specific milestone was already prompted
-      const milestoneKey = `@happy/review_prompted_${currentMilestone}`;
-      const alreadyPrompted = await AsyncStorage.getItem(milestoneKey);
-      if (alreadyPrompted === "true") {
-        return;
-      }
-
-      // Check if device supports in-app reviews
-      const isAvailable = await StoreReview.isAvailableAsync();
-      const hasAction = await StoreReview.hasAction();
-
-      if (!isAvailable || !hasAction) {
-        return;
-      }
-
-      // Record milestone prompted before calling
-      await AsyncStorage.setItem(milestoneKey, "true");
-
-      // Apple HIG: call native requestReview directly without pre-alert interruption
-      await StoreReview.requestReview();
-    } catch (error) {
-      console.error("Error requesting review:", error);
-    }
+    await requestReviewForMilestone(currentMilestone);
   }, [currentMilestone]);
 
   useEffect(() => {

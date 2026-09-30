@@ -102,8 +102,8 @@ export function NodeEngineRouter({
   const showingFeedback = checkStatus !== V1CheckStatusEnum.Idle;
   const isCheckpoint = category === CourseExerciseCategoryEnum.CourseCheckpoint;
   const isParadox = category === CourseExerciseCategoryEnum.ParadoxCard;
-  const isReframe = category === CourseExerciseCategoryEnum.InteractiveReframe;
-  const showingSkipAction = !showingFeedback && !ready && !isCheckpoint && !isParadox && !isReframe;
+  // ponytail: always allow skip action unless feedback is actively displayed
+  const showingSkipAction = !showingFeedback;
   useV1NodeSessionDraft({
     dispatch,
     exerciseCount: exercises.length,
@@ -362,6 +362,7 @@ export function NodeEngineRouter({
 
   const skipForNow = async () => {
     if (!currentExercise) {
+      await finishNode(responses);
       return;
     }
 
@@ -406,11 +407,11 @@ export function NodeEngineRouter({
   }
 
   if (!currentExercise || !Engine || !categoryConfig) {
-    return <NodeExerciseDataError invalidContent={false} onClose={onClose} />;
+    return <NodeExerciseDataError invalidContent={false} onClose={onClose} onSkip={skipForNow} />;
   }
 
   if (contentIssues.length > 0) {
-    return <NodeExerciseDataError invalidContent onClose={onClose} />;
+    return <NodeExerciseDataError invalidContent onClose={onClose} onSkip={skipForNow} />;
   }
 
   const checkpointResponse = (currentResponse ?? responses[currentExercise.id]) as Record<string, unknown> | null;

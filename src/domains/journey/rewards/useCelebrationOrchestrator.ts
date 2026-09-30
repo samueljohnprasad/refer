@@ -6,6 +6,7 @@ import { useCallback } from "react";
 import { useAppDispatch } from "@/src/store/hooks";
 import type { CompleteNodeResponse } from "@/src/types/journeyV5";
 import { setPendingCelebration } from "../state/journeySlice";
+import { requestReviewForMilestone } from "@/src/hooks/useReviewPrompt";
 
 interface UseCelebrationOrchestratorResult {
   /**
@@ -31,6 +32,12 @@ export function useCelebrationOrchestrator(
         dispatch(
           setPendingCelebration({ courseId, celebration: result.celebration }),
         );
+        // ponytail: trigger App Store review prompt when user completes a unit/course celebration
+        if (result.celebration?.level === "unit" || result.celebration?.level === "course") {
+          setTimeout(() => {
+            requestReviewForMilestone("course_unit_completed");
+          }, 2400);
+        }
       } catch (err) {
         // ponytail: never throw — rewards must not block navigation (FR-5.4)
         console.warn("[rewards] orchestrator error", err);

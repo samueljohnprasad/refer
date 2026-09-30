@@ -4,9 +4,11 @@ import { PracticeDataErrorScreen } from "@/src/components/node/NodeEngineRouterP
 export function NodeExerciseDataError({
   invalidContent,
   onClose,
+  onSkip,
 }: {
   invalidContent: boolean;
   onClose?: () => void;
+  onSkip?: () => void;
 }) {
   return (
     <PracticeDataErrorScreen
@@ -16,6 +18,7 @@ export function NodeExerciseDataError({
           : "This lesson uses an unsupported exercise category."
       }
       onClose={onClose}
+      onSkip={onSkip}
     />
   );
 }

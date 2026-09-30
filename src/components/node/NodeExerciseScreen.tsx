@@ -103,7 +103,7 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
           primaryLoading={props.primaryLoading}
           onPrimaryPress={props.onPrimaryPress}
           skipLabel={readString(props.exercise.content?.skipLabel) ?? undefined}
-          onSkip={allowsSkip ? props.onSkip : undefined}
+          onSkip={props.onSkip}
         />
       </View>
     );
