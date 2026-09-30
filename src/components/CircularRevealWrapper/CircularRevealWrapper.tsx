@@ -35,7 +35,7 @@ export function CircularRevealWrapper({
 
   // Clone the child to inject our custom onPress handler
   return cloneElement(children, {
-    onPress: (e: GestureResponderEvent) => {
+    onPress: (e?: GestureResponderEvent) => {
       // Trigger the reveal and navigation
       navigateWithReveal(e, href, color, duration);
       

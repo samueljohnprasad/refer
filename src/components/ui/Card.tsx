@@ -1,5 +1,6 @@
 import React, { useCallback, useRef } from "react";
 import {
+  GestureResponderEvent,
   Pressable,
   View,
   type ViewProps,
@@ -67,7 +68,7 @@ const RADIUS_CLASS: Record<Radius, string> = {
 interface CardProps extends ViewProps {
   variant?: Variant;
   radius?: Radius;
-  onPress?: () => void;
+  onPress?: (event?: GestureResponderEvent) => void;
   haptic?: "none" | "light" | "medium";
   showDepth?: boolean; // Kept for backwards compatibility but ignored visually
   disabled?: boolean;
@@ -129,16 +130,20 @@ export function Card({
     opacity.value = withTiming(1, { duration: 150 });
   }, [isInteractive, reducedMotion, pressY, opacity]);
 
-  const handlePress = useCallback(() => {
-    if (!isInteractive || pressLock.current) return;
+  const handlePress = useCallback(
+    (event?: GestureResponderEvent) => {
+      if (!isInteractive || pressLock.current) return;
 
-    pressLock.current = true;
-    setTimeout(() => {
-      pressLock.current = false;
-    }, DOUBLE_TAP_GUARD_MS);
+      pressLock.current = true;
+      setTimeout(() => {
+        pressLock.current = false;
+      }, DOUBLE_TAP_GUARD_MS);
 
-    onPress?.();
-  }, [isInteractive, onPress]);
+      // ponytail: forward event to consumers like CircularRevealWrapper
+      onPress?.(event);
+    },
+    [isInteractive, onPress]
+  );
 
   const hasPadding =
     contentClassName.includes("p-") ||

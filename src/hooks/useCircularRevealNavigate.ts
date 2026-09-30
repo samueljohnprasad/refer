@@ -1,20 +1,24 @@
 import { useSetAtom } from 'jotai';
 import { startTransitionAtom } from '@/src/store/transitionStore';
 import { useRouter } from 'expo-router';
-import { GestureResponderEvent } from 'react-native';
+import { Dimensions, GestureResponderEvent } from 'react-native';
 
 export const useCircularRevealNavigate = () => {
   const router = useRouter();
   const startTransition = useSetAtom(startTransitionAtom);
 
   const navigateWithReveal = (
-    event: GestureResponderEvent,
-    href: string,
+    event?: GestureResponderEvent,
+    href?: string,
     color: string = '#4ECDC4', // Default fallback color
     duration?: number
   ) => {
-    // Extract the exact X and Y coordinates of the user's tap on the screen
-    const { pageX, pageY } = event.nativeEvent;
+    if (!href) return;
+
+    // ponytail: fallback to screen center if event is missing or SyntheticEvent without nativeEvent
+    const { width, height } = Dimensions.get('window');
+    const pageX = event?.nativeEvent?.pageX ?? width / 2;
+    const pageY = event?.nativeEvent?.pageY ?? height / 2;
 
     // Trigger the global Jotai state to start the Skia animation
     startTransition({
