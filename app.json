@@ -23,7 +23,6 @@
         "NSCameraUsageDescription": "Happy needs access to the camera to take photos of your handwritten journal pages to convert them into reflections.",
         "NSUserNotificationUsageDescription": "The app sends notifications to remind you to record your daily voice journal entries.",
         "ITSAppUsesNonExemptEncryption": false,
-        "UIBackgroundModes": [],
         "EXDevMenuShowFloatingActionButton": false
       }
     },
