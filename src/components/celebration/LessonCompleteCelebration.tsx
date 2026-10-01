@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, Modal, Pressable, Share, useColorScheme } from "react-native";
+import { View, Text, StyleSheet, Modal, Pressable, ScrollView, Share, useColorScheme } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, {
   useAnimatedStyle,
@@ -30,6 +30,7 @@ import {
   Tick02Icon,
   VolumeHighIcon,
   VolumeMuteIcon,
+  GiftIcon,
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/src/components/ui/Button";
 import { ConfettiExplosion } from "@/src/components/animations/ConfettiExplosion";
@@ -41,6 +42,13 @@ import { useSoundEffects } from "@/src/hooks/useSoundEffects";
 import { useStreak } from "@/src/hooks/useStreak";
 import { useXPOptional } from "@/src/context/XPContext";
 import { useDailyXPGoal } from "@/src/store/dailyGoalStore";
+import {
+  hasClaimedPerfectWeek,
+  isPerfectWeek,
+  markPerfectWeekClaimed,
+  PERFECT_WEEK_BONUS_XP,
+} from "@/src/store/perfectWeekStore";
+import { XPActionType } from "@/src/types/xp";
 import {
   getStreakMilestone,
   markStreakMilestoneCelebrated,
@@ -56,6 +64,7 @@ const PANDA = {
   celebrate: require("../../../assets/images/panda/panda-super-excite.png"),
   happy: require("../../../assets/images/panda/panda-happy.png"),
   plant: require("../../../assets/images/panda/panda-plant.png"),
+  proud: require("../../../assets/images/panda/panda-love-hug.png"),
 } as const;
 
 export type CelebrationPandaVariant = keyof typeof PANDA;
@@ -111,6 +120,8 @@ export interface LessonCompleteCelebrationProps {
   dailyGoal?: number;
   /** Force the streak-milestone flourish on/off (defaults to once-per-run detection). */
   celebrateStreakMilestone?: boolean;
+  /** Force the perfect-week chest on/off (defaults to Saturday + 7-day streak, once a week). */
+  celebratePerfectWeek?: boolean;
   title?: string;
   perfectTitle?: string;
   message?: string;
@@ -130,6 +141,7 @@ export function LessonCompleteCelebration({
   todayXP: todayXPOverride,
   dailyGoal: dailyGoalOverride,
   celebrateStreakMilestone,
+  celebratePerfectWeek,
   title = "Lesson complete!",
   perfectTitle = "Perfect lesson!",
   message,
@@ -151,6 +163,9 @@ export function LessonCompleteCelebration({
   const [goalJustReached, setGoalJustReached] = useState(false);
   const [activeMilestone, setActiveMilestone] = useState<StreakMilestoneDay | null>(null);
   const [showMilestoneMessage, setShowMilestoneMessage] = useState(false);
+  const [perfectWeek, setPerfectWeek] = useState(false);
+  const [chestOpened, setChestOpened] = useState(false);
+  const chestAwardedRef = useRef(false);
   const countTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const shareCardRef = useRef<View>(null);
@@ -161,7 +176,11 @@ export function LessonCompleteCelebration({
   const resolvedStreak = Math.max(1, streakDays ?? currentStreak ?? 0);
   const resolvedTitle = isPerfect ? perfectTitle : title;
   const resolvedMessage = message ?? pickEncouragement(lessonTitle ?? title, isPerfect);
-  const resolvedPanda: CelebrationPandaVariant = isPerfect ? "happy" : pandaVariant;
+  const resolvedPanda: CelebrationPandaVariant = chestOpened
+    ? "proud"
+    : isPerfect
+      ? "happy"
+      : pandaVariant;
 
   // Daily goal: XP context is already updated optimistically with this lesson's
   // XP, so "before" is today's total minus what was just earned.
@@ -194,6 +213,10 @@ export function LessonCompleteCelebration({
   const milestoneScale = useSharedValue(0);
   const milestoneOpacity = useSharedValue(0);
   const flamePulse = useSharedValue(0);
+  const chestScale = useSharedValue(0);
+  const chestOpacity = useSharedValue(0);
+  const chestWobble = useSharedValue(0);
+  const pandaSwap = useSharedValue(1);
   const buttonOpacity = useSharedValue(0);
 
   const schedule = (delay: number, fn: () => void) => {
@@ -260,12 +283,19 @@ export function LessonCompleteCelebration({
       milestoneScale.value = 0;
       milestoneOpacity.value = 0;
       flamePulse.value = 0;
+      chestScale.value = 0;
+      chestOpacity.value = 0;
+      chestWobble.value = 0;
+      pandaSwap.value = 1;
       buttonOpacity.value = 0;
       setDisplayXP(0);
       setCanInteract(false);
       setGoalJustReached(false);
       setActiveMilestone(null);
       setShowMilestoneMessage(false);
+      setPerfectWeek(false);
+      setChestOpened(false);
+      chestAwardedRef.current = false;
       if (countTimerRef.current) clearInterval(countTimerRef.current);
       timersRef.current.forEach(clearTimeout);
       timersRef.current = [];
@@ -387,6 +417,44 @@ export function LessonCompleteCelebration({
       });
     }
 
+    // Perfect week chest: appears after the goal ring and wobbles until opened.
+    const chestDelay = ringFillDelay + (rm ? 100 : 320);
+    const startPerfectWeek = () => {
+      setPerfectWeek(true);
+      chestOpacity.value = withDelay(chestDelay, withTiming(1, { duration: rm ? 120 : 220 }));
+      chestScale.value = withDelay(chestDelay, popIn(rm));
+      if (!rm) {
+        chestWobble.value = withDelay(
+          chestDelay + 400,
+          withRepeat(
+            withSequence(
+              withTiming(1, { duration: 90 }),
+              withTiming(-1, { duration: 90 }),
+              withTiming(0.6, { duration: 80 }),
+              withTiming(0, { duration: 80 }),
+              withTiming(0, { duration: 1300 }),
+            ),
+            -1,
+            false,
+          ),
+        );
+      }
+      runHaptic(chestDelay, Haptics.ImpactFeedbackStyle.Heavy);
+    };
+    let perfectWeekCheckCancelled = false;
+    const perfectWeekEligible = celebratePerfectWeek ?? isPerfectWeek(resolvedStreak);
+    if (perfectWeekEligible) {
+      if (celebratePerfectWeek !== undefined) {
+        startPerfectWeek();
+      } else {
+        hasClaimedPerfectWeek().then((claimed) => {
+          if (claimed || perfectWeekCheckCancelled) return;
+          startPerfectWeek();
+          void markPerfectWeekClaimed();
+        });
+      }
+    }
+
     // Buttons
     buttonOpacity.value = withDelay(
       ringFillDelay + (rm ? 120 : 420),
@@ -397,6 +465,7 @@ export function LessonCompleteCelebration({
 
     return () => {
       milestoneCheckCancelled = true;
+      perfectWeekCheckCancelled = true;
       if (countTimerRef.current) clearInterval(countTimerRef.current);
       timersRef.current.forEach(clearTimeout);
       timersRef.current = [];
@@ -465,10 +534,52 @@ export function LessonCompleteCelebration({
   const flameIconStyle = useAnimatedStyle(() => ({
     transform: [{ scale: 1 + flamePulse.value * 0.45 }, { rotate: `${flamePulse.value * -8}deg` }],
   }));
+  const chestCardStyle = useAnimatedStyle(() => ({
+    opacity: chestOpacity.value,
+    transform: [{ scale: chestScale.value }],
+  }));
+  const chestIconStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${chestWobble.value * 12}deg` }, { scale: 1 + Math.abs(chestWobble.value) * 0.12 }],
+  }));
+  const pandaSwapStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pandaSwap.value }],
+  }));
+
+  const awardChest = () => {
+    if (chestAwardedRef.current) return;
+    chestAwardedRef.current = true;
+    xpContext?.awardXP(XPActionType.EXERCISE_COMPLETE, {
+      customAmount: PERFECT_WEEK_BONUS_XP,
+      customDescription: "Perfect week chest",
+    });
+  };
+
+  const handleOpenChest = () => {
+    if (chestOpened) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => {});
+    play("celebrationChime");
+    chestWobble.value = 0;
+    chestScale.value = withSequence(
+      withTiming(0.9, { duration: 90 }),
+      withSpring(1.08, { damping: 7, stiffness: 220 }),
+      withSpring(1, { damping: 12, stiffness: 180 }),
+    );
+    // Proud panda moment: a quick dip and bounce as the mascot swaps.
+    pandaSwap.value = withSequence(
+      withTiming(0.82, { duration: 140, easing: Easing.in(Easing.quad) }),
+      withSpring(1.12, { damping: 7, stiffness: 200 }),
+      withSpring(1, { damping: 12, stiffness: 180 }),
+    );
+    setChestOpened(true);
+    schedule(220, () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {}));
+    awardChest();
+  };
   const buttonStyle = useAnimatedStyle(() => ({ opacity: buttonOpacity.value }));
 
   const handleContinue = () => {
     if (!canInteract) return;
+    // Never let an unopened chest cost the learner their reward.
+    if (perfectWeek) awardChest();
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
     onContinue();
   };
@@ -572,35 +683,40 @@ export function LessonCompleteCelebration({
           />
         </View>
 
-        <View style={styles.content}>
-          {/* Mute toggle */}
-          <Pressable
-            testID="celebration-mute-toggle"
-            accessibilityRole="button"
-            accessibilityLabel={isMuted ? "Unmute celebration sounds" : "Mute celebration sounds"}
-            accessibilityState={{ selected: isMuted }}
-            hitSlop={8}
-            onPress={() => {
-              Haptics.selectionAsync().catch(() => {});
-              toggleMute();
-            }}
-            style={({ pressed }) => [
-              styles.muteButton,
-              {
-                top: insets.top + 12,
-                backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.05)",
-                opacity: pressed ? 0.6 : 1,
-              },
-            ]}
-          >
-            <HugeiconsIcon
-              icon={isMuted ? VolumeMuteIcon : VolumeHighIcon}
-              size={20}
-              color={SEMANTIC_COLORS.text.secondary}
-              strokeWidth={2}
-            />
-          </Pressable>
+        {/* Mute toggle */}
+        <Pressable
+          testID="celebration-mute-toggle"
+          accessibilityRole="button"
+          accessibilityLabel={isMuted ? "Unmute celebration sounds" : "Mute celebration sounds"}
+          accessibilityState={{ selected: isMuted }}
+          hitSlop={8}
+          onPress={() => {
+            Haptics.selectionAsync().catch(() => {});
+            toggleMute();
+          }}
+          style={({ pressed }) => [
+            styles.muteButton,
+            {
+              top: insets.top + 12,
+              backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.05)",
+              opacity: pressed ? 0.6 : 1,
+            },
+          ]}
+        >
+          <HugeiconsIcon
+            icon={isMuted ? VolumeMuteIcon : VolumeHighIcon}
+            size={20}
+            color={SEMANTIC_COLORS.text.secondary}
+            strokeWidth={2}
+          />
+        </Pressable>
 
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        >
           {/* Mascot + confetti */}
           <View style={styles.mascotZone}>
             <View pointerEvents="none" style={styles.confettiLayer}>
@@ -613,12 +729,19 @@ export function LessonCompleteCelebration({
               />
             ) : null}
             <Animated.View style={[styles.mascotWrap, pandaStyle]}>
-              <Image
-                source={PANDA[resolvedPanda]}
-                style={styles.mascot}
-                contentFit="contain"
-              />
+              <Animated.View style={[styles.mascot, pandaSwapStyle]}>
+                <Image
+                  source={PANDA[resolvedPanda]}
+                  style={styles.mascot}
+                  contentFit="contain"
+                />
+              </Animated.View>
             </Animated.View>
+            {chestOpened && !reducedMotion ? (
+              <View pointerEvents="none" style={styles.confettiLayer}>
+                <ConfettiExplosion isVisible count={36} duration={1100} />
+              </View>
+            ) : null}
           </View>
 
           {/* Copy */}
@@ -627,9 +750,11 @@ export function LessonCompleteCelebration({
           </Animated.View>
           <Animated.View style={[messageStyle, styles.messageWrap]}>
             <Text style={[styles.message, { color: SEMANTIC_COLORS.text.secondary }]}>
-              {showMilestoneMessage && activeMilestone
-                ? STREAK_MILESTONE_MESSAGES[activeMilestone]
-                : resolvedMessage}
+              {chestOpened
+                ? "Seven days straight. Look at you."
+                : showMilestoneMessage && activeMilestone
+                  ? STREAK_MILESTONE_MESSAGES[activeMilestone]
+                  : resolvedMessage}
             </Text>
           </Animated.View>
 
@@ -767,6 +892,57 @@ export function LessonCompleteCelebration({
             </View>
           </Animated.View>
 
+          {/* Perfect week chest */}
+          {perfectWeek ? (
+            <Animated.View style={[styles.chestCardWrap, chestCardStyle]}>
+              <Pressable
+                testID="celebration-perfect-week-chest"
+                accessibilityRole="button"
+                accessibilityLabel={
+                  chestOpened
+                    ? `Perfect week chest opened. Plus ${PERFECT_WEEK_BONUS_XP} XP`
+                    : "Perfect week. Tap to open your chest"
+                }
+                onPress={handleOpenChest}
+                disabled={chestOpened}
+                style={({ pressed }) => [
+                  styles.chestCard,
+                  {
+                    backgroundColor: chestOpened ? (isDark ? "#14281a" : "#EAF7EC") : badgeColors.surface,
+                    borderColor: chestOpened ? (isDark ? "#2c5a34" : "#BFE3C4") : badgeColors.border,
+                    opacity: pressed ? 0.85 : 1,
+                  },
+                ]}
+              >
+                <Animated.View
+                  style={[
+                    styles.chestIcon,
+                    chestIconStyle,
+                    { backgroundColor: chestOpened ? goalGreen : badgeColors.text },
+                  ]}
+                >
+                  <HugeiconsIcon
+                    icon={chestOpened ? Tick02Icon : GiftIcon}
+                    size={24}
+                    color={chestOpened ? (isDark ? "#0f1a0f" : "#FFFFFF") : badgeColors.surface}
+                    strokeWidth={2.4}
+                  />
+                </Animated.View>
+                <View style={styles.goalText}>
+                  <Text style={[styles.statLabel, { color: chestOpened ? goalGreen : badgeColors.text }]}>
+                    PERFECT WEEK
+                  </Text>
+                  <Text style={[styles.goalValue, { color: SEMANTIC_COLORS.text.primary }]}>
+                    {chestOpened ? `+${PERFECT_WEEK_BONUS_XP} XP` : "Seven for seven!"}
+                  </Text>
+                  <Text style={[styles.goalHint, { color: SEMANTIC_COLORS.text.secondary }]}>
+                    {chestOpened ? "Every dot lit this week. Proud of you." : "Tap to open your bonus chest"}
+                  </Text>
+                </View>
+              </Pressable>
+            </Animated.View>
+          ) : null}
+
           <View style={styles.spacer} />
 
           {/* CTAs */}
@@ -801,7 +977,7 @@ export function LessonCompleteCelebration({
               />
             </View>
           </Animated.View>
-        </View>
+        </ScrollView>
       </Animated.View>
     </Modal>
   );
@@ -816,8 +992,11 @@ const styles = StyleSheet.create({
     height: 0,
     overflow: "hidden",
   },
-  content: {
+  scroll: {
     flex: 1,
+  },
+  content: {
+    flexGrow: 1,
     paddingHorizontal: 24,
     paddingTop: 64,
     paddingBottom: 40,
@@ -835,6 +1014,7 @@ const styles = StyleSheet.create({
   },
   mascotZone: {
     flex: 1,
+    minHeight: 200,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
@@ -961,6 +1141,28 @@ const styles = StyleSheet.create({
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 13,
     marginTop: 2,
+  },
+  chestCardWrap: {
+    width: "100%",
+    marginTop: 10,
+  },
+  chestCard: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 18,
+    borderWidth: 2,
+    minHeight: 64,
+  },
+  chestIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
   },
   spacer: {
     flex: 1,

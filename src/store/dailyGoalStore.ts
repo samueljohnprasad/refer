@@ -54,3 +54,24 @@ export function useDailyXPGoal(): { goal: number; setGoal: (goal: number) => voi
 
   return { goal, setGoal };
 }
+
+// ─── "Daily goal done" toast — shown once per calendar day ───────────────────
+
+const GOAL_TOAST_KEY_PREFIX = "@daily_goal_toast_shown_v1:";
+const todayKey = () => GOAL_TOAST_KEY_PREFIX + new Date().toISOString().slice(0, 10);
+
+export async function hasShownGoalToastToday(): Promise<boolean> {
+  try {
+    return (await AsyncStorage.getItem(todayKey())) === "1";
+  } catch {
+    return true;
+  }
+}
+
+export async function markGoalToastShownToday(): Promise<void> {
+  try {
+    await AsyncStorage.setItem(todayKey(), "1");
+  } catch (error) {
+    console.error("[DailyGoalStore] Failed to persist toast flag:", error);
+  }
+}

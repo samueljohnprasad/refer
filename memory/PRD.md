@@ -46,5 +46,11 @@ People seeking accessible CBT / mindfulness exercises in a polished, gamified ap
 - **Weekly streak dots**: `WeeklyStreakDots.tsx` (Sun→Sat dots + letters, today ringed, derived from the displayed streak count) rendered inside the STREAK card with staggered pop-in.
 - **Mute toggle**: speaker icon button (top-right, safe-area aware) on the celebration, wired to `useSoundEffects().toggleMute` (global persisted mute).
 
+## Implemented (2026-10-01, round 5)
+- **Daily goal toast**: `DailyGoalToast.tsx` (+ `useDailyGoalToast`) on `JourneyMapView` — small card above the tab bar, once per calendar day (`dailyGoalStore.hasShownGoalToastToday`), suppressed while celebrations/overlays/catalog are open; auto-hides after 4.5s or on tap.
+- **Perfect week chest**: `src/store/perfectWeekStore.ts` (`isPerfectWeek` = Saturday + streak ≥ 7, claimed once per week). Celebration shows a wobbling gold chest card; tapping opens it (+50 XP via `awardXP customAmount`, confetti, proud `panda-love-hug` swap, message). Unopened chest is auto-awarded on Continue. Celebration content is now a ScrollView for small phones.
+- **Streak Freeze**: SKIPPED by user decision (needs `update_user_streak` RPC change; `user_streaks.streak_freezes_available` column already exists).
+
 ## Backlog / next
+- P2: Streak Freeze via migration redefining `update_user_streak` (user to apply with `supabase db push`).
 - P2: Review-prompt timing tuning after lesson celebrations.

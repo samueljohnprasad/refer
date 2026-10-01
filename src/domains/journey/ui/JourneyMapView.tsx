@@ -16,6 +16,7 @@ import JourneyUnavailableState from "./components/JourneyUnavailableState";
 import { ChestRewardModal } from "./components";
 import { CelebrationOverlay } from "@/src/components/celebration/CelebrationOverlay";
 import { LessonCompleteCelebration } from "@/src/components/celebration/LessonCompleteCelebration";
+import { DailyGoalToast, useDailyGoalToast } from "@/src/components/celebration/DailyGoalToast";
 import {
   LESSON_BASE_XP,
   PERFECT_LESSON_BONUS_XP,
@@ -87,6 +88,14 @@ export const JourneyMapView = React.memo(function JourneyMapView({
       setActiveCourseId(nextCourseId);
     },
     [controller, setActiveCourseId],
+  );
+
+  const goalToast = useDailyGoalToast(
+    !!controller.pendingCelebration ||
+      controller.isOverlayOpen ||
+      isCourseCatalogPresented ||
+      !!controller.rewardNode ||
+      model.isPreparing,
   );
 
   if (model.isPreparing) {
@@ -213,6 +222,12 @@ export const JourneyMapView = React.memo(function JourneyMapView({
         enrolledCourses={enrolledCourses}
         onClose={onCloseCatalogSheet}
         onCourseSelect={setActiveCourseId}
+      />
+      <DailyGoalToast
+        visible={goalToast.visible}
+        todayXP={goalToast.todayXP}
+        goal={goalToast.goal}
+        onDismiss={goalToast.dismiss}
       />
       {controller.rewardNode &&
       controller.rewardNode.type === NodeType.CHEST &&

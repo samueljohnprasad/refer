@@ -74,6 +74,7 @@ export default function CelebrationTestScreen() {
         durationMs={2 * 60_000 + 8_000}
         streakDays={7}
         celebrateStreakMilestone={false}
+        celebratePerfectWeek
         todayXP={15}
         dailyGoal={30}
         lessonTitle="Reframing the inner critic"
