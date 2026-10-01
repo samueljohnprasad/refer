@@ -25,12 +25,25 @@ import {
   Clock01Icon,
   Share01Icon,
   Clapping01Icon,
+  Target02Icon,
+  Tick02Icon,
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/src/components/ui/Button";
 import { ConfettiExplosion } from "@/src/components/animations/ConfettiExplosion";
 import { ShareWinCard } from "@/src/components/celebration/ShareWinCard";
+import { DailyGoalRing } from "@/src/components/celebration/DailyGoalRing";
+import { FlameBurst } from "@/src/components/celebration/FlameBurst";
 import { useSoundEffects } from "@/src/hooks/useSoundEffects";
 import { useStreak } from "@/src/hooks/useStreak";
+import { useXPOptional } from "@/src/context/XPContext";
+import { useDailyXPGoal } from "@/src/store/dailyGoalStore";
+import {
+  getStreakMilestone,
+  markStreakMilestoneCelebrated,
+  shouldCelebrateStreakMilestone,
+  STREAK_MILESTONE_MESSAGES,
+  type StreakMilestoneDay,
+} from "@/src/store/streakMilestoneStore";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 
@@ -88,6 +101,12 @@ export interface LessonCompleteCelebrationProps {
   streakDays?: number;
   /** Lesson name used on the shareable card. */
   lessonTitle?: string;
+  /** Override for today's XP after this lesson (defaults to the XP context). */
+  todayXP?: number;
+  /** Override for the daily XP goal (defaults to the saved goal). */
+  dailyGoal?: number;
+  /** Force the streak-milestone flourish on/off (defaults to once-per-run detection). */
+  celebrateStreakMilestone?: boolean;
   title?: string;
   perfectTitle?: string;
   message?: string;
@@ -104,6 +123,9 @@ export function LessonCompleteCelebration({
   durationMs,
   streakDays,
   lessonTitle,
+  todayXP: todayXPOverride,
+  dailyGoal: dailyGoalOverride,
+  celebrateStreakMilestone,
   title = "Lesson complete!",
   perfectTitle = "Perfect lesson!",
   message,
@@ -115,10 +137,15 @@ export function LessonCompleteCelebration({
   const reducedMotion = useReducedMotion();
   const { play } = useSoundEffects();
   const { currentStreak } = useStreak();
+  const xpContext = useXPOptional();
+  const { goal: savedGoal } = useDailyXPGoal();
 
   const [displayXP, setDisplayXP] = useState(0);
   const [canInteract, setCanInteract] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
+  const [goalJustReached, setGoalJustReached] = useState(false);
+  const [activeMilestone, setActiveMilestone] = useState<StreakMilestoneDay | null>(null);
+  const [showMilestoneMessage, setShowMilestoneMessage] = useState(false);
   const countTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const shareCardRef = useRef<View>(null);
@@ -130,6 +157,17 @@ export function LessonCompleteCelebration({
   const resolvedTitle = isPerfect ? perfectTitle : title;
   const resolvedMessage = message ?? pickEncouragement(lessonTitle ?? title, isPerfect);
   const resolvedPanda: CelebrationPandaVariant = isPerfect ? "happy" : pandaVariant;
+
+  // Daily goal: XP context is already updated optimistically with this lesson's
+  // XP, so "before" is today's total minus what was just earned.
+  const dailyGoal = Math.max(1, dailyGoalOverride ?? savedGoal);
+  const todayAfter = Math.max(totalXP, todayXPOverride ?? xpContext?.todayXP ?? totalXP);
+  const todayBefore = Math.max(0, todayAfter - totalXP);
+  const goalReachedBefore = todayBefore >= dailyGoal;
+  const goalReachedAfter = todayAfter >= dailyGoal;
+  const xpToGoal = Math.max(0, dailyGoal - todayAfter);
+
+  const streakMilestone = getStreakMilestone(resolvedStreak);
 
   // Animation values
   const overlayOpacity = useSharedValue(0);
@@ -146,6 +184,11 @@ export function LessonCompleteCelebration({
   const streakOpacity = useSharedValue(0);
   const timeScale = useSharedValue(0);
   const timeOpacity = useSharedValue(0);
+  const ringScale = useSharedValue(0);
+  const ringOpacity = useSharedValue(0);
+  const milestoneScale = useSharedValue(0);
+  const milestoneOpacity = useSharedValue(0);
+  const flamePulse = useSharedValue(0);
   const buttonOpacity = useSharedValue(0);
 
   const schedule = (delay: number, fn: () => void) => {
@@ -181,6 +224,16 @@ export function LessonCompleteCelebration({
           withSpring(1, { damping: 12, stiffness: 160 }),
         );
 
+  // Shared timeline (ms) — also read by the ring at render time.
+  const rm = reducedMotion;
+  const badgeDelay = rm ? 200 : 700;
+  const stagger = rm ? 40 : 140;
+  const cardDelay = isPerfect ? badgeDelay + (rm ? 80 : 260) : rm ? 220 : 760;
+  const milestoneDelay = cardDelay + stagger + (rm ? 80 : 260);
+  const ringDelay = cardDelay + stagger * 3 + (rm ? 40 : 120);
+  const ringFillDelay = ringDelay + (rm ? 60 : 220);
+  const ringFillDuration = rm ? 250 : 900;
+
   useEffect(() => {
     if (!isVisible) {
       overlayOpacity.value = 0;
@@ -197,16 +250,22 @@ export function LessonCompleteCelebration({
       streakOpacity.value = 0;
       timeScale.value = 0;
       timeOpacity.value = 0;
+      ringScale.value = 0;
+      ringOpacity.value = 0;
+      milestoneScale.value = 0;
+      milestoneOpacity.value = 0;
+      flamePulse.value = 0;
       buttonOpacity.value = 0;
       setDisplayXP(0);
       setCanInteract(false);
+      setGoalJustReached(false);
+      setActiveMilestone(null);
+      setShowMilestoneMessage(false);
       if (countTimerRef.current) clearInterval(countTimerRef.current);
       timersRef.current.forEach(clearTimeout);
       timersRef.current = [];
       return;
     }
-
-    const rm = reducedMotion;
 
     overlayOpacity.value = withTiming(1, { duration: rm ? 150 : 280 });
 
@@ -248,7 +307,6 @@ export function LessonCompleteCelebration({
     messageOpacity.value = withDelay(rm ? 180 : 560, withTiming(1, { duration: rm ? 150 : 320 }));
 
     // Perfect badge
-    const badgeDelay = rm ? 200 : 700;
     if (isPerfect) {
       badgeOpacity.value = withDelay(badgeDelay, withTiming(1, { duration: rm ? 120 : 200 }));
       badgeScale.value = withDelay(badgeDelay, popIn(rm));
@@ -256,8 +314,6 @@ export function LessonCompleteCelebration({
     }
 
     // Stat cards spring in one after another; XP counts up as it lands.
-    const stagger = rm ? 40 : 140;
-    const cardDelay = isPerfect ? badgeDelay + (rm ? 80 : 260) : rm ? 220 : 760;
     xpOpacity.value = withDelay(cardDelay, withTiming(1, { duration: rm ? 120 : 220 }));
     xpScale.value = withDelay(cardDelay, popIn(rm));
     schedule(cardDelay, () => {
@@ -275,15 +331,67 @@ export function LessonCompleteCelebration({
       runHaptic(cardDelay + stagger * 2, Haptics.ImpactFeedbackStyle.Light);
     }
 
+    // Streak milestone: flame burst on the streak card + message pill.
+    const startMilestone = (milestone: StreakMilestoneDay) => {
+      setActiveMilestone(milestone);
+      milestoneOpacity.value = withDelay(milestoneDelay, withTiming(1, { duration: rm ? 120 : 200 }));
+      milestoneScale.value = withDelay(milestoneDelay, popIn(rm));
+      // Swap the encouragement line for the milestone message with a quick dip.
+      messageOpacity.value = withDelay(
+        milestoneDelay,
+        withSequence(withTiming(0, { duration: 120 }), withTiming(1, { duration: 240 })),
+      );
+      schedule(milestoneDelay + 120, () => setShowMilestoneMessage(true));
+      if (!rm) {
+        flamePulse.value = withDelay(
+          milestoneDelay,
+          withRepeat(
+            withSequence(
+              withTiming(1, { duration: 180, easing: Easing.out(Easing.quad) }),
+              withTiming(0, { duration: 260, easing: Easing.in(Easing.quad) }),
+            ),
+            2,
+            false,
+          ),
+        );
+      }
+      runHaptic(milestoneDelay, Haptics.ImpactFeedbackStyle.Heavy);
+      runHaptic(milestoneDelay + 200, Haptics.ImpactFeedbackStyle.Medium);
+    };
+    let milestoneCheckCancelled = false;
+    if (streakMilestone) {
+      if (celebrateStreakMilestone !== undefined) {
+        if (celebrateStreakMilestone) startMilestone(streakMilestone);
+      } else {
+        shouldCelebrateStreakMilestone(streakMilestone).then((ok) => {
+          if (!ok || milestoneCheckCancelled) return;
+          startMilestone(streakMilestone);
+          void markStreakMilestoneCelebrated(streakMilestone);
+        });
+      }
+    }
+
+    // Daily goal ring card: pops in after the stats, then fills.
+    ringOpacity.value = withDelay(ringDelay, withTiming(1, { duration: rm ? 120 : 220 }));
+    ringScale.value = withDelay(ringDelay, popIn(rm));
+    runHaptic(ringDelay, Haptics.ImpactFeedbackStyle.Light);
+    if (goalReachedAfter && !goalReachedBefore) {
+      schedule(ringFillDelay + ringFillDuration - 60, () => {
+        setGoalJustReached(true);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+      });
+    }
+
     // Buttons
     buttonOpacity.value = withDelay(
-      cardDelay + stagger * 2 + (rm ? 60 : 320),
+      ringFillDelay + (rm ? 120 : 420),
       withTiming(1, { duration: rm ? 120 : 260 }, (finished) => {
         if (finished) runOnJS(setCanInteract)(true);
       }),
     );
 
     return () => {
+      milestoneCheckCancelled = true;
       if (countTimerRef.current) clearInterval(countTimerRef.current);
       timersRef.current.forEach(clearTimeout);
       timersRef.current = [];
@@ -340,6 +448,17 @@ export function LessonCompleteCelebration({
   const timeStyle = useAnimatedStyle(() => ({
     opacity: timeOpacity.value,
     transform: [{ scale: timeScale.value }],
+  }));
+  const ringCardStyle = useAnimatedStyle(() => ({
+    opacity: ringOpacity.value,
+    transform: [{ scale: ringScale.value }],
+  }));
+  const milestoneStyle = useAnimatedStyle(() => ({
+    opacity: milestoneOpacity.value,
+    transform: [{ scale: milestoneScale.value }],
+  }));
+  const flameIconStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: 1 + flamePulse.value * 0.45 }, { rotate: `${flamePulse.value * -8}deg` }],
   }));
   const buttonStyle = useAnimatedStyle(() => ({ opacity: buttonOpacity.value }));
 
@@ -409,6 +528,27 @@ export function LessonCompleteCelebration({
     border: isDark ? "#6b5316" : "#F2C94C",
     text: isDark ? "#FFE08A" : "#7A4D0A",
   };
+  const milestoneColors = {
+    surface: isDark ? "#3a1d10" : "#FFE4D1",
+    border: isDark ? "#6b3a1c" : "#FFB383",
+    text: isDark ? "#FFC9A3" : "#9A3A0C",
+  };
+  const goalGreen = isDark ? "#7FCB85" : "#4F9A55";
+  const goalDone = goalReachedBefore || goalJustReached;
+  const ringColors = {
+    surface: goalDone ? (isDark ? "#14281a" : "#EAF7EC") : SEMANTIC_COLORS.surface.secondary,
+    border: goalDone ? (isDark ? "#2c5a34" : "#BFE3C4") : isDark ? "#2a3a2a" : "#E3ECE3",
+    fill: goalDone ? goalGreen : amber,
+    track: isDark ? "#2a3a2a" : "#E6EDE6",
+    label: goalDone ? goalGreen : SEMANTIC_COLORS.text.secondary,
+  };
+  const ringHint = goalReachedBefore
+    ? "Goal already met — every extra XP counts."
+    : goalJustReached
+      ? "Daily goal reached. Beautiful."
+      : goalReachedAfter
+        ? "Almost there…"
+        : `${xpToGoal} XP to go`;
 
   return (
     <Modal transparent visible={isVisible} animationType="none" statusBarTranslucent>
@@ -454,7 +594,9 @@ export function LessonCompleteCelebration({
           </Animated.View>
           <Animated.View style={[messageStyle, styles.messageWrap]}>
             <Text style={[styles.message, { color: SEMANTIC_COLORS.text.secondary }]}>
-              {resolvedMessage}
+              {showMilestoneMessage && activeMilestone
+                ? STREAK_MILESTONE_MESSAGES[activeMilestone]
+                : resolvedMessage}
             </Text>
           </Animated.View>
 
@@ -478,6 +620,23 @@ export function LessonCompleteCelebration({
             </Animated.View>
           ) : null}
 
+          {/* Streak milestone pill */}
+          {activeMilestone ? (
+            <Animated.View
+              testID="celebration-streak-milestone"
+              style={[
+                styles.badge,
+                milestoneStyle,
+                { backgroundColor: milestoneColors.surface, borderColor: milestoneColors.border },
+              ]}
+            >
+              <HugeiconsIcon icon={FireIcon} size={18} color={milestoneColors.text} strokeWidth={2.4} />
+              <Text style={[styles.badgeText, { color: milestoneColors.text }]}>
+                {activeMilestone}-DAY STREAK
+              </Text>
+            </Animated.View>
+          ) : null}
+
           {/* Stat cards */}
           <View style={styles.statsRow}>
             <Animated.View
@@ -494,11 +653,21 @@ export function LessonCompleteCelebration({
 
             <Animated.View
               testID="celebration-streak-card"
-              style={[styles.statCard, streakStyle, { backgroundColor: streakColors.surface, borderColor: streakColors.border }]}
+              style={[
+                styles.statCard,
+                streakStyle,
+                {
+                  backgroundColor: streakColors.surface,
+                  borderColor: activeMilestone ? streakColors.icon : streakColors.border,
+                },
+              ]}
             >
+              {activeMilestone && !reducedMotion ? <FlameBurst delay={milestoneDelay} /> : null}
               <Text style={[styles.statLabel, { color: streakColors.label }]}>STREAK</Text>
               <View style={styles.statValueRow}>
-                <HugeiconsIcon icon={FireIcon} size={20} color={streakColors.icon} strokeWidth={2.4} />
+                <Animated.View style={flameIconStyle}>
+                  <HugeiconsIcon icon={FireIcon} size={20} color={streakColors.icon} strokeWidth={2.4} />
+                </Animated.View>
                 <Text style={[styles.statValue, { color: streakColors.value }]}>{resolvedStreak}</Text>
               </View>
             </Animated.View>
@@ -518,6 +687,44 @@ export function LessonCompleteCelebration({
               </Animated.View>
             ) : null}
           </View>
+
+          {/* Daily goal ring */}
+          <Animated.View
+            testID="celebration-daily-goal"
+            style={[
+              styles.goalCard,
+              ringCardStyle,
+              { backgroundColor: ringColors.surface, borderColor: ringColors.border },
+            ]}
+          >
+            <DailyGoalRing
+              size={60}
+              strokeWidth={7}
+              from={todayBefore / dailyGoal}
+              to={todayAfter / dailyGoal}
+              color={ringColors.fill}
+              trackColor={ringColors.track}
+              delay={ringFillDelay}
+              duration={ringFillDuration}
+            >
+              <HugeiconsIcon
+                icon={goalDone ? Tick02Icon : Target02Icon}
+                size={22}
+                color={ringColors.fill}
+                strokeWidth={2.6}
+              />
+            </DailyGoalRing>
+            <View style={styles.goalText}>
+              <Text style={[styles.statLabel, { color: ringColors.label }]}>DAILY GOAL</Text>
+              <Text style={[styles.goalValue, { color: SEMANTIC_COLORS.text.primary }]}>
+                {Math.min(todayAfter, dailyGoal)}
+                <Text style={[styles.goalOf, { color: SEMANTIC_COLORS.text.secondary }]}> / {dailyGoal} XP</Text>
+              </Text>
+              <Text style={[styles.goalHint, { color: goalDone ? goalGreen : SEMANTIC_COLORS.text.secondary }]}>
+                {ringHint}
+              </Text>
+            </View>
+          </Animated.View>
 
           <View style={styles.spacer} />
 
@@ -597,8 +804,8 @@ const styles = StyleSheet.create({
     borderRadius: 120,
   },
   mascotWrap: {
-    width: 210,
-    height: 210,
+    width: 190,
+    height: 190,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -647,7 +854,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   statsRow: {
-    marginTop: 20,
+    marginTop: 16,
     flexDirection: "row",
     gap: 10,
     width: "100%",
@@ -659,6 +866,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     borderWidth: 2,
     alignItems: "center",
+    overflow: "visible",
   },
   statLabel: {
     fontFamily: APP_FONT_FAMILIES.extraBold,
@@ -674,6 +882,34 @@ const styles = StyleSheet.create({
   statValue: {
     fontFamily: APP_FONT_FAMILIES.extraBold,
     fontSize: 22,
+  },
+  goalCard: {
+    marginTop: 12,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 18,
+    borderWidth: 2,
+  },
+  goalText: {
+    flex: 1,
+  },
+  goalValue: {
+    fontFamily: APP_FONT_FAMILIES.extraBold,
+    fontSize: 20,
+    marginTop: 2,
+  },
+  goalOf: {
+    fontFamily: APP_FONT_FAMILIES.bold,
+    fontSize: 14,
+  },
+  goalHint: {
+    fontFamily: APP_FONT_FAMILIES.semiBold,
+    fontSize: 13,
+    marginTop: 2,
   },
   spacer: {
     flex: 1,

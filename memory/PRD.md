@@ -36,6 +36,11 @@ People seeking accessible CBT / mindfulness exercises in a polished, gamified ap
 - **Share your win**: `ShareWinCard.tsx` rendered off-screen inside the modal, captured with `react-native-view-shot` and shared via `expo-sharing` (text-share fallback). Added deps `expo-sharing`, `react-native-view-shot` (yarn; `bun.lock` is stale — run `bun install` if building with bun).
 - Fixed pre-existing TS errors in `useJourneyMapController.tsx` (`courseCompletionMessage` type, `showDock` → `isCompleted`).
 
+## Implemented (2026-10-01, round 3)
+- **Daily goal ring**: `DailyGoalRing.tsx` (react-native-svg + reanimated). Goal stored in `src/store/dailyGoalStore.ts` (`useDailyXPGoal`, default 30 XP, AsyncStorage). Celebration shows a "DAILY GOAL" card: ring fills from before→after this lesson using `XPContext.todayXP`; turns green with a tick + success haptic when the goal is crossed; hint "N XP to go" / "Daily goal reached".
+- **Streak milestones (3/7/15/30)**: `src/store/streakMilestoneStore.ts` celebrates each milestone once per streak run (AsyncStorage date check). UI: "N-DAY STREAK" pill, `FlameBurst.tsx` embers + halo on the streak card, flame icon pulse, heavy haptics, encouragement line swaps to a milestone message.
+- Dev screen triggers updated (`todayXP`, `dailyGoal`, `celebrateStreakMilestone` overrides).
+
 ## Backlog / next
+- P2: Daily goal picker in Settings (`DAILY_XP_GOAL_OPTIONS` already exported).
 - P2: Review-prompt timing tuning after lesson celebrations.
-- P2: Streak-milestone flourish (7/30 days) on the celebration.

@@ -59,6 +59,10 @@ export default function CelebrationTestScreen() {
         lessonTitle="Catching anxious thoughts"
         title="Lesson complete!"
         message="You showed up for yourself today."
+        todayXP={30}
+        dailyGoal={30}
+        streakDays={3}
+        celebrateStreakMilestone
         onContinue={() => setLessonVisible(false)}
       />
 
@@ -69,6 +73,9 @@ export default function CelebrationTestScreen() {
         isPerfect
         durationMs={2 * 60_000 + 8_000}
         streakDays={7}
+        celebrateStreakMilestone={false}
+        todayXP={15}
+        dailyGoal={30}
         lessonTitle="Reframing the inner critic"
         onContinue={() => setPerfectVisible(false)}
       />
