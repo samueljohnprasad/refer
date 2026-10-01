@@ -46,8 +46,9 @@ export interface UseStreakSaverNotificationReturn {
 // ============================================================================
 
 const NOTIFICATION_IDENTIFIER = "streak-saver-daily";
-const NOTIFICATION_HOUR = 20; // 8 PM
+const NOTIFICATION_HOUR = 19; // 7 PM
 const NOTIFICATION_MINUTE = 0;
+
 
 // ============================================================================
 // Helpers

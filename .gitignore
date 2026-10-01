@@ -56,3 +56,13 @@ supabase/functions/.env
 .temp/plan-mode/
 
 .env.local
+
+# App Store Connect local credentials
+.asc/
+.asc
+
+# RevenueCat local credentials and config
+.revenuecat.json
+.revenuecat/
+
+

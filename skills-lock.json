@@ -274,6 +274,186 @@
       "skillPath": "skills/in-progress/batch-grill-me/SKILL.md",
       "computedHash": "f448831b8f04518b1527408f1d5024384ad5f543bdbaac6fabb7aa053ad60489"
     },
+    "bmad": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad/SKILL.md",
+      "computedHash": "376ac169b1a5f00edb188d9233dd2108613a975ace9af446adde356356845e66"
+    },
+    "bmad-advanced-elicitation": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-advanced-elicitation/SKILL.md",
+      "computedHash": "697f8f12b0f6b8f6cb99c98d14141c6789afee43297e706e26ac62e27a884fb1"
+    },
+    "bmad-agent-analyst": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-agent-analyst/SKILL.md",
+      "computedHash": "6403e3d62df9351a24bac93f70c670e025451cf057b06287e4d1cfb5a09d224b"
+    },
+    "bmad-agent-architect": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-agent-architect/SKILL.md",
+      "computedHash": "ed28348c07a6d27ff2d26af704d69f55f541cc1ff37e707a502c2a83f590fdd3"
+    },
+    "bmad-agent-dev": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-agent-dev/SKILL.md",
+      "computedHash": "f45b6cc89ff9d97de05f6a861dc5b1c60cc54d7d6f69ddf439cd222ef55c57b8"
+    },
+    "bmad-agent-pm": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-agent-pm/SKILL.md",
+      "computedHash": "a3d052b676395851cfaab8bf148b12fce5061ebb63739fa34485af929889dafc"
+    },
+    "bmad-agent-ux-designer": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-agent-ux-designer/SKILL.md",
+      "computedHash": "c85affb3285d78cdaf45e88a2d5899ef4940df55e2a41c2a334541ba7626db95"
+    },
+    "bmad-architecture": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-architecture/SKILL.md",
+      "computedHash": "32f104edc7d1ce40bc3e7823bb8e3506ec4e7fdfda2af924e0216ec5a072774b"
+    },
+    "bmad-brainstorming": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-brainstorming/SKILL.md",
+      "computedHash": "62b18d1b0846c3822c5b056e8d2b2506b239238de7b481301b671810be5ab2e6"
+    },
+    "bmad-build": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-build/SKILL.md",
+      "computedHash": "aa9911d77b81d555fc41292a9daa7731eaf458b7b8dfe49cf7ccb460b5e02d09"
+    },
+    "bmad-build-auto": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-build-auto/SKILL.md",
+      "computedHash": "6f2ec6410a592642e14c212a23afe1ae8938d191557404e302f95f4eb2266bf2"
+    },
+    "bmad-code-review": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-code-review/SKILL.md",
+      "computedHash": "22675f298deada0fc2a23b444e216579044b1d5b128fab0d2df569e560c66662"
+    },
+    "bmad-correct-course": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-correct-course/SKILL.md",
+      "computedHash": "a380ecaae4fc75c8cf03bd3dfe9d8171fdb085c9a8b772f4a29aaa6ba5cffce3"
+    },
+    "bmad-customize": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-customize/SKILL.md",
+      "computedHash": "bf718d2bf43a1b62ef3e32eb4ad0c85aad5e8e6866fb59bddb11e056feae38bc"
+    },
+    "bmad-deep-recon": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-deep-recon/SKILL.md",
+      "computedHash": "21a3f51d9c562ab40f4a9d454ae5adccb4d09f299b6c8b3bdb77a7dd240edb3b"
+    },
+    "bmad-forge-idea": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-forge-idea/SKILL.md",
+      "computedHash": "74910c0d04128654182339ae9c37f772bac4d96e8e26d4f526e53bac134478d7"
+    },
+    "bmad-party-mode": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-party-mode/SKILL.md",
+      "computedHash": "032d0fae6021d0d9be8f8733a9dde3a040c9fd1bab172dae6c167fb738b1dde6"
+    },
+    "bmad-prd": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-prd/SKILL.md",
+      "computedHash": "57d7e5541cd1638208272e372965358992efaafb23989830753ca900a20c34c3"
+    },
+    "bmad-prfaq": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-prfaq/SKILL.md",
+      "computedHash": "2297e29b845fb5640f2da2708cc408176f5f9feb776dcdec6219762cafd82fd8"
+    },
+    "bmad-product-brief": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-product-brief/SKILL.md",
+      "computedHash": "e9a5493669489cba89028d863dc6735928a7390860faf55eda69c36bbc140472"
+    },
+    "bmad-project-context": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-project-context/SKILL.md",
+      "computedHash": "d1fe9efb708e7963de3d5ae4967684c10e8f2f13a29333e7504778070aee1fd5"
+    },
+    "bmad-qa-generate-e2e-tests": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-qa-generate-e2e-tests/SKILL.md",
+      "computedHash": "09192a1cbf43187cf95bf0a47c3619f85cd5842640422d698fdc6afeb7c8b015"
+    },
+    "bmad-retrospective": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-retrospective/SKILL.md",
+      "computedHash": "28046e1fc808cb9d08d5ac2f1f723d9a2b19ce99d58e047380c7152ded95c0fa"
+    },
+    "bmad-review": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-review/SKILL.md",
+      "computedHash": "418d47130c71c096e50202168151874112350e28fdde3f59ba23bd313253c281"
+    },
+    "bmad-spec": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-spec/SKILL.md",
+      "computedHash": "c411da78e56cd81bbdbdf6eef6e25ef6d02f4ee09571f18b745296f10588ba3b"
+    },
+    "bmad-ticket": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-ticket/SKILL.md",
+      "computedHash": "102773acbea311186b0d8e0f6012086c2769fd501153eae98731d309c0631057"
+    },
+    "bmad-ux": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-ux/SKILL.md",
+      "computedHash": "c6489000a35a7f03c7f1780979d9ff6fb98f38d9b9bfba7206f03dcbd9008e8b"
+    },
+    "bmad-walkthrough": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmad-walkthrough/SKILL.md",
+      "computedHash": "9c18ca1ff735431d1910c552a6eca363729f1049f658f788ffd4550ce63eb567"
+    },
+    "bmod-core-tools": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmod-core-tools/SKILL.md",
+      "computedHash": "4ba321479782b782ab8ac2981e5fd2d30b0c6cd428628e69e32c2dd656347500"
+    },
+    "bmod-method": {
+      "source": "bmad-code-org/BMAD-METHOD",
+      "sourceType": "github",
+      "skillPath": "skills/bmod-method/SKILL.md",
+      "computedHash": "aa1b249bff295d3f51c8f313d006dcb24701806b67b238bab05471d5dc91f5ae"
+    },
     "brand-storytelling": {
       "source": "omer-metin/skills-for-antigravity",
       "sourceType": "github",
@@ -415,6 +595,12 @@
       "sourceType": "github",
       "skillPath": "skills/crash-analytics/SKILL.md",
       "computedHash": "4b202563ac2b174b84f9184bee0a20b1b2b94c7cdbd1b6b8b57425bee738cc76"
+    },
+    "create-revenuecat-project": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/create-revenuecat-project/SKILL.md",
+      "computedHash": "af2588c974f1d871405277e589c59977eff9a745ff5b73260f3368a6a23e76ac"
     },
     "creative-communications": {
       "source": "omer-metin/skills-for-antigravity",
@@ -812,6 +998,12 @@
       "skillPath": "skills/brutalist-skill/SKILL.md",
       "computedHash": "8fc355c4aadb7d29c53ca28bc41be3cd6eea765d121e3737c4dc2d0f90a8effa"
     },
+    "integrate-revenuecat": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/integrate-revenuecat/SKILL.md",
+      "computedHash": "a7a59216308d9ec53a90b68167446295195deabfe3c8515010bf99c7859772a9"
+    },
     "jotai": {
       "source": "vercel-labs/json-render",
       "sourceType": "github",
@@ -1026,6 +1218,126 @@
       "skillPath": "skills/rating-prompt-strategy/SKILL.md",
       "computedHash": "d9a3471479fb02249d5c5272e105db7ab53e07a786c5f2041c38479d245adbda"
     },
+    "rc-alternative-billing": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-alternative-billing/SKILL.md",
+      "computedHash": "9335e0e8ea961229db78f5c80e878b9e3d3bdaa222a78f4478791fe34a9b413b"
+    },
+    "rc-backend": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-backend/SKILL.md",
+      "computedHash": "1a448faf013fc215d01d758473176432fb1dd3a3ea17deefa48ebe0ffd470a9f"
+    },
+    "rc-cancellations-pauses-winback": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-cancellations-pauses-winback/SKILL.md",
+      "computedHash": "85ab24a4a6fdc0bf74d6f88fe1bc21556e5c12d9dc4c35613f2a4d31fb7be78f"
+    },
+    "rc-catalog-management": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-catalog-management/SKILL.md",
+      "computedHash": "673c3997b7fd119de35fe0426bf6404b6a352a6608b2273b68159716419e16ae"
+    },
+    "rc-configuring-the-sdk": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-configuring-the-sdk/SKILL.md",
+      "computedHash": "207a7a9deba89f5ac657360275372381078543ec72b47547216621f770273114"
+    },
+    "rc-error-handling": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-error-handling/SKILL.md",
+      "computedHash": "9cab3aa1ea4b200ed65b8b1ac9973fa21fb6f08d1f66062088db92fca522c91f"
+    },
+    "rc-one-time-products": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-one-time-products/SKILL.md",
+      "computedHash": "f1e6950a4a183238acb60606dd0632ecbfd7afceac6bf585582480769e657b9b"
+    },
+    "rc-payment-recovery": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-payment-recovery/SKILL.md",
+      "computedHash": "99ad24adc3808765c96ed1dcf39e6ea8f7083fe4a6e4466cec964d307d776850"
+    },
+    "rc-plan-changes": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-plan-changes/SKILL.md",
+      "computedHash": "c36d0f7e0e548527ec3a0a8686840eff07dd388de4be817f6a93fa77e4e60e39"
+    },
+    "rc-price-changes": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-price-changes/SKILL.md",
+      "computedHash": "b65cf522bcf5e8c4ad504a6ad2dfc4ae1975776e3945c27660dcc9a6370aa210"
+    },
+    "rc-purchase-flow": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-purchase-flow/SKILL.md",
+      "computedHash": "daa567d76abdeaa88fa1eeb2ef11608c9e6173df958cb743abc7064a7528e906"
+    },
+    "rc-revenuecat-api-quick-reference": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-revenuecat-api-quick-reference/SKILL.md",
+      "computedHash": "2c4f2a9f84b1b3872026d42657ac9cdaf8ad108fad387b36dd964c8a39512a9b"
+    },
+    "rc-revenuecat-vs-raw-billing": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-revenuecat-vs-raw-billing/SKILL.md",
+      "computedHash": "7a3ec220c4b8f19d0ca215e46ab3e5a719e994a43a7d6c7ae1a35ac24034a425"
+    },
+    "rc-security": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-security/SKILL.md",
+      "computedHash": "6fe1fb50f5017c15991ba44d8c654bc9df8727713f3da5284dfc5686667eeb77"
+    },
+    "rc-setup": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-setup/SKILL.md",
+      "computedHash": "930e5e80a42e8b27266d7cc50bdb2fa5dea420bb96559ec6d261a5685f0cc3c8"
+    },
+    "rc-subscription-states": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-subscription-states/SKILL.md",
+      "computedHash": "fbcb3409dc037b8b61459886ab2f9ec6b5b2e68548f9f1e14cb886b43cc9e595"
+    },
+    "rc-subscriptions": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-subscriptions/SKILL.md",
+      "computedHash": "c3072ae008e2fc5372e1e4ca2654db65e7efc3ce20c01a931f5706549c6dc2fa"
+    },
+    "rc-testing": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-testing/SKILL.md",
+      "computedHash": "5d75b58c4b35490bb7a522ac039754c9876a61c1180d223af8cfbe72f3170943"
+    },
+    "rc-understanding-revenuecat": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-understanding-revenuecat/SKILL.md",
+      "computedHash": "d450ba3ed09f68f62a5206010229aecd1876702a8e4762f5db7b61104f02cdb4"
+    },
+    "rc-webhooks": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat-play-billing/skills/rc-webhooks/SKILL.md",
+      "computedHash": "3fb140659284145c1ff619882edd214caebb63abaf158f29548f378ed479ea23"
+    },
     "react-concurrent": {
       "source": "claude-dev-suite/claude-dev-suite",
       "sourceType": "github",
@@ -1119,6 +1431,138 @@
       "sourceType": "github",
       "skillPath": "skills/in-progress/retro/SKILL.md",
       "computedHash": "b9bd2e5e0378214bf54d2a293df50490669b845a4c2a71c8f747ce8ab365f53a"
+    },
+    "revenuecat": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat/SKILL.md",
+      "computedHash": "71b0d87f04983b0c6e75a632ec13169ac2d17317e0c6ccaa8bbffd40bbbdb52a"
+    },
+    "revenuecat-app-valuation": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-app-valuation/SKILL.md",
+      "computedHash": "5cc6b6b9c453ab6722a2a5e52ba8be1695c93793d9e4ddbb2b6e5db4890fbb6b"
+    },
+    "revenuecat-audiences": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-audiences/SKILL.md",
+      "computedHash": "c3bc2216e4e7fd92fc1ec19abe119a0322e163f139a76987307823d47939e6d8"
+    },
+    "revenuecat-billing": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-billing/SKILL.md",
+      "computedHash": "56501d49cc8632502b05929fbc5805390b57fee70319e2213a148a4f42722d55"
+    },
+    "revenuecat-charts": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-charts/SKILL.md",
+      "computedHash": "b7d7a0bfaa286abfeb0b11a6a7cc6833008ecd05948bb20a56477269a761a048"
+    },
+    "revenuecat-cli": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-cli/SKILL.md",
+      "computedHash": "b3d19a98ee365999850577e6f052d466a583451ab0419955d2aa02a3821d4cb7"
+    },
+    "revenuecat-customer-center": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-customer-center/SKILL.md",
+      "computedHash": "d529993f4b8731b1b4480c4deab3063e10661fcff4031f2888fe711831e2a2ae"
+    },
+    "revenuecat-dashboard-links": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-dashboard-links/SKILL.md",
+      "computedHash": "550f8a090fe173d9e0593dca7f37ef825a03395d8a32e5236e98ac297018d7a9"
+    },
+    "revenuecat-entitlements-gate": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-entitlements-gate/SKILL.md",
+      "computedHash": "137b725af76eac6250e80b1b562af7a41ffe33bfc9ed569d39f1d4959cf21270"
+    },
+    "revenuecat-experiment-analysis": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-experiment-analysis/SKILL.md",
+      "computedHash": "ab6fe9bffd169e7632fa0f5c3d42848e642788f04926a79bd63149a5616f4393"
+    },
+    "revenuecat-experiments": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-experiments/SKILL.md",
+      "computedHash": "4e086becc6451b73f48562b3b9a5e176ab059546da802409d91028eea3eb2ee2"
+    },
+    "revenuecat-forecasting": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-forecasting/SKILL.md",
+      "computedHash": "3b5e300a1b9c31c71e4a558efcf79046f0418c2cc1bdc969f9ad6ed4a64c494a"
+    },
+    "revenuecat-identify-user": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-identify-user/SKILL.md",
+      "computedHash": "50661df3ddc3e12ccf50d478405fb8ffa4c94dc05859a30786ecfc5dcbcc6025"
+    },
+    "revenuecat-migrate": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-migrate/SKILL.md",
+      "computedHash": "ca614ac37748f21fa7dc46d35f9f4f84bad8bc18225a1527d56d2f2366097fbe"
+    },
+    "revenuecat-paywall": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-paywall/SKILL.md",
+      "computedHash": "5176250381aa90728b9b35579b2dde488b339997e2deb7d4813a52fc33e78ce8"
+    },
+    "revenuecat-paywall-design": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-paywall-design/SKILL.md",
+      "computedHash": "eea2c5ad77797d562011b4dba41c2df351b2e81ff87f7243e7923671e4cb110f"
+    },
+    "revenuecat-purchase-flow": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-purchase-flow/SKILL.md",
+      "computedHash": "062b24cb3604fdfb2ec5df2c90b226ef79ff6f2060bea75d1478d9fd330c0d01"
+    },
+    "revenuecat-sdk-compatibility": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-sdk-compatibility/SKILL.md",
+      "computedHash": "09efe7d8a1437ed20926da2d2e9e688f6d19342d83082310fe7cf17a05c3c284"
+    },
+    "revenuecat-status": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-status/SKILL.md",
+      "computedHash": "9615af573b742ec02b56d782b3be527ed34872c62f9a21ae7e592fbde63c732c"
+    },
+    "revenuecat-store-state": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-store-state/SKILL.md",
+      "computedHash": "561a5c5e4d906aa284c71e5d92792562a5ec7ee9eb1d9e2404b399fab5996872"
+    },
+    "revenuecat-testing-setup": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-testing-setup/SKILL.md",
+      "computedHash": "c18dfc4a93054d4cdf8389357d63ba3ca9fd92d17a484818c2c51f18f78d7777"
+    },
+    "revenuecat-troubleshoot": {
+      "source": "RevenueCat/ai-toolkit",
+      "sourceType": "github",
+      "skillPath": "revenuecat/skills/revenuecat-troubleshoot/SKILL.md",
+      "computedHash": "a4c60c371cc96ba9b0dd44851e1685e9e01e3f1e6cc7e5cdd49458ca379b2c5b"
     },
     "review-animations": {
       "source": "emilkowalski/skills",
