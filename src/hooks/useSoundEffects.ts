@@ -15,6 +15,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { useAtom } from "jotai";
+import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import {
   soundMutedAtom,
   loadSoundMuted,
@@ -43,7 +44,9 @@ export type JourneySoundKey =
   | "exerciseContinue"
   | "exerciseSelect"
   | "exerciseComplete"
-  | "timerDone";
+  | "timerDone"
+  | "celebrationChime"
+  | "pageTurn";
 
 /**
  * Map of sound keys to require()-based asset sources.
@@ -64,7 +67,21 @@ const SOUND_SOURCES: Record<JourneySoundKey, number | null> = {
   exerciseSelect: null,
   exerciseComplete: null,
   timerDone: null,
+  celebrationChime: require("../../assets/sounds/celebration-chime.wav"),
+  pageTurn: require("../../assets/sounds/page-turn.wav"),
 };
+
+// Singleton player cache shared across hook instances (lazy-created).
+const playerCache = new Map<JourneySoundKey, AudioPlayer>();
+
+function getPlayer(key: JourneySoundKey, source: number): AudioPlayer {
+  let player = playerCache.get(key);
+  if (!player) {
+    player = createAudioPlayer(source);
+    playerCache.set(key, player);
+  }
+  return player;
+}
 
 // ---------------------------------------------------------------------------
 // Hook return type
@@ -111,12 +128,15 @@ export function useSoundEffects(): SoundEffectsAPI {
         return;
       }
 
-      // When real audio files are bundled, uncomment below:
-      // import { createAudioPlayer } from 'expo-audio';
-      // const player = createAudioPlayer(source);
-      // player.play();
-      //
-      // For now this is a no-op beyond the null check above.
+      try {
+        const player = getPlayer(key, source);
+        void player.seekTo(0).catch(() => {});
+        player.play();
+      } catch (error) {
+        if (__DEV__) {
+          console.warn(`[Sound] Failed to play ${key}:`, error);
+        }
+      }
     },
     [isMuted],
   );

@@ -29,8 +29,13 @@ People seeking accessible CBT / mindfulness exercises in a polished, gamified ap
 - Repo root is `/app`; platform `expo` supervisor expected `/app/frontend`. Added symlink `/app/frontend -> /app` so the packager runs. Deps installed via yarn/bun.
 - Web preview does NOT render (native-only deps: react-native-color-matrix-image-filters, native Lottie, etc.). Verify in Expo Go on a device.
 
+## Implemented (2026-10-01, round 2)
+- **Celebration sound**: `assets/sounds/page-turn.wav` (as the screen opens) + `assets/sounds/celebration-chime.wav` (as the panda lands). `useSoundEffects` now actually plays via `expo-audio` (cached players, respects global mute).
+- **Streak + time cards**: celebration shows XP · STREAK · TIME cards (staggered spring-in). Streak from `useStreak().currentStreak` (min 1); time measured from screen mount in both journey-flow and ExerciseFlowScreen.
+- **Perfect lesson**: `src/domains/journey/rewards/lessonStats.ts` (`isPerfectLesson`, `PERFECT_LESSON_BONUS_XP = 5`). Journey-flow awards base+bonus XP and passes `{ durationMs, isPerfect }` via `handleCompletionResult(result, stats)` → `RewardCelebration.stats`. UI: golden glow, slow 3-beat clap (scale/tilt + light haptics), "PERFECT LESSON +5 XP" badge, "Perfect lesson!" title, perfect-specific encouragements.
+- **Share your win**: `ShareWinCard.tsx` rendered off-screen inside the modal, captured with `react-native-view-shot` and shared via `expo-sharing` (text-share fallback). Added deps `expo-sharing`, `react-native-view-shot` (yarn; `bun.lock` is stale — run `bun install` if building with bun).
+- Fixed pre-existing TS errors in `useJourneyMapController.tsx` (`courseCompletionMessage` type, `showDock` → `isCompleted`).
+
 ## Backlog / next
-- P1: Perfect-lesson variant (bonus XP, slow-clap mascot) like Duolingo.
-- P1: Streak + time-spent stat cards alongside XP.
-- P2: Celebration sound effects (wire real assets into `useSoundEffects`).
 - P2: Review-prompt timing tuning after lesson celebrations.
+- P2: Streak-milestone flourish (7/30 days) on the celebration.

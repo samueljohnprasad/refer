@@ -9,6 +9,7 @@ export default function CelebrationTestScreen() {
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
   const [lessonVisible, setLessonVisible] = useState(false);
+  const [perfectVisible, setPerfectVisible] = useState(false);
   const [context, setContext] = useState<CelebrationContext | null>(null);
 
   const triggerStandard = () => {
@@ -36,6 +37,10 @@ export default function CelebrationTestScreen() {
           title="Trigger Lesson Complete (new)"
           onPress={() => setLessonVisible(true)}
         />
+        <Button
+          title="Trigger Perfect Lesson"
+          onPress={() => setPerfectVisible(true)}
+        />
         <Button title="Trigger Old Overlay" onPress={triggerStandard} />
       </View>
 
@@ -50,9 +55,22 @@ export default function CelebrationTestScreen() {
       <LessonCompleteCelebration
         isVisible={lessonVisible}
         xpEarned={10}
+        durationMs={3 * 60_000 + 42_000}
+        lessonTitle="Catching anxious thoughts"
         title="Lesson complete!"
         message="You showed up for yourself today."
         onContinue={() => setLessonVisible(false)}
+      />
+
+      <LessonCompleteCelebration
+        isVisible={perfectVisible}
+        xpEarned={10}
+        bonusXP={5}
+        isPerfect
+        durationMs={2 * 60_000 + 8_000}
+        streakDays={7}
+        lessonTitle="Reframing the inner critic"
+        onContinue={() => setPerfectVisible(false)}
       />
     </View>
   );

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "@/src/components/tw";
 import { Stack, router, useLocalSearchParams } from "expo-router";
@@ -18,6 +18,11 @@ import { updateUserStreak } from "@/src/lib/api/mentalHealthJourneyApi";
 import { useQueryClient } from "@tanstack/react-query";
 import { createLogger } from "@/src/lib/logger";
 import { useCelebrationOrchestrator } from "@/src/domains/journey/rewards/useCelebrationOrchestrator";
+import {
+  isPerfectLesson,
+  LESSON_BASE_XP,
+  PERFECT_LESSON_BONUS_XP,
+} from "@/src/domains/journey/rewards/lessonStats";
 import { useXPOptional } from "@/src/context/XPContext";
 import { XPActionType } from "@/src/types/xp";
 
@@ -32,6 +37,8 @@ export default function JourneyFlowRoute() {
   const queryClient = useQueryClient();
   const { handleCompletionResult } = useCelebrationOrchestrator(courseId || "");
   const xp = useXPOptional();
+  // Wall-clock start of the lesson, surfaced as "time spent" on the celebration.
+  const lessonStartedAtRef = useRef(Date.now());
 
   const [completeNode] = journeyApi.useCompleteNodeMutation();
   const node = useAppSelector((state) => selectNode(state, nodeId || ""));
@@ -79,12 +86,21 @@ export default function JourneyFlowRoute() {
         if ("data" in progressResult && progressResult.data) {
           dispatch(setCourseProgress(progressResult.data));
         }
+        const isPerfect = isPerfectLesson(responses);
         if (completion.celebration) {
           xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
-            customDescription: node?.title || "Lesson completed",
+            customAmount: isPerfect
+              ? LESSON_BASE_XP + PERFECT_LESSON_BONUS_XP
+              : LESSON_BASE_XP,
+            customDescription: isPerfect
+              ? `Perfect lesson: ${node?.title || "Lesson"}`
+              : node?.title || "Lesson completed",
           });
         }
-        handleCompletionResult(completion);
+        handleCompletionResult(completion, {
+          durationMs: Date.now() - lessonStartedAtRef.current,
+          isPerfect,
+        });
         log.info("node_completion_succeeded", {
           courseId,
           nodeId,

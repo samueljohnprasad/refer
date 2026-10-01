@@ -76,11 +76,20 @@ export interface CourseRewardContent {
   doneActionLabel: string;
 }
 
+/** Client-side stats attached to a lesson celebration (not part of the server payload). */
+export interface LessonCelebrationStats {
+  /** Wall-clock time the learner spent in the lesson. */
+  durationMs: number;
+  /** True when every graded item was answered correctly on the first try. */
+  isPerfect: boolean;
+}
+
 export type RewardCelebration =
   | {
       level: CelebrationLevel.LESSON;
       nodeId: string;
       content: LessonRewardContent;
+      stats?: LessonCelebrationStats;
     }
   | {
       level: CelebrationLevel.UNIT;

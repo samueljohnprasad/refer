@@ -4,7 +4,11 @@
 
 import { useCallback } from "react";
 import { useAppDispatch } from "@/src/store/hooks";
-import type { CompleteNodeResponse } from "@/src/types/journeyV5";
+import type {
+  CompleteNodeResponse,
+  LessonCelebrationStats,
+} from "@/src/types/journeyV5";
+import { CelebrationLevel } from "@/src/types/journeyV5";
 import { setPendingCelebration } from "../state/journeySlice";
 import { requestReviewForMilestone } from "@/src/hooks/useReviewPrompt";
 
@@ -13,8 +17,12 @@ interface UseCelebrationOrchestratorResult {
    * Call this immediately after a successful completeNode response.
    * Dispatches setPendingCelebration with the highest-priority level:
    *   course > unit > lesson
+   * Optional `stats` (time spent, perfect lesson) are attached to lesson celebrations.
    */
-  handleCompletionResult: (result: CompleteNodeResponse) => void;
+  handleCompletionResult: (
+    result: CompleteNodeResponse,
+    stats?: LessonCelebrationStats,
+  ) => void;
 }
 
 /**
@@ -27,11 +35,13 @@ export function useCelebrationOrchestrator(
   const dispatch = useAppDispatch();
 
   const handleCompletionResult = useCallback(
-    (result: CompleteNodeResponse): void => {
+    (result: CompleteNodeResponse, stats?: LessonCelebrationStats): void => {
       try {
-        dispatch(
-          setPendingCelebration({ courseId, celebration: result.celebration }),
-        );
+        const celebration =
+          result.celebration?.level === CelebrationLevel.LESSON && stats
+            ? { ...result.celebration, stats }
+            : result.celebration;
+        dispatch(setPendingCelebration({ courseId, celebration }));
         // ponytail: trigger App Store review prompt when user completes a unit/course celebration
         if (result.celebration?.level === "unit" || result.celebration?.level === "course") {
           setTimeout(() => {

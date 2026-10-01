@@ -159,9 +159,11 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   } | null>(null);
 
   // ─── Lesson-complete celebration ──────────────────────────────────
-  const [celebration, setCelebration] = React.useState<{ xp: number } | null>(
-    null,
-  );
+  const [celebration, setCelebration] = React.useState<{
+    xp: number;
+    durationMs: number;
+  } | null>(null);
+  const exerciseStartedAtRef = useRef(Date.now());
 
   const setPrimaryOverride = React.useCallback(
     (override: { label: string; action: () => void; disabled: boolean } | null) => {
@@ -252,7 +254,10 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
           customDescription: config.title || "Exercise completed",
         });
         // Show the celebration screen instead of exiting immediately.
-        setCelebration({ xp: XP_REWARDS[XPActionType.EXERCISE_COMPLETE] });
+        setCelebration({
+          xp: XP_REWARDS[XPActionType.EXERCISE_COMPLETE],
+          durationMs: Date.now() - exerciseStartedAtRef.current,
+        });
         return;
       }
 
@@ -418,6 +423,8 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
         <LessonCompleteCelebration
           isVisible={!!celebration}
           xpEarned={celebration.xp}
+          durationMs={celebration.durationMs}
+          lessonTitle={config.title}
           title="Exercise complete!"
           message={pickEncouragement(config.title)}
           onContinue={exitScreen}

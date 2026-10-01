@@ -16,7 +16,10 @@ import JourneyUnavailableState from "./components/JourneyUnavailableState";
 import { ChestRewardModal } from "./components";
 import { CelebrationOverlay } from "@/src/components/celebration/CelebrationOverlay";
 import { LessonCompleteCelebration } from "@/src/components/celebration/LessonCompleteCelebration";
-import { XP_REWARDS, XPActionType } from "@/src/types/xp";
+import {
+  LESSON_BASE_XP,
+  PERFECT_LESSON_BONUS_XP,
+} from "@/src/domains/journey/rewards/lessonStats";
 import { CheckpointActionSheet } from "./components/CheckpointActionSheet";
 import { CelebrationLevel } from "@/src/types/journeyV5";
 import { NodeType } from "@/src/types/journey";
@@ -227,7 +230,11 @@ export const JourneyMapView = React.memo(function JourneyMapView({
       {controller.pendingCelebration?.level === CelebrationLevel.LESSON && (
         <LessonCompleteCelebration
           isVisible={true}
-          xpEarned={XP_REWARDS[XPActionType.EXERCISE_COMPLETE]}
+          xpEarned={LESSON_BASE_XP}
+          bonusXP={PERFECT_LESSON_BONUS_XP}
+          isPerfect={controller.pendingCelebration.stats?.isPerfect ?? false}
+          durationMs={controller.pendingCelebration.stats?.durationMs}
+          lessonTitle={controller.pendingCelebration.content.title}
           title="Lesson complete!"
           message={controller.pendingCelebration.content.takeaway}
           continueLabel={

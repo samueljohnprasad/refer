@@ -35,6 +35,7 @@ type JourneyMapController = {
   activeNodeInitialScrollIndex: ActiveNodeInitialScrollIndex;
   bottomSpacerHeight: number;
   courseTitle: string;
+  courseCompletionMessage?: string;
   flashListData: JourneyFlashListItem[];
   handleListLoad: () => void;
   handleNodePress: (node: PathNodeData) => void;
@@ -254,7 +255,7 @@ export function useJourneyMapController(
     activeGlobalIndex,
     activeNodeInitialScrollIndex,
     bottomSpacerHeight:
-      LIST_BOTTOM_SPACER_HEIGHT + insets.bottom + (recommendation.showDock ? 200 : 0),
+      LIST_BOTTOM_SPACER_HEIGHT + insets.bottom + (recommendation.isCompleted ? 200 : 0),
     courseTitle: course?.title ?? "Journey",
     courseCompletionMessage: course?.rewardContent?.acknowledgement,
     flashListData,
