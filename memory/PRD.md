@@ -41,6 +41,10 @@ People seeking accessible CBT / mindfulness exercises in a polished, gamified ap
 - **Streak milestones (3/7/15/30)**: `src/store/streakMilestoneStore.ts` celebrates each milestone once per streak run (AsyncStorage date check). UI: "N-DAY STREAK" pill, `FlameBurst.tsx` embers + halo on the streak card, flame icon pulse, heavy haptics, encouragement line swaps to a milestone message.
 - Dev screen triggers updated (`todayXP`, `dailyGoal`, `celebrateStreakMilestone` overrides).
 
+## Implemented (2026-10-01, round 4)
+- **Goal picker**: `SettingsScreen/components/DailyGoalPicker.tsx` — inline chip group (10 Easy / 20 Steady / 30 Serious / 50 Intense) at the top of Settings → Preferences, persisted via `useDailyXPGoal`.
+- **Weekly streak dots**: `WeeklyStreakDots.tsx` (Sun→Sat dots + letters, today ringed, derived from the displayed streak count) rendered inside the STREAK card with staggered pop-in.
+- **Mute toggle**: speaker icon button (top-right, safe-area aware) on the celebration, wired to `useSoundEffects().toggleMute` (global persisted mute).
+
 ## Backlog / next
-- P2: Daily goal picker in Settings (`DAILY_XP_GOAL_OPTIONS` already exported).
 - P2: Review-prompt timing tuning after lesson celebrations.

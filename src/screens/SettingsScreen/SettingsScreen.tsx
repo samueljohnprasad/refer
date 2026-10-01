@@ -21,6 +21,7 @@ import {
 
 import { PromoCard } from "./components/PromoCard";
 import { SettingsSection } from "./components/SettingsSection";
+import { DailyGoalPicker } from "./components/DailyGoalPicker";
 import { SettingsItem } from "./components/SettingsItem";
 import { SettingsDialogs } from "./components/SettingsDialogs";
 import { SettingsDevSection } from "./components/SettingsDevSection";
@@ -118,6 +119,7 @@ export default function SettingsScreen() {
         <PostTrialDiscountBanner />
 
         <SettingsSection title="Preferences">
+          <DailyGoalPicker />
           <SettingsItem
             icon={Notification01Icon}
             title="Daily Reminders"

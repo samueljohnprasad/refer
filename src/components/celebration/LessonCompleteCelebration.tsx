@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, Modal, Share, useColorScheme } from "react-native";
+import { View, Text, StyleSheet, Modal, Pressable, Share, useColorScheme } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -27,12 +28,15 @@ import {
   Clapping01Icon,
   Target02Icon,
   Tick02Icon,
+  VolumeHighIcon,
+  VolumeMuteIcon,
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/src/components/ui/Button";
 import { ConfettiExplosion } from "@/src/components/animations/ConfettiExplosion";
 import { ShareWinCard } from "@/src/components/celebration/ShareWinCard";
 import { DailyGoalRing } from "@/src/components/celebration/DailyGoalRing";
 import { FlameBurst } from "@/src/components/celebration/FlameBurst";
+import { WeeklyStreakDots } from "@/src/components/celebration/WeeklyStreakDots";
 import { useSoundEffects } from "@/src/hooks/useSoundEffects";
 import { useStreak } from "@/src/hooks/useStreak";
 import { useXPOptional } from "@/src/context/XPContext";
@@ -135,7 +139,8 @@ export function LessonCompleteCelebration({
 }: LessonCompleteCelebrationProps) {
   const isDark = useColorScheme() === "dark";
   const reducedMotion = useReducedMotion();
-  const { play } = useSoundEffects();
+  const insets = useSafeAreaInsets();
+  const { play, toggleMute, isMuted } = useSoundEffects();
   const { currentStreak } = useStreak();
   const xpContext = useXPOptional();
   const { goal: savedGoal } = useDailyXPGoal();
@@ -568,6 +573,34 @@ export function LessonCompleteCelebration({
         </View>
 
         <View style={styles.content}>
+          {/* Mute toggle */}
+          <Pressable
+            testID="celebration-mute-toggle"
+            accessibilityRole="button"
+            accessibilityLabel={isMuted ? "Unmute celebration sounds" : "Mute celebration sounds"}
+            accessibilityState={{ selected: isMuted }}
+            hitSlop={8}
+            onPress={() => {
+              Haptics.selectionAsync().catch(() => {});
+              toggleMute();
+            }}
+            style={({ pressed }) => [
+              styles.muteButton,
+              {
+                top: insets.top + 12,
+                backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.05)",
+                opacity: pressed ? 0.6 : 1,
+              },
+            ]}
+          >
+            <HugeiconsIcon
+              icon={isMuted ? VolumeMuteIcon : VolumeHighIcon}
+              size={20}
+              color={SEMANTIC_COLORS.text.secondary}
+              strokeWidth={2}
+            />
+          </Pressable>
+
           {/* Mascot + confetti */}
           <View style={styles.mascotZone}>
             <View pointerEvents="none" style={styles.confettiLayer}>
@@ -670,6 +703,14 @@ export function LessonCompleteCelebration({
                 </Animated.View>
                 <Text style={[styles.statValue, { color: streakColors.value }]}>{resolvedStreak}</Text>
               </View>
+              <WeeklyStreakDots
+                streakDays={resolvedStreak}
+                activeColor={streakColors.icon}
+                inactiveColor={isDark ? "#4a3326" : "#FFD9C2"}
+                letterColor={streakColors.label}
+                delay={cardDelay + stagger + (rm ? 40 : 180)}
+                reducedMotion={rm}
+              />
             </Animated.View>
 
             {durationMs !== undefined ? (
@@ -781,6 +822,16 @@ const styles = StyleSheet.create({
     paddingTop: 64,
     paddingBottom: 40,
     alignItems: "center",
+  },
+  muteButton: {
+    position: "absolute",
+    right: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10,
   },
   mascotZone: {
     flex: 1,
