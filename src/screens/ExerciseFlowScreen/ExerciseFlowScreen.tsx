@@ -127,7 +127,11 @@ import { RADIUS } from "@/src/theme/radius";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
 import { useXPOptional } from "@/src/context/XPContext";
-import { XPActionType } from "@/src/types/xp";
+import { XPActionType, XP_REWARDS } from "@/src/types/xp";
+import {
+  LessonCompleteCelebration,
+  pickEncouragement,
+} from "@/src/components/celebration/LessonCompleteCelebration";
 
 interface ResolvedExerciseFlowScreenProps {
   config: ExerciseConfig<any>;
@@ -153,6 +157,11 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
     stepIndex: number;
     override: { label: string; action: () => void; disabled: boolean } | null;
   } | null>(null);
+
+  // ─── Lesson-complete celebration ──────────────────────────────────
+  const [celebration, setCelebration] = React.useState<{ xp: number } | null>(
+    null,
+  );
 
   const setPrimaryOverride = React.useCallback(
     (override: { label: string; action: () => void; disabled: boolean } | null) => {
@@ -235,10 +244,16 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       await save(payload, existingEntry?.id);
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-      if (!existingEntry || existingEntry.status !== "completed") {
+      const isFreshCompletion =
+        !existingEntry || existingEntry.status !== "completed";
+
+      if (isFreshCompletion) {
         xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
           customDescription: config.title || "Exercise completed",
         });
+        // Show the celebration screen instead of exiting immediately.
+        setCelebration({ xp: XP_REWARDS[XPActionType.EXERCISE_COMPLETE] });
+        return;
       }
 
       exitScreen();
@@ -364,39 +379,51 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   const finalPrimaryDisabled = primaryOverride ? primaryOverride.disabled : (!flow.isCurrentStepValid || isSaving);
 
   return (
-    <LessonScreen
-      className="flex-1"
-      style={{ backgroundColor: config.backgroundColor ?? "#FFFFFF" }}
-      hideHeader={currentStep?.hideHeader || readOnly}
-      hideFooter={currentStep?.hideFooter}
-      progress={flow.progress}
-      onClose={handleClose}
-      backButtonVariant="close-icon"
-      primaryLabel={finalPrimaryLabel}
-      onPrimaryPress={finalPrimaryPress}
-      primaryDisabled={finalPrimaryDisabled}
-      primaryLoading={isSaving}
-      primaryRightIcon={
-        isFinalStep && !isSaving ? (
-          <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} color={SEMANTIC_COLORS.surface.primary} strokeWidth={2} />
-        ) : undefined
-      }
-      secondaryLabel={readOnly ? undefined : isFinalStep ? (currentStep?.secondaryLabel || "Edit answers") : (flow.canGoBack ? "Back" : undefined)}
-      onSecondaryPress={flow.canGoBack ? flow.goBack : undefined}
-    >
-      <AnimatedStepContainer
-        stepIndex={flow.currentStepIndex}
-        className="pb-4"
+    <>
+      <LessonScreen
+        className="flex-1"
+        style={{ backgroundColor: config.backgroundColor ?? "#FFFFFF" }}
+        hideHeader={currentStep?.hideHeader || readOnly}
+        hideFooter={currentStep?.hideFooter}
+        progress={flow.progress}
+        onClose={handleClose}
+        backButtonVariant="close-icon"
+        primaryLabel={finalPrimaryLabel}
+        onPrimaryPress={finalPrimaryPress}
+        primaryDisabled={finalPrimaryDisabled}
+        primaryLoading={isSaving}
+        primaryRightIcon={
+          isFinalStep && !isSaving ? (
+            <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} color={SEMANTIC_COLORS.surface.primary} strokeWidth={2} />
+          ) : undefined
+        }
+        secondaryLabel={readOnly ? undefined : isFinalStep ? (currentStep?.secondaryLabel || "Edit answers") : (flow.canGoBack ? "Back" : undefined)}
+        onSecondaryPress={flow.canGoBack ? flow.goBack : undefined}
       >
-        {StepComponent ? (
-          <StepComponent {...stepProps} />
-        ) : (
-          <View className="flex-1 justify-center items-center">
-            <Text className="text-slate-400">Unknown step</Text>
-          </View>
-        )}
-      </AnimatedStepContainer>
-    </LessonScreen>
+        <AnimatedStepContainer
+          stepIndex={flow.currentStepIndex}
+          className="pb-4"
+        >
+          {StepComponent ? (
+            <StepComponent {...stepProps} />
+          ) : (
+            <View className="flex-1 justify-center items-center">
+              <Text className="text-slate-400">Unknown step</Text>
+            </View>
+          )}
+        </AnimatedStepContainer>
+      </LessonScreen>
+
+      {celebration && (
+        <LessonCompleteCelebration
+          isVisible={!!celebration}
+          xpEarned={celebration.xp}
+          title="Exercise complete!"
+          message={pickEncouragement(config.title)}
+          onContinue={exitScreen}
+        />
+      )}
+    </>
   );
 };
 

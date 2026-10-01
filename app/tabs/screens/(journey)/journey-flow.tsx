@@ -18,6 +18,8 @@ import { updateUserStreak } from "@/src/lib/api/mentalHealthJourneyApi";
 import { useQueryClient } from "@tanstack/react-query";
 import { createLogger } from "@/src/lib/logger";
 import { useCelebrationOrchestrator } from "@/src/domains/journey/rewards/useCelebrationOrchestrator";
+import { useXPOptional } from "@/src/context/XPContext";
+import { XPActionType } from "@/src/types/xp";
 
 const log = createLogger("JourneyFlow");
 
@@ -29,6 +31,7 @@ export default function JourneyFlowRoute() {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const { handleCompletionResult } = useCelebrationOrchestrator(courseId || "");
+  const xp = useXPOptional();
 
   const [completeNode] = journeyApi.useCompleteNodeMutation();
   const node = useAppSelector((state) => selectNode(state, nodeId || ""));
@@ -76,6 +79,11 @@ export default function JourneyFlowRoute() {
         if ("data" in progressResult && progressResult.data) {
           dispatch(setCourseProgress(progressResult.data));
         }
+        if (completion.celebration) {
+          xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
+            customDescription: node?.title || "Lesson completed",
+          });
+        }
         handleCompletionResult(completion);
         log.info("node_completion_succeeded", {
           courseId,
@@ -100,6 +108,8 @@ export default function JourneyFlowRoute() {
       handleCompletionResult,
       handleDismiss,
       queryClient,
+      node?.title,
+      xp,
     ],
   );
 

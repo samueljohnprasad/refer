@@ -15,6 +15,8 @@ import JourneyLoadingSkeleton from "./components/JourneyLoadingSkeleton";
 import JourneyUnavailableState from "./components/JourneyUnavailableState";
 import { ChestRewardModal } from "./components";
 import { CelebrationOverlay } from "@/src/components/celebration/CelebrationOverlay";
+import { LessonCompleteCelebration } from "@/src/components/celebration/LessonCompleteCelebration";
+import { XP_REWARDS, XPActionType } from "@/src/types/xp";
 import { CheckpointActionSheet } from "./components/CheckpointActionSheet";
 import { CelebrationLevel } from "@/src/types/journeyV5";
 import { NodeType } from "@/src/types/journey";
@@ -221,17 +223,16 @@ export const JourneyMapView = React.memo(function JourneyMapView({
         />
       ) : null}
 
-      {/* T012: Lesson Celebration */}
+      {/* T012: Lesson Celebration — Duolingo-style XP + mascot screen */}
       {controller.pendingCelebration?.level === CelebrationLevel.LESSON && (
-        <CelebrationOverlay
+        <LessonCompleteCelebration
           isVisible={true}
-          context={{
-            type: 'lesson',
-            primaryText: controller.pendingCelebration.content.takeaway,
-            secondaryText: controller.pendingCelebration.content.title,
-            pandaAnimationKey: 'generic_success',
-            backgroundColor: isDark ? '#1a2a1a' : '#fbfdf8',
-          }}
+          xpEarned={XP_REWARDS[XPActionType.EXERCISE_COMPLETE]}
+          title="Lesson complete!"
+          message={controller.pendingCelebration.content.takeaway}
+          continueLabel={
+            controller.pendingCelebration.content.primaryActionLabel || "Continue"
+          }
           onContinue={controller.dismissCelebration}
         />
       )}
