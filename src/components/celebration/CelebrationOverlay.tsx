@@ -8,6 +8,9 @@ import { PandaMetaphor } from './PandaMetaphor';
 import { StreakIndicator } from './StreakIndicator';
 import { Button } from '@/src/components/ui/Button';
 import { SEMANTIC_COLORS } from '../../../src/theme/colors';
+import { createLogger } from '@/src/lib/logger';
+
+const logger = createLogger('celebration-overlay');
 
 export interface CelebrationOverlayProps {
   isVisible: boolean;
@@ -30,10 +33,12 @@ export function CelebrationOverlay({
   });
 
   useEffect(() => {
+    // ponytail: diagnostic logger for CelebrationOverlay
+    logger.info('useEffect triggered, isVisible =', isVisible, context);
     if (!isVisible) {
       setCanInteract(false);
     }
-  }, [isVisible]);
+  }, [isVisible, context]);
 
   const overlayStyle = useAnimatedStyle(() => ({
     opacity: timeline.overlayOpacity.value,

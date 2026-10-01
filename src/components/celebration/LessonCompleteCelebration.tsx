@@ -58,6 +58,9 @@ import {
 } from "@/src/store/streakMilestoneStore";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
+import { createLogger } from "@/src/lib/logger";
+
+const logger = createLogger("lesson-complete-celebration");
 
 // ─── Mascot variants ──────────────────────────────────────────────────────────
 const PANDA = {
@@ -263,6 +266,14 @@ export function LessonCompleteCelebration({
   const ringFillDuration = rm ? 250 : 900;
 
   useEffect(() => {
+    // ponytail: diagnostic logging for celebration modal visibility
+    logger.info("useEffect triggered, isVisible =", isVisible, {
+      xpEarned,
+      bonusXP,
+      isPerfect,
+      streakDays: resolvedStreak,
+      lessonTitle,
+    });
     if (!isVisible) {
       overlayOpacity.value = 0;
       pandaProgress.value = 0;
@@ -1046,17 +1057,18 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: APP_FONT_FAMILIES.extraBold,
-    fontSize: 28,
+    fontSize: 30,
+    letterSpacing: -0.5,
     textAlign: "center",
   },
   messageWrap: {
-    marginTop: 8,
-    paddingHorizontal: 8,
+    marginTop: 6,
+    paddingHorizontal: 12,
   },
   message: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 17,
-    lineHeight: 24,
+    fontSize: 16,
+    lineHeight: 22,
     textAlign: "center",
   },
   badge: {
@@ -1085,17 +1097,18 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   statsRow: {
-    marginTop: 16,
+    marginTop: 20,
     flexDirection: "row",
-    gap: 10,
+    gap: 12,
     width: "100%",
   },
   statCard: {
     flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderRadius: 18,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    borderRadius: 20,
     borderWidth: 2,
+    borderBottomWidth: 4,
     alignItems: "center",
     overflow: "visible",
   },
@@ -1115,15 +1128,16 @@ const styles = StyleSheet.create({
     fontSize: 22,
   },
   goalCard: {
-    marginTop: 12,
+    marginTop: 14,
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    borderRadius: 18,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 22,
     borderWidth: 2,
+    borderBottomWidth: 4,
   },
   goalText: {
     flex: 1,
@@ -1151,10 +1165,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    borderRadius: 18,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 22,
     borderWidth: 2,
+    borderBottomWidth: 4,
     minHeight: 64,
   },
   chestIcon: {

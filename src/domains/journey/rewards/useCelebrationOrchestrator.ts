@@ -11,6 +11,9 @@ import type {
 import { CelebrationLevel } from "@/src/types/journeyV5";
 import { setPendingCelebration } from "../state/journeySlice";
 import { requestReviewForMilestone } from "@/src/hooks/useReviewPrompt";
+import { createLogger } from "@/src/lib/logger";
+
+const logger = createLogger("celebration-orchestrator");
 
 interface UseCelebrationOrchestratorResult {
   /**
@@ -41,6 +44,9 @@ export function useCelebrationOrchestrator(
           result.celebration?.level === CelebrationLevel.LESSON && stats
             ? { ...result.celebration, stats }
             : result.celebration;
+
+        // ponytail: diagnostic logger for celebration orchestration
+        logger.info("Dispatching pendingCelebration", { courseId, celebration });
         dispatch(setPendingCelebration({ courseId, celebration }));
         // ponytail: trigger App Store review prompt when user completes a unit/course celebration
         if (result.celebration?.level === "unit" || result.celebration?.level === "course") {
@@ -50,7 +56,7 @@ export function useCelebrationOrchestrator(
         }
       } catch (err) {
         // ponytail: never throw — rewards must not block navigation (FR-5.4)
-        console.warn("[rewards] orchestrator error", err);
+        logger.warn("Orchestrator error", err);
       }
     },
     [courseId, dispatch],

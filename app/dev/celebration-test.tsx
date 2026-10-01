@@ -4,6 +4,9 @@ import { useRouter } from 'expo-router';
 import { CelebrationOverlay } from '../../src/components/celebration/CelebrationOverlay';
 import { LessonCompleteCelebration } from '../../src/components/celebration/LessonCompleteCelebration';
 import { CelebrationContext } from '../../src/types/celebration';
+import { createLogger } from '@/src/lib/logger';
+
+const logger = createLogger('celebration-test');
 
 export default function CelebrationTestScreen() {
   const router = useRouter();
@@ -13,6 +16,8 @@ export default function CelebrationTestScreen() {
   const [context, setContext] = useState<CelebrationContext | null>(null);
 
   const triggerStandard = () => {
+    // ponytail: app logger for celebration test
+    logger.info('Triggering standard old overlay');
     setContext({
       type: 'lesson',
       level: 1,
@@ -25,6 +30,7 @@ export default function CelebrationTestScreen() {
   };
 
   const handleContinue = () => {
+    logger.info('Dismissing standard old overlay');
     setIsVisible(false);
   };
 
@@ -35,11 +41,17 @@ export default function CelebrationTestScreen() {
       <View className="mb-8" style={{ gap: 12 }}>
         <Button
           title="Trigger Lesson Complete (new)"
-          onPress={() => setLessonVisible(true)}
+          onPress={() => {
+            logger.info('Triggering Lesson Complete (new), setting lessonVisible=true');
+            setLessonVisible(true);
+          }}
         />
         <Button
           title="Trigger Perfect Lesson"
-          onPress={() => setPerfectVisible(true)}
+          onPress={() => {
+            logger.info('Triggering Perfect Lesson, setting perfectVisible=true');
+            setPerfectVisible(true);
+          }}
         />
         <Button title="Trigger Old Overlay" onPress={triggerStandard} />
       </View>

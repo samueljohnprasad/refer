@@ -26,6 +26,9 @@ import type {
 } from "@/src/types/exerciseFlow";
 import { useSingleExerciseEntry } from "@/src/hooks/useSingleExerciseEntry";
 import { getExerciseConfig } from "@/src/data/exerciseRegistry";
+import { createLogger } from "@/src/lib/logger";
+
+const logger = createLogger("exercise-flow-screen");
 
 
 // ─── Animated step transition wrapper ────────────────────────────────────────
@@ -252,6 +255,12 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       if (isFreshCompletion) {
         xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
           customDescription: config.title || "Exercise completed",
+        });
+        // ponytail: diagnostic logger for standalone exercise celebration trigger
+        logger.info("Fresh completion! Setting celebration state:", {
+          xp: XP_REWARDS[XPActionType.EXERCISE_COMPLETE],
+          durationMs: Date.now() - exerciseStartedAtRef.current,
+          title: config.title,
         });
         // Show the celebration screen instead of exiting immediately.
         setCelebration({

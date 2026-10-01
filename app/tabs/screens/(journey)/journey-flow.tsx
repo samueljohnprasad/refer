@@ -25,6 +25,7 @@ import {
 } from "@/src/domains/journey/rewards/lessonStats";
 import { useXPOptional } from "@/src/context/XPContext";
 import { XPActionType } from "@/src/types/xp";
+import { CelebrationLevel, type RewardCelebration } from "@/src/types/journeyV5";
 
 const log = createLogger("JourneyFlow");
 
@@ -87,20 +88,33 @@ export default function JourneyFlowRoute() {
           dispatch(setCourseProgress(progressResult.data));
         }
         const isPerfect = isPerfectLesson(responses);
-        if (completion.celebration) {
-          xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
-            customAmount: isPerfect
-              ? LESSON_BASE_XP + PERFECT_LESSON_BONUS_XP
-              : LESSON_BASE_XP,
-            customDescription: isPerfect
-              ? `Perfect lesson: ${node?.title || "Lesson"}`
-              : node?.title || "Lesson completed",
-          });
-        }
-        handleCompletionResult(completion, {
-          durationMs: Date.now() - lessonStartedAtRef.current,
-          isPerfect,
+        const resolvedCelebration: RewardCelebration = completion.celebration ?? {
+          level: CelebrationLevel.LESSON,
+          nodeId: nodeId || "",
+          content: {
+            title: node?.title || "Lesson complete!",
+            takeaway: "You showed up for yourself today.",
+            primaryActionLabel: "Continue",
+          },
+        };
+
+        xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
+          customAmount: isPerfect
+            ? LESSON_BASE_XP + PERFECT_LESSON_BONUS_XP
+            : LESSON_BASE_XP,
+          customDescription: isPerfect
+            ? `Perfect lesson: ${node?.title || "Lesson"}`
+            : node?.title || "Lesson completed",
         });
+
+        // ponytail: dispatch celebration state for journey map overlay
+        handleCompletionResult(
+          { ...completion, celebration: resolvedCelebration },
+          {
+            durationMs: Date.now() - lessonStartedAtRef.current,
+            isPerfect,
+          },
+        );
         log.info("node_completion_succeeded", {
           courseId,
           nodeId,
