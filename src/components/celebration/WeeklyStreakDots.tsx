@@ -1,12 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withSpring,
-  withTiming,
-} from "react-native-reanimated";
 import { getDay } from "date-fns";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 
@@ -45,70 +38,28 @@ interface WeeklyStreakDotsProps {
   reducedMotion?: boolean;
 }
 
+// ponytail: render dots directly without 7 redundant child spring hooks
 export function WeeklyStreakDots({
   streakDays,
   activeColor,
   inactiveColor,
   letterColor,
-  delay = 0,
-  reducedMotion = false,
 }: WeeklyStreakDotsProps) {
   const dots = getWeekDots(streakDays);
   return (
     <View style={styles.row} accessibilityLabel={`${dots.filter((d) => d.active).length} active days this week`}>
       {dots.map((dot, i) => (
-        <Dot
-          key={dot.letter + i}
-          dot={dot}
-          activeColor={activeColor}
-          inactiveColor={inactiveColor}
-          letterColor={letterColor}
-          delay={delay + i * (reducedMotion ? 0 : 45)}
-          reducedMotion={reducedMotion}
-        />
+        <View key={dot.letter + i} style={styles.dotColumn}>
+          <View
+            style={[
+              styles.dot,
+              { backgroundColor: dot.active ? activeColor : inactiveColor },
+              dot.isToday && { borderWidth: 1.5, borderColor: activeColor },
+            ]}
+          />
+          <Text style={[styles.letter, { color: letterColor, opacity: dot.isToday ? 1 : 0.7 }]}>{dot.letter}</Text>
+        </View>
       ))}
-    </View>
-  );
-}
-
-function Dot({
-  dot,
-  activeColor,
-  inactiveColor,
-  letterColor,
-  delay,
-  reducedMotion,
-}: {
-  dot: WeekDot;
-  activeColor: string;
-  inactiveColor: string;
-  letterColor: string;
-  delay: number;
-  reducedMotion: boolean;
-}) {
-  const scale = useSharedValue(0);
-
-  useEffect(() => {
-    scale.value = withDelay(
-      delay,
-      reducedMotion ? withTiming(1, { duration: 120 }) : withSpring(1, { damping: 10, stiffness: 220 }),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
-
-  return (
-    <View style={styles.dotColumn}>
-      <Animated.View
-        style={[
-          styles.dot,
-          style,
-          { backgroundColor: dot.active ? activeColor : inactiveColor },
-          dot.isToday && { borderWidth: 1.5, borderColor: activeColor },
-        ]}
-      />
-      <Text style={[styles.letter, { color: letterColor, opacity: dot.isToday ? 1 : 0.7 }]}>{dot.letter}</Text>
     </View>
   );
 }
@@ -118,20 +69,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    marginTop: 8,
+    marginTop: 6,
+    paddingHorizontal: 4,
   },
   dotColumn: {
     alignItems: "center",
-    gap: 2,
+    gap: 4,
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
   letter: {
     fontFamily: APP_FONT_FAMILIES.extraBold,
-    fontSize: 8,
+    fontSize: 9,
     letterSpacing: 0.2,
   },
 });

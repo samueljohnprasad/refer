@@ -16,8 +16,9 @@ export default function CelebrationTestScreen() {
   const [context, setContext] = useState<CelebrationContext | null>(null);
 
   const triggerStandard = () => {
-    // ponytail: app logger for celebration test
     logger.info('Triggering standard old overlay');
+    setLessonVisible(false);
+    setPerfectVisible(false);
     setContext({
       type: 'lesson',
       level: 1,
@@ -27,6 +28,20 @@ export default function CelebrationTestScreen() {
       backgroundColor: '#FEF3C7',
     } as any);
     setIsVisible(true);
+  };
+
+  const triggerLessonComplete = () => {
+    logger.info('Triggering Lesson Complete (new)');
+    setIsVisible(false);
+    setPerfectVisible(false);
+    setLessonVisible(true);
+  };
+
+  const triggerPerfectLesson = () => {
+    logger.info('Triggering Perfect Lesson');
+    setIsVisible(false);
+    setLessonVisible(false);
+    setPerfectVisible(true);
   };
 
   const handleContinue = () => {
@@ -41,17 +56,11 @@ export default function CelebrationTestScreen() {
       <View className="mb-8" style={{ gap: 12 }}>
         <Button
           title="Trigger Lesson Complete (new)"
-          onPress={() => {
-            logger.info('Triggering Lesson Complete (new), setting lessonVisible=true');
-            setLessonVisible(true);
-          }}
+          onPress={triggerLessonComplete}
         />
         <Button
           title="Trigger Perfect Lesson"
-          onPress={() => {
-            logger.info('Triggering Perfect Lesson, setting perfectVisible=true');
-            setPerfectVisible(true);
-          }}
+          onPress={triggerPerfectLesson}
         />
         <Button title="Trigger Old Overlay" onPress={triggerStandard} />
       </View>

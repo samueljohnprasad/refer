@@ -53,8 +53,8 @@
 
 ## Markets
 - **Primary:** United States (US), Canada (CA), United Kingdom (GB), Australia (AU)
-- **Secondary:** Germany, France, Japan, South Korea
-- **Languages:** English (US) primary; localization roadmap ready
+- **Secondary (Metadata Live / Staged):** Germany (DE), France (FR), Japan (JA), South Korea (KO)
+- **Languages:** English (US, GB, CA, AU), French (FR, CA), German (DE), Japanese (JA), Korean (KO), Spanish (MX multiplier)
 
 ## 10-Slot Storyboard Summary
 

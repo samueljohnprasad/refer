@@ -23,7 +23,6 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   ZapIcon,
   FireIcon,
-  Clock01Icon,
   Share01Icon,
   Clapping01Icon,
   Target02Icon,
@@ -31,10 +30,16 @@ import {
   VolumeHighIcon,
   VolumeMuteIcon,
   GiftIcon,
+  Clock01Icon,
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/src/components/ui/Button";
+import { Card } from "@/src/components/ui/Card";
 import { ConfettiExplosion } from "@/src/components/animations/ConfettiExplosion";
-import { ShareWinCard } from "@/src/components/celebration/ShareWinCard";
+import {
+  ShareWinCard,
+  SHARE_CARD_WIDTH,
+  SHARE_CARD_HEIGHT,
+} from "@/src/components/celebration/ShareWinCard";
 import { DailyGoalRing } from "@/src/components/celebration/DailyGoalRing";
 import { FlameBurst } from "@/src/components/celebration/FlameBurst";
 import { WeeklyStreakDots } from "@/src/components/celebration/WeeklyStreakDots";
@@ -57,6 +62,7 @@ import {
   type StreakMilestoneDay,
 } from "@/src/store/streakMilestoneStore";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { SAGE, NEUTRAL } from "@/src/theme/palette";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { createLogger } from "@/src/lib/logger";
 
@@ -235,7 +241,7 @@ export function LessonCompleteCelebration({
   const startCountUp = () => {
     if (countTimerRef.current) clearInterval(countTimerRef.current);
     const start = Date.now();
-    const duration = reducedMotion ? 200 : 700;
+    const duration = reducedMotion ? 100 : 250;
     countTimerRef.current = setInterval(() => {
       const fraction = Math.min((Date.now() - start) / duration, 1);
       const eased = 1 - Math.pow(1 - fraction, 3);
@@ -247,23 +253,20 @@ export function LessonCompleteCelebration({
     }, 16);
   };
 
+  // ponytail: snappy spring without cartoonish overshoot
   const popIn = (rm: boolean) =>
     rm
-      ? withTiming(1, { duration: 150 })
-      : withSequence(
-          withSpring(1.12, { damping: 9, stiffness: 150 }),
-          withSpring(1, { damping: 12, stiffness: 160 }),
-        );
+      ? withTiming(1, { duration: 120 })
+      : withSpring(1, { damping: 20, stiffness: 240 });
 
-  // Shared timeline (ms) — also read by the ring at render time.
+  // Cohesive, fast timeline (Duolingo standard ~250ms)
   const rm = reducedMotion;
-  const badgeDelay = rm ? 200 : 700;
-  const stagger = rm ? 40 : 140;
-  const cardDelay = isPerfect ? badgeDelay + (rm ? 80 : 260) : rm ? 220 : 760;
-  const milestoneDelay = cardDelay + stagger + (rm ? 80 : 260);
-  const ringDelay = cardDelay + stagger * 3 + (rm ? 40 : 120);
-  const ringFillDelay = ringDelay + (rm ? 60 : 220);
-  const ringFillDuration = rm ? 250 : 900;
+  const animDuration = rm ? 120 : 200;
+  const cardDelay = rm ? 0 : 60;
+  const ringDelay = rm ? 0 : 80;
+  const ringFillDelay = rm ? 0 : 100;
+  const ringFillDuration = rm ? 150 : 350;
+  const milestoneDelay = rm ? 0 : 100;
 
   useEffect(() => {
     // ponytail: diagnostic logging for celebration modal visibility
@@ -313,96 +316,45 @@ export function LessonCompleteCelebration({
       return;
     }
 
-    overlayOpacity.value = withTiming(1, { duration: rm ? 150 : 280 });
+    overlayOpacity.value = withTiming(1, { duration: animDuration });
 
-    // Sound: a soft page-turn as the screen opens, a chime as the mascot lands.
-    play("pageTurn");
-    schedule(rm ? 120 : 380, () => play("celebrationChime"));
+    // Sound + single crisp haptic on arrival
+    play("celebrationChime");
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
 
-    // Mascot pop
-    pandaProgress.value = withDelay(
-      rm ? 0 : 120,
-      withTiming(1, { duration: rm ? 250 : 760, easing: Easing.out(Easing.cubic) }),
-    );
-    runHaptic(rm ? 120 : 420, Haptics.ImpactFeedbackStyle.Medium);
+    // Mascot settles in cleanly without rotation wobble
+    pandaProgress.value = withTiming(1, { duration: rm ? 150 : 280, easing: Easing.out(Easing.cubic) });
 
-    // Perfect lesson: golden glow + a slow, rhythmic 3-beat clap after landing.
-    if (isPerfect) {
-      glowOpacity.value = withDelay(rm ? 150 : 700, withTiming(1, { duration: 500 }));
-      if (!rm) {
-        const beat = 520;
-        clapProgress.value = withDelay(
-          900,
-          withRepeat(
-            withSequence(
-              withTiming(1, { duration: beat / 2, easing: Easing.out(Easing.quad) }),
-              withTiming(0, { duration: beat / 2, easing: Easing.in(Easing.quad) }),
-            ),
-            3,
-            false,
-          ),
-        );
-        for (let i = 0; i < 3; i++) {
-          runHaptic(900 + i * beat + beat / 2, Haptics.ImpactFeedbackStyle.Light);
-        }
-      }
-    }
-
-    // Title + message
-    titleOpacity.value = withDelay(rm ? 150 : 420, withTiming(1, { duration: rm ? 150 : 320 }));
-    messageOpacity.value = withDelay(rm ? 180 : 560, withTiming(1, { duration: rm ? 150 : 320 }));
+    // Title + message slide in smoothly
+    titleOpacity.value = withDelay(rm ? 0 : 30, withTiming(1, { duration: animDuration }));
+    messageOpacity.value = withDelay(rm ? 0 : 50, withTiming(1, { duration: animDuration }));
 
     // Perfect badge
     if (isPerfect) {
-      badgeOpacity.value = withDelay(badgeDelay, withTiming(1, { duration: rm ? 120 : 200 }));
-      badgeScale.value = withDelay(badgeDelay, popIn(rm));
-      runHaptic(badgeDelay, Haptics.ImpactFeedbackStyle.Heavy);
+      glowOpacity.value = withTiming(1, { duration: animDuration });
+      badgeOpacity.value = withDelay(rm ? 0 : 50, withTiming(1, { duration: animDuration }));
+      badgeScale.value = withDelay(rm ? 0 : 50, popIn(rm));
     }
 
-    // Stat cards spring in one after another; XP counts up as it lands.
-    xpOpacity.value = withDelay(cardDelay, withTiming(1, { duration: rm ? 120 : 220 }));
+    // Stat cards enter together at cardDelay
+    xpOpacity.value = withDelay(cardDelay, withTiming(1, { duration: animDuration }));
     xpScale.value = withDelay(cardDelay, popIn(rm));
-    schedule(cardDelay, () => {
-      startCountUp();
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    });
+    startCountUp();
 
-    streakOpacity.value = withDelay(cardDelay + stagger, withTiming(1, { duration: rm ? 120 : 220 }));
-    streakScale.value = withDelay(cardDelay + stagger, popIn(rm));
-    runHaptic(cardDelay + stagger, Haptics.ImpactFeedbackStyle.Light);
+    streakOpacity.value = withDelay(cardDelay, withTiming(1, { duration: animDuration }));
+    streakScale.value = withDelay(cardDelay, popIn(rm));
 
     if (durationMs !== undefined) {
-      timeOpacity.value = withDelay(cardDelay + stagger * 2, withTiming(1, { duration: rm ? 120 : 220 }));
-      timeScale.value = withDelay(cardDelay + stagger * 2, popIn(rm));
-      runHaptic(cardDelay + stagger * 2, Haptics.ImpactFeedbackStyle.Light);
+      timeOpacity.value = withDelay(cardDelay, withTiming(1, { duration: animDuration }));
+      timeScale.value = withDelay(cardDelay, popIn(rm));
     }
 
-    // Streak milestone: flame burst on the streak card + message pill.
+    // Streak milestone
     const startMilestone = (milestone: StreakMilestoneDay) => {
       setActiveMilestone(milestone);
-      milestoneOpacity.value = withDelay(milestoneDelay, withTiming(1, { duration: rm ? 120 : 200 }));
+      milestoneOpacity.value = withDelay(milestoneDelay, withTiming(1, { duration: animDuration }));
       milestoneScale.value = withDelay(milestoneDelay, popIn(rm));
-      // Swap the encouragement line for the milestone message with a quick dip.
-      messageOpacity.value = withDelay(
-        milestoneDelay,
-        withSequence(withTiming(0, { duration: 120 }), withTiming(1, { duration: 240 })),
-      );
-      schedule(milestoneDelay + 120, () => setShowMilestoneMessage(true));
-      if (!rm) {
-        flamePulse.value = withDelay(
-          milestoneDelay,
-          withRepeat(
-            withSequence(
-              withTiming(1, { duration: 180, easing: Easing.out(Easing.quad) }),
-              withTiming(0, { duration: 260, easing: Easing.in(Easing.quad) }),
-            ),
-            2,
-            false,
-          ),
-        );
-      }
-      runHaptic(milestoneDelay, Haptics.ImpactFeedbackStyle.Heavy);
-      runHaptic(milestoneDelay + 200, Haptics.ImpactFeedbackStyle.Medium);
+      setShowMilestoneMessage(true);
     };
     let milestoneCheckCancelled = false;
     if (streakMilestone) {
@@ -417,62 +369,38 @@ export function LessonCompleteCelebration({
       }
     }
 
-    // Daily goal ring card: pops in after the stats, then fills.
-    ringOpacity.value = withDelay(ringDelay, withTiming(1, { duration: rm ? 120 : 220 }));
+    // Daily goal ring card
+    ringOpacity.value = withDelay(ringDelay, withTiming(1, { duration: animDuration }));
     ringScale.value = withDelay(ringDelay, popIn(rm));
-    runHaptic(ringDelay, Haptics.ImpactFeedbackStyle.Light);
     if (goalReachedAfter && !goalReachedBefore) {
-      schedule(ringFillDelay + ringFillDuration - 60, () => {
+      schedule(ringFillDelay + ringFillDuration, () => {
         setGoalJustReached(true);
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       });
     }
 
-    // Perfect week chest: appears after the goal ring and wobbles until opened.
-    const chestDelay = ringFillDelay + (rm ? 100 : 320);
-    const startPerfectWeek = () => {
-      setPerfectWeek(true);
-      chestOpacity.value = withDelay(chestDelay, withTiming(1, { duration: rm ? 120 : 220 }));
-      chestScale.value = withDelay(chestDelay, popIn(rm));
-      if (!rm) {
-        chestWobble.value = withDelay(
-          chestDelay + 400,
-          withRepeat(
-            withSequence(
-              withTiming(1, { duration: 90 }),
-              withTiming(-1, { duration: 90 }),
-              withTiming(0.6, { duration: 80 }),
-              withTiming(0, { duration: 80 }),
-              withTiming(0, { duration: 1300 }),
-            ),
-            -1,
-            false,
-          ),
-        );
-      }
-      runHaptic(chestDelay, Haptics.ImpactFeedbackStyle.Heavy);
-    };
+    // Perfect week chest
     let perfectWeekCheckCancelled = false;
     const perfectWeekEligible = celebratePerfectWeek ?? isPerfectWeek(resolvedStreak);
     if (perfectWeekEligible) {
+      const showChest = () => {
+        setPerfectWeek(true);
+        chestOpacity.value = withDelay(ringDelay, withTiming(1, { duration: animDuration }));
+        chestScale.value = withDelay(ringDelay, popIn(rm));
+      };
       if (celebratePerfectWeek !== undefined) {
-        startPerfectWeek();
+        showChest();
       } else {
         hasClaimedPerfectWeek().then((claimed) => {
           if (claimed || perfectWeekCheckCancelled) return;
-          startPerfectWeek();
+          showChest();
           void markPerfectWeekClaimed();
         });
       }
     }
 
-    // Buttons
-    buttonOpacity.value = withDelay(
-      ringFillDelay + (rm ? 120 : 420),
-      withTiming(1, { duration: rm ? 120 : 260 }, (finished) => {
-        if (finished) runOnJS(setCanInteract)(true);
-      }),
-    );
+    // Buttons interactive and visible immediately — never hold user hostage
+    buttonOpacity.value = withDelay(ringDelay, withTiming(1, { duration: animDuration }));
+    setCanInteract(true);
 
     return () => {
       milestoneCheckCancelled = true;
@@ -486,71 +414,87 @@ export function LessonCompleteCelebration({
 
   const overlayStyle = useAnimatedStyle(() => ({ opacity: overlayOpacity.value }));
 
+  // Clean, crisp entrance for the panda without gelatin oscillation
   const pandaStyle = useAnimatedStyle(() => {
     if (reducedMotion) {
       return {
         opacity: interpolate(pandaProgress.value, [0, 1], [0, 1], Extrapolation.CLAMP),
-        transform: [
-          { scale: interpolate(pandaProgress.value, [0, 1], [0.96, 1], Extrapolation.CLAMP) },
-        ],
       };
     }
-    const translateY = interpolate(pandaProgress.value, [0, 0.4, 0.7, 1], [50, -14, 4, 0], Extrapolation.CLAMP);
-    const popScale = interpolate(pandaProgress.value, [0, 0.4, 0.6, 0.8, 1], [0.5, 1.15, 0.95, 1.03, 1], Extrapolation.CLAMP);
-    const popRotate = interpolate(pandaProgress.value, [0, 0.4, 0.6, 0.8, 1], [-6, 5, -2, 1, 0], Extrapolation.CLAMP);
-    const opacity = interpolate(pandaProgress.value, [0, 0.12, 1], [0, 1, 1], Extrapolation.CLAMP);
-    // Slow clap: gentle squeeze + tilt on each beat.
-    const scale = popScale + clapProgress.value * 0.07;
-    const rotate = popRotate + clapProgress.value * 4;
-    return { opacity, transform: [{ translateY }, { scale }, { rotate: `${rotate}deg` }] };
+    const translateY = interpolate(pandaProgress.value, [0, 1], [16, 0], Extrapolation.CLAMP);
+    const scale = interpolate(pandaProgress.value, [0, 1], [0.92, 1], Extrapolation.CLAMP);
+    const opacity = interpolate(pandaProgress.value, [0, 1], [0, 1], Extrapolation.CLAMP);
+    return { opacity, transform: [{ translateY }, { scale }] };
   });
 
   const glowStyle = useAnimatedStyle(() => ({
-    opacity: glowOpacity.value * (0.55 + clapProgress.value * 0.45),
-    transform: [{ scale: 1 + clapProgress.value * 0.08 }],
+    opacity: glowOpacity.value * 0.6,
+    transform: [{ scale: 1 }],
   }));
 
   const titleStyle = useAnimatedStyle(() => ({
     opacity: titleOpacity.value,
-    transform: [{ translateY: 12 * (1 - titleOpacity.value) }],
+    transform: [{ translateY: 8 * (1 - titleOpacity.value) }],
   }));
   const messageStyle = useAnimatedStyle(() => ({
     opacity: messageOpacity.value,
-    transform: [{ translateY: 12 * (1 - messageOpacity.value) }],
+    transform: [{ translateY: 8 * (1 - messageOpacity.value) }],
   }));
+  // ponytail: never scale from 0 per animation skills / Emil Kowalski rules; scale from 0.95 + subtle translateY
   const badgeStyle = useAnimatedStyle(() => ({
     opacity: badgeOpacity.value,
-    transform: [{ scale: badgeScale.value }],
+    transform: [
+      { translateY: 6 * (1 - badgeOpacity.value) },
+      { scale: interpolate(badgeScale.value, [0, 1], [0.95, 1], Extrapolation.CLAMP) },
+    ],
   }));
   const xpStyle = useAnimatedStyle(() => ({
     opacity: xpOpacity.value,
-    transform: [{ scale: xpScale.value }],
+    transform: [
+      { translateY: 8 * (1 - xpOpacity.value) },
+      { scale: interpolate(xpScale.value, [0, 1], [0.95, 1], Extrapolation.CLAMP) },
+    ],
   }));
   const streakStyle = useAnimatedStyle(() => ({
     opacity: streakOpacity.value,
-    transform: [{ scale: streakScale.value }],
+    transform: [
+      { translateY: 8 * (1 - streakOpacity.value) },
+      { scale: interpolate(streakScale.value, [0, 1], [0.95, 1], Extrapolation.CLAMP) },
+    ],
   }));
   const timeStyle = useAnimatedStyle(() => ({
     opacity: timeOpacity.value,
-    transform: [{ scale: timeScale.value }],
+    transform: [
+      { translateY: 8 * (1 - timeOpacity.value) },
+      { scale: interpolate(timeScale.value, [0, 1], [0.95, 1], Extrapolation.CLAMP) },
+    ],
   }));
   const ringCardStyle = useAnimatedStyle(() => ({
     opacity: ringOpacity.value,
-    transform: [{ scale: ringScale.value }],
+    transform: [
+      { translateY: 8 * (1 - ringOpacity.value) },
+      { scale: interpolate(ringScale.value, [0, 1], [0.95, 1], Extrapolation.CLAMP) },
+    ],
   }));
   const milestoneStyle = useAnimatedStyle(() => ({
     opacity: milestoneOpacity.value,
-    transform: [{ scale: milestoneScale.value }],
+    transform: [
+      { translateY: 6 * (1 - milestoneOpacity.value) },
+      { scale: interpolate(milestoneScale.value, [0, 1], [0.95, 1], Extrapolation.CLAMP) },
+    ],
   }));
   const flameIconStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: 1 + flamePulse.value * 0.45 }, { rotate: `${flamePulse.value * -8}deg` }],
+    transform: [{ scale: 1 }],
   }));
   const chestCardStyle = useAnimatedStyle(() => ({
     opacity: chestOpacity.value,
-    transform: [{ scale: chestScale.value }],
+    transform: [
+      { translateY: 8 * (1 - chestOpacity.value) },
+      { scale: interpolate(chestScale.value, [0, 1], [0.95, 1], Extrapolation.CLAMP) },
+    ],
   }));
   const chestIconStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${chestWobble.value * 12}deg` }, { scale: 1 + Math.abs(chestWobble.value) * 0.12 }],
+    transform: [{ scale: 1 }],
   }));
   const pandaSwapStyle = useAnimatedStyle(() => ({
     transform: [{ scale: pandaSwap.value }],
@@ -627,61 +571,37 @@ export function LessonCompleteCelebration({
 
   if (!isVisible) return null;
 
-  const bg = isDark ? "#0f1a0f" : "#fbfdf8";
-  const amber = "#F5A623";
-  const xpColors = {
-    surface: isDark ? "#2a2410" : "#FFF7E0",
-    border: isDark ? "#4a3f18" : "#F6D97A",
-    label: isDark ? "#C9A24A" : "#B4791B",
-    value: isDark ? "#F3C969" : "#8A5A12",
-    icon: amber,
-  };
-  const streakColors = {
-    surface: isDark ? "#2e1c12" : "#FFF0E6",
-    border: isDark ? "#55301c" : "#FFC9A3",
-    label: isDark ? "#E08A5A" : "#C2501A",
-    value: isDark ? "#FFB08A" : "#A63E10",
-    icon: "#FF7A3D",
-  };
-  const timeColors = {
-    surface: isDark ? "#12222e" : "#E9F3FF",
-    border: isDark ? "#1f3a52" : "#B9D8FF",
-    label: isDark ? "#6FA8E6" : "#2B6CB0",
-    value: isDark ? "#A9CFFF" : "#1F4F85",
-    icon: "#3B82F6",
-  };
+  const bg = isDark ? "#0D150E" : "#F8FAF7";
   const badgeColors = {
-    surface: isDark ? "#3a2d0c" : "#FFE89C",
-    border: isDark ? "#6b5316" : "#F2C94C",
-    text: isDark ? "#FFE08A" : "#7A4D0A",
+    surface: isDark ? "#2A2312" : "#FFFDF0",
+    border: isDark ? "#4A3B18" : "#FDE68A",
+    text: isDark ? "#FBBF24" : "#92400E",
   };
   const milestoneColors = {
-    surface: isDark ? "#3a1d10" : "#FFE4D1",
-    border: isDark ? "#6b3a1c" : "#FFB383",
-    text: isDark ? "#FFC9A3" : "#9A3A0C",
+    surface: isDark ? "#2A1D14" : "#FFEDD5",
+    border: isDark ? "#522C1A" : "#FED7AA",
+    text: isDark ? "#FB923C" : "#C2410C",
   };
-  const goalGreen = isDark ? "#7FCB85" : "#4F9A55";
+  const goalGreen = isDark ? SAGE[300] : SAGE[500];
   const goalDone = goalReachedBefore || goalJustReached;
   const ringColors = {
-    surface: goalDone ? (isDark ? "#14281a" : "#EAF7EC") : SEMANTIC_COLORS.surface.secondary,
-    border: goalDone ? (isDark ? "#2c5a34" : "#BFE3C4") : isDark ? "#2a3a2a" : "#E3ECE3",
-    fill: goalDone ? goalGreen : amber,
-    track: isDark ? "#2a3a2a" : "#E6EDE6",
-    label: goalDone ? goalGreen : SEMANTIC_COLORS.text.secondary,
+    fill: goalDone ? (isDark ? SAGE[300] : SAGE[500]) : "#F59E0B",
+    track: isDark ? "#243425" : SAGE[100],
+    label: goalDone ? (isDark ? SAGE[300] : SAGE[600]) : SEMANTIC_COLORS.text.secondary,
   };
   const ringHint = goalReachedBefore
-    ? "Goal already met — every extra XP counts."
+    ? "Daily goal achieved!"
     : goalJustReached
       ? "Daily goal reached. Beautiful."
       : goalReachedAfter
-        ? "Almost there…"
+        ? "Almost there!"
         : `${xpToGoal} XP to go`;
 
   return (
     <Modal transparent visible={isVisible} animationType="none" statusBarTranslucent>
-      <Animated.View
+      <View
         testID="lesson-complete-celebration"
-        style={[StyleSheet.absoluteFill, overlayStyle, { backgroundColor: bg }]}
+        style={[StyleSheet.absoluteFill, { backgroundColor: bg, zIndex: 9999 }]}
       >
         {/* Off-screen share card (captured on demand) */}
         <View pointerEvents="none" style={styles.shareCardHost}>
@@ -724,7 +644,13 @@ export function LessonCompleteCelebration({
 
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={styles.content}
+          contentContainerStyle={[
+            styles.content,
+            {
+              paddingTop: Math.max(insets.top + 28, 68),
+              paddingBottom: Math.max(insets.bottom + 24, 40),
+            },
+          ]}
           showsVerticalScrollIndicator={false}
           bounces={false}
         >
@@ -806,124 +732,159 @@ export function LessonCompleteCelebration({
             </Animated.View>
           ) : null}
 
-          {/* Stat cards */}
+          {/* Stat cards — ponytail: canonical variant="tile" tactile cards matching design system */}
           <View style={styles.statsRow}>
-            <Animated.View
-              style={[styles.statCard, xpStyle, { backgroundColor: xpColors.surface, borderColor: xpColors.border }]}
-            >
-              <Text style={[styles.statLabel, { color: xpColors.label }]}>XP</Text>
-              <View style={styles.statValueRow}>
-                <HugeiconsIcon icon={ZapIcon} size={20} color={xpColors.icon} strokeWidth={2.4} />
-                <Text testID="celebration-xp-value" style={[styles.statValue, { color: xpColors.value }]}>
-                  +{displayXP}
-                </Text>
-              </View>
+            <Animated.View style={[{ flex: 1 }, xpStyle]}>
+              <Card
+                variant="tile"
+                radius="lg"
+                className="w-full"
+                contentClassName="items-center justify-center py-3.5 px-2 min-h-[78px]"
+              >
+                <Text style={[styles.statLabel, { color: SEMANTIC_COLORS.text.secondary }]}>XP</Text>
+                <View style={styles.statValueRow}>
+                  <HugeiconsIcon icon={ZapIcon} size={18} color="#F59E0B" strokeWidth={2.4} />
+                  <Text testID="celebration-xp-value" style={[styles.statValue, { color: SEMANTIC_COLORS.text.primary }]}>
+                    +{displayXP}
+                  </Text>
+                </View>
+              </Card>
             </Animated.View>
 
-            <Animated.View
-              testID="celebration-streak-card"
-              style={[
-                styles.statCard,
-                streakStyle,
-                {
-                  backgroundColor: streakColors.surface,
-                  borderColor: activeMilestone ? streakColors.icon : streakColors.border,
-                },
-              ]}
-            >
-              {activeMilestone && !reducedMotion ? <FlameBurst delay={milestoneDelay} /> : null}
-              <Text style={[styles.statLabel, { color: streakColors.label }]}>STREAK</Text>
-              <View style={styles.statValueRow}>
-                <Animated.View style={flameIconStyle}>
-                  <HugeiconsIcon icon={FireIcon} size={20} color={streakColors.icon} strokeWidth={2.4} />
-                </Animated.View>
-                <Text style={[styles.statValue, { color: streakColors.value }]}>{resolvedStreak}</Text>
-              </View>
-              <WeeklyStreakDots
-                streakDays={resolvedStreak}
-                activeColor={streakColors.icon}
-                inactiveColor={isDark ? "#4a3326" : "#FFD9C2"}
-                letterColor={streakColors.label}
-                delay={cardDelay + stagger + (rm ? 40 : 180)}
-                reducedMotion={rm}
-              />
+            <Animated.View testID="celebration-streak-card" style={[{ flex: 1 }, streakStyle]}>
+              <Card
+                variant="tile"
+                radius="lg"
+                className="w-full"
+                contentClassName="items-center justify-center py-3.5 px-2 min-h-[78px]"
+              >
+                {activeMilestone && !reducedMotion ? <FlameBurst delay={milestoneDelay} /> : null}
+                <Text style={[styles.statLabel, { color: SEMANTIC_COLORS.text.secondary }]}>STREAK</Text>
+                <View style={styles.statValueRow}>
+                  <Animated.View style={flameIconStyle}>
+                    <HugeiconsIcon icon={FireIcon} size={18} color="#EA580C" strokeWidth={2.4} />
+                  </Animated.View>
+                  <Text style={[styles.statValue, { color: SEMANTIC_COLORS.text.primary }]}>{resolvedStreak}</Text>
+                </View>
+              </Card>
             </Animated.View>
 
             {durationMs !== undefined ? (
-              <Animated.View
-                testID="celebration-time-card"
-                style={[styles.statCard, timeStyle, { backgroundColor: timeColors.surface, borderColor: timeColors.border }]}
-              >
-                <Text style={[styles.statLabel, { color: timeColors.label }]}>TIME</Text>
-                <View style={styles.statValueRow}>
-                  <HugeiconsIcon icon={Clock01Icon} size={20} color={timeColors.icon} strokeWidth={2.4} />
-                  <Text style={[styles.statValue, { color: timeColors.value }]}>
-                    {formatLessonDuration(durationMs)}
-                  </Text>
-                </View>
+              <Animated.View testID="celebration-time-card" style={[{ flex: 1 }, timeStyle]}>
+                <Card
+                  variant="tile"
+                  radius="lg"
+                  className="w-full"
+                  contentClassName="items-center justify-center py-3.5 px-2 min-h-[78px]"
+                >
+                  <Text style={[styles.statLabel, { color: SEMANTIC_COLORS.text.secondary }]}>TIME</Text>
+                  <View style={styles.statValueRow}>
+                    <HugeiconsIcon
+                      icon={Clock01Icon}
+                      size={18}
+                      color={isDark ? "#60A5FA" : "#3B82F6"}
+                      strokeWidth={2.4}
+                    />
+                    <Text style={[styles.statValue, { color: SEMANTIC_COLORS.text.primary }]}>
+                      {formatLessonDuration(durationMs)}
+                    </Text>
+                  </View>
+                </Card>
               </Animated.View>
             ) : null}
           </View>
 
-          {/* Daily goal ring */}
+          {/* Weekly streak dots — ponytail: dedicated row gives all 7 days horizontal breathing room */}
+          <Animated.View style={[{ width: "100%", marginTop: 10 }, streakStyle]}>
+            <Card
+              variant="tile"
+              radius="lg"
+              className="w-full"
+              contentClassName="py-2.5 px-4"
+            >
+              <View style={styles.weekDotsHeader}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                  <HugeiconsIcon icon={FireIcon} size={15} color="#EA580C" strokeWidth={2.4} />
+                  <Text style={[styles.statLabel, { color: SEMANTIC_COLORS.text.secondary }]}>THIS WEEK</Text>
+                </View>
+                <Text style={[styles.statLabel, { color: SEMANTIC_COLORS.text.primary }]}>
+                  {resolvedStreak} DAY{resolvedStreak === 1 ? "" : "S"}
+                </Text>
+              </View>
+              <WeeklyStreakDots
+                streakDays={resolvedStreak}
+                activeColor="#EA580C"
+                inactiveColor={isDark ? "#283C29" : "#E5E5E5"}
+                letterColor={isDark ? "#8FA58F" : "#64748B"}
+              />
+            </Card>
+          </Animated.View>
+
+          {/* Daily goal ring card — ponytail: reuse shared Card variant="tile" */}
           <Animated.View
             testID="celebration-daily-goal"
-            style={[
-              styles.goalCard,
-              ringCardStyle,
-              { backgroundColor: ringColors.surface, borderColor: ringColors.border },
-            ]}
+            style={[{ width: "100%", marginTop: 10 }, ringCardStyle]}
           >
-            <DailyGoalRing
-              size={60}
-              strokeWidth={7}
-              from={todayBefore / dailyGoal}
-              to={todayAfter / dailyGoal}
-              color={ringColors.fill}
-              trackColor={ringColors.track}
-              delay={ringFillDelay}
-              duration={ringFillDuration}
+            <Card
+              variant="tile"
+              radius="lg"
+              className="w-full"
+              contentClassName="flex-row items-center gap-3.5 p-3.5"
             >
-              <HugeiconsIcon
-                icon={goalDone ? Tick02Icon : Target02Icon}
-                size={22}
+              <DailyGoalRing
+                size={54}
+                strokeWidth={6}
+                from={todayBefore / dailyGoal}
+                to={todayAfter / dailyGoal}
                 color={ringColors.fill}
-                strokeWidth={2.6}
-              />
-            </DailyGoalRing>
-            <View style={styles.goalText}>
-              <Text style={[styles.statLabel, { color: ringColors.label }]}>DAILY GOAL</Text>
-              <Text style={[styles.goalValue, { color: SEMANTIC_COLORS.text.primary }]}>
-                {Math.min(todayAfter, dailyGoal)}
-                <Text style={[styles.goalOf, { color: SEMANTIC_COLORS.text.secondary }]}> / {dailyGoal} XP</Text>
-              </Text>
-              <Text style={[styles.goalHint, { color: goalDone ? goalGreen : SEMANTIC_COLORS.text.secondary }]}>
-                {ringHint}
-              </Text>
-            </View>
+                trackColor={ringColors.track}
+                delay={ringFillDelay}
+                duration={ringFillDuration}
+              >
+                <HugeiconsIcon
+                  icon={goalDone ? Tick02Icon : Target02Icon}
+                  size={20}
+                  color={ringColors.fill}
+                  strokeWidth={2.6}
+                />
+              </DailyGoalRing>
+              <View style={styles.goalText}>
+                <Text style={[styles.statLabel, { color: ringColors.label }]}>DAILY GOAL</Text>
+                <Text style={[styles.goalValue, { color: SEMANTIC_COLORS.text.primary }]}>
+                  {Math.min(todayAfter, dailyGoal)}
+                  <Text style={[styles.goalOf, { color: SEMANTIC_COLORS.text.secondary }]}> / {dailyGoal} XP</Text>
+                </Text>
+                <Text style={[styles.goalHint, { color: ringColors.label }]}>
+                  {ringHint}
+                </Text>
+              </View>
+            </Card>
           </Animated.View>
 
           {/* Perfect week chest */}
           {perfectWeek ? (
             <Animated.View style={[styles.chestCardWrap, chestCardStyle]}>
-              <Pressable
-                testID="celebration-perfect-week-chest"
-                accessibilityRole="button"
+              <Card
+                variant="solid"
+                radius="lg"
+                showDepth={true}
+                className="w-full"
+                contentClassName="flex-row items-center gap-3.5 p-3.5"
+                onPress={handleOpenChest}
+                disabled={chestOpened}
                 accessibilityLabel={
                   chestOpened
                     ? `Perfect week chest opened. Plus ${PERFECT_WEEK_BONUS_XP} XP`
                     : "Perfect week. Tap to open your chest"
                 }
-                onPress={handleOpenChest}
-                disabled={chestOpened}
-                style={({ pressed }) => [
-                  styles.chestCard,
-                  {
-                    backgroundColor: chestOpened ? (isDark ? "#14281a" : "#EAF7EC") : badgeColors.surface,
-                    borderColor: chestOpened ? (isDark ? "#2c5a34" : "#BFE3C4") : badgeColors.border,
-                    opacity: pressed ? 0.85 : 1,
-                  },
-                ]}
+                faceStyle={{
+                  backgroundColor: chestOpened ? (isDark ? "#14281a" : "#EAF7EC") : badgeColors.surface,
+                  borderColor: chestOpened ? (isDark ? "#2c5a34" : "#BFE3C4") : badgeColors.border,
+                  borderWidth: 2,
+                }}
+                rimStyle={{
+                  backgroundColor: chestOpened ? (isDark ? "#2c5a34" : "#86EFAC") : badgeColors.border,
+                }}
               >
                 <Animated.View
                   style={[
@@ -950,33 +911,14 @@ export function LessonCompleteCelebration({
                     {chestOpened ? "Every dot lit this week. Proud of you." : "Tap to open your bonus chest"}
                   </Text>
                 </View>
-              </Pressable>
+              </Card>
             </Animated.View>
           ) : null}
 
           <View style={styles.spacer} />
 
-          {/* CTAs */}
+          {/* CTAs — ponytail: primary Continue first, ghost Share beneath */}
           <Animated.View style={[styles.buttonWrap, buttonStyle]}>
-            <View testID="celebration-share-button">
-              <Button
-                label={isSharing ? "Preparing…" : "Share your win"}
-                variant="secondary"
-                size="lg"
-                fullWidth
-                leftIcon={
-                  <HugeiconsIcon
-                    icon={Share01Icon}
-                    size={20}
-                    color={SEMANTIC_COLORS.text.primary}
-                    strokeWidth={2.2}
-                  />
-                }
-                onPress={handleShare}
-                loading={isSharing}
-                disabled={!canInteract}
-              />
-            </View>
             <View testID="celebration-continue-button" style={styles.continueWrap}>
               <Button
                 label={continueLabel}
@@ -987,21 +929,41 @@ export function LessonCompleteCelebration({
                 disabled={!canInteract}
               />
             </View>
+            <View testID="celebration-share-button">
+              <Button
+                label={isSharing ? "Preparing…" : "Share your win"}
+                variant="ghost"
+                size="md"
+                fullWidth
+                leftIcon={
+                  <HugeiconsIcon
+                    icon={Share01Icon}
+                    size={18}
+                    color={SEMANTIC_COLORS.text.secondary}
+                    strokeWidth={2.2}
+                  />
+                }
+                onPress={handleShare}
+                loading={isSharing}
+                disabled={!canInteract}
+              />
+            </View>
           </Animated.View>
         </ScrollView>
-      </Animated.View>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   shareCardHost: {
+    // ponytail: move offscreen to prevent ghost card rendering behind modal
     position: "absolute",
-    top: 0,
-    left: 0,
-    width: 0,
-    height: 0,
-    overflow: "hidden",
+    left: -10000,
+    top: -10000,
+    width: SHARE_CARD_WIDTH,
+    height: SHARE_CARD_HEIGHT,
+    zIndex: -9999,
   },
   scroll: {
     flex: 1,
@@ -1009,8 +971,6 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
     paddingHorizontal: 24,
-    paddingTop: 64,
-    paddingBottom: 40,
     alignItems: "center",
   },
   muteButton: {
@@ -1024,11 +984,12 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   mascotZone: {
-    flex: 1,
-    minHeight: 200,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
+    minHeight: 165,
+    marginTop: 2,
+    marginBottom: 4,
   },
   confettiLayer: {
     position: "absolute",
@@ -1046,8 +1007,8 @@ const styles = StyleSheet.create({
     borderRadius: 120,
   },
   mascotWrap: {
-    width: 190,
-    height: 190,
+    width: 175,
+    height: 175,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1097,20 +1058,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   statsRow: {
-    marginTop: 20,
+    marginTop: 14,
     flexDirection: "row",
     gap: 12,
     width: "100%",
-  },
-  statCard: {
-    flex: 1,
-    paddingVertical: 14,
-    paddingHorizontal: 10,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderBottomWidth: 4,
-    alignItems: "center",
-    overflow: "visible",
   },
   statLabel: {
     fontFamily: APP_FONT_FAMILIES.extraBold,
@@ -1126,18 +1077,6 @@ const styles = StyleSheet.create({
   statValue: {
     fontFamily: APP_FONT_FAMILIES.extraBold,
     fontSize: 22,
-  },
-  goalCard: {
-    marginTop: 14,
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 22,
-    borderWidth: 2,
-    borderBottomWidth: 4,
   },
   goalText: {
     flex: 1,
@@ -1160,18 +1099,6 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 10,
   },
-  chestCard: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 22,
-    borderWidth: 2,
-    borderBottomWidth: 4,
-    minHeight: 64,
-  },
   chestIcon: {
     width: 48,
     height: 48,
@@ -1181,10 +1108,18 @@ const styles = StyleSheet.create({
   },
   spacer: {
     flex: 1,
+    minHeight: 8,
+  },
+  weekDotsHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 6,
   },
   buttonWrap: {
     width: "100%",
-    gap: 12,
+    marginTop: 14,
+    gap: 8,
   },
   continueWrap: {
     width: "100%",

@@ -2,7 +2,8 @@
 
 **Target Audience:** Adults & young adults struggling with anxiety, overthinking, and daily stress who want practical CBT and journaling without feeling bored or overwhelmed.  
 **Design Direction:** "Calm meets Duolingo" — premium, approachable, cheerful, physical 3D depth, zero AI slop gradients.  
-**Primary Brand Mascot:** Friendly panda companion (`assets/icons/icon-panda.png`).
+**Primary Brand Mascot:** Friendly panda companion (`assets/icons/icon-panda.png`).  
+**International Localizations:** See [`SCREENSHOT_LOCALIZATION_COPY.md`](file:///Users/samuelprasad/Desktop/happy/journals/SCREENSHOT_LOCALIZATION_COPY.md) for full 10-slot copy across UK (`en-GB`), AU (`en-AU`), Germany (`de-DE`), and France/Canada (`fr-FR`/`fr-CA`).
 
 ---
 
