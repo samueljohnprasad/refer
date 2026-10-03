@@ -1,0 +1,219 @@
+{
+  "header": { "your_course": "DEIN KURS", "quiet_moment": "EIN RUHIGER MOMENT" },
+  "buttons": {
+    "lets_begin": "LOS GEHT'S",
+    "continue": "WEITER",
+    "start_my_journey": "MEINE REISE BEGINNEN",
+    "start_lesson_1": "LEKTION 1 STARTEN",
+    "set_reminders": "ERINNERUNGEN EINRICHTEN",
+    "save_my_progress": "MEINEN FORTSCHRITT SPEICHERN",
+    "skip_for_now": "Jetzt überspringen",
+    "maybe_later": "Vielleicht später",
+    "setting_up": "Wird eingerichtet..."
+  },
+  "welcome": {
+    "headline_line1": "Beginne deine",
+    "headline_line2": "innere Reise",
+    "subhead": "einen Gedanken nach dem anderen"
+  },
+  "welcome_nodes": {"0_0":"Wachse weiter","1_0":"Denke","1_1":"in Ruhe nach","2_0":"Verstehe","2_1":"dich selbst","4_0":"Baue eine","4_1":"Gewohnheit auf","5_0":"Ein klarerer","5_1":"Kopf","today":"Heute","start_here":"Starte hier"},
+  "mascot_greeting": {
+    "label": "Dein Begleiter",
+    "hi": "Hallo, ich bin Mochi.",
+    "intro": "Ich bin ein Panda. Ich bin sanft. Ich bin geduldig. Ich begleite dich auf dieser Reise – nur",
+    "questions_count": "6 kurze Fragen",
+    "before_lesson": "vor deiner ersten Lektion.",
+    "quote": "„Die kleinste Übung, täglich gemacht, ist kraftvoller als die größte, die nur einmal gemacht wird.“"
+  },
+  "quiz_motivation": {
+    "step_label": "Fang mit dem an, was sich am wahrsten anfühlt",
+    "title": "Was führt dich hierher, Freund·in?",
+    "description": "Wähle das aus, das am meisten bei dir anklingt. Es gibt keine falschen Antworten.",
+    "options": {
+      "anxiety": { "title": "Angst bewältigen", "subtitle": "Die rasenden Gedanken zur Ruhe bringen" },
+      "mood": { "title": "Meine Stimmung heben", "subtitle": "Leichtigkeit in schweren Tagen finden" },
+      "stress": { "title": "Besser mit Stress umgehen", "subtitle": "Resilienz für schwierige Momente aufbauen" },
+      "self_understanding": { "title": "Mich selbst verstehen", "subtitle": "Muster, Auslöser und persönliches Wachstum" },
+      "sleep": { "title": "Besser schlafen & erholen", "subtitle": "Abendrituale, die wirklich funktionieren" }
+    }
+  },
+  "quiz_stress_level": {
+    "question_mark": "?",
+    "step_label": "Finde dein Tempo",
+    "options": {
+      "light": { "title": "Leichte Brise", "subtitle": "Überschaubar – ich möchte nur die Kontrolle behalten" },
+      "moderate": { "title": "Spürbares Gewicht", "subtitle": "Es kommt und geht, manche Tage sind schwerer als andere" },
+      "heavy": { "title": "Schwere Wolken", "subtitle": "Es beeinträchtigt meinen Alltag erheblich" },
+      "overwhelming": { "title": "Erdrückender Sturm", "subtitle": "Manche Tage weiß ich nicht, wo ich anfangen soll" }
+    }
+  },
+  "motivation_followup": {
+    "anxiety": {
+      "question": "Wie präsent ist deine Angst gerade",
+      "subtext": "Das hilft uns, ein Tempo zu finden, das zu dir passt.",
+      "options": {
+        "light": { "title": "Leises Hintergrundgeräusch", "subtitle": "Sie ist da, aber ich komme trotzdem durch meinen Tag." },
+        "moderate": { "title": "Regelmäßige Anspannung", "subtitle": "An den meisten Tagen spürbar, manchmal schwer loszulassen." },
+        "heavy": { "title": "Dauerndes Gewicht", "subtitle": "Angst begleitet mich den Großteil des Tages." },
+        "overwhelming": { "title": "Übernehmend", "subtitle": "Manche Tage beansprucht sie fast meine ganze Aufmerksamkeit." }
+      }
+    },
+    "mood": {
+      "question": "Wie schwer sind deine Tiefphasen",
+      "subtext": "Das hilft uns, die richtigen Lektionen für deine aktuelle Situation auszuwählen.",
+      "options": {
+        "light": { "title": "Gelegentliche Dips", "subtitle": "Ich fühle mich manchmal off, erhole mich aber schnell" },
+        "moderate": { "title": "Regelmäßige Tiefs", "subtitle": "Tiefphasen kommen und gehen durch die Woche" },
+        "heavy": { "title": "Die meisten Tage fühlen sich schwer an", "subtitle": "Es ist schwer, die meiste Zeit Leichtigkeit zu finden" },
+        "overwhelming": { "title": "Kaum durchzukommen", "subtitle": "Manche Tage ist schon das Durchkommen viel" }
+      }
+    },
+    "stress": {
+      "question": "Wie viel Druck trägst du gerade",
+      "subtext": "Das hilft uns, das richtige Tempo und die richtigen Werkzeuge für dich zu finden.",
+      "options": {
+        "light": { "title": "Handhabbare Last", "subtitle": "Viel zu tun, aber meistens in Kontrolle" },
+        "moderate": { "title": "Wachsender Druck", "subtitle": "Es häuft sich an und ich entspanne mich nicht immer" },
+        "heavy": { "title": "Dauernder Druck", "subtitle": "Stress ist gerade mein täglicher Begleiter" },
+        "overwhelming": { "title": "Am Limit", "subtitle": "Ich laufe meistens auf Reserve" }
+      }
+    },
+    "self_understanding": {
+      "question": "Wie verloren fühlst du dich gerade",
+      "subtext": "Es gibt keine falsche Antwort – wir treffen dich genau dort, wo du bist.",
+      "options": {
+        "light": { "title": "Leicht neugierig", "subtitle": "Ich kenne mich größtenteils, möchte nur mehr Klarheit" },
+        "moderate": { "title": "Etwas Verwirrung", "subtitle": "Ich habe Muster, die ich nicht ganz erklären kann" },
+        "heavy": { "title": "Oft unsicher", "subtitle": "Ich reagiere und verstehe nicht warum" },
+        "overwhelming": { "title": "Ziemlich verloren", "subtitle": "Es ist schwer zu wissen, was ich wirklich fühle oder will" }
+      }
+    },
+    "sleep": {
+      "question": "Wie gestört ist dein Schlaf",
+      "subtext": "Das prägt die Abendrituale, die wir für dich aufbauen.",
+      "options": {
+        "light": { "title": "Leicht unruhig", "subtitle": "Gelegentliche schlechte Nächte, meistens okay" },
+        "moderate": { "title": "Unbeständig", "subtitle": "Schlaf variiert stark, gute und schlechte Nächte" },
+        "heavy": { "title": "Regelmäßig schlecht", "subtitle": "Ich fühle mich morgens selten ausgeruht" },
+        "overwhelming": { "title": "Stark gestört", "subtitle": "Schlaf ist ein echtes Problem, das meinen Alltag beeinträchtigt" }
+      }
+    }
+  },
+ "building_journey": {
+    "title": "Dein Weg entsteht…",
+    "subtitle": "Abgestimmt auf das, was du geteilt hast",
+    "ready_title": "Dein Weg ist bereit!",
+    "ready_subtitle": "Dein KVT-Weg ist bereit",
+    "generating": "Plan wird erstellt…",
+    "complete": "Fertig",
+    "private": "Privat und auf dich abgestimmt",
+   "tasks": {
+      "profile": "Wir sehen uns deine Angaben an",
+      "gentle_schedule": "Ein sanftes, machbares Tempo festlegen",
+      "stress": "Dein Stressprofil wird analysiert",
+      "plan": "Deine persönliche Reise wird zusammengestellt",
+      "cbt": "KVT-Übungen werden für dich ausgewählt",
+      "schedule": "Dein Tagesablauf wird optimiert"
+    }
+  },
+  "plan_names": {"anxiety":"Den Sturm beruhigen","mood":"Licht wiederfinden","stress":"Gelassen unter Druck","self_understanding":"Zu dir selbst finden","sleep":"Sanft zur Ruhe kommen"},
+  "plan_reveal": {
+    "step_label": "Dein maßgeschneiderter Plan",
+    "loading_milestones": "Meilensteine werden geladen",
+    "phase_subtitles": {"foundation":"Grundlagen und Wahrnehmung","practice":"Fähigkeiten üben","integration":"Langfristig verankern","initial":"Erster Schwerpunkt","core":"Wichtige Übung","anchor":"Langfristige Stütze"},
+    "units": "{{count}} Einheiten",
+    "course_illustration": "Illustration zu {{title}}",
+    "title": "Deine Reise ist bereit",
+    "pace_per_day": "~5 Min/Tag",
+    "milestones_count": "3 Meilensteine",
+    "self_paced": "In deinem Tempo",
+    "why_this_course": "Warum dieser Kurs",
+    "tailored_label": "Abgestimmt auf das, was du geteilt hast",
+    "milestones_section": "Deine 3 Meilensteine",
+    "step_by_step": "Schritt für Schritt",
+    "milestone_badges": {
+      "start_here": "HIER BEGINNEN",
+      "phase_2": "PHASE 2",
+      "mastery": "MEISTERSCHAFT"
+    }
+  },
+  "daily_goal": {
+    "anxiety": {
+      "headline": "Wie lange kannst du dir Zeit nehmen für",
+      "subtext": "Schon 3 Minuten täglicher Reflexion können eine Angstspirale unterbrechen. Fang dort an, wo du bist.",
+      "testimonial": { "name": "Sara", "age": 31, "quote": "„3 Minuten fühlten sich peinlich kurz an. Aber täglich 3 Minuten aufzutauchen hat mehr gebracht als meine wöchentlichen 30-Minuten-Versuche je getan haben.“" }
+    },
+    "mood": {
+      "headline": "Wie viel Zeit kannst du schützen für",
+      "subtext": "Regelmäßigkeit zählt mehr als Länge. Eine kleine tägliche Gewohnheit überdauert große gelegentliche.",
+      "testimonial": { "name": "Marcus", "age": 34, "quote": "„5 Minuten jeden Morgen wurden zu dem Moment, auf den ich mich wirklich gefreut habe. Es hat den ganzen Tag anders gestimmt.“" }
+    },
+    "stress": {
+      "headline": "Wie viel Zeit kannst du dir zurückholen für",
+      "subtext": "Ein kurzes Entspannungsfenster schlägt ein langes, das du nie wirklich umsetzt. Sei ehrlich zu dir.",
+      "testimonial": { "name": "Priya", "age": 29, "quote": "„Ich dachte, ich bräuchte eine Stunde Selbstfürsorge. Aber 5 Minuten strukturierte Reflexion haben mir mehr geholfen als eine Stunde Scrollen.“" }
+    },
+    "self_understanding": {
+      "headline": "Wie viel Zeit wirst du dir gönnen für",
+      "subtext": "Selbstverstehen wächst langsam. Auch kurze, regelmäßige Reflexion summiert sich mit der Zeit.",
+      "testimonial": { "name": "Riley", "age": 26, "quote": "„Ich fing mit 5 Minuten an, nur um Muster zu erkennen. Sechs Wochen später verstand ich endlich, warum ich mich selbst sabotiert habe.“" }
+    },
+    "sleep": {
+      "headline": "Wie lange kannst du dich abends runterfahren für",
+      "subtext": "Ein kurzes, regelmäßig durchgeführtes Abendritual kalibriert dein Nervensystem mit der Zeit neu.",
+      "testimonial": { "name": "Dani", "age": 28, "quote": "„5 Minuten Journaling vor dem Schlafen haben 45 Minuten Doom-Scrolling ersetzt. Ich schlafe jetzt in unter 20 Minuten ein.“" }
+    },
+    "cards": {
+      "gentle": { "tag": "Sanft", "description": "Ein kurzer Check-in" },
+      "recommended": { "tag": "Empfohlen", "description": "Eine bedeutungsvolle Pause" },
+      "committed": { "tag": "Engagiert", "description": "Eine echte Reflexion" },
+      "serious": { "tag": "Ernsthaft", "description": "Eine tiefe Praxis" }
+    }
+  },
+  "pact_signing": {
+    "today": "Heute",
+    "step_label": "Ein kleiner Pakt",
+    "subtitle": "Kannst du dir {{minutes}} Minuten am Tag nehmen?",
+    "streak_goal": "Ziel: 7 Tage in Folge",
+    "day_1_today": "Tag 1 beginnt heute",
+    "vow": "„Für die nächsten 7 Tage bin ich für mich da – auch wenn es nur {{minutes}} Minuten sind.“",
+    "private": "100 % nur für dich",
+    "hint_idle": "Halte gedrückt, um dein 7-Tage-Versprechen abzugeben",
+    "hint_holding": "Dein Versprechen wird besiegelt...",
+    "hint_done": "Pakt besiegelt. Einen Tag nach dem anderen ✨",
+    "button_idle": "Halten zum Verpflichten",
+    "button_holding": "Besiegelung...",
+    "button_done": "Pakt besiegelt"
+  },
+  "lesson_complete": { "you_did_it": "Du hast es geschafft.", "truly": "Wirklich." },
+  "notification": {
+    "step_label": "Sanfte Erinnerungen",
+    "title": "Tägliche Erinnerungen",
+    "description": "Regelmäßige Check-ins stärken die emotionale Resilienz. Wähle Zeiten, die zu deinem Alltag passen.",
+    "consistency_proof": "Mitglieder mit Erinnerungen sind 3× beständiger",
+    "customize_note": "Du kannst diese jederzeit in den Einstellungen anpassen oder stummschalten.",
+    "reminders": {"1":{"title":"Morgenreflexion","body":"Starte mit Klarheit in den Tag ☀️ Nimm dir einen Moment für deine Gedanken und Ziele."},"2":{"title":"Mittags-Check-in","body":"Wie läuft dein Tag? 🌿 Halte kurz inne und notiere deine Gedanken."},"3":{"title":"Abendruhe","body":"Zeit zum Entspannen 🌙 Denk an deinen Tag und würdige, was dir gelungen ist."}}
+  },
+  "welcome_to_happy": {
+    "step_label": "Fast geschafft",
+    "login": "Anmelden",
+    "login_accessibility": "Du hast schon ein Konto? Anmelden",
+    "personal_plan": "Mein Plan",
+    "title": "Nimm deinen Fortschritt mit",
+    "description": "Speichere deinen maßgeschneiderten Plan, deine Serie und private Notizen, bevor du Tag 1 beginnst.",
+    "course_card": { "ready_badge": "Bereit", "daily_label": "Maßgeschneiderter 7-Tage-Kurs • {{minutes}} Min täglich" },
+    "streak_card": { "title": "Serie & Schwung", "day_1_badge": "Tag 1", "subtitle": "Sichere die heutige Gewohnheit in deiner Geschichte" },
+    "reflections_card": { "title": "Private Reflexionen", "encrypted_badge": "Verschlüsselt", "subtitle": "Sicher mit deinem persönlichen Profil synchronisiert" }
+  },
+  "xp_first_step": "Dein erster Schritt",
+  "paywall": {
+    "benefits": {
+      "journeys": "Alle 12 Reisen mit aufbauenden Lektionen",
+      "ai": "Unbegrenzte KI-Einblicke & wöchentliche Muster",
+      "cbt": "Vollständiges KVT-Werkzeugset (20+ Übungen)",
+      "streak": "Serienreparatur & Premium-Designs"
+    }
+  },
+  "pact_text": "Ich verpflichte mich, für mich da zu sein – auch an den Tagen, an denen ich keine Lust habe. Nur {{minutes}} Minuten. Das ist alles, was es braucht.",
+  "future_letter": "Du hast es geschafft. Du bist wirklich aufgetaucht – nicht nur einmal, sondern jeden einzelnen Tag 30 Tage lang.\n\nErinnerst du dich noch, wie schwer sich alles angefühlt hat, als du angefangen hast? {{timing}} war am schwersten. Aber du bist immer wieder zurückgekommen. {{minutes}} Minuten nach dem anderen.\n\nDu bist nicht mehr dieselbe Person, die diese App vor einem Monat geöffnet hat. Du bist ruhiger. Du bemerkst deine Gedanken, bevor sie sich hochschaukeln. Du hast jetzt Werkzeuge.\n\nIch bin stolz auf dich."
+}

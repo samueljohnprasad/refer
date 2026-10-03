@@ -12,8 +12,6 @@ import { ScrollView, View, Pressable } from "react-native";
 import { Stack, useFocusEffect } from "expo-router";
 import { Text } from "@/src/components/ui/Text";
 import {
-  format,
-  addDays,
   startOfWeek,
   endOfWeek,
   startOfMonth,
@@ -23,16 +21,10 @@ import { useAtom, useSetAtom } from "jotai";
 import { SafeAreaView } from "@/src/components/tw";
 import * as Haptics from "expo-haptics";
 import Animated, {
-  interpolate,
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
   FadeIn,
   Easing,
 } from "react-native-reanimated";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { GestureDetector } from "react-native-gesture-handler";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import {
   currentWeekViewAtom,
@@ -56,28 +48,13 @@ import { pickerStyle, tag, badge } from "@expo/ui/swift-ui/modifiers";
 // Static imports to avoid Metro bundler React.lazy chunk resolution crashes
 import { MentalHealthProfileContainer } from "./notes/MentalHealthProfileContainer";
 import { AIInsightsModalBottomSheet } from "@/src/components/ai/AIInsightsModalBottomSheet";
+import { useJournalDateSwipe } from "./hooks/useJournalDateSwipe";
+import { useTranslation } from "react-i18next";
 
-const TAB_FILTER_OPTIONS = ["Journal", "Habits"] as const;
 type TabFilter = "habits" | "journal";
-type TabFilterLabel = (typeof TAB_FILTER_OPTIONS)[number];
-
-const TAB_FILTER_BY_LABEL: Record<TabFilterLabel, TabFilter> = {
-  Journal: "journal",
-  Habits: "habits",
-};
-const TAB_FILTER_LABEL_BY_FILTER: Record<TabFilter, TabFilterLabel> = {
-  journal: "Journal",
-  habits: "Habits",
-};
-
-function isTabFilterLabel(selection: unknown): selection is TabFilterLabel {
-  return (
-    typeof selection === "string" &&
-    TAB_FILTER_OPTIONS.includes(selection as TabFilterLabel)
-  );
-}
 
 function DailyNotesScreenComponent(): ReactElement {
+  const { i18n, t } = useTranslation("journal");
   // State for selected date
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   const [openAIInsights, setOpenAIInsights] = useAtom(openAIInsightsAtom);
@@ -146,188 +123,20 @@ function DailyNotesScreenComponent(): ReactElement {
   }, [openAIInsights, setOpenAIInsights]);
 
   // Format week dates for display
-  const weekStart = useMemo(
-    () => startOfWeek(currentWeekView, { weekStartsOn: 0 }),
-    [currentWeekView],
+  const weekDateFormatter = new Intl.DateTimeFormat(i18n.language, {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+  const weekStartFormatted = weekDateFormatter.format(
+    startOfWeek(currentWeekView, { weekStartsOn: 0 }),
   );
-  const weekEnd = useMemo(
-    () => endOfWeek(currentWeekView, { weekStartsOn: 0 }),
-    [currentWeekView],
-  );
-  const weekStartFormatted = useMemo(
-    () => format(weekStart, "MMM dd, yyyy"),
-    [weekStart],
-  );
-  const weekEndFormatted = useMemo(
-    () => format(weekEnd, "MMM dd, yyyy"),
-    [weekEnd],
+  const weekEndFormatted = weekDateFormatter.format(
+    endOfWeek(currentWeekView, { weekStartsOn: 0 }),
   );
 
-  // Shared values for content animations (UI thread)
-  const contentTranslateX = useSharedValue<number>(0);
-  const contentOpacity = useSharedValue<number>(1);
-  const contentScale = useSharedValue<number>(1);
-  // Animated styles with smooth scale feedback
-  const contentAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: contentOpacity.get(),
-    transform: [
-      { translateX: contentTranslateX.get() },
-      { scale: contentScale.get() },
-    ],
-  }));
-
-  // Helper to move date by offset without stale closure issues
-  const updateDateFromTs = useCallback(
-    (ts: number): void => {
-      const newDate = new Date(ts);
-      setSelectedDate(newDate);
-      setCurrentWeekView(newDate);
-    },
-    [setSelectedDate, setCurrentWeekView],
-  );
-
-  const changeDateBy = useCallback(
-    (offset: number): void => {
-      // Pre-compute the target date timestamp on JS thread and pass to worklet as a primitive
-      const targetTs: number = addDays(selectedDate, offset).getTime();
-      const direction = offset > 0 ? -1 : 1;
-      const slideDistance = 30; // Exit distance is shorter
-
-      contentOpacity.set(withTiming(0, { duration: 150 }));
-      contentTranslateX.set(
-        withTiming(
-          direction * slideDistance,
-          { duration: 150 },
-          (finished?: boolean) => {
-            if (finished) {
-              runOnJS(updateDateFromTs)(targetTs);
-              // Set starting position for new content (coming from the other side)
-              contentTranslateX.set(-direction * slideDistance * 1.5);
-
-              // Fade back in with spring motion
-              contentOpacity.set(withTiming(1, { duration: 250 }));
-              contentTranslateX.set(
-                withSpring(0, {
-                  damping: 20,
-                  stiffness: 100,
-                  overshootClamping: true,
-                }),
-              );
-            }
-          },
-        ),
-      );
-    },
-    [selectedDate, updateDateFromTs, contentOpacity, contentTranslateX],
-  );
-
-  const goToPreviousDateContent = useCallback(
-    (): void => changeDateBy(-1),
-    [changeDateBy],
-  );
-  const goToNextDateContent = useCallback(
-    (): void => changeDateBy(1),
-    [changeDateBy],
-  );
-
-  // Enhanced pan gesture with reduced sensitivity - memoized with stable dependencies
-  const contentPanGesture = useMemo(
-    () =>
-      Gesture.Pan()
-        .minDistance(15)
-        // failOffsetY: gesture fails immediately when vertical scroll detected.
-        // This prevents onBegin/onUpdate from firing during vertical scroll,
-        // which was animating contentScale/opacity → causing the flicker.
-        .failOffsetY([-5, 5])
-        // Only become active once the user moves clearly horizontally
-        .activeOffsetX([-15, 15])
-        .onUpdate((g) => {
-          "worklet";
-          const rawTx = g.translationX;
-          const resistanceThreshold = 60;
-          const maxTranslate = 100;
-
-          let tx = rawTx;
-
-          // Rubber band resistance after threshold
-          if (Math.abs(rawTx) > resistanceThreshold) {
-            const excess = Math.abs(rawTx) - resistanceThreshold;
-            const c = 120;
-            const resistance =
-              resistanceThreshold + (excess * c) / (excess + c);
-            tx = rawTx > 0 ? resistance : -resistance;
-          }
-
-          if (tx < -maxTranslate) tx = -maxTranslate;
-          else if (tx > maxTranslate) tx = maxTranslate;
-
-          contentTranslateX.set(tx);
-
-          const progress = Math.abs(tx) / maxTranslate;
-
-          contentOpacity.set(
-            interpolate(progress, [0, 0.7, 1], [1, 0.92, 0.85], "clamp"),
-          );
-          // Scale only applies during confirmed horizontal swipe, never during scroll
-          contentScale.set(interpolate(progress, [0, 1], [1, 0.98], "clamp"));
-        })
-        .onEnd((g) => {
-          "worklet";
-          const absDx = Math.abs(g.translationX);
-          const direction = g.translationX > 0 ? "right" : "left";
-
-          // Increased threshold for less sensitivity
-          if (absDx > 75) {
-            if (direction === "left") {
-              runOnJS(goToNextDateContent)();
-            } else {
-              runOnJS(goToPreviousDateContent)();
-            }
-          }
-
-          // Smoother, less bouncy spring animation
-          contentTranslateX.set(
-            withSpring(0, {
-              damping: 20,
-              stiffness: 100,
-              overshootClamping: true,
-            }),
-          );
-          contentOpacity.set(
-            withSpring(1, {
-              damping: 20,
-              stiffness: 100,
-              overshootClamping: true,
-            }),
-          );
-          contentScale.set(
-            withSpring(1, {
-              damping: 20,
-              stiffness: 100,
-              overshootClamping: true,
-            }),
-          );
-        })
-        .onFinalize(() => {
-          "worklet";
-          contentTranslateX.set(
-            withSpring(0, {
-              damping: 20,
-              stiffness: 100,
-              overshootClamping: true,
-            }),
-          );
-          contentOpacity.set(withSpring(1));
-          contentScale.set(withSpring(1));
-        }),
-    [
-      contentScale,
-      contentTranslateX,
-      contentOpacity,
-      goToNextDateContent,
-      goToPreviousDateContent,
-    ],
-  );
+  const { gesture: contentPanGesture, animatedStyle: contentAnimatedStyle } =
+    useJournalDateSwipe();
 
   // Memoize Mental Health Container to prevent re-renders during animations
   const mentalHealthContent = useMemo(
@@ -351,14 +160,6 @@ function DailyNotesScreenComponent(): ReactElement {
   // Memoize header callback
   const handleBookmarksPress = useCallback(
     () => setShowBookmarksModal((prev) => !prev),
-    [],
-  );
-  const handleFilterSelectionChange = useCallback(
-    (selection: unknown): void => {
-      if (!isTabFilterLabel(selection)) return;
-      Haptics.selectionAsync();
-      setTabFilter(TAB_FILTER_BY_LABEL[selection]);
-    },
     [],
   );
   const handleAIInsightsClose = useCallback((): void => {
@@ -410,11 +211,11 @@ function DailyNotesScreenComponent(): ReactElement {
                   ),
                 ]}
               >
-                Journal
+                {t("tab.journal")}
               </SwiftUIText>
 
               <SwiftUIText modifiers={[tag("habits")]}>
-                Habits
+                {t("tab.habits")}
               </SwiftUIText>
             </Picker>
           </Host>

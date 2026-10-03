@@ -1,0 +1,219 @@
+{
+  "header": { "your_course": "TU CURSO", "quiet_moment": "UN MOMENTO DE CALMA" },
+  "buttons": {
+    "lets_begin": "¡EMPECEMOS!",
+    "continue": "CONTINUAR",
+    "start_my_journey": "COMENZAR MI CAMINO",
+    "start_lesson_1": "INICIAR LECCIÓN 1",
+    "set_reminders": "CONFIGURAR RECORDATORIOS",
+    "save_my_progress": "GUARDAR MI PROGRESO",
+    "skip_for_now": "Omitir por ahora",
+    "maybe_later": "Quizás después",
+    "setting_up": "Configurando..."
+  },
+  "welcome": {
+    "headline_line1": "Comienza tu",
+    "headline_line2": "viaje interior",
+    "subhead": "un pensamiento a la vez"
+  },
+  "welcome_nodes": {"0_0":"Sigue creciendo","1_0":"Reflexiona","1_1":"a fondo","2_0":"Conócete","2_1":"mejor","4_0":"Crea un","4_1":"hábito","5_0":"Una mente","5_1":"más clara","today":"Hoy","start_here":"Empieza aquí"},
+  "mascot_greeting": {
+    "label": "Tu guía",
+    "hi": "Hola, soy Mochi.",
+    "intro": "Soy un panda. Soy suave. Soy paciente. Seré tu compañero en este camino, solo",
+    "questions_count": "6 preguntas rápidas",
+    "before_lesson": "antes de tu primera lección.",
+    "quote": "«La práctica más pequeña, hecha cada día, es más poderosa que la más grande hecha una sola vez.»"
+  },
+  "quiz_motivation": {
+    "step_label": "Empieza con lo que más resuena en ti",
+    "title": "¿Qué te trae por aquí, amigo/a?",
+    "description": "Elige la opción que más conecte contigo. No hay respuestas incorrectas.",
+    "options": {
+      "anxiety": { "title": "Manejar la ansiedad", "subtitle": "Callar los pensamientos acelerados" },
+      "mood": { "title": "Mejorar mi estado de ánimo", "subtitle": "Encontrar ligereza en los días difíciles" },
+      "stress": { "title": "Gestionar mejor el estrés", "subtitle": "Construir resiliencia para los momentos duros" },
+      "self_understanding": { "title": "Entenderme mejor", "subtitle": "Patrones, detonantes y crecimiento personal" },
+      "sleep": { "title": "Dormir y descansar mejor", "subtitle": "Rituales nocturnos que de verdad funcionan" }
+    }
+  },
+  "quiz_stress_level": {
+    "question_mark": "?",
+    "step_label": "Marca tu ritmo",
+    "options": {
+      "light": { "title": "Brisa ligera", "subtitle": "Manejable, solo quiero mantenerlo bajo control" },
+      "moderate": { "title": "Peso moderado", "subtitle": "Va y viene, algunos días más difíciles que otros" },
+      "heavy": { "title": "Nubes pesadas", "subtitle": "Afecta significativamente mi vida diaria" },
+      "overwhelming": { "title": "Tormenta abrumadora", "subtitle": "Hay días en que no sé ni por dónde empezar" }
+    }
+  },
+  "motivation_followup": {
+    "anxiety": {
+      "question": "Qué tan presente ha estado la ansiedad últimamente",
+      "subtext": "Esto nos ayuda a elegir un ritmo que se adapte a ti.",
+      "options": {
+        "light": { "title": "Zumbido de fondo", "subtitle": "Está ahí, pero puedo seguir con mi día." },
+        "moderate": { "title": "Tensión regular", "subtitle": "Presente la mayoría de los días, a veces difícil de soltar." },
+        "heavy": { "title": "Peso constante", "subtitle": "La ansiedad me acompaña la mayor parte del día." },
+        "overwhelming": { "title": "Tomando el control", "subtitle": "Hay días en que acapara casi toda mi atención." }
+      }
+    },
+    "mood": {
+      "question": "Qué tan pesados son tus bajones de ánimo",
+      "subtext": "Saber esto nos ayuda a ajustar las lecciones a donde estás ahora.",
+      "options": {
+        "light": { "title": "Bajones ocasionales", "subtitle": "A veces me siento mal pero me recupero pronto" },
+        "moderate": { "title": "Bajas frecuentes", "subtitle": "Los períodos bajos van y vienen a lo largo de la semana" },
+        "heavy": { "title": "La mayoría de los días se sienten pesados", "subtitle": "Cuesta encontrar ligereza la mayor parte del tiempo" },
+        "overwhelming": { "title": "Difícil de superar", "subtitle": "Algunos días, simplemente atravesar el día ya es mucho" }
+      }
+    },
+    "stress": {
+      "question": "Cuánta presión estás cargando",
+      "subtext": "Esto nos ayuda a calibrar el ritmo y las herramientas adecuadas para ti.",
+      "options": {
+        "light": { "title": "Carga manejable", "subtitle": "Ocupado/a pero mayormente en control" },
+        "moderate": { "title": "Presión acumulada", "subtitle": "Se va amontonando y no siempre logro desconectarme" },
+        "heavy": { "title": "Presión constante", "subtitle": "El estrés es un compañero diario en este momento" },
+        "overwhelming": { "title": "Al límite", "subtitle": "La mayor parte del tiempo funcionando en reserva" }
+      }
+    },
+    "self_understanding": {
+      "question": "Qué tan perdido/a te sientes ahora mismo",
+      "subtext": "No hay respuesta incorrecta, te encontraremos exactamente donde estás.",
+      "options": {
+        "light": { "title": "Levemente curioso/a", "subtitle": "Me conozco bastante, solo quiero más claridad" },
+        "moderate": { "title": "Algo de confusión", "subtitle": "Tengo patrones que no termino de explicarme" },
+        "heavy": { "title": "A menudo inseguro/a", "subtitle": "Me encuentro reaccionando sin entender por qué" },
+        "overwhelming": { "title": "Bastante perdido/a", "subtitle": "Me cuesta saber qué siento o qué quiero realmente" }
+      }
+    },
+    "sleep": {
+      "question": "Qué tan alterado está tu sueño",
+      "subtext": "Esto da forma a los rituales nocturnos que construiremos para ti.",
+      "options": {
+        "light": { "title": "Levemente inquieto/a", "subtitle": "Noches malas ocasionales, generalmente bien" },
+        "moderate": { "title": "Inconsistente", "subtitle": "El sueño varía mucho, buenas noches y malas noches" },
+        "heavy": { "title": "Habitualmente malo", "subtitle": "Rara vez me siento descansado/a por la mañana" },
+        "overwhelming": { "title": "Gravemente alterado", "subtitle": "El sueño es un problema real que afecta mi vida diaria" }
+      }
+    }
+  },
+ "building_journey": {
+    "title": "Estamos preparando tu camino…",
+    "subtitle": "A partir de lo que compartiste",
+    "ready_title": "¡Tu camino está listo!",
+    "ready_subtitle": "Tu recorrido de TCC está listo",
+    "generating": "Creando el plan…",
+    "complete": "Listo",
+    "private": "Privado y adaptado a ti",
+   "tasks": {
+      "profile": "Revisando lo que compartiste",
+      "gentle_schedule": "Un ritmo suave y llevadero",
+      "stress": "Analizando tu perfil de estrés",
+      "plan": "Construyendo tu camino personal",
+      "cbt": "Seleccionando ejercicios de TCC para ti",
+      "schedule": "Optimizando tu rutina diaria"
+    }
+  },
+  "plan_names": {"anxiety":"Calmar la tormenta","mood":"Volver a encontrar la luz","stress":"Serenidad bajo presión","self_understanding":"Volver a ti","sleep":"Descanso tranquilo"},
+  "plan_reveal": {
+    "step_label": "Tu plan personalizado",
+    "loading_milestones": "Cargando etapas",
+    "phase_subtitles": {"foundation":"Bases y conciencia","practice":"Aprender y practicar","integration":"Integrar con calma","initial":"Primer objetivo","core":"Práctica principal","anchor":"Apoyo a largo plazo"},
+    "units": "{{count}} unidades",
+    "course_illustration": "Ilustración de {{title}}",
+    "title": "Tu camino está listo",
+    "pace_per_day": "~5 min/día",
+    "milestones_count": "3 Hitos",
+    "self_paced": "A tu ritmo",
+    "why_this_course": "Por qué este programa",
+    "tailored_label": "Adaptado a lo que nos contaste",
+    "milestones_section": "Tus 3 hitos",
+    "step_by_step": "Paso a paso",
+    "milestone_badges": {
+      "start_here": "EMPIEZA AQUÍ",
+      "phase_2": "FASE 2",
+      "mastery": "MAESTRÍA"
+    }
+  },
+  "daily_goal": {
+    "anxiety": {
+      "headline": "Cuánto tiempo puedes dedicarle a",
+      "subtext": "Incluso 3 minutos de reflexión diaria pueden interrumpir una espiral de ansiedad. Empieza donde estás.",
+      "testimonial": { "name": "Sara", "age": 31, "quote": "«3 minutos me parecían ridículamente poco. Pero aparecer cada día durante 3 minutos hizo más que mis intentos semanales de 30 minutos.»" }
+    },
+    "mood": {
+      "headline": "Cuánto tiempo puedes proteger para",
+      "subtext": "La constancia importa más que la duración. Un pequeño hábito diario dura más que uno grande ocasional.",
+      "testimonial": { "name": "Marcus", "age": 34, "quote": "«5 minutos cada mañana se convirtieron en el momento que de verdad esperaba. Le daba un tono diferente a todo el día.»" }
+    },
+    "stress": {
+      "headline": "Cuánto tiempo puedes recuperar para",
+      "subtext": "Una pequeña ventana de descompresión vale más que una larga que nunca llega. Sé honesto/a contigo.",
+      "testimonial": { "name": "Priya", "age": 29, "quote": "«Pensaba que necesitaba una hora de autocuidado. Resulta que 5 minutos de reflexión estructurada bajaron mi cortisol más que una hora de scroll.»" }
+    },
+    "self_understanding": {
+      "headline": "Cuánto tiempo vas a darle a",
+      "subtext": "El autoconocimiento se construye despacio. Incluso la reflexión breve y constante se acumula con el tiempo.",
+      "testimonial": { "name": "Riley", "age": 26, "quote": "«Empecé con 5 minutos solo para ver patrones. Seis semanas después entendí por fin por qué seguía saboteándome.»" }
+    },
+    "sleep": {
+      "headline": "Cuánto tiempo puedes dedicar a desconectarte",
+      "subtext": "Un ritual nocturno breve pero constante recalibra tu sistema nervioso con el tiempo.",
+      "testimonial": { "name": "Dani", "age": 28, "quote": "«5 minutos de journaling antes de dormir reemplazaron 45 minutos de scroll. Ahora me duermo en menos de 20 minutos.»" }
+    },
+    "cards": {
+      "gentle": { "tag": "Suave", "description": "Un pequeño registro" },
+      "recommended": { "tag": "Recomendado", "description": "Una pausa con significado" },
+      "committed": { "tag": "Comprometido/a", "description": "Una reflexión de verdad" },
+      "serious": { "tag": "Serio/a", "description": "Una práctica profunda" }
+    }
+  },
+  "pact_signing": {
+    "today": "Hoy",
+    "step_label": "Un pequeño pacto",
+    "subtitle": "¿Puedes aparecer {{minutes}} minutos al día?",
+    "streak_goal": "Meta: 7 días seguidos",
+    "day_1_today": "El día 1 empieza hoy",
+    "vow": "«Durante los próximos 7 días, estaré ahí para mí, aunque sea solo {{minutes}} minutos.»",
+    "private": "100 % privado para ti",
+    "hint_idle": "Mantén presionado para hacer tu compromiso de 7 días",
+    "hint_holding": "Sellando tu compromiso...",
+    "hint_done": "Pacto sellado. Un día a la vez ✨",
+    "button_idle": "Mantén para comprometerte",
+    "button_holding": "Sellando...",
+    "button_done": "Pacto sellado"
+  },
+  "lesson_complete": { "you_did_it": "Lo lograste.", "truly": "De verdad." },
+  "notification": {
+    "step_label": "Recordatorios amables",
+    "title": "Recordatorios diarios",
+    "description": "Los registros constantes fortalecen la resiliencia emocional. Elige horarios que encajen en tu rutina.",
+    "consistency_proof": "Los miembros con recordatorios son 3 veces más constantes",
+    "customize_note": "Puedes personalizar o silenciar estos recordatorios en cualquier momento desde Ajustes.",
+    "reminders": {"1":{"title":"Reflexión matutina","body":"Empieza el día con claridad ☀️ Tómate un momento para pensar en tus intenciones."},"2":{"title":"Pausa del mediodía","body":"¿Cómo va tu día? 🌿 Haz una pausa y anota tus pensamientos."},"3":{"title":"Pausa de la noche","body":"Es hora de relajarte 🌙 Reflexiona sobre tu día y celebra tus logros."}}
+  },
+  "welcome_to_happy": {
+    "step_label": "Ya casi",
+    "login": "Iniciar sesión",
+    "login_accessibility": "¿Ya tienes una cuenta? Inicia sesión",
+    "personal_plan": "Mi plan",
+    "title": "Lleva tu progreso contigo",
+    "description": "Guarda tu plan personalizado, tu racha y tus notas privadas antes de comenzar el Día 1.",
+    "course_card": { "ready_badge": "Listo", "daily_label": "Programa personalizado de 7 días • {{minutes}} min diarios" },
+    "streak_card": { "title": "Racha y motivación", "day_1_badge": "Día 1", "subtitle": "Guarda el hábito de hoy en tu historial" },
+    "reflections_card": { "title": "Reflexiones privadas", "encrypted_badge": "Cifrado", "subtitle": "Sincronizado de forma segura con tu perfil personal" }
+  },
+  "xp_first_step": "Primer paso en tu camino",
+  "paywall": {
+    "benefits": {
+      "journeys": "Los 12 caminos con lecciones progresivas",
+      "ai": "Insights de IA ilimitados y patrones semanales",
+      "cbt": "Kit completo de TCC (más de 20 ejercicios)",
+      "streak": "Recuperación de racha y temas premium"
+    }
+  },
+  "pact_text": "Me comprometo a estar ahí para mí, incluso los días que no tengo ganas. Solo {{minutes}} minutos. Eso es todo lo que hace falta.",
+  "future_letter": "Lo lograste. De verdad apareciste, no solo una vez, sino cada día durante 30 días.\n\n¿Recuerdas lo pesado que se sentía todo cuando empezaste? {{timing}} era lo más difícil. Pero seguiste volviendo. {{minutes}} minutos a la vez.\n\nYa no eres la misma persona que abrió esta app hace un mes. Estás más tranquilo/a. Notas tus pensamientos antes de que se descontrolen. Ahora tienes herramientas.\n\nEstoy orgulloso/a de ti."
+}

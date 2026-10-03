@@ -51,5 +51,10 @@
     "streakCount_other": "{{count}} giorni di serie",
     "weekDays": ["D", "L", "M", "M", "G", "V", "S"],
     "a11yLabel": "Serie attuale: {{count}} giorni. Tocca per visualizzare la cronologia."
+  },
+  "errors": {
+    "loadTitle": "Qualcosa è andato storto",
+    "loadDescription": "Non siamo riusciti a caricare la schermata iniziale.",
+    "tryAgain": "Riprova"
   }
 }

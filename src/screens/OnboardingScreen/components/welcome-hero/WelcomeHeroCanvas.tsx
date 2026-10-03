@@ -26,7 +26,6 @@ import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
   BACKGROUND,
-  COPY,
   NODES,
   TODAY_INDEX,
   PATH_D,
@@ -46,6 +45,7 @@ import {
 } from "./WelcomeDecorations";
 import { PandaMascot } from "./PandaMascot";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
+import { useTranslation } from "react-i18next";
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
@@ -116,6 +116,7 @@ function Subhead({
 }
 
 export function WelcomeHeroCanvas(): React.JSX.Element {
+  const { t } = useTranslation("onboarding");
   const { width: screenWidth } = useWindowDimensions();
   const scale: number = screenWidth / CANVAS_WIDTH;
   const canvasHeight: number = CANVAS_HEIGHT * scale;
@@ -200,10 +201,10 @@ export function WelcomeHeroCanvas(): React.JSX.Element {
 
       {/* Headline & subhead */}
       <View style={{ position: "absolute", top: 176 * scale, left: 72 * scale, right: 72 * scale }}>
-        {COPY.headline.map((line: string, i: number) => (
+        {[t("welcome.headline_line1"), t("welcome.headline_line2")].map((line: string, i: number) => (
           <HeadlineLine key={line} line={line} index={i} frame={frame} scale={scale} />
         ))}
-        <Subhead text={COPY.subhead} frame={frame} scale={scale} />
+        <Subhead text={t("welcome.subhead")} frame={frame} scale={scale} />
       </View>
 
       {/* Drifting layer for nodes, labels, and panda */}

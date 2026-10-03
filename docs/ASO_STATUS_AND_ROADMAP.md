@@ -16,8 +16,8 @@
 | **In-App Events** | `7-Day CBT Mental Reset Challenge` Published | ✅ DONE | Low | Plan next seasonal challenge |
 | **Custom Product Pages** | 3 pages live (`CBT Courses`, `Anxiety Relief`, `Voice Journal`) | ✅ DONE | Med | Link to ad campaigns (ASA, TikTok, Meta) |
 | **Review Prompts** | `useReviewPrompt` hooked to Day 3/7/15 & unit milestone | ✅ DONE | Low | Verify live prompt appearance in production |
-| **Keyword Budget** | 100/100 full budget achieved across all 28 supported App Store locales | ✅ DONE | Low | Maintain density on future version bumps |
-| **Screenshots** | `en-US` (6/10), `de-DE` (2/10), remaining 8 locales have 0 screenshots | ❌ INCOMPLETE | High | Render & upload localized sets (Slots 1–10) |
+| **Keyword Budget** | Full keyword budget achieved across all 34 supported App Store locales | ✅ DONE | Low | Maintain density on future version bumps |
+| **Screenshots** | `en-US` (7/10 live), `de-DE` (2/10), 27 locales documented in copy guide | ❌ INCOMPLETE | High | Render & upload remaining sets (Slots 8–10 in en-US, full sets for de/ja/fr) |
 | **App Preview Video** | 0 videos in App Store Connect | ⏳ PENDING | Med | Record 15-30s gameplay video for Slot 1 |
 | **A/B Testing (PPO)** | 0 active experiments | ⏳ PENDING | Med | Start Icon & Slot 1 A/B test once 1.5.1 is live |
 
@@ -70,14 +70,20 @@ Apple indexes both `en-US` AND `es-MX` (Spanish Mexico) in the United States App
 | `th` | 100/100 | Full | High-intent Thai CBT & coping terms (คิดมาก, เครียด, ซึมเศร้า, แพนิค, สมาธิ, นอนไม่หลับ, จิตวิทยา, บำบัด, ฮีลใจ, ผ่อนคลาย, อารมณ์, นิสัย, ความสุข, สงบ) |
 | `ru` | 100/100 | Full | High-intent Russian CBT & coping terms (психолог, терапия, депрессия, паника, сон, бессонница, привычки, осознанность, спокойствие, выгорание, дыхание) |
 | `ms` | 100/100 | Full | High-intent Malay CBT & coping terms (terapi, stres, kemurungan, depresi, meditasi, tidur, panik, mood, emosi, tabiat, psikologi, nafas, syukur, jurnal) |
+| `cs` | 100/100 | Full | High-intent Czech CBT & coping terms (terapie, meditace, všímavost, panika, dýchání, návyk, emoce, duševní zdraví, relaxace, pohoda, sebepéče, smutek) |
+| `el` | 95/100 | Full | High-intent Greek ΓΣΘ & wellbeing terms (θεραπεία, στρες, κατάθλιψη, διαλογισμός, ύπνος, πανικός, αναπνοή, ψυχολόγος) |
+| `hu` | 83/100 | Full | High-intent Hungarian CBT & wellbeing terms (terápia, stressz, depresszió, meditáció, alvás, pánik, légzés, pszichológus) |
+| `ro` | 87/100 | Full | High-intent Romanian CBT & wellbeing terms (terapie, stres, depresie, meditație, somn, panică, respirație, psiholog) |
+| `pt-PT` | 90/100 | Full | High-intent European Portuguese TCC & wellbeing terms (terapia, stress, depressão, meditação, sono, pânico, respiração, psicólogo) |
+| `he` | 83/100 | Full | High-intent Hebrew CBT & wellbeing terms (טיפול, מתח, דיכאון, מדיטציה, שינה, פאניקה, נשימה, פסיכולוג) |
 
 ---
 
 ## 3. Screenshots Gap & Plan
 
 ### Current App Store Connect State (6.5" iPhone)
-- `en-US`: 6 uploaded
-- `de-DE`: 2 uploaded
+- `en-US`: 7 uploaded (Slots 1–7 live, Slots 8–10 pending)
+- `de-DE`: 2 uploaded (Slots 1–2 live, Slots 3–10 pending)
 - `en-AU`, `en-CA`, `en-GB`, `es-MX`, `fr-CA`, `fr-FR`, `ja`, `ko`: **0 uploaded** (fallback to English)
 
 ### 10-Slot Storyboard Reference

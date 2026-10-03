@@ -16,6 +16,7 @@ import {
   foregroundStyle,
   datePickerStyle,
 } from "@expo/ui/swift-ui/modifiers";
+import { useTranslation } from "react-i18next";
 
 interface CalendarDatePickerSheetProps {
   isVisible: boolean;
@@ -26,6 +27,7 @@ interface CalendarDatePickerSheetProps {
 
 export const CalendarDatePickerSheet: React.FC<CalendarDatePickerSheetProps> = React.memo(
   ({ isVisible, selectedDate, onClose, onSelectDate }) => {
+    const { t } = useTranslation("journal");
     return (
       <Host>
         <BottomSheet
@@ -53,7 +55,7 @@ export const CalendarDatePickerSheet: React.FC<CalendarDatePickerSheetProps> = R
                   foregroundStyle("#1C1C1E"),
                 ]}
               >
-                Select Date
+                {t("capture.selectDate")}
               </SUIText>
               <SwiftUIDateTimePicker
                 onDateChange={(date: Date) => {
@@ -61,7 +63,7 @@ export const CalendarDatePickerSheet: React.FC<CalendarDatePickerSheetProps> = R
                   onSelectDate(date);
                 }}
                 displayedComponents={["date"]}
-                title="Select Date"
+                title={t("capture.selectDate")}
                 selection={selectedDate}
                 modifiers={[datePickerStyle("graphical")]}
               />

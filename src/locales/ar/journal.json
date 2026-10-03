@@ -1,1 +1,35 @@
-{}
+{
+  "title": "اليوميات",
+  "emotionDetails": { "title": "مشاعر يوم {{date}}", "empty": "لم تُسجّل مشاعر لهذا اليوم", "moodLog": "تسجيل المزاج", "journalEntry": "تدوينة يومية" },
+  "prompts": {
+    "dailyReflect": "ما الذي يشغل بالك الآن؟",
+    "gratitude": "اذكر ثلاثة أشياء تشعر بالامتنان لها اليوم.",
+    "thoughtRecord": "ما الفكرة التي غيّرت شعورك؟"
+  },
+  "moods": { "great": "رائع", "good": "جيد", "okay": "لا بأس", "low": "منخفض", "stressed": "متوتر" },
+  "actions": { "newEntry": "تأمل جديد", "voiceNote": "تسجيل ملاحظة صوتية" },
+  "capture": {
+    "writePrompt": "اضغط لكتابة أفكارك…",
+    "writePromptA11y": "اضغط لكتابة أفكارك",
+    "recordVoiceA11y": "تسجيل ملاحظة صوتية",
+    "writeThoughtsA11y": "كتابة الأفكار",
+    "shufflePrompt": "سؤال آخر",
+    "selectDate": "اختر التاريخ",
+    "scanJournal": "مسح صفحات اليوميات ضوئيًا",
+    "freeWrite": "كتابة حرة", "freeWriteHint": "اكتب دون سؤال موجّه", "dailyReflectionXP": "تأمل يومي • +10 XP",
+    "menu": { "journal": "اليوميات · {{date}}", "today": "انتقل إلى اليوم", "browse": "عرض كل الأسئلة" },
+    "options": { "title": "خيارات اليوميات", "import": "استيراد تدوينة مكتوبة بخط اليد", "scanHint": "امسح صفحة ورقية ضوئيًا", "tryAnother": "جرّب سؤالًا آخر", "selected": "{{prompt}}. محدد." },
+    "image": { "title": "مسح تدوينة ضوئيًا", "description": "التقط صفحاتك المكتوبة بخط اليد أو المطبوعة.", "camera": "افتح الكاميرا", "gallery": "اختر من المعرض", "ready": "جاهز", "generated": "تم إعداد تأملاتك.", "viewInsights": "عرض التأملات", "reading": "جارٍ قراءة النص المكتوب…", "creating": "جارٍ إعداد تأملات مخصصة…", "cancelProcessing": "إلغاء المعالجة", "cancel": "إلغاء", "retry": "حاول مرة أخرى", "steps": { "idle": "جاهز للمسح", "capturing": "جارٍ فتح الكاميرا…", "extracting": "جارٍ قراءة تدوينتك…", "analyzing": "جارٍ إعداد التأملات…", "done": "اكتمل!", "error": "حدث خطأ ما" }, "alerts": { "processingFailed": "تعذرت المعالجة", "processImageError": "تعذرت معالجة صورة التدوينة.", "cameraPermission": "يلزم السماح باستخدام الكاميرا", "cameraPermissionMessage": "اسمح بالوصول إلى الكاميرا لمسح صفحاتك.", "galleryPermission": "يلزم السماح بالوصول إلى الصور", "galleryPermissionMessage": "اسمح بالوصول إلى صورك لمسح الصفحات.", "error": "خطأ", "cameraError": "تعذر التقاط الصورة. حاول مرة أخرى.", "galleryError": "تعذر اختيار الصورة. حاول مرة أخرى." } },
+    "keyboard": { "cancel": "إلغاء", "options": "خيارات", "aiInsights": "تأملات الذكاء الاصطناعي", "generateAnalysis": "إنشاء تحليل بالذكاء الاصطناعي", "placeholder": "ابدأ الكتابة هنا…", "word_one": "{{count}} كلمة", "word_other": "{{count}} كلمات", "finish": "إنهاء تدوينة اليوميات", "done": "تم", "saveDraftTitle": "هل تريد حفظ المسودة؟", "saveDraftMessage": "سيتم حفظ تأملك لتتمكن من إكماله لاحقًا.", "discard": "تجاهل", "saveClose": "حفظ وإغلاق", "keepWriting": "متابعة الكتابة" },
+    "voice": { "recording": "جارٍ التسجيل", "paused": "متوقف مؤقتًا", "close": "إغلاق مسجل الصوت", "shuffle": "جرّب سؤالًا آخر", "discardTitle": "هل تريد تجاهل التسجيل؟", "discardMessage": "سيُحذف هذا التسجيل نهائيًا.", "keep": "الاحتفاظ بالتسجيل", "discard": "تجاهل", "pause": "إيقاف التسجيل مؤقتًا", "resume": "استئناف التسجيل", "finish": "إنهاء التسجيل", "waveRecording": "جارٍ تسجيل الصوت", "wavePaused": "التسجيل متوقف مؤقتًا", "waveIdle": "غير نشط" },
+    "analysis": { "phaseTranscribing": "جارٍ تحويل الصوت إلى نص", "phaseUnderstanding": "جارٍ فهم المشاعر", "phaseInsights": "جارٍ إعداد تأملات العلاج المعرفي السلوكي", "phasePreparing": "جارٍ تجهيز التأمل", "step": "الخطوة {{step}} من 4 · {{label}}", "reassurance": "لنأخذ لحظة للتأمل في تدوينتك…", "cancel": "إلغاء التحليل", "mascot": "باندا تتأمل" },
+    "prompts": { "smile": "ما الذي جعلك تبتسم اليوم؟", "challenge": "ما التحدي الذي واجهته اليوم، وكيف استجبت له؟", "gratitude": "ما الشيء الذي تشعر بالامتنان له الآن؟", "selfLearning": "ماذا تعلمت عن نفسك اليوم؟", "selfCare": "كيف يمكنك الاعتناء بنفسك أكثر غدًا؟", "smallWin": "ما الإنجاز الصغير الذي حققته اليوم؟", "peace": "صِف لحظة شعرت فيها بالسلام.", "appreciation": "من الشخص الذي تقدّره، ولماذا؟", "letGo": "ما الشيء الذي تريد التخلي عنه؟", "changeOneThing": "لو استطعت تغيير شيء واحد في يومك، فما هو؟", "lookingForward": "ما الذي تتطلع إليه هذا الأسبوع؟", "selfCareToday": "كيف اعتنيت بنفسك اليوم؟", "fear": "ما الخوف الذي واجهته أو تريد مواجهته؟", "accomplishment": "اكتب عن إنجاز حديث.", "idealDay": "كيف يبدو يومك المثالي؟", "tomorrowEnergy": "ما الطاقة التي تريد أن تبدأ بها يوم غد؟", "moodThreeWords": "صِف مزاجك بثلاث كلمات.", "habit": "ما العادة التي تريد بناءها؟", "positiveImpact": "من ترك أثرًا إيجابيًا في يومك؟", "beautifulThing": "ما الشيء الجميل الذي رأيته اليوم؟" }
+  },
+  "tab": { "journal": "اليوميات", "habits": "العادات" },
+  "calendar": { "today": "اليوم", "todayHint": "العودة إلى اليوم الحالي", "expand": "توسيع التقويم", "collapse": "طيّ التقويم", "expandHint": "التبديل بين عرض الأسبوع والشهر", "moreOptions": "مزيد من الخيارات", "timeline": "السجل والرؤى", "bookmarks": "المحفوظات", "dragHandle": "مقبض التقويم", "previousMonth": "الشهر السابق", "previousMonthHint": "الانتقال إلى الشهر السابق", "nextMonth": "الشهر التالي", "nextMonthHint": "الانتقال إلى الشهر التالي", "jumpToday": "العودة إلى اليوم", "dayA11y": "{{day}}{{today}}" },
+  "empty": { "titles": ["سجّل فكرة سريعة", "ما الذي يشغل بالك؟", "تأمل في يومك"], "description": "ملاحظاتك خاصة بك. ابدأ من حيث أنت.", "recordVoice": "سجّل صوتًا", "writeText": "اكتب نصًا" },
+  "error": { "title": "استراحة قصيرة غير متوقعة", "description": "تعذّر تحميل ملاحظاتك الآن. ملاحظاتك محفوظة بأمان على جهازك.", "reconnect": "أعد الاتصال", "reconnectA11y": "أعد الاتصال لتحميل ملاحظاتك" },
+  "entry": { "untitled": "ملاحظة بلا عنوان", "words_one": "{{count}} كلمة", "words_other": "{{count}} كلمات", "createdAt": "ملاحظة يومية: {{title}}، أُنشئت الساعة {{time}}", "openHint": "انقر مرتين لفتح تفاصيل الملاحظة", "noDate": "بلا تاريخ" },
+  "delete": { "title": "هل تريد حذف الملاحظة؟", "message": "سيتم حذف هذه الملاحظة نهائيًا. لا يمكن التراجع عن هذا الإجراء.", "confirm": "حذف", "cancel": "إلغاء" },
+  "bookmarks": { "title": "ملاحظات مثبتة", "count_one": "ملاحظة مثبتة واحدة", "count_other": "{{count}} ملاحظات مثبتة", "emptyTitle": "لا توجد ملاحظات مثبتة", "emptyDescription": "اضغط على علامة الحفظ في أي ملاحظة لتجدها هنا بسهولة." }
+}

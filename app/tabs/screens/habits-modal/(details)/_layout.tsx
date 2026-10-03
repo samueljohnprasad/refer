@@ -2,12 +2,14 @@ import React from "react";
 import { Stack, useRouter } from "expo-router";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { useCSSVariable } from "uniwind";
+import { useTranslation } from "react-i18next";
 
 const GLASS = isLiquidGlassAvailable();
 const IS_ANDROID = process.env.EXPO_OS === "android";
 
 export default function HabitDetailsGroupLayout() {
   const router = useRouter();
+  const { t } = useTranslation("habits");
   const appForeground = useCSSVariable("--app-foreground") as string;
   const appBackground = useCSSVariable("--app-background") as string;
 
@@ -32,7 +34,7 @@ export default function HabitDetailsGroupLayout() {
       <Stack.Screen
         name="details"
         options={{
-          title: "Habit Details",
+          title: t("navigation.detailsTitle"),
           headerLeft: () => null,
         }}
       >

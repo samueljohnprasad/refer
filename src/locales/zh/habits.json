@@ -1,1 +1,12 @@
-{}
+{
+  "title": "习惯",
+  "streak": { "days": "天连续坚持", "multiplier": "连续记录加成" },
+  "timeOfDay": { "morning": "早晨", "afternoon": "下午", "evening": "晚上", "anytime": "不限时间" },
+  "actions": { "logHabit": "记录习惯", "habitCompleted": "已完成", "addHabit": "添加习惯" },
+  "empty": { "titles": ["养成好习惯", "记录每日进展", "保持规律"], "description": "通过简单的每日记录，慢慢建立自己的习惯。" },
+  "repeat": { "weekly": "每周", "monthly": "每月", "once": "仅一次" },
+  "add": { "addHabitPrefix": "添加习惯", "createCustom": "创建自定义习惯", "nameLabel": "习惯名称 *", "namePlaceholder": "例如：早晨拉伸", "nameHint": "为习惯取个名字，开始记录", "descriptionLabel": "这件事为什么对你重要？", "descriptionPlaceholder": "为了更有精力、更专注……", "reasonPrompt": "你为什么想要{{habit}}？", "back": "返回", "createHabit": "创建习惯", "presets": { "water": { "name": "喝 8 杯水", "description": "保持水分充足，让精力和专注力更好" }, "exercise": { "name": "锻炼 30 分钟", "description": "活动身体，让思绪清晰" }, "meditate": { "name": "冥想", "description": "找到内心的平静与安定" }, "read": { "name": "阅读 15 分钟", "description": "每天拓展视野" }, "gratitude": { "name": "练习感恩", "description": "珍惜生活中的美好" }, "journal": { "name": "写一篇日记", "description": "梳理自己的想法和感受" }, "sleep": { "name": "睡满 8 小时", "description": "休息对恢复精力很重要" }, "walk": { "name": "出去散步", "description": "呼吸新鲜空气，活动身体" } } },
+  "details": { "anytime": "不限时间", "atTime": "指定时间", "date": "日期", "time": "时间", "duration": "时长", "repeat": "重复", "endRepeat": "结束重复", "endDate": "结束日期", "after": "之后", "reminder": "提醒", "notesPlaceholder": "添加关于此习惯的备注……", "save": "保存更改", "markIncomplete": "标记为未完成", "complete": "✓ 完成习惯", "delete": "删除习惯", "never": "从不", "daily": "每天", "weekly": "每周", "monthly": "每月", "onDate": "在指定日期", "afterCount": "完成指定次数后", "times_one": "{{count}} 次", "times_other": "{{count}} 次", "durationHour_one": "{{count}} 小时", "durationHour_other": "{{count}} 小时", "durationMinute": "{{count}} 分钟", "cannotCompleteTitle": "无法完成习惯", "cannotCompleteFuture": "无法将未来日期的习惯标记为已完成。" },
+  "navigation": { "addTitle": "添加习惯", "detailsTitle": "习惯详情" },
+  "accessibility": { "completed": "{{habit}}，已完成", "markComplete": "将 {{habit}} 标记为已完成", "markIncomplete": "将 {{habit}} 标记为未完成" }
+}

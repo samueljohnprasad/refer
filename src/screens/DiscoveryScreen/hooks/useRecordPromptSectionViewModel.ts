@@ -1,5 +1,4 @@
 import { useMemo, useCallback, useState, useEffect, useRef } from "react";
-import { format } from "date-fns";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -10,6 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import type { GlassMenuConfig } from "@/src/components/ui/ConfigurableGlassMenu";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
+import { useTranslation } from "react-i18next";
 
 type AnimatedTextStyle = React.ComponentProps<typeof Animated.Text>["style"];
 
@@ -41,6 +41,7 @@ export function useRecordPromptSectionViewModel({
   onOpenOptions,
   headerRight,
 }: UseRecordPromptSectionOptions): RecordPromptSectionViewModel {
+  const { i18n, t } = useTranslation("journal");
   const reducedMotion = useReducedMotion();
   const isFirstMount = useRef(true);
   const promptOpacity = useSharedValue<number>(1);
@@ -110,14 +111,14 @@ export function useRecordPromptSectionViewModel({
   }));
 
   const formattedDate = useMemo(
-    () => format(selectedDate, "MMMM d"),
-    [selectedDate],
+    () => new Intl.DateTimeFormat(i18n.language, { month: "long", day: "numeric" }).format(selectedDate),
+    [selectedDate, i18n.language],
   );
 
   // ponytail: quiet metadata styling with secondary neutral and medium weight
   const menuConfig: GlassMenuConfig = useMemo(() => {
     return {
-      title: `Journal · ${formattedDate}`,
+      title: t("capture.menu.journal", { date: formattedDate }),
       showChevron: true,
       controlSize: "small",
       minHeight: 40,
@@ -132,28 +133,28 @@ export function useRecordPromptSectionViewModel({
             {
               type: "button",
               id: "change-date",
-              label: "Select Date",
+              label: t("capture.selectDate"),
               systemImage: "calendar",
               onPress: onDatePress,
             },
             {
               type: "button",
               id: "today",
-              label: "Go to Today",
+              label: t("capture.menu.today"),
               systemImage: "calendar.badge.clock",
               onPress: onTodayPress,
             },
             {
               type: "button",
               id: "shuffle-prompt",
-              label: "Shuffle Prompt",
+              label: t("capture.shufflePrompt"),
               systemImage: "arrow.triangle.2.circlepath",
               onPress: onShufflePrompt,
             },
             {
               type: "button",
               id: "browse-prompts",
-              label: "Browse All Prompts",
+              label: t("capture.menu.browse"),
               systemImage: "list.bullet",
               onPress: onOpenOptions,
             },
@@ -163,6 +164,7 @@ export function useRecordPromptSectionViewModel({
     };
   }, [
     formattedDate,
+    t,
     onDatePress,
     onTodayPress,
     onShufflePrompt,

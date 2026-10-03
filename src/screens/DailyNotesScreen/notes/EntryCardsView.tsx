@@ -15,6 +15,7 @@ import { EntryCard } from "./EntryCard";
 import { Button } from "@/src/components/ui/Button";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { useTranslation } from "react-i18next";
 
 interface EntryCardsViewProps {
   entries: JournalEntry[];
@@ -59,6 +60,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   onEndReached,
   ListFooterComponent,
 }) => {
+  const { i18n, t } = useTranslation("journal");
   const [selectedDate] = useAtom(selectedDateAtom);
   const router = useRouter();
   const [deleteEntry, setDeleteEntry] = useState<DeleteJournal>({
@@ -91,16 +93,12 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
       <EmptyState
         mascotState="panda-notes"
         mascotSize={102}
-        title={[
-          "Capture a quick thought",
-          "What's on your mind?",
-          "Reflect on your day",
-        ]}
-        description="Private by default. Just start where you are."
-        buttonText="Record Voice"
+        title={t("empty.titles", { returnObjects: true }) as string[]}
+        description={t("empty.description")}
+        buttonText={t("empty.recordVoice")}
         onButtonPress={() => router.push("/tabs/(tabs)/record")}
         buttonIcon={Mic01Icon}
-        secondaryButtonText="Write Text"
+        secondaryButtonText={t("empty.writeText")}
         onSecondaryButtonPress={() =>
           router.push("/tabs/screens/keyboard-recorder")
         }
@@ -113,7 +111,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   const composerFooter = (
     <View className="flex-row items-center gap-2.5 pt-3 pb-6">
       <Button
-        label="Record Voice"
+        label={t("empty.recordVoice")}
         variant="primary"
         size="md"
         className="flex-1"
@@ -127,7 +125,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         }
       />
       <Button
-        label="Write Text"
+        label={t("empty.writeText")}
         variant="secondary"
         size="md"
         className="flex-1"
@@ -189,11 +187,8 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
                 {showDateHeaders && isFirstOfDate && (
                   <Text className="happy-font-body-bold text-[11px] leading-[15px] uppercase tracking-wide text-ink-muted mb-2 mt-1 px-0.5">
                     {entry.selected_date
-                      ? format(
-                          parseISO(entry.selected_date),
-                          "MMM d, yyyy · EEE"
-                        ).toUpperCase()
-                      : "NO DATE"}
+                          ? formatEntryDate(entry.selected_date, i18n.language).toUpperCase()
+                      : t("entry.noDate")}
                   </Text>
                 )}
                 <EntryCard
@@ -228,11 +223,8 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
                 {showDateHeaders && isFirstOfDate && (
                   <Text className="happy-font-body-bold text-[11px] leading-[15px] uppercase tracking-wide text-ink-muted mb-2 mt-1 px-0.5">
                     {entry.selected_date
-                      ? format(
-                          parseISO(entry.selected_date),
-                          "MMM d, yyyy · EEE"
-                        ).toUpperCase()
-                      : "NO DATE"}
+                      ? formatEntryDate(entry.selected_date, i18n.language).toUpperCase()
+                      : t("entry.noDate")}
                   </Text>
                 )}
                 <EntryCard
@@ -253,13 +245,22 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
       <ConfirmationModal
         deleteEntry={deleteEntry}
         onDismiss={onDismiss}
-        title="Delete Journal?"
-        message="This journal entry will be permanently deleted. This action cannot be undone."
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t("delete.title")}
+        message={t("delete.message")}
+        confirmText={t("delete.confirm")}
+        cancelText={t("delete.cancel")}
         confirmVariant="destructive"
         onDelete={onDelete}
       />
     </View>
   );
 };
+
+function formatEntryDate(date: string, language: string): string {
+  return new Intl.DateTimeFormat(language, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    weekday: "short",
+  }).format(parseISO(date));
+}

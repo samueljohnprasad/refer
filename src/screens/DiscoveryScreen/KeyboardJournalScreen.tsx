@@ -21,22 +21,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { useAtom } from "jotai";
 import * as Haptics from "expo-haptics";
-import {
-  Host,
-  DatePicker as SwiftUIDateTimePicker,
-  Button as SUIButton,
-  Toggle as SUIToggle,
-  Menu as SUIMenu,
-  Text as SUIText,
-} from "@expo/ui/swift-ui";
-import {
-  datePickerStyle,
-  labelStyle,
-  buttonStyle,
-  controlSize,
-  tint,
-} from "@expo/ui/swift-ui/modifiers";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "@/src/store/hooks";
 import { setVisible as setAssistantVisible } from "@/src/store/slices/happyAssistantSlice";
 import { selectedDateDiscoveryAtom } from "./helpers";
@@ -49,6 +34,7 @@ import {
 } from "./hooks/useKeyboardJournalOperations";
 import { JournalPromptRow } from "./components/JournalPromptRow";
 import { KeyboardJournalBottomBar } from "./components/KeyboardJournalBottomBar";
+import { KeyboardJournalHeader } from "./components/KeyboardJournalHeader";
 
 interface KeyboardJournalScreenProps {
   onSubmit?: (text: string, enableAIInsights?: boolean) => void;
@@ -69,6 +55,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   const [isRealtimeActive, setIsRealtimeActive] = useState<boolean>(false);
   const [enableAIInsights, setEnableAIInsights] = useState<boolean>(true);
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const { i18n, t } = useTranslation("journal");
 
   const [localSelectedDate, setLocalSelectedDate] = useAtom(selectedDateDiscoveryAtom);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -164,64 +151,19 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         className="flex-1"
       >
-        {/* Apple SwiftUI Native Header */}
-        <View
-          className="flex-row justify-between items-center px-4 pb-2"
-          style={{ paddingTop: Math.max(insets.top + 4, 16) }}
-        >
-          <Host matchContents style={{ width: 44, height: 44, justifyContent: "center", alignItems: "center" }}>
-            <SUIButton
-              label="Cancel"
-              systemImage="xmark"
-              onPress={handleClose}
-              modifiers={[
-                labelStyle("iconOnly"),
-                buttonStyle("glass"),
-                controlSize("large"),
-                tint(SEMANTIC_COLORS.text.primary),
-              ]}
-            />
-          </Host>
-
-          <Host matchContents style={{ height: 40, width: 140, justifyContent: "center", alignItems: "center" }}>
-            <SwiftUIDateTimePicker
-              selection={localSelectedDate}
-              onDateChange={(date: Date) => {
-                Haptics.selectionAsync();
-                setLocalSelectedDate(date);
-              }}
-              displayedComponents={["date"]}
-              modifiers={[
-                datePickerStyle("compact"),
-                tint(SEMANTIC_COLORS.text.primary),
-              ]}
-            />
-          </Host>
-
-          <Host matchContents style={{ width: 44, height: 44, justifyContent: "center", alignItems: "center" }}>
-            <SUIMenu
-              label="Options"
-              systemImage="ellipsis"
-              modifiers={[
-                labelStyle("iconOnly"),
-                buttonStyle("glass"),
-                controlSize("large"),
-                tint(SEMANTIC_COLORS.text.primary),
-              ]}
-            >
-              <SUIToggle
-                isOn={enableAIInsights}
-                onIsOnChange={(isOn: boolean) => {
-                  if (isRealtimeActive) return;
-                  setEnableAIInsights(isOn);
-                }}
-              >
-                <SUIText>AI Insights</SUIText>
-                <SUIText>Generate AI analysis</SUIText>
-              </SUIToggle>
-            </SUIMenu>
-          </Host>
-        </View>
+        <KeyboardJournalHeader
+          topInset={insets.top}
+          selectedDate={localSelectedDate}
+          onDateChange={(date) => {
+            Haptics.selectionAsync();
+            setLocalSelectedDate(date);
+          }}
+          isAIInsightsEnabled={enableAIInsights}
+          onAIInsightsChange={(enabled) => {
+            if (!isRealtimeActive) setEnableAIInsights(enabled);
+          }}
+          onClose={handleClose}
+        />
 
         {/* Content Body */}
         <ScrollView
@@ -254,7 +196,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
               onChangeText={setJournalText}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
-              placeholder="Start writing here…"
+              placeholder={t("capture.keyboard.placeholder")}
               placeholderTextColor="rgba(20, 36, 20, 0.35)"
               multiline
               textAlignVertical="top"
@@ -271,7 +213,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                     isNearLimit ? "text-terracotta-500" : "text-ink-muted"
                   }`}
                 >
-                  {combinedLength.toLocaleString()} / {MAX_JOURNAL_LENGTH.toLocaleString()}
+                  {combinedLength.toLocaleString(i18n.language)} / {MAX_JOURNAL_LENGTH.toLocaleString(i18n.language)}
                 </Text>
               ) : (
                 <View />
@@ -279,7 +221,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
 
               {wordCount > 0 && (
                 <Text className="text-[12px] text-ink-muted happy-font-caption font-medium">
-                  {wordCount} {wordCount === 1 ? "word" : "words"}
+                  {t("capture.keyboard.word", { count: wordCount })}
                 </Text>
               )}
             </View>

@@ -11,34 +11,56 @@ import exercisesEn from '../../locales/en/exercises.json';
 import journalEn from '../../locales/en/journal.json';
 import habitsEn from '../../locales/en/habits.json';
 import settingsEn from '../../locales/en/settings.json';
+import onboardingEn from '../../locales/en/onboarding.json';
 
 import commonFr from '../../locales/fr/common.json';
 import homeFr from '../../locales/fr/home.json';
+import journalFr from '../../locales/fr/journal.json';
 import settingsFr from '../../locales/fr/settings.json';
+import onboardingFr from '../../locales/fr/onboarding.json';
+import habitsFr from '../../locales/fr/habits.json';
 
 import commonEs from '../../locales/es/common.json';
 import homeEs from '../../locales/es/home.json';
+import journalEs from '../../locales/es/journal.json';
 import settingsEs from '../../locales/es/settings.json';
+import onboardingEs from '../../locales/es/onboarding.json';
+import habitsEs from '../../locales/es/habits.json';
 
 import commonDe from '../../locales/de/common.json';
 import homeDe from '../../locales/de/home.json';
+import journalDe from '../../locales/de/journal.json';
 import settingsDe from '../../locales/de/settings.json';
+import onboardingDe from '../../locales/de/onboarding.json';
+import habitsDe from '../../locales/de/habits.json';
 
 import commonAr from '../../locales/ar/common.json';
 import homeAr from '../../locales/ar/home.json';
+import journalAr from '../../locales/ar/journal.json';
 import settingsAr from '../../locales/ar/settings.json';
+import onboardingAr from '../../locales/ar/onboarding.json';
+import habitsAr from '../../locales/ar/habits.json';
 
 import commonPt from '../../locales/pt/common.json';
 import homePt from '../../locales/pt/home.json';
+import journalPt from '../../locales/pt/journal.json';
 import settingsPt from '../../locales/pt/settings.json';
+import onboardingPt from '../../locales/pt/onboarding.json';
+import habitsPt from '../../locales/pt/habits.json';
 
 import commonIt from '../../locales/it/common.json';
 import homeIt from '../../locales/it/home.json';
+import journalIt from '../../locales/it/journal.json';
 import settingsIt from '../../locales/it/settings.json';
+import onboardingIt from '../../locales/it/onboarding.json';
+import habitsIt from '../../locales/it/habits.json';
 
 import commonZh from '../../locales/zh/common.json';
 import homeZh from '../../locales/zh/home.json';
+import journalZh from '../../locales/zh/journal.json';
 import settingsZh from '../../locales/zh/settings.json';
+import onboardingZh from '../../locales/zh/onboarding.json';
+import habitsZh from '../../locales/zh/habits.json';
 
 export const LANGUAGE_STORAGE_KEY = '@happy/language';
 export const CDN_BASE = 'https://cdn.happy.app/locales';
@@ -87,7 +109,7 @@ export async function initI18n(): Promise<void> {
       lng,
       fallbackLng: 'en',
       supportedLngs: [...SUPPORTED_LANGUAGES],
-      ns: ['common', 'home', 'exercises', 'journal', 'habits', 'settings'],
+      ns: ['common', 'home', 'exercises', 'journal', 'habits', 'settings', 'onboarding'],
       defaultNS: 'common',
       compatibilityJSON: 'v4',
       resources: {
@@ -98,14 +120,15 @@ export async function initI18n(): Promise<void> {
           journal: journalEn,
           habits: habitsEn,
           settings: settingsEn,
+          onboarding: onboardingEn,
         },
-        fr: { common: commonFr, home: homeFr, settings: settingsFr, exercises: {}, journal: {}, habits: {} },
-        es: { common: commonEs, home: homeEs, settings: settingsEs, exercises: {}, journal: {}, habits: {} },
-        de: { common: commonDe, home: homeDe, settings: settingsDe, exercises: {}, journal: {}, habits: {} },
-        ar: { common: commonAr, home: homeAr, settings: settingsAr, exercises: {}, journal: {}, habits: {} },
-        pt: { common: commonPt, home: homePt, settings: settingsPt, exercises: {}, journal: {}, habits: {} },
-        it: { common: commonIt, home: homeIt, settings: settingsIt, exercises: {}, journal: {}, habits: {} },
-        zh: { common: commonZh, home: homeZh, settings: settingsZh, exercises: {}, journal: {}, habits: {} },
+        fr: { common: commonFr, home: homeFr, settings: settingsFr, onboarding: onboardingFr, exercises: {}, journal: journalFr, habits: habitsFr },
+        es: { common: commonEs, home: homeEs, settings: settingsEs, onboarding: onboardingEs, exercises: {}, journal: journalEs, habits: habitsEs },
+        de: { common: commonDe, home: homeDe, settings: settingsDe, onboarding: onboardingDe, exercises: {}, journal: journalDe, habits: habitsDe },
+        ar: { common: commonAr, home: homeAr, settings: settingsAr, onboarding: onboardingAr, exercises: {}, journal: journalAr, habits: habitsAr },
+        pt: { common: commonPt, home: homePt, settings: settingsPt, onboarding: onboardingPt, exercises: {}, journal: journalPt, habits: habitsPt },
+        it: { common: commonIt, home: homeIt, settings: settingsIt, onboarding: onboardingIt, exercises: {}, journal: journalIt, habits: habitsIt },
+        zh: { common: commonZh, home: homeZh, settings: settingsZh, onboarding: onboardingZh, exercises: {}, journal: journalZh, habits: habitsZh },
       },
       partialBundledLanguages: true,
       interpolation: {

@@ -13,6 +13,7 @@ import {
   PricingTier,
 } from "../types";
 import { ONBOARDING_STEPS, TOTAL_ONBOARDING_STEPS } from "../constants";
+import { useTranslation } from "react-i18next";
 
 export interface UseOnboardingFlowReturn {
   currentStepIndex: number;
@@ -62,6 +63,7 @@ const PLAN_NAME_MAP: Record<MotivationAnswer, string> = {
 };
 
 export const useOnboardingFlow = (): UseOnboardingFlowReturn => {
+  const { t } = useTranslation("onboarding");
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const [formData, setFormData] =
     useState<OnboardingFormData>(INITIAL_FORM_DATA);
@@ -81,8 +83,8 @@ export const useOnboardingFlow = (): UseOnboardingFlowReturn => {
   const progress = (currentStepIndex + 1) / TOTAL_ONBOARDING_STEPS;
 
   const derivedPlanName = useMemo(
-    () => PLAN_NAME_MAP[formData.motivation ?? "anxiety"],
-    [formData.motivation],
+    () => t(`plan_names.${formData.motivation ?? "anxiety"}`, { defaultValue: PLAN_NAME_MAP[formData.motivation ?? "anxiety"] }),
+    [formData.motivation, t],
   );
 
   const goNext = useCallback((): void => {

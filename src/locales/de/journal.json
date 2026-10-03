@@ -1,1 +1,35 @@
-{}
+{
+  "title": "Tagebuch",
+  "emotionDetails": { "title": "Gefühle am {{date}}", "empty": "Für diesen Tag wurden keine Gefühle festgehalten", "moodLog": "Stimmungseintrag", "journalEntry": "Tagebucheintrag" },
+  "prompts": {
+    "dailyReflect": "Was beschäftigt dich gerade?",
+    "gratitude": "Nenne drei Dinge, für die du heute dankbar bist.",
+    "thoughtRecord": "Welcher Gedanke hat deine Gefühlslage verändert?"
+  },
+  "moods": { "great": "Sehr gut", "good": "Gut", "okay": "Okay", "low": "Niedergeschlagen", "stressed": "Gestresst" },
+  "actions": { "newEntry": "Neue Reflexion", "voiceNote": "Sprachnotiz aufnehmen" },
+  "capture": {
+    "writePrompt": "Tippe, um deine Gedanken aufzuschreiben …",
+    "writePromptA11y": "Tippe, um deine Gedanken aufzuschreiben",
+    "recordVoiceA11y": "Sprachnotiz aufnehmen",
+    "writeThoughtsA11y": "Gedanken aufschreiben",
+    "shufflePrompt": "Andere Frage",
+    "selectDate": "Datum auswählen",
+    "scanJournal": "Tagebuchseiten scannen",
+    "freeWrite": "Freies Schreiben", "freeWriteHint": "Schreibe ohne eine Frage", "dailyReflectionXP": "Tagesreflexion • +10 XP",
+    "menu": { "journal": "Tagebuch · {{date}}", "today": "Zu heute", "browse": "Alle Fragen ansehen" },
+    "options": { "title": "Tagebuchoptionen", "import": "Handgeschriebene Notiz importieren", "scanHint": "Seite auf Papier scannen", "tryAnother": "ANDERE FRAGE AUSPROBIEREN", "selected": "{{prompt}}. Ausgewählt." },
+    "image": { "title": "Tagebuch scannen", "description": "Fotografiere handgeschriebene oder gedruckte Seiten.", "camera": "Kamera öffnen", "gallery": "Aus Galerie auswählen", "ready": "Bereit", "generated": "Deine Einblicke wurden erstellt.", "viewInsights": "Einblicke ansehen", "reading": "Handschrift wird gelesen…", "creating": "Persönliche Einblicke werden erstellt…", "cancelProcessing": "Verarbeitung abbrechen", "cancel": "Abbrechen", "retry": "Erneut versuchen", "steps": { "idle": "Bereit zum Scannen", "capturing": "Kamera wird geöffnet…", "extracting": "Tagebuch wird gelesen…", "analyzing": "Einblicke werden erstellt…", "done": "Fertig!", "error": "Etwas ist schiefgelaufen" }, "alerts": { "processingFailed": "Verarbeitung fehlgeschlagen", "processImageError": "Das Tagebuchbild konnte nicht verarbeitet werden.", "cameraPermission": "Kamerazugriff erforderlich", "cameraPermissionMessage": "Erlaube den Kamerazugriff, um deine Seiten zu scannen.", "galleryPermission": "Fotoberechtigung erforderlich", "galleryPermissionMessage": "Erlaube den Fotozugriff, um Seiten zu scannen.", "error": "Fehler", "cameraError": "Foto konnte nicht aufgenommen werden. Versuche es erneut.", "galleryError": "Foto konnte nicht ausgewählt werden. Versuche es erneut." } },
+    "keyboard": { "cancel": "Abbrechen", "options": "Optionen", "aiInsights": "KI-Einblicke", "generateAnalysis": "KI-Analyse erstellen", "placeholder": "Schreibe hier…", "word_one": "{{count}} Wort", "word_other": "{{count}} Wörter", "finish": "Tagebucheintrag beenden", "done": "Fertig", "saveDraftTitle": "Entwurf speichern?", "saveDraftMessage": "Deine Reflexion wird gespeichert, damit du später weiterschreiben kannst.", "discard": "Verwerfen", "saveClose": "Speichern und schließen", "keepWriting": "Weiter schreiben" },
+    "voice": { "recording": "Aufnahme läuft", "paused": "Pausiert", "close": "Sprachaufnahme schließen", "shuffle": "Andere Frage ausprobieren", "discardTitle": "Aufnahme verwerfen?", "discardMessage": "Diese Aufnahme wird dauerhaft gelöscht.", "keep": "Aufnahme behalten", "discard": "Verwerfen", "pause": "Aufnahme pausieren", "resume": "Aufnahme fortsetzen", "finish": "Aufnahme beenden", "waveRecording": "Audioaufnahme läuft", "wavePaused": "Aufnahme pausiert", "waveIdle": "Inaktiv" },
+    "analysis": { "phaseTranscribing": "Audio wird transkribiert", "phaseUnderstanding": "Gefühle werden eingeordnet", "phaseInsights": "TCC-Einblicke werden erstellt", "phasePreparing": "Reflexion wird vorbereitet", "step": "Schritt {{step}} von 4 · {{label}}", "reassurance": "Nimm dir einen Moment, um über deinen Eintrag nachzudenken…", "cancel": "Analyse abbrechen", "mascot": "Nachdenkender Panda" },
+    "prompts": { "smile": "Was hat dich heute zum Lächeln gebracht?", "challenge": "Was war heute schwierig und wie bist du damit umgegangen?", "gratitude": "Wofür bist du gerade dankbar?", "selfLearning": "Was hast du heute über dich gelernt?", "selfCare": "Wie kannst du morgen besser auf dich achten?", "smallWin": "Was war heute ein kleiner Erfolg?", "peace": "Beschreibe einen Moment, in dem du dich ruhig gefühlt hast.", "appreciation": "Wen schätzt du und warum?", "letGo": "Was möchtest du loslassen?", "changeOneThing": "Was würdest du an diesem Tag ändern, wenn du könntest?", "lookingForward": "Worauf freust du dich diese Woche?", "selfCareToday": "Wie hast du heute für dich gesorgt?", "fear": "Welche Angst hast du überwunden oder möchtest du angehen?", "accomplishment": "Schreibe über einen kürzlichen Erfolg.", "idealDay": "Wie sieht dein idealer Tag aus?", "tomorrowEnergy": "Mit welcher Energie möchtest du in morgen starten?", "moodThreeWords": "Beschreibe deine Stimmung in drei Worten.", "habit": "Welche Gewohnheit möchtest du aufbauen?", "positiveImpact": "Wer hat deinen Tag positiv beeinflusst?", "beautifulThing": "Was Schönes hast du heute gesehen?" }
+  },
+  "tab": { "journal": "Tagebuch", "habits": "Gewohnheiten" },
+  "calendar": { "today": "Heute", "todayHint": "Zum aktuellen Tag zurückkehren", "expand": "Kalender erweitern", "collapse": "Kalender einklappen", "expandHint": "Zwischen Wochen- und Monatsansicht wechseln", "moreOptions": "Weitere Optionen", "timeline": "Verlauf und Einblicke", "bookmarks": "Lesezeichen", "dragHandle": "Kalender-Griff", "previousMonth": "Vorheriger Monat", "previousMonthHint": "Vorherigen Monat anzeigen", "nextMonth": "Nächster Monat", "nextMonthHint": "Nächsten Monat anzeigen", "jumpToday": "Zu heute springen", "dayA11y": "{{day}}{{today}}" },
+  "empty": { "titles": ["Halte einen Gedanken fest", "Was geht dir durch den Kopf?", "Denk über deinen Tag nach"], "description": "Deine Notizen bleiben privat. Fang einfach hier an.", "recordVoice": "Stimme aufnehmen", "writeText": "Text schreiben" },
+  "error": { "title": "Kurze ungeplante Pause", "description": "Deine Notizen konnten gerade nicht geladen werden. Sie sind sicher auf deinem Gerät gespeichert.", "reconnect": "Erneut verbinden", "reconnectA11y": "Erneut verbinden, um Notizen zu laden" },
+  "entry": { "untitled": "Unbenannter Eintrag", "words_one": "{{count}} Wort", "words_other": "{{count}} Wörter", "createdAt": "Tagebucheintrag: {{title}}, erstellt um {{time}}", "openHint": "Doppeltippen, um den Eintrag zu öffnen", "noDate": "OHNE DATUM" },
+  "delete": { "title": "Eintrag löschen?", "message": "Dieser Tagebucheintrag wird endgültig gelöscht. Das lässt sich nicht rückgängig machen.", "confirm": "Löschen", "cancel": "Abbrechen" },
+  "bookmarks": { "title": "Angepinnte Notizen", "count_one": "{{count}} angepinnte Notiz", "count_other": "{{count}} angepinnte Notizen", "emptyTitle": "Keine angepinnten Notizen", "emptyDescription": "Tippe bei einem Eintrag auf das Lesezeichen, um ihn hier schnell wiederzufinden." }
+}

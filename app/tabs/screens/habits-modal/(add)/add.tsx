@@ -27,89 +27,41 @@ import { useHabits } from "@/hooks/data/useHabits";
 import { handleHabitCreated } from "@/src/utils/habitNotificationHandlers";
 import { useCSSVariable } from "uniwind";
 import { HabitIcon } from "@/src/utils/habitIconMapper";
-
-// ─── Presets ────────────────────────────────────────────────────────
-
-const PRESET_HABITS: PresetHabit[] = [
-  {
-    name: "Drink 8 glasses of water",
-    description: "Stay hydrated for better energy and focus",
-    icon: "💧",
-    category: "health",
-  },
-  {
-    name: "Exercise for 30 mins",
-    description: "Move your body, clear your mind",
-    icon: "💪",
-    category: "health",
-  },
-  {
-    name: "Meditate",
-    description: "Find your calm and center",
-    icon: "🧘",
-    category: "health",
-  },
-  {
-    name: "Read for 15 mins",
-    description: "Expand your mind daily",
-    icon: "📚",
-    category: "productivity",
-  },
-  {
-    name: "Practice gratitude",
-    description: "Appreciate the good in your life",
-    icon: "❤️",
-    category: "productivity",
-  },
-  {
-    name: "Write a journal entry",
-    description: "Reflect on your thoughts and feelings",
-    icon: "✍️",
-    category: "mindfulness",
-  },
-  {
-    name: "Get 8 hours of sleep",
-    description: "Rest is essential for recovery",
-    icon: "😴",
-    category: "health",
-  },
-  {
-    name: "Go for a walk",
-    description: "Fresh air and movement",
-    icon: "🚶",
-    category: "selfcare",
-  },
-];
+import { useTranslation } from "react-i18next";
+import { getHabitPreset, HABIT_PRESET_KEYS } from "@/src/components/habits/HabitPresets";
 
 // ─── Sub-components ─────────────────────────────────────────────────
 
 interface PresetRowProps {
-  preset: PresetHabit;
+  label: string;
+  name: string;
+  description: string;
+  icon: string;
   onPress: () => void;
   disabled: boolean;
 }
 
-function PresetRow({ preset, onPress, disabled }: PresetRowProps): React.JSX.Element {
+function PresetRow({ label, name, description, icon, onPress, disabled }: PresetRowProps): React.JSX.Element {
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled}
       className="flex-row items-center px-5 py-3.5 active:bg-gray-50"
       accessibilityRole="button"
-      accessibilityLabel={`Add habit: ${preset.name}. ${preset.description}`}
+      accessibilityLabel={`${label}: ${name}. ${description}`}
     >
       <View className="mr-4 h-10 w-10 items-center justify-center">
-        <HabitIcon icon={preset.icon} size={24} />
+        <HabitIcon icon={icon} size={24} />
       </View>
       <View className="min-w-0 flex-1">
         <RNText
           className="text-[17px] font-semibold text-black mb-0.5"
           numberOfLines={1}
         >
-          {preset.name}
+          {name}
         </RNText>
         <RNText className="text-[14px] text-gray-500" numberOfLines={2}>
-          {preset.description}
+          {description}
         </RNText>
       </View>
     </Pressable>
@@ -123,6 +75,10 @@ export default function HabitAddScreen(): React.JSX.Element {
   const insets = useSafeAreaInsets();
   const { createHabit } = useHabits();
   const appBackground = useCSSVariable("--app-background") as string;
+  const { t } = useTranslation("habits");
+  const presets = HABIT_PRESET_KEYS.map((key, index) =>
+    getHabitPreset(index, t(`add.presets.${key}.name`), t(`add.presets.${key}.description`)),
+  );
 
   const [showCustomForm, setShowCustomForm] = useState<boolean>(false);
   const [habitName, setHabitName] = useState<string>("");
@@ -199,15 +155,18 @@ export default function HabitAddScreen(): React.JSX.Element {
                 <HugeiconsIcon icon={Add01Icon} size={20} color={SEMANTIC_COLORS.text.tertiary} />
               </View>
               <RNText className="text-[17px] font-semibold text-black">
-                Create Custom Habit
+                {t("add.createCustom")}
               </RNText>
             </Pressable>
 
-            {PRESET_HABITS.map((preset, index) => (
-              <React.Fragment key={preset.name}>
+            {presets.map((preset, index) => (
+              <React.Fragment key={HABIT_PRESET_KEYS[index]}>
                 <SectionDivider />
                 <PresetRow
-                  preset={preset}
+                  name={preset.name}
+                  description={preset.description}
+                  icon={preset.icon}
+                  label={t("add.addHabitPrefix")}
                   onPress={() => handlePresetSelect(preset)}
                   disabled={loading}
                 />
@@ -232,12 +191,12 @@ export default function HabitAddScreen(): React.JSX.Element {
           >
             {/* Name */}
             <RNText className="text-[13px] font-medium text-gray-500 mb-2">
-              Habit name *
+              {t("add.nameLabel")}
             </RNText>
             <TextInput
               value={habitName}
               onChangeText={setHabitName}
-              placeholder="e.g., Morning stretch routine"
+              placeholder={t("add.namePlaceholder")}
               placeholderTextColor={SEMANTIC_COLORS.text.tertiary}
               maxLength={50}
               autoFocus
@@ -247,7 +206,7 @@ export default function HabitAddScreen(): React.JSX.Element {
             <View className="flex-row items-center justify-between mb-6">
               <RNText className="text-[13px] text-gray-400">
                 {habitName.length === 0
-                  ? "Give your habit a name to get started"
+                  ? t("add.nameHint")
                   : " "}
               </RNText>
               <RNText className="text-[13px] text-gray-400">
@@ -257,12 +216,12 @@ export default function HabitAddScreen(): React.JSX.Element {
 
             {/* Description */}
             <RNText className="text-[13px] font-medium text-gray-500 mb-2">
-              Why is this important to you?
+              {t("add.descriptionLabel")}
             </RNText>
             <TextInput
               value={habitDescription}
               onChangeText={setHabitDescription}
-              placeholder="To feel more energized and focused..."
+              placeholder={t("add.descriptionPlaceholder")}
               placeholderTextColor={SEMANTIC_COLORS.text.tertiary}
               maxLength={200}
               multiline
@@ -276,7 +235,7 @@ export default function HabitAddScreen(): React.JSX.Element {
                 numberOfLines={1}
               >
                 {habitName.length > 0 && habitDescription.length === 0
-                  ? `Why do you want to ${habitName.toLowerCase()}?`
+                  ? t("add.reasonPrompt", { habit: habitName.toLowerCase() })
                   : " "}
               </RNText>
               <RNText className="text-[13px] text-gray-400">
@@ -295,7 +254,7 @@ export default function HabitAddScreen(): React.JSX.Element {
           >
             <View className="flex-1">
               <Button
-                label="Back"
+                label={t("add.back")}
                 variant="secondary"
                 size="lg"
                 onPress={() => {
@@ -307,7 +266,7 @@ export default function HabitAddScreen(): React.JSX.Element {
             </View>
             <View className="flex-1">
               <Button
-                label="Create Habit"
+                label={t("add.createHabit")}
                 variant="primary"
                 size="lg"
                 disabled={!habitName.trim() || loading}

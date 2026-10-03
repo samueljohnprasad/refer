@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { MoodIcon, type MoodKey } from "@/src/components/MoodIcon";
 import useFetchDailyMoods from "@/hooks/data/useFetchDailyMoods";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 interface EmotionDetailsModalProps {
   visible: boolean;
@@ -27,6 +28,7 @@ export const EmotionDetailsModal: React.FC<EmotionDetailsModalProps> = ({
   onClose,
   selectedDate,
 }) => {
+  const { i18n, t } = useTranslation("journal");
   const sheetRef = useRef<BottomSheetModal>(null);
 
   const targetDateStr = dayjs(selectedDate).format("YYYY-MM-DD");
@@ -60,23 +62,32 @@ export const EmotionDetailsModal: React.FC<EmotionDetailsModalProps> = ({
     return dailyMoods.map((moodData) => {
       const exactTime = new Date(moodData.selected_date);
       return {
-        time: dayjs(exactTime).format("h:mm A"),
+        time: new Intl.DateTimeFormat(i18n.language, { hour: "numeric", minute: "2-digit" }).format(exactTime),
         mood: getMoodLabel(moodData.mood_score),
         source: getSourceLabel(moodData.input_method),
         exactTime,
       };
     });
-  }, [dailyMoods]);
+  }, [dailyMoods, i18n.language]);
+
+  const selectedDateLabel = new Intl.DateTimeFormat(i18n.language, {
+    month: "short",
+    day: "numeric",
+  }).format(selectedDate);
+  const selectedYearDayLabel = new Intl.DateTimeFormat(i18n.language, {
+    weekday: "long",
+    year: "numeric",
+  }).format(selectedDate);
 
   return (
     <ShortBottomModal ref={sheetRef} snapPoints={["70%"]} onDismiss={onClose}>
       <VStack className="flex-1 px-5 pt-1 pb-6" space="sm">
         <View className="items-center w-full mb-4">
           <Heading className="text-center text-3xl font-cormorantSemiBold text-[#1f2937] mb-2 leading-9">
-            Emotions for {format(selectedDate, "MMM d")}
+            {t("emotionDetails.title", { date: selectedDateLabel })}
           </Heading>
           <Text className="text-gray-600 text-center text-base">
-            {format(selectedDate, "EEEE, yyyy")}
+            {selectedYearDayLabel}
           </Text>
         </View>
 
@@ -87,7 +98,7 @@ export const EmotionDetailsModal: React.FC<EmotionDetailsModalProps> = ({
         ) : emotionEntries.length === 0 ? (
           <View className="flex-1 items-center justify-center py-10">
             <Text className="text-gray-500 text-center text-base">
-              No emotions logged for this day
+              {t("emotionDetails.empty")}
             </Text>
           </View>
         ) : (
@@ -112,10 +123,10 @@ export const EmotionDetailsModal: React.FC<EmotionDetailsModalProps> = ({
                     </View>
                     <View className="flex-1">
                       <Text className="text-gray-900 font-semibold text-base capitalize">
-                        {entry.mood}
+                        {t(`moods.${entry.mood === "fine" ? "okay" : entry.mood}`, { defaultValue: entry.mood })}
                       </Text>
                       <Text className="text-gray-500 text-sm">
-                        {entry.source}
+                        {t(entry.source === "Mood Log" ? "emotionDetails.moodLog" : "emotionDetails.journalEntry")}
                       </Text>
                     </View>
                   </View>

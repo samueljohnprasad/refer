@@ -1,4 +1,3 @@
-import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Feather } from "@expo/vector-icons";
 import VoiceWaveform from "./VoiceWaveform";
@@ -9,24 +8,22 @@ import { useJournalEntry } from "@/hooks/useJournalEntry";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
 import { selectedDateDiscoveryAtom } from "./helpers";
 import { useAtom, useAtomValue } from "jotai";
-import { formattedDateTime, formatTime } from "@/src/utils/date";
-import { ReloadIcon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react-native";
+import { formatTime } from "@/src/utils/date";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import useAudioRecording from "@/hooks/useAudioRecording";
 import * as Haptics from "expo-haptics";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { createLogger } from "@/src/lib/logger";
-import { StaggeredText, type StaggeredTextRef } from "@/src/animations/everybody-can-cook/components/staggered-text";
 import { useInterval } from "@/src/hooks/useInterval";
 import { useAppDispatch } from "@/src/store/hooks";
 import { setVisible as setAssistantVisible } from "@/src/store/slices/happyAssistantSlice";
+import { useTranslation } from "react-i18next";
+import { VoiceRecorderPromptStage } from "./components/VoiceRecorderPromptStage";
 
 const log = createLogger("VoiceRecorder");
 
@@ -37,6 +34,7 @@ interface VoiceRecorderProps {
 
 // ponytail: subtle pulse on recording dot (1 -> 0.4 -> 1 across ~1.3s)
 const RecordingStatus = () => {
+  const { t } = useTranslation("journal");
   const opacity = useSharedValue(1);
   useEffect(() => {
     opacity.value = withRepeat(withTiming(0.4, { duration: 650 }), -1, true);
@@ -55,25 +53,19 @@ const RecordingStatus = () => {
         ]}
       />
       <Text className="text-emerald-600 text-sm happy-font-body-semibold">
-        Recording
+        {t("capture.voice.recording")}
       </Text>
     </View>
   );
 };
 
 const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
+  const { i18n, t } = useTranslation("journal");
   const { currentPrompt, shufflePrompt } = useJournalEntry();
-  const rotation = useSharedValue(0);
   const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
   const [startRecording, setStartRecording] = useAtom(startRecordingAtom);
   const [enableAIInsights] = useState<boolean>(true);
-  const textRef = useRef<StaggeredTextRef>(null);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    textRef.current?.reset();
-    textRef.current?.animate();
-  }, [currentPrompt]);
 
   // ponytail: hide floating panda assistant during voice recording
   useEffect(() => {
@@ -96,18 +88,9 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
       void Haptics.selectionAsync();
       lastShuffleTime.current = now;
     }
-    rotation.value = withSpring(rotation.value + 360, {
-      damping: 20,
-      stiffness: 100,
-      overshootClamping: true,
-    });
     shufflePrompt();
     log.debug("Prompt shuffled");
-  }, [shufflePrompt, rotation]);
-
-  const rotateStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${rotation.value}deg` }],
-  }));
+  }, [shufflePrompt]);
 
   const {
     recorderState,
@@ -183,12 +166,12 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
   const handleCloseRecorder = useCallback(() => {
     if (hasStarted) {
       Alert.alert(
-        "Discard recording?",
-        "This recording will be permanently deleted.",
+        t("capture.voice.discardTitle"),
+        t("capture.voice.discardMessage"),
         [
-          { text: "Keep Recording", style: "cancel" },
+          { text: t("capture.voice.keep"), style: "cancel" },
           {
-            text: "Discard",
+            text: t("capture.voice.discard"),
             style: "destructive",
             onPress: () => {
               void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
@@ -200,7 +183,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
     } else {
       onClose();
     }
-  }, [hasStarted, handleDiscardRecording, onClose]);
+  }, [hasStarted, handleDiscardRecording, onClose, t]);
 
   return (
     <View className="flex-1 bg-sage-50">
@@ -211,7 +194,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
             <TouchableOpacity
               onPress={handleCloseRecorder}
               className="w-10 h-10 items-center justify-center rounded-full active:opacity-60"
-              accessibilityLabel="Close voice recorder"
+              accessibilityLabel={t("capture.voice.close")}
               accessibilityRole="button"
               hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
             >
@@ -222,7 +205,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
               className="text-xs happy-font-body-semibold"
               style={{ color: SEMANTIC_COLORS.text.secondary }}
             >
-              {formattedDateTime(selectedDate)}
+              {new Intl.DateTimeFormat(i18n.language, { dateStyle: "medium", timeStyle: "short" }).format(selectedDate)}
             </Text>
 
             {/* Empty balance spacer so date stays centered */}
@@ -231,43 +214,12 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
 
           {/* Center Section: Prompt, Waveform, Timer & Status */}
           <View className="flex-1 justify-center items-center py-2">
-            <View key={currentPrompt} className="px-4 mb-2 w-full">
-              <StaggeredText
-                ref={textRef}
-                text={currentPrompt}
-                fontSize={hasStarted ? 23 : 26}
-                textStyle={{
-                  fontFamily: APP_FONT_FAMILIES.bold,
-                  color: SEMANTIC_COLORS.text.primary,
-                  lineHeight: hasStarted ? 30 : 34,
-                  textAlign: "center",
-                }}
-                containerStyle={{
-                  justifyContent: "center",
-                }}
-              />
-            </View>
-
-            {/* ponytail: shuffle button hidden once recording starts to prevent accidental context loss */}
-            {!hasStarted && (
-              <TouchableOpacity
-                onPress={handleShufflePrompt}
-                className="py-2 px-3 flex-row items-center gap-2 active:opacity-60"
-                activeOpacity={0.7}
-                accessibilityLabel="Try another prompt"
-              >
-                <Animated.View style={rotateStyle}>
-                  <HugeiconsIcon
-                    icon={ReloadIcon}
-                    size={16}
-                    color={SEMANTIC_COLORS.text.secondary}
-                  />
-                </Animated.View>
-                <Text className="text-ink-soft text-sm happy-font-body-semibold">
-                  Shuffle prompt
-                </Text>
-              </TouchableOpacity>
-            )}
+            <VoiceRecorderPromptStage
+              key={currentPrompt}
+              prompt={currentPrompt}
+              hasStarted={hasStarted}
+              onShuffle={handleShufflePrompt}
+            />
 
             {/* ponytail: 25-bar live animated waveform */}
             <View className="mt-6 mb-2 w-full items-center">
@@ -288,7 +240,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
               {isRecording && <RecordingStatus />}
               {isPaused && (
                 <Text className="text-ink-muted text-sm mt-1.5 happy-font-body-semibold">
-                  Paused
+                  {t("capture.voice.paused")}
                 </Text>
               )}
             </View>

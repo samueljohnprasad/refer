@@ -1,7 +1,6 @@
 import React, { useCallback, memo } from "react";
 import { Pressable, View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
-import { format } from "date-fns";
 import { getEntryTypeIcon } from "../../../components/lib/entryTypeUtils";
 import { JournalEntry } from "@/hooks/data/types";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -10,6 +9,7 @@ import { getDuration } from "@/src/utils/date";
 import { Link } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { useTranslation } from "react-i18next";
 
 export interface EntryCardProps {
   entry: JournalEntry;
@@ -39,6 +39,10 @@ export const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
   index,
   isBookmarking = false,
 }) {
+  const { i18n, t } = useTranslation("journal");
+  const formattedTime = entry.selected_date
+    ? new Intl.DateTimeFormat(i18n.language, { hour: "numeric", minute: "2-digit" }).format(new Date(entry.selected_date))
+    : "";
   const isBookmarked: boolean = entry.is_bookmarked || false;
   const currentGradient = MOOD_GRADIENTS[entry.moods?.main_mood || "great"] || MOOD_GRADIENTS.great;
 
@@ -64,10 +68,11 @@ export const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
         <Pressable
           onPress={() => onPress(entry)}
           accessibilityRole="button"
-          accessibilityLabel={`Journal entry: ${entry.title || "Untitled Entry"}, created at ${
-            entry.selected_date ? format(new Date(entry.selected_date), "h:mm a") : ""
-          }`}
-          accessibilityHint="Double tap to open journal entry details"
+          accessibilityLabel={t("entry.createdAt", {
+            title: entry.title || t("entry.untitled"),
+            time: formattedTime,
+          })}
+          accessibilityHint={t("entry.openHint")}
           className="w-full active:opacity-85 active:scale-[0.99]"
         >
           <Link.AppleZoom>
@@ -89,14 +94,14 @@ export const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
                 color="ink"
                 className="happy-font-body-bold text-[16px] leading-[21px] text-ink mb-1"
               >
-                {entry.title || "Untitled Entry"}
+                {entry.title || t("entry.untitled")}
               </Text>
 
               {/* Metadata: Time · 🎙 Duration / Words */}
               <View className="flex-row items-center flex-wrap mb-1.5">
                 {entry.selected_date && (
                   <Text className="happy-font-body text-[13px] leading-[17px] text-ink-muted">
-                    {format(new Date(entry.selected_date), "h:mm a")}
+                    {formattedTime}
                   </Text>
                 )}
                 {!!entry.duration_seconds && (
@@ -116,7 +121,7 @@ export const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
                   <>
                     <Text className="happy-font-body text-[13px] text-ink-muted mx-1.5">·</Text>
                     <Text className="happy-font-body text-[13px] leading-[17px] text-ink-muted">
-                      {entry.words_count} words
+                      {t("entry.words", { count: entry.words_count })}
                     </Text>
                   </>
                 )}

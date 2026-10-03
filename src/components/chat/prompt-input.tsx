@@ -75,6 +75,8 @@ export function PromptInputAction(props: {
   children: ReactNode;
   onPress?: () => void;
   onLongPress?: () => void;
+  accessibilityLabel?: string;
+  accessibilityRole?: "button";
 }) {
   return (
     <TouchableGlass

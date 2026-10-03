@@ -7,6 +7,7 @@ import { MotivationAnswer } from "../types";
 import { MOTIVATION_OPTIONS } from "../constants";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
 const STEP_LABEL_ENTER_DELAY_MS = 80;
 const TITLE_ENTER_DELAY_MS = 140;
@@ -25,6 +26,7 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
 }) => {
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation("onboarding");
 
   const handleSelect = useCallback(
     (id: MotivationAnswer) => {
@@ -49,7 +51,7 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
         entering={FadeIn.duration(160).delay(STEP_LABEL_ENTER_DELAY_MS)}
         className="text-[11px] font-bold uppercase tracking-wider text-sage-600"
       >
-        Start with what feels most true
+        {t("quiz_motivation.step_label")}
       </Animated.Text>
 
       <Animated.Text
@@ -57,21 +59,21 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
         style={{ fontFamily: APP_FONT_FAMILIES.extraBold }}
         className="mt-2 text-[30px] leading-[36px] text-ink happy-font-body-extrabold"
       >
-        What brings you here, friend?
+        {t("quiz_motivation.title")}
       </Animated.Text>
 
       <Animated.Text
         entering={FadeIn.duration(180).delay(DESCRIPTION_ENTER_DELAY_MS)}
         className="mt-2 text-[15px] leading-relaxed text-ink-soft happy-font-body-medium"
       >
-        Pick the one that resonates most. No wrong answers.
+        {t("quiz_motivation.description")}
       </Animated.Text>
 
       <View className="mt-6 gap-3.5">
         {MOTIVATION_OPTIONS.map((option, index) => (
           <OptionCard
             key={option.id}
-            option={option}
+            option={{ ...option, title: t(`quiz_motivation.options.${option.id}.title`), subtitle: t(`quiz_motivation.options.${option.id}.subtitle`) }}
             isSelected={selected === option.id}
             onSelect={() => handleSelect(option.id)}
             index={index}

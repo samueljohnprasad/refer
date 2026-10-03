@@ -18,6 +18,7 @@ import Animated, {
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { Feather } from "@expo/vector-icons";
 import { ProcessingPhase } from "./types";
+import { useTranslation } from "react-i18next";
 
 interface EmotionAnalysisLoadingScreenProps {
   onAnalysisCompleted: (data: AnalysisCompletedType) => void;
@@ -29,32 +30,33 @@ interface EmotionAnalysisLoadingScreenProps {
 // ponytail: 4-step progress mapping for visual reassurance
 const PHASE_CONFIG: Record<
   ProcessingPhase,
-  { step: number; label: string; progress: number }
+  { step: number; labelKey: string; progress: number }
 > = {
   [ProcessingPhase.TRANSCRIBING]: {
     step: 1,
-    label: "Transcribing audio",
+    labelKey: "phaseTranscribing",
     progress: 0.25,
   },
   [ProcessingPhase.ANALYZING_EMOTIONS]: {
     step: 2,
-    label: "Understanding feelings",
+    labelKey: "phaseUnderstanding",
     progress: 0.5,
   },
   [ProcessingPhase.GENERATING_INSIGHTS]: {
     step: 3,
-    label: "Generating CBT insights",
+    labelKey: "phaseInsights",
     progress: 0.75,
   },
   [ProcessingPhase.FINALIZING]: {
     step: 4,
-    label: "Preparing reflection",
+    labelKey: "phasePreparing",
     progress: 1.0,
   },
 };
 
 // ponytail: 4-second therapeutic breath halo (inhale 2s, exhale 2s) with gentle panda pulse
 const BreathingAura = () => {
+  const { t } = useTranslation("journal");
   const scale = useSharedValue(0.95);
   const opacity = useSharedValue(0.45);
   const pandaScale = useSharedValue(0.97);
@@ -109,7 +111,7 @@ const BreathingAura = () => {
             source={require("@/assets/images/panda/panda-notes.png")}
             className="w-28 h-28"
             resizeMode="contain"
-            accessibilityLabel="Reflecting panda"
+            accessibilityLabel={t("capture.analysis.mascot")}
           />
         </Animated.View>
       </View>
@@ -120,6 +122,7 @@ const BreathingAura = () => {
 export const EmotionAnalysisLoadingScreen: React.FC<
   EmotionAnalysisLoadingScreenProps
 > = ({ onAnalysisCompleted, recordingUri, journalText, onCancel }) => {
+  const { t } = useTranslation("journal");
   const { processingPhase } = useEmotionsAnalysis({
     uri: recordingUri,
     journalText,
@@ -149,7 +152,7 @@ export const EmotionAnalysisLoadingScreen: React.FC<
             <TouchableOpacity
               onPress={onCancel}
               className="w-10 h-10 items-center justify-center rounded-full bg-black/[0.04] active:opacity-60"
-              accessibilityLabel="Cancel analysis"
+              accessibilityLabel={t("capture.analysis.cancel")}
               accessibilityRole="button"
               hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
             >
@@ -180,7 +183,7 @@ export const EmotionAnalysisLoadingScreen: React.FC<
           className="text-[26px] leading-[32px] tracking-tight happy-font-body-bold text-center"
           style={{ color: SEMANTIC_COLORS.text.primary }}
         >
-          {processingPhase}
+          {t(`capture.analysis.${currentPhase.labelKey}`, { defaultValue: currentPhase.labelKey })}
         </Text>
 
         {/* ponytail: 4-segment tactile progress bar (Duolingo style) */}
@@ -207,7 +210,7 @@ export const EmotionAnalysisLoadingScreen: React.FC<
           className="text-xs happy-font-body-semibold mt-3 tracking-wide"
           style={{ color: SEMANTIC_COLORS.text.secondary }}
         >
-          Step {currentPhase.step} of 4 • {currentPhase.label}
+          {t("capture.analysis.step", { step: currentPhase.step, label: t(`capture.analysis.${currentPhase.labelKey}`, { defaultValue: currentPhase.labelKey }) })}
         </Text>
 
         {/* Calming reassurance copy */}
@@ -215,7 +218,7 @@ export const EmotionAnalysisLoadingScreen: React.FC<
           className="text-[14px] leading-5 text-center mt-7 max-w-[280px] happy-font-body-medium"
           style={{ color: "#4B5563" }}
         >
-          Taking a moment to reflect on your entry...
+          {t("capture.analysis.reassurance")}
         </Text>
       </View>
     </View>

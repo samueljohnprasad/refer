@@ -13,6 +13,7 @@ import {
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { Button } from "@/src/components/ui/Button";
+import { useTranslation } from "react-i18next";
 
 export interface MicControlViewProps {
   isRecording: boolean;
@@ -31,6 +32,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
   onStop,
   onDiscard,
 }) => {
+  const { t } = useTranslation("journal");
   const [, setRecorderOpen] = useAtom(recorderOpenAtom);
 
   const handleDiscard = useCallback(() => {
@@ -40,18 +42,18 @@ const MicControlView: React.FC<MicControlViewProps> = ({
 
   const confirmDiscard = useCallback(() => {
     Alert.alert(
-      "Discard recording?",
-      "This recording will be permanently deleted.",
+      t("capture.voice.discardTitle"),
+      t("capture.voice.discardMessage"),
       [
-        { text: "Keep Recording", style: "cancel" },
+        { text: t("capture.voice.keep"), style: "cancel" },
         {
-          text: "Discard",
+          text: t("capture.voice.discard"),
           style: "destructive",
           onPress: handleDiscard,
         },
       ]
     );
-  }, [handleDiscard]);
+  }, [handleDiscard, t]);
 
   return (
     <View className="w-full items-center justify-center">
@@ -69,7 +71,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
               width={56}
               round
               fullWidth={false}
-              accessibilityLabel={isPaused ? "Discard recording" : "Cancel recording"}
+              accessibilityLabel={isPaused ? t("capture.voice.discard") : t("capture.keyboard.cancel")}
               leftIcon={
                 isPaused ? (
                   <Feather name="trash-2" size={20} color="#DC2626" />
@@ -122,7 +124,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
           }
           // ponytail: Button handles press-in haptic; no haptic on pressout/release
           onPress={onToggleRecord}
-          accessibilityLabel={isRecording ? "Pause recording" : "Resume recording"}
+          accessibilityLabel={t(isRecording ? "capture.voice.pause" : "capture.voice.resume")}
         />
 
         {/* Right Action: Done Button Slot (56px) */}
@@ -139,7 +141,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
               width={56}
               round
               fullWidth={false}
-              accessibilityLabel="Finish recording"
+              accessibilityLabel={t("capture.voice.finish")}
               leftIcon={
                 <HugeiconsIcon
                   icon={Tick01Icon}

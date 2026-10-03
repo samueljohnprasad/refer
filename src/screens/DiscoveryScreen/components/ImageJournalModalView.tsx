@@ -16,6 +16,7 @@ import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { Button } from "@/src/components/ui/Button";
 import { Text } from "@/src/components/ui/Text";
 import type { ImageJournalScannerViewModel } from "../hooks/useImageJournalScanner";
+import { useTranslation } from "react-i18next";
 
 export interface ImageJournalModalViewProps
   extends ImageJournalScannerViewModel {
@@ -35,6 +36,7 @@ export const ImageJournalModalView: React.FC<ImageJournalModalViewProps> = React
     handleClose,
     handleConfirmInsights,
   }) => {
+    const { t } = useTranslation("journal");
     if (!visible) return null;
 
     return (
@@ -67,10 +69,10 @@ export const ImageJournalModalView: React.FC<ImageJournalModalViewProps> = React
                   {/* Header */}
                   <View className="mb-8 pt-5">
                     <Text variant="display" className="mb-2">
-                      Scan Journal
+                      {t("capture.image.title")}
                     </Text>
                     <Text variant="body" color="muted">
-                      Capture your handwritten or printed pages.
+                      {t("capture.image.description")}
                     </Text>
                   </View>
 
@@ -79,7 +81,7 @@ export const ImageJournalModalView: React.FC<ImageJournalModalViewProps> = React
                     {!imageUri ? (
                       <View className="flex-1 justify-center pb-12">
                         <Button
-                          label="Open Camera"
+                          label={t("capture.image.camera")}
                           variant="primary"
                           onPress={captureImage}
                           leftIcon={
@@ -93,7 +95,7 @@ export const ImageJournalModalView: React.FC<ImageJournalModalViewProps> = React
                         />
 
                         <Button
-                          label="Select from Gallery"
+                          label={t("capture.image.gallery")}
                           variant="secondary"
                           onPress={pickImage}
                           leftIcon={
@@ -127,18 +129,17 @@ export const ImageJournalModalView: React.FC<ImageJournalModalViewProps> = React
                                     />
                                   </View>
                                   <Text variant="h2" className="text-center mb-2">
-                                    Ready
+                                    {t("capture.image.ready")}
                                   </Text>
                                   <Text
                                     variant="body"
                                     color="soft"
                                     className="text-center mb-8"
                                   >
-                                    Your insights have been successfully
-                                    generated.
+                                    {t("capture.image.generated")}
                                   </Text>
                                   <Button
-                                    label="View Insights"
+                                    label={t("capture.image.viewInsights")}
                                     variant="primary"
                                     onPress={handleConfirmInsights}
                                   />
@@ -153,7 +154,7 @@ export const ImageJournalModalView: React.FC<ImageJournalModalViewProps> = React
                                     variant="body-bold"
                                     className="mt-6 text-center"
                                   >
-                                    {stepMessage}
+                                    {t(`capture.image.steps.${step}`, { defaultValue: stepMessage })}
                                   </Text>
                                   {step === "extracting" && (
                                     <Text
@@ -161,7 +162,7 @@ export const ImageJournalModalView: React.FC<ImageJournalModalViewProps> = React
                                       color="soft"
                                       className="mt-2 text-center px-8"
                                     >
-                                      Reading handwritten text...
+                                      {t("capture.image.reading")}
                                     </Text>
                                   )}
                                   {step === "analyzing" && (
@@ -170,7 +171,7 @@ export const ImageJournalModalView: React.FC<ImageJournalModalViewProps> = React
                                       color="soft"
                                       className="mt-2 text-center px-8"
                                     >
-                                      Creating personalized insights...
+                                      {t("capture.image.creating")}
                                     </Text>
                                   )}
                                   <TouchableOpacity
@@ -178,7 +179,7 @@ export const ImageJournalModalView: React.FC<ImageJournalModalViewProps> = React
                                     className="mt-10 px-6 py-3 rounded-full bg-sage-200/50"
                                   >
                                     <Text variant="body-bold" color="ink">
-                                      Cancel Processing
+                                      {t("capture.image.cancelProcessing")}
                                     </Text>
                                   </TouchableOpacity>
                                 </View>
@@ -191,13 +192,13 @@ export const ImageJournalModalView: React.FC<ImageJournalModalViewProps> = React
                         {step === "error" && (
                           <View className="flex-row gap-3">
                             <Button
-                              label="Cancel"
+                              label={t("capture.image.cancel")}
                               variant="secondary"
                               onPress={handleClose}
                               className="flex-1"
                             />
                             <Button
-                              label="Try Again"
+                              label={t("capture.image.retry")}
                               variant="primary"
                               onPress={handleRetake}
                               className="flex-1"

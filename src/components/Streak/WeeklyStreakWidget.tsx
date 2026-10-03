@@ -5,6 +5,7 @@ import { Feather } from "@expo/vector-icons";
 import { useStreak } from "@/src/hooks/useStreak";
 import { AnimatedFireIcon } from "@/src/components/ui/AnimatedStatIcon";
 import { Card } from "@/src/components/ui/Card";
+import { useTranslation } from "react-i18next";
 
 interface WeeklyStreakWidgetProps {
   onPress?: () => void;
@@ -15,13 +16,14 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
   onPress,
   showDepth = false,
 }) => {
+  const { t } = useTranslation("home");
   const { currentStreak, weeklyProgress, isLoading } = useStreak();
   const streakData = React.useMemo(
     () => ({ currentStreak, weeklyProgress }),
     [currentStreak, weeklyProgress]
   );
 
-  const labels = ["S", "M", "T", "W", "T", "F", "S"];
+  const labels = t("streak.weekDays", { returnObjects: true }) as string[];
 
   return (
     // ponytail: interactive card surface with chevron affordance
@@ -32,7 +34,7 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
       showDepth={showDepth}
       haptic="light"
       accessibilityRole="button"
-      accessibilityLabel={`Current streak: ${currentStreak} days. Tap to view streak history.`}
+      accessibilityLabel={t("streak.a11yLabel", { count: currentStreak })}
       contentClassName="w-full flex-row items-center justify-between py-2 px-3.5"
     >
       {/* Left: Streak label */}
@@ -42,7 +44,7 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
           className="text-[15px] font-bold text-ink"
           style={{ fontFamily: APP_FONT_FAMILIES.bold }}
         >
-          {isLoading ? "-" : currentStreak} day streak
+          {isLoading ? "-" : t("streak.streakCount", { count: currentStreak })}
         </Text>
       </View>
 

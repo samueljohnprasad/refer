@@ -6,6 +6,7 @@ import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import MochiMascot from "../components/MochiMascot";
 import SpeechBubble from "../components/SpeechBubble";
+import { useTranslation } from "react-i18next";
 
 const MASCOT_ENTER_DELAY_MS = 0;
 const SPEECH_BUBBLE_DELAY_MS = 80;
@@ -14,6 +15,7 @@ const QUOTE_ENTER_DELAY_MS = 160;
 const MascotGreetingStep: React.FC = () => {
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation("onboarding");
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -32,15 +34,14 @@ const MascotGreetingStep: React.FC = () => {
           <View className="mt-6 w-full">
             <SpeechBubble delay={SPEECH_BUBBLE_DELAY_MS}>
               <Text className="happy-font-heading-bold text-[18px] text-ink">
-                Hi, I&apos;m Mochi.
+                {t("mascot_greeting.hi")}
               </Text>
               {"\n"}
-              I&apos;m a panda. I&apos;m soft. I&apos;m patient. I&apos;ll be your
-              companion on this journey, just{" "}
+              {t("mascot_greeting.intro")}{" "}
               <Text className="happy-font-heading-bold text-ink">
-                6 quick questions
+                {t("mascot_greeting.questions_count")}
               </Text>{" "}
-              before your first lesson.
+              {t("mascot_greeting.before_lesson")}
             </SpeechBubble>
           </View>
         </View>
@@ -53,8 +54,7 @@ const MascotGreetingStep: React.FC = () => {
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="text-center text-[15px] italic leading-6 text-ink"
           >
-            &ldquo;The smallest practice, done daily, is more powerful than the
-            biggest one done once.&rdquo;
+            {t("mascot_greeting.quote")}
           </Text>
         </Animated.View>
       </View>

@@ -34,11 +34,6 @@ export const TODAY_INDEX: number = 3;
 export const NODE_SIZE: number = 132;
 export const TODAY_SIZE: number = 150;
 
-export const COPY = {
-  headline: ["Start your", "journey within"],
-  subhead: "one thought at a time",
-} as const;
-
 export const TODAY: JourneyNodeDef = NODES[TODAY_INDEX];
 
 export const PANDA = {

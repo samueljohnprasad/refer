@@ -8,8 +8,10 @@ import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 import { StreakProgressGraphic } from "@/src/components/Streak/StreakCelebration";
 import { useStreak } from "@/src/hooks/useStreak";
+import { useTranslation } from "react-i18next";
 
 const LessonCompleteStep: React.FC = () => {
+  const { t } = useTranslation("onboarding");
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
   const [startAnim, setStartAnim] = useState(false);
@@ -55,7 +57,7 @@ const LessonCompleteStep: React.FC = () => {
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="text-center text-[34px] leading-[1.05] tracking-[-0.01em] text-ink"
           >
-            You did it.{" "}
+            {t("lesson_complete.you_did_it", { defaultValue: "You did it." })}{" "}
             <Text
               style={{
                 fontFamily: APP_FONT_FAMILIES.regular,
@@ -63,7 +65,7 @@ const LessonCompleteStep: React.FC = () => {
                 color: SEMANTIC_COLORS.brand.primary,
               }}
             >
-              Truly.
+              {t("lesson_complete.truly", { defaultValue: "Truly." })}
             </Text>
           </Text>
         </Animated.View>

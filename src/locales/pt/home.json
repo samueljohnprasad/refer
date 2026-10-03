@@ -51,5 +51,10 @@
     "streakCount_other": "{{count}} dias de sequência",
     "weekDays": ["D", "S", "T", "Q", "Q", "S", "S"],
     "a11yLabel": "Sequência atual: {{count}} dias. Toque para ver o histórico."
+  },
+  "errors": {
+    "loadTitle": "Algo correu mal",
+    "loadDescription": "Não foi possível carregar o ecrã inicial.",
+    "tryAgain": "Tentar novamente"
   }
 }

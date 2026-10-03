@@ -12,31 +12,11 @@ import React, { useMemo } from "react";
 import { Pressable, View, DimensionValue } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import useCalendarMonth from "./hooks/useCalendarMonth";
-import MoodBadge from "@/src/components/MoodBadge";
+import { CalendarDayCell, CalendarMoodLegend, CalendarWeekDayHeader } from "./CalendarPickerParts";
 import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
-
-/** Human-readable mood scale shown as a legend below the calendar grid. */
-const MOOD_LEGEND = [
-  { score: 1, label: "Terrible" },
-  { score: 2, label: "Bad" },
-  { score: 3, label: "Okay" },
-  { score: 4, label: "Good" },
-  { score: 5, label: "Great" },
-] as const;
-
-// Constants outside component to prevent recreation
-const WEEKDAY_LABELS = [
-  "Sun",
-  "Mon",
-  "Tue",
-  "Wed",
-  "Thu",
-  "Fri",
-  "Sat",
-] as const;
+import { useTranslation } from "react-i18next";
 
 // Calendar Picker Component
 interface CalendarPickerProps {
@@ -47,170 +27,16 @@ interface CalendarPickerProps {
   showMoodBadges?: boolean; // controls visibility of mood badges/+ icons
 }
 
-// Memoized Day Cell Component
-interface DayCellProps {
-  day: Date;
-  inCurrentMonth: boolean;
-  isTodayDate: boolean;
-  isSelected: boolean;
-  mood: number | undefined;
-  onPress: () => void;
-  showMoodBadge: boolean;
-  disabled?: boolean;
-  cellStyle: {
-    width: DimensionValue;
-    aspectRatio: number;
-  };
-}
-
-const DayCell = React.memo<DayCellProps>(
-  ({
-    day,
-    inCurrentMonth,
-    isTodayDate,
-    isSelected,
-    mood,
-    onPress,
-    showMoodBadge,
-    disabled = false,
-    cellStyle,
-  }) => {
-    const dayLabel = format(day, "d");
-
-    const textVariant = useMemo(() => {
-      if (isTodayDate || isSelected) return "body-bold";
-      return "body";
-    }, [isTodayDate, isSelected]);
-
-    // ponytail: align month selected day text style with week view
-    const textColorVariant = useMemo(() => {
-      if (disabled) return "muted";
-      if (isSelected) return undefined;
-      return isTodayDate ? "ink" : "muted";
-    }, [disabled, isSelected, isTodayDate]);
-
-    const dateBgStyle = useMemo(() => {
-      if (isSelected) {
-        return {
-          backgroundColor: SEMANTIC_COLORS.selection.surface,
-          borderColor: SEMANTIC_COLORS.selection.foreground,
-          borderWidth: 1,
-        };
-      }
-      if (isTodayDate) {
-        return {
-          backgroundColor: SEMANTIC_COLORS.surface.secondary,
-          borderColor: SEMANTIC_COLORS.brand.soft,
-          borderWidth: 1,
-        };
-      }
-      return { borderColor: "transparent", borderWidth: 1 };
-    }, [isSelected, isTodayDate]);
-
-    const moodClassName = useMemo(
-      () => `mt-0.5 ${disabled ? "opacity-30" : ""}`,
-      [disabled]
-    );
-
-    // Early return for out-of-month cells (after all hooks)
-    if (!inCurrentMonth) {
-      return (
-        <View style={cellStyle} className="justify-center items-center p-0.5">
-          <View className="w-full h-full" />
-        </View>
-      );
-    }
-
-    return (
-      <Pressable
-        className="justify-center items-center p-1"
-        style={cellStyle}
-        onPress={onPress}
-        disabled={disabled}
-        accessibilityRole="button"
-        accessibilityLabel={`${dayLabel}${isTodayDate ? ", today" : ""}`}
-        accessibilityState={{ selected: isSelected, disabled }}
-      >
-        <View className="w-full h-full flex justify-center items-center gap-1">
-          <View className="w-[34px] h-[34px] rounded-full justify-center items-center" style={dateBgStyle}>
-            <Text
-              variant={textVariant as any}
-              color={textColorVariant as any}
-              style={{ color: isSelected ? SEMANTIC_COLORS.brand.pressed : undefined }}
-            >
-              {dayLabel}
-            </Text>
-          </View>
-          {showMoodBadge && (
-            <View className={moodClassName}>
-              <MoodBadge
-                disabled={disabled}
-                moodscore={mood !== undefined ? Math.round(mood) : undefined}
-                // 22px fills the cell without cramping the date number,
-                // and meets the visual size needed for recognisable emoji.
-                size={22}
-                // Press handling is owned by the parent Pressable (full-cell
-                // target), so the badge itself is display-only.
-                displayOnly
-                hideEmptySlot={disabled && mood === undefined}
-              />
-            </View>
-          )}
-        </View>
-      </Pressable>
-    );
-  },
-  // Custom comparison to prevent unnecessary re-renders
-  (prevProps, nextProps) => {
-    return (
-      prevProps.isSelected === nextProps.isSelected &&
-      prevProps.isTodayDate === nextProps.isTodayDate &&
-      prevProps.inCurrentMonth === nextProps.inCurrentMonth &&
-      prevProps.mood === nextProps.mood &&
-      prevProps.showMoodBadge === nextProps.showMoodBadge &&
-      prevProps.day.getTime() === nextProps.day.getTime() &&
-      prevProps.cellStyle.aspectRatio === nextProps.cellStyle.aspectRatio
-    );
-  }
-);
-
-DayCell.displayName = "DayCell";
-
-// Memoized Week Header Component
-const WeekDayHeader = React.memo(() => (
-  // important: use accessibilityElementsHidden to reduce screen reader noise
-  <View
-    className="flex-row mb-1"
-    accessibilityElementsHidden={true}
-    importantForAccessibility="no"
-  >
-    {WEEKDAY_LABELS.map((label, index) => {
-      const isWeekend = index === 0 || index === 6;
-      const colorVariant = isWeekend ? "muted" : "ink";
-
-      return (
-        <View key={label} className="flex-1 items-center py-2">
-          <Text variant="overline" color={colorVariant}>
-            {label}
-          </Text>
-        </View>
-      );
-    })}
-  </View>
-));
-
-WeekDayHeader.displayName = "WeekDayHeader";
-
 export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
   ({ selectedDate, onDateSelect, visible, moodMap, showMoodBadges = true }) => {
+    const { i18n, t } = useTranslation("journal");
     const { currentMonth, days, goToPreviousMonth, goToNextMonth, goToDate } =
       useCalendarMonth({ selectedDate, visible, weekStartsOn: 0 });
 
-    // Memoize month title - use full month name
-    const monthTitle = useMemo(
-      () => format(currentMonth, "MMMM yyyy"),
-      [currentMonth]
-    );
+    const monthTitle = new Intl.DateTimeFormat(i18n.language, {
+      month: "long",
+      year: "numeric",
+    }).format(currentMonth);
 
     const canGoNextMonth = useMemo((): boolean => {
       const nextMonthStart = startOfMonth(addMonths(currentMonth, 1));
@@ -272,8 +98,8 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
             onPress={goToPreviousMonth}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             accessibilityRole="button"
-            accessibilityLabel="Previous month"
-            accessibilityHint="Navigates calendar to the previous month"
+            accessibilityLabel={t("calendar.previousMonth")}
+            accessibilityHint={t("calendar.previousMonthHint")}
           >
             <HugeiconsIcon
               icon={ArrowLeft01Icon}
@@ -292,14 +118,14 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
               <Pressable
                 onPress={() => goToDate(new Date())}
                 accessibilityRole="button"
-                accessibilityLabel="Jump to today"
+                accessibilityLabel={t("calendar.jumpToday")}
                 hitSlop={{ top: 8, bottom: 8, left: 12, right: 12 }}
               >
                 <Text
                   variant="label"
                   style={{ color: SEMANTIC_COLORS.warning.indicator, marginTop: 2 }}
                 >
-                  Today
+                  {t("calendar.today")}
                 </Text>
               </Pressable>
             )}
@@ -312,8 +138,8 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
             disabled={!canGoNextMonth}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             accessibilityRole="button"
-            accessibilityLabel="Next month"
-            accessibilityHint="Navigates calendar to the next month"
+            accessibilityLabel={t("calendar.nextMonth")}
+            accessibilityHint={t("calendar.nextMonthHint")}
           >
             <HugeiconsIcon
               icon={ArrowRight01Icon}
@@ -324,11 +150,11 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
           </Pressable>
         </View>
 
-        <WeekDayHeader />
+        <CalendarWeekDayHeader />
 
         <View className="flex-row flex-wrap">
           {daysData.map((dayData, index) => (
-            <DayCell
+            <CalendarDayCell
               key={dayData.dayStr}
               day={dayData.day}
               inCurrentMonth={dayData.inCurrentMonth}
@@ -343,34 +169,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
           ))}
         </View>
 
-        {/* Mood scale legend — 5-emoji row with labels so the scale is always
-            visible without requiring prior knowledge of the 1–5 system. */}
-        {showMoodBadges && (
-          <View
-            className="flex-row justify-between mt-4 px-1"
-            accessibilityElementsHidden={true}
-            importantForAccessibility="no"
-          >
-            {MOOD_LEGEND.map(({ score, label }) => (
-              <View key={score} className="items-center gap-0.5" style={{ flex: 1 }}>
-                <MoodBadge
-                  moodscore={score}
-                  size={14}
-                  disabled={false}
-                  displayOnly
-                />
-                <Text
-                  variant="overline"
-                  color="muted"
-                  style={{ fontSize: 9 }}
-                  numberOfLines={1}
-                >
-                  {label}
-                </Text>
-              </View>
-            ))}
-          </View>
-        )}
+        {showMoodBadges && <CalendarMoodLegend />}
       </View>
     );
   }

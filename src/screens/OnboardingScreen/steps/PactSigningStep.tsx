@@ -11,19 +11,19 @@ import { AnimatedFireIcon } from "@/src/components/ui/AnimatedStatIcon";
 import MochiMascot from "../components/MochiMascot";
 import { useHoldToCommit } from "../hooks/useHoldToCommit";
 import { DailyGoalMinutes } from "../types";
+import { useTranslation } from "react-i18next";
 
 interface PactSigningStepProps {
   dailyGoal: DailyGoalMinutes;
   onCommit: () => void;
 }
 
-const WEEKDAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
 const PactSigningStep: React.FC<PactSigningStepProps> = ({
   dailyGoal,
   onCommit,
 }) => {
   const insets = useSafeAreaInsets();
+  const { t, i18n } = useTranslation("onboarding");
   const headerHeight = useHeaderHeight();
   const { progress, isHolding, committed, onPressIn, onPressOut } =
     useHoldToCommit(onCommit);
@@ -36,12 +36,12 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
       d.setDate(today.getDate() + i);
       return {
         index: i + 1,
-        weekday: i === 0 ? "Today" : WEEKDAY_NAMES[d.getDay()],
+        weekday: i === 0 ? t("pact_signing.today", { defaultValue: "Today" }) : new Intl.DateTimeFormat(i18n.language, { weekday: "short" }).format(d),
         isToday: i === 0,
         isLast: i === 6,
       };
     });
-  }, []);
+  }, [i18n.language, t]);
 
   const commitFillStyle = useAnimatedStyle(() => ({
     width: `${Math.min(100, Math.max(0, progress.value * 100))}%`,
@@ -64,13 +64,13 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
             style={{ fontFamily: APP_FONT_FAMILIES.extraBold }}
             className="text-center text-[28px] leading-[34px] text-ink happy-font-body-extrabold"
           >
-            A small pact
+            {t("pact_signing.step_label")}
           </Text>
           <Text
             style={{ fontFamily: APP_FONT_FAMILIES.regular }}
             className="mt-1 text-center text-[15px] text-ink-soft"
           >
-            Can you show up for {dailyGoal} minutes a day?
+            {t("pact_signing.subtitle", { minutes: dailyGoal })}
           </Text>
         </Animated.View>
       </View>
@@ -92,14 +92,14 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
                 style={{ fontFamily: APP_FONT_FAMILIES.bold }}
                 className="text-[12px] uppercase tracking-wider text-sage-800"
               >
-                7-Day Streak Goal
+                {t("pact_signing.streak_goal")}
               </Text>
             </View>
             <Text
               style={{ fontFamily: APP_FONT_FAMILIES.bold }}
               className="text-[12px] text-amber-700"
             >
-              Day 1 starts today
+              {t("pact_signing.day_1_today")}
             </Text>
           </View>
 
@@ -147,7 +147,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
             style={{ fontFamily: APP_FONT_FAMILIES.bold }}
             className="text-center text-[16px] leading-[24px] text-ink px-2"
           >
-            &ldquo;For the next 7 days, I’ll show up for myself, even if it’s only for {dailyGoal} minutes.&rdquo;
+            {t("pact_signing.vow", { minutes: dailyGoal })}
           </Text>
 
           {/* Reassurance Seal */}
@@ -161,7 +161,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
               style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="text-[12px] text-sage-700"
             >
-              100% private to you
+              {t("pact_signing.private")}
             </Text>
           </View>
         </View>
@@ -177,10 +177,10 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
           className="text-center text-[13px] text-ink-soft happy-font-body-semibold"
         >
           {committed
-            ? "Pact sealed. One day at a time ✨"
+            ? t("pact_signing.hint_done")
             : isHolding
-              ? "Sealing your commitment..."
-              : "Hold to make your 7-day commitment"}
+              ? t("pact_signing.hint_holding")
+              : t("pact_signing.hint_idle")}
         </Text>
 
         {/* 3D Tactile Hold-to-Commit Button with visible fill */}
@@ -189,7 +189,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
           onPressOut={onPressOut}
           disabled={committed}
           accessibilityRole="button"
-          accessibilityLabel={committed ? "Pact sealed" : "Hold to commit"}
+          accessibilityLabel={committed ? t("pact_signing.button_done") : t("pact_signing.button_idle")}
           className="h-14 w-full justify-center active:scale-[0.98]"
         >
           {/* Bottom Rim / 3D Shadow Plate */}
@@ -270,10 +270,10 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
                 className="text-center text-[16px] font-bold uppercase tracking-[0.03em] text-white"
               >
                 {committed
-                  ? "Pact Sealed"
+                  ? t("pact_signing.button_done")
                   : isHolding
-                    ? "Sealing..."
-                    : "Hold to commit"}
+                    ? t("pact_signing.button_holding")
+                    : t("pact_signing.button_idle")}
               </Text>
             </View>
           </View>

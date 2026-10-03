@@ -32,6 +32,7 @@ import type {
   TimeOption,
 } from "@/src/types/habits";
 import { handleHabitUpdated } from "@/src/utils/habitNotificationHandlers";
+import { useTranslation } from "react-i18next";
 
 // ─── Component ──────────────────────────────────────────────────────
 
@@ -41,6 +42,7 @@ export default function HabitDetailsScreen(): React.JSX.Element | null {
     selectedDate?: string;
   }>();
   const router = useRouter();
+  const { t } = useTranslation("habits");
   const insets = useSafeAreaInsets();
   const appBackground = useCSSVariable("--app-background") as string;
 
@@ -136,8 +138,8 @@ export default function HabitDetailsScreen(): React.JSX.Element | null {
   const handleToggle = async (): Promise<void> => {
     if (isFuture(selectedDate)) {
       Alert.alert(
-        "Cannot complete habit",
-        "You cannot mark habits as complete for future dates.",
+        t("details.cannotCompleteTitle"),
+        t("details.cannotCompleteFuture"),
       );
       return;
     }

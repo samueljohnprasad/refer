@@ -51,5 +51,10 @@
     "streakCount_other": "{{count}} días de racha",
     "weekDays": ["D", "L", "M", "M", "J", "V", "S"],
     "a11yLabel": "Racha actual: {{count}} días. Toca para ver el historial."
+  },
+  "errors": {
+    "loadTitle": "Algo salió mal",
+    "loadDescription": "No pudimos cargar la pantalla de inicio.",
+    "tryAgain": "Volver a intentar"
   }
 }

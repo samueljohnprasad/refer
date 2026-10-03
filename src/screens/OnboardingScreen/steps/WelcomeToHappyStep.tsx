@@ -9,6 +9,7 @@ import { Book01Icon, LockIcon, FireIcon } from "@hugeicons/core-free-icons";
 import { Card } from "@/src/components/ui/Card";
 import MochiMascot from "../components/MochiMascot";
 import { DailyGoalMinutes } from "../types";
+import { useTranslation } from "react-i18next";
 
 interface WelcomeToHappyStepProps {
   planName: string;
@@ -22,7 +23,8 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
   onLoginPress,
 }) => {
   const insets = useSafeAreaInsets();
-  const displayPlanName = planName.replace(/\.$/, "") || "Personal Plan";
+  const { t } = useTranslation("onboarding");
+  const displayPlanName = planName.replace(/\.$/, "") || t("welcome_to_happy.personal_plan", { defaultValue: "Personal Plan" });
 
   return (
     <ScrollView
@@ -43,13 +45,13 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
             hitSlop={12}
             className="flex-row items-center rounded-full bg-sage-100/80 px-3 py-1 active:opacity-70"
             accessibilityRole="button"
-            accessibilityLabel="Already have an account? Log in"
+            accessibilityLabel={t("welcome_to_happy.login_accessibility", { defaultValue: "Already have an account? Log in" })}
           >
             <Text
               style={{ fontFamily: APP_FONT_FAMILIES.bold }}
               className="text-[12px] text-sage-800"
             >
-              Log in
+              {t("welcome_to_happy.login", { defaultValue: "Log in" })}
             </Text>
           </Pressable>
         )}
@@ -67,7 +69,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
             style={{ fontFamily: APP_FONT_FAMILIES.bold }}
             className="text-[10px] font-bold uppercase tracking-wider text-sage-700"
           >
-            Lock In Your Progress
+            {t("welcome_to_happy.step_label")}
           </Text>
         </View>
 
@@ -75,13 +77,13 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
           style={{ fontFamily: APP_FONT_FAMILIES.extraBold }}
           className="text-center text-[26px] leading-[32px] text-ink"
         >
-          Keep your progress with you
+          {t("welcome_to_happy.title")}
         </Text>
         <Text
           style={{ fontFamily: APP_FONT_FAMILIES.regular }}
           className="mt-1 text-center text-[14px] leading-snug text-ink-soft px-3"
         >
-          Save your tailored plan, streak, and private notes before starting Day 1.
+          {t("welcome_to_happy.description")}
         </Text>
       </Animated.View>
 
@@ -98,7 +100,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
           onPress={() => {}}
           haptic="medium"
           accessibilityRole="button"
-          accessibilityLabel={`${displayPlanName}, Ready, Tailored 7-day course`}
+          accessibilityLabel={`${displayPlanName}, ${t("welcome_to_happy.course_card.ready_badge")}, ${t("welcome_to_happy.course_card.daily_label", { minutes: dailyGoal })}`}
         >
           <View className="flex-row items-center gap-3">
             <View className="h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 border border-emerald-200/70">
@@ -118,7 +120,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
                     style={{ fontFamily: APP_FONT_FAMILIES.bold }}
                     className="text-[10px] text-emerald-800 uppercase tracking-wide"
                   >
-                    Ready
+                    {t("welcome_to_happy.course_card.ready_badge")}
                   </Text>
                 </View>
               </View>
@@ -126,7 +128,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
                 style={{ fontFamily: APP_FONT_FAMILIES.regular }}
                 className="mt-0.5 text-[12px] text-ink-soft"
               >
-                Tailored 7-day course • {dailyGoal}m daily
+                {t("welcome_to_happy.course_card.daily_label", { minutes: dailyGoal })}
               </Text>
             </View>
           </View>
@@ -140,7 +142,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
           onPress={() => {}}
           haptic="medium"
           accessibilityRole="button"
-          accessibilityLabel="Streak & momentum, Day 1, Lock in today's habit history"
+          accessibilityLabel={`${t("welcome_to_happy.streak_card.title")}, ${t("welcome_to_happy.streak_card.day_1_badge")}, ${t("welcome_to_happy.streak_card.subtitle")}`}
         >
           <View className="flex-row items-center gap-3">
             <View className="h-10 w-10 items-center justify-center rounded-xl bg-amber-50 border border-amber-200/70">
@@ -152,14 +154,14 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
                   style={{ fontFamily: APP_FONT_FAMILIES.bold }}
                   className="text-[15px] text-ink"
                 >
-                  Streak & momentum
+                  {t("welcome_to_happy.streak_card.title")}
                 </Text>
                 <View className="rounded-full bg-amber-100/80 px-2 py-0.5">
                   <Text
                     style={{ fontFamily: APP_FONT_FAMILIES.bold }}
                     className="text-[10px] text-amber-800 uppercase tracking-wide"
                   >
-                    Day 1
+                    {t("welcome_to_happy.streak_card.day_1_badge")}
                   </Text>
                 </View>
               </View>
@@ -167,7 +169,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
                 style={{ fontFamily: APP_FONT_FAMILIES.regular }}
                 className="mt-0.5 text-[12px] text-ink-soft"
               >
-                Lock in today&apos;s habit history
+                {t("welcome_to_happy.streak_card.subtitle")}
               </Text>
             </View>
           </View>
@@ -181,7 +183,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
           onPress={() => {}}
           haptic="medium"
           accessibilityRole="button"
-          accessibilityLabel="Private reflections, Encrypted, Synced securely to your personal profile"
+          accessibilityLabel={`${t("welcome_to_happy.reflections_card.title")}, ${t("welcome_to_happy.reflections_card.encrypted_badge")}, ${t("welcome_to_happy.reflections_card.subtitle")}`}
         >
           <View className="flex-row items-center gap-3">
             <View className="h-10 w-10 items-center justify-center rounded-xl bg-sky-50 border border-sky-200/70">
@@ -193,14 +195,14 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
                   style={{ fontFamily: APP_FONT_FAMILIES.bold }}
                   className="text-[15px] text-ink"
                 >
-                  Private reflections
+                  {t("welcome_to_happy.reflections_card.title")}
                 </Text>
                 <View className="rounded-full bg-sky-100/80 px-2 py-0.5">
                   <Text
                     style={{ fontFamily: APP_FONT_FAMILIES.bold }}
                     className="text-[10px] text-sky-800 uppercase tracking-wide"
                   >
-                    Encrypted
+                    {t("welcome_to_happy.reflections_card.encrypted_badge")}
                   </Text>
                 </View>
               </View>
@@ -208,7 +210,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
                 style={{ fontFamily: APP_FONT_FAMILIES.regular }}
                 className="mt-0.5 text-[12px] text-ink-soft"
               >
-                Synced securely to your personal profile
+                {t("welcome_to_happy.reflections_card.subtitle")}
               </Text>
             </View>
           </View>

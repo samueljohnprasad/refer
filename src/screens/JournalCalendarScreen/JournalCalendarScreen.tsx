@@ -60,6 +60,7 @@ const Greeting = React.memo<{
 
 export default function JournalCalendarScreen() {
   const { t: tHome } = useTranslation("home");
+  const { t: tCommon } = useTranslation("common");
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const posthog = usePostHog();
 
@@ -166,7 +167,7 @@ export default function JournalCalendarScreen() {
       <Stack.Toolbar placement="right" tintColor={SEMANTIC_COLORS.text.tertiary}>
         <Stack.Toolbar.Button
           icon="gearshape"
-          accessibilityLabel="Settings"
+          accessibilityLabel={tCommon("navigation.settings")}
           tintColor={SEMANTIC_COLORS.text.tertiary}
           onPress={handleSettingsPress}
         />

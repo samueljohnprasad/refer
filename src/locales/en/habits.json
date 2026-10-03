@@ -7,10 +7,58 @@
   "timeOfDay": {
     "morning": "Morning",
     "afternoon": "Afternoon",
-    "evening": "Evening"
+    "evening": "Evening",
+    "anytime": "Anytime"
   },
   "actions": {
     "logHabit": "Log Habit",
-    "habitCompleted": "Completed"
+    "habitCompleted": "Completed",
+    "addHabit": "Add Habit"
+  },
+  "empty": {
+    "titles": ["Build Better Habits", "Track Daily Progress", "Stay Consistent"],
+    "description": "Build routines with simple daily tracking."
+  },
+  "repeat": {
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "once": "Once"
+  },
+  "add": {
+    "addHabitPrefix": "Add habit",
+    "createCustom": "Create Custom Habit",
+    "nameLabel": "Habit name *",
+    "namePlaceholder": "e.g., Morning stretch routine",
+    "nameHint": "Give your habit a name to get started",
+    "descriptionLabel": "Why is this important to you?",
+    "descriptionPlaceholder": "To feel more energized and focused...",
+    "reasonPrompt": "Why do you want to {{habit}}?",
+    "back": "Back",
+    "createHabit": "Create Habit",
+    "presets": {
+      "water": { "name": "Drink 8 glasses of water", "description": "Stay hydrated for better energy and focus" },
+      "exercise": { "name": "Exercise for 30 mins", "description": "Move your body, clear your mind" },
+      "meditate": { "name": "Meditate", "description": "Find your calm and center" },
+      "read": { "name": "Read for 15 mins", "description": "Expand your mind daily" },
+      "gratitude": { "name": "Practice gratitude", "description": "Appreciate the good in your life" },
+      "journal": { "name": "Write a journal entry", "description": "Reflect on your thoughts and feelings" },
+      "sleep": { "name": "Get 8 hours of sleep", "description": "Rest is essential for recovery" },
+      "walk": { "name": "Go for a walk", "description": "Fresh air and movement" }
+    }
+  },
+  "details": {
+    "anytime": "Anytime", "atTime": "At time", "date": "Date", "time": "Time", "duration": "Duration",
+    "repeat": "Repeat", "endRepeat": "End Repeat", "endDate": "End Date", "after": "After", "reminder": "Reminder",
+    "notesPlaceholder": "Add notes about this habit...", "save": "Save Changes", "markIncomplete": "Mark Incomplete",
+    "complete": "✓ Complete Habit", "delete": "Delete Habit", "never": "Never", "daily": "Daily", "weekly": "Weekly",
+    "monthly": "Monthly", "onDate": "On Date", "afterCount": "After Count", "times_one": "{{count}} time", "times_other": "{{count}} times",
+    "durationHour_one": "{{count}} hour", "durationHour_other": "{{count}} hours", "durationMinute": "{{count}} mins",
+    "cannotCompleteTitle": "Cannot complete habit", "cannotCompleteFuture": "You cannot mark habits as complete for future dates."
+  },
+  "navigation": { "addTitle": "Add a Habit", "detailsTitle": "Habit Details" },
+  "accessibility": {
+    "completed": "{{habit}}, completed",
+    "markComplete": "Mark {{habit}} as complete",
+    "markIncomplete": "Mark {{habit}} as incomplete"
   }
 }

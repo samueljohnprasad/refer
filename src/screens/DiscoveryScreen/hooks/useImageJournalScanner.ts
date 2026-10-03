@@ -4,6 +4,7 @@ import * as ImagePicker from "expo-image-picker";
 import { extractTextFromImage } from "@/src/network/extractTextFromImage";
 import { callMyFunction } from "@/src/network/transcribeAudio";
 import { InsightsType } from "@/src/network/genAi";
+import { useTranslation } from "react-i18next";
 
 export type ProcessingStep =
   | "idle"
@@ -12,15 +13,6 @@ export type ProcessingStep =
   | "analyzing"
   | "done"
   | "error";
-
-export const STEP_MESSAGES: Record<ProcessingStep, string> = {
-  idle: "Ready to capture",
-  capturing: "Opening camera...",
-  extracting: "Reading your journal...",
-  analyzing: "Generating insights...",
-  done: "Complete!",
-  error: "Something went wrong",
-};
 
 interface UseImageJournalScannerOptions {
   onClose: () => void;
@@ -45,6 +37,7 @@ export function useImageJournalScanner({
   onClose,
   onInsightsReady,
 }: UseImageJournalScannerOptions): ImageJournalScannerViewModel {
+  const { t } = useTranslation("journal");
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [step, setStep] = useState<ProcessingStep>("idle");
   const [extractedText, setExtractedText] = useState<string>("");
@@ -81,14 +74,14 @@ export function useImageJournalScanner({
         console.error("Processing error:", error);
         setStep("error");
         Alert.alert(
-          "Processing Failed",
+          t("capture.image.alerts.processingFailed"),
           error instanceof Error
             ? error.message
-            : "Failed to process journal image."
+            : t("capture.image.alerts.processImageError")
         );
       }
     },
-    []
+    [t]
   );
 
   const captureImage = useCallback(async (): Promise<void> => {
@@ -98,8 +91,8 @@ export function useImageJournalScanner({
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== "granted") {
         Alert.alert(
-          "Camera Permission Required",
-          "Please allow camera access to scan your journal pages."
+          t("capture.image.alerts.cameraPermission"),
+          t("capture.image.alerts.cameraPermissionMessage")
         );
         setStep("idle");
         return;
@@ -122,9 +115,9 @@ export function useImageJournalScanner({
     } catch (error: unknown) {
       console.error("Camera error:", error);
       setStep("error");
-      Alert.alert("Error", "Failed to capture image. Please try again.");
+      Alert.alert(t("capture.image.alerts.error"), t("capture.image.alerts.cameraError"));
     }
-  }, [processImage]);
+  }, [processImage, t]);
 
   const pickImage = useCallback(async (): Promise<void> => {
     try {
@@ -132,8 +125,8 @@ export function useImageJournalScanner({
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
         Alert.alert(
-          "Gallery Permission Required",
-          "Please allow access to your photos to scan journal pages."
+          t("capture.image.alerts.galleryPermission"),
+          t("capture.image.alerts.galleryPermissionMessage")
         );
         return;
       }
@@ -154,9 +147,9 @@ export function useImageJournalScanner({
     } catch (error: unknown) {
       console.error("Gallery error:", error);
       setStep("error");
-      Alert.alert("Error", "Failed to pick image. Please try again.");
+      Alert.alert(t("capture.image.alerts.error"), t("capture.image.alerts.galleryError"));
     }
-  }, [processImage]);
+  }, [processImage, t]);
 
   const handleRetake = useCallback((): void => {
     resetState();
@@ -173,7 +166,7 @@ export function useImageJournalScanner({
   return {
     imageUri,
     step,
-    stepMessage: STEP_MESSAGES[step],
+    stepMessage: t(`capture.image.steps.${step}`, { defaultValue: step }),
     extractedText,
     extractedInsights,
     captureImage,

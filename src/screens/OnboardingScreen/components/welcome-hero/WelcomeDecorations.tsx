@@ -24,6 +24,7 @@ import {
   JourneyNodeDef,
 } from "./constants";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
+import { useTranslation } from "react-i18next";
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -34,6 +35,7 @@ interface LabelProps {
 }
 
 export function WelcomeLabel({ index, frame, scale }: LabelProps): React.JSX.Element | null {
+  const { t } = useTranslation("onboarding");
   if (index === TODAY_INDEX) return null;
   const node: JourneyNodeDef = NODES[index];
   const startAt: number = nodeAt(index) + 4;
@@ -84,7 +86,7 @@ export function WelcomeLabel({ index, frame, scale }: LabelProps): React.JSX.Ele
             textAlign: node.side === "left" ? "right" : "left",
           }}
         >
-          {line}
+          {t(`welcome_nodes.${index}_${i}`, { defaultValue: line })}
         </Text>
       ))}
     </Animated.View>
@@ -92,6 +94,7 @@ export function WelcomeLabel({ index, frame, scale }: LabelProps): React.JSX.Ele
 }
 
 export function TodayCallout({ frame, scale }: { frame: SharedValue<number>; scale: number }): React.JSX.Element {
+  const { t } = useTranslation("onboarding");
   const startAt: number = nodeAt(TODAY_INDEX) + 4;
   const gap: number = (TODAY_SIZE / 2 + 30) * scale;
   const nodeX: number = TODAY.x * scale;
@@ -133,7 +136,7 @@ export function TodayCallout({ frame, scale }: { frame: SharedValue<number>; sca
             textAlign: "right",
           }}
         >
-          Today
+          {t("welcome_nodes.today", { defaultValue: "Today" })}
         </Text>
         <Text
           style={{
@@ -145,7 +148,7 @@ export function TodayCallout({ frame, scale }: { frame: SharedValue<number>; sca
             textAlign: "right",
           }}
         >
-          Start here
+          {t("welcome_nodes.start_here", { defaultValue: "Start here" })}
         </Text>
       </Animated.View>
 

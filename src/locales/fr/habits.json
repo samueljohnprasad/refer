@@ -1,1 +1,22 @@
-{}
+{
+  "title": "Habitudes",
+  "streak": { "days": "jours de suite", "multiplier": "Multiplicateur de série" },
+  "timeOfDay": { "morning": "Matin", "afternoon": "Après-midi", "evening": "Soir", "anytime": "À tout moment" },
+  "actions": { "logHabit": "Noter l'habitude", "habitCompleted": "Terminé", "addHabit": "Ajouter une habitude" },
+  "empty": { "titles": ["Créer de bonnes habitudes", "Suivre ses progrès", "Garder le rythme"], "description": "Créez une routine grâce à un suivi quotidien simple." },
+  "repeat": { "weekly": "Chaque semaine", "monthly": "Chaque mois", "once": "Une fois" },
+  "add": {
+    "addHabitPrefix": "Ajouter une habitude", "createCustom": "Créer une habitude personnalisée", "nameLabel": "Nom de l'habitude *",
+    "namePlaceholder": "Ex. : étirements du matin", "nameHint": "Donnez un nom à votre habitude pour commencer", "descriptionLabel": "Pourquoi est-ce important pour vous ?",
+    "descriptionPlaceholder": "Pour me sentir plus énergique et concentré(e)...", "reasonPrompt": "Pourquoi voulez-vous {{habit}} ?", "back": "Retour", "createHabit": "Créer l'habitude",
+    "presets": {
+      "water": { "name": "Boire 8 verres d'eau", "description": "Restez hydraté(e) pour avoir plus d'énergie et mieux vous concentrer" },
+      "exercise": { "name": "Faire 30 min d'exercice", "description": "Bougez pour libérer votre esprit" }, "meditate": { "name": "Méditer", "description": "Retrouvez votre calme et votre équilibre" },
+      "read": { "name": "Lire 15 min", "description": "Enrichissez votre esprit chaque jour" }, "gratitude": { "name": "Pratiquer la gratitude", "description": "Appréciez les bonnes choses de votre vie" },
+      "journal": { "name": "Écrire dans un journal", "description": "Réfléchissez à vos pensées et vos émotions" }, "sleep": { "name": "Dormir 8 heures", "description": "Le repos est essentiel pour récupérer" }, "walk": { "name": "Faire une promenade", "description": "Prenez l'air et bougez" }
+    }
+  },
+  "details": { "anytime": "À tout moment", "atTime": "À une heure précise", "date": "Date", "time": "Heure", "duration": "Durée", "repeat": "Répétition", "endRepeat": "Fin de la répétition", "endDate": "Date de fin", "after": "Après", "reminder": "Rappel", "notesPlaceholder": "Ajoutez des notes sur cette habitude...", "save": "Enregistrer", "markIncomplete": "Marquer comme non terminée", "complete": "✓ Terminer l'habitude", "delete": "Supprimer l'habitude", "never": "Jamais", "daily": "Chaque jour", "weekly": "Chaque semaine", "monthly": "Chaque mois", "onDate": "À une date", "afterCount": "Après un nombre de fois", "times_one": "{{count}} fois", "times_other": "{{count}} fois", "durationHour_one": "{{count}} heure", "durationHour_other": "{{count}} heures", "durationMinute": "{{count}} min", "cannotCompleteTitle": "Impossible de terminer l'habitude", "cannotCompleteFuture": "Vous ne pouvez pas marquer une habitude comme terminée à une date future." },
+  "navigation": { "addTitle": "Ajouter une habitude", "detailsTitle": "Détails de l'habitude" },
+  "accessibility": { "completed": "{{habit}}, terminée", "markComplete": "Marquer {{habit}} comme terminée", "markIncomplete": "Marquer {{habit}} comme non terminée" }
+}

@@ -51,5 +51,10 @@
     "streakCount_other": "{{count}} day streak",
     "weekDays": ["S", "M", "T", "W", "T", "F", "S"],
     "a11yLabel": "Current streak: {{count}} days. Tap to view streak history."
+  },
+  "errors": {
+    "loadTitle": "Something went wrong",
+    "loadDescription": "We couldn't load your home screen.",
+    "tryAgain": "Try again"
   }
 }

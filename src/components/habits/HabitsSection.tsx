@@ -16,10 +16,10 @@ import * as Haptics from "expo-haptics";
 import {
   categorizeHabits,
   getActiveCategories,
-  TIME_CATEGORY_CONFIG,
 } from "@/src/utils/habitCategories";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { usePostHog } from "posthog-react-native";
+import { useTranslation } from "react-i18next";
 
 interface HabitsSectionProps {
   selectedDate: Date;
@@ -28,6 +28,7 @@ interface HabitsSectionProps {
 export const HabitsSection: React.FC<HabitsSectionProps> = ({
   selectedDate,
 }) => {
+  const { t } = useTranslation("habits");
   const router = useRouter();
   const posthog = usePostHog();
 
@@ -103,14 +104,10 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
       ) : habitsWithStatus.length === 0 ? (
         <EmptyState
           mascotState="panda-yet-sleep-pillow"
-          title={[
-            "Build Better Habits",
-            "Track Daily Progress",
-            "Stay Consistent",
-          ]}
+          title={t("empty.titles", { returnObjects: true }) as string[]}
           // ponytail: concise habit empty-state copy
-          description="Build routines with simple daily tracking."
-          buttonText="Add Habit"
+          description={t("empty.description")}
+          buttonText={t("actions.addHabit")}
           onButtonPress={() =>
             router.push("/tabs/screens/habits-modal/add" as never)
           }
@@ -124,7 +121,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
               {/* Section header — quiet, small, uppercase label */}
               <View className="mb-1 px-5">
                 <Text className="text-xs uppercase tracking-wider text-ink-soft happy-font-body-bold">
-                  {TIME_CATEGORY_CONFIG[category].label}
+                  {t(`timeOfDay.${category}`)}
                 </Text>
               </View>
 
@@ -154,7 +151,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
             className="flex-row items-center px-5 mt-8 py-3 min-h-[44px]"
             style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
             accessibilityRole="button"
-            accessibilityLabel="Add a new habit"
+            accessibilityLabel={t("actions.addHabit")}
           >
             <View className="h-9 w-9 items-center justify-center rounded-full bg-sage-50 mr-3">
               <HugeiconsIcon
@@ -164,7 +161,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
               />
             </View>
             <Text className="happy-font-body text-[15px] text-ink-muted">
-              Add Habit
+              {t("actions.addHabit")}
             </Text>
           </Pressable>
         </>

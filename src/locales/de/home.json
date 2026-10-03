@@ -51,5 +51,10 @@
     "streakCount_other": "{{count}} Tage Serie",
     "weekDays": ["S", "M", "D", "M", "D", "F", "S"],
     "a11yLabel": "Aktuelle Serie: {{count}} Tage. Tippen für Verlauf."
+  },
+  "errors": {
+    "loadTitle": "Etwas ist schiefgelaufen",
+    "loadDescription": "Die Startseite konnte nicht geladen werden.",
+    "tryAgain": "Erneut versuchen"
   }
 }

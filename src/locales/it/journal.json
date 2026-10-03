@@ -1,1 +1,35 @@
-{}
+{
+  "title": "Diario",
+  "emotionDetails": { "title": "Emozioni del {{date}}", "empty": "Nessuna emozione registrata in questo giorno", "moodLog": "Registro dell'umore", "journalEntry": "Voce del diario" },
+  "prompts": {
+    "dailyReflect": "Cosa ti passa per la mente in questo momento?",
+    "gratitude": "Nomina tre cose per cui provi gratitudine oggi.",
+    "thoughtRecord": "Quale pensiero ha cambiato il tuo stato d'animo?"
+  },
+  "moods": { "great": "Benissimo", "good": "Bene", "okay": "Così così", "low": "Giù di morale", "stressed": "Stressato" },
+  "actions": { "newEntry": "Nuova riflessione", "voiceNote": "Registra una nota vocale" },
+  "capture": {
+    "writePrompt": "Tocca per scrivere i tuoi pensieri…",
+    "writePromptA11y": "Tocca per scrivere i tuoi pensieri",
+    "recordVoiceA11y": "Registra una nota vocale",
+    "writeThoughtsA11y": "Scrivi i tuoi pensieri",
+    "shufflePrompt": "Cambia domanda",
+    "selectDate": "Scegli una data",
+    "scanJournal": "Scansiona le pagine del diario",
+    "freeWrite": "Scrittura libera", "freeWriteHint": "Scrivi senza una domanda", "dailyReflectionXP": "Riflessione quotidiana • +10 XP",
+    "menu": { "journal": "Diario · {{date}}", "today": "Vai a oggi", "browse": "Vedi tutte le domande" },
+    "options": { "title": "Opzioni del diario", "import": "Importa nota scritta a mano", "scanHint": "Scansiona una pagina cartacea", "tryAnother": "PROVA UN'ALTRA DOMANDA", "selected": "{{prompt}}. Selezionata." },
+    "image": { "title": "Scansiona il diario", "description": "Acquisisci pagine scritte a mano o stampate.", "camera": "Apri fotocamera", "gallery": "Scegli dalla galleria", "ready": "Pronto", "generated": "Le tue riflessioni sono pronte.", "viewInsights": "Vedi riflessioni", "reading": "Lettura del testo scritto a mano…", "creating": "Creazione di riflessioni personalizzate…", "cancelProcessing": "Annulla elaborazione", "cancel": "Annulla", "retry": "Riprova", "steps": { "idle": "Pronto per la scansione", "capturing": "Apertura della fotocamera…", "extracting": "Lettura del diario…", "analyzing": "Creazione delle riflessioni…", "done": "Completato!", "error": "Qualcosa è andato storto" }, "alerts": { "processingFailed": "Elaborazione non riuscita", "processImageError": "Impossibile elaborare l'immagine del diario.", "cameraPermission": "Autorizzazione fotocamera richiesta", "cameraPermissionMessage": "Consenti l'accesso alla fotocamera per scansionare le pagine.", "galleryPermission": "Autorizzazione foto richiesta", "galleryPermissionMessage": "Consenti l'accesso alle foto per scansionare le pagine.", "error": "Errore", "cameraError": "Impossibile acquisire la foto. Riprova.", "galleryError": "Impossibile scegliere la foto. Riprova." } },
+    "keyboard": { "cancel": "Annulla", "options": "Opzioni", "aiInsights": "Riflessioni IA", "generateAnalysis": "Crea analisi IA", "placeholder": "Inizia a scrivere qui…", "word_one": "{{count}} parola", "word_other": "{{count}} parole", "finish": "Termina la nota del diario", "done": "Fatto", "saveDraftTitle": "Salvare la bozza?", "saveDraftMessage": "La tua riflessione sarà salvata così potrai terminarla più tardi.", "discard": "Elimina", "saveClose": "Salva e chiudi", "keepWriting": "Continua a scrivere" },
+    "voice": { "recording": "Registrazione in corso", "paused": "In pausa", "close": "Chiudi registratore vocale", "shuffle": "Prova un'altra domanda", "discardTitle": "Eliminare la registrazione?", "discardMessage": "La registrazione verrà eliminata definitivamente.", "keep": "Mantieni registrazione", "discard": "Elimina", "pause": "Metti in pausa", "resume": "Riprendi registrazione", "finish": "Termina registrazione", "waveRecording": "Registrazione audio", "wavePaused": "Registrazione in pausa", "waveIdle": "Inattivo" },
+    "analysis": { "phaseTranscribing": "Trascrizione audio", "phaseUnderstanding": "Comprensione delle emozioni", "phaseInsights": "Creazione di riflessioni CBT", "phasePreparing": "Preparazione della riflessione", "step": "Passaggio {{step}} di 4 · {{label}}", "reassurance": "Prendiamoci un momento per riflettere sulla tua nota…", "cancel": "Annulla analisi", "mascot": "Panda riflessivo" },
+    "prompts": { "smile": "Che cosa ti ha fatto sorridere oggi?", "challenge": "Che difficoltà hai affrontato oggi e come hai reagito?", "gratitude": "Per che cosa ti senti grato in questo momento?", "selfLearning": "Che cosa hai imparato su di te oggi?", "selfCare": "Come puoi prenderti più cura di te domani?", "smallWin": "Qual è stata una piccola vittoria di oggi?", "peace": "Descrivi un momento in cui ti sei sentito in pace.", "appreciation": "Chi apprezzi e perché?", "letGo": "Che cosa vorresti lasciarti alle spalle?", "changeOneThing": "Se potessi cambiare una cosa di oggi, quale sarebbe?", "lookingForward": "Che cosa aspetti con entusiasmo questa settimana?", "selfCareToday": "Come ti sei preso cura di te oggi?", "fear": "Quale paura hai affrontato o vorresti affrontare?", "accomplishment": "Scrivi di un risultato recente.", "idealDay": "Com'è la tua giornata ideale?", "tomorrowEnergy": "Con quale energia vuoi affrontare domani?", "moodThreeWords": "Descrivi il tuo umore in tre parole.", "habit": "Quale abitudine vorresti sviluppare?", "positiveImpact": "Chi ha avuto un impatto positivo sulla tua giornata?", "beautifulThing": "Qual è una cosa bella che hai visto oggi?" }
+  },
+  "tab": { "journal": "Diario", "habits": "Abitudini" },
+  "calendar": { "today": "Oggi", "todayHint": "Torna al giorno attuale", "expand": "Espandi calendario", "collapse": "Riduci calendario", "expandHint": "Passa dalla vista settimanale a quella mensile", "moreOptions": "Altre opzioni", "timeline": "Cronologia e approfondimenti", "bookmarks": "Preferiti", "dragHandle": "Maniglia del calendario", "previousMonth": "Mese precedente", "previousMonthHint": "Vai al mese precedente", "nextMonth": "Mese successivo", "nextMonthHint": "Vai al mese successivo", "jumpToday": "Vai a oggi", "dayA11y": "{{day}}{{today}}" },
+  "empty": { "titles": ["Annota un pensiero", "Cosa ti passa per la mente?", "Ripensa alla tua giornata"], "description": "Le tue note restano private. Inizia da dove sei.", "recordVoice": "Registra la voce", "writeText": "Scrivi un testo" },
+  "error": { "title": "Una breve pausa imprevista", "description": "Al momento non riusciamo a caricare le note. Sono salvate in modo sicuro sul tuo dispositivo.", "reconnect": "Riprova a connetterti", "reconnectA11y": "Riprova a connetterti per caricare le note" },
+  "entry": { "untitled": "Nota senza titolo", "words_one": "{{count}} parola", "words_other": "{{count}} parole", "createdAt": "Nota del diario: {{title}}, creata alle {{time}}", "openHint": "Tocca due volte per aprire i dettagli della nota", "noDate": "SENZA DATA" },
+  "delete": { "title": "Eliminare la nota?", "message": "La nota verrà eliminata definitivamente. Non potrai annullare questa azione.", "confirm": "Elimina", "cancel": "Annulla" },
+  "bookmarks": { "title": "Note salvate", "count_one": "{{count}} nota salvata", "count_other": "{{count}} note salvate", "emptyTitle": "Nessuna nota salvata", "emptyDescription": "Tocca il segnalibro su una nota per salvarla qui e ritrovarla facilmente." }
+}

@@ -11,6 +11,7 @@ import useTodayPillAnimation from "@/hooks/animations/useTodayPillAnimation";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
+import { useTranslation } from "react-i18next";
 
 export interface TodayPillProps {
   visible: boolean;
@@ -27,7 +28,7 @@ export interface TodayPillProps {
 export const TodayPill: React.FC<TodayPillProps> = React.memo(
   ({
     visible,
-    label = "Today",
+    label,
     onPress,
     containerStyle,
     backgroundColor = SEMANTIC_COLORS.selection.surface,
@@ -36,6 +37,7 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
     offsetX,
     scaleFrom,
   }) => {
+    const { t } = useTranslation("journal");
     const { animatedStyle, pointerEvents } = useTodayPillAnimation({
       visible,
       durationMs,
@@ -58,8 +60,8 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
         <Pressable
           onPress={onPress}
           accessibilityRole="button"
-          accessibilityLabel={label}
-          accessibilityHint="Returns view to the current day"
+          accessibilityLabel={label ?? t("calendar.today")}
+          accessibilityHint={t("calendar.todayHint")}
           className="flex-row items-center gap-0.5"
         >
           <MaterialCommunityIcons
@@ -71,7 +73,7 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
             className="happy-font-body-medium text-[13px]"
             style={{ color: textColor }}
           >
-            {label}
+            {label ?? t("calendar.today")}
           </Text>
         </Pressable>
       </Animated.View>

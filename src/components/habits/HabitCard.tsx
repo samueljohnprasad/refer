@@ -5,9 +5,10 @@ import { ConfettiExplosion } from "@/src/components/animations/ConfettiExplosion
 import { StreakBadge } from "@/src/components/habits/StreakBadge";
 import { Checkbox } from "@/src/components/check-box";
 import * as Haptics from "expo-haptics";
-import { format, parse } from "date-fns";
+import { parse } from "date-fns";
 import { HabitIcon } from "@/src/utils/habitIconMapper";
 import { SAGE } from "@/src/theme/palette";
+import { useTranslation } from "react-i18next";
 
 interface HabitCardProps {
   habit: HabitWithStatus;
@@ -17,31 +18,30 @@ interface HabitCardProps {
 }
 
 // ponytail: only format time when timeOption is at_time
-const formatTime = (time: string): string => {
+const formatTime = (time: string, language: string): string => {
   try {
     const timeWithoutSeconds = time.split(":").slice(0, 2).join(":");
     const parsed = parse(timeWithoutSeconds, "HH:mm", new Date());
-    return format(parsed, "h:mm a");
+    return new Intl.DateTimeFormat(language, { hour: "numeric", minute: "2-digit" }).format(parsed);
   } catch {
     return time;
   }
 };
 
 // ponytail: only show non-daily repeat patterns (daily is noise on a daily habits screen)
-const getRepeatLabel = (habit: HabitWithStatus): string => {
+const getRepeatKey = (habit: HabitWithStatus): "weekly" | "monthly" | "once" | null => {
   switch (habit.repeatPattern) {
     case "weekly":
       if (habit.repeatDays && habit.repeatDays.length > 0) {
-        const daysMap = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        return habit.repeatDays.map((d) => daysMap[d]).join(" · ");
+        return "weekly";
       }
-      return "Weekly";
+      return "weekly";
     case "monthly":
-      return "Monthly";
+      return "monthly";
     case "never":
-      return "Once";
+      return "once";
     default:
-      return ""; // daily → silent
+      return null;
   }
 };
 
@@ -50,6 +50,7 @@ export const HabitCard: React.FC<HabitCardProps> = ({
   onPress,
   onToggleComplete,
 }) => {
+  const { i18n, t } = useTranslation("habits");
   const [showConfetti, setShowConfetti] = React.useState(false);
   const isFirstRender = React.useRef(true);
 
@@ -72,7 +73,10 @@ export const HabitCard: React.FC<HabitCardProps> = ({
     onToggleComplete();
   };
 
-  const repeatLabel = getRepeatLabel(habit);
+  const repeatKey = getRepeatKey(habit);
+  const repeatLabel = repeatKey === "weekly" && habit.repeatDays?.length
+    ? habit.repeatDays.map((day) => new Intl.DateTimeFormat(i18n.language, { weekday: "short" }).format(new Date(2023, 0, 1 + day))).join(" · ")
+    : repeatKey ? t(`repeat.${repeatKey}`) : "";
   // Only show scheduled time when user explicitly set at_time option
   const showTime =
     habit.timeOption === "at_time" &&
@@ -89,7 +93,7 @@ export const HabitCard: React.FC<HabitCardProps> = ({
         className="py-3"
         style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
         accessibilityRole="button"
-        accessibilityLabel={`${habit.name}${habit.isCompleted ? ", completed" : ""}`}
+        accessibilityLabel={habit.isCompleted ? t("accessibility.completed", { habit: habit.name }) : habit.name}
       >
         <View className="flex-row items-center">
           {/* Icon */}
@@ -123,7 +127,7 @@ export const HabitCard: React.FC<HabitCardProps> = ({
                 {/* Scheduled time — only real at_time values */}
                 {showTime && (
                   <Text className="text-xs text-ink-soft happy-font-body">
-                    {formatTime(habit.scheduledTime!)}
+                  {formatTime(habit.scheduledTime!, i18n.language)}
                   </Text>
                 )}
 
@@ -139,7 +143,7 @@ export const HabitCard: React.FC<HabitCardProps> = ({
             className="ml-3 relative w-11 h-11 items-center justify-center"
             accessibilityRole="checkbox"
             accessibilityState={{ checked: habit.isCompleted }}
-            accessibilityLabel={`Mark ${habit.name} as ${habit.isCompleted ? "incomplete" : "complete"}`}
+            accessibilityLabel={t(habit.isCompleted ? "accessibility.markIncomplete" : "accessibility.markComplete", { habit: habit.name })}
           >
             <View className="z-10">
               <Checkbox

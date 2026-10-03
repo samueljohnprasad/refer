@@ -30,6 +30,7 @@ import { useAtomValue } from "jotai";
 import { cfgAtom } from "@/src/components/notifications/store";
 import { handleNotificationPermissionOnContinue } from "./utils/onboardingNotifications";
 import { useAuth } from "@/src/context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 interface OnboardingScreenProps {
   onComplete: (skipped?: boolean) => Promise<void>;
@@ -46,6 +47,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const { markCompleted } = useCompleteOnboarding();
   const { presentPaywall } = useRevenueCat();
   const { user } = useAuth();
+  const { t } = useTranslation("onboarding");
   const remindersCfg = useAtomValue(cfgAtom);
   const [loading, setLoading] = React.useState(false);
   const [isStepActionReady, setIsStepActionReady] = React.useState(false);
@@ -166,7 +168,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
           await updateUserStreak();
           await xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
             customAmount: 15,
-            customDescription: "First step on your journey",
+            customDescription: t("xp_first_step", { defaultValue: "First step on your journey" }),
           });
 
           await onComplete(skipped);
@@ -201,6 +203,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
       goNext,
       user?.id,
       remindersCfg,
+      t,
     ],
   );
 
@@ -263,14 +266,14 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
             className="w-full gap-3"
           >
             <TactileButton
-              label={loading ? "Setting up..." : currentStepConfig.continueButtonLabel}
+              label={loading ? t("buttons.setting_up") : t(currentStep === "welcome" ? "buttons.lets_begin" : currentStep === "plan_reveal" ? "buttons.start_my_journey" : currentStep === "notification_permission" ? "buttons.set_reminders" : currentStep === "welcome_to_happy" ? "buttons.save_my_progress" : "buttons.continue")}
               onPress={() => handleContinue(false)}
               disabled={isContinueDisabled}
               rightIcon={currentStepConfig.name === "welcome" ? <SymbolImage name="arrow.up" size={18} tintColor="#FFFFFF" /> : undefined}
             />
             {currentStepConfig.canSkip && (
               <TactileButton
-                label={currentStepConfig.skipButtonLabel ?? "Skip for now"}
+                label={t(currentStep === "welcome_to_happy" ? "buttons.maybe_later" : "buttons.skip_for_now")}
                 onPress={() => {
                   analytics.trackStepSkipped(currentStep);
                   if (isLastStep) handleContinue(true);

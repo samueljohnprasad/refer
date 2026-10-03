@@ -1,5 +1,6 @@
 {
   "title": "Journal",
+  "emotionDetails": { "title": "Emotions for {{date}}", "empty": "No emotions logged for this day", "moodLog": "Mood Log", "journalEntry": "Journal Entry" },
   "prompts": {
     "dailyReflect": "What is on your mind right now?",
     "gratitude": "Name three things you are grateful for today.",
@@ -15,5 +16,91 @@
   "actions": {
     "newEntry": "New Reflection",
     "voiceNote": "Record Voice Note"
+  },
+  "capture": {
+    "writePrompt": "Tap to write your thoughts...",
+    "writePromptA11y": "Tap to write your thoughts",
+    "recordVoiceA11y": "Record voice",
+    "writeThoughtsA11y": "Write thoughts",
+    "shufflePrompt": "Shuffle prompt",
+    "selectDate": "Select Date",
+    "scanJournal": "Scan journal pages",
+    "freeWrite": "Free Write",
+    "freeWriteHint": "Write without a prompt",
+    "dailyReflectionXP": "Daily Reflection • +10 XP",
+    "menu": { "journal": "Journal · {{date}}", "today": "Go to Today", "browse": "Browse All Prompts" },
+    "options": { "title": "Journaling Options", "import": "Import Handwritten Entry", "scanHint": "Scan from paper", "tryAnother": "TRY ANOTHER PROMPT", "selected": "{{prompt}}. Selected." },
+    "image": {
+      "title": "Scan Journal", "description": "Capture your handwritten or printed pages.", "camera": "Open Camera", "gallery": "Select from Gallery",
+      "ready": "Ready", "generated": "Your insights have been successfully generated.", "viewInsights": "View Insights", "reading": "Reading handwritten text...",
+      "creating": "Creating personalized insights...", "cancelProcessing": "Cancel Processing", "cancel": "Cancel", "retry": "Try Again",
+      "steps": { "idle": "Ready to capture", "capturing": "Opening camera...", "extracting": "Reading your journal...", "analyzing": "Generating insights...", "done": "Complete!", "error": "Something went wrong" },
+      "alerts": { "processingFailed": "Processing Failed", "processImageError": "Failed to process journal image.", "cameraPermission": "Camera Permission Required", "cameraPermissionMessage": "Please allow camera access to scan your journal pages.", "galleryPermission": "Gallery Permission Required", "galleryPermissionMessage": "Please allow access to your photos to scan journal pages.", "error": "Error", "cameraError": "Failed to capture image. Please try again.", "galleryError": "Failed to pick image. Please try again." }
+    },
+    "keyboard": {
+      "cancel": "Cancel", "options": "Options", "aiInsights": "AI Insights", "generateAnalysis": "Generate AI analysis", "placeholder": "Start writing here…",
+      "word_one": "{{count}} word", "word_other": "{{count}} words", "finish": "Finish journal entry", "done": "Done",
+      "saveDraftTitle": "Save Draft?", "saveDraftMessage": "Your reflection will be saved so you can finish it later.", "discard": "Discard", "saveClose": "Save & Close", "keepWriting": "Keep Writing"
+    },
+    "voice": {
+      "recording": "Recording", "paused": "Paused", "close": "Close voice recorder", "shuffle": "Try another prompt", "discardTitle": "Discard recording?",
+      "discardMessage": "This recording will be permanently deleted.", "keep": "Keep Recording", "discard": "Discard", "pause": "Pause recording", "resume": "Resume recording", "finish": "Finish recording",
+      "waveRecording": "Recording audio", "wavePaused": "Recording paused", "waveIdle": "Idle"
+    },
+    "analysis": {
+      "phaseTranscribing": "Transcribing audio", "phaseUnderstanding": "Understanding feelings", "phaseInsights": "Generating CBT insights", "phasePreparing": "Preparing reflection",
+      "step": "Step {{step}} of 4 · {{label}}", "reassurance": "Taking a moment to reflect on your entry...", "cancel": "Cancel analysis", "mascot": "Reflecting panda"
+    },
+    "prompts": {
+      "smile": "What made you smile today?", "challenge": "What challenged you today, and how did you respond?", "gratitude": "One thing you are grateful for right now?",
+      "selfLearning": "What did you learn about yourself today?", "selfCare": "How can you take care of yourself better tomorrow?", "smallWin": "What is a small win you had today?",
+      "peace": "Describe a moment where you felt at peace.", "appreciation": "Who is someone you appreciate, and why?", "letGo": "What is one thing you want to let go of?",
+      "changeOneThing": "If you could change one thing about today, what would it be?", "lookingForward": "What are you looking forward to this week?", "selfCareToday": "How did you practice self-care today?",
+      "fear": "What is a fear you faced or want to face?", "accomplishment": "Write about a recent accomplishment.", "idealDay": "What does your ideal day look like?",
+      "tomorrowEnergy": "What energy do you want to bring into tomorrow?", "moodThreeWords": "Describe your mood in three words.", "habit": "What is a habit you want to build?",
+      "positiveImpact": "Who made a positive impact on your day?", "beautifulThing": "What is something beautiful you saw today?"
+    }
+  },
+  "tab": { "journal": "Journal", "habits": "Habits" },
+  "calendar": {
+    "today": "Today", "todayHint": "Return to the current day", "expand": "Expand calendar",
+    "collapse": "Collapse calendar", "expandHint": "Switch between weekly and monthly calendar views",
+    "moreOptions": "More options", "timeline": "Timeline & Insights", "bookmarks": "Bookmarks", "dragHandle": "Calendar drag handle",
+    "previousMonth": "Previous month", "previousMonthHint": "Navigates calendar to the previous month",
+    "nextMonth": "Next month", "nextMonthHint": "Navigates calendar to the next month",
+    "jumpToday": "Jump to today", "dayA11y": "{{day}}{{today}}"
+  },
+  "empty": {
+    "titles": ["Capture a quick thought", "What's on your mind?", "Reflect on your day"],
+    "description": "Private by default. Just start where you are.",
+    "recordVoice": "Record Voice",
+    "writeText": "Write Text"
+  },
+  "error": {
+    "title": "Taking a momentary pause",
+    "description": "We couldn't reach your journal entries right now. Your notes are safely saved on your device.",
+    "reconnect": "Try Reconnecting",
+    "reconnectA11y": "Try reconnecting to load journal entries"
+  },
+  "entry": {
+    "untitled": "Untitled Entry",
+    "words_one": "{{count}} word",
+    "words_other": "{{count}} words",
+    "createdAt": "Journal entry: {{title}}, created at {{time}}",
+    "openHint": "Double tap to open journal entry details",
+    "noDate": "NO DATE"
+  },
+  "delete": {
+    "title": "Delete Journal?",
+    "message": "This journal entry will be permanently deleted. This action cannot be undone.",
+    "confirm": "Delete",
+    "cancel": "Cancel"
+  },
+  "bookmarks": {
+    "title": "Pinned Notes",
+    "count_one": "{{count}} pinned note",
+    "count_other": "{{count}} pinned notes",
+    "emptyTitle": "No Pinned Notes",
+    "emptyDescription": "Tap the bookmark icon on any journal entry to save it here for quick access."
   }
 }

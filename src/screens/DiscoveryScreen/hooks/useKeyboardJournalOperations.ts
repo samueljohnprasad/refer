@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { Alert, Keyboard } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export const MAX_JOURNAL_LENGTH = 7000;
 export const CHAR_COUNT_THRESHOLD = MAX_JOURNAL_LENGTH * 0.8; // 80% (5,600 chars)
@@ -30,16 +31,17 @@ export const useKeyboardJournalOperations = ({
   onSubmit,
   onStop,
 }: UseKeyboardJournalOperationsProps) => {
+  const { t } = useTranslation("journal");
   const handleClose = useCallback(() => {
     if (isRealtimeActive) return;
     Keyboard.dismiss();
     if (journalText.trim().length > 0) {
       Alert.alert(
-        "Save Draft?",
-        "Your reflection will be saved so you can finish it later.",
+        t("capture.keyboard.saveDraftTitle"),
+        t("capture.keyboard.saveDraftMessage"),
         [
           {
-            text: "Discard",
+            text: t("capture.keyboard.discard"),
             style: "destructive",
             onPress: () => {
               void clearDraft();
@@ -48,19 +50,19 @@ export const useKeyboardJournalOperations = ({
             },
           },
           {
-            text: "Save & Close",
+            text: t("capture.keyboard.saveClose"),
             onPress: () => {
               void saveDraft(journalText);
               onClose();
             },
           },
-          { text: "Keep Writing", style: "cancel" },
+          { text: t("capture.keyboard.keepWriting"), style: "cancel" },
         ]
       );
     } else {
       onClose();
     }
-  }, [isRealtimeActive, journalText, clearDraft, saveDraft, setJournalText, onClose]);
+  }, [isRealtimeActive, journalText, clearDraft, saveDraft, setJournalText, onClose, t]);
 
   const handleSubmit = useCallback(() => {
     Keyboard.dismiss();

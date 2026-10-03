@@ -15,6 +15,7 @@ import { RecordPromptSection } from "./components/RecordPromptSection";
 import { RecordMascotStage } from "./components/RecordMascotStage";
 import { CalendarDatePickerSheet } from "./components/CalendarDatePickerSheet";
 import type { DiscoveryScreenViewModel } from "./hooks/useDiscoveryScreenViewModel";
+import { useTranslation } from "react-i18next";
 
 export interface DiscoveryViewProps extends DiscoveryScreenViewModel {}
 
@@ -44,6 +45,7 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = React.memo(
     onCloseOptions,
     onCloseImageJournal,
   }) => {
+    const { t } = useTranslation("journal");
     const insets = useSafeAreaInsets();
     // ponytail: ensure bottom action cluster and its labels sit cleanly above NativeTabs bar (49pt tab bar + safe bottom inset + 16pt breathing room)
     const bottomPadding = Math.max(insets.bottom, 20) + 64;
@@ -100,6 +102,8 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = React.memo(
             >
               {/* Camera / Photo Attachment Action */}
               <PromptInputAction
+                accessibilityRole="button"
+                accessibilityLabel={t("capture.scanJournal")}
                 onPress={() => {
                   Haptics.selectionAsync();
                   onScanJournal();
@@ -123,10 +127,10 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = React.memo(
                     }}
                     className="flex-1 py-2 justify-center active:opacity-70"
                     accessibilityRole="button"
-                    accessibilityLabel="Tap to write your thoughts"
+                    accessibilityLabel={t("capture.writePromptA11y")}
                   >
                     <Text className="text-[15px] text-[#788576] happy-font-body-medium">
-                      Tap to write your thoughts...
+                      {t("capture.writePrompt")}
                     </Text>
                   </Pressable>
 
@@ -139,7 +143,7 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = React.memo(
                       className="w-[36px] h-[36px] rounded-full bg-[#2D4D28] items-center justify-center m-[2px] active:scale-95"
                       style={{ borderCurve: "continuous" }}
                       accessibilityRole="button"
-                      accessibilityLabel="Record voice"
+                      accessibilityLabel={t("capture.recordVoiceA11y")}
                     >
                       <SymbolView
                         name="mic.fill"
@@ -157,7 +161,7 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = React.memo(
                       className="w-[36px] h-[36px] rounded-full bg-foreground items-center justify-center m-[2px] active:scale-95"
                       style={{ borderCurve: "continuous" }}
                       accessibilityRole="button"
-                      accessibilityLabel="Write thoughts"
+                      accessibilityLabel={t("capture.writeThoughtsA11y")}
                     >
                       <SymbolView
                         name="square.and.pencil"

@@ -1,5 +1,5 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, ScrollView, Platform } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -9,6 +9,7 @@ import { useReminderConfig } from "@/src/components/notifications/useReminderCon
 import { DEFAULT_REMINDERS } from "@/src/components/notifications/constants";
 import { SymbolView } from "expo-symbols";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { useTranslation } from "react-i18next";
 
 interface NotificationPermissionStepProps {
   selectedTime?: NotificationTime;
@@ -22,7 +23,13 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   onSelectTime,
 }) => {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation("onboarding");
   const contentTopPadding = Platform.OS === "ios" ? insets.top + 32 : insets.top + 28;
+  const reminderItems = useMemo(() => DEFAULT_REMINDERS.map((item) => ({
+    ...item,
+    title: t(`notification.reminders.${item.id}.title`, { defaultValue: item.title }),
+    notificationBody: t(`notification.reminders.${item.id}.body`, { defaultValue: item.notificationBody }),
+  })), [t]);
   
   // ponytail: do not prompt OS dialog while toggling in onboarding; prompt on Continue click
   const {
@@ -30,7 +37,7 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
     cfg,
     handleTimeChange,
     toggleSelected,
-  } = useReminderConfig(DEFAULT_REMINDERS, { requestPermissionsOnToggle: false });
+  } = useReminderConfig(reminderItems, { requestPermissionsOnToggle: false });
 
   // Notify parent that a time is "selected" if any reminder is enabled
   useEffect(() => {
@@ -56,7 +63,7 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
           style={{ fontFamily: APP_FONT_FAMILIES.bold }}
           className="text-[11px] font-bold uppercase tracking-wider text-sage-600"
         >
-          Gentle nudges
+          {t("notification.step_label")}
         </Text>
       </Animated.View>
 
@@ -65,13 +72,13 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
           style={{ fontFamily: APP_FONT_FAMILIES.extraBold }}
           className="text-[28px] leading-[34px] text-ink happy-font-body-extrabold"
         >
-          Daily reminders
+          {t("notification.title")}
         </Text>
         <Text
           style={{ fontFamily: APP_FONT_FAMILIES.regular }}
           className="mt-1.5 text-[15px] leading-relaxed text-ink-soft happy-font-body-medium"
         >
-          Consistent check-ins build emotional resilience. Pick times that fit your daily flow.
+          {t("notification.description")}
         </Text>
       </Animated.View>
 
@@ -112,7 +119,7 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
           className="text-[12px] text-sage-800"
         >
-          Members with reminders are 3x more consistent
+          {t("notification.consistency_proof")}
         </Text>
       </Animated.View>
 
@@ -121,7 +128,7 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
           className="text-center text-[13px] leading-relaxed text-ink-soft"
         >
-          You can customize or mute these anytime in Settings.
+          {t("notification.customize_note")}
         </Text>
       </Animated.View>
     </ScrollView>

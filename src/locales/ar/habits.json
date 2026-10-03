@@ -1,1 +1,12 @@
-{}
+{
+  "title": "العادات",
+  "streak": { "days": "أيام متتالية", "multiplier": "مضاعف الاستمرارية" },
+  "timeOfDay": { "morning": "الصباح", "afternoon": "بعد الظهر", "evening": "المساء", "anytime": "أي وقت" },
+  "actions": { "logHabit": "تسجيل العادة", "habitCompleted": "مكتملة", "addHabit": "إضافة عادة" },
+  "empty": { "titles": ["ابنِ عادات أفضل", "تابع تقدمك اليومي", "حافظ على الاستمرار"], "description": "أنشئ روتينًا بتتبع يومي بسيط." },
+  "repeat": { "weekly": "أسبوعيًا", "monthly": "شهريًا", "once": "مرة واحدة" },
+  "add": { "addHabitPrefix": "إضافة عادة", "createCustom": "إنشاء عادة مخصصة", "nameLabel": "اسم العادة *", "namePlaceholder": "مثال: تمارين التمدد صباحًا", "nameHint": "امنح عادتك اسمًا للبدء", "descriptionLabel": "لماذا هذا مهم لك؟", "descriptionPlaceholder": "لأشعر بمزيد من النشاط والتركيز...", "reasonPrompt": "لماذا تريد {{habit}}؟", "back": "رجوع", "createHabit": "إنشاء العادة", "presets": { "water": { "name": "شرب 8 أكواب من الماء", "description": "حافظ على ترطيب جسمك لمزيد من الطاقة والتركيز" }, "exercise": { "name": "التمرين لمدة 30 دقيقة", "description": "حرّك جسمك وصفِّ ذهنك" }, "meditate": { "name": "التأمل", "description": "ابحث عن الهدوء والتوازن" }, "read": { "name": "القراءة لمدة 15 دقيقة", "description": "وسّع آفاقك كل يوم" }, "gratitude": { "name": "ممارسة الامتنان", "description": "قدّر الأشياء الجميلة في حياتك" }, "journal": { "name": "كتابة تدوينة يومية", "description": "تأمل أفكارك ومشاعرك" }, "sleep": { "name": "النوم 8 ساعات", "description": "الراحة ضرورية للتعافي" }, "walk": { "name": "الخروج للمشي", "description": "استمتع بالهواء النقي والحركة" } } },
+  "details": { "anytime": "في أي وقت", "atTime": "في وقت محدد", "date": "التاريخ", "time": "الوقت", "duration": "المدة", "repeat": "التكرار", "endRepeat": "إنهاء التكرار", "endDate": "تاريخ الانتهاء", "after": "بعد", "reminder": "تذكير", "notesPlaceholder": "أضف ملاحظات حول هذه العادة...", "save": "حفظ التغييرات", "markIncomplete": "وضع علامة غير مكتملة", "complete": "✓ إكمال العادة", "delete": "حذف العادة", "never": "أبدًا", "daily": "يوميًا", "weekly": "أسبوعيًا", "monthly": "شهريًا", "onDate": "في تاريخ", "afterCount": "بعد عدد مرات", "times_one": "{{count}} مرة", "times_other": "{{count}} مرات", "durationHour_one": "{{count}} ساعة", "durationHour_other": "{{count}} ساعات", "durationMinute": "{{count}} دقيقة", "cannotCompleteTitle": "لا يمكن إكمال العادة", "cannotCompleteFuture": "لا يمكنك وضع علامة إكمال للعادات في تواريخ مستقبلية." },
+  "navigation": { "addTitle": "إضافة عادة", "detailsTitle": "تفاصيل العادة" },
+  "accessibility": { "completed": "{{habit}}، مكتملة", "markComplete": "وضع {{habit}} كمكتملة", "markIncomplete": "وضع {{habit}} كغير مكتملة" }
+}

@@ -1,0 +1,277 @@
+{
+  "header": { "your_course": "YOUR COURSE", "quiet_moment": "A QUIET MOMENT" },
+  "buttons": {
+    "lets_begin": "LET'S BEGIN",
+    "continue": "CONTINUE",
+    "start_my_journey": "START MY JOURNEY",
+    "start_lesson_1": "START LESSON 1",
+    "set_reminders": "SET REMINDERS",
+    "save_my_progress": "SAVE MY PROGRESS",
+    "skip_for_now": "Skip for now",
+    "maybe_later": "Maybe later",
+    "setting_up": "Setting up..."
+  },
+  "welcome": {
+    "headline_line1": "Start your",
+    "headline_line2": "journey within",
+    "subhead": "one thought at a time"
+  },
+  "welcome_nodes": {"0_0":"Keep growing","1_0":"Reflect","1_1":"deeply","2_0":"Understand","2_1":"yourself","4_0":"Build a","4_1":"habit","5_0":"A brighter","5_1":"mind","today":"Today","start_here":"Start here"},
+  "mascot_greeting": {
+    "label": "Your guide",
+    "hi": "Hi, I'm Mochi.",
+    "intro": "I'm a panda. I'm soft. I'm patient. I'll be your companion on this journey, just",
+    "questions_count": "6 quick questions",
+    "before_lesson": "before your first lesson.",
+    "quote": "\u201cThe smallest practice, done daily, is more powerful than the biggest one done once.\u201d"
+  },
+  "quiz_motivation": {
+    "step_label": "Start with what feels most true",
+    "title": "What brings you here, friend?",
+    "description": "Pick the one that resonates most. No wrong answers.",
+    "options": {
+      "anxiety": {
+        "title": "Manage anxiety",
+        "subtitle": "Quiet the racing thoughts"
+      },
+      "mood": {
+        "title": "Lift my mood",
+        "subtitle": "Find lightness in heavy days"
+      },
+      "stress": {
+        "title": "Handle stress better",
+        "subtitle": "Build resilience for hard moments"
+      },
+      "self_understanding": {
+        "title": "Understand myself",
+        "subtitle": "Patterns, triggers, and growth"
+      },
+      "sleep": {
+        "title": "Sleep & rest better",
+        "subtitle": "Wind-down rituals that work"
+      }
+    }
+  },
+  "quiz_stress_level": {
+    "question_mark": "?",
+    "step_label": "Set the pace",
+    "options": {
+      "light": {
+        "title": "Light breeze",
+        "subtitle": "Manageable, I just want to stay ahead of it"
+      },
+      "moderate": {
+        "title": "Moderate weight",
+        "subtitle": "It comes and goes, some days harder than others"
+      },
+      "heavy": {
+        "title": "Heavy clouds",
+        "subtitle": "It affects my daily life significantly"
+      },
+      "overwhelming": {
+        "title": "Overwhelming storm",
+        "subtitle": "Some days I don't know how to start"
+      }
+    }
+  },
+  "motivation_followup": {
+    "anxiety": {
+      "question": "How present has anxiety felt lately",
+      "subtext": "This helps us choose a pace that fits.",
+      "options": {
+        "light": { "title": "Background hum", "subtitle": "It's there, but I can still go about my day." },
+        "moderate": { "title": "Regular tension", "subtitle": "Noticeable most days, sometimes hard to shake." },
+        "heavy": { "title": "Constant weight", "subtitle": "Anxiety is with me most of the day." },
+        "overwhelming": { "title": "Taking over", "subtitle": "Some days it takes up most of my attention." }
+      }
+    },
+    "mood": {
+      "question": "How heavy are your low moods",
+      "subtext": "Knowing this helps us match the right lessons to where you are.",
+      "options": {
+        "light": { "title": "Occasional dips", "subtitle": "I feel off sometimes but bounce back" },
+        "moderate": { "title": "Regular lows", "subtitle": "Low periods come and go through the week" },
+        "heavy": { "title": "Most days feel heavy", "subtitle": "It's hard to find lightness most of the time" },
+        "overwhelming": { "title": "Hard to get through", "subtitle": "Some days just getting through feels like a lot" }
+      }
+    },
+    "stress": {
+      "question": "How much pressure are you carrying",
+      "subtext": "This helps us calibrate the right pace and tools for you.",
+      "options": {
+        "light": { "title": "Manageable load", "subtitle": "Busy but mostly in control" },
+        "moderate": { "title": "Building pressure", "subtitle": "It piles up and I don't always decompress" },
+        "heavy": { "title": "Constant pressure", "subtitle": "Stress is a daily companion right now" },
+        "overwhelming": { "title": "Pushed to the limit", "subtitle": "Running on empty most of the time" }
+      }
+    },
+    "self_understanding": {
+      "question": "How lost do you feel right now",
+      "subtext": "There's no wrong answer, we'll meet you exactly where you are.",
+      "options": {
+        "light": { "title": "Mildly curious", "subtitle": "I mostly know myself, just want more clarity" },
+        "moderate": { "title": "Some confusion", "subtitle": "I have patterns I can't quite explain" },
+        "heavy": { "title": "Often uncertain", "subtitle": "I find myself reacting and not understanding why" },
+        "overwhelming": { "title": "Quite lost", "subtitle": "It's hard to know what I actually feel or want" }
+      }
+    },
+    "sleep": {
+      "question": "How disrupted is your sleep",
+      "subtext": "This shapes the wind-down practices we'll build for you.",
+      "options": {
+        "light": { "title": "Slightly restless", "subtitle": "Occasional bad nights, mostly okay" },
+        "moderate": { "title": "Inconsistent", "subtitle": "Sleep varies a lot, good nights and bad nights" },
+        "heavy": { "title": "Regularly poor", "subtitle": "I rarely feel rested in the morning" },
+        "overwhelming": { "title": "Severely disrupted", "subtitle": "Sleep is a real problem affecting my daily life" }
+      }
+    }
+  },
+ "building_journey": {
+    "title": "Building your journey...",
+    "subtitle": "Personalizing from what you shared",
+    "ready_title": "Your journey is ready!",
+    "ready_subtitle": "Your CBT path is ready",
+    "generating": "Generating plan...",
+    "complete": "Complete",
+    "private": "Private and tailored to you",
+   "tasks": {
+      "profile": "Reviewing what you shared",
+      "gentle_schedule": "Setting a gentle, manageable pace",
+      "stress": "Analyzing your stress profile",
+      "plan": "Building your personal journey",
+      "cbt": "Selecting CBT exercises for you",
+      "schedule": "Optimizing your daily schedule"
+    }
+  },
+  "plan_names": {"anxiety":"Quieting the Storm","mood":"Finding Light Again","stress":"Steady Under Pressure","self_understanding":"Coming Home to Yourself","sleep":"The Gentle Wind-Down"},
+  "plan_reveal": {
+    "step_label": "Your tailored plan",
+    "loading_milestones": "Loading milestones",
+    "phase_subtitles": {"foundation":"Foundation & Awareness","practice":"Skill Building & Practice","integration":"Integration & Lasting Calm","initial":"Initial focus","core":"Core practice","anchor":"Long-term anchor"},
+    "units": "{{count}} units",
+    "course_illustration": "{{title}} illustration",
+    "title": "Your journey is ready",
+    "pace_per_day": "~5 min/day",
+    "milestones_count": "3 Milestones",
+    "self_paced": "Self-paced",
+    "why_this_course": "Why this course",
+    "tailored_label": "Tailored to what you shared",
+    "milestones_section": "Your 3 Milestones",
+    "step_by_step": "Step-by-step",
+    "milestone_badges": {
+      "start_here": "START HERE",
+      "phase_2": "PHASE 2",
+      "mastery": "MASTERY"
+    }
+  },
+  "daily_goal": {
+    "anxiety": {
+      "headline": "How long can you sit with",
+      "subtext": "Even 3 minutes of daily reflection can interrupt an anxiety spiral. Start where you are.",
+      "testimonial": {
+        "name": "Sara",
+        "age": 31,
+        "quote": "\"3 minutes felt embarrassingly short. But showing up daily for 3 minutes did more than my once-a-week 30-minute attempts ever did.\""
+      }
+    },
+    "mood": {
+      "headline": "How much time can you protect for",
+      "subtext": "Consistency matters more than length. A small daily habit outlasts big occasional ones.",
+      "testimonial": {
+        "name": "Marcus",
+        "age": 34,
+        "quote": "\"5 minutes every morning became the thing I actually looked forward to. It set a different tone for the whole day.\""
+      }
+    },
+    "stress": {
+      "headline": "How much time can you reclaim for",
+      "subtext": "A short decompression window beats a long one you never actually do. Be honest.",
+      "testimonial": {
+        "name": "Priya",
+        "age": 29,
+        "quote": "\"I thought I needed an hour of self-care. Turns out 5 minutes of structured reflection lowered my cortisol more than scrolling for an hour.\""
+      }
+    },
+    "self_understanding": {
+      "headline": "How much time will you give",
+      "subtext": "Self-understanding builds slowly. Even short, consistent reflection compounds over time.",
+      "testimonial": {
+        "name": "Riley",
+        "age": 26,
+        "quote": "\"I started with 5 minutes just to see patterns. Six weeks later I finally understood why I kept sabotaging myself.\""
+      }
+    },
+    "sleep": {
+      "headline": "How long can you wind down for",
+      "subtext": "A short wind-down ritual done consistently rewires your nervous system over time.",
+      "testimonial": {
+        "name": "Dani",
+        "age": 28,
+        "quote": "\"5 minutes of journaling before bed replaced 45 minutes of doom-scrolling. I'm asleep in under 20 minutes now.\""
+      }
+    },
+    "cards": {
+      "gentle": { "tag": "Gentle", "description": "A check-in" },
+      "recommended": { "tag": "Recommended", "description": "A meaningful pause" },
+      "committed": { "tag": "Committed", "description": "A real reflection" },
+      "serious": { "tag": "Serious", "description": "A deep practice" }
+    }
+  },
+  "pact_signing": {
+    "today": "Today",
+    "step_label": "A small pact",
+    "subtitle": "Can you show up for {{minutes}} minutes a day?",
+    "streak_goal": "7-Day Streak Goal",
+    "day_1_today": "Day 1 starts today",
+    "vow": "\"For the next 7 days, I'll show up for myself, even if it's only for {{minutes}} minutes.\"",
+    "private": "100% private to you",
+    "hint_idle": "Hold to make your 7-day commitment",
+    "hint_holding": "Sealing your commitment...",
+    "hint_done": "Pact sealed. One day at a time \u2728",
+    "button_idle": "Hold to commit",
+    "button_holding": "Sealing...",
+    "button_done": "Pact Sealed"
+  },
+  "lesson_complete": { "you_did_it": "You did it.", "truly": "Truly." },
+  "notification": {
+    "step_label": "Gentle nudges",
+    "title": "Daily reminders",
+    "description": "Consistent check-ins build emotional resilience. Pick times that fit your daily flow.",
+    "consistency_proof": "Members with reminders are 3x more consistent",
+    "customize_note": "You can customize or mute these anytime in Settings.",
+    "reminders": {"1":{"title":"Morning Reflection","body":"Start your day with clarity ☀️ Take a moment to reflect and set your intentions."},"2":{"title":"Midday Check-in","body":"How's your day going? 🌿 Pause and capture your thoughts right now."},"3":{"title":"Evening Wind-down","body":"Time to unwind 🌙 Reflect on your day and celebrate your wins."}}
+  },
+  "welcome_to_happy": {
+    "step_label": "Almost there",
+    "login": "Log in",
+    "login_accessibility": "Already have an account? Log in",
+    "personal_plan": "Personal Plan",
+    "title": "Keep your progress with you",
+    "description": "Save your tailored plan, streak, and private notes before starting Day 1.",
+    "course_card": {
+      "ready_badge": "Ready",
+      "daily_label": "Tailored 7-day course \u2022 {{minutes}}m daily"
+    },
+    "streak_card": {
+      "title": "Streak & momentum",
+      "day_1_badge": "Day 1",
+      "subtitle": "Lock in today's habit history"
+    },
+    "reflections_card": {
+      "title": "Private reflections",
+      "encrypted_badge": "Encrypted",
+      "subtitle": "Synced securely to your personal profile"
+    }
+  },
+  "xp_first_step": "First step on your journey",
+  "paywall": {
+    "benefits": {
+      "journeys": "All 12 journeys with sequenced lessons",
+      "ai": "Unlimited AI insights & weekly patterns",
+      "cbt": "Full CBT toolkit (20+ exercises)",
+      "streak": "Streak repair & premium themes"
+    }
+  },
+  "pact_text": "I commit to showing up for myself, even on the days I don't feel like it. Just {{minutes}} minutes. That's all it takes.",
+  "future_letter": "You did it. You actually showed up, not once, but every single day for 30 days.\n\nRemember how heavy things felt when you started? The {{timing}} were the hardest. But you kept coming back. {{minutes}} minutes at a time.\n\nYou're not the same person who opened this app a month ago. You're calmer. You notice your thoughts before they spiral. You have tools now.\n\nI'm proud of you."
+}

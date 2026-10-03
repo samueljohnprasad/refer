@@ -14,6 +14,8 @@ import {
   presentationBackground,
 } from "@expo/ui/swift-ui/modifiers";
 import { SAGE } from "@/src/theme/palette";
+import { useTranslation } from "react-i18next";
+import { getCapturePromptKey } from "../capturePrompts";
 
 export interface JournalingOptionsModalViewProps {
   visible: boolean;
@@ -34,6 +36,7 @@ export const JournalingOptionsModalView: React.FC<JournalingOptionsModalViewProp
     onSelectPrompt,
     onScanJournal,
   }) => {
+    const { t } = useTranslation("journal");
     return (
       <Modal
         visible={visible}
@@ -69,7 +72,7 @@ export const JournalingOptionsModalView: React.FC<JournalingOptionsModalViewProp
                       color="ink"
                       className="text-center happy-font-heading-semibold text-[20px] leading-[26px]"
                     >
-                      Journaling Options
+                      {t("capture.options.title")}
                     </Text>
                   </View>
 
@@ -82,7 +85,7 @@ export const JournalingOptionsModalView: React.FC<JournalingOptionsModalViewProp
                       {/* Free Write */}
                       <Pressable
                         accessibilityRole="button"
-                        accessibilityLabel="Free Write. Write without a prompt."
+                        accessibilityLabel={`${t("capture.freeWrite")}. ${t("capture.freeWriteHint")}`}
                         onPress={() => onSelectPrompt("Free Write")}
                         className="w-full flex-row items-center py-1.5 px-3 rounded-2xl active:bg-ink/[0.05] min-h-[44px]"
                       >
@@ -98,13 +101,13 @@ export const JournalingOptionsModalView: React.FC<JournalingOptionsModalViewProp
                             color="ink"
                             className="happy-font-body-bold text-[16px] leading-[21px]"
                           >
-                            Free Write
+                            {t("capture.freeWrite")}
                           </Text>
                           <Text
                             color="soft"
                             className="happy-font-body text-[13px] leading-[18px] mt-0.5"
                           >
-                            Write without a prompt
+                            {t("capture.freeWriteHint")}
                           </Text>
                         </View>
                       </Pressable>
@@ -112,7 +115,7 @@ export const JournalingOptionsModalView: React.FC<JournalingOptionsModalViewProp
                       {/* Import Handwritten Entry */}
                       <Pressable
                         accessibilityRole="button"
-                        accessibilityLabel="Import Handwritten Entry. Scan from paper."
+                        accessibilityLabel={`${t("capture.options.import")}. ${t("capture.options.scanHint")}`}
                         onPress={onScanJournal}
                         className="w-full flex-row items-center py-1.5 px-3 rounded-2xl active:bg-ink/[0.05] min-h-[44px]"
                       >
@@ -128,13 +131,13 @@ export const JournalingOptionsModalView: React.FC<JournalingOptionsModalViewProp
                             color="ink"
                             className="happy-font-body-bold text-[16px] leading-[21px]"
                           >
-                            Import Handwritten Entry
+                            {t("capture.options.import")}
                           </Text>
                           <Text
                             color="soft"
                             className="happy-font-body text-[13px] leading-[18px] mt-0.5"
                           >
-                            Scan from paper
+                            {t("capture.options.scanHint")}
                           </Text>
                         </View>
                       </Pressable>
@@ -143,19 +146,20 @@ export const JournalingOptionsModalView: React.FC<JournalingOptionsModalViewProp
                     {/* Section Label: 1 step quieter (11px) with generous gap above */}
                     <View className="mt-5 mb-1 px-3">
                       <Text className="happy-font-body-bold text-[11px] leading-[15px] uppercase tracking-wide text-ink-muted">
-                        TRY ANOTHER PROMPT
+                        {t("capture.options.tryAnother")}
                       </Text>
                     </View>
 
                     {/* Prompt Choices Flat List: consistent row padding rhythm, no manual margins */}
                     {displayPrompts.map((prompt: string, index: number) => {
                       const isSelected = prompt === currentPrompt;
+                      const translatedPrompt = t(`capture.prompts.${getCapturePromptKey(prompt) ?? ""}`, { defaultValue: prompt });
                       return (
                         <Pressable
                           key={index}
                           accessibilityRole="button"
                           accessibilityLabel={
-                            isSelected ? `${prompt}. Selected.` : prompt
+                            isSelected ? t("capture.options.selected", { prompt: translatedPrompt }) : translatedPrompt
                           }
                           onPress={() => onSelectPrompt(prompt)}
                           className={`w-full flex-row items-center justify-between px-3.5 rounded-xl min-h-[44px] active:bg-ink/[0.05] ${
@@ -172,7 +176,7 @@ export const JournalingOptionsModalView: React.FC<JournalingOptionsModalViewProp
                                 : "text-ink"
                             }`}
                           >
-                            {prompt}
+                            {translatedPrompt}
                           </Text>
                           {isSelected ? (
                             <View className="pl-2 pr-1.5 self-center justify-center items-center">

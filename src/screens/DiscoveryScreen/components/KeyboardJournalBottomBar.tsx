@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { Button } from "@/src/components/ui/Button";
 import WhisperUI from "@/src/components/ui/swiftui";
 import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
+import { useTranslation } from "react-i18next";
 
 interface KeyboardJournalBottomBarProps {
   paddingBottom: number;
@@ -26,6 +27,7 @@ export const KeyboardJournalBottomBar: React.FC<KeyboardJournalBottomBarProps> =
     onSubmit,
   }) => {
     const { isVoiceEnabled, isLocalTranscription } = useVoiceFeature();
+    const { t } = useTranslation("journal");
 
     return (
       <View
@@ -51,8 +53,8 @@ export const KeyboardJournalBottomBar: React.FC<KeyboardJournalBottomBarProps> =
               variant="primary"
               size="md"
               fullWidth
-              accessibilityLabel="Finish journal entry"
-              label="Done"
+              accessibilityLabel={t("capture.keyboard.finish")}
+              label={t("capture.keyboard.done")}
               haptic="medium"
             />
           </View>

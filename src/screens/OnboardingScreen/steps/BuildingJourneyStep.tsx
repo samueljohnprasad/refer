@@ -16,6 +16,7 @@ import LoadingTaskRow from "../components/LoadingTaskRow";
 import { useAutoAdvance } from "../hooks/useAutoAdvance";
 import { getBuildingJourneyConfig } from "../config/buildingJourneyConfig";
 import type { MotivationAnswer, StressLevel } from "../types";
+import { useTranslation } from "react-i18next";
 
 interface BuildingJourneyStepProps {
   onComplete: () => void;
@@ -29,6 +30,7 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
   motivation,
   stressLevel,
 }) => {
+  const { t } = useTranslation("onboarding");
   const config = useMemo(
     () => getBuildingJourneyConfig(motivation, stressLevel),
     [motivation, stressLevel],
@@ -74,10 +76,10 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
           style={{ fontFamily: APP_FONT_FAMILIES.extraBold }}
           className="text-center text-2xl text-ink"
         >
-          {allComplete ? "Your Journey is Ready!" : config.title}
+          {allComplete ? t("building_journey.ready_title", { defaultValue: "Your Journey is Ready!" }) : t("building_journey.title", { defaultValue: config.title })}
         </Text>
         <Text className="mt-1 text-center text-sm text-ink-soft">
-          {allComplete ? "Personalized CBT path created for you" : config.subtitle}
+          {allComplete ? t("building_journey.ready_subtitle", { defaultValue: "Personalized CBT path created for you" }) : t("building_journey.subtitle", { defaultValue: config.subtitle })}
         </Text>
       </Animated.View>
 
@@ -88,7 +90,7 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
             style={{ fontFamily: APP_FONT_FAMILIES.bold }}
             className="text-xs text-ink-muted"
           >
-            {allComplete ? "Complete" : "Generating plan..."}
+            {allComplete ? t("building_journey.complete", { defaultValue: "Complete" }) : t("building_journey.generating", { defaultValue: "Generating plan..." })}
           </Text>
           <Text
             style={{ fontFamily: APP_FONT_FAMILIES.extraBold, color: SAGE[600] }}
@@ -120,7 +122,7 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
         {tasks.map((task, index) => (
           <LoadingTaskRow
             key={task.id}
-            label={task.label}
+            label={t(`building_journey.tasks.${task.id === "journey" ? "plan" : task.id === "profile" ? "profile" : task.id === "schedule" && (stressLevel === "heavy" || stressLevel === "overwhelming") ? "gentle_schedule" : task.id}`, { defaultValue: task.label })}
             completed={task.completed}
             inProgress={task.inProgress}
             index={index}
@@ -145,7 +147,7 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }}
           className="text-xs"
         >
-          100% private & personalized to you
+          {t("building_journey.private", { defaultValue: "Private and tailored to you" })}
         </Text>
       </Animated.View>
     </View>

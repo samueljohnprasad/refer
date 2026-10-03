@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import Animated, {
   useSharedValue,
@@ -89,6 +90,7 @@ export const VoiceWaveform: React.FC<VoiceWaveformProps> = ({
   isPaused,
   color = "#587C51",
 }) => {
+  const { t } = useTranslation("journal");
   // Symmetrical 25-bar curve heights from edge to center (index 12 is peak)
   const heights = [
     10, 14, 18, 24, 30, 36, 42, 48, 54, 60, 64, 68, 70, 68, 64, 60, 54, 48, 42, 36, 30, 24, 18, 14, 10,
@@ -99,7 +101,7 @@ export const VoiceWaveform: React.FC<VoiceWaveformProps> = ({
       className="flex-row items-center justify-center gap-1.5 h-20 w-full px-4"
       accessibilityRole="progressbar"
       accessibilityLabel={
-        isRecording ? "Recording audio" : isPaused ? "Recording paused" : "Idle"
+        t(isRecording ? "capture.voice.waveRecording" : isPaused ? "capture.voice.wavePaused" : "capture.voice.waveIdle")
       }
     >
       {heights.map((maxH, index) => {

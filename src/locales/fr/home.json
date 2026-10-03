@@ -51,5 +51,10 @@
     "streakCount_other": "{{count}} jours de série",
     "weekDays": ["D", "L", "M", "M", "J", "V", "S"],
     "a11yLabel": "Série actuelle : {{count}} jours. Touchez pour voir l'historique."
+  },
+  "errors": {
+    "loadTitle": "Une erreur s'est produite",
+    "loadDescription": "Impossible de charger l'accueil.",
+    "tryAgain": "Réessayer"
   }
 }

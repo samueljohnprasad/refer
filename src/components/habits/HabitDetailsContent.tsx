@@ -8,6 +8,7 @@ import { Text } from "@/src/components/ui/Text";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { HabitIcon } from "@/src/utils/habitIconMapper";
 import { NEUTRAL } from "@/src/theme/palette";
+import { useTranslation } from "react-i18next";
 import type {
   EndRepeatOption,
   Habit,
@@ -21,34 +22,8 @@ import {
   SettingsToggleRow,
 } from "./SettingsRow";
 
-const DURATION_OPTIONS = [
-  { value: "5", label: "5 mins" },
-  { value: "10", label: "10 mins" },
-  { value: "15", label: "15 mins" },
-  { value: "30", label: "30 mins" },
-  { value: "45", label: "45 mins" },
-  { value: "60", label: "1 hour" },
-  { value: "90", label: "1.5 hours" },
-  { value: "120", label: "2 hours" },
-];
-
-const REPEAT_OPTIONS = [
-  { value: "never", label: "Never" },
-  { value: "daily", label: "Daily" },
-  { value: "weekly", label: "Weekly" },
-  { value: "monthly", label: "Monthly" },
-];
-
-const END_REPEAT_OPTIONS = [
-  { value: "never", label: "Never" },
-  { value: "on_date", label: "On Date" },
-  { value: "after_count", label: "After Count" },
-];
-
-const COUNT_OPTIONS = Array.from({ length: 30 }, (_, index) => ({
-  value: String(index + 1),
-  label: `${index + 1} ${index === 0 ? "time" : "times"}`,
-}));
+const DURATION_MINUTES = [5, 10, 15, 30, 45];
+const DURATION_HOURS = [60, 90, 120];
 
 export interface HabitDetailsFormValues {
   timeOption: TimeOption;
@@ -96,6 +71,25 @@ export function HabitDetailsContent({
   values,
   actions,
 }: HabitDetailsContentProps): React.JSX.Element {
+  const { t } = useTranslation("habits");
+  const durationOptions = [...DURATION_MINUTES, ...DURATION_HOURS].map((minutes) => ({
+    value: String(minutes),
+    label: minutes < 60
+      ? t("details.durationMinute", { count: minutes })
+      : t("details.durationHour", { count: minutes / 60 }),
+  }));
+  const repeatOptions = ["never", "daily", "weekly", "monthly"].map((value) => ({
+    value,
+    label: t(`details.${value}`, { defaultValue: value }),
+  }));
+  const endRepeatOptions = ["never", "on_date", "after_count"].map((value) => ({
+    value,
+    label: t(`details.${value === "on_date" ? "onDate" : value === "after_count" ? "afterCount" : value}`, { defaultValue: value }),
+  }));
+  const countOptions = Array.from({ length: 30 }, (_, index) => ({
+    value: String(index + 1),
+    label: t("details.times", { count: index + 1 }),
+  }));
   return (
     <ScrollView
       className="flex-1"
@@ -131,15 +125,15 @@ export function HabitDetailsContent({
             }}
             modifiers={[pickerStyle("segmented")]}
           >
-            <SwiftUIText modifiers={[tag("anytime")]}>Anytime</SwiftUIText>
-            <SwiftUIText modifiers={[tag("at_time")]}>At time</SwiftUIText>
+            <SwiftUIText modifiers={[tag("anytime")]}>{t("details.anytime")}</SwiftUIText>
+            <SwiftUIText modifiers={[tag("at_time")]}>{t("details.atTime")}</SwiftUIText>
           </Picker>
         </Host>
       </View>
 
       <View className="mx-4 mb-4 overflow-hidden rounded-[10px] bg-white">
         <SettingsDateRow
-          label="Date"
+          label={t("details.date")}
           selection={values.startDate}
           onDateChange={(date) => selectDate(date, actions.setStartDate)}
           displayedComponents={["date"]}
@@ -149,7 +143,7 @@ export function HabitDetailsContent({
         {values.timeOption === "at_time" ? (
           <>
             <SettingsDateRow
-              label="Time"
+              label={t("details.time")}
               selection={values.scheduledTime}
               onDateChange={(date) =>
                 selectDate(date, actions.setScheduledTime)
@@ -158,9 +152,9 @@ export function HabitDetailsContent({
             />
             <SectionDivider />
             <SettingsPickerRow
-              label="Duration"
+              label={t("details.duration")}
               selection={String(values.durationMinutes)}
-              options={DURATION_OPTIONS}
+              options={durationOptions}
               onSelectionChange={(selection) => {
                 void Haptics.selectionAsync();
                 actions.setDurationMinutes(Number.parseInt(selection, 10));
@@ -171,9 +165,9 @@ export function HabitDetailsContent({
         ) : null}
 
         <SettingsPickerRow
-          label="Repeat"
+          label={t("details.repeat")}
           selection={values.repeatPattern}
-          options={REPEAT_OPTIONS}
+          options={repeatOptions}
           onSelectionChange={(selection) => {
             void Haptics.selectionAsync();
             actions.setRepeatPattern(selection as RepeatPattern);
@@ -181,9 +175,9 @@ export function HabitDetailsContent({
         />
         <SectionDivider />
         <SettingsPickerRow
-          label="End Repeat"
+          label={t("details.endRepeat")}
           selection={values.endRepeatOption}
-          options={END_REPEAT_OPTIONS}
+          options={endRepeatOptions}
           onSelectionChange={(selection) => {
             void Haptics.selectionAsync();
             actions.setEndRepeatOption(selection as EndRepeatOption);
@@ -194,7 +188,7 @@ export function HabitDetailsContent({
           <>
             <SectionDivider />
             <SettingsDateRow
-              label="End Date"
+              label={t("details.endDate")}
               selection={values.endRepeatDate}
               onDateChange={(date) =>
                 selectDate(date, actions.setEndRepeatDate)
@@ -210,9 +204,9 @@ export function HabitDetailsContent({
           <>
             <SectionDivider />
             <SettingsPickerRow
-              label="After"
+          label={t("details.after")}
               selection={String(values.endRepeatCount)}
-              options={COUNT_OPTIONS}
+          options={countOptions}
               onSelectionChange={(selection) => {
                 void Haptics.selectionAsync();
                 actions.setEndRepeatCount(Number.parseInt(selection, 10));
@@ -224,7 +218,7 @@ export function HabitDetailsContent({
 
       <View className="mx-4 mb-4 overflow-hidden rounded-[10px] bg-white">
         <SettingsToggleRow
-          label="Reminder"
+          label={t("details.reminder")}
           value={values.reminderEnabled}
           onValueChange={(value) => {
             void Haptics.selectionAsync();
@@ -237,7 +231,7 @@ export function HabitDetailsContent({
         <TextInput
           value={values.notes}
           onChangeText={actions.setNotes}
-          placeholder="Add notes about this habit..."
+          placeholder={t("details.notesPlaceholder")}
           placeholderTextColor={NEUTRAL.inkSoft}
           multiline
           numberOfLines={4}
@@ -248,13 +242,13 @@ export function HabitDetailsContent({
 
       <View className="mx-4 mb-5 gap-2">
         <Button
-          label="Save Changes"
+          label={t("details.save")}
           variant="primary"
           size="lg"
           onPress={actions.save}
         />
         <Button
-          label={isCompleted ? "Mark Incomplete" : "✓ Complete Habit"}
+          label={isCompleted ? t("details.markIncomplete") : t("details.complete")}
           variant="ghost"
           size="lg"
           onPress={actions.toggleCompletion}
@@ -264,7 +258,7 @@ export function HabitDetailsContent({
       <PressableScale onPress={actions.delete}>
         <View className="mx-4 items-center justify-center rounded-[10px] bg-white py-3.5">
           <Text className="text-[17px] text-red-500 happy-font-body-semibold">
-            Delete Habit
+            {t("details.delete")}
           </Text>
         </View>
       </PressableScale>

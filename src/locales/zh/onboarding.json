@@ -1,0 +1,380 @@
+{
+  "header": {
+    "your_course": "你的课程",
+    "quiet_moment": "片刻宁静"
+  },
+  "buttons": {
+    "lets_begin": "开始吧",
+    "continue": "继续",
+    "start_my_journey": "开始我的旅程",
+    "start_lesson_1": "开始第一课",
+    "set_reminders": "设置提醒",
+    "save_my_progress": "保存我的进度",
+    "skip_for_now": "暂时跳过",
+    "maybe_later": "以后再说",
+    "setting_up": "正在设置…"
+  },
+  "welcome": {
+    "headline_line1": "开启你的",
+    "headline_line2": "内心之旅",
+    "subhead": "一次一个念头"
+  },
+  "welcome_nodes": {
+    "0_0": "继续成长",
+    "1_0": "深入",
+    "1_1": "反思",
+    "2_0": "更了解",
+    "2_1": "自己",
+    "4_0": "养成",
+    "4_1": "习惯",
+    "5_0": "让内心",
+    "5_1": "更明朗",
+    "today": "今天",
+    "start_here": "从这里开始"
+  },
+  "mascot_greeting": {
+    "label": "你的指引者",
+    "hi": "嗨，我是Mochi。",
+    "intro": "我是只温柔又有耐心的熊猫。第一课之前，请先回答",
+    "questions_count": "6 个简单问题",
+    "before_lesson": "。我会陪你一起开始。",
+    "quote": "“每天进行的最小练习比一次最大的练习更有效。”"
+  },
+  "quiz_motivation": {
+    "step_label": "从最贴近你的感受开始",
+    "title": "你为什么来到这里？",
+    "description": "选择一个最能引起共鸣的。没有错误的答案。",
+    "options": {
+      "anxiety": {
+        "title": "管理焦虑",
+        "subtitle": "让纷乱的思绪慢下来"
+      },
+      "mood": {
+        "title": "提升我的心情",
+        "subtitle": "在难熬的日子里找回轻松"
+      },
+      "stress": {
+        "title": "更好地处理压力",
+        "subtitle": "培养应对艰难时刻的韧性"
+      },
+      "self_understanding": {
+        "title": "了解我自己",
+        "subtitle": "认识自己的模式与情绪诱因"
+      },
+      "sleep": {
+        "title": "更好的睡眠和休息",
+        "subtitle": "找到适合自己的睡前习惯"
+      }
+    }
+  },
+  "quiz_stress_level": {
+    "question_mark": "？",
+    "step_label": "选择适合你的节奏",
+    "options": {
+      "light": {
+        "title": "轻风",
+        "subtitle": "还能应对，只想早点照顾自己"
+      },
+      "moderate": {
+        "title": "时有时无的压力",
+        "subtitle": "它来来去去，有些日子比其他日子更难"
+      },
+      "heavy": {
+        "title": "沉重的乌云",
+        "subtitle": "它对我的日常生活影响很大"
+      },
+      "overwhelming": {
+        "title": "难以招架",
+        "subtitle": "有些日子我不知道如何开始"
+      }
+    }
+  },
+  "motivation_followup": {
+    "anxiety": {
+      "question": "最近，焦虑有多常出现？",
+      "subtext": "这有助于我们选择适合的节奏。",
+      "options": {
+        "light": {
+          "title": "偶尔在背景里",
+          "subtitle": "它就在那里，但我仍然可以继续我的一天。"
+        },
+        "moderate": {
+          "title": "经常紧绷",
+          "subtitle": "大多数日子都能感觉到，有时很难缓解。"
+        },
+        "heavy": {
+          "title": "持续的负担",
+          "subtitle": "我一天中的大部分时间都在焦虑。"
+        },
+        "overwhelming": {
+          "title": "占据了我的生活",
+          "subtitle": "有些日子，它占据了我大部分的注意力。"
+        }
+      }
+    },
+    "mood": {
+      "question": "最近低落的情绪有多难受？",
+      "subtext": "了解这些信息有助于我们将正确的课程与您的现状相匹配。",
+      "options": {
+        "light": {
+          "title": "偶尔低落",
+          "subtitle": "有时不太好，但通常能缓过来"
+        },
+        "moderate": {
+          "title": "经常低落",
+          "subtitle": "一周里会反复出现低落的时刻"
+        },
+        "heavy": {
+          "title": "大多数日子感觉很沉重",
+          "subtitle": "大多数时候都很难感到轻松"
+        },
+        "overwhelming": {
+          "title": "度过一天都不容易",
+          "subtitle": "有些日子，撑过一天就已经很辛苦"
+        }
+      }
+    },
+    "stress": {
+      "question": "最近你感受到多大的压力？",
+      "subtext": "这有助于我们为您调整合适的节奏和工具。",
+      "options": {
+        "light": {
+          "title": "还能应对",
+          "subtitle": "忙碌，但主要在掌控之中"
+        },
+        "moderate": {
+          "title": "压力逐渐累积",
+          "subtitle": "事情越积越多，我不总能放松下来"
+        },
+        "heavy": {
+          "title": "持续的压力",
+          "subtitle": "最近几乎每天都觉得有压力"
+        },
+        "overwhelming": {
+          "title": "快到极限了",
+          "subtitle": "大多数时候都觉得精疲力尽"
+        }
+      }
+    },
+    "self_understanding": {
+      "question": "最近你有多难看清自己的感受？",
+      "subtext": "没有对错。我们会从你现在的状态开始。",
+      "options": {
+        "light": {
+          "title": "有点好奇",
+          "subtitle": "我大致了解自己，只想看得更清楚"
+        },
+        "moderate": {
+          "title": "有些困惑",
+          "subtitle": "有些反复出现的反应，我还不太明白"
+        },
+        "heavy": {
+          "title": "经常不确定",
+          "subtitle": "有时我会做出反应，却不知道为什么"
+        },
+        "overwhelming": {
+          "title": "有些迷茫",
+          "subtitle": "很难知道我真正的感受或想要什么"
+        }
+      }
+    },
+    "sleep": {
+      "question": "最近睡眠受到了多大影响？",
+      "subtext": "这能帮助我们选择适合你的睡前练习。",
+      "options": {
+        "light": {
+          "title": "偶尔睡不好",
+          "subtitle": "偶尔会有糟糕的夜晚，基本没问题"
+        },
+        "moderate": {
+          "title": "睡眠不稳定",
+          "subtitle": "有时睡得好，有时睡得差"
+        },
+        "heavy": {
+          "title": "经常睡不好",
+          "subtitle": "早上醒来时很少觉得休息够了"
+        },
+        "overwhelming": {
+          "title": "睡眠困扰很大",
+          "subtitle": "睡眠问题正在影响我的日常生活"
+        }
+      }
+    }
+  },
+  "building_journey": {
+    "title": "正在准备你的旅程…",
+    "subtitle": "根据你分享的内容进行调整",
+    "ready_title": "你的旅程准备好了！",
+    "ready_subtitle": "专属 CBT 路径已准备好",
+    "generating": "正在生成计划…",
+    "complete": "已完成",
+    "private": "私密且适合你的需要",
+    "tasks": {
+      "profile": "回顾你分享的内容",
+      "gentle_schedule": "安排温和、可行的节奏",
+      "stress": "分析您的压力状况",
+      "plan": "构建您的个人旅程",
+      "cbt": "为您选择CBT练习",
+      "schedule": "优化每日行程安排"
+    }
+  },
+  "plan_names": {"anxiety":"平息内心风暴","mood":"重新找到光亮","stress":"压力下稳住自己","self_understanding":"重新认识自己","sleep":"温柔入睡"},
+  "plan_reveal": {
+    "step_label": "量身定制的方案",
+    "loading_milestones": "正在加载里程碑",
+    "phase_subtitles": {"foundation":"基础与觉察","practice":"学习并练习技能","integration":"融入日常生活","initial":"从这里开始","core":"核心练习","anchor":"长期坚持"},
+    "units": "{{count}} 个单元",
+    "course_illustration": "{{title}} 的插图",
+    "title": "你的旅程准备好了",
+    "pace_per_day": "每天约 5 分钟",
+    "milestones_count": "3 个里程碑",
+    "self_paced": "按自己的节奏",
+    "why_this_course": "为什么选择这门课程",
+    "tailored_label": "根据您分享的内容量身定制",
+    "milestones_section": "你的 3 个里程碑",
+    "step_by_step": "循序渐进",
+    "milestone_badges": {
+      "start_here": "这里开始",
+      "phase_2": "第二阶段",
+      "mastery": "熟练掌握"
+    }
+  },
+  "daily_goal": {
+    "anxiety": {
+      "headline": "你愿意花多少时间",
+      "subtext": "即使每天反思3分钟也可以打断焦虑螺旋。从您所在的位置开始。",
+      "testimonial": {
+        "name": "萨拉",
+        "age": 31,
+        "quote": "“3分钟感到尴尬的短暂。但每天出现3分钟，比我每周一次的30分钟尝试做得更多。”"
+      }
+    },
+    "mood": {
+      "headline": "你能为自己留出多少时间",
+      "subtext": "一致性比长度更重要。日常的小习惯比偶尔的大习惯更长久。",
+      "testimonial": {
+        "name": "Marcus",
+        "age": 34,
+        "quote": "“每天早上5分钟成为我真正期待的事情。它为整天定下了不同的基调。”"
+      }
+    },
+    "stress": {
+      "headline": "你能给自己腾出多少时间",
+      "subtext": "短时间的解压缩窗口胜过你实际上从未做过的长时间解压缩窗口。说实话。",
+      "testimonial": {
+        "name": "Priya",
+        "age": 29,
+        "quote": "“我想我需要一个小时的自我照顾。事实证明， 5分钟的结构性反射比滚动一个小时更能降低我的皮质醇。”"
+      }
+    },
+    "self_understanding": {
+      "headline": "你愿意给自己多少时间",
+      "subtext": "自我理解建立缓慢。即使是短暂、一致的反思，也会随着时间的推移而复合。",
+      "testimonial": {
+        "name": "莱利",
+        "age": 26,
+        "quote": "“我从5分钟开始，只是为了看看模式。六周后，我终于明白了为什么我一直在破坏自己。”"
+      }
+    },
+    "sleep": {
+      "headline": "睡前你能留出多少时间",
+      "subtext": "每天花一点时间放松，能帮助身体逐渐适应睡前节奏。",
+      "testimonial": {
+        "name": "Dani",
+        "age": 28,
+        "quote": "“睡前写 5 分钟日记，代替了我刷手机的 45 分钟。现在我更容易入睡了。”"
+      }
+    },
+    "cards": {
+      "gentle": {
+        "tag": "轻松开始",
+        "description": "简单记录一下"
+      },
+      "recommended": {
+        "tag": "推荐",
+        "description": "给自己一点空间"
+      },
+      "committed": {
+        "tag": "认真投入",
+        "description": "深入想一想"
+      },
+      "serious": {
+        "tag": "深度练习",
+        "description": "充分探索自己"
+      }
+    }
+  },
+  "pact_signing": {
+    "today": "今天",
+    "step_label": "给自己的小约定",
+    "subtitle": "你愿意每天为自己留出 {{minutes}} 分钟吗？",
+    "streak_goal": "连续 7 天的目标",
+    "day_1_today": "今天是第 1 天",
+    "vow": "“接下来的 7 天，我会每天为自己留一点时间，哪怕只有 {{minutes}} 分钟。”",
+    "private": "只属于你的私人约定",
+    "hint_idle": "长按，许下 7 天的小约定",
+    "hint_holding": "正在记录你的约定…",
+    "hint_done": "约定已记下。一天一天来 ✨",
+    "button_idle": "长按确认",
+    "button_holding": "正在确认…",
+    "button_done": "约定已确认"
+  },
+  "lesson_complete": {
+    "you_did_it": "你做到了。",
+    "truly": "真的。"
+  },
+  "notification": {
+    "step_label": "温柔提醒",
+    "title": "每日提醒",
+    "description": "定期关心自己的感受，有助于养成习惯。选择适合你生活节奏的时间。",
+    "consistency_proof": "设置提醒的用户更容易坚持",
+    "customize_note": "你可以随时在设置中调整或关闭提醒。",
+    "reminders": {
+      "1": {
+        "title": "晨间反思",
+        "body": "用清晰的心情开启一天 ☀️ 花一点时间想想今天想怎么过。"
+      },
+      "2": {
+        "title": "午间记录",
+        "body": "今天过得怎么样？🌿 稍作停顿，记下此刻的想法。"
+      },
+      "3": {
+        "title": "睡前放松",
+        "body": "是时候慢下来啦 🌙 回顾今天，也记得肯定自己的努力。"
+      }
+    }
+  },
+  "welcome_to_happy": {
+    "step_label": "就快开始了",
+    "login": "登录",
+    "login_accessibility": "已有账户？登录",
+    "personal_plan": "我的计划",
+    "title": "保存你的进度",
+    "description": "在开始第 1 天之前，保存专属计划、连续记录和私人笔记。",
+    "course_card": {
+      "ready_badge": "已准备好",
+      "daily_label": "专属 7 天课程 · 每天 {{minutes}} 分钟"
+    },
+    "streak_card": {
+      "title": "连续记录",
+      "day_1_badge": "第 1 天",
+      "subtitle": "保存今天的练习记录"
+    },
+    "reflections_card": {
+      "title": "私人反思",
+      "encrypted_badge": "已加密",
+      "subtitle": "安全同步到你的个人资料"
+    }
+  },
+  "xp_first_step": "旅程的第一步",
+  "paywall": {
+    "benefits": {
+      "journeys": "解锁全部 12 条成长路径",
+      "ai": "不限次数的 AI 见解与每周回顾",
+      "cbt": "完整 CBT 工具箱（20 多种练习）",
+      "streak": "连续记录修复与高级主题"
+    }
+  },
+  "pact_text": "我愿意每天为自己留一点时间，即使有些日子不太想做。只需 {{minutes}} 分钟。",
+  "future_letter": "你做到了。30 天里，你一次次为自己留出时间。\n\n还记得刚开始时有多不容易吗？{{timing}} 尤其难熬。但你仍然回来，每次花 {{minutes}} 分钟。\n\n一个月后的你，可能更能察觉自己的想法，也有了照顾自己的方法。\n\n为你的坚持感到骄傲。"
+}

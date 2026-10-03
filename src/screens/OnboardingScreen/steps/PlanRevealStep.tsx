@@ -4,7 +4,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, View, ScrollView, Platform, Image } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
-import { Skeleton } from "@/src/components/ui/Skeleton";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { SparklesIcon } from "@hugeicons/core-free-icons";
 import {
@@ -20,6 +19,8 @@ import {
   resolveCourseSummary,
 } from "../utils/planMeta";
 import type { MotivationAnswer, StressLevel } from "../types";
+import { useTranslation } from "react-i18next";
+import { CourseOutlineSkeleton } from "../components/CourseOutlineSkeleton";
 
 interface PlanRevealStepProps {
   planName: string;
@@ -32,6 +33,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
   motivation = "anxiety",
   stressLevel,
 }) => {
+  const { t } = useTranslation("onboarding");
   const insets = useSafeAreaInsets();
   const planMeta = PLAN_META[motivation];
   const displayPlanName = planName.replace(/\.$/, "");
@@ -64,20 +66,20 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
   const milestones = useMemo(() => {
     if (overview?.sections && overview.sections.length > 0) {
       const phaseSubtitles = [
-        "Foundation & Awareness",
-        "Skill Building & Practice",
-        "Integration & Lasting Calm",
+        t("plan_reveal.phase_subtitles.foundation", { defaultValue: "Foundation & Awareness" }),
+        t("plan_reveal.phase_subtitles.practice", { defaultValue: "Skill Building & Practice" }),
+        t("plan_reveal.phase_subtitles.integration", { defaultValue: "Integration & Lasting Calm" }),
       ];
       return overview.sections.slice(0, 3).map((section, idx) => ({
         title: section.title,
-        subtitle: phaseSubtitles[idx] || `${section.units.length} units`,
+        subtitle: phaseSubtitles[idx] || t("plan_reveal.units", { count: section.units.length, defaultValue: "{{count}} units" }),
       }));
     }
     return planMeta.practiceItems.map((item, idx) => ({
       title: item,
-      subtitle: idx === 0 ? "Initial focus" : idx === 1 ? "Core practice" : "Long-term anchor",
+      subtitle: idx === 0 ? t("plan_reveal.phase_subtitles.initial", { defaultValue: "Initial focus" }) : idx === 1 ? t("plan_reveal.phase_subtitles.core", { defaultValue: "Core practice" }) : t("plan_reveal.phase_subtitles.anchor", { defaultValue: "Long-term anchor" }),
     }));
-  }, [overview, planMeta]);
+  }, [overview, planMeta, t]);
 
   return (
     <ScrollView
@@ -95,7 +97,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
           style={{ fontFamily: APP_FONT_FAMILIES.bold }}
           className="text-[11px] font-bold uppercase tracking-wider text-sage-600"
         >
-          Built around your goal
+          {t("plan_reveal.step_label")}
         </Text>
       </Animated.View>
 
@@ -137,7 +139,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
                 source={mascotArt}
                 className="h-20 w-20 -mr-1"
                 resizeMode="contain"
-                accessibilityLabel={`${courseTitle} illustration`}
+                accessibilityLabel={t("plan_reveal.course_illustration", { title: courseTitle, defaultValue: "{{title}} illustration" })}
               />
             )}
           </View>
@@ -146,17 +148,17 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
           <View className="mt-4 flex-row items-center justify-between border-t border-white/15 pt-3">
             <View className="rounded-full bg-white/20 px-2.5 py-1">
               <Text className="text-[11px] happy-font-body-bold text-white">
-                ⏱ ~5 min/day
+                ⏱ {t("plan_reveal.pace_per_day")}
               </Text>
             </View>
             <View className="rounded-full bg-white/20 px-2.5 py-1">
               <Text className="text-[11px] happy-font-body-bold text-white">
-                🌱 3 Milestones
+                🌱 {t("plan_reveal.milestones_count")}
               </Text>
             </View>
             <View className="rounded-full bg-white/20 px-2.5 py-1">
               <Text className="text-[11px] happy-font-body-bold text-white">
-                ✨ Self-paced
+                ✨ {t("plan_reveal.self_paced")}
               </Text>
             </View>
           </View>
@@ -169,7 +171,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
           style={{ fontFamily: APP_FONT_FAMILIES.bold }}
           className="text-[11px] font-bold uppercase tracking-wider text-sage-600 mb-2.5"
         >
-          Why this course
+          {t("plan_reveal.why_this_course")}
         </Text>
         <View className="rounded-2xl border border-sage-200/80 bg-white p-4 shadow-sm">
           <View className="flex-row items-start gap-3">
@@ -178,7 +180,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
             </View>
             <View className="flex-1">
               <Text className="text-xs happy-font-body-bold text-sage-800 uppercase tracking-wide">
-                Tailored to what you shared
+                {t("plan_reveal.tailored_label")}
               </Text>
               <Text
                 style={{ fontFamily: APP_FONT_FAMILIES.regular }}
@@ -198,10 +200,10 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
             style={{ fontFamily: APP_FONT_FAMILIES.bold }}
             className="text-[11px] font-bold uppercase tracking-wider text-sage-600"
           >
-            Your 3 Milestones
+            {t("plan_reveal.milestones_section")}
           </Text>
           <Text className="text-xs happy-font-body-semibold text-sage-600">
-            Step-by-step
+            {t("plan_reveal.step_by_step")}
           </Text>
         </View>
 
@@ -251,19 +253,19 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
                       {isFirst ? (
                         <View className="rounded-full bg-emerald-100 px-2 py-0.5 mt-0.5">
                           <Text className="text-[10px] happy-font-body-bold text-emerald-800">
-                            START HERE
+                            {t("plan_reveal.milestone_badges.start_here")}
                           </Text>
                         </View>
                       ) : isSecond ? (
                         <View className="rounded-full bg-neutral-100 px-2 py-0.5 mt-0.5">
                           <Text className="text-[10px] happy-font-body-semibold text-ink-muted">
-                            PHASE 2
+                            {t("plan_reveal.milestone_badges.phase_2")}
                           </Text>
                         </View>
                       ) : (
                         <View className="rounded-full bg-sage-100 px-2 py-0.5 mt-0.5">
                           <Text className="text-[10px] happy-font-body-semibold text-sage-700">
-                            MASTERY
+                            {t("plan_reveal.milestone_badges.mastery")}
                           </Text>
                         </View>
                       )}
@@ -284,24 +286,5 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
     </ScrollView>
   );
 };
-
-function CourseOutlineSkeleton(): React.JSX.Element {
-  return (
-    <View className="mt-2 gap-3" accessibilityLabel="Loading milestones">
-      {Array.from({ length: 3 }).map((_, index) => (
-        <View
-          key={index}
-          className="flex-row items-center gap-3 rounded-2xl border border-neutral-200/80 bg-white p-4"
-        >
-          <Skeleton width={36} height={36} radius={18} />
-          <View className="flex-1 gap-1.5">
-            <Skeleton width="60%" height={16} radius={6} />
-            <Skeleton width="40%" height={12} radius={4} />
-          </View>
-        </View>
-      ))}
-    </View>
-  );
-}
 
 export default React.memo(PlanRevealStep);

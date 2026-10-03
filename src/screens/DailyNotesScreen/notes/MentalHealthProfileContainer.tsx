@@ -13,6 +13,7 @@ import { useJournalOperations } from "@/hooks/journals/useJournalOperations";
 import SuspensLoader from "@/src/components/SuspensLoader";
 
 import { BookmarkedJournalsBottomSheet } from "./BookmarkedJournalsBottomSheet";
+import { useTranslation } from "react-i18next";
 
 interface MentalHealthProfileContainerProps {
   selectedDate: Date;
@@ -24,6 +25,7 @@ interface MentalHealthProfileContainerProps {
 const MentalHealthProfileContainerComponent: React.FC<
   MentalHealthProfileContainerProps
 > = ({ selectedDate, showBookmarksModal, setShowBookmarksModal }) => {
+  const { t } = useTranslation("journal");
   const router = useRouter();
   const setSelectedJournalEntry = useSetAtom(selectedJournalEntryAtom);
   const [bookmarkingId, setBookmarkingId] = useState<number | null>(null);
@@ -88,19 +90,19 @@ const MentalHealthProfileContainerComponent: React.FC<
           <Mascot state="panda-pillow-hug" size={156} />
         </View>
         <Text className="happy-font-heading-bold text-xl text-ink text-center mb-2 px-6">
-          Taking a momentary pause
+          {t("error.title")}
         </Text>
         <Text className="happy-font-body text-sm text-ink-muted text-center px-8 mb-8 leading-relaxed">
-          We couldn't reach your journal entries right now. Don't worry, your notes are safely saved on your device.
+          {t("error.description")}
         </Text>
         <View className="px-12 self-stretch w-full max-w-sm">
           <Button
-            label="Try Reconnecting"
+            label={t("error.reconnect")}
             variant="primary"
             size="lg"
             onPress={handleRefetch}
             loading={isRefetching || mentalHealthLoading}
-            accessibilityLabel="Try Reconnecting to load journal entries"
+            accessibilityLabel={t("error.reconnectA11y")}
           />
         </View>
       </View>

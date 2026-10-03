@@ -15,6 +15,7 @@ import {
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 import { SkeletonList } from "@/src/components/ui/Skeleton";
+import { useTranslation } from "react-i18next";
 
 interface BookmarkedJournalsBottomSheetProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ interface BookmarkedJournalsBottomSheetProps {
 export const BookmarkedJournalsBottomSheet: React.FC<
   BookmarkedJournalsBottomSheetProps
 > = ({ isOpen, onClose, onEntryPress, onBookmark }) => {
+  const { t } = useTranslation("journal");
   const {
     data: bookmarkedJournals,
     isLoading,
@@ -71,10 +73,10 @@ export const BookmarkedJournalsBottomSheet: React.FC<
                 {/* Header: compact 22px semibold title with close metadata */}
                 <View className="px-5 pt-3 pb-3 border-b border-sage-100/60">
                   <Text className="happy-font-heading-semibold text-[22px] leading-[28px] text-ink">
-                    Pinned Notes
+                    {t("bookmarks.title")}
                   </Text>
                   <Text className="happy-font-body text-[14px] leading-[18px] text-ink-muted mt-0.5">
-                    {totalCount === 1 ? "1 pinned note" : `${totalCount || 0} pinned notes`}
+                    {t("bookmarks.count", { count: totalCount || 0 })}
                   </Text>
                 </View>
 
@@ -109,11 +111,10 @@ export const BookmarkedJournalsBottomSheet: React.FC<
                         <Feather name="bookmark" size={32} color={SEMANTIC_COLORS.text.tertiary} />
                       </View>
                       <Text className="happy-font-heading-bold mb-3 text-[22px] text-ink">
-                        No Pinned Notes
+                        {t("bookmarks.emptyTitle")}
                       </Text>
                       <Text className="happy-font-body-medium px-8 text-center text-[17px] leading-6 text-ink-muted">
-                        Tap the bookmark icon on any journal entry to save it here for
-                        quick access.
+                        {t("bookmarks.emptyDescription")}
                       </Text>
                     </View>
                   )}

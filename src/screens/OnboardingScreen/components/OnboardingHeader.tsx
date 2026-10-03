@@ -5,6 +5,7 @@ import { GlassView } from "expo-glass-effect";
 import { LessonHeader } from "@/src/components/ui/LessonHeader";
 import { SafeAreaView } from "@/src/components/tw";
 import type { OnboardingStepName } from "../types";
+import { useTranslation } from "react-i18next";
 
 export interface HeaderConfig {
   visible: boolean;
@@ -80,6 +81,7 @@ export const OnboardingHeader: React.FC<OnboardingHeaderProps> = ({
   backgroundColor,
   onBack,
 }) => {
+  const { t } = useTranslation("onboarding");
   const headerConfig = getHeaderConfig(stepName);
 
   return (
@@ -119,7 +121,7 @@ export const OnboardingHeader: React.FC<OnboardingHeaderProps> = ({
                   : "arrow"
               }
               progress={headerConfig.progress}
-              trailingLabel={headerConfig.trailingLabel}
+              trailingLabel={stepName === "journey_map" ? t("header.your_course", { defaultValue: "YOUR COURSE" }) : stepName === "letter_from_future" ? t("header.quiet_moment", { defaultValue: "A QUIET MOMENT" }) : headerConfig.trailingLabel}
               iconColor={HEADER_ICON_COLOR}
               trailingLabelColor={headerConfig.trailingLabelColor ?? "#7D8D7B"}
               progressFillColor={headerConfig.progressFillColor}
