@@ -141,4 +141,6 @@ export interface ButtonProps {
   labelClassName?: string;
   faceColor?: ColorValue;
   rimColor?: ColorValue;
+  faceStrokeColor?: ColorValue;
+  faceStrokeWidth?: number;
 }

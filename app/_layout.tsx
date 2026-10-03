@@ -10,6 +10,26 @@ configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
   strict: false,
 });
+
+// ponytail: prevent uncaught JS exceptions from triggering native process abort in production
+const globalRef = global as unknown as {
+  ErrorUtils?: {
+    getGlobalHandler?: () => ((error: unknown, isFatal?: boolean) => void) | undefined;
+    setGlobalHandler: (handler: (error: unknown, isFatal?: boolean) => void) => void;
+  };
+};
+
+if (!__DEV__ && typeof globalRef.ErrorUtils !== "undefined") {
+  const defaultHandler = globalRef.ErrorUtils.getGlobalHandler?.();
+  globalRef.ErrorUtils.setGlobalHandler((error: unknown, isFatal?: boolean) => {
+    console.warn("[GlobalHandler] Caught unhandled exception:", error);
+    if (defaultHandler) {
+      try {
+        defaultHandler(error, false);
+      } catch {}
+    }
+  });
+}
 import {
   DarkTheme,
   DefaultTheme,
@@ -17,9 +37,9 @@ import {
 } from "expo-router/react-navigation";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { requireOptionalNativeModule } from "expo-modules-core";
-import { Slot, router as expoRouter } from "expo-router";
+import { Slot, router as expoRouter, usePathname } from "expo-router";
 import { AuthProvider } from "@/src/context/AuthContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StyleSheet, View, useColorScheme } from "react-native";
@@ -43,7 +63,9 @@ import {
   APP_FONT_SOURCES,
   APP_NAVIGATION_FONTS,
 } from "@/src/theme/typography";
-import { PostHogProvider } from "posthog-react-native";
+import { PostHogProvider, usePostHog } from "posthog-react-native";
+import { posthog } from "@/src/config/posthog";
+import { posthogLog } from "@/src/lib/posthogLogger";
 import { XPProvider } from "@/src/context/XPContext";
 import { LevelProvider } from "@/src/context/LevelContext";
 import { RewardsProvider } from "@/src/context/RewardsContext";
@@ -54,6 +76,8 @@ import {
   trackNotificationReceived,
 } from "@/src/utils/notificationConversionTracker";
 import { usePushNotificationSetup } from "@/src/hooks/data/usePushNotificationSetup";
+import { useStreak } from "@/src/hooks/useStreak";
+import { useStreakSaverNotification } from "@/src/hooks/useStreakSaverNotification";
 import { ReduxProvider } from "@/src/store/ReduxProvider";
 import { SplashOverlay } from "@/src/components/splash";
 
@@ -97,6 +121,10 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (fontsReady) {
+      posthogLog.info("application_ready", {
+        font_load_state: error ? "fallback" : "loaded",
+      });
+
       // Initialize premium haptic system
       void HapticManager.initialize().catch(() => {});
       try {
@@ -121,24 +149,27 @@ export default function RootLayout() {
     const subscription = Notifications.addNotificationResponseReceivedListener(
       (response) => {
         const data = response.notification.request.content.data;
-        if (!data?.notification_log_id) return;
+        if (!data) return;
 
-        // Track the open
-        trackNotificationOpened({
-          notification_log_id: data.notification_log_id as string,
-        });
-        trackNotificationReceived({
-          notification_log_id: data.notification_log_id as string,
-          category: (data.category as string) || "",
-          template_id: (data.template_id as string) || "",
-        });
+        // Track remote notification if log ID exists
+        if (data.notification_log_id) {
+          trackNotificationOpened({
+            notification_log_id: data.notification_log_id as string,
+          });
+          trackNotificationReceived({
+            notification_log_id: data.notification_log_id as string,
+            category: (data.category as string) || "",
+            template_id: (data.template_id as string) || "",
+          });
+        }
 
-        // Deep link based on notification category
-        const category = data.category as string;
-        switch (category) {
-          case "mood_check_in":
-            expoRouter.push("/tabs/(tabs)/home" as any);
+        // Deep link based on notification type or category (AD-5)
+        const targetType = (data.type as string) || (data.category as string);
+        switch (targetType) {
+          case "streak_saver":
+            expoRouter.push("/tabs/screens/journey-map" as any);
             break;
+          case "mood_check_in":
           case "habit_reminder":
             expoRouter.push("/tabs/(tabs)/home" as any);
             break;
@@ -184,12 +215,7 @@ function RootLayoutNav() {
 
   return (
       <ReduxProvider>
-        <PostHogProvider
-          apiKey="phc_3A3cPPqkAbVXBfiskxZlaOcORt0AxADK0sNMgz0I7oU"
-          options={{
-            host: "https://us.i.posthog.com",
-          }}
-        >
+        <AnalyticsProvider>
           <QueryClientProvider client={queryClient}>
             <GestureHandlerRootView style={StyleSheet.absoluteFill}>
               <HeroUINativeProvider>
@@ -232,12 +258,45 @@ function RootLayoutNav() {
               </HeroUINativeProvider>
             </GestureHandlerRootView>
           </QueryClientProvider>
-        </PostHogProvider>
+        </AnalyticsProvider>
       </ReduxProvider>
   );
 }
+function AnalyticsProvider({ children }: { children: ReactNode }) {
+  if (!posthog) {
+    return <>{children}</>;
+  }
+
+  return (
+    <PostHogProvider client={posthog}>
+      <ScreenTracker />
+      {children}
+    </PostHogProvider>
+  );
+}
+
+function ScreenTracker() {
+  const pathname = usePathname();
+  const posthog = usePostHog();
+
+  useEffect(() => {
+    posthog?.screen(pathname);
+    posthogLog.info("screen_displayed", { route: pathname });
+  }, [pathname, posthog]);
+
+  return null;
+}
+
 function NotificationIntegration() {
   usePushNotificationSetup();
+  // ponytail: schedule 7:00 PM evening streak saver notification if streak is active (AD-3)
+  const { currentStreak, isActiveToday } = useStreak();
+  useStreakSaverNotification({
+    currentStreak,
+    isActiveToday,
+    notificationsDisabled: false,
+    journeySlug: "mindfulness-foundations",
+  });
   return null;
 }
 function SystemBackgroundIntegration() {

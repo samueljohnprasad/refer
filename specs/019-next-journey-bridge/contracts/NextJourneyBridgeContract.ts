@@ -21,4 +21,6 @@ export interface NextJourneyBridgeDockProps {
   currentCourseTitle?: string;
   /** Message acknowledging course completion */
   completionMessage?: string;
+  /** Triggered when user taps the close icon */
+  onClose?: () => void;
 }

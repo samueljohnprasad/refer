@@ -54,13 +54,21 @@ const NOTIFICATION_MINUTE = 0;
 // Helpers
 // ============================================================================
 
-/** Request notification permissions if not already granted */
-async function ensurePermissions(): Promise<boolean> {
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  if (existingStatus === "granted") return true;
-
-  const { status } = await Notifications.requestPermissionsAsync();
+// ponytail: passive check only; never pop permission prompt from background hook (AD-2)
+async function checkPermissions(): Promise<boolean> {
+  const { status } = await Notifications.getPermissionsAsync();
   return status === "granted";
+}
+
+/** Cancel any scheduled streak saver notification */
+export async function cancelStreakSaverNotification(): Promise<void> {
+  try {
+    await Notifications.cancelScheduledNotificationAsync(
+      NOTIFICATION_IDENTIFIER,
+    );
+  } catch (err) {
+    console.warn("[StreakSaver] Failed to cancel notification:", err);
+  }
 }
 
 /** Build the notification content */
@@ -83,13 +91,13 @@ function buildNotificationContent(
   };
 }
 
-/** Get the next 8 PM Date object */
-function getNext8PM(): Date {
+/** Get the next 7 PM Date object */
+function getNext7PM(): Date {
   const now: Date = new Date();
   const target: Date = new Date(now);
   target.setHours(NOTIFICATION_HOUR, NOTIFICATION_MINUTE, 0, 0);
 
-  // If 8 PM has already passed today, schedule for tomorrow
+  // If 7 PM has already passed today, schedule for tomorrow
   if (now >= target) {
     target.setDate(target.getDate() + 1);
   }
@@ -159,15 +167,15 @@ export function useStreakSaverNotification({
       return;
     }
 
-    // Check permissions
-    const hasPermission: boolean = await ensurePermissions();
+    // Check permissions passively (AD-2)
+    const hasPermission: boolean = await checkPermissions();
     if (!hasPermission) return;
 
     // Cancel any existing scheduled notification first
     await cancelNotification();
 
     try {
-      const trigger: Date = getNext8PM();
+      const trigger: Date = getNext7PM();
       const secondsUntilTrigger: number = Math.max(
         1,
         Math.floor((trigger.getTime() - Date.now()) / 1000),

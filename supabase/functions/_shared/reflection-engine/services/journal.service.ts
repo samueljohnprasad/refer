@@ -1,5 +1,6 @@
 import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { reflectionEngine } from "../ai/reflection-engine.ts";
+import type { AiObservationContext } from "../../ai-observability.ts";
 
 export interface JournalInput {
   userId: string;
@@ -8,6 +9,7 @@ export interface JournalInput {
   inputType?: string;
   durationSeconds?: number;
   wordsCount?: number;
+  aiObservation?: AiObservationContext;
 }
 
 export class JournalService {
@@ -25,6 +27,7 @@ export class JournalService {
       inputType,
       durationSeconds,
       wordsCount,
+      aiObservation,
     } = input;
 
     console.log(
@@ -33,7 +36,7 @@ export class JournalService {
 
     // 1. Generate Reflection via AI Engine
     const reflectionStart = Date.now();
-    const aiResult = await reflectionEngine.generateJournalReflection(content);
+    const aiResult = await reflectionEngine.generateJournalReflection(content, aiObservation);
     const reflectionElapsed = Date.now() - reflectionStart;
     console.log(
       `[JournalService] Step 1/5 complete in ${reflectionElapsed}ms: Title="${aiResult.title}", MoodScore=${aiResult.moodScore}`,

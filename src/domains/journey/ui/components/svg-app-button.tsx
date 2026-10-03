@@ -71,7 +71,12 @@ export const SvgAppButtonView = React.memo(function SvgAppButtonView({
             viewBox={`0 0 ${resolvedWidth} ${height + pressDepth}`}
             style={StyleSheet.absoluteFill}
           >
-            <Path d={rimPath} fill={backgroundColor} />
+            <Path
+              d={rimPath}
+              fill={backgroundColor}
+              stroke={faceStrokeColor}
+              strokeWidth={faceStrokeWidth}
+            />
           </Svg>
 
           <AnimatedPressable

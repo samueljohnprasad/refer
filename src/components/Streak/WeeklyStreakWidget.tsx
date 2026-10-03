@@ -49,7 +49,7 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
       {/* Right: 7-day indicators with shared baseline grid + chevron */}
       <View className="flex-row items-center gap-2.5">
         <View className="flex-row items-center gap-2">
-          {streakData.weeklyProgress.days.map((isCompleted: boolean, i: number) => (
+          {streakData?.weeklyProgress?.days?.map((isCompleted: boolean, i: number) => (
             <View key={i} className="items-center gap-1.5">
               <Text className="text-[11px] font-bold text-ink-muted">
                 {labels[i]}

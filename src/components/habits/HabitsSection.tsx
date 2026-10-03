@@ -19,6 +19,7 @@ import {
   TIME_CATEGORY_CONFIG,
 } from "@/src/utils/habitCategories";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { usePostHog } from "posthog-react-native";
 
 interface HabitsSectionProps {
   selectedDate: Date;
@@ -28,6 +29,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   selectedDate,
 }) => {
   const router = useRouter();
+  const posthog = usePostHog();
 
   const { habits, loading: habitsLoading } = useHabits();
   const {
@@ -59,6 +61,9 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   ) => {
     if (isFuture(selectedDate)) return;
     await toggleHabitCompletion(habitId, isCompleted, habitName);
+    posthog?.capture("habit_completion_toggled", {
+      completed: !isCompleted,
+    });
     refetchStreaks();
   };
 

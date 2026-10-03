@@ -7,6 +7,7 @@ import { useAuth } from "@/src/context/AuthContext";
 import { useDeleteUser } from "@/hooks/useDeleteUser";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "heroui-native";
+import { openAppStoreReview } from "@/src/utils/appStoreReview";
 
 export const useSettingsModals = () => {
   const [isSignoutOPen, setIsSignoutOPen] = useState(false);
@@ -30,10 +31,7 @@ export const useSettingsModals = () => {
 
   const handleRateUs = () => {
     Haptics.selectionAsync();
-    const itunesItemId = "6755650433";
-    Linking.openURL(
-      `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${itunesItemId}?action=write-review`
-    );
+    void openAppStoreReview();
   };
 
   const handleContactSupport = async () => {

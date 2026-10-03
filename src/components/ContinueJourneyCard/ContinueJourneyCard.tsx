@@ -3,7 +3,8 @@
 
 import React from "react";
 import { View, Text, Image } from "react-native";
-import { ArrowRight, Clock, Compass } from "lucide-react-native";
+// ponytail: use native expo-symbols SymbolView instead of lucide icons
+import { SymbolView } from "expo-symbols";
 import { Card } from "@/src/components/ui/Card";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import {
@@ -83,7 +84,11 @@ export function ContinueJourneyCard({
                 </Text>
                 {state.estimatedMins ? (
                   <View className="flex-row items-center mt-1.5">
-                    <Clock size={11} color={SEMANTIC_COLORS.text.tertiary as string} />
+                    <SymbolView
+                      name="clock"
+                      size={11}
+                      tintColor={SEMANTIC_COLORS.text.tertiary as string}
+                    />
                     <Text className="text-[11px] font-medium text-ink-muted ml-1">
                       {state.estimatedMins} min
                     </Text>
@@ -129,7 +134,11 @@ export function ContinueJourneyCard({
                 </Text>
               </View>
               <View className="w-10 h-10 rounded-full bg-sage-100 items-center justify-center">
-                <Compass size={20} color={SEMANTIC_COLORS.brand.primary as string} />
+                <SymbolView
+                  name="safari"
+                  size={20}
+                  tintColor={SEMANTIC_COLORS.brand.primary as string}
+                />
               </View>
             </View>
             {/* Primary Action Row */}
@@ -177,7 +186,11 @@ export function ContinueJourneyCard({
                 </Text>
               </View>
               <View className="w-10 h-10 rounded-full bg-sand/30 items-center justify-center">
-                <Compass size={20} color={SEMANTIC_COLORS.text.secondary as string} />
+                <SymbolView
+                  name="safari"
+                  size={20}
+                  tintColor={SEMANTIC_COLORS.text.secondary as string}
+                />
               </View>
             </View>
             {/* Primary Action Row */}
@@ -197,7 +210,12 @@ function ContinueJourneyActionRow({ label }: { label: string }) {
         {label}
       </Text>
       <View className="w-6 h-6 rounded-full bg-brand-primary items-center justify-center shadow-xs">
-        <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.5} />
+        <SymbolView
+          name="arrow.right"
+          size={13}
+          tintColor="#FFFFFF"
+          weight="bold"
+        />
       </View>
     </View>
   );

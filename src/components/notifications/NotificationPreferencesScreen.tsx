@@ -1,4 +1,6 @@
 import { useNotificationPreferences } from "@/src/hooks/data/useNotificationPreferences";
+import { useAuth } from "@/src/context/AuthContext";
+import { registerPushToken } from "@/src/utils/pushTokenRegistration";
 import React from "react";
 import {
   View,
@@ -9,10 +11,11 @@ import {
 } from "react-native";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
-import { Bell, Flame, Smile, CheckCircle2, Trophy } from "lucide-react-native";
-import type { LucideIcon } from "lucide-react-native";
+// ponytail: use native expo-symbols instead of lucide
+import { SymbolView, type SymbolViewProps } from "expo-symbols";
 
 export default function NotificationPreferencesScreen() {
+  const { user } = useAuth();
   const { settings, isLoading, updateSettings, isUpdating } =
     useNotificationPreferences();
 
@@ -26,6 +29,10 @@ export default function NotificationPreferencesScreen() {
 
   const toggleSetting = (key: string, value: boolean) => {
     updateSettings({ [key]: value });
+    if (key === "push_enabled" && value && user?.id) {
+      // ponytail: register push token immediately when user turns push on
+      registerPushToken(user.id, true).catch(console.error);
+    }
   };
 
   return (
@@ -41,7 +48,7 @@ export default function NotificationPreferencesScreen() {
 
       {/* Master toggle */}
       <SettingRow
-        icon={Bell}
+        iconName="bell.fill"
         title="Push Notifications"
         description="Receive personalized reminders to journal, track mood, and maintain streaks"
         value={settings.push_enabled}
@@ -56,7 +63,7 @@ export default function NotificationPreferencesScreen() {
           <SectionHeader title="Notification Types" />
 
           <SettingRow
-            icon={Flame}
+            iconName="flame.fill"
             title="Streak Reminders"
             description="Get notified when your journal streak is at risk"
             value={settings.streak_reminders}
@@ -65,7 +72,7 @@ export default function NotificationPreferencesScreen() {
           />
 
           <SettingRow
-            icon={Smile}
+            iconName="face.smiling"
             title="Mood Check-ins"
             description="Daily reminders to log your mood"
             value={settings.mood_reminders}
@@ -74,7 +81,7 @@ export default function NotificationPreferencesScreen() {
           />
 
           <SettingRow
-            icon={CheckCircle2}
+            iconName="checkmark.circle.fill"
             title="Habit Reminders"
             description="Reminders for your active habits"
             value={settings.habit_reminders}
@@ -83,7 +90,7 @@ export default function NotificationPreferencesScreen() {
           />
 
           <SettingRow
-            icon={Trophy}
+            iconName="trophy.fill"
             title="Achievement Nudges"
             description="Get notified when you're close to unlocking an achievement"
             value={settings.achievement_reminders}
@@ -117,14 +124,14 @@ function SectionHeader({ title }: { title: string }) {
 }
 
 function SettingRow({
-  icon: Icon,
+  iconName,
   title,
   description,
   value,
   onToggle,
   disabled,
 }: {
-  icon?: LucideIcon;
+  iconName?: SymbolViewProps["name"];
   title: string;
   description: string;
   value: boolean;
@@ -133,7 +140,7 @@ function SettingRow({
 }) {
   return (
     <View className="flex-row items-center px-5 py-3.5 gap-4">
-      {Icon && <Icon size={24} color="var(--app-foreground)" strokeWidth={1.75} />}
+      {iconName && <SymbolView name={iconName} size={22} tintColor="#1A1A1A" />}
       <View className="flex-1 gap-0.5">
         <Text className="text-[17px] text-foreground">{title}</Text>
         <Text className="text-[13px] text-muted-foreground leading-snug">

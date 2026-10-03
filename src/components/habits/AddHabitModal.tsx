@@ -29,6 +29,7 @@ import { Button } from "@/src/components/ui/Button";
 import { Text } from "@/src/components/ui/Text";
 import * as Haptics from "expo-haptics";
 import { SectionDivider } from "./SettingsRow";
+import { usePostHog } from "posthog-react-native";
 
 // ─── Presets ────────────────────────────────────────────────────────
 
@@ -141,6 +142,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
   const [habitDescription, setHabitDescription] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const insets = useSafeAreaInsets();
+  const posthog = usePostHog();
 
   const handleClose = (): void => {
     if (loading) return;
@@ -155,6 +157,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
       description: preset.description,
       icon: preset.icon,
     });
+    posthog?.capture("habit_created", { source: "preset" });
     setLoading(false);
     onClose();
   };
@@ -167,6 +170,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
       name: habitName.trim(),
       description: habitDescription.trim() || undefined,
     });
+    posthog?.capture("habit_created", { source: "custom" });
     setLoading(false);
 
     setHabitName("");

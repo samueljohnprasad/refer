@@ -1,4 +1,8 @@
 import { GoogleGenerativeAI, GenerativeModel } from "npm:@google/generative-ai";
+import {
+  captureGeminiGeneration,
+  type AiObservationContext,
+} from "../../ai-observability.ts";
 
 export class GeminiClient {
   private ai: GoogleGenerativeAI | null = null;
@@ -34,22 +38,52 @@ export class GeminiClient {
     systemInstruction?: string,
     responseSchema?: object,
     modelName?: string,
+    observation?: AiObservationContext,
   ): Promise<unknown> {
-    const model = this.getModel(modelName || "gemini-2.5-flash");
+    const resolvedModelName = modelName || "gemini-2.5-flash";
+    const model = this.getModel(resolvedModelName);
+    const startedAt = Date.now();
+    const input = [
+      ...(systemInstruction
+        ? [{ role: "system", content: systemInstruction }]
+        : []),
+      { role: "user", content: prompt },
+    ];
 
-    const response = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      systemInstruction: systemInstruction
-        ? { role: "system", parts: [{ text: systemInstruction }] }
-        : undefined,
-      generationConfig: {
-        responseMimeType: "application/json",
-        // @ts-ignore — responseSchema is supported by the API but not yet in the Deno type definitions
-        responseSchema,
-      },
+    let text: string;
+    try {
+      const response = await model.generateContent({
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        systemInstruction: systemInstruction
+          ? { role: "system", parts: [{ text: systemInstruction }] }
+          : undefined,
+        generationConfig: {
+          responseMimeType: "application/json",
+          // @ts-ignore — responseSchema is supported by the API but not yet in the Deno type definitions
+          responseSchema,
+        },
+      });
+      text = response.response.text();
+    } catch (error) {
+      await captureGeminiGeneration({
+        operation: "generate_structured_reflection",
+        model: resolvedModelName,
+        input,
+        startedAt,
+        error,
+        context: observation,
+      });
+      throw error;
+    }
+
+    await captureGeminiGeneration({
+      operation: "generate_structured_reflection",
+      model: resolvedModelName,
+      input,
+      output: text,
+      startedAt,
+      context: observation,
     });
-
-    const text = response.response.text();
     try {
       return JSON.parse(text);
     } catch (error) {

@@ -1,5 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import * as FileSystem from "expo-file-system/legacy";
+import { observeGeminiGeneration } from "@/src/observability/ai";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY!,
@@ -22,7 +23,7 @@ export async function extractTextFromImage(imageUri: string): Promise<string> {
       ? "image/png"
       : "image/jpeg";
 
-    const response = await ai.models.generateContent({
+    const response = await observeGeminiGeneration("extract_text_from_image", (request) => ai.models.generateContent(request), {
       model: "gemini-2.0-flash",
       contents: [
         {

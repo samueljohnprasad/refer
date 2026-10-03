@@ -27,6 +27,8 @@ import type {
 import { useSingleExerciseEntry } from "@/src/hooks/useSingleExerciseEntry";
 import { getExerciseConfig } from "@/src/data/exerciseRegistry";
 import { createLogger } from "@/src/lib/logger";
+import { usePostHog } from "posthog-react-native";
+import { requestReviewForMilestone } from "@/src/hooks/useReviewPrompt";
 
 const logger = createLogger("exercise-flow-screen");
 
@@ -168,6 +170,15 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   } | null>(null);
   const exerciseStartedAtRef = useRef(Date.now());
 
+  // ponytail: trigger Day-1 App Store review prompt 2.0s after celebration modal renders
+  useEffect(() => {
+    if (!celebration) return;
+    const timer = setTimeout(() => {
+      void requestReviewForMilestone("first_exercise_completed");
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [celebration]);
+
   const setPrimaryOverride = React.useCallback(
     (override: { label: string; action: () => void; disabled: boolean } | null) => {
       setPrimaryOverrideState({ stepIndex: flow.currentStepIndex, override });
@@ -183,6 +194,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   // ─── Mutation ─────────────────────────────────────────────────────
   const { save, isSaving } = useExerciseMutation();
   const xp = useXPOptional();
+  const posthog = usePostHog();
 
   // ─── AI ───────────────────────────────────────────────────────────
   const currentStep = config?.steps[flow.currentStepIndex];
@@ -253,6 +265,10 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
         !existingEntry || existingEntry.status !== "completed";
 
       if (isFreshCompletion) {
+        posthog?.capture("exercise_completed", {
+          exercise_type: exerciseType,
+          step_count: flow.totalSteps,
+        });
         xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
           customDescription: config.title || "Exercise completed",
         });
@@ -274,7 +290,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
     } catch (err) {
       Alert.alert("Save failed", "Please try again.");
     }
-  }, [flow, existingEntry, save, config.title, xp, exitScreen]);
+  }, [flow, existingEntry, save, config.title, xp, exitScreen, posthog, exerciseType]);
 
   const handleNavigateDeeper = useCallback(async (type: ExerciseType) => {
       try {
@@ -284,6 +300,10 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
         if (!existingEntry || existingEntry.status !== "completed") {
+          posthog?.capture("exercise_completed", {
+            exercise_type: exerciseType,
+            step_count: flow.totalSteps,
+          });
           xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
             customDescription: config.title || "Exercise completed",
           });
@@ -298,7 +318,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       } catch (err) {
         Alert.alert("Save failed", "Please try again.");
       }
-  }, [flow, existingEntry, save, config.title, xp, router]);
+  }, [flow, existingEntry, save, config.title, xp, router, posthog, exerciseType]);
 
   // ─── Android hardware back button ─────────────────────────────────
   React.useEffect(() => {

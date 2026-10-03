@@ -1,4 +1,5 @@
 import { aiService } from "./ai-service.ts";
+import type { AiObservationContext } from "../../ai-observability.ts";
 import { contextBuilder } from "./context-builder.ts";
 import { promptBuilder } from "./prompt-builder.ts";
 import { promptLoader } from "./prompt-loader.ts";
@@ -15,11 +16,12 @@ import {
 export class ReflectionEngine {
   public async generateJournalReflection(
     journalContent: string,
+    observation?: AiObservationContext,
   ): Promise<JournalReflectionResult> {
     const template = await promptLoader.loadPrompt("journal");
     console.log("Template loaded:");
     const prompt = promptBuilder.buildJournalPrompt(template, journalContent);
-    return await aiService.generateJournalReflection(prompt);
+    return await aiService.generateJournalReflection(prompt, undefined, observation);
   }
 
   public async generateDailyReflection(

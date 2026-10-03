@@ -1,6 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { File } from "expo-file-system";
 import { getAllMicronutrientNames } from "@/src/config/micronutrients";
+import { observeGeminiGeneration } from "@/src/observability/ai";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY!,
@@ -66,7 +67,7 @@ export const analyzeCaloriesFromImage = async (
     // Get dynamic list of micronutrients to track
     const micronutrientNames = getAllMicronutrientNames().join(", ");
 
-    const response = await ai.models.generateContent({
+    const response = await observeGeminiGeneration("analyze_calories_from_image", (request) => ai.models.generateContent(request), {
       model: "gemini-2.0-flash",
       contents: [
         {

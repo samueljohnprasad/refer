@@ -71,9 +71,20 @@ Deno.serve(async (req: Request) => {
       console.log(`${logPrefix} Gemini API key verified present`);
     }
 
+    const aiObservation = {
+      distinctId: user.id,
+      traceId: crypto.randomUUID(),
+      sessionId: null,
+    };
     const transcribeStart = Date.now();
     console.log(`${logPrefix} Starting transcription (isAudio=${isAudio})...`);
-    const transcripts = await transcribeAudio(apiKey, journal, isAudio, reqId);
+    const transcripts = await transcribeAudio(
+      apiKey,
+      journal,
+      isAudio,
+      reqId,
+      aiObservation,
+    );
     console.log(`${logPrefix} Transcription finished in ${Date.now() - transcribeStart}ms. Segments: ${transcripts.length}`);
 
     const rawContent = transcripts.join(" ").trim();
@@ -108,6 +119,7 @@ Deno.serve(async (req: Request) => {
       inputType,
       durationSeconds,
       wordsCount,
+      aiObservation,
     });
     console.log(
       `${logPrefix} processJournalCompleted finished in ${Date.now() - serviceStart}ms. Record saved successfully.`

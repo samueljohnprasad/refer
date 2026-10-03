@@ -1,6 +1,6 @@
-import { Icon } from "@/src/components/icon";
 import { Link } from "expo-router";
-import { Plus } from "lucide-react-native";
+// ponytail: use native expo-symbols instead of lucide
+import { SymbolView } from "expo-symbols";
 
 import { PromptInputAction } from "./prompt-input";
 
@@ -12,7 +12,7 @@ export function AttachmentsButton() {
   return (
     <Link href="/attachments" asChild>
       <PromptInputAction>
-        <Icon icon={Plus} className="w-5 h-5 text-muted-foreground" />
+        <SymbolView name="plus" size={20} tintColor="#8e8e93" />
       </PromptInputAction>
     </Link>
   );

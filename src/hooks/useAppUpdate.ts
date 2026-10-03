@@ -1,5 +1,7 @@
+// ponytail: native version check using expo-application and iTunes lookup
 import { useState, useEffect, useCallback, useRef } from "react";
-import VersionCheck from "react-native-version-check";
+import * as Application from "expo-application";
+import Constants from "expo-constants";
 
 interface UseAppUpdateReturn {
   showUpdateModal: boolean;
@@ -13,6 +15,41 @@ interface UseAppUpdateReturn {
 
 interface UseAppUpdateOptions {
   autoCheck?: boolean;
+}
+
+// ponytail: minimal semver comparison without external dependencies
+function isNewerVersion(latest: string, current: string): boolean {
+  if (typeof latest !== "string" || typeof current !== "string") return false;
+  const l = latest.split(".").map((n) => parseInt(n, 10) || 0);
+  const c = current.split(".").map((n) => parseInt(n, 10) || 0);
+  for (let i = 0; i < Math.max(l.length, c.length); i++) {
+    const lNum = l[i] ?? 0;
+    const cNum = c[i] ?? 0;
+    if (lNum > cNum) return true;
+    if (lNum < cNum) return false;
+  }
+  return false;
+}
+
+function resolveCurrentAppVersion(): string {
+  return (
+    Application.nativeApplicationVersion ??
+    Constants.expoConfig?.version ??
+    "1.0.0"
+  );
+}
+
+async function fetchLatestAppStoreVersion(bundleId: string): Promise<string | null> {
+  try {
+    const res = await fetch(
+      `https://itunes.apple.com/lookup?bundleId=${bundleId}&date=${Date.now()}`
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.results?.[0]?.version ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export function useAppUpdate(
@@ -32,26 +69,16 @@ export function useAppUpdate(
 
     try {
       setIsChecking(true);
-      const current = VersionCheck.getCurrentVersion();
-      const latest = await VersionCheck.getLatestVersion({
-        packageName: "com.samuelprasad.happy",
-        ignoreErrors: true,
-      });
-
+      const current = resolveCurrentAppVersion();
       setCurrentVersion(current);
+
+      const latest = await fetchLatestAppStoreVersion("com.samuelprasad.happy");
+      if (!latest) return;
+
       setLatestVersion(latest);
-
-      const updateNeeded = await VersionCheck.needUpdate({
-        currentVersion: current,
-        latestVersion: latest,
-      });
-
-      if (updateNeeded?.isNeeded) {
+      if (isNewerVersion(latest, current)) {
         setShowUpdateModal(true);
       }
-      // If we are in dev and want to force test it, we could do something here, but let's stick to the real logic.
-    } catch (error) {
-      console.error("Error checking for updates:", error);
     } finally {
       setIsChecking(false);
     }

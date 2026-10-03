@@ -6,6 +6,7 @@ import { useSkillProgression } from "./useSkillProgression";
 import { useTemporalPatterns } from "./useTemporalPatterns";
 import { useTriggerClusters } from "./useTriggerClusters";
 import { EXERCISE_LABELS, DISTORTION_LABELS } from "@/src/constants/insights";
+import { observeGeminiGeneration } from "@/src/observability/ai";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -149,7 +150,7 @@ Rules:
 - End on an encouraging or actionable note
 - Tone: like a supportive coach who genuinely knows this person`;
 
-  const response = await ai.models.generateContent({
+  const response = await observeGeminiGeneration("generate_insight_narrative", (request) => ai.models.generateContent(request), {
     model: "gemini-2.0-flash",
     contents: prompt,
     config: {

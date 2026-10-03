@@ -33,6 +33,8 @@ export function Button({
   labelClassName = "",
   faceColor: customFaceColor,
   rimColor: customRimColor,
+  faceStrokeColor: customFaceStrokeColor,
+  faceStrokeWidth: customFaceStrokeWidth,
 }: ButtonProps) {
   const sizeConfig = SIZES[size];
   const isDisabled = disabled || loading;
@@ -105,6 +107,10 @@ export function Button({
   const labelColor = isDisabled 
     ? (config.disabledLabelColor ?? config.labelColor)
     : config.labelColor;
+  const faceStrokeColor =
+    customFaceStrokeColor ?? config.faceStrokeColor;
+  const faceStrokeWidth =
+    customFaceStrokeWidth ?? config.faceStrokeWidth ?? 0;
 
   return (
     <View
@@ -126,6 +132,8 @@ export function Button({
         pressDepth={pressDepth}
         color={faceColor as string}
         backgroundColor={rimColor as string}
+        faceStrokeColor={faceStrokeColor as string | undefined}
+        faceStrokeWidth={faceStrokeWidth}
         disabled={isDisabled}
         onPress={handlePress}
         onPressIn={handlePressIn}

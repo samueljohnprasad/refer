@@ -9,6 +9,7 @@ import React, {
 import Purchases, { CustomerInfo, LOG_LEVEL } from "react-native-purchases";
 import { useAuth } from "./AuthContext";
 import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
+import { usePostHog } from "posthog-react-native";
 
 interface RevenueCatContextValue {
   customerInfo: CustomerInfo | null;
@@ -100,6 +101,7 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
   const [shouldPromptAccountClaim, setShouldPromptAccountClaim] =
     useState<boolean>(false);
   const { user, isAnonymous } = useAuth();
+  const posthog = usePostHog();
   const isConfiguredRef = useRef<boolean>(false);
   const identifiedUserIdRef = useRef<string | null>(null);
 
@@ -145,7 +147,12 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
       setIsLoadingRevenueCat(true);
       const info = await Purchases.restorePurchases();
       setCustomerInfo(info);
-      hasProHandler(info);
+      const hasPremiumAccess = hasProHandler(info);
+      if (hasPremiumAccess) {
+        posthog?.capture("subscription_access_granted", {
+          source: "restore",
+        });
+      }
       return info;
     } catch (e) {
       console.error(e);
@@ -185,6 +192,10 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
         case PAYWALL_RESULT.RESTORED:
           setHasPro(true);
           await refreshCustomerInfo();
+          posthog?.capture("subscription_access_granted", {
+            source:
+              paywallResult === PAYWALL_RESULT.PURCHASED ? "purchase" : "restore",
+          });
           if (isAnonymous) {
             setShouldPromptAccountClaim(true);
           }
@@ -219,6 +230,10 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
         case PAYWALL_RESULT.RESTORED:
           setHasPro(true);
           await refreshCustomerInfo();
+          posthog?.capture("subscription_access_granted", {
+            source:
+              paywallResult === PAYWALL_RESULT.PURCHASED ? "purchase" : "restore",
+          });
           if (isAnonymous) {
             setShouldPromptAccountClaim(true);
           }

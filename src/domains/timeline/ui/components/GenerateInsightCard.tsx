@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Pressable, ActivityIndicator } from 'react-native';
-import { Sparkles } from 'lucide-react-native';
+// ponytail: use native expo-symbols instead of lucide
+import { SymbolView } from 'expo-symbols';
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 
 interface GenerateInsightCardProps {
@@ -24,7 +25,7 @@ export const GenerateInsightCard = ({
       {isGenerating ? (
         <ActivityIndicator size="small" color="#666666" />
       ) : (
-        <Sparkles size={12} color="#666666" strokeWidth={2.0} />
+        <SymbolView name="sparkles" size={12} tintColor="#666666" />
       )}
       <Text className="text-[14px] text-[#666666]" style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}>
         {isGenerating ? "Generating..." : title}

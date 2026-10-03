@@ -13,7 +13,7 @@ const TimelineDot: React.FC<TimelineDotProps> = React.memo(({ status }) => {
   const isCompleted = status === "completed" || isSpecial;
 
   return (
-    <View style={[styles.halo, isCompleted ? styles.haloCompleted : styles.haloCollapsed]}>
+    <View style={[styles.halo, isCompleted ? styles.haloCompleted : styles.haloNeutral]}>
       <View
         style={[
           styles.inner,
@@ -47,12 +47,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(95, 127, 88, 0.15)", // SEMANTIC_COLORS.brand.pressed with 15% opacity
   },
   haloNeutral: {
-    backgroundColor: "transparent",
-  },
-  haloCollapsed: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
     backgroundColor: "transparent",
   },
   inner: {

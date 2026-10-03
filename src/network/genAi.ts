@@ -2,6 +2,7 @@ import { FetchWeekEntriesType } from "@/hooks/data/useWeeklyAISummaries";
 import { Enums } from "@/types/types";
 import { GoogleGenAI } from "@google/genai";
 import { getMoodScore } from "../utils/mood";
+import { observeGeminiGeneration } from "@/src/observability/ai";
 
 export type FeelingsType = {
   name: string;
@@ -143,7 +144,7 @@ export const generateAIRecommendations = async (
       )
       .join("\n---\n");
 
-    const response = await ai.models.generateContent({
+    const response = await observeGeminiGeneration("generate_ai_recommendations", (request) => ai.models.generateContent(request), {
       model: "gemini-2.0-flash",
       contents: `Analyze these recent journal entries and provide personalized growth recommendations:\n\n${entriesText}\n\nGenerate 3-5 actionable recommendations.`,
       config: {
@@ -223,7 +224,7 @@ export const generateWeeklySummary = async (
         0
       ) / entries.length;
 
-    const response = await ai.models.generateContent({
+    const response = await observeGeminiGeneration("generate_weekly_summary", (request) => ai.models.generateContent(request), {
       model: "gemini-2.0-flash",
       contents: `Generate a comprehensive weekly summary for the week of ${weekStart} to ${weekEnd}. The user made ${
         entries.length
@@ -465,7 +466,7 @@ export const generateGrowthInsights = async (
       )
       .join("\n---\n");
 
-    const response = await ai.models.generateContent({
+    const response = await observeGeminiGeneration("generate_growth_insights", (request) => ai.models.generateContent(request), {
       model: "gemini-2.0-flash",
       contents: `Analyze these journal entries and identify deep patterns, recurring themes, and growth opportunities. Provide 3-5 actionable insights.\n\nEntries:\n${entriesText}`,
       config: {

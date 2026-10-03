@@ -13,21 +13,23 @@ export const UpdateAvailableBanner: React.FC = () => {
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
   const [isDownloading, setIsDownloading] = useState(false);
 
-  useEffect(() => {
-    // Auto-reload once successfully downloaded
+  const handleAction = async () => {
     if (isUpdatePending) {
       HapticManager.triggerSystem("notificationSuccess");
-      Updates.reloadAsync();
+      await Updates.reloadAsync();
+      return;
     }
-  }, [isUpdatePending]);
-
-  if (!isUpdateAvailable) return null;
-
-  const handleDownload = async () => {
     setIsDownloading(true);
-    await Updates.fetchUpdateAsync();
-    setIsDownloading(false);
+    try {
+      await Updates.fetchUpdateAsync();
+    } catch (e) {
+      console.warn("[Updates] Failed to fetch update:", e);
+    } finally {
+      setIsDownloading(false);
+    }
   };
+
+  if (!isUpdateAvailable && !isUpdatePending) return null;
 
   return (
     <Animated.View entering={FadeInUp} exiting={FadeOutUp} className="z-50 w-full bg-sage-700 shadow-md">
@@ -36,16 +38,16 @@ export const UpdateAvailableBanner: React.FC = () => {
           <View className="flex-row items-center gap-2">
             <HugeiconsIcon icon={SparklesIcon} size={18} color="#FFFFFF" />
             <Text className="happy-font-body-medium text-[15px] font-semibold text-white">
-              Update available
+              {isUpdatePending ? "Update downloaded" : "Update available"}
             </Text>
           </View>
           <Pressable
-            onPress={handleDownload}
-            disabled={isDownloading || isUpdatePending}
+            onPress={handleAction}
+            disabled={isDownloading}
             className="rounded-full bg-white/20 px-4 py-1.5 active:bg-white/30"
           >
             <Text className="happy-font-body-bold text-[13px] text-white">
-              {isDownloading ? "Downloading..." : isUpdatePending ? "Restarting..." : "Download"}
+              {isDownloading ? "Downloading..." : isUpdatePending ? "Restart" : "Download"}
             </Text>
           </Pressable>
         </View>

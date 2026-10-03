@@ -125,12 +125,12 @@ function resolveTemplate(
 
 serve(async (req) => {
   try {
-      const SUPABASE_URL = "https://xaqeueshxpehijtxwklo.supabase.co";
-      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcWV1ZXNoeHBlaGlqdHh3a2xvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1OTY2ODMsImV4cCI6MjA2ODE3MjY4M30.hKxftlcs-j4W1TrsbdycfT2tK9qowc3ZrgG1ZJoFwo4";
+      const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "https://xaqeueshxpehijtxwklo.supabase.co";
+      const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcWV1ZXNoeHBlaGlqdHh3a2xvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MjU5NjY4MywiZXhwIjoyMDY4MTcyNjgzfQ.V5jpUlbJsNQAOH4jFjwfjSG4MK4SA2vVnAKLI99mPlE";
       
     const supabase = createClient(
       SUPABASE_URL,
-      SUPABASE_ANON_KEY
+      SUPABASE_SERVICE_ROLE_KEY
     );
 
     const now = new Date();
@@ -308,12 +308,12 @@ serve(async (req) => {
 
         // Send to Expo Push API
         if (messagesToSend.length > 0) {
-          const sendUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-push-notification`;
+          const sendUrl = `${SUPABASE_URL}/functions/v1/send-push-notification`;
           const sendResponse = await fetch(sendUrl, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+              Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
             },
             body: JSON.stringify({ messages: messagesToSend }),
           });

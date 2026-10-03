@@ -10,6 +10,7 @@ import {
   EXERCISE_LABELS,
   DISTORTION_LABELS,
 } from "@/src/constants/insights";
+import { observeGeminiGeneration } from "@/src/observability/ai";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -150,7 +151,7 @@ As their therapist, provide:
 4. bestEvidence: Quote the single strongest piece of evidence-against text the client has generated that disproves their core belief (copy it verbatim from their entries)
 5. suggestion: One specific, actionable suggestion for next week (not generic advice, tailored to their pattern)`;
 
-  const response = await ai.models.generateContent({
+  const response = await observeGeminiGeneration("generate_therapist_notebook", (request) => ai.models.generateContent(request), {
     model: "gemini-2.0-flash",
     contents: prompt,
     config: {

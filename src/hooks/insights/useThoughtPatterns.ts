@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { GoogleGenAI } from "@google/genai";
 import { useAuth } from "@/src/context/AuthContext";
 import { useExerciseStats } from "./useExerciseStats";
+import { observeGeminiGeneration } from "@/src/observability/ai";
 
 export interface ThoughtTheme {
   theme: string;
@@ -89,7 +90,7 @@ Return JSON with:
 - triggerContext: one sentence describing the most common context/situation triggering these thoughts
 - insight: one personalized therapeutic sentence about what this pattern reveals and a gentle suggestion`;
 
-  const response = await ai.models.generateContent({
+  const response = await observeGeminiGeneration("analyze_thought_patterns", (request) => ai.models.generateContent(request), {
     model: "gemini-2.0-flash",
     contents: prompt,
     config: {

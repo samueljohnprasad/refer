@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { View, Text } from "react-native";
 import Animated, { FadeInDown, ReduceMotion } from "react-native-reanimated";
-import { ArrowDown } from "lucide-react-native";
+// ponytail: use native expo-symbols instead of lucide
+import { SymbolView } from "expo-symbols";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
   readRecord,
@@ -106,11 +107,13 @@ export function CommonTrapCategoryEngine({
         {/* Cost (Causal Chain) */}
         {isCostVisible && (
           <Animated.View entering={ANIMATION} className="mb-10 w-full flex-col">
-            <ArrowDown
-              size={20}
-              color="#5f7f58"
-              className="mb-6 opacity-60 self-center"
-            />
+            <View className="mb-6 opacity-60 self-center">
+              <SymbolView
+                name="arrow.down"
+                size={20}
+                tintColor="#5f7f58"
+              />
+            </View>
 
             <Text className="text-[11px] font-semibold tracking-wider text-forest-700/60 mb-6 text-left">
               WHAT IT TURNS INTO
@@ -126,11 +129,13 @@ export function CommonTrapCategoryEngine({
                   className="items-center w-full"
                 >
                   {idx > 0 && (
-                    <ArrowDown
-                      size={20}
-                      color="#5f7f58"
-                      className="my-3 opacity-60"
-                    />
+                    <View className="my-3 opacity-60">
+                      <SymbolView
+                        name="arrow.down"
+                        size={20}
+                        tintColor="#5f7f58"
+                      />
+                    </View>
                   )}
                   <Text className="text-base font-medium text-forest-800 text-center leading-relaxed">
                     {cost}

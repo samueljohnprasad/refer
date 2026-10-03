@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { withUniwind } from "uniwind";
-import type { LucideIcon } from "lucide-react-native";
+import type { LucideIcon } from "lucide-react";
 
 function IconBase({
   icon: Icon,

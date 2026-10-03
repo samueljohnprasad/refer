@@ -1,4 +1,8 @@
 import { geminiClient } from "../_shared/reflection-engine/ai/client.ts";
+import {
+  captureGeminiGeneration,
+  type AiObservationContext,
+} from "../_shared/ai-observability.ts";
 
 function detectAudioMime(base64: string): string {
   if (base64.startsWith("UklGR")) return "audio/wav";
@@ -11,7 +15,8 @@ export async function transcribeAudio(
   _apiKey: string,
   journal: string,
   isAudio: boolean,
-  reqTag: string = "default"
+  reqTag: string = "default",
+  observation?: AiObservationContext,
 ): Promise<string[]> {
   if (!isAudio) return [journal];
 
@@ -39,6 +44,25 @@ export async function transcribeAudio(
     ]);
 
     const transcript = result.response.text().trim();
+    await captureGeminiGeneration({
+      operation: "transcribe_journal_audio",
+      model: "gemini-2.5-flash",
+      input: [
+        {
+          role: "user",
+          content: [
+            { type: "audio", mimeType, data: journal },
+            {
+              type: "text",
+              text: "Transcribe the spoken words in this audio recording exactly. Output ONLY the raw transcription text. Do not add markdown, quotes, explanations, or filler. If no speech is detected or if only silence/noise, output nothing.",
+            },
+          ],
+        },
+      ],
+      output: transcript,
+      startedAt: startTime,
+      context: observation,
+    });
     const elapsedMs = Date.now() - startTime;
     console.log(`${tag} Gemini STT completed in ${elapsedMs}ms. Transcript length: ${transcript.length}`);
     if (transcript) {
@@ -49,6 +73,14 @@ export async function transcribeAudio(
 
     return transcript ? [transcript] : [];
   } catch (error) {
+    await captureGeminiGeneration({
+      operation: "transcribe_journal_audio",
+      model: "gemini-2.5-flash",
+      input: [{ role: "user", content: journal }],
+      startedAt: startTime,
+      error,
+      context: observation,
+    });
     const elapsedMs = Date.now() - startTime;
     console.error(`${tag} Gemini STT failed in ${elapsedMs}ms:`, error);
     throw error;

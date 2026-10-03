@@ -1,8 +1,9 @@
 // domains/journey/ui/components/NextJourneyBridgeDock.tsx
 // Persistent floating milestone dock displayed on completed journey maps.
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Pressable } from "react-native";
+import * as Haptics from "expo-haptics";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -11,7 +12,8 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Trophy } from "lucide-react-native";
+// ponytail: use native expo-symbols instead of lucide
+import { SymbolView } from "expo-symbols";
 import { Button } from "@/src/components/ui/Button";
 import type { NextJourneyBridgeDockProps } from "@/specs/019-next-journey-bridge/contracts/NextJourneyBridgeContract";
 
@@ -34,10 +36,20 @@ export const NextJourneyBridgeDock: React.FC<NextJourneyBridgeDockProps> = React
     onBrowseCatalog,
     currentCourseTitle = "Course",
     completionMessage,
+    onClose,
   }) {
     const insets = useSafeAreaInsets();
     // 24pt+ visual breathing room above native tab bar (~49pt + insets.bottom + 25pt margin)
     const bottomOffset = Math.max(insets.bottom + 74, 88);
+
+    // ponytail: local dismiss state so close works immediately
+    const [isDismissed, setIsDismissed] = useState(false);
+
+    const handleClose = () => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      setIsDismissed(true);
+      onClose?.();
+    };
 
     // ponytail: two-beat sequence (Beat 1: accomplishment 0ms, Beat 2: next journey 300ms)
     const iconScale = useSharedValue(0.85);
@@ -78,6 +90,10 @@ export const NextJourneyBridgeDock: React.FC<NextJourneyBridgeDockProps> = React
       transform: [{ translateY: bottomTranslateY.value }],
     }));
 
+    if (isDismissed) {
+      return null;
+    }
+
     if (isAllCoursesCompleted) {
       return (
         <View
@@ -85,19 +101,29 @@ export const NextJourneyBridgeDock: React.FC<NextJourneyBridgeDockProps> = React
           className="absolute left-4 right-4 z-40"
         >
           <View className="bg-white dark:bg-neutral-900 border border-neutral-200/80 dark:border-neutral-800 rounded-[28px] p-6 overflow-hidden">
+            {/* Close Button */}
+            <Pressable
+              onPress={handleClose}
+              hitSlop={12}
+              className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 items-center justify-center active:opacity-60"
+              accessibilityRole="button"
+              accessibilityLabel="Close"
+            >
+              <SymbolView name="xmark" size={12} tintColor="#6B7280" weight="bold" />
+            </Pressable>
             <Animated.View style={topAnimatedStyle}>
-              <View className="flex-row items-center gap-2 mb-2">
+              <View className="flex-row items-center gap-2 mb-2 pr-8">
                 <Animated.View
                   style={iconAnimatedStyle}
                   className="w-7 h-7 rounded-full bg-emerald-100/70 dark:bg-emerald-950/60 items-center justify-center"
                 >
-                  <Trophy size={14} color="#059669" strokeWidth={2.2} />
+                  <SymbolView name="trophy.fill" size={14} tintColor="#059669" />
                 </Animated.View>
                 <Text className="text-[11px] font-nunito-extrabold tracking-wider uppercase text-emerald-700 dark:text-emerald-400">
                   ALL COURSES COMPLETE
                 </Text>
               </View>
-              <Text className="text-[21px] font-nunito-bold text-neutral-900 dark:text-neutral-50 mb-1.5 leading-snug">
+              <Text className="text-[21px] font-nunito-bold text-neutral-900 dark:text-neutral-50 mb-1.5 leading-snug pr-8">
                 All Caught Up!
               </Text>
               <Text className="text-[15px] font-nunito-medium text-neutral-600 dark:text-neutral-400 leading-relaxed mb-5">
@@ -141,23 +167,34 @@ export const NextJourneyBridgeDock: React.FC<NextJourneyBridgeDockProps> = React
         className="absolute left-4 right-4 z-40"
       >
         <View className="bg-white dark:bg-neutral-900 border border-neutral-200/80 dark:border-neutral-800 rounded-[28px] overflow-hidden">
+          {/* Close Button */}
+          <Pressable
+            onPress={handleClose}
+            hitSlop={12}
+            className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 items-center justify-center active:opacity-60"
+            accessibilityRole="button"
+            accessibilityLabel="Close"
+          >
+            <SymbolView name="xmark" size={12} tintColor="#6B7280" weight="bold" />
+          </Pressable>
+
           {/* TOP ZONE: Accomplishment */}
           <Animated.View
             style={topAnimatedStyle}
             className="px-5 pt-6 pb-5 bg-white dark:bg-neutral-900"
           >
-            <View className="flex-row items-center gap-2 mb-2">
+            <View className="flex-row items-center gap-2 mb-2 pr-8">
               <Animated.View
                 style={iconAnimatedStyle}
                 className="w-7 h-7 rounded-full bg-emerald-100/70 dark:bg-emerald-950/60 items-center justify-center"
               >
-                <Trophy size={14} color="#059669" strokeWidth={2.2} />
+                <SymbolView name="trophy.fill" size={14} tintColor="#059669" />
               </Animated.View>
               <Text className="text-[11px] font-nunito-extrabold tracking-wider uppercase text-emerald-700 dark:text-emerald-400">
                 COURSE COMPLETE
               </Text>
             </View>
-            <Text className="text-[21px] font-nunito-bold text-neutral-900 dark:text-neutral-50 mb-1.5 leading-snug">
+            <Text className="text-[21px] font-nunito-bold text-neutral-900 dark:text-neutral-50 mb-1.5 leading-snug pr-8">
               {currentCourseTitle}
             </Text>
             <Text className="text-[15px] font-nunito-medium text-neutral-600 dark:text-neutral-400 leading-relaxed">

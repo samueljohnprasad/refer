@@ -19,7 +19,8 @@ import {
 } from "@expo/ui/swift-ui/modifiers";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { BlurView } from "expo-blur";
-import { ChevronLeft } from "lucide-react-native";
+// ponytail: use native expo-symbols instead of lucide
+import { SymbolView } from "expo-symbols";
 import { IMessageStack } from "@/src/animations/imessage-stack";
 
 import { DaysTimelineTab } from "@/src/domains/timeline/ui/tabs/DaysTimelineTab";
@@ -75,7 +76,7 @@ export default function TimelinesScreen() {
           headerLeft: () => (
             // Aligned native back button, small footprint but large hit target (Point 16, 17, 18)
             <Pressable onPress={() => router.back()} className="px-2 py-2 ml-[-8px]">
-              <ChevronLeft size={24} color="#1A1A1A" strokeWidth={2.5} />
+              <SymbolView name="chevron.left" size={20} tintColor="#1A1A1A" weight="semibold" />
             </Pressable>
           ),
           headerRight: () => null,

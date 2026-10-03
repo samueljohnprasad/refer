@@ -35,6 +35,7 @@ import {
 } from "../utils/pushTokenRegistration";
 import { migrateGuestProgress } from "../lib/migrations/migrateGuestProgress";
 import { store, resetStore } from "../store/store";
+import { usePostHog } from "posthog-react-native";
 
 export type AuthProviderId = "apple" | "google";
 
@@ -202,6 +203,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [accountConflict, setAccountConflict] =
     useState<AccountConflict | null>(null);
   const { toast } = useToast();
+  const posthog = usePostHog();
+
+  const identifyAuthenticatedUser = (nextUser: User): void => {
+    if (nextUser.is_anonymous) return;
+
+    const personProperties: Record<string, string> = {};
+    if (nextUser.email) personProperties.email = nextUser.email;
+
+    const fullName = nextUser.user_metadata?.full_name;
+    if (typeof fullName === "string") personProperties.name = fullName;
+
+    posthog?.identify(nextUser.id, { $set: personProperties });
+  };
 
   const ensureProfileForUser = async (nextUser: User): Promise<void> => {
     const { error: profileError } = await supabase
@@ -287,12 +301,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (event === "INITIAL_SESSION") {
         setSession(session);
         setUser(session?.user ?? null);
+        if (session?.user) identifyAuthenticatedUser(session.user);
         setError(false);
         return;
       }
 
       setSession(session);
       setUser(session?.user ?? null);
+
+      // Identify once the app learns that an anonymous session has become an account.
+      // The Supabase UUID is a stable, non-PII distinct ID; PII remains person data.
+      if (
+        session?.user &&
+        (event === "SIGNED_IN" || event === "USER_UPDATED")
+      ) {
+        identifyAuthenticatedUser(session.user);
+      }
 
       // Show success toast when user signs in (navigation handled by signin screen)
       if (event === "SIGNED_IN" && session?.user) {
@@ -315,6 +339,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       if (event === "SIGNED_OUT") {
+        posthog?.reset();
         setSession(null);
         setUser(null);
         store.dispatch(resetStore());
@@ -374,6 +399,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       router.replace("/tabs/screens/onboard-container");
     } catch (error) {
+      posthog?.reset();
       setSession(null);
       setUser(null);
       store.dispatch(resetStore());

@@ -7,6 +7,8 @@ import { useJournalOperations } from "@/hooks/journals/useJournalOperations";
 import { JournalEntry } from "@/hooks/data/types";
 import { Enums } from "@/database.types";
 import { createLogger } from "@/src/lib/logger";
+import { usePostHog } from "posthog-react-native";
+import { requestReviewForMilestone } from "@/src/hooks/useReviewPrompt";
 
 const log = createLogger("useJournalOperationsHandler");
 
@@ -28,6 +30,7 @@ export const useJournalOperationsHandler = ({
   const { toast } = useToast();
   const { saveJournal } = useSaveJournal();
   const { deleteJournal, toggleBookmark } = useJournalOperations();
+  const posthog = usePostHog();
   const [isBookmarked, setIsBookmarked] = useState<boolean>(entry?.is_bookmarked ?? false);
 
   const handleDeleteEntry = useCallback((): void => {
@@ -46,6 +49,7 @@ export const useJournalOperationsHandler = ({
                 journalId: entry.id,
                 selectedDate: entry.selected_date ? new Date(entry.selected_date) : new Date(),
               });
+              posthog?.capture("journal_entry_deleted");
               toast.show({
                 placement: "top",
                 variant: "success",
@@ -59,7 +63,7 @@ export const useJournalOperationsHandler = ({
         },
       ]
     );
-  }, [entry, deleteJournal, toast, onClose]);
+  }, [entry, deleteJournal, toast, onClose, posthog]);
 
   const handleContinue = useCallback(async (): Promise<void> => {
     try {
@@ -87,11 +91,16 @@ export const useJournalOperationsHandler = ({
       }
 
       await saveJournal(updatedInsights);
+      posthog?.capture("journal_entry_saved");
       toast.show({
         placement: "top",
         variant: "success",
         label: "Journal saved successfully",
       });
+      // ponytail: trigger Day-1 App Store review prompt 2.0s after first journal save
+      setTimeout(() => {
+        void requestReviewForMilestone("first_journal_saved");
+      }, 2000);
       onClose?.();
     } catch (error) {
       log.error("Failed to save journal entry", error);
@@ -101,7 +110,7 @@ export const useJournalOperationsHandler = ({
         label: "Failed to save journal",
       });
     }
-  }, [saveJournal, insights, journalText, selectedMood, toast, onClose, entry]);
+  }, [saveJournal, insights, journalText, selectedMood, toast, onClose, entry, posthog]);
 
   const handleToggleBookmark = useCallback(async (): Promise<void> => {
     if (!entry?.id) return;
@@ -120,10 +129,13 @@ export const useJournalOperationsHandler = ({
         selectedDate: entry.selected_date ? new Date(entry.selected_date) : new Date(),
         isBookmarked: !newStatus,
       });
+      posthog?.capture("journal_entry_bookmark_toggled", {
+        bookmarked: newStatus,
+      });
     } catch {
       setIsBookmarked(!newStatus);
     }
-  }, [entry, isBookmarked, toast, toggleBookmark]);
+  }, [entry, isBookmarked, toast, toggleBookmark, posthog]);
 
   return {
     isBookmarked,

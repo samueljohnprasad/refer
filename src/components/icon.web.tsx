@@ -1,6 +1,6 @@
 import type React from "react";
 import * as LucideWeb from "lucide-react";
-import type { LucideIcon } from "lucide-react-native";
+import type { LucideIcon } from "lucide-react";
 
 /**
  * Web variant of <Icon>. The native version reads a resolved `color` out of the

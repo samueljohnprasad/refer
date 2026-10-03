@@ -140,7 +140,7 @@ export default function JournalCalendarScreen() {
   );
 
   useEffect(() => {
-    posthog.capture("Journal Calendar Screen Visited");
+    posthog?.capture("Journal Calendar Screen Visited");
   }, [posthog]);
 
   return (

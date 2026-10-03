@@ -10,6 +10,7 @@
  */
 
 import { supabase } from "@/src/network/auth/supabase";
+import { cancelStreakSaverNotification } from "@/src/hooks/useStreakSaverNotification";
 
 export type ApiResponse<T> =
   | { data: T; success: true; error?: never }
@@ -88,6 +89,9 @@ export async function updateUserStreak(): Promise<ApiResponse<null>> {
       log.error("updateUserStreak RPC error", error.message);
       return { data: null, success: false, error: error.message };
     }
+
+    // ponytail: cancel evening streak saver reminder immediately on activity completion (AD-4)
+    void cancelStreakSaverNotification();
 
     return { data: null, success: true };
   } catch (err) {

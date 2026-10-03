@@ -1,26 +1,9 @@
-import { Image as ExpoImage, ImageProps, type ImageStyle } from "expo-image";
-import {
-  ArrowUp,
-  ChevronDown,
-  HelpCircle,
-  MessageSquare,
-  Plus,
-  type LucideIcon,
-} from "lucide-react-native";
-
+// ponytail: use expo-image sf: and expo-symbols without lucide dependency
+import { Image as ExpoImage, type ImageProps, type ImageStyle } from "expo-image";
+import { SymbolView } from "expo-symbols";
 import { withUniwind } from "uniwind";
 
 const Image = withUniwind(ExpoImage);
-
-/**
- * Map of SF Symbol names to Lucide icons for Android/web fallback.
- */
-const LUCIDE_FALLBACKS: Record<string, LucideIcon> = {
-  "arrow.up": ArrowUp,
-  "chevron.down": ChevronDown,
-  "bubble.left.and.bubble.right": MessageSquare,
-  plus: Plus,
-};
 
 type SymbolImageProps = {
   /** SF Symbol name (e.g. "arrow.up", "chevron.down") */
@@ -55,6 +38,13 @@ export function SymbolImage({
     );
   }
 
-  const Icon = LUCIDE_FALLBACKS[name] ?? HelpCircle;
-  return <Icon size={size} color={tintColor} style={style as any} />;
+  return (
+    <SymbolView
+      name={name as any}
+      size={size}
+      tintColor={tintColor}
+      style={[{ width: size, height: size }, style]}
+      className={className}
+    />
+  );
 }

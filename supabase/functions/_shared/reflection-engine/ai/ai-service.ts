@@ -1,4 +1,5 @@
 import { geminiClient } from "./client.ts";
+import type { AiObservationContext } from "../../ai-observability.ts";
 import {
   JournalReflectionResult,
   DailyReflectionResult,
@@ -13,12 +14,15 @@ import { monthlyReflectionSchema } from "./schemas/monthly.ts";
 export class AIService {
   public async generateJournalReflection(
     prompt: string,
-    systemInstruction?: string
+    systemInstruction?: string,
+    observation?: AiObservationContext,
   ): Promise<JournalReflectionResult> {
     const rawResult = await geminiClient.generateJson(
       prompt,
       systemInstruction,
-      journalReflectionSchema
+      journalReflectionSchema,
+      undefined,
+      observation,
     );
     return rawResult as JournalReflectionResult;
   }

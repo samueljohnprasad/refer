@@ -115,22 +115,33 @@ export function useSvgAppButtonViewModel({
     [hasPercentageWidth, measuredWidth],
   );
 
+  // ponytail: inset paths by half stroke width when stroked to prevent SVG viewBox/overflow clipping
+  const strokeOffset = faceStrokeWidth > 0 ? faceStrokeWidth / 2 : 0;
+
   const facePath = useMemo(
-    () => roundedRectPath(0, 0, resolvedWidth, height, leftRadius, rightRadius),
-    [height, leftRadius, resolvedWidth, rightRadius],
+    () =>
+      roundedRectPath(
+        strokeOffset,
+        strokeOffset,
+        Math.max(0, resolvedWidth - strokeOffset * 2),
+        Math.max(0, height - strokeOffset * 2),
+        leftRadius,
+        rightRadius,
+      ),
+    [height, leftRadius, resolvedWidth, rightRadius, strokeOffset],
   );
 
   const rimPath = useMemo(
     () =>
       roundedRectPath(
-        0,
-        pressDepth,
-        resolvedWidth,
-        height,
+        strokeOffset,
+        pressDepth + strokeOffset,
+        Math.max(0, resolvedWidth - strokeOffset * 2),
+        Math.max(0, height - strokeOffset * 2),
         leftRadius,
         rightRadius,
       ),
-    [height, leftRadius, pressDepth, resolvedWidth, rightRadius],
+    [height, leftRadius, pressDepth, resolvedWidth, rightRadius, strokeOffset],
   );
 
   const animatedStyle = useAnimatedStyle(() => ({

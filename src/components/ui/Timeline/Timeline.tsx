@@ -116,15 +116,15 @@ function TimelineInner<T extends TimelineItemData>({
                   style={{
                     position: "absolute",
                     left: 9,
-                    top: isVeryFirst ? 14 : 0,
+                    top: isVeryFirst ? 18 : 0,
                     bottom: isVeryLast ? undefined : 0,
-                    height: isVeryLast ? 14 : undefined,
+                    height: isVeryLast ? 18 : undefined,
                   }}
                 />
               )}
 
               {/* The Dot (center aligns with first line of content text) */}
-              <View className="absolute top-[8px] left-[0px] items-center">
+              <View className="absolute top-[8px] left-0 right-0 items-center">
                 <TimelineDot status={item.status || "completed"} />
               </View>
             </View>

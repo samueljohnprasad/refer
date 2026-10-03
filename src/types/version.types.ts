@@ -19,21 +19,3 @@ export interface UpdateModalConfig {
   autoShow?: boolean;
   appStoreUrl?: string;
 }
-
-export type ReactNativeVersionCheck = {
-  getCurrentVersion: () => string;
-  getLatestVersion: (options?: {
-    provider?: "appStore" | "playStore";
-    packageName?: string;
-    ignoreErrors?: boolean;
-  }) => Promise<string>;
-  needUpdate: (options?: {
-    currentVersion?: string;
-    latestVersion?: string;
-    depth?: number;
-  }) => Promise<{
-    isNeeded: boolean;
-    currentVersion: string;
-    latestVersion: string;
-  }>;
-};

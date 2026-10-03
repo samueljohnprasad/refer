@@ -16,21 +16,23 @@ const PROJECT_ID = "b87a1855-bf48-4992-9004-1ec817a4a5de";
  */
 export async function registerPushToken(
     userId: string,
-    requestPermission: boolean = false
+    requestPermission: boolean = true
 ): Promise<string | null> {
     try {
         if (!Device.isDevice) {
             log.info("Push notifications require a physical device");
+            console.log("[PushToken] ℹ️ Push notifications require physical device (Device.isDevice is false)");
             return null;
         }
 
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
 
-        // ponytail: never prompt for permission on app start or passive sync
+        // ponytail: prompt for permission if not granted yet
         if (existingStatus !== "granted") {
             if (!requestPermission) {
                 log.debug("Push notification permission not granted yet (passive check skipped)");
+                console.log(`[PushToken] ℹ️ Permission not granted yet (status: ${existingStatus}). Passive check skipped.`);
                 return null;
             }
             const { status } = await Notifications.requestPermissionsAsync();
@@ -39,6 +41,7 @@ export async function registerPushToken(
 
         if (finalStatus !== "granted") {
             log.info("Push notification permission not granted by user");
+            console.log(`[PushToken] ⚠️ Push permission not granted (status: ${finalStatus}). If denied, turn ON in iPhone Settings -> Happy -> Notifications.`);
             return null;
         }
 
@@ -76,6 +79,7 @@ export async function registerPushToken(
 
         if (error) {
             log.error("Error storing push token in Supabase:", error);
+            console.error("[PushToken] ❌ Error storing token in Supabase:", error);
             return null;
         }
 
@@ -88,10 +92,16 @@ export async function registerPushToken(
             { onConflict: "user_id" }
         );
 
+        // ponytail: prominent token output for debugging, curls, and testflight verification
+        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        console.log(`[PushToken] 🚀 EXPO PUSH TOKEN: ${expoPushToken}`);
+        console.log(`[PushToken] 📱 User: ${userId} | Platform: ${platform} | Timezone: ${timezone}`);
+        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         log.info("Push token registered successfully:", expoPushToken);
         return expoPushToken;
     } catch (error) {
         log.error("Error registering push token:", error);
+        console.error("[PushToken] ❌ Exception during push token registration:", error);
         return null;
     }
 }

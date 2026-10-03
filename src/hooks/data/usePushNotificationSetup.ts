@@ -1,9 +1,12 @@
 import { useEffect, useRef } from "react";
+import { AppState, type AppStateStatus } from "react-native";
 import * as Notifications from "expo-notifications";
 import { useAuth } from "@/src/context/AuthContext";
 import { registerPushToken } from "@/src/utils/pushTokenRegistration";
 import { trackNotificationReceived } from "@/src/utils/notificationConversionTracker";
+import { createLogger } from "@/src/lib/logger";
 
+const log = createLogger("usePushNotificationSetup");
 
 /**
  * Hook to set up push notification listeners.
@@ -19,8 +22,27 @@ export function usePushNotificationSetup() {
     useEffect(() => {
         if (!user?.id) return;
 
-        // Re-register token on app mount (tokens can change)
-        registerPushToken(user.id).catch(console.error);
+        const syncToken = () => {
+            // ponytail: request permission on device so token is registered to Supabase
+            registerPushToken(user.id, true)
+                .then((token) => {
+                    if (token) {
+                        log.info("Push token verified:", token);
+                    }
+                })
+                .catch((err) => {
+                    log.error("Failed to register push token:", err);
+                });
+        };
+
+        syncToken();
+
+        // ponytail: re-check token when user returns from iOS Settings
+        const appStateSub = AppState.addEventListener("change", (state: AppStateStatus) => {
+            if (state === "active") {
+                syncToken();
+            }
+        });
 
         // Listen for notifications received while app is in foreground
         notificationListener.current =
@@ -36,6 +58,7 @@ export function usePushNotificationSetup() {
             });
 
         return () => {
+            appStateSub.remove();
             notificationListener.current?.remove();
         };
     }, [user?.id]);

@@ -11,7 +11,6 @@ import {
 import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
 import * as Haptics from "expo-haptics";
-import VersionCheck from "react-native-version-check";
 
 interface UpdateModalProps {
   /** Whether the modal is visible */
@@ -64,25 +63,8 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
   const handleUpdate = useCallback(async (): Promise<void> => {
     try {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      
-      let targetUrl = appStoreUrl;
-      try {
-        const storeUrl = await VersionCheck.getStoreUrl({
-          appID: "6755650433",
-          packageName: "com.samuelprasad.happy",
-        });
-        if (storeUrl) {
-          targetUrl = storeUrl;
-        }
-      } catch (e) {
-        console.warn("Could not fetch dynamic store URL, using fallback", e);
-      }
-
-      // Some simulators or devices might return false for canOpenURL if schemes aren't configured,
-      // but openURL will still work for standard https:// links.
-      await Linking.openURL(targetUrl);
-
-      // Close modal after opening store
+      // ponytail: direct App Store link without dead version-check dependency
+      await Linking.openURL(appStoreUrl);
       closeHandler();
     } catch (error) {
       console.error("Error opening App Store:", error);

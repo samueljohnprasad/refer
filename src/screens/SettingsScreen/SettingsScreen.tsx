@@ -176,7 +176,8 @@ export default function SettingsScreen() {
           />
           <SettingsItem
             icon={StarIcon}
-            title="Write a Review"
+            title="Rate Happy on the App Store"
+            subtitle="Support our journey with a review"
             onPress={handleRateUs}
             showArrow={false}
           />

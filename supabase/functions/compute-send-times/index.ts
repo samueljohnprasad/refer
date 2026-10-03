@@ -9,12 +9,12 @@ const MIN_DATA_POINTS = 5;
 
 serve(async (req) => {
   try {
-      const SUPABASE_URL = "https://xaqeueshxpehijtxwklo.supabase.co";
-      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcWV1ZXNoeHBlaGlqdHh3a2xvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1OTY2ODMsImV4cCI6MjA2ODE3MjY4M30.hKxftlcs-j4W1TrsbdycfT2tK9qowc3ZrgG1ZJoFwo4";
+      const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "https://xaqeueshxpehijtxwklo.supabase.co";
+      const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcWV1ZXNoeHBlaGlqdHh3a2xvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MjU5NjY4MywiZXhwIjoyMDY4MTcyNjgzfQ.V5jpUlbJsNQAOH4jFjwfjSG4MK4SA2vVnAKLI99mPlE";
       
     const supabase = createClient(
       SUPABASE_URL,
-      SUPABASE_ANON_KEY
+      SUPABASE_SERVICE_ROLE_KEY
     );
 
     let offset = 0;

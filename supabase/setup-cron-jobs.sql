@@ -3,10 +3,10 @@
 -- Run these in Supabase Dashboard > SQL Editor
 -- ============================================
 
--- 1. Main notification dispatcher - runs every 15 minutes
+-- 1. Main notification dispatcher - runs twice daily (9:00 AM IST & 8:00 PM IST)
 SELECT cron.schedule(
   'notification-dispatcher',
-  '*/15 * * * *',
+  '30 3,14 * * *',
   $$
   SELECT net.http_post(
     url := 'https://xaqeueshxpehijtxwklo.supabase.co/functions/v1/notification-dispatcher',
@@ -45,10 +45,10 @@ SELECT cron.schedule(
   $$
 );
 
--- 4. Optional: Receipt checker - runs every 30 minutes
+-- 4. Optional: Receipt checker - runs once daily at 8:45 PM IST (15:15 UTC)
 SELECT cron.schedule(
   'check-push-receipts',
-  '15,45 * * * *',
+  '15 15 * * *',
   $$
   SELECT net.http_post(
     url := 'https://xaqeueshxpehijtxwklo.supabase.co/functions/v1/check-push-receipts',

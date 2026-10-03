@@ -215,8 +215,6 @@ export function LessonCompleteCelebration({
   const xpOpacity = useSharedValue(0);
   const streakScale = useSharedValue(0);
   const streakOpacity = useSharedValue(0);
-  const timeScale = useSharedValue(0);
-  const timeOpacity = useSharedValue(0);
   const ringScale = useSharedValue(0);
   const ringOpacity = useSharedValue(0);
   const milestoneScale = useSharedValue(0);
@@ -290,8 +288,6 @@ export function LessonCompleteCelebration({
       xpOpacity.value = 0;
       streakScale.value = 0;
       streakOpacity.value = 0;
-      timeScale.value = 0;
-      timeOpacity.value = 0;
       ringScale.value = 0;
       ringOpacity.value = 0;
       milestoneScale.value = 0;
@@ -343,11 +339,6 @@ export function LessonCompleteCelebration({
 
     streakOpacity.value = withDelay(cardDelay, withTiming(1, { duration: animDuration }));
     streakScale.value = withDelay(cardDelay, popIn(rm));
-
-    if (durationMs !== undefined) {
-      timeOpacity.value = withDelay(cardDelay, withTiming(1, { duration: animDuration }));
-      timeScale.value = withDelay(cardDelay, popIn(rm));
-    }
 
     // Streak milestone
     const startMilestone = (milestone: StreakMilestoneDay) => {
@@ -460,13 +451,6 @@ export function LessonCompleteCelebration({
     transform: [
       { translateY: 8 * (1 - streakOpacity.value) },
       { scale: interpolate(streakScale.value, [0, 1], [0.95, 1], Extrapolation.CLAMP) },
-    ],
-  }));
-  const timeStyle = useAnimatedStyle(() => ({
-    opacity: timeOpacity.value,
-    transform: [
-      { translateY: 8 * (1 - timeOpacity.value) },
-      { scale: interpolate(timeScale.value, [0, 1], [0.95, 1], Extrapolation.CLAMP) },
     ],
   }));
   const ringCardStyle = useAnimatedStyle(() => ({
@@ -768,30 +752,6 @@ export function LessonCompleteCelebration({
                 </View>
               </Card>
             </Animated.View>
-
-            {durationMs !== undefined ? (
-              <Animated.View testID="celebration-time-card" style={[{ flex: 1 }, timeStyle]}>
-                <Card
-                  variant="tile"
-                  radius="lg"
-                  className="w-full"
-                  contentClassName="items-center justify-center py-3.5 px-2 min-h-[78px]"
-                >
-                  <Text style={[styles.statLabel, { color: SEMANTIC_COLORS.text.secondary }]}>TIME</Text>
-                  <View style={styles.statValueRow}>
-                    <HugeiconsIcon
-                      icon={Clock01Icon}
-                      size={18}
-                      color={isDark ? "#60A5FA" : "#3B82F6"}
-                      strokeWidth={2.4}
-                    />
-                    <Text style={[styles.statValue, { color: SEMANTIC_COLORS.text.primary }]}>
-                      {formatLessonDuration(durationMs)}
-                    </Text>
-                  </View>
-                </Card>
-              </Animated.View>
-            ) : null}
           </View>
 
           {/* Weekly streak dots — ponytail: dedicated row gives all 7 days horizontal breathing room */}

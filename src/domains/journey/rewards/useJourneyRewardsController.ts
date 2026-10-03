@@ -22,6 +22,7 @@ import {
   selectUnit,
 } from "@/src/domains/journey/state/journeySelectors";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
+import { requestReviewForMilestone } from "@/src/hooks/useReviewPrompt";
 
 export function useJourneyRewardsController(courseId: string) {
   const [rewardNode, setRewardNode] = useState<PathNodeData | null>(null);
@@ -105,6 +106,10 @@ export function useJourneyRewardsController(courseId: string) {
         },
       }),
     );
+    // ponytail: trigger App Store review prompt 2.0s after user completes a course unit
+    setTimeout(() => {
+      void requestReviewForMilestone("course_unit_completed");
+    }, 2000);
     setRewardNode(null);
   }, [courseId, dispatch, rewardNode, rewardNodeEntity, rewardUnit]);
 

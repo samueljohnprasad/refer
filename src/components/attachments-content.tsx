@@ -1,29 +1,18 @@
-import { Icon } from "@/src/components/icon";
 import { Switch } from "@/src/components/switch";
 import * as ImagePicker from "expo-image-picker";
-import type { LucideIcon } from "lucide-react-native";
-import {
-  Archive,
-  Camera,
-  ChevronRight,
-  File,
-  Globe,
-  Image as ImageIcon,
-  Paintbrush,
-  Sparkles,
-  Wrench,
-} from "lucide-react-native";
+// ponytail: use native expo-symbols instead of lucide
+import { SymbolView, type SymbolViewProps } from "expo-symbols";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
 const IS_IOS = process.env.EXPO_OS === "ios";
 
 function AttachmentButton({
-  icon,
+  iconName,
   label,
   onPress,
 }: {
-  icon: LucideIcon;
+  iconName: SymbolViewProps["name"];
   label: string;
   onPress?: () => void;
 }) {
@@ -32,7 +21,7 @@ function AttachmentButton({
       onPress={onPress}
       className="flex-1 items-center gap-2 py-3 rounded-xl bg-secondary active:bg-muted hover:bg-muted border-continuous"
     >
-      <Icon icon={icon} className="w-6 h-6 text-foreground" />
+      <SymbolView name={iconName} size={24} tintColor="#1A1A1A" />
       <Text className="text-[13px] text-foreground">{label}</Text>
     </Pressable>
   );
@@ -55,13 +44,13 @@ async function openPhotos() {
 }
 
 function ToggleRow({
-  icon,
+  iconName,
   label,
   badge,
   value,
   onValueChange,
 }: {
-  icon: LucideIcon;
+  iconName: SymbolViewProps["name"];
   label: string;
   badge?: string;
   value: boolean;
@@ -69,7 +58,7 @@ function ToggleRow({
 }) {
   return (
     <View className="flex-row items-center px-5 py-3 gap-3.5">
-      <Icon icon={icon} className="w-5 h-5 text-foreground" />
+      <SymbolView name={iconName} size={20} tintColor="#1A1A1A" />
       <Text className="flex-1 text-[17px] text-foreground">{label}</Text>
       {badge && (
         <View className="px-1.5 py-0.5 rounded bg-muted">
@@ -84,12 +73,12 @@ function ToggleRow({
 }
 
 function DisclosureRow({
-  icon,
+  iconName,
   label,
   detail,
   onPress,
 }: {
-  icon: LucideIcon;
+  iconName: SymbolViewProps["name"];
   label: string;
   detail: string;
   onPress?: () => void;
@@ -99,10 +88,10 @@ function DisclosureRow({
       onPress={onPress}
       className="flex-row items-center mx-2 px-3 py-3 gap-3.5 rounded-xl active:bg-muted hover:bg-muted"
     >
-      <Icon icon={icon} className="w-5 h-5 text-foreground" />
+      <SymbolView name={iconName} size={20} tintColor="#1A1A1A" />
       <Text className="flex-1 text-[17px] text-foreground">{label}</Text>
       <Text className="text-[15px] text-muted-foreground">{detail}</Text>
-      <Icon icon={ChevronRight} className="w-3 h-3 text-muted-foreground" />
+      <SymbolView name="chevron.right" size={12} tintColor="#8e8e93" />
     </Pressable>
   );
 }
@@ -120,27 +109,27 @@ export function AttachmentsContent() {
       {/* Attachment buttons */}
       <View className="flex-row gap-3 px-5 pt-2 pb-4">
         <AttachmentButton
-          icon={Camera}
+          iconName="camera.fill"
           label="Camera"
           onPress={IS_IOS ? openCamera : undefined}
         />
         <AttachmentButton
-          icon={ImageIcon}
+          iconName="photo.fill"
           label="Photos"
           onPress={IS_IOS ? openPhotos : undefined}
         />
-        <AttachmentButton icon={File} label="Files" />
+        <AttachmentButton iconName="doc.fill" label="Files" />
       </View>
 
       {/* Toggles */}
       <ToggleRow
-        icon={Sparkles}
+        iconName="sparkles"
         label="Research"
         value={research}
         onValueChange={setResearch}
       />
       <ToggleRow
-        icon={Globe}
+        iconName="globe"
         label="Web search"
         badge="Beta"
         value={webSearch}
@@ -151,9 +140,9 @@ export function AttachmentsContent() {
       <View className="h-px bg-border mx-5 my-1" />
 
       {/* Disclosure rows */}
-      <DisclosureRow icon={Archive} label="Add to project" detail="None" />
-      <DisclosureRow icon={Paintbrush} label="Choose style" detail="Normal" />
-      <DisclosureRow icon={Wrench} label="Tool access" detail="Auto" />
+      <DisclosureRow iconName="archivebox.fill" label="Add to project" detail="None" />
+      <DisclosureRow iconName="paintbrush.fill" label="Choose style" detail="Normal" />
+      <DisclosureRow iconName="wrench.and.screwdriver.fill" label="Tool access" detail="Auto" />
     </>
   );
 }

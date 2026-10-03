@@ -11,6 +11,7 @@ import {
   DISTORTION_LABELS,
 } from "@/src/constants/insights";
 import { countBy } from "@/src/utils/insights";
+import { observeGeminiGeneration } from "@/src/observability/ai";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -115,7 +116,7 @@ ${situationList}
 
 Return a JSON array of themes, each with the indices (1-based) of situations that belong to it. Every situation must belong to exactly one theme.`;
 
-  const response = await ai.models.generateContent({
+  const response = await observeGeminiGeneration("cluster_trigger_situations", (request) => ai.models.generateContent(request), {
     model: "gemini-2.0-flash",
     contents: prompt,
     config: {

@@ -5,8 +5,8 @@ import { useGradualAnimation } from "@/hooks/useGradualAnimation";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
 import { useUpdateDisplayName } from "@/hooks/post/useUpdateDisplayName";
-import { Icon } from "@/src/components/icon";
-import { User, X, Check } from "lucide-react-native";
+// ponytail: use native expo-symbols instead of lucide
+import { SymbolView } from "expo-symbols";
 
 interface NameEditScreenProps {
   setShowModal: (show: boolean) => void;
@@ -64,7 +64,7 @@ export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
       <View className="flex-1 px-5 pt-8 items-center">
         {/* Avatar Container */}
         <View className="w-24 h-24 rounded-full bg-card items-center justify-center mb-8 shadow-sm border border-border">
-          <Icon icon={User} className="w-10 h-10 text-muted-foreground" />
+          <SymbolView name="person.fill" size={38} tintColor="#8e8e93" />
         </View>
 
         {/* Input */}

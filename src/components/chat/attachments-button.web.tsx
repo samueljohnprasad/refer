@@ -1,11 +1,11 @@
 import { AttachmentsContent } from "@/src/components/attachments-content";
-import { Icon } from "@/src/components/icon";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/src/components/web-popover";
-import { Plus } from "lucide-react-native";
+// ponytail: use native expo-symbols instead of lucide
+import { SymbolView } from "expo-symbols";
 import { Text, View } from "react-native";
 
 /**
@@ -19,7 +19,7 @@ export function AttachmentsButton() {
         aria-label="Add to chat"
         className="flex h-7 w-7 items-center justify-center rounded-lg border border-border/40 bg-transparent transition-colors hover:bg-accent"
       >
-        <Icon icon={Plus} className="w-5 h-5 text-muted-foreground" />
+        <SymbolView name="plus" size={18} tintColor="#8e8e93" />
       </PopoverTrigger>
       <PopoverContent>
         <View className="pb-1 pt-1">
