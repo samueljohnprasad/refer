@@ -34,6 +34,7 @@ import {
   TRAIL_BOTTOM,
   PROGRESS_SEGMENTS,
   ProgressSegmentDef,
+  DURATION_FRAMES,
   T,
 } from "./constants";
 import { WelcomeNode } from "./WelcomeNode";
@@ -118,12 +119,16 @@ export function WelcomeHeroCanvas(): React.JSX.Element {
   const { width: screenWidth } = useWindowDimensions();
   const scale: number = screenWidth / CANVAS_WIDTH;
   const canvasHeight: number = CANVAS_HEIGHT * scale;
+  // rawFrame advances continuously; frame is the looped value seen by children
+  const rawFrame = useSharedValue<number>(0);
   const frame = useSharedValue<number>(0);
 
-  // 30 FPS timeline clock running smoothly on native UI thread
+  // 30 FPS clock — loops DURATION_FRAMES up to 5×, then freezes at DURATION_FRAMES
   useFrameCallback((info: FrameInfo) => {
     if (info.timeSincePreviousFrame) {
-      frame.value += (info.timeSincePreviousFrame / 1000) * 30;
+      const maxRaw: number = DURATION_FRAMES * 5; // ponytail: 5 plays
+      rawFrame.value = Math.min(rawFrame.value + (info.timeSincePreviousFrame / 1000) * 30, maxRaw);
+      frame.value = rawFrame.value < maxRaw ? rawFrame.value % DURATION_FRAMES : DURATION_FRAMES;
     }
   });
 
