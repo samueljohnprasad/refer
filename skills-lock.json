@@ -110,6 +110,12 @@
       "sourceType": "github",
       "computedHash": "d964f328784a7aa2b8288d64a95e933412576e4a79a8017ca9a34e1de2e89242"
     },
+    "app-store-screenshots": {
+      "source": "ParthJadhav/app-store-screenshots",
+      "sourceType": "github",
+      "skillPath": "skills/app-store-screenshots/SKILL.md",
+      "computedHash": "e3a533208ad40237352549c91cb5373d07ef146513cac52e715ef924b0d1a136"
+    },
     "apple-design": {
       "source": "emilkowalski/skills",
       "sourceType": "github",
