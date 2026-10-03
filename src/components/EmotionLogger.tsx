@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { Text } from "@/src/components/ui/Text";
 import Animated, {
   useSharedValue,
@@ -20,11 +21,11 @@ import { createLogger } from "@/src/lib/logger";
 const logger = createLogger("emotion-logger");
 
 const EMOTIONS = [
-  { id: 1, name: "Terrible", moodKey: "terrible" as MoodKey },
-  { id: 2, name: "Bad", moodKey: "bad" as MoodKey },
-  { id: 3, name: "Okay", moodKey: "okay" as MoodKey },
-  { id: 4, name: "Good", moodKey: "good" as MoodKey },
-  { id: 5, name: "Great", moodKey: "great" as MoodKey },
+  { id: 1, name: "Terrible", moodKey: "terrible" as MoodKey, i18nKey: "moods.terrible" as const },
+  { id: 2, name: "Bad", moodKey: "bad" as MoodKey, i18nKey: "moods.bad" as const },
+  { id: 3, name: "Okay", moodKey: "okay" as MoodKey, i18nKey: "moods.okay" as const },
+  { id: 4, name: "Good", moodKey: "good" as MoodKey, i18nKey: "moods.good" as const },
+  { id: 5, name: "Great", moodKey: "great" as MoodKey, i18nKey: "moods.great" as const },
 ] as const;
 
 interface EmotionLoggerProps {
@@ -39,6 +40,7 @@ const EmotionItem: React.FC<{
   onPress: () => void;
   isLoading: boolean;
 }> = ({ emotion, count, onPress, isLoading }) => {
+  const { t } = useTranslation("home");
   const countScale = useSharedValue(1);
 
   // Animate count changes
@@ -62,6 +64,8 @@ const EmotionItem: React.FC<{
     }
   };
 
+  const moodName: string = t(emotion.i18nKey);
+
   return (
     // ponytail: clean emoji without circle border and showing count badge like previous
     <PressableScale
@@ -70,7 +74,7 @@ const EmotionItem: React.FC<{
       scale={0.93}
       hapticStyle="light"
       accessibilityRole="button"
-      accessibilityLabel={`Log ${emotion.name} mood${count > 0 ? `, logged ${count} times` : ""}`}
+      accessibilityLabel={`Log ${moodName} mood${count > 0 ? `, logged ${count} times` : ""}`}
       className="flex-1 items-center justify-center min-h-[56px] py-1"
     >
       <View className="relative items-center justify-center">
@@ -90,7 +94,7 @@ const EmotionItem: React.FC<{
         variant="chip"
         className="mt-1.5 text-[12px] font-medium text-ink-muted"
       >
-        {emotion.name}
+        {moodName}
       </Text>
     </PressableScale>
   );
@@ -101,6 +105,7 @@ const MemoizedEmotionItem = React.memo(EmotionItem);
 
 export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
   ({ selectedDate = new Date(), onEmotionLogged }) => {
+    const { t } = useTranslation("home");
     const {
       emotionCounts,
       logEmotion: logEmotionToSupabase,
@@ -154,7 +159,7 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
       <View className="gap-1.5">
         <View className="flex-row items-center justify-between px-1 mb-0.5">
           <Text className="text-[11px] font-semibold tracking-wider text-ink-muted/80 uppercase">
-            How are you feeling?
+            {t("sections.howAreYouFeeling")}
           </Text>
         </View>
 

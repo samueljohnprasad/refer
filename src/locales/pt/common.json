@@ -1,0 +1,27 @@
+{
+  "navigation": {
+    "home": "Início",
+    "journal": "Diário",
+    "exercises": "Exercícios",
+    "habits": "Hábitos",
+    "settings": "Ajustes",
+    "capture": "Capturar",
+    "journeys": "Jornadas"
+  },
+  "streak": {
+    "message_one": "{{count}} dia de sequência!",
+    "message_other": "{{count}} dias de sequência!"
+  },
+  "errors": {
+    "generic": "Ocorreu um erro. Tente novamente.",
+    "network": "Sem conexão. Verifique sua internet."
+  },
+  "actions": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "done": "Concluído",
+    "retry": "Tentar novamente",
+    "skip": "Pular",
+    "continue": "Continuar"
+  }
+}

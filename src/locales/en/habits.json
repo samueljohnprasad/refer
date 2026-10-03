@@ -1,0 +1,16 @@
+{
+  "title": "Habits",
+  "streak": {
+    "days": "Days Streak",
+    "multiplier": "Streak Multiplier"
+  },
+  "timeOfDay": {
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening"
+  },
+  "actions": {
+    "logHabit": "Log Habit",
+    "habitCompleted": "Completed"
+  }
+}

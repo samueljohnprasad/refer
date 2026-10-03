@@ -16,7 +16,7 @@
 | **In-App Events** | `7-Day CBT Mental Reset Challenge` Published | ✅ DONE | Low | Plan next seasonal challenge |
 | **Custom Product Pages** | 3 pages live (`CBT Courses`, `Anxiety Relief`, `Voice Journal`) | ✅ DONE | Med | Link to ad campaigns (ASA, TikTok, Meta) |
 | **Review Prompts** | `useReviewPrompt` hooked to Day 3/7/15 & unit milestone | ✅ DONE | Low | Verify live prompt appearance in production |
-| **Keyword Budget** | `ja` (89/100) & `ko` (77/100) have unused characters; US-MX cross-locale duplication | ⚠️ ACTION | High | Optimize character budget & cross-index coverage |
+| **Keyword Budget** | 100/100 full budget achieved across all 28 supported App Store locales | ✅ DONE | Low | Maintain density on future version bumps |
 | **Screenshots** | `en-US` (6/10), `de-DE` (2/10), remaining 8 locales have 0 screenshots | ❌ INCOMPLETE | High | Render & upload localized sets (Slots 1–10) |
 | **App Preview Video** | 0 videos in App Store Connect | ⏳ PENDING | Med | Record 15-30s gameplay video for Slot 1 |
 | **A/B Testing (PPO)** | 0 active experiments | ⏳ PENDING | Med | Start Icon & Slot 1 A/B test once 1.5.1 is live |
@@ -42,16 +42,34 @@ Apple indexes both `en-US` AND `es-MX` (Spanish Mexico) in the United States App
 ### Keyword Budget Usage by Locale
 | Locale | Length | Status | Recommendation |
 | :--- | :---: | :---: | :--- |
-| `en-US` | 100/100 | Full | Swap out MX-duplicated words (`sleep`, `panic`, `overthinking`) for `adhd`, `ptsd`, `breathe`, `tracker` |
-| `en-AU` | 100/100 | Full | Optimal coverage |
-| `en-CA` | 100/100 | Full | Optimal coverage |
-| `en-GB` | 99/100 | Full | Optimal UK-specific terms (`wellbeing`, `burnout`, `reflection`) |
+| `en-US` | 100/100 | Full | US high-volume clinical & coping terms (therapy, anxiety, depression, mindfulness) |
+| `en-AU` | 100/100 | Full | Optimal Australian English terms (therapy, anxiety, calm, overthinking) |
+| `en-CA` | 100/100 | Full | Optimal Canadian English coverage |
+| `en-GB` | 100/100 | Full | Optimal UK-specific terms (wellbeing, burnout, reflection, relax) |
 | `es-MX` | 100/100 | Full | High-volume English & Spanish crossover terms |
-| `de-DE` | 100/100 | Full | German psychological terms (`achtsamkeit`, `beruhigung`, `burnout`) |
-| `fr-FR` | 100/100 | Full | French mental health terms (`angoisse`, `respiration`, `phobie`) |
-| `fr-CA` | 100/100 | Full | Quebec French terms matching `fr-FR` |
-| `ja` | 89/100 | 11 free | Add `カウンセリング` (counseling), `メンタルヘルス`, `不眠` (insomnia) |
-| `ko` | 77/100 | 23 free | Add `불면증` (insomnia), `상담` (counseling), `번아웃` (burnout), `루틴` (routine) |
+| `es-ES` | 100/100 | Full | Castilian Spanish clinical & coping terms (terapia, estres, depresion, meditacion, sueno) |
+| `de-DE` | 100/100 | Full | German psychological terms (achtsamkeit, beruhigung, burnout) |
+| `fr-FR` | 100/100 | Full | French mental health terms (angoisse, respiration, phobie) |
+| `fr-CA` | 100/100 | Full | Quebec French terms matching fr-FR |
+| `ja` | 100/100 | Full | High-intent Japanese clinical terms (カウンセリング, 不眠, 認知行動療法, 気分, ストレス) |
+| `ko` | 100/100 | Full | High-intent Korean terms (우울증, 불면증, 심리상담, 번아웃, 루틴) |
+| `it` | 100/100 | Full | High-volume Italian clinical terms (terapia, meditazione, depressione, sonno, panico, respiro) |
+| `pt-BR` | 100/100 | Full | Brazilian Portuguese mental health terms (terapia, depressao, panico, meditacao, sono) |
+| `zh-Hant` | 100/100 | Full | Traditional Chinese wellness terms (冥想, 睡眠, 正念, 憂鬱, 心理諮商) |
+| `nl-NL` | 100/100 | Full | High-intent Dutch clinical & wellness terms (therapie, stress, depressie, meditatie, slaap, paniek, piekeren) |
+| `sv` | 100/100 | Full | High-intent Swedish KBT & coping terms (terapi, stress, depression, meditation, somn, oro, maende) |
+| `tr` | 100/100 | Full | High-intent Turkish BDT & coping terms (terapi, anksiyete, stres, depresyon, meditasyon, panikatak, nefes) |
+| `pl` | 100/100 | Full | High-intent Polish CBT & coping terms (terapia, stres, depresja, medytacja, sen, panika, oddech, nawyki) |
+| `zh-Hans` | 100/100 | Full | Simplified Chinese CBT & wellness terms (冥想, 睡眠, 正念, 抑郁, 呼吸, 放松, 失眠, 恐慌, 习惯, 疗愈) |
+| `no` | 100/100 | Full | High-intent Norwegian KBT & coping terms (terapi, stress, depresjon, meditasjon, søvn, pust, mindfulness, ro, panikk, uro, vaner) |
+| `da` | 100/100 | Full | High-intent Danish KBT & coping terms (terapi, stress, depression, meditation, søvn, åndedræt, ro, panik, uro, vaner) |
+| `fi` | 100/100 | Full | High-intent Finnish KBT & coping terms (terapia, stressi, masennus, uni, hengitys, mindfulness, rauha, paniikki, tavat, cbt) |
+| `id` | 100/100 | Full | High-intent Indonesian CBT & coping terms (terapi, stres, depresi, meditasi, tidur, napas, panik, tenang, curhat, psikolog, refleksi, afirmasi, mindfulness) |
+| `vi` | 100/100 | Full | High-intent Vietnamese CBT & coping terms (trị liệu, căng thẳng, trầm cảm, thiền, giấc ngủ, hít thở, thư giãn, chánh niệm, hoảng loạn, thói quen, cảm xúc) |
+| `ar-SA` | 100/100 | Full | High-intent Gulf Arabic CBT & coping terms (علاج, توتر, اكتئاب, تأمل, نوم, استرخاء, تنفس, هلع, هدوء, عادات, مذكرات, وسواس, مزاج, مشاعر, فضفضة) |
+| `th` | 100/100 | Full | High-intent Thai CBT & coping terms (คิดมาก, เครียด, ซึมเศร้า, แพนิค, สมาธิ, นอนไม่หลับ, จิตวิทยา, บำบัด, ฮีลใจ, ผ่อนคลาย, อารมณ์, นิสัย, ความสุข, สงบ) |
+| `ru` | 100/100 | Full | High-intent Russian CBT & coping terms (психолог, терапия, депрессия, паника, сон, бессонница, привычки, осознанность, спокойствие, выгорание, дыхание) |
+| `ms` | 100/100 | Full | High-intent Malay CBT & coping terms (terapi, stres, kemurungan, depresi, meditasi, tidur, panik, mood, emosi, tabiat, psikologi, nafas, syukur, jurnal) |
 
 ---
 

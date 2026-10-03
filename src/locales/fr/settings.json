@@ -1,0 +1,9 @@
+{
+  "title": "Paramètres",
+  "language": {
+    "title": "Langue",
+    "useDevice": "Langue de l appareil",
+    "restartPromptTitle": "Redémarrage requis",
+    "restartPromptMessage": "Veuillez redémarrer Happy pour appliquer la nouvelle disposition."
+  }
+}

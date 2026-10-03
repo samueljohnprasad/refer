@@ -83,27 +83,25 @@ export default function Home(): React.JSX.Element {
   }
 
   return (
-    <View className="flex-1">
-      <View className="flex-1 px-8 justify-between">
-        <View className="flex-1 justify-center items-center">
-          <WelcomeHeroVisual />
-        </View>
-
-        <View
-          pointerEvents="box-none"
-          className="absolute bottom-16 left-8 right-8"
-        >
-          <Animated.View className="w-full gap-2" style={buttonAnimatedStyle}>
-            <BeginButton
-              onPress={handleGetStartedPress}
-              onPressIn={handlePressIn}
-              onPressOut={handlePressOut}
-            />
-          </Animated.View>
-        </View>
-
-        <SignInBottomSheet ref={sheetRef} />
+    <View className="flex-1 bg-white">
+      <View className="flex-1 items-center justify-start">
+        <WelcomeHeroVisual />
       </View>
+
+      <View
+        pointerEvents="box-none"
+        className="absolute bottom-16 left-8 right-8"
+      >
+        <Animated.View className="w-full gap-2" style={buttonAnimatedStyle}>
+          <BeginButton
+            onPress={handleGetStartedPress}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+          />
+        </Animated.View>
+      </View>
+
+      <SignInBottomSheet ref={sheetRef} />
     </View>
   );
 }

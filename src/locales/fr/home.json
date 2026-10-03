@@ -1,0 +1,55 @@
+{
+  "greeting": {
+    "morning": "Bonjour",
+    "afternoon": "Bon après-midi",
+    "evening": "Bonsoir",
+    "windDown": "L'heure de se détendre",
+    "fallbackName": "Ami"
+  },
+  "sections": {
+    "todayReflection": "Réflexion du jour",
+    "continueJourney": "Continuez votre parcours",
+    "howAreYouFeeling": "Comment vous sentez-vous ?"
+  },
+  "actions": {
+    "startReflection": "Commencer la réflexion",
+    "newPrompt": "Nouvelle suggestion"
+  },
+  "moods": {
+    "terrible": "Terrible",
+    "bad": "Mauvais",
+    "okay": "Moyen",
+    "good": "Bien",
+    "great": "Super"
+  },
+  "prompts": {
+    "1": "De quoi êtes-vous reconnaissant aujourd'hui ?",
+    "2": "Comment voulez-vous vous sentir ?",
+    "3": "Laissez partir le stress et l'anxiété",
+    "4": "Qu'est-ce qui s'est bien passé aujourd'hui ?",
+    "5": "Qu'attendez-vous avec impatience aujourd'hui ?",
+    "6": "Qu'est-ce qui vous a fait sourire aujourd'hui ?",
+    "7": "Quels défis avez-vous surmontés ?",
+    "8": "Comment prenez-vous soin de vous ?",
+    "9": "Qui a rendu votre journée meilleure ?",
+    "10": "Qu'avez-vous appris aujourd'hui ?"
+  },
+  "journey": {
+    "completeTitle": "Parcours terminé",
+    "completeDesc": "Vous pouvez revoir les compétences acquises.",
+    "reviewSkills": "Revoir vos compétences",
+    "findNextStep": "Trouvez votre prochaine étape",
+    "chooseJourney": "Choisissez un parcours pour commencer.",
+    "exploreJourneys": "Explorer les parcours",
+    "continueLearning": "Continuer l'apprentissage",
+    "continueJourney": "Continuer votre parcours",
+    "pickUpWhereLeft": "Reprenez là où vous vous êtes arrêté.",
+    "openJourneys": "Ouvrir les parcours"
+  },
+  "streak": {
+    "streakCount_one": "{{count}} jour de série",
+    "streakCount_other": "{{count}} jours de série",
+    "weekDays": ["D", "L", "M", "M", "J", "V", "S"],
+    "a11yLabel": "Série actuelle : {{count}} jours. Touchez pour voir l'historique."
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "title": "Impostazioni",
+  "language": {
+    "title": "Lingua",
+    "useDevice": "Usa lingua del dispositivo",
+    "restartPromptTitle": "Riavvio necessario",
+    "restartPromptMessage": "Riavvia Happy per applicare la nuova direzione del layout."
+  }
+}

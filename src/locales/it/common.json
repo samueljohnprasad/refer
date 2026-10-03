@@ -1,0 +1,27 @@
+{
+  "navigation": {
+    "home": "Home",
+    "journal": "Diario",
+    "exercises": "Esercizi",
+    "habits": "Abitudini",
+    "settings": "Impostazioni",
+    "capture": "Cattura",
+    "journeys": "Percorsi"
+  },
+  "streak": {
+    "message_one": "{{count}} giorno di serie!",
+    "message_other": "{{count}} giorni di serie!"
+  },
+  "errors": {
+    "generic": "Qualcosa è andato storto. Riprova.",
+    "network": "Nessuna connessione. Controlla internet."
+  },
+  "actions": {
+    "save": "Salva",
+    "cancel": "Annulla",
+    "done": "Fine",
+    "retry": "Riprova",
+    "skip": "Salta",
+    "continue": "Continua"
+  }
+}

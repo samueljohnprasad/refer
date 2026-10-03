@@ -1,0 +1,27 @@
+{
+  "navigation": {
+    "home": "Accueil",
+    "journal": "Journal",
+    "exercises": "Exercices",
+    "habits": "Habitudes",
+    "settings": "Paramètres",
+    "capture": "Capturer",
+    "journeys": "Parcours"
+  },
+  "streak": {
+    "message_one": "{{count}} jour de série !",
+    "message_other": "{{count}} jours de série !"
+  },
+  "errors": {
+    "generic": "Une erreur est survenue. Veuillez réessayer.",
+    "network": "Aucune connexion. Vérifiez votre réseau."
+  },
+  "actions": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "done": "Terminé",
+    "retry": "Réessayer",
+    "skip": "Passer",
+    "continue": "Continuer"
+  }
+}

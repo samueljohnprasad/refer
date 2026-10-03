@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useCallback, useState } from "react";
 import { View, Text, ScrollView, Pressable } from "react-native";
+import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
@@ -24,22 +25,24 @@ import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
 // Re-export for backward compat from other files that import from here.
 export { PALETTE } from "@/constants/palette";
 
-/**
- * Returns a time-aware greeting based on the current hour.
- */
-const getGreeting = (hour: number): string => {
-  if (hour >= 4 && hour < 12) return "Good morning";
-  if (hour >= 12 && hour < 17) return "Good afternoon";
-  if (hour >= 17 && hour < 22) return "Good evening";
-  return "Time to wind down";
+const getGreetingKey = (
+  hour: number,
+): "morning" | "afternoon" | "evening" | "windDown" => {
+  if (hour >= 4 && hour < 12) return "morning";
+  if (hour >= 12 && hour < 17) return "afternoon";
+  if (hour >= 17 && hour < 22) return "evening";
+  return "windDown";
 };
 
-// ponytail: unconstrained full-width greeting
+// ponytail: unconstrained full-width localized greeting
 const Greeting = React.memo<{
   displayName?: string;
   isLoading: boolean;
 }>(({ displayName, isLoading }) => {
-  const greeting = useMemo(() => getGreeting(new Date().getHours()), []);
+  const { t } = useTranslation("home");
+  const greetingKey = useMemo(() => getGreetingKey(new Date().getHours()), []);
+  const greeting = t(`greeting.${greetingKey}`);
+  const fallbackName = t("greeting.fallbackName");
 
   return (
     <View className="w-full">
@@ -49,14 +52,14 @@ const Greeting = React.memo<{
         numberOfLines={1}
         adjustsFontSizeToFit
       >
-        {greeting}, {isLoading ? "..." : displayName || "Friend"}
+        {greeting}, {isLoading ? "..." : displayName || fallbackName}
       </Text>
     </View>
   );
 });
 
 export default function JournalCalendarScreen() {
-  
+  const { t: tHome } = useTranslation("home");
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const posthog = usePostHog();
 
@@ -196,7 +199,7 @@ export default function JournalCalendarScreen() {
           <View className="mt-6">
             <View className="mb-1.5 px-1">
               <Text className="text-[11px] font-semibold tracking-wider text-ink-muted/80 uppercase">
-                Today's reflection
+                {tHome("sections.todayReflection")}
               </Text>
             </View>
             <FeaturedPromptCard

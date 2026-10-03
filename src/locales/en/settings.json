@@ -1,0 +1,19 @@
+{
+  "title": "Settings",
+  "language": {
+    "title": "Language",
+    "useDevice": "Use Device Language",
+    "restartPromptTitle": "Restart App Needed",
+    "restartPromptMessage": "Please restart Happy to apply the right-to-left layout direction.",
+    "languages": {
+      "en": "English",
+      "fr": "Français",
+      "de": "Deutsch",
+      "es": "Español",
+      "ar": "العربية",
+      "pt": "Português",
+      "it": "Italiano",
+      "zh": "中文"
+    }
+  }
+}

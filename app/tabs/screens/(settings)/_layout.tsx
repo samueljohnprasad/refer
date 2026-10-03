@@ -26,7 +26,16 @@ export default function SettingsGroupLayout() {
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
-          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name="language"
+        options={{
+          headerShown: true,
+          title: "Language",
+          freezeOnBlur: true,
+          headerBackButtonDisplayMode: "minimal",
+          animation: "slide_from_right",
         }}
       />
       <Stack.Screen

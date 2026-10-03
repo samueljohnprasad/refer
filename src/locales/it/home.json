@@ -1,0 +1,55 @@
+{
+  "greeting": {
+    "morning": "Buongiorno",
+    "afternoon": "Buon pomeriggio",
+    "evening": "Buonasera",
+    "windDown": "Tempo di rilassarsi",
+    "fallbackName": "Amico"
+  },
+  "sections": {
+    "todayReflection": "Riflessione di oggi",
+    "continueJourney": "Continua il tuo percorso",
+    "howAreYouFeeling": "Come ti senti?"
+  },
+  "actions": {
+    "startReflection": "Inizia riflessione",
+    "newPrompt": "Nuovo spunto di riflessione"
+  },
+  "moods": {
+    "terrible": "Pessimo",
+    "bad": "Male",
+    "okay": "Così così",
+    "good": "Bene",
+    "great": "Fantastico"
+  },
+  "prompts": {
+    "1": "Di cosa sei grato oggi?",
+    "2": "Come vuoi sentirti?",
+    "3": "Lascia andare stress e ansia",
+    "4": "Cosa è andato bene oggi?",
+    "5": "Cosa aspetti con gioia oggi?",
+    "6": "Cosa ti ha fatto sorridere oggi?",
+    "7": "Quali sfide hai superato?",
+    "8": "Come ti stai prendendo cura di te?",
+    "9": "Chi ha reso migliore la tua giornata?",
+    "10": "Cosa hai imparato oggi?"
+  },
+  "journey": {
+    "completeTitle": "Percorso completato",
+    "completeDesc": "Puoi rivedere le competenze apprese.",
+    "reviewSkills": "Rivedi le tue competenze",
+    "findNextStep": "Trova il prossimo passo",
+    "chooseJourney": "Scegli un percorso per iniziare a imparare.",
+    "exploreJourneys": "Esplora i percorsi",
+    "continueLearning": "Continua a imparare",
+    "continueJourney": "Continua il tuo percorso",
+    "pickUpWhereLeft": "Riprendi da dove eri rimasto.",
+    "openJourneys": "Apri i percorsi"
+  },
+  "streak": {
+    "streakCount_one": "{{count}} giorno di serie",
+    "streakCount_other": "{{count}} giorni di serie",
+    "weekDays": ["D", "L", "M", "M", "G", "V", "S"],
+    "a11yLabel": "Serie attuale: {{count}} giorni. Tocca per visualizzare la cronologia."
+  }
+}

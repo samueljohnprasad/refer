@@ -1,0 +1,27 @@
+{
+  "navigation": {
+    "home": "首页",
+    "journal": "日志",
+    "exercises": "练习",
+    "habits": "习惯",
+    "settings": "设置",
+    "capture": "记录",
+    "journeys": "旅程"
+  },
+  "streak": {
+    "message_one": "连续 {{count}} 天！",
+    "message_other": "连续 {{count}} 天！"
+  },
+  "errors": {
+    "generic": "出错了，请稍后重试。",
+    "network": "网络无连接，请检查网络设置。"
+  },
+  "actions": {
+    "save": "保存",
+    "cancel": "取消",
+    "done": "完成",
+    "retry": "重试",
+    "skip": "跳过",
+    "continue": "继续"
+  }
+}

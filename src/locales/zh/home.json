@@ -1,0 +1,55 @@
+{
+  "greeting": {
+    "morning": "早上好",
+    "afternoon": "下午好",
+    "evening": "晚上好",
+    "windDown": "放松时间",
+    "fallbackName": "朋友"
+  },
+  "sections": {
+    "todayReflection": "今日反思",
+    "continueJourney": "继续你的旅程",
+    "howAreYouFeeling": "你感觉如何？"
+  },
+  "actions": {
+    "startReflection": "开始反思",
+    "newPrompt": "换一个提示"
+  },
+  "moods": {
+    "terrible": "极差",
+    "bad": "不好",
+    "okay": "一般",
+    "good": "很好",
+    "great": "极佳"
+  },
+  "prompts": {
+    "1": "今天你感恩什么？",
+    "2": "你今天想有什么感受？",
+    "3": "释放压力与焦虑",
+    "4": "今天有什么顺利的事？",
+    "5": "你今天期待什么？",
+    "6": "今天什么事让你微笑了？",
+    "7": "你克服了什么挑战？",
+    "8": "你今天如何照顾自己？",
+    "9": "谁让你的今天变得更好了？",
+    "10": "你今天学到了什么？"
+  },
+  "journey": {
+    "completeTitle": "旅程已完成",
+    "completeDesc": "你可以回顾所学的技能。",
+    "reviewSkills": "回顾技能",
+    "findNextStep": "寻找下一步",
+    "chooseJourney": "选择一段旅程开始学习。",
+    "exploreJourneys": "探索旅程",
+    "continueLearning": "继续学习",
+    "continueJourney": "继续你的旅程",
+    "pickUpWhereLeft": "从上次离开的地方继续。",
+    "openJourneys": "打开旅程"
+  },
+  "streak": {
+    "streakCount_one": "连续打卡 {{count}} 天",
+    "streakCount_other": "连续打卡 {{count}} 天",
+    "weekDays": ["日", "一", "二", "三", "四", "五", "六"],
+    "a11yLabel": "当前连续打卡：{{count}} 天。轻点查看打卡历史。"
+  }
+}

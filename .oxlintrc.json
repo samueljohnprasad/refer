@@ -9,6 +9,7 @@
     "dist/**",
     "graphify-out/**",
     "node_modules/**",
+    "remotion/**",
     "supabase/.temp/**"
   ],
   "rules": {

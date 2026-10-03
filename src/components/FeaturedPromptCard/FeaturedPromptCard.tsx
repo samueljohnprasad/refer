@@ -6,7 +6,7 @@ import { Feather } from "@expo/vector-icons";
 import { SymbolView } from "expo-symbols";
 import { Card } from "@/src/components/ui/Card";
 import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
-
+import { useTranslation } from "react-i18next";
 
 import type { QuickJournalPrompt } from "@/src/screens/DiscoveryScreen/QuickJournalSection";
 
@@ -23,7 +23,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
   prompts,
   onPress,
 }) => {
-  
+  const { t } = useTranslation("home");
   const [activeIndex, setActiveIndex] = useState(0);
 
   const cyclePrompt = useCallback(() => {
@@ -48,7 +48,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
         <TouchableOpacity
           onPress={cyclePrompt}
           className="h-12 w-12 items-center justify-center active:opacity-60"
-          accessibilityLabel="New reflection prompt"
+          accessibilityLabel={t("actions.newPrompt")}
           accessibilityRole="button"
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
@@ -66,14 +66,14 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
             lineHeight: 28,
           }}
         >
-          {currentPrompt.description}
+          {t(`prompts.${currentPrompt.id}` as any, { defaultValue: currentPrompt.description })}
         </Text>
       </View>
 
       {/* ponytail: exact 3D tactile button and styling from lesson screen footer */}
       <View className="mt-2.5">
         <CourseExercisePrimaryButton
-          label="Start reflection"
+          label={t("actions.startReflection")}
           height={52}
           fontSize={17}
           pressDepth={5}

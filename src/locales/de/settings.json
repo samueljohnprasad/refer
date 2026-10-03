@@ -1,0 +1,9 @@
+{
+  "title": "Einstellungen",
+  "language": {
+    "title": "Sprache",
+    "useDevice": "Gerätesprache verwenden",
+    "restartPromptTitle": "Neustart erforderlich",
+    "restartPromptMessage": "Bitte starte Happy neu, um die neue Layout-Richtung anzuwenden."
+  }
+}

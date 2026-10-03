@@ -1,0 +1,55 @@
+{
+  "greeting": {
+    "morning": "Guten Morgen",
+    "afternoon": "Guten Tag",
+    "evening": "Guten Abend",
+    "windDown": "Zeit zum Entspannen",
+    "fallbackName": "Freund"
+  },
+  "sections": {
+    "todayReflection": "Heutige Reflexion",
+    "continueJourney": "Reise fortsetzen",
+    "howAreYouFeeling": "Wie fühlst du dich?"
+  },
+  "actions": {
+    "startReflection": "Reflexion starten",
+    "newPrompt": "Neuer Impuls"
+  },
+  "moods": {
+    "terrible": "Schrecklich",
+    "bad": "Schlecht",
+    "okay": "Geht so",
+    "good": "Gut",
+    "great": "Großartig"
+  },
+  "prompts": {
+    "1": "Wofür bist du heute dankbar?",
+    "2": "Wie möchtest du dich fühlen?",
+    "3": "Lass Stress und Angst los",
+    "4": "Was lief heute gut?",
+    "5": "Worauf freust du dich heute?",
+    "6": "Was hat dich heute zum Lächeln gebracht?",
+    "7": "Welche Herausforderungen hast du gemeistert?",
+    "8": "Wie sorgst du für dich?",
+    "9": "Wer hat deinen Tag verbessert?",
+    "10": "Was hast du heute gelernt?"
+  },
+  "journey": {
+    "completeTitle": "Reise abgeschlossen",
+    "completeDesc": "Du kannst gelernte Fähigkeiten wiederholen.",
+    "reviewSkills": "Fähigkeiten wiederholen",
+    "findNextStep": "Finde deinen nächsten Schritt",
+    "chooseJourney": "Wähle eine Reise zum Starten.",
+    "exploreJourneys": "Reisen erkunden",
+    "continueLearning": "Weiterlernen",
+    "continueJourney": "Reise fortsetzen",
+    "pickUpWhereLeft": "Mach da weiter, wo du aufgehört hast.",
+    "openJourneys": "Reisen öffnen"
+  },
+  "streak": {
+    "streakCount_one": "{{count}} Tag Serie",
+    "streakCount_other": "{{count}} Tage Serie",
+    "weekDays": ["S", "M", "D", "M", "D", "F", "S"],
+    "a11yLabel": "Aktuelle Serie: {{count}} Tage. Tippen für Verlauf."
+  }
+}

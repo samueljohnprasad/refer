@@ -1,4 +1,3 @@
-import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
 import {
   configureReanimatedLogger,
@@ -30,63 +29,27 @@ if (!__DEV__ && typeof globalRef.ErrorUtils !== "undefined") {
     }
   });
 }
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "expo-router/react-navigation";
+
+import { useEffect, useState } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { type ReactNode, useEffect, useState } from "react";
 import { requireOptionalNativeModule } from "expo-modules-core";
-import { Slot, router as expoRouter, usePathname } from "expo-router";
-import { AuthProvider } from "@/src/context/AuthContext";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { StyleSheet, View, useColorScheme } from "react-native";
+import { router as expoRouter } from "expo-router";
+import { AppState, type AppStateStatus, StyleSheet, View, useColorScheme } from "react-native";
+import * as Localization from "expo-localization";
+import { initI18n, i18n } from "@/src/lib/i18n";
 import { StatusBar } from "expo-status-bar";
 import { Presets } from "react-native-pulsar";
-import { PressablesConfig } from "pressto";
-import { KeyboardProvider } from "react-native-keyboard-controller";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import * as Notifications from "expo-notifications";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HapticManager } from "@/lib/haptics/HapticManager";
-import { useSystemBackgroundColor } from "@/src/utils/useSystemBackgroundColor";
-import { HeroUINativeProvider } from "heroui-native";
-
-import RevenueCatProvider from "@/src/context/RevenueCatProvider";
-import AnonymousPurchaseClaimPrompt from "@/src/components/premium/AnonymousPurchaseClaimPrompt";
-import { FloatingHappyAssistant } from "@/src/components/happy-assistant/FloatingHappyAssistant";
-import { TransitionOverlay } from "@/src/components/TransitionOverlay";
-import UpdateAvailableBanner from "@/src/components/UpdateAvailableBanner";
-import {
-  APP_FONT_SOURCES,
-  APP_NAVIGATION_FONTS,
-} from "@/src/theme/typography";
-import { PostHogProvider, usePostHog } from "posthog-react-native";
-import { posthog } from "@/src/config/posthog";
+import { APP_FONT_SOURCES } from "@/src/theme/typography";
 import { posthogLog } from "@/src/lib/posthogLogger";
-import { XPProvider } from "@/src/context/XPContext";
-import { LevelProvider } from "@/src/context/LevelContext";
-import { RewardsProvider } from "@/src/context/RewardsContext";
-import { ChallengesProvider } from "@/src/context/ChallengesContext";
-import { StreakModalProvider } from "@/src/context/StreakModalContext";
 import {
   trackNotificationOpened,
   trackNotificationReceived,
 } from "@/src/utils/notificationConversionTracker";
-import { usePushNotificationSetup } from "@/src/hooks/data/usePushNotificationSetup";
-import { useStreak } from "@/src/hooks/useStreak";
-import { useStreakSaverNotification } from "@/src/hooks/useStreakSaverNotification";
-import { ReduxProvider } from "@/src/store/ReduxProvider";
 import { SplashOverlay } from "@/src/components/splash";
-
-const queryClient = new QueryClient();
-const globalPressableHandlers = {
-  onPress: (): void => {
-    Presets.System.selection();
-  },
-};
+import { RootLayoutNav } from "@/src/components/layout/RootLayoutNav";
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -118,6 +81,22 @@ export default function RootLayout() {
   const dark = useColorScheme() === "dark";
   const [splashDone, setSplashDone] = useState(false);
   const [overlayReady, setOverlayReady] = useState(false);
+  const [i18nReady, setI18nReady] = useState(() => i18n.isInitialized);
+
+  useEffect(() => {
+    if (!i18n.isInitialized) {
+      void initI18n().then(() => setI18nReady(true));
+    }
+  }, []);
+
+  useEffect(() => {
+    const sub = AppState.addEventListener("change", (state: AppStateStatus) => {
+      if (state === "active") {
+        Localization.getLocales();
+      }
+    });
+    return () => sub.remove();
+  }, []);
 
   useEffect(() => {
     if (fontsReady) {
@@ -140,9 +119,9 @@ export default function RootLayout() {
   }, [fontsReady]);
 
   useEffect(() => {
-    if (!fontsReady || !overlayReady) return;
+    if (!fontsReady || !overlayReady || !i18nReady) return;
     void SplashScreen.hideAsync().catch(() => {});
-  }, [fontsReady, overlayReady]);
+  }, [fontsReady, overlayReady, i18nReady]);
 
   // Handle push notification taps — deep link to appropriate screen
   useEffect(() => {
@@ -186,13 +165,15 @@ export default function RootLayout() {
     return () => subscription.remove();
   }, []);
 
+  if (!i18nReady) return null;
+
   return (
     <>
       <View style={styles.root}>
         <RootLayoutNav />
         {!splashDone && fontsReady ? (
           <SplashOverlay
-            canFinish={fontsReady && overlayReady}
+            canFinish={fontsReady && overlayReady && i18nReady}
             onReady={() => setOverlayReady(true)}
             onDone={() => setSplashDone(true)}
           />
@@ -206,100 +187,3 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
 });
-
-function RootLayoutNav() {
-  const isDark = useColorScheme() === "dark";
-  const navigationTheme = isDark
-    ? { ...DarkTheme, fonts: APP_NAVIGATION_FONTS }
-    : { ...DefaultTheme, fonts: APP_NAVIGATION_FONTS };
-
-  return (
-      <ReduxProvider>
-        <AnalyticsProvider>
-          <QueryClientProvider client={queryClient}>
-            <GestureHandlerRootView style={StyleSheet.absoluteFill}>
-              <HeroUINativeProvider>
-                <AuthProvider>
-                  <NotificationIntegration />
-                  <XPProvider>
-                    <LevelProvider>
-                      <RewardsProvider>
-                        <ChallengesProvider>
-                          <PressablesConfig
-                            globalHandlers={globalPressableHandlers}
-                            animationType="spring"
-                          >
-                            <GluestackUIProvider
-                              mode={isDark ? "dark" : "light"}
-                            >
-                              <SystemBackgroundIntegration />
-                              <RevenueCatProvider>
-                                <ThemeProvider value={navigationTheme}>
-                                  <KeyboardProvider>
-                                    <BottomSheetModalProvider>
-                                      <StreakModalProvider>
-                                        <UpdateAvailableBanner />
-                                        <Slot />
-                                        <AnonymousPurchaseClaimPrompt />
-                                        <FloatingHappyAssistant />
-                                        <TransitionOverlay />
-                                      </StreakModalProvider>
-                                    </BottomSheetModalProvider>
-                                  </KeyboardProvider>
-                                </ThemeProvider>
-                              </RevenueCatProvider>
-                            </GluestackUIProvider>
-                          </PressablesConfig>
-                        </ChallengesProvider>
-                      </RewardsProvider>
-                    </LevelProvider>
-                  </XPProvider>
-                </AuthProvider>
-              </HeroUINativeProvider>
-            </GestureHandlerRootView>
-          </QueryClientProvider>
-        </AnalyticsProvider>
-      </ReduxProvider>
-  );
-}
-function AnalyticsProvider({ children }: { children: ReactNode }) {
-  if (!posthog) {
-    return <>{children}</>;
-  }
-
-  return (
-    <PostHogProvider client={posthog}>
-      <ScreenTracker />
-      {children}
-    </PostHogProvider>
-  );
-}
-
-function ScreenTracker() {
-  const pathname = usePathname();
-  const posthog = usePostHog();
-
-  useEffect(() => {
-    posthog?.screen(pathname);
-    posthogLog.info("screen_displayed", { route: pathname });
-  }, [pathname, posthog]);
-
-  return null;
-}
-
-function NotificationIntegration() {
-  usePushNotificationSetup();
-  // ponytail: schedule 7:00 PM evening streak saver notification if streak is active (AD-3)
-  const { currentStreak, isActiveToday } = useStreak();
-  useStreakSaverNotification({
-    currentStreak,
-    isActiveToday,
-    notificationsDisabled: false,
-    journeySlug: "mindfulness-foundations",
-  });
-  return null;
-}
-function SystemBackgroundIntegration() {
-  useSystemBackgroundColor();
-  return null;
-}

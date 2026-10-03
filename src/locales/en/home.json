@@ -1,0 +1,55 @@
+{
+  "greeting": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening",
+    "windDown": "Time to wind down",
+    "fallbackName": "Friend"
+  },
+  "sections": {
+    "todayReflection": "Today's reflection",
+    "continueJourney": "Continue your journey",
+    "howAreYouFeeling": "How are you feeling?"
+  },
+  "actions": {
+    "startReflection": "Start reflection",
+    "newPrompt": "New reflection prompt"
+  },
+  "moods": {
+    "terrible": "Terrible",
+    "bad": "Bad",
+    "okay": "Okay",
+    "good": "Good",
+    "great": "Great"
+  },
+  "prompts": {
+    "1": "What are you grateful for today?",
+    "2": "How do you want to feel?",
+    "3": "Let go of stress and anxiety",
+    "4": "What went well today?",
+    "5": "What are you looking forward to today?",
+    "6": "What made you smile today?",
+    "7": "What challenges did you overcome?",
+    "8": "How are you taking care of yourself?",
+    "9": "Who made your day better?",
+    "10": "What did you learn today?"
+  },
+  "journey": {
+    "completeTitle": "Journey complete",
+    "completeDesc": "You can revisit the skills you’ve learned.",
+    "reviewSkills": "Review your skills",
+    "findNextStep": "Find your next step",
+    "chooseJourney": "Choose a journey to start learning.",
+    "exploreJourneys": "Explore journeys",
+    "continueLearning": "Continue learning",
+    "continueJourney": "Continue your journey",
+    "pickUpWhereLeft": "Pick up where you left off.",
+    "openJourneys": "Open journeys"
+  },
+  "streak": {
+    "streakCount_one": "{{count}} day streak",
+    "streakCount_other": "{{count}} day streak",
+    "weekDays": ["S", "M", "T", "W", "T", "F", "S"],
+    "a11yLabel": "Current streak: {{count}} days. Tap to view streak history."
+  }
+}

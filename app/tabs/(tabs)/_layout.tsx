@@ -1,6 +1,7 @@
 import React from "react";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { useColorScheme } from "react-native";
+import { useTranslation } from "react-i18next";
 
 const Label = NativeTabs.Trigger.Label;
 const Icon = NativeTabs.Trigger.Icon;
@@ -9,6 +10,7 @@ import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
 export default function TabLayout() {
   const isDark = useColorScheme() === "dark";
+  const { t } = useTranslation("common");
   useWidgetWeekMoods();
 
   return (
@@ -30,7 +32,7 @@ export default function TabLayout() {
       }}
     >
       <NativeTabs.Trigger name="home">
-        <Label>Home</Label>
+        <Label>{t("navigation.home")}</Label>
         <Icon
           sf={{
             default: "house",
@@ -39,7 +41,7 @@ export default function TabLayout() {
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="journal">
-        <Label>Journal</Label>
+        <Label>{t("navigation.journal")}</Label>
         <Icon
           sf={{
             default: "book",
@@ -48,7 +50,7 @@ export default function TabLayout() {
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="record">
-        <Label>Capture</Label>
+        <Label>{t("navigation.capture")}</Label>
         <Icon
           sf={{
             default: "plus",
@@ -57,7 +59,7 @@ export default function TabLayout() {
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="journeys">
-        <Label>Journeys</Label>
+        <Label>{t("navigation.journeys")}</Label>
         <Icon
           sf={{
             default: "map",
@@ -66,7 +68,7 @@ export default function TabLayout() {
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="exercises">
-        <Label>Exercises</Label>
+        <Label>{t("navigation.exercises")}</Label>
         <Icon
           sf={{
             default: "leaf",

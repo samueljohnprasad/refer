@@ -1,0 +1,27 @@
+{
+  "navigation": {
+    "home": "Home",
+    "journal": "Journal",
+    "exercises": "Exercises",
+    "habits": "Habits",
+    "settings": "Settings",
+    "capture": "Capture",
+    "journeys": "Journeys"
+  },
+  "streak": {
+    "message_one": "{{count}} day streak!",
+    "message_other": "{{count}} day streak!"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "No connection. Check your internet."
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "done": "Done",
+    "retry": "Retry",
+    "skip": "Skip for now",
+    "continue": "Continue"
+  }
+}

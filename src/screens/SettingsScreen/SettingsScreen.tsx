@@ -17,7 +17,12 @@ import {
   Share01Icon,
   StarIcon,
   Settings01Icon,
+  Globe02Icon,
 } from "@hugeicons/core-free-icons";
+
+import { useLanguage } from "@/src/hooks/useLanguage";
+import { LANGUAGE_METADATA } from "@/src/components/settings/LanguagePicker";
+import type { SupportedLanguage } from "@/src/lib/i18n";
 
 import { PromoCard } from "./components/PromoCard";
 import { SettingsSection } from "./components/SettingsSection";
@@ -71,6 +76,14 @@ export default function SettingsScreen() {
 
   const { scrollY, setUpgradeY } = useSettingsAnimation();
 
+  const { currentLanguage } = useLanguage();
+
+  const currentLanguageMeta =
+    LANGUAGE_METADATA[currentLanguage as SupportedLanguage];
+  const currentLanguageLabel = currentLanguageMeta
+    ? `${currentLanguageMeta.nativeName} (${currentLanguageMeta.name})`
+    : "Device Language";
+
   const handleShareApp = async () => {
     try {
       await Share.share({
@@ -120,6 +133,15 @@ export default function SettingsScreen() {
 
         <SettingsSection title="Preferences">
           <DailyGoalPicker />
+          <SettingsItem
+            icon={Globe02Icon}
+            title="Language"
+            subtitle={currentLanguageLabel}
+            onPress={() => {
+              Haptics.selectionAsync();
+              router.push("/tabs/screens/language" as any);
+            }}
+          />
           <SettingsItem
             icon={Notification01Icon}
             title="Daily Reminders"

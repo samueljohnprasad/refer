@@ -1,0 +1,27 @@
+{
+  "navigation": {
+    "home": "Inicio",
+    "journal": "Diario",
+    "exercises": "Ejercicios",
+    "habits": "Hábitos",
+    "settings": "Ajustes",
+    "capture": "Capturar",
+    "journeys": "Viajes"
+  },
+  "streak": {
+    "message_one": "¡Racha de {{count}} día!",
+    "message_other": "¡Racha de {{count}} días!"
+  },
+  "errors": {
+    "generic": "Algo salió mal. Inténtalo de nuevo.",
+    "network": "Sin conexión. Comprueba tu internet."
+  },
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "done": "Listo",
+    "retry": "Reintentar",
+    "skip": "Omitir",
+    "continue": "Continuar"
+  }
+}

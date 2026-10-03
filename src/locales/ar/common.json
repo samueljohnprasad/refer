@@ -1,0 +1,27 @@
+{
+  "navigation": {
+    "home": "الرئيسية",
+    "journal": "المذكرات",
+    "exercises": "التمارين",
+    "habits": "العادات",
+    "settings": "الإعدادات",
+    "capture": "تسجيل",
+    "journeys": "الرحلات"
+  },
+  "streak": {
+    "message_one": "سلسلة يوم واحد!",
+    "message_other": "سلسلة {{count}} أيام!"
+  },
+  "errors": {
+    "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    "network": "لا يوجد اتصال. تحقق من الإنترنت."
+  },
+  "actions": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "done": "تم",
+    "retry": "إعادة المحاولة",
+    "skip": "تخطي الآن",
+    "continue": "متابعة"
+  }
+}

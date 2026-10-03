@@ -1,0 +1,27 @@
+{
+  "navigation": {
+    "home": "Start",
+    "journal": "Tagebuch",
+    "exercises": "Übungen",
+    "habits": "Gewohnheiten",
+    "settings": "Einstellungen",
+    "capture": "Erfassen",
+    "journeys": "Reisen"
+  },
+  "streak": {
+    "message_one": "{{count}} Tag Serie!",
+    "message_other": "{{count}} Tage Serie!"
+  },
+  "errors": {
+    "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "network": "Keine Verbindung. Prüfe dein Internet."
+  },
+  "actions": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "done": "Fertig",
+    "retry": "Wiederholen",
+    "skip": "Überspringen",
+    "continue": "Weiter"
+  }
+}

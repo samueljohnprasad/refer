@@ -49,12 +49,12 @@ export function shouldHideAssistant(pathname: string | null): boolean {
     path.includes("timelines") ||
     path.includes("xp-history") ||
     path.includes("achievements") ||
-    path.includes("timeline") ||
-    // ponytail: hide assistant over composition, recording canvas, and reading screens
     path.includes("keyboard-recorder") ||
     path.includes("recording") ||
     path.includes("record") ||
-    path.includes("journal")
+    path.includes("journal") ||
+    path.includes("language") ||
+    path.includes("settings")
   );
 }
 

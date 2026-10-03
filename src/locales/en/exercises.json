@@ -1,0 +1,22 @@
+{
+  "title": "Exercises",
+  "subtitle": "Strengthen your mental fitness",
+  "cbt": {
+    "thoughtReframing": {
+      "title": "Thought Reframing",
+      "description": "Examine unhelpful thoughts and find balanced alternatives."
+    },
+    "abcAnalysis": {
+      "title": "ABC Analysis",
+      "description": "Trace Activating event, Beliefs, and Consequences."
+    },
+    "boxBreathing": {
+      "title": "Box Breathing",
+      "description": "Calm your nervous system with rhythmic breathing."
+    }
+  },
+  "feedback": {
+    "greatJob": "Great job completing this exercise!",
+    "streakKeepGoing": "Keep up the momentum today."
+  }
+}

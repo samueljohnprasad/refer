@@ -1,0 +1,9 @@
+{
+  "title": "Ajustes",
+  "language": {
+    "title": "Idioma",
+    "useDevice": "Idioma del dispositivo",
+    "restartPromptTitle": "Reinicio requerido",
+    "restartPromptMessage": "Por favor reinicia Happy para aplicar la nueva dirección de diseño."
+  }
+}

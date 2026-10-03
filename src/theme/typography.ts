@@ -4,6 +4,8 @@ import { Nunito_600SemiBold } from "@expo-google-fonts/nunito/600SemiBold";
 import { Nunito_600SemiBold_Italic } from "@expo-google-fonts/nunito/600SemiBold_Italic";
 import { Nunito_700Bold } from "@expo-google-fonts/nunito/700Bold";
 import { Nunito_800ExtraBold } from "@expo-google-fonts/nunito/800ExtraBold";
+import { Caveat_600SemiBold } from "@expo-google-fonts/caveat/600SemiBold";
+import { Caveat_700Bold } from "@expo-google-fonts/caveat/700Bold";
 
 export const APP_FONT_FAMILY = "Nunito" as const;
 
@@ -14,6 +16,8 @@ export const APP_FONT_FAMILIES = {
   semiBoldItalic: "NunitoSemiBoldItalic",
   bold: "NunitoBold",
   extraBold: "NunitoExtraBold",
+  caveatSemiBold: "CaveatSemiBold",
+  caveatBold: "CaveatBold",
 } as const;
 
 export const APP_FONT_SOURCES = {
@@ -23,6 +27,8 @@ export const APP_FONT_SOURCES = {
   [APP_FONT_FAMILIES.semiBoldItalic]: Nunito_600SemiBold_Italic,
   [APP_FONT_FAMILIES.bold]: Nunito_700Bold,
   [APP_FONT_FAMILIES.extraBold]: Nunito_800ExtraBold,
+  [APP_FONT_FAMILIES.caveatSemiBold]: Caveat_600SemiBold,
+  [APP_FONT_FAMILIES.caveatBold]: Caveat_700Bold,
 } as const;
 
 export const APP_FONT_ASSETS = {

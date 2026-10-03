@@ -1,0 +1,9 @@
+{
+  "title": "设置",
+  "language": {
+    "title": "语言",
+    "useDevice": "使用系统语言",
+    "restartPromptTitle": "需要重启应用",
+    "restartPromptMessage": "请重启 Happy 以应用新的界面布局方向。"
+  }
+}

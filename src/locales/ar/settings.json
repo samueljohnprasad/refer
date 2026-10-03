@@ -1,0 +1,9 @@
+{
+  "title": "الإعدادات",
+  "language": {
+    "title": "اللغة",
+    "useDevice": "استخدام لغة الجهاز",
+    "restartPromptTitle": "إعادة تشغيل التطبيق مطلوبة",
+    "restartPromptMessage": "يرجى إعادة تشغيل Happy لتطبيق اتجاه الواجهة من اليمين إلى اليسار."
+  }
+}

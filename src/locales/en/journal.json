@@ -1,0 +1,19 @@
+{
+  "title": "Journal",
+  "prompts": {
+    "dailyReflect": "What is on your mind right now?",
+    "gratitude": "Name three things you are grateful for today.",
+    "thoughtRecord": "What thought triggered your shift in emotion?"
+  },
+  "moods": {
+    "great": "Great",
+    "good": "Good",
+    "okay": "Okay",
+    "low": "Low",
+    "stressed": "Stressed"
+  },
+  "actions": {
+    "newEntry": "New Reflection",
+    "voiceNote": "Record Voice Note"
+  }
+}
