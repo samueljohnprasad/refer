@@ -3,6 +3,7 @@ import { usePostHog } from "posthog-react-native";
 import { OnboardingStepName } from "../types";
 
 interface UseOnboardingAnalyticsReturn {
+  trackStarted: () => void;
   trackStepViewed: (stepName: OnboardingStepName, stepNumber: number) => void;
   trackStepCompleted: (
     stepName: OnboardingStepName,
@@ -15,6 +16,7 @@ interface UseOnboardingAnalyticsReturn {
   trackTrialStarted: (planType: "annual" | "weekly") => void;
   trackTrialSkipped: () => void;
   trackOnboardingCompleted: (stepsCompleted: number) => void;
+  trackOnboardingSkipped: (stepName: OnboardingStepName) => void;
   trackPremiumGateHit: (feature: string, context: string) => void;
   trackChecklistItemCompleted: (itemName: string, dayNumber: number) => void;
 }
@@ -51,6 +53,10 @@ export const useOnboardingAnalytics = (): UseOnboardingAnalyticsReturn => {
     },
     [trackEvent],
   );
+
+  const trackStarted = useCallback((): void => {
+    trackEvent("onboarding_started", { source: "onboarding" });
+  }, [trackEvent]);
 
   const trackStepCompleted = useCallback(
     (stepName: OnboardingStepName, stepNumber: number): void => {
@@ -110,6 +116,13 @@ export const useOnboardingAnalytics = (): UseOnboardingAnalyticsReturn => {
     [trackEvent],
   );
 
+  const trackOnboardingSkipped = useCallback(
+    (stepName: OnboardingStepName): void => {
+      trackEvent("onboarding_skipped", { step_name: stepName });
+    },
+    [trackEvent],
+  );
+
   const trackPremiumGateHit = useCallback(
     (feature: string, context: string): void => {
       trackEvent("premium_gate_hit", { feature, context });
@@ -128,6 +141,7 @@ export const useOnboardingAnalytics = (): UseOnboardingAnalyticsReturn => {
   );
 
   return {
+    trackStarted,
     trackStepViewed,
     trackStepCompleted,
     trackStepSkipped,
@@ -137,6 +151,7 @@ export const useOnboardingAnalytics = (): UseOnboardingAnalyticsReturn => {
     trackTrialStarted,
     trackTrialSkipped,
     trackOnboardingCompleted,
+    trackOnboardingSkipped,
     trackPremiumGateHit,
     trackChecklistItemCompleted,
   };

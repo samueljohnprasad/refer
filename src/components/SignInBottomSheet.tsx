@@ -9,6 +9,7 @@ import SignInBottomSheetContent from "./SignInBottomSheet/SignInBottomSheetConte
 import { useSignInBottomSheetController } from "./SignInBottomSheet/useSignInBottomSheetController";
 
 interface SignInBottomSheetProps {
+  source?: "entry" | "onboarding";
   onDismiss?: () => void;
   onSkip?: () => void;
   onSuccess?: () => void;
@@ -24,6 +25,7 @@ export interface SignInBottomSheetHandle {
 export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(
   function SignInBottomSheet(
     {
+      source = "entry",
       onDismiss,
       onSkip,
       onSuccess,
@@ -33,6 +35,7 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(
     ref,
   ) {
     const controller = useSignInBottomSheetController({
+      source,
       onDismiss,
       onSkip,
       onSuccess,

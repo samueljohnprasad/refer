@@ -38,9 +38,7 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
   }) => {
     const { t } = useTranslation("settings");
     const icon = iconMap[item.id] || "clock.fill";
-    const title = t(`reminders.slots.${item.id}.title`, {
-      defaultValue: item.title,
-    });
+    const title = String(t(`reminders.slots.${item.id}.title` as any));
 
     const handlePress = () => {
       Haptics.selectionAsync();

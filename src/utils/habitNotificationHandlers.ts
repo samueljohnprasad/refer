@@ -8,17 +8,23 @@ import {
 /**
  * Handle notification scheduling when a habit is created
  */
-export async function handleHabitCreated(habit: Habit): Promise<void> {
+export async function handleHabitCreated(
+  habit: Habit,
+  copy: { title: string; body: string },
+): Promise<void> {
   if (habit.reminderEnabled && habit.reminderTime) {
-    await scheduleHabitNotification(habit);
+    await scheduleHabitNotification(habit, copy);
   }
 }
 
 /**
  * Handle notification updates when a habit is modified
  */
-export async function handleHabitUpdated(habit: Habit): Promise<void> {
-  await updateHabitNotification(habit);
+export async function handleHabitUpdated(
+  habit: Habit,
+  copy: { title: string; body: string },
+): Promise<void> {
+  await updateHabitNotification(habit, copy);
 }
 
 /**
@@ -31,10 +37,13 @@ export async function handleHabitDeleted(habitId: string): Promise<void> {
 /**
  * Sync notifications for all habits (useful on app start or after permission changes)
  */
-export async function syncHabitNotifications(habits: Habit[]): Promise<void> {
+export async function syncHabitNotifications(
+  habits: Habit[],
+  copyForHabit: (habit: Habit) => { title: string; body: string },
+): Promise<void> {
   for (const habit of habits) {
     if (habit.reminderEnabled && habit.reminderTime) {
-      await scheduleHabitNotification(habit);
+      await scheduleHabitNotification(habit, copyForHabit(habit));
     } else {
       // Cancel if reminder is disabled
       await cancelHabitNotification(habit.id);

@@ -7,7 +7,7 @@ import {
   ensureNotificationPermissions,
   loadRemindersConfig,
 } from "@/src/components/lib/notification-reminders";
-import type { ReminderItem } from "./types";
+import type { ReminderItem, ReminderTemplateWithIcon } from "./types";
 import { cfgAtom } from "./store";
 
 type UseReminderConfigReturn = {
@@ -32,7 +32,7 @@ interface UseReminderConfigOptions {
  * Custom hook to manage reminder configuration state and operations
  */
 export const useReminderConfig = (
-  defaultItems: ReminderItem[],
+  defaultItems: ReminderTemplateWithIcon[],
   options?: UseReminderConfigOptions
 ): UseReminderConfigReturn => {
   const { t } = useTranslation("settings");
@@ -41,10 +41,8 @@ export const useReminderConfig = (
     () =>
       defaultItems.map((item) => ({
         ...item,
-        title: t(`reminders.slots.${item.id}.title`, { defaultValue: item.title }),
-        notificationBody: t(`reminders.slots.${item.id}.body`, {
-          defaultValue: item.notificationBody,
-        }),
+        title: String(t(`reminders.slots.${item.id}.title` as any)),
+        notificationBody: String(t(`reminders.slots.${item.id}.body` as any)),
       })),
     [defaultItems, t],
   );

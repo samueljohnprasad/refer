@@ -109,7 +109,8 @@ function getTriggerForRepeatPattern(
  * Schedule a notification for a habit
  */
 export async function scheduleHabitNotification(
-  habit: Habit
+  habit: Habit,
+  copy: { title: string; body: string },
 ): Promise<string | null> {
   try {
     // Check if reminders are enabled and we have permission
@@ -134,8 +135,8 @@ export async function scheduleHabitNotification(
 
     const notificationId = await Notifications.scheduleNotificationAsync({
       content: {
-        title: `${habit.icon || "🎯"} Habit Reminder`,
-        body: `Time to complete: ${habit.name}`,
+        title: `${habit.icon || "🎯"} ${copy.title}`,
+        body: copy.body,
         data: {
           habitId: habit.id,
           habitName: habit.name,
@@ -188,12 +189,13 @@ export async function cancelHabitNotification(habitId: string): Promise<void> {
  * Update notification for a habit (cancel old and schedule new)
  */
 export async function updateHabitNotification(
-  habit: Habit
+  habit: Habit,
+  copy: { title: string; body: string },
 ): Promise<string | null> {
   await cancelHabitNotification(habit.id);
 
   if (habit.reminderEnabled && habit.reminderTime) {
-    return await scheduleHabitNotification(habit);
+    return await scheduleHabitNotification(habit, copy);
   }
 
   return null;

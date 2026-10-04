@@ -1,5 +1,6 @@
 {
   "title": "Habits",
+  "notifications": { "reminderTitle": "Habit reminder", "reminderBody": "Time to complete: {{name}}" },
   "streak": {
     "days": "Days Streak",
     "multiplier": "Streak Multiplier"

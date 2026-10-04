@@ -79,9 +79,9 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
       transform: [{ scale: scale.value }],
       opacity: opacity.value,
     }));
-    const title = t(`promptBrowser.items.${prompt.id}.title`);
-    const description = tHome(`prompts.${prompt.id}`);
-    const category = t(`promptBrowser.items.${prompt.id}.category`);
+    const title = String(t(`promptBrowser.items.${prompt.id}.title` as any));
+    const description = String(tHome(`prompts.${prompt.id}` as any));
+    const category = String(t(`promptBrowser.items.${prompt.id}.category` as any));
 
     return (
       <Animated.View style={entranceStyle} className="mr-3">

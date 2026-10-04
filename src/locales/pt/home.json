@@ -66,6 +66,13 @@
     "newStreakMessage": "Uma nova sequência começa! Volte todos os dias para continuar a progredir.",
     "continue": "Continuar"
   },
+  "notifications": {
+    "streakSaver": {
+      "title": "Hora de fazer uma pausa rápida",
+      "firstDayBody": "Uma breve reflexão hoje inicia sua sequência. Até 2 minutos contam 🌿",
+      "ongoingBody": "Sua sequência está em {{count}} dias. Um exercício curto ajuda a manter o ritmo 🌿"
+    }
+  },
   "errors": {
     "loadTitle": "Algo correu mal",
     "loadDescription": "Não foi possível carregar o ecrã inicial.",

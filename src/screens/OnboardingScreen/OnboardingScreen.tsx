@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { StyleSheet, View, useWindowDimensions } from "react-native";
 import Animated, {
   useSharedValue,
@@ -90,6 +90,13 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const initialBackgroundColor = ONBOARDING_STEPS[0].backgroundColor;
   const canContinue = currentStepConfig.isContinueEnabled?.(formData) ?? true;
   const showContinueButton = currentStepConfig.showContinueButton;
+  const hasTrackedStart = useRef(false);
+
+  useEffect(() => {
+    if (hasTrackedStart.current) return;
+    hasTrackedStart.current = true;
+    analytics.trackStarted();
+  }, [analytics]);
 
   const {
     containerBackgroundColor,
@@ -141,6 +148,9 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
       if (!isStepActionReady || loading) return;
 
       analytics.trackStepCompleted(currentStep, currentStepIndex);
+      if (skipped) {
+        analytics.trackOnboardingSkipped(currentStep);
+      }
 
       if (currentStep === "notification_permission" && !skipped) {
         await handleNotificationPermissionOnContinue(user?.id, remindersCfg);
@@ -170,6 +180,8 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
             customAmount: 15,
             customDescription: t("xp_first_step"),
           });
+
+          analytics.trackOnboardingCompleted(currentStepIndex + 1);
 
           await onComplete(skipped);
         } catch (error) {

@@ -20,15 +20,8 @@ import {
 } from "../network/auth/apple-auth";
 import { router } from "expo-router";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
   Platform,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { WifiOffIcon, ReloadIcon } from "@hugeicons/core-free-icons";
 import {
   registerPushToken,
   unregisterPushToken,
@@ -36,6 +29,7 @@ import {
 import { migrateGuestProgress } from "../lib/migrations/migrateGuestProgress";
 import { store, resetStore } from "../store/store";
 import { usePostHog } from "posthog-react-native";
+import AuthNetworkErrorScreen from "./AuthNetworkErrorScreen";
 
 export type AuthProviderId = "apple" | "google";
 
@@ -147,51 +141,6 @@ export const useAuth = (): AuthContextType => {
 interface AuthProviderProps {
   children: React.ReactNode;
 }
-
-// Error Screen Component
-const NetworkErrorScreen: React.FC<{
-  onRetry: () => void;
-  retrying: boolean;
-}> = ({ onRetry, retrying }) => (
-  <View className="flex-1 bg-gradient-to-b from-purple-50 to-white items-center justify-center px-6">
-    <View className="items-center">
-      <View className="w-24 h-24 rounded-full bg-red-100 items-center justify-center mb-6">
-        <HugeiconsIcon icon={WifiOffIcon} size={48} color="#DC2626" />
-      </View>
-
-      <Text className="text-3xl font-bold text-gray-900 text-center mb-3">
-        Connection Error
-      </Text>
-
-      <Text className="text-base text-gray-600 text-center mb-8 leading-6">
-        Unable to connect to the server.{"\n"}
-        Please check your internet connection and try again.
-      </Text>
-
-      <TouchableOpacity
-        onPress={onRetry}
-        disabled={retrying}
-        activeOpacity={0.8}
-        className="rounded-2xl overflow-hidden"
-      >
-        <LinearGradient
-          colors={retrying ? ["#999", "#777"] : ["#7B61FF", "#9C7CFF"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          className="px-8 py-4 flex-row items-center gap-3"
-        >
-          {retrying && <ActivityIndicator size="small" color="#FFF" />}
-          {!retrying && (
-            <HugeiconsIcon icon={ReloadIcon} size={20} color="#FFF" />
-          )}
-          <Text className="text-white text-lg font-bold">
-            {retrying ? "Retrying..." : "Retry Connection"}
-          </Text>
-        </LinearGradient>
-      </TouchableOpacity>
-    </View>
-  </View>
-);
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -549,7 +498,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Show error screen if initialization failed
   if (error && !loading) {
-    return <NetworkErrorScreen onRetry={handleRetry} retrying={retrying} />;
+    return <AuthNetworkErrorScreen onRetry={handleRetry} retrying={retrying} />;
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -130,7 +130,11 @@ export default function HabitDetailsScreen(): React.JSX.Element | null {
 
     await updateHabit(habit.id, { ...schedulingData });
 
-    await handleHabitUpdated({ ...habit, ...schedulingData });
+    const updatedHabit = { ...habit, ...schedulingData };
+    await handleHabitUpdated(updatedHabit, {
+      title: t("notifications.reminderTitle"),
+      body: t("notifications.reminderBody", { name: updatedHabit.name }),
+    });
     void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.back();
   };

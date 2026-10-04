@@ -31,9 +31,9 @@ export async function handleNotificationPermissionOnContinue(
         if (item.enabled) {
           await scheduleDailyReminder(
             id,
-            item.title ?? "Daily Reminder",
+            item.title ?? "",
             { hour: item.hour, minute: item.minute },
-            item.body
+            item.body ?? "",
           );
         }
       }

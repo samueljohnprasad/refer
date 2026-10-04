@@ -1,5 +1,6 @@
 {
   "title": "习惯",
+  "notifications": { "reminderTitle": "习惯提醒", "reminderBody": "该完成这项习惯了：{{name}}" },
   "streak": { "days": "天连续坚持", "multiplier": "连续记录加成" },
   "timeOfDay": { "morning": "早晨", "afternoon": "下午", "evening": "晚上", "anytime": "不限时间" },
   "actions": { "logHabit": "记录习惯", "habitCompleted": "已完成", "addHabit": "添加习惯" },

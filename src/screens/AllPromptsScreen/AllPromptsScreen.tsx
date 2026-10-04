@@ -95,9 +95,9 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
   ({ prompt, onPress }) => {
     const { t } = useTranslation("common");
     const { t: tHome } = useTranslation("home");
-    const title = t(`promptBrowser.items.${prompt.id}.title`);
-    const description = tHome(`prompts.${prompt.id}`);
-    const category = t(`promptBrowser.items.${prompt.id}.category`);
+    const title = String(t(`promptBrowser.items.${prompt.id}.title` as any));
+    const description = String(tHome(`prompts.${prompt.id}` as any));
+    const category = String(t(`promptBrowser.items.${prompt.id}.category` as any));
 
     return (
       <TouchableOpacity
@@ -185,7 +185,7 @@ export default function AllPromptsScreen() {
         presentPaywall();
         return;
       }
-      setPrompt(tHome(`prompts.${prompt.id}`));
+      setPrompt(String(tHome(`prompts.${prompt.id}` as any)));
       if (isVoiceEnabled) {
         setStartRecording(true);
       }

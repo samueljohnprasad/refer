@@ -1,5 +1,6 @@
 {
   "title": "العادات",
+  "notifications": { "reminderTitle": "تذكير بعادة", "reminderBody": "حان وقت إكمال: {{name}}" },
   "streak": { "days": "أيام متتالية", "multiplier": "مضاعف الاستمرارية" },
   "timeOfDay": { "morning": "الصباح", "afternoon": "بعد الظهر", "evening": "المساء", "anytime": "أي وقت" },
   "actions": { "logHabit": "تسجيل العادة", "habitCompleted": "مكتملة", "addHabit": "إضافة عادة" },

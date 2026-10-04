@@ -1,5 +1,5 @@
 // ponytail: composed root providers and global navigation shell
-import React, { type ReactNode, useEffect } from "react";
+import React, { type ReactNode, useCallback, useEffect } from "react";
 import { StyleSheet, useColorScheme } from "react-native";
 import { Slot, usePathname } from "expo-router";
 import {
@@ -15,6 +15,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HeroUINativeProvider } from "heroui-native";
 import { PostHogProvider, usePostHog } from "posthog-react-native";
+import { useTranslation } from "react-i18next";
 
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { AuthProvider } from "@/src/context/AuthContext";
@@ -72,13 +73,24 @@ function AnalyticsProvider({ children }: { children: ReactNode }) {
 
 function NotificationIntegration() {
   usePushNotificationSetup();
+  const { t } = useTranslation("home");
   // ponytail: schedule 7:00 PM evening streak saver notification if streak is active (AD-3)
   const { currentStreak, isActiveToday } = useStreak();
+  const getNotificationCopy = useCallback(
+    (streakDays: number) => ({
+      title: t("notifications.streakSaver.title"),
+      body: streakDays === 1
+        ? t("notifications.streakSaver.firstDayBody")
+        : t("notifications.streakSaver.ongoingBody", { count: streakDays }),
+    }),
+    [t],
+  );
   useStreakSaverNotification({
     currentStreak,
     isActiveToday,
     notificationsDisabled: false,
     journeySlug: "mindfulness-foundations",
+    getNotificationCopy,
   });
   return null;
 }

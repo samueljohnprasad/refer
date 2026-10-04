@@ -112,6 +112,7 @@
   "streakHeaderA11y": "{{count}} giorni di fila",
   "unitGuidebook": "Guida dell’unità",
   "progressStatsA11y": "Statistiche dei progressi",
+  "insightPointsA11y": "{{count}} punti Insight. Tocca per i dettagli.",
   "tapForEncouragement": "Tocca per ricevere incoraggiamento",
   "keepStreakGoing": "Continua così! 🔥",
   "journeyProgress": "{{completed}}/{{total}} completati",

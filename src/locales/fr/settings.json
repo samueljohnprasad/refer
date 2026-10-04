@@ -10,6 +10,7 @@
   "premium": { "unlockAccessibility": "Débloquer Happy Premium. Analyses, résumés et plus", "unlockTitle": "Débloquer Happy Premium", "unlockSubtitle": "Analyses, résumés et plus", "checking": "Vérification du statut Premium", "active": "Premium est actif", "lifetime": "Accès Premium à vie", "renews": "Renouvellement le {{date}}", "activeUntil": "Actif jusqu’au {{date}}", "activeTitle": "Premium actif", "status": "{{status}}. Toutes les fonctions Premium sont déverrouillées." },
   "premiumUi": { "upgradeCta": "Passer à Premium", "dismissAccessibility": "Masquer l’invitation à passer à Premium", "notNow": "Pas maintenant", "trialLastDay": "Dernier jour de votre essai !", "trialDaysLeft": "{{count}} jours d’essai restants", "trialAccessibility_one": "1 jour d’essai restant. Touchez pour passer à Premium.", "trialAccessibility_other": "{{count}} jours d’essai restants. Touchez pour passer à Premium.", "keepPremiumAccess": "Ne perdez pas l’accès aux fonctionnalités Premium", "keepAllFeatures": "Passez à Premium pour conserver toutes les fonctionnalités", "upgrade": "Passer à Premium", "premiumFeature": "Fonctionnalité Premium", "gateDescription": "Passez à Premium pour débloquer cette fonctionnalité et profiter pleinement de votre parcours.", "unlockWithPremium": "Débloquer avec Premium", "unlockAccessibility": "Passez à Premium pour débloquer {{feature}}" },
   "accountAuth": {
+    "networkError": { "title": "Erreur de connexion", "description": "Impossible de se connecter au serveur. Vérifiez votre connexion Internet et réessayez.", "retrying": "Nouvelle tentative…", "retry": "Réessayer" },
     "toasts": {
       "signedIn": "Connexion réussie.",
       "signInFailed": "Échec de la connexion. Veuillez réessayer.",
@@ -44,9 +45,9 @@
       "stayCurrent": "Garder ma progression actuelle"
     },
     "signIn": {
-      "createAccount": "Créer votre compte",
+      "createAccount": "Gardez votre parcours personnalisé",
       "welcomeBack": "Ravi de vous revoir",
-      "createDescription": "Synchronisez votre cours, vos réflexions et votre série avec votre compte.",
+      "createDescription": "Enregistrez votre progression, vos réflexions, votre série et vos analyses sur tous vos appareils.",
       "welcomeDescription": "Connectez-vous pour synchroniser votre cours, vos réflexions et votre série sur vos appareils.",
       "continueApple": "Continuer avec Apple",
       "continueGoogle": "Continuer avec Google",

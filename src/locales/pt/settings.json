@@ -10,6 +10,7 @@
   "premium": { "unlockAccessibility": "Desbloquear o Happy Premium. Análises, resumos e mais", "unlockTitle": "Desbloquear o Happy Premium", "unlockSubtitle": "Análises, resumos e mais", "checking": "A verificar o estado Premium", "active": "O Premium está ativo", "lifetime": "Acesso Premium vitalício", "renews": "Renova em {{date}}", "activeUntil": "Ativo até {{date}}", "activeTitle": "Premium ativo", "status": "{{status}}. Todas as funcionalidades Premium estão desbloqueadas." },
   "premiumUi": { "upgradeCta": "Mudar para Premium", "dismissAccessibility": "Fechar convite para Premium", "notNow": "Agora não", "trialLastDay": "Último dia do teu período de teste!", "trialDaysLeft": "Restam {{count}} dias de teste", "trialAccessibility_one": "Resta 1 dia de teste. Toca para atualizar.", "trialAccessibility_other": "Restam {{count}} dias de teste. Toca para atualizar.", "keepPremiumAccess": "Não percas acesso às funcionalidades Premium", "keepAllFeatures": "Muda para Premium para manter todas as funcionalidades", "upgrade": "Atualizar", "premiumFeature": "Funcionalidade Premium", "gateDescription": "Muda para Premium para desbloquear esta funcionalidade e aproveitar melhor o teu percurso.", "unlockWithPremium": "Desbloquear com Premium", "unlockAccessibility": "Muda para Premium para desbloquear {{feature}}" },
   "accountAuth": {
+    "networkError": { "title": "Erro de ligação", "description": "Não foi possível ligar ao servidor. Verifique a ligação à Internet e tente novamente.", "retrying": "A tentar novamente…", "retry": "Tentar novamente" },
     "toasts": {
       "signedIn": "Sessão iniciada com sucesso.",
       "signInFailed": "Não foi possível iniciar sessão. Tenta novamente.",
@@ -44,9 +45,9 @@
       "stayCurrent": "Manter o meu progresso atual"
     },
     "signIn": {
-      "createAccount": "Cria a tua conta",
+      "createAccount": "Guarda o teu percurso personalizado",
       "welcomeBack": "Bem-vindo de volta",
-      "createDescription": "Sincroniza o teu curso, reflexões e sequência com a tua conta.",
+      "createDescription": "Guarda o teu progresso, reflexões, sequência e insights em todos os dispositivos.",
       "welcomeDescription": "Inicia sessão para sincronizar o teu curso, reflexões e sequência entre dispositivos.",
       "continueApple": "Continuar com a Apple",
       "continueGoogle": "Continuar com o Google",

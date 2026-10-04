@@ -9,6 +9,9 @@ import { clearGuestProgress } from "@/hooks/data/useGuestProgress";
 import { useAuth, type AuthProviderId } from "@/src/context/AuthContext";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useTranslation } from "react-i18next";
+import { useSignupAnalytics } from "./useSignUpAnalytics";
+
+type SignupSource = "entry" | "onboarding";
 
 export interface PremiumRecoveryState {
   appUserID: string | null;
@@ -17,6 +20,7 @@ export interface PremiumRecoveryState {
 }
 
 interface ControllerProps {
+  source: SignupSource;
   onDismiss?: () => void;
   onSkip?: () => void;
   onSuccess?: () => void;
@@ -27,6 +31,7 @@ const hasPremiumEntitlement = (info: CustomerInfo | null): boolean =>
   Boolean(info?.entitlements.active["Premium journals"]);
 
 export function useSignInBottomSheetController({
+  source,
   onDismiss,
   onSkip,
   onSuccess,
@@ -35,6 +40,7 @@ export function useSignInBottomSheetController({
   const router = useRouter();
   const { toast } = useToast();
   const { t } = useTranslation("settings");
+  const signupAnalytics = useSignupAnalytics();
   const {
     session,
     isAnonymous,
@@ -84,6 +90,7 @@ export function useSignInBottomSheetController({
   };
 
   const handleSheetDismiss = (): void => {
+    signupAnalytics.trackDismissed(source);
     dismissAccountClaimPrompt();
     onDismiss?.();
     setIsOpen(false);
@@ -103,6 +110,7 @@ export function useSignInBottomSheetController({
   };
 
   const handleSkip = (): void => {
+    signupAnalytics.trackSkipped(source);
     dismissSheet();
     onSkip?.();
   };
@@ -118,10 +126,12 @@ export function useSignInBottomSheetController({
   const handleProviderPress = async (provider: AuthProviderId): Promise<void> => {
     try {
       setBusyProvider(provider);
+      signupAnalytics.trackProviderTapped(provider, source);
 
       if (!session && !isAnonymous) {
         const result = await moveToExistingAccount(provider);
         if (result.status === "signed_in") {
+          signupAnalytics.trackAuthSucceeded(provider, source);
           showSuccess(t("accountAuth.toasts.signedIn"));
           finishSuccessfully();
           return;
@@ -152,6 +162,7 @@ export function useSignInBottomSheetController({
       }
 
       showSuccess(t("accountAuth.toasts.accountCreated"));
+      signupAnalytics.trackAuthSucceeded(provider, source);
       finishSuccessfully();
     } catch {
       showError(t("accountAuth.toasts.signInFailed"));
@@ -247,6 +258,7 @@ export function useSignInBottomSheetController({
     openSheet: () => {
       setIsOpen(true);
       onOpenChange?.(true);
+      signupAnalytics.trackSheetViewed(source);
     },
     dismissSheet,
   };

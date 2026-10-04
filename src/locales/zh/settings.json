@@ -10,6 +10,7 @@
   "premium": { "unlockAccessibility": "解锁 Happy Premium。获取分析、总结等更多功能", "unlockTitle": "解锁 Happy Premium", "unlockSubtitle": "分析、总结等更多功能", "checking": "正在检查 Premium 状态", "active": "Premium 已激活", "lifetime": "永久 Premium 访问权限", "renews": "续订日期：{{date}}", "activeUntil": "有效期至 {{date}}", "activeTitle": "Premium 已激活", "status": "{{status}}。所有 Premium 功能均已解锁。" },
   "premiumUi": { "upgradeCta": "升级到 Premium", "dismissAccessibility": "关闭 Premium 升级提示", "notNow": "暂不", "trialLastDay": "试用期的最后一天！", "trialDaysLeft": "试用期还剩 {{count}} 天", "trialAccessibility_other": "试用期还剩 {{count}} 天。轻点即可升级。", "keepPremiumAccess": "继续使用 Premium 功能", "keepAllFeatures": "升级以继续使用全部功能", "upgrade": "升级", "premiumFeature": "Premium 功能", "gateDescription": "升级以解锁此功能，更好地继续你的旅程。", "unlockWithPremium": "使用 Premium 解锁", "unlockAccessibility": "升级以解锁{{feature}}" },
   "accountAuth": {
+    "networkError": { "title": "连接错误", "description": "无法连接到服务器。请检查网络连接后重试。", "retrying": "正在重试…", "retry": "重新连接" },
     "toasts": {
       "signedIn": "登录成功。",
       "signInFailed": "登录失败，请重试。",
@@ -44,9 +45,9 @@
       "stayCurrent": "保留当前进度"
     },
     "signIn": {
-      "createAccount": "创建账户",
+      "createAccount": "保留你的专属旅程",
       "welcomeBack": "欢迎回来",
-      "createDescription": "将课程、反思记录和连续练习天数同步到你的账户。",
+      "createDescription": "在所有设备上保存你的进度、反思记录、连续练习和洞察。",
       "welcomeDescription": "登录后即可在不同设备间同步课程、反思记录和连续练习天数。",
       "continueApple": "使用 Apple 继续",
       "continueGoogle": "使用 Google 继续",

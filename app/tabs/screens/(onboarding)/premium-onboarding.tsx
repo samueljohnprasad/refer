@@ -42,6 +42,7 @@ export default function PremiumOnboardingRoute(): React.JSX.Element {
       <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
         <SignInBottomSheet
           ref={signInSheetRef}
+          source="onboarding"
           showSkipButton
           onOpenChange={setIsSheetOpen}
           onDismiss={continueToHome}

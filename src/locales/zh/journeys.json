@@ -112,6 +112,7 @@
   "streakHeaderA11y": "已连续{{count}}天",
   "unitGuidebook": "单元指南",
   "progressStatsA11y": "进度统计",
+  "insightPointsA11y": "{{count}} 个洞察积分。轻点查看详情。",
   "tapForEncouragement": "轻点获取鼓励",
   "keepStreakGoing": "继续加油！🔥",
   "journeyProgress": "已完成{{completed}}/{{total}}",

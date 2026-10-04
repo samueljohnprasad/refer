@@ -64,6 +64,13 @@
     "newStreakMessage": "新的连续打卡开始了！每天回来继续积累进度吧。",
     "continue": "继续"
   },
+  "notifications": {
+    "streakSaver": {
+      "title": "花一点时间记录一下",
+      "firstDayBody": "今天简单记录一下，就能开启连续记录。两分钟也很有意义 🌿",
+      "ongoingBody": "你已连续记录 {{count}} 天。做个简短练习，继续保持 🌿"
+    }
+  },
   "errors": {
     "loadTitle": "出现了问题",
     "loadDescription": "无法加载首页。",

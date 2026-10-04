@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 import {
   useAnimatedNumberViewModel,
   useGainFlyoverViewModel,
@@ -93,6 +94,7 @@ export const XPCounterView = React.memo(function XPCounterView({
   onPress,
   compact,
 }: XPCounterViewProps): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
     <Pressable
       onPress={onPress}
@@ -101,7 +103,7 @@ export const XPCounterView = React.memo(function XPCounterView({
           ? ""
           : "bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-2xl"
       }`}
-      accessibilityLabel={`${totalIP} insight points. Tap for details.`}
+      accessibilityLabel={t("insightPointsA11y", { count: totalIP })}
       accessibilityRole="button"
     >
       <Text style={{ fontSize: compact ? 14 : 16 }}>⚡</Text>

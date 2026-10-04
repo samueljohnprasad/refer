@@ -2,6 +2,7 @@ import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { View, Text } from "react-native";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 
@@ -12,6 +13,7 @@ interface TimelineSectionHeaderProps {
 }
 
 export const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = React.memo(({ date, title, mode = "days" }) => {
+    const { t } = useTranslation("common");
     if (mode === "months" || mode === "weeks") {
       // For weeks or months, render the provided title if available, otherwise fallback to standard text
       // E.g., for Months: "July 2026". We might want to stack month and year similar to how "1 WED" is rendered.
@@ -75,7 +77,7 @@ export const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = React
             letterSpacing: 0.2,
           }}
         >
-          TODAY
+          {t("timeline.todayLabel")}
         </Text>
       );
     } else if (isYesterday) {
@@ -88,7 +90,7 @@ export const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = React
             letterSpacing: 0.2,
           }}
         >
-          YEST.
+          {t("timeline.yesterdayLabel")}
         </Text>
       );
     } else {

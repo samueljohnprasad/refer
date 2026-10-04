@@ -32,6 +32,10 @@ export interface UseStreakSaverNotificationParams {
   notificationsDisabled: boolean;
   /** Journey slug for deep linking */
   journeySlug: string;
+  getNotificationCopy: (streakDays: number) => {
+    title: string;
+    body: string;
+  };
 }
 
 export interface UseStreakSaverNotificationReturn {
@@ -74,15 +78,10 @@ export async function cancelStreakSaverNotification(): Promise<void> {
 /** Build the notification content */
 function buildNotificationContent(
   streakDays: number,
+  getNotificationCopy: UseStreakSaverNotificationParams["getNotificationCopy"],
 ): Notifications.NotificationContentInput {
-  const body: string =
-    streakDays === 1
-      ? "A quick check-in today would start your streak. Even 2 minutes counts 🌿"
-      : `You're on a ${streakDays}-day streak. A short exercise today keeps the momentum going 🌿`;
-
   return {
-    title: `Time for a little check-in`,
-    body,
+    ...getNotificationCopy(streakDays),
     sound: "default",
     data: {
       type: "streak_saver",
@@ -141,6 +140,7 @@ export function useStreakSaverNotification({
   isActiveToday,
   notificationsDisabled,
   journeySlug,
+  getNotificationCopy,
 }: UseStreakSaverNotificationParams): UseStreakSaverNotificationReturn {
   const scheduledRef = useRef<boolean>(false);
 
@@ -183,7 +183,7 @@ export function useStreakSaverNotification({
 
       await Notifications.scheduleNotificationAsync({
         identifier: NOTIFICATION_IDENTIFIER,
-        content: buildNotificationContent(currentStreak),
+        content: buildNotificationContent(currentStreak, getNotificationCopy),
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
           seconds: secondsUntilTrigger,
@@ -195,7 +195,7 @@ export function useStreakSaverNotification({
     } catch (err) {
       console.warn("[StreakSaver] Failed to schedule notification:", err);
     }
-  }, [currentStreak, isActiveToday, notificationsDisabled, cancelNotification]);
+  }, [currentStreak, isActiveToday, notificationsDisabled, cancelNotification, getNotificationCopy]);
 
   // Auto-schedule/cancel when deps change
   useEffect(() => {

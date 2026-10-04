@@ -112,6 +112,7 @@
   "streakHeaderA11y": "{{count}} أيام متتالية",
   "unitGuidebook": "دليل الوحدة",
   "progressStatsA11y": "إحصاءات التقدم",
+  "insightPointsA11y": "{{count}} نقطة Insight. اضغط لعرض التفاصيل.",
   "tapForEncouragement": "اضغط للحصول على تشجيع",
   "keepStreakGoing": "واصل التقدم! 🔥",
   "journeyProgress": "{{completed}}/{{total}} مكتمل",

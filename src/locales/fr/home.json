@@ -66,6 +66,13 @@
     "newStreakMessage": "Une nouvelle série commence ! Continuez à revenir chaque jour pour progresser.",
     "continue": "Continuer"
   },
+  "notifications": {
+    "streakSaver": {
+      "title": "Un petit moment pour vous",
+      "firstDayBody": "Un petit bilan aujourd’hui lancera votre série. Même 2 minutes comptent 🌿",
+      "ongoingBody": "Votre série dure depuis {{count}} jours. Un court exercice vous aidera à garder le rythme 🌿"
+    }
+  },
   "errors": {
     "loadTitle": "Une erreur s'est produite",
     "loadDescription": "Impossible de charger l'accueil.",

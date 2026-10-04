@@ -66,6 +66,13 @@
     "newStreakMessage": "¡Empieza una nueva racha! Vuelve cada día para seguir avanzando.",
     "continue": "Continuar"
   },
+  "notifications": {
+    "streakSaver": {
+      "title": "Un momento para hacer una pausa",
+      "firstDayBody": "Un breve registro hoy iniciará tu racha. Incluso 2 minutos cuentan 🌿",
+      "ongoingBody": "Llevas {{count}} días de racha. Un ejercicio breve te ayudará a mantener el ritmo 🌿"
+    }
+  },
   "errors": {
     "loadTitle": "Algo salió mal",
     "loadDescription": "No pudimos cargar la pantalla de inicio.",

@@ -96,14 +96,14 @@ export async function scheduleDailyReminder(
   id: string,
   title: string,
   time: { hour: number; minute: number },
-  body?: string
+  body: string
 ): Promise<string> {
   await ensureAndroidChannel();
   const { hour, minute } = time;
   const identifier = await Notifications.scheduleNotificationAsync({
     content: {
       title,
-      body: body || "Time to journal.",
+      body,
       sound: Platform.OS === "android" ? undefined : "default",
     },
     trigger: {

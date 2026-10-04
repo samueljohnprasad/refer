@@ -97,7 +97,10 @@ export default function HabitAddScreen(): React.JSX.Element {
     const created = await createHabit(formData);
     if (created) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      await handleHabitCreated(created);
+      await handleHabitCreated(created, {
+        title: t("notifications.reminderTitle"),
+        body: t("notifications.reminderBody", { name: created.name }),
+      });
       setLoading(false);
       router.replace({
         pathname: "/tabs/screens/habits-modal/details",
@@ -120,7 +123,10 @@ export default function HabitAddScreen(): React.JSX.Element {
     const created = await createHabit(formData);
     if (created) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      await handleHabitCreated(created);
+      await handleHabitCreated(created, {
+        title: t("notifications.reminderTitle"),
+        body: t("notifications.reminderBody", { name: created.name }),
+      });
       setLoading(false);
       setHabitName("");
       setHabitDescription("");

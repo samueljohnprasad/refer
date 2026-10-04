@@ -1,5 +1,6 @@
 {
   "title": "Abitudini",
+  "notifications": { "reminderTitle": "Promemoria abitudine", "reminderBody": "È il momento di completare: {{name}}" },
   "streak": { "days": "giorni di fila", "multiplier": "Moltiplicatore della serie" },
   "timeOfDay": { "morning": "Mattina", "afternoon": "Pomeriggio", "evening": "Sera", "anytime": "In qualsiasi momento" },
   "actions": { "logHabit": "Registra abitudine", "habitCompleted": "Completata", "addHabit": "Aggiungi abitudine" },

@@ -10,6 +10,7 @@
   "premium": { "unlockAccessibility": "افتح Happy Premium. تحليلات وملخصات والمزيد", "unlockTitle": "فتح Happy Premium", "unlockSubtitle": "تحليلات وملخصات والمزيد", "checking": "جارٍ التحقق من حالة Premium", "active": "Premium مفعّل", "lifetime": "وصول Premium مدى الحياة", "renews": "يتجدد في {{date}}", "activeUntil": "نشط حتى {{date}}", "activeTitle": "Premium مفعّل", "status": "{{status}}. جميع ميزات Premium مفتوحة." },
   "premiumUi": { "upgradeCta": "الترقية إلى Premium", "dismissAccessibility": "إغلاق دعوة الترقية إلى Premium", "notNow": "ليس الآن", "trialLastDay": "هذا آخر يوم في الفترة التجريبية!", "trialDaysLeft_one": "بقي يوم واحد في الفترة التجريبية", "trialDaysLeft_two": "بقي يومان في الفترة التجريبية", "trialDaysLeft_few": "بقيت {{count}} أيام في الفترة التجريبية", "trialDaysLeft_many": "بقي {{count}} يومًا في الفترة التجريبية", "trialDaysLeft_other": "بقي {{count}} يوم في الفترة التجريبية", "trialAccessibility_one": "بقي يوم واحد في الفترة التجريبية. اضغط للترقية.", "trialAccessibility_two": "بقي يومان في الفترة التجريبية. اضغط للترقية.", "trialAccessibility_few": "بقيت {{count}} أيام في الفترة التجريبية. اضغط للترقية.", "trialAccessibility_many": "بقي {{count}} يومًا في الفترة التجريبية. اضغط للترقية.", "trialAccessibility_other": "بقي {{count}} يوم في الفترة التجريبية. اضغط للترقية.", "keepPremiumAccess": "لا تفقد الوصول إلى ميزات Premium", "keepAllFeatures": "رقِّ للاحتفاظ بكل الميزات", "upgrade": "ترقية", "premiumFeature": "ميزة Premium", "gateDescription": "رقِّ لفتح هذه الميزة والاستفادة أكثر من رحلتك.", "unlockWithPremium": "افتح مع Premium", "unlockAccessibility": "رقِّ لفتح {{feature}}" },
   "accountAuth": {
+    "networkError": { "title": "خطأ في الاتصال", "description": "تعذر الاتصال بالخادم. تحقق من اتصالك بالإنترنت ثم حاول مرة أخرى.", "retrying": "جارٍ إعادة المحاولة…", "retry": "إعادة الاتصال" },
     "toasts": {
       "signedIn": "تم تسجيل الدخول بنجاح.",
       "signInFailed": "تعذّر تسجيل الدخول. حاول مرة أخرى.",
@@ -44,9 +45,9 @@
       "stayCurrent": "الاحتفاظ بتقدّمي الحالي"
     },
     "signIn": {
-      "createAccount": "أنشئ حسابك",
+      "createAccount": "احتفظ برحلتك المخصصة",
       "welcomeBack": "مرحبًا بعودتك",
-      "createDescription": "زامن دروسك وتأملاتك وسلسلتك مع حسابك.",
+      "createDescription": "احفظ تقدمك وتأملاتك وسلسلتك ورؤاك على جميع أجهزتك.",
       "welcomeDescription": "سجّل الدخول لمزامنة دروسك وتأملاتك وسلسلتك بين أجهزتك.",
       "continueApple": "المتابعة باستخدام Apple",
       "continueGoogle": "المتابعة باستخدام Google",

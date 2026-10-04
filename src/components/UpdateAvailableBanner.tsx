@@ -8,9 +8,11 @@ import { SafeAreaView } from "@/src/components/tw";
 import { HapticManager } from "@/lib/haptics/HapticManager";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { SparklesIcon } from "@hugeicons/core-free-icons";
+import { useTranslation } from "react-i18next";
 
 export const UpdateAvailableBanner: React.FC = () => {
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
+  const { t } = useTranslation("common");
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleAction = async () => {
@@ -38,7 +40,7 @@ export const UpdateAvailableBanner: React.FC = () => {
           <View className="flex-row items-center gap-2">
             <HugeiconsIcon icon={SparklesIcon} size={18} color="#FFFFFF" />
             <Text className="happy-font-body-medium text-[15px] font-semibold text-white">
-              {isUpdatePending ? "Update downloaded" : "Update available"}
+              {isUpdatePending ? t("updates.downloaded") : t("updates.available")}
             </Text>
           </View>
           <Pressable
@@ -47,7 +49,11 @@ export const UpdateAvailableBanner: React.FC = () => {
             className="rounded-full bg-white/20 px-4 py-1.5 active:bg-white/30"
           >
             <Text className="happy-font-body-bold text-[13px] text-white">
-              {isDownloading ? "Downloading..." : isUpdatePending ? "Restart" : "Download"}
+              {isDownloading
+                ? t("updates.downloading")
+                : isUpdatePending
+                  ? t("updates.restart")
+                  : t("updates.download")}
             </Text>
           </Pressable>
         </View>

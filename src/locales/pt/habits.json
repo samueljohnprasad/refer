@@ -1,5 +1,6 @@
 {
   "title": "Hábitos",
+  "notifications": { "reminderTitle": "Lembrete de hábito", "reminderBody": "Está na hora de concluir: {{name}}" },
   "streak": { "days": "dias seguidos", "multiplier": "Multiplicador de sequência" },
   "timeOfDay": { "morning": "Manhã", "afternoon": "Tarde", "evening": "Noite", "anytime": "A qualquer hora" },
   "actions": { "logHabit": "Registar hábito", "habitCompleted": "Concluído", "addHabit": "Adicionar hábito" },

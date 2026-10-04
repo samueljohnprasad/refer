@@ -8,18 +8,19 @@ export type MCName = ComponentProps<typeof MaterialCommunityIcons>["name"];
 /**
  * Base reminder item structure
  */
-export type BaseItem = {
+export type ReminderTemplate = {
   id: string;
-  title: string;
   hour: number;
   minute: number;
+};
+
+export type ReminderItem = ReminderTemplate & {
+  title: string;
   notificationBody: string;
 };
 
-export type FeItem = BaseItem & { iconLib: "fe"; icon: FeatherName };
-export type McItem = BaseItem & { iconLib: "mc"; icon: MCName };
-
-export type ReminderItem = FeItem | McItem;
+export type ReminderTemplateWithIcon = ReminderTemplate &
+  ({ iconLib: "fe"; icon: FeatherName } | { iconLib: "mc"; icon: MCName });
 
 /**
  * Color scheme for reminder cards

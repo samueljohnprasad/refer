@@ -1,5 +1,5 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, ScrollView, Platform } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -17,13 +17,6 @@ interface NotificationPermissionStepProps {
   stressTiming?: string;
 }
 
-type ReminderId = "1" | "2" | "3";
-const REMINDER_COPY_KEYS: Record<ReminderId, { title: `notification.reminders.${ReminderId}.title`; body: `notification.reminders.${ReminderId}.body` }> = {
-  "1": { title: "notification.reminders.1.title", body: "notification.reminders.1.body" },
-  "2": { title: "notification.reminders.2.title", body: "notification.reminders.2.body" },
-  "3": { title: "notification.reminders.3.title", body: "notification.reminders.3.body" },
-};
-
 // ponytail: benchmarked against stoic & Duolingo Mobbin flows (CBT habit proof + single-viewport no-scroll layout)
 const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   selectedTime,
@@ -32,19 +25,13 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("onboarding");
   const contentTopPadding = Platform.OS === "ios" ? insets.top + 32 : insets.top + 28;
-  const reminderItems = useMemo(() => DEFAULT_REMINDERS.map((item) => ({
-    ...item,
-    title: String(t(REMINDER_COPY_KEYS[item.id as ReminderId].title)),
-    notificationBody: String(t(REMINDER_COPY_KEYS[item.id as ReminderId].body)),
-  })), [t]);
-  
   // ponytail: do not prompt OS dialog while toggling in onboarding; prompt on Continue click
   const {
     items,
     cfg,
     handleTimeChange,
     toggleSelected,
-  } = useReminderConfig(reminderItems, { requestPermissionsOnToggle: false });
+  } = useReminderConfig(DEFAULT_REMINDERS, { requestPermissionsOnToggle: false });
 
   // Notify parent that a time is "selected" if any reminder is enabled
   useEffect(() => {

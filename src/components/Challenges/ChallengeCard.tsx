@@ -111,11 +111,11 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
   }));
 
   const isComplete = challenge.completed;
-  const title = t(`challenges.items.${challenge.id}.title`, { defaultValue: challenge.title });
-  const description = t(`challenges.items.${challenge.id}.description`, { defaultValue: challenge.description });
+  const title = String(t(`challenges.items.${challenge.id}.title` as any));
+  const description = String(t(`challenges.items.${challenge.id}.description` as any));
   const accessibilityLabel = isComplete
-    ? `${t("challenges.done")}: ${title}`
-    : `${title}. ${progressPercent}%`;
+    ? t("challengeCard.completed", { title })
+    : t("challengeCard.progress", { title, progress: Math.round(progressPercent) });
 
   if (compact) {
     return (
@@ -123,11 +123,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
         onPress={handlePress}
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel={
-          isComplete
-            ? accessibilityLabel
-            : accessibilityLabel
-        }
+        accessibilityLabel={accessibilityLabel}
         accessibilityHint={t("challenges.opensDetails")}
       >
         <Animated.View
@@ -185,11 +181,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
       showDepth={true}
       className="mb-2.5"
       contentClassName="p-4"
-      accessibilityLabel={
-        isComplete
-          ? accessibilityLabel
-          : accessibilityLabel
-      }
+      accessibilityLabel={accessibilityLabel}
       accessibilityHint={t("challenges.opensDetails")}
     >
       {/* Header */}
@@ -224,7 +216,10 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
       <View className="mt-4">
         <View className="flex-row items-center justify-between mb-2">
           <Text variant="caption-muted">
-            {challenge.progress} of {challenge.condition.target}
+            {t("challengeCard.progressCount", {
+              progress: challenge.progress,
+              target: challenge.condition.target,
+            })}
           </Text>
           <Text variant="label-bold">{Math.round(progressPercent)}%</Text>
         </View>

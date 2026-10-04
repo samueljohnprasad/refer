@@ -15,12 +15,12 @@ import type { AchievementProgressItem } from "./AchievementBadgeDetailSheet";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { useTranslation } from "react-i18next";
 
-const CATEGORY_META: Record<AchievementCategory, { label: string; icon: any }> = {
-  journaling: { label: "Journaling", icon: NoteIcon },
-  streaks: { label: "Streaks", icon: Fire02Icon },
-  habits: { label: "Habits", icon: TaskDone01Icon },
-  wellness: { label: "Wellness", icon: StarsIcon },
-  tracking: { label: "Tracking", icon: BarChartIcon },
+const CATEGORY_META: Record<AchievementCategory, { icon: any }> = {
+  journaling: { icon: NoteIcon },
+  streaks: { icon: Fire02Icon },
+  habits: { icon: TaskDone01Icon },
+  wellness: { icon: StarsIcon },
+  tracking: { icon: BarChartIcon },
 };
 
 interface AchievementCategorySectionProps {
@@ -37,7 +37,8 @@ export const AchievementCategorySection = memo(function AchievementCategorySecti
 }: AchievementCategorySectionProps) {
   const { t } = useTranslation("common");
   if (items.length === 0) return null;
-  const meta = CATEGORY_META[category] ?? { label: category, icon: Medal01Icon };
+  const meta = CATEGORY_META[category] ?? { icon: Medal01Icon };
+  const categoryLabel = String(t(`achievements.categories.${category}` as any));
 
   return (
     <View className="mb-3.5 px-4">
@@ -51,7 +52,7 @@ export const AchievementCategorySection = memo(function AchievementCategorySecti
           />
         </View>
         <Text className="happy-font-body-bold text-[16px] text-ink">
-          {t(`achievements.categories.${category}`, { defaultValue: meta.label })}
+          {categoryLabel}
         </Text>
       </View>
 

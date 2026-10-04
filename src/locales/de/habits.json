@@ -1,5 +1,6 @@
 {
   "title": "Gewohnheiten",
+  "notifications": { "reminderTitle": "Gewohnheitserinnerung", "reminderBody": "Zeit für: {{name}}" },
   "streak": { "days": "Tage in Folge", "multiplier": "Serienmultiplikator" },
   "timeOfDay": { "morning": "Morgen", "afternoon": "Nachmittag", "evening": "Abend", "anytime": "Jederzeit" },
   "actions": { "logHabit": "Gewohnheit erfassen", "habitCompleted": "Erledigt", "addHabit": "Gewohnheit hinzufügen" },

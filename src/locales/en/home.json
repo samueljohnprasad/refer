@@ -66,6 +66,13 @@
     "newStreakMessage": "A new streak begins! Keep showing up each day to build your progress.",
     "continue": "Continue"
   },
+  "notifications": {
+    "streakSaver": {
+      "title": "Time for a little check-in",
+      "firstDayBody": "A quick check-in today would start your streak. Even 2 minutes counts 🌿",
+      "ongoingBody": "You're on a {{count}}-day streak. A short exercise today keeps the momentum going 🌿"
+    }
+  },
   "errors": {
     "loadTitle": "Something went wrong",
     "loadDescription": "We couldn't load your home screen.",

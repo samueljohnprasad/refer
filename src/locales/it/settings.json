@@ -10,6 +10,7 @@
   "premium": { "unlockAccessibility": "Sblocca Happy Premium. Analisi, riepiloghi e altro", "unlockTitle": "Sblocca Happy Premium", "unlockSubtitle": "Analisi, riepiloghi e altro", "checking": "Verifica dello stato Premium", "active": "Premium è attivo", "lifetime": "Accesso Premium a vita", "renews": "Si rinnova il {{date}}", "activeUntil": "Attivo fino al {{date}}", "activeTitle": "Premium attivo", "status": "{{status}}. Tutte le funzioni Premium sono sbloccate." },
   "premiumUi": { "upgradeCta": "Passa a Premium", "dismissAccessibility": "Chiudi l'invito a Premium", "notNow": "Non ora", "trialLastDay": "Ultimo giorno di prova!", "trialDaysLeft": "Restano {{count}} giorni di prova", "trialAccessibility_one": "Resta 1 giorno di prova. Tocca per eseguire l'upgrade.", "trialAccessibility_other": "Restano {{count}} giorni di prova. Tocca per eseguire l'upgrade.", "keepPremiumAccess": "Non perdere l'accesso alle funzioni Premium", "keepAllFeatures": "Passa a Premium per mantenere tutte le funzioni", "upgrade": "Esegui l'upgrade", "premiumFeature": "Funzione Premium", "gateDescription": "Passa a Premium per sbloccare questa funzione e ottenere di più dal tuo percorso.", "unlockWithPremium": "Sblocca con Premium", "unlockAccessibility": "Passa a Premium per sbloccare {{feature}}" },
   "accountAuth": {
+    "networkError": { "title": "Errore di connessione", "description": "Impossibile connettersi al server. Controlla la connessione Internet e riprova.", "retrying": "Nuovo tentativo…", "retry": "Riprova la connessione" },
     "toasts": {
       "signedIn": "Accesso eseguito.",
       "signInFailed": "Accesso non riuscito. Riprova.",
@@ -44,9 +45,9 @@
       "stayCurrent": "Mantieni i progressi attuali"
     },
     "signIn": {
-      "createAccount": "Crea il tuo account",
+      "createAccount": "Conserva il tuo percorso personalizzato",
       "welcomeBack": "Bentornato",
-      "createDescription": "Sincronizza corso, riflessioni e serie con il tuo account.",
+      "createDescription": "Salva progressi, riflessioni, serie e insight su tutti i dispositivi.",
       "welcomeDescription": "Accedi per sincronizzare corso, riflessioni e serie su tutti i tuoi dispositivi.",
       "continueApple": "Continua con Apple",
       "continueGoogle": "Continua con Google",

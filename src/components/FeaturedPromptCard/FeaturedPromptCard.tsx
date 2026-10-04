@@ -66,7 +66,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
             lineHeight: 28,
           }}
         >
-          {t(`prompts.${currentPrompt.id}` as any)}
+          {String(t(`prompts.${currentPrompt.id}` as any))}
         </Text>
       </View>
 
