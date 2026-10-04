@@ -73,7 +73,8 @@
     "alternativeBeliefOutcome": "Credenza e conseguenza alternative",
     "gratitudeEntries": "Note di gratitudine",
     "reframedPerspective": "Prospettiva riformulata",
-    "gratitudePrompt": "Sono grato per..."
+    "gratitudePrompt": "Sono grato per...",
+    "ratingLabels": { "distress": "Disagio", "mood": "Umore", "emotion": "Emozione", "calm": "Calma", "presence": "Presenza", "tension": "Tensione", "anxiety": "Ansia", "focus": "Concentrazione" }
   },
   "milestone": "{{count}} esercizi di consapevolezza registrati! La costanza dà i suoi frutti nel tempo.",
   "cbt": {

@@ -2,23 +2,22 @@ import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
+import type { AiInsight } from '../../model/timeline.types';
 
 interface DailyInsightCardProps {
-  insight: {
-    summary: string;
-    timelineSummary?: string;
-  };
-  onPress?: () => void;
+  insight: AiInsight;
+  onPress?: (insight: AiInsight) => void;
 }
 
 export const DailyInsightCard = ({ insight, onPress }: DailyInsightCardProps) => {
   const { t } = useTranslation('common');
   // Use timelineSummary if available, else fallback to extracting the first sentence (Point 13)
   const firstSentence = insight.timelineSummary || insight.summary.split(/(?<=[.!?])\s+/)[0] || insight.summary;
+  const handlePress = () => onPress?.(insight);
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={handlePress}
       className="active:opacity-60 py-1"
     >
       <View className="gap-2">

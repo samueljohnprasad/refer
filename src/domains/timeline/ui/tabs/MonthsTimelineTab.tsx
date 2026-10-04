@@ -15,12 +15,14 @@ import { useHeaderHeight } from 'expo-router/react-navigation';
 import type { TimelineSection } from '@/src/components/ui/Timeline/types';
 import type { MonthlyTimelineItem, TimelineTabProps } from '../../model/timeline.types';
 import { MOCK_MONTHS_TIMELINE_DATA } from './mockData';
+import { localizeMockTimeline } from './localizeMockTimeline';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 
 
 export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
   const { t, i18n } = useTranslation('common');
+  const { t: tSamples } = useTranslation('timelineSamples');
   const headerHeight = useHeaderHeight();
   const { toast } = useToast();
   const { data, isLoading, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useMonthlyTimeline({ pageSize: 10 });
@@ -55,7 +57,9 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
   const displayData = data?.pages ? data.pages.flatMap(p => p.data) : [];
 
   const isTimelineEmpty = displayData.length === 0;
-  const actualDataToDisplay = isTimelineEmpty ? MOCK_MONTHS_TIMELINE_DATA : displayData;
+  const actualDataToDisplay = isTimelineEmpty
+    ? localizeMockTimeline(MOCK_MONTHS_TIMELINE_DATA, tSamples)
+    : displayData;
 
   const sections: TimelineSection<MonthlyTimelineItem>[] = useMemo(() => {
     return actualDataToDisplay.map((item: any) => {

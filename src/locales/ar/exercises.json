@@ -73,7 +73,8 @@
     "alternativeBeliefOutcome": "معتقد ونتيجة بديلان",
     "gratitudeEntries": "أمور الامتنان",
     "reframedPerspective": "منظور جديد",
-    "gratitudePrompt": "أشعر بالامتنان لـ..."
+    "gratitudePrompt": "أشعر بالامتنان لـ...",
+    "ratingLabels": { "distress": "الضيق", "mood": "المزاج", "emotion": "المشاعر", "calm": "الهدوء", "presence": "الحضور", "tension": "التوتر", "anxiety": "القلق", "focus": "التركيز" }
   },
   "milestone": "سُجّل {{count}} من تمارين اليقظة الذهنية! الاستمرار يصنع فرقًا مع الوقت.",
   "cbt": {

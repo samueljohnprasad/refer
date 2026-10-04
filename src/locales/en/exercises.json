@@ -73,7 +73,8 @@
     "alternativeBeliefOutcome": "Alternative Belief & Outcome",
     "gratitudeEntries": "Gratitude Entries",
     "reframedPerspective": "Reframed Perspective",
-    "gratitudePrompt": "I am grateful for..."
+    "gratitudePrompt": "I am grateful for...",
+    "ratingLabels": { "distress": "Distress", "mood": "Mood", "emotion": "Emotion", "calm": "Calm", "presence": "Presence", "tension": "Tension", "anxiety": "Anxiety", "focus": "Focus" }
   },
   "milestone": "{{count}} mindful exercises logged! Consistency compounds over time.",
   "cbt": {

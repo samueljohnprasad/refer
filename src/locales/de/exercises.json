@@ -73,7 +73,8 @@
     "alternativeBeliefOutcome": "Alternative Überzeugung und Folge",
     "gratitudeEntries": "Dankbarkeitseinträge",
     "reframedPerspective": "Neue Perspektive",
-    "gratitudePrompt": "Ich bin dankbar für …"
+    "gratitudePrompt": "Ich bin dankbar für …",
+    "ratingLabels": { "distress": "Belastung", "mood": "Stimmung", "emotion": "Gefühl", "calm": "Ruhe", "presence": "Präsenz", "tension": "Anspannung", "anxiety": "Angst", "focus": "Konzentration" }
   },
   "milestone": "{{count}} Achtsamkeitsübungen gespeichert! Dranbleiben zahlt sich mit der Zeit aus.",
   "cbt": {

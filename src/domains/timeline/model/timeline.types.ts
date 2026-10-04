@@ -38,5 +38,5 @@ export interface MonthlyTimelineItem extends TimelineItemData {
 export type TimelineTabType = 'days' | 'weeks' | 'months';
 
 export interface TimelineTabProps {
-  onOpenModal?: () => void;
+  onOpenModal?: (insight: AiInsight) => void;
 }

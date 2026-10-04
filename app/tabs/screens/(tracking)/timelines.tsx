@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Pressable } from "react-native";
+import { View, Pressable, Modal, ScrollView } from "react-native";
 import { SafeAreaView } from "@/src/components/tw";
 import { Stack, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
@@ -22,7 +22,8 @@ import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { BlurView } from "expo-blur";
 // ponytail: use native expo-symbols instead of lucide
 import { SymbolView } from "expo-symbols";
-import { IMessageStack } from "@/src/animations/imessage-stack";
+import { Text as AppText } from "@/src/components/ui/Text";
+import type { AiInsight } from "@/src/domains/timeline/model/timeline.types";
 
 import { DaysTimelineTab } from "@/src/domains/timeline/ui/tabs/DaysTimelineTab";
 import { WeeksTimelineTab } from "@/src/domains/timeline/ui/tabs/WeeksTimelineTab";
@@ -34,7 +35,9 @@ export default function TimelinesScreen() {
   const [activeTab, setActiveTab] = useState<"days" | "weeks" | "months">(
     "days",
   );
-  const [isStackModalOpen, setIsStackModalOpen] = useState(false);
+  const [isInsightModalVisible, setIsInsightModalVisible] = useState(false);
+  const [isInsightSheetPresented, setIsInsightSheetPresented] = useState(false);
+  const [selectedInsight, setSelectedInsight] = useState<AiInsight | null>(null);
 
   const handleSelectionChange = (selection: unknown) => {
     if (typeof selection === "string") {
@@ -44,8 +47,10 @@ export default function TimelinesScreen() {
     }
   };
 
-  const handleOpenModal = () => {
-    setIsStackModalOpen(true);
+  const handleOpenModal = (insight: AiInsight) => {
+    setSelectedInsight(insight);
+    setIsInsightModalVisible(true);
+    setIsInsightSheetPresented(true);
   };
 
   return (
@@ -93,36 +98,48 @@ export default function TimelinesScreen() {
         )}
       </View>
 
-      <Host>
-        <BottomSheet
-          isPresented={isStackModalOpen}
-          onIsPresentedChange={(val) => {
-            if (!val) setIsStackModalOpen(false);
-          }}
-        >
-          <Group
-            modifiers={[
-              presentationDetents(["medium"]),
-              presentationDragIndicator("visible"),
-            ]}
+      <Modal
+        visible={isInsightModalVisible}
+        transparent
+        animationType="none"
+        statusBarTranslucent
+        onRequestClose={() => setIsInsightSheetPresented(false)}
+      >
+        <Host>
+          <BottomSheet
+            isPresented={isInsightSheetPresented}
+            onIsPresentedChange={setIsInsightSheetPresented}
+            onDismiss={() => {
+              setSelectedInsight(null);
+              setIsInsightModalVisible(false);
+            }}
           >
-            <RNHostView>
-              <SafeAreaView
-                edges={["bottom"]}
-                style={{
-                  flex: 1,
-                  width: "100%",
-                  backgroundColor: "transparent",
-                }}
-              >
-                <View className="flex-1 justify-center bg-transparent w-full py-4">
-                  <IMessageStack />
-                </View>
-              </SafeAreaView>
-            </RNHostView>
-          </Group>
-        </BottomSheet>
-      </Host>
+            <Group
+              modifiers={[
+                presentationDetents(["medium", "large"]),
+                presentationDragIndicator("visible"),
+              ]}
+            >
+              <RNHostView>
+                <SafeAreaView edges={["bottom"]} className="flex-1 w-full">
+                  <ScrollView
+                    className="flex-1 w-full"
+                    contentContainerClassName="px-6 py-6"
+                    showsVerticalScrollIndicator={false}
+                  >
+                    <AppText variant="h2" className="mb-4">
+                      {t("timeline.viewInsight")}
+                    </AppText>
+                    {selectedInsight ? (
+                      <AppText variant="body">{selectedInsight.summary}</AppText>
+                    ) : null}
+                  </ScrollView>
+                </SafeAreaView>
+              </RNHostView>
+            </Group>
+          </BottomSheet>
+        </Host>
+      </Modal>
     </View>
   );
 }

@@ -73,7 +73,8 @@
     "alternativeBeliefOutcome": "Croyance et conséquence alternatives",
     "gratitudeEntries": "Notes de gratitude",
     "reframedPerspective": "Nouvelle perspective",
-    "gratitudePrompt": "Je suis reconnaissant·e pour…"
+    "gratitudePrompt": "Je suis reconnaissant·e pour…",
+    "ratingLabels": { "distress": "Détresse", "mood": "Humeur", "emotion": "Émotion", "calm": "Calme", "presence": "Présence", "tension": "Tension", "anxiety": "Anxiété", "focus": "Concentration" }
   },
   "milestone": "{{count}} exercices de pleine conscience enregistrés ! La régularité porte ses fruits avec le temps.",
   "cbt": {

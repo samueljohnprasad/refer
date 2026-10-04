@@ -6,10 +6,14 @@ import React, {
   useRef,
   useState,
 } from "react";
-import Purchases, { CustomerInfo, LOG_LEVEL } from "react-native-purchases";
+import Purchases, { CustomerInfo } from "react-native-purchases";
 import { useAuth } from "./AuthContext";
 import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
 import { usePostHog } from "posthog-react-native";
+import {
+  isPurchaseCancelledError,
+  revenueCatLogHandler,
+} from "./revenueCatLogging";
 
 interface RevenueCatContextValue {
   customerInfo: CustomerInfo | null;
@@ -28,59 +32,6 @@ const apiKey = Platform.select({
   ios: "appl_vziHsnYOgSMjzwblNQBZlcvuNAo",
   android: "test_uplWOSJiaUBXqOcHZzthmJvPxNI",
 });
-
-const isPurchaseCancelledError = (error: unknown): boolean => {
-  const maybeError = error as {
-    code?: string | number;
-    message?: string;
-    userCancelled?: boolean;
-  };
-  const haystack = [
-    maybeError?.code,
-    maybeError?.message,
-    error instanceof Error ? error.message : "",
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
-
-  return (
-    maybeError?.userCancelled === true ||
-    haystack.includes("purchasecancelled") ||
-    haystack.includes("purchase cancelled") ||
-    haystack.includes("purchase was cancelled") ||
-    (haystack.includes("purchase") && haystack.includes("cancelled"))
-  );
-};
-
-const revenueCatLogHandler = (
-  logLevel: LOG_LEVEL,
-  message: string,
-): void => {
-  const formattedMessage = `[RevenueCat] ${message}`;
-
-  if (logLevel === LOG_LEVEL.ERROR && isPurchaseCancelledError({ message })) {
-    console.info(formattedMessage);
-    return;
-  }
-
-  switch (logLevel) {
-    case LOG_LEVEL.DEBUG:
-      console.debug(formattedMessage);
-      return;
-    case LOG_LEVEL.INFO:
-      console.info(formattedMessage);
-      return;
-    case LOG_LEVEL.WARN:
-      console.warn(formattedMessage);
-      return;
-    case LOG_LEVEL.ERROR:
-      console.error(formattedMessage);
-      return;
-    default:
-      console.log(formattedMessage);
-  }
-};
 
 const RevenueCatContext = createContext<RevenueCatContextValue | undefined>(
   undefined
@@ -104,6 +55,7 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
   const posthog = usePostHog();
   const isConfiguredRef = useRef<boolean>(false);
   const identifiedUserIdRef = useRef<string | null>(null);
+  const isPaywallPresentationInProgressRef = useRef(false);
 
   const hasProHandler = (info: CustomerInfo | null): boolean => {
     const nextHasPro =
@@ -171,6 +123,11 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   async function presentPaywall(): Promise<boolean> {
+    if (isPaywallPresentationInProgressRef.current) {
+      return false;
+    }
+
+    isPaywallPresentationInProgressRef.current = true;
     try {
       const offerings = await Purchases.getOfferings();
       const offering = offerings.current;
@@ -208,6 +165,8 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
         console.error(e);
       }
       return false;
+    } finally {
+      isPaywallPresentationInProgressRef.current = false;
     }
   }
 

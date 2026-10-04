@@ -22,7 +22,6 @@ import {
   Pressable,
 } from "react-native";
 import { useTranslation } from "react-i18next";
-import type { TFunction } from "i18next";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -30,31 +29,23 @@ import Animated, {
   LinearTransition,
   Easing,
 } from "react-native-reanimated";
-import { format } from "date-fns";
 import { ShiftBadge } from "./ShiftBadge";
 import type { ExerciseTimelineItem } from "./types";
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { styles } from "./ExerciseTimelineCard.styles";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import {
+  formatTimelineDate,
+  formatTimelineTimestamp,
+  getLocalizedDistortion,
+  getLocalizedExerciseCategory,
+  getLocalizedExerciseTitle,
+  getLocalizedLogFieldLabel,
+  getLocalizedRatingLabel,
+} from "./timelineLocalization";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-function translateLogFieldLabel(
-  t: TFunction<"exercises">,
-  label: string | undefined,
-): string {
-  switch (label) {
-    case "Automatic Thought": return t("log.automaticThought");
-    case "Balanced Reframe": return t("log.balancedReframe");
-    case "Initial Thought": return t("log.initialThought");
-    case "Cognitive Reframe": return t("log.cognitiveReframe");
-    case "Activating Event (A)": return t("log.activatingEvent");
-    case "Alternative Belief & Outcome": return t("log.alternativeBeliefOutcome");
-    case "Gratitude Entries": return t("log.gratitudeEntries");
-    case "Reframed Perspective": return t("log.reframedPerspective");
-    default: return label ?? t("log.initialThought");
-  }
-}
 
 const AnimatedEmotionBar: React.FC<{
   emotion: string;
@@ -91,6 +82,9 @@ interface ExerciseTimelineCardProps {
 const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
   ({ item }) => {
     const { t } = useTranslation("exercises");
+    const { t: commonT } = useTranslation("common");
+    const { i18n } = useTranslation();
+    const locale = i18n.resolvedLanguage ?? i18n.language;
     const previewText = item.previewText === "I am grateful for..."
       ? t("log.gratitudePrompt")
       : item.previewText;
@@ -156,11 +150,11 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
           <View style={styles.headerRow}>
             <View style={styles.headerTextContainer}>
               <Text style={styles.title} numberOfLines={1}>
-                {item.title}
+                {getLocalizedExerciseTitle(t, item)}
               </Text>
               <View style={styles.categoryPill}>
                 <Text style={styles.category} numberOfLines={1}>
-                  {item.categoryLabel}
+                  {getLocalizedExerciseCategory(t, item)}
                 </Text>
               </View>
             </View>
@@ -187,7 +181,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
               {previewText && (!item.gratitudeEntries || item.gratitudeEntries.length === 0) && (
                 <View style={styles.previewContainer}>
                   <Text style={styles.sectionLabel}>
-                    {translateLogFieldLabel(t, item.previewLabel)}
+                    {getLocalizedLogFieldLabel(t, item.previewLabel)}
                   </Text>
                   <Text style={styles.previewTextExpanded}>
                     "{previewText}"
@@ -217,7 +211,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
                     {item.tags.map((tag: string, idx: number) => (
                       <View key={idx} style={styles.tag}>
                         <Text style={styles.tagText}>
-                          {tag.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                          {getLocalizedDistortion(commonT, tag)}
                         </Text>
                       </View>
                     ))}
@@ -248,7 +242,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
                   <View style={styles.reframeHeader}>
                     <Feather name="check-circle" size={13} color={SEMANTIC_COLORS.brand.onSoft} />
                     <Text style={styles.reframeLabel}>
-                      {translateLogFieldLabel(t, item.expandedLabel)}
+                      {getLocalizedLogFieldLabel(t, item.expandedLabel)}
                     </Text>
                   </View>
                   <Text style={styles.expandedText}>{item.expandedText}</Text>
@@ -261,7 +255,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
                 accessibilityRole="button"
                 accessibilityLabel={t("log.openFullDetails", {
                   title: item.title,
-                  date: format(new Date(item.date), "MMM d"),
+                  date: formatTimelineDate(new Date(item.date), locale),
                 })}
               >
                 <Text style={styles.viewDetailsText}>
@@ -275,7 +269,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
           <View style={styles.cardFooter}>
             {hasShift ? (
               <ShiftBadge
-                label={item.ratingLabel!}
+                label={getLocalizedRatingLabel(t, item.ratingLabel!)}
                 before={item.beforeRating!}
                 after={item.afterRating!}
                 invertScale={item.invertScale}
@@ -284,7 +278,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
               <View />
             )}
             <Text style={styles.timestamp}>
-              {format(new Date(item.date), "EEE, h:mm a")}
+              {formatTimelineTimestamp(new Date(item.date), locale)}
             </Text>
           </View>
         </AnimatedPressable>

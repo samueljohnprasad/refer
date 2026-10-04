@@ -19,6 +19,7 @@ import onboardingEn from '../../locales/en/onboarding.json';
 import journeysEn from '../../locales/en/journeys.json';
 import insightsEn from '../../locales/en/insights.json';
 import trackingEn from '../../locales/en/tracking.json';
+import timelineSamplesEn from '../../locales/en/timelineSamples.json';
 
 import commonFr from '../../locales/fr/common.json';
 import homeFr from '../../locales/fr/home.json';
@@ -34,6 +35,7 @@ import exercisesFrRendererCopy from '../../locales/fr/exerciseFlowRendererCopy.j
 import exercisesFrSharedCopy from '../../locales/fr/exerciseFlowSharedCopy.json';
 import insightsFr from '../../locales/fr/insights.json';
 import trackingFr from '../../locales/fr/tracking.json';
+import timelineSamplesFr from '../../locales/fr/timelineSamples.json';
 
 import commonEs from '../../locales/es/common.json';
 import homeEs from '../../locales/es/home.json';
@@ -49,6 +51,7 @@ import exercisesEsRendererCopy from '../../locales/es/exerciseFlowRendererCopy.j
 import exercisesEsSharedCopy from '../../locales/es/exerciseFlowSharedCopy.json';
 import insightsEs from '../../locales/es/insights.json';
 import trackingEs from '../../locales/es/tracking.json';
+import timelineSamplesEs from '../../locales/es/timelineSamples.json';
 
 import commonDe from '../../locales/de/common.json';
 import homeDe from '../../locales/de/home.json';
@@ -64,6 +67,7 @@ import exercisesDeRendererCopy from '../../locales/de/exerciseFlowRendererCopy.j
 import exercisesDeSharedCopy from '../../locales/de/exerciseFlowSharedCopy.json';
 import insightsDe from '../../locales/de/insights.json';
 import trackingDe from '../../locales/de/tracking.json';
+import timelineSamplesDe from '../../locales/de/timelineSamples.json';
 
 import commonAr from '../../locales/ar/common.json';
 import homeAr from '../../locales/ar/home.json';
@@ -79,6 +83,7 @@ import exercisesArRendererCopy from '../../locales/ar/exerciseFlowRendererCopy.j
 import exercisesArSharedCopy from '../../locales/ar/exerciseFlowSharedCopy.json';
 import insightsAr from '../../locales/ar/insights.json';
 import trackingAr from '../../locales/ar/tracking.json';
+import timelineSamplesAr from '../../locales/ar/timelineSamples.json';
 
 import commonPt from '../../locales/pt/common.json';
 import homePt from '../../locales/pt/home.json';
@@ -94,6 +99,7 @@ import exercisesPtRendererCopy from '../../locales/pt/exerciseFlowRendererCopy.j
 import exercisesPtSharedCopy from '../../locales/pt/exerciseFlowSharedCopy.json';
 import insightsPt from '../../locales/pt/insights.json';
 import trackingPt from '../../locales/pt/tracking.json';
+import timelineSamplesPt from '../../locales/pt/timelineSamples.json';
 
 import commonIt from '../../locales/it/common.json';
 import homeIt from '../../locales/it/home.json';
@@ -109,6 +115,7 @@ import exercisesItRendererCopy from '../../locales/it/exerciseFlowRendererCopy.j
 import exercisesItSharedCopy from '../../locales/it/exerciseFlowSharedCopy.json';
 import insightsIt from '../../locales/it/insights.json';
 import trackingIt from '../../locales/it/tracking.json';
+import timelineSamplesIt from '../../locales/it/timelineSamples.json';
 
 import commonZh from '../../locales/zh/common.json';
 import homeZh from '../../locales/zh/home.json';
@@ -124,6 +131,7 @@ import exercisesZhRendererCopy from '../../locales/zh/exerciseFlowRendererCopy.j
 import exercisesZhSharedCopy from '../../locales/zh/exerciseFlowSharedCopy.json';
 import insightsZh from '../../locales/zh/insights.json';
 import trackingZh from '../../locales/zh/tracking.json';
+import timelineSamplesZh from '../../locales/zh/timelineSamples.json';
 
 function composeExerciseNamespace<T extends { flow: { ui: object } }>(
   base: T,
@@ -214,7 +222,7 @@ export async function initI18n(): Promise<void> {
       lng,
       fallbackLng: 'en',
       supportedLngs: [...SUPPORTED_LANGUAGES],
-      ns: ['common', 'home', 'exercises', 'journal', 'habits', 'settings', 'onboarding', 'journeys', 'insights', 'tracking'],
+      ns: ['common', 'home', 'exercises', 'journal', 'habits', 'settings', 'onboarding', 'journeys', 'insights', 'tracking', 'timelineSamples'],
       defaultNS: 'common',
       compatibilityJSON: 'v4',
       resources: {
@@ -229,14 +237,15 @@ export async function initI18n(): Promise<void> {
           journeys: journeysEn,
           insights: insightsEn,
           tracking: trackingEn,
+          timelineSamples: timelineSamplesEn,
         },
-        fr: { common: commonFr, home: homeFr, settings: settingsFr, onboarding: onboardingFr, exercises: exercisesByLocale.fr, journal: journalFr, habits: habitsFr, journeys: journeysFr, insights: insightsFr, tracking: trackingFr },
-        es: { common: commonEs, home: homeEs, settings: settingsEs, onboarding: onboardingEs, exercises: exercisesByLocale.es, journal: journalEs, habits: habitsEs, journeys: journeysEs, insights: insightsEs, tracking: trackingEs },
-        de: { common: commonDe, home: homeDe, settings: settingsDe, onboarding: onboardingDe, exercises: exercisesByLocale.de, journal: journalDe, habits: habitsDe, journeys: journeysDe, insights: insightsDe, tracking: trackingDe },
-        ar: { common: commonAr, home: homeAr, settings: settingsAr, onboarding: onboardingAr, exercises: exercisesByLocale.ar, journal: journalAr, habits: habitsAr, journeys: journeysAr, insights: insightsAr, tracking: trackingAr },
-        pt: { common: commonPt, home: homePt, settings: settingsPt, onboarding: onboardingPt, exercises: exercisesByLocale.pt, journal: journalPt, habits: habitsPt, journeys: journeysPt, insights: insightsPt, tracking: trackingPt },
-        it: { common: commonIt, home: homeIt, settings: settingsIt, onboarding: onboardingIt, exercises: exercisesByLocale.it, journal: journalIt, habits: habitsIt, journeys: journeysIt, insights: insightsIt, tracking: trackingIt },
-        zh: { common: commonZh, home: homeZh, settings: settingsZh, onboarding: onboardingZh, exercises: exercisesByLocale.zh, journal: journalZh, habits: habitsZh, journeys: journeysZh, insights: insightsZh, tracking: trackingZh },
+        fr: { common: commonFr, home: homeFr, settings: settingsFr, onboarding: onboardingFr, exercises: exercisesByLocale.fr, journal: journalFr, habits: habitsFr, journeys: journeysFr, insights: insightsFr, tracking: trackingFr, timelineSamples: timelineSamplesFr },
+        es: { common: commonEs, home: homeEs, settings: settingsEs, onboarding: onboardingEs, exercises: exercisesByLocale.es, journal: journalEs, habits: habitsEs, journeys: journeysEs, insights: insightsEs, tracking: trackingEs, timelineSamples: timelineSamplesEs },
+        de: { common: commonDe, home: homeDe, settings: settingsDe, onboarding: onboardingDe, exercises: exercisesByLocale.de, journal: journalDe, habits: habitsDe, journeys: journeysDe, insights: insightsDe, tracking: trackingDe, timelineSamples: timelineSamplesDe },
+        ar: { common: commonAr, home: homeAr, settings: settingsAr, onboarding: onboardingAr, exercises: exercisesByLocale.ar, journal: journalAr, habits: habitsAr, journeys: journeysAr, insights: insightsAr, tracking: trackingAr, timelineSamples: timelineSamplesAr },
+        pt: { common: commonPt, home: homePt, settings: settingsPt, onboarding: onboardingPt, exercises: exercisesByLocale.pt, journal: journalPt, habits: habitsPt, journeys: journeysPt, insights: insightsPt, tracking: trackingPt, timelineSamples: timelineSamplesPt },
+        it: { common: commonIt, home: homeIt, settings: settingsIt, onboarding: onboardingIt, exercises: exercisesByLocale.it, journal: journalIt, habits: habitsIt, journeys: journeysIt, insights: insightsIt, tracking: trackingIt, timelineSamples: timelineSamplesIt },
+        zh: { common: commonZh, home: homeZh, settings: settingsZh, onboarding: onboardingZh, exercises: exercisesByLocale.zh, journal: journalZh, habits: habitsZh, journeys: journeysZh, insights: insightsZh, tracking: trackingZh, timelineSamples: timelineSamplesZh },
       },
       partialBundledLanguages: true,
       interpolation: {

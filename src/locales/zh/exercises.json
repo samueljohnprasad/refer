@@ -73,7 +73,8 @@
     "alternativeBeliefOutcome": "替代想法与结果",
     "gratitudeEntries": "感恩记录",
     "reframedPerspective": "重新看待后的视角",
-    "gratitudePrompt": "我感恩……"
+    "gratitudePrompt": "我感恩……",
+    "ratingLabels": { "distress": "困扰", "mood": "情绪", "emotion": "情绪", "calm": "平静", "presence": "觉察", "tension": "紧张", "anxiety": "焦虑", "focus": "专注" }
   },
   "milestone": "已记录 {{count}} 次正念练习！坚持下去，时间会带来变化。",
   "cbt": {

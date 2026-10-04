@@ -75,7 +75,7 @@ export const JumpBackInCard = memo(function JumpBackInCard({
         radius="lg"
         showDepth={true}
         onPress={handlePress}
-        style={{ width, height: 148 }}
+        style={{ width, height: 164 }}
         rimStyle={{ backgroundColor: "#D4D4D4" }}
         faceStyle={{
           height: "100%",
@@ -107,8 +107,7 @@ export const JumpBackInCard = memo(function JumpBackInCard({
           </Text>
         </View>
 
-        {/* Integrated Action Row (Card is whole touch target) */}
-        <View className="flex-row items-center justify-between pt-1">
+        <View className="gap-1.5 pt-1">
           <View className="flex-row items-center gap-1">
             <HugeiconsIcon icon={ZapIcon} size={13} color="#C89400" />
             <Text
@@ -119,7 +118,7 @@ export const JumpBackInCard = memo(function JumpBackInCard({
             </Text>
           </View>
 
-          <View className="h-7 px-2.5 rounded-full bg-sage-600 flex-row items-center gap-1">
+          <View className="h-7 w-full justify-center rounded-full bg-sage-600 flex-row items-center gap-1">
             <HugeiconsIcon icon={PlayIcon} size={11} color="#FFFFFF" />
             <Text
               style={{ fontFamily: APP_FONT_FAMILIES.bold }}

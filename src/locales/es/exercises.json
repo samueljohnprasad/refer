@@ -73,7 +73,8 @@
     "alternativeBeliefOutcome": "Creencia y resultado alternativos",
     "gratitudeEntries": "Agradecimientos",
     "reframedPerspective": "Perspectiva replanteada",
-    "gratitudePrompt": "Agradezco..."
+    "gratitudePrompt": "Agradezco...",
+    "ratingLabels": { "distress": "Malestar", "mood": "Ánimo", "emotion": "Emoción", "calm": "Calma", "presence": "Presencia", "tension": "Tensión", "anxiety": "Ansiedad", "focus": "Concentración" }
   },
   "milestone": "¡{{count}} ejercicios de atención plena registrados! La constancia da frutos con el tiempo.",
   "cbt": {

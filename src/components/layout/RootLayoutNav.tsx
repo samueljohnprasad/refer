@@ -38,6 +38,7 @@ import { useStreak } from "@/src/hooks/useStreak";
 import { useStreakSaverNotification } from "@/src/hooks/useStreakSaverNotification";
 import { useSystemBackgroundColor } from "@/src/utils/useSystemBackgroundColor";
 import { APP_NAVIGATION_FONTS } from "@/src/theme/typography";
+import { useUserIdLogger } from "@/src/hooks/useUserIdLogger";
 
 const queryClient = new QueryClient();
 const globalPressableHandlers = {
@@ -100,6 +101,11 @@ function SystemBackgroundIntegration() {
   return null;
 }
 
+function AuthStateLogger() {
+  useUserIdLogger();
+  return null;
+}
+
 export function RootLayoutNav() {
   const isDark = useColorScheme() === "dark";
   const navigationTheme = isDark
@@ -113,6 +119,7 @@ export function RootLayoutNav() {
           <GestureHandlerRootView style={StyleSheet.absoluteFill}>
             <HeroUINativeProvider>
               <AuthProvider>
+                <AuthStateLogger />
                 <NotificationIntegration />
                 <XPProvider>
                   <LevelProvider>

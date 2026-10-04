@@ -15,10 +15,12 @@ import { useHeaderHeight } from 'expo-router/react-navigation';
 import type { TimelineSection } from '@/src/components/ui/Timeline/types';
 import type { DailyTimelineItem, TimelineTabProps } from '../../model/timeline.types';
 import { MOCK_DAYS_TIMELINE_DATA } from './mockData';
+import { localizeMockTimeline } from './localizeMockTimeline';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
   const { t } = useTranslation('common');
+  const { t: tSamples } = useTranslation('timelineSamples');
   const headerHeight = useHeaderHeight();
   const { toast } = useToast();
   const { data, isLoading, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useDailyTimeline({ pageSize: 10 });
@@ -53,7 +55,9 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
   const displayData = data?.pages ? data.pages.flatMap(p => p.data) : [];
 
   const isTimelineEmpty = displayData.length === 0;
-  const actualDataToDisplay = isTimelineEmpty ? MOCK_DAYS_TIMELINE_DATA : displayData;
+  const actualDataToDisplay = isTimelineEmpty
+    ? localizeMockTimeline(MOCK_DAYS_TIMELINE_DATA, tSamples)
+    : displayData;
 
   const sections: TimelineSection<DailyTimelineItem>[] = useMemo(() => {
     return actualDataToDisplay.map((item: any) => {

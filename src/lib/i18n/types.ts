@@ -13,6 +13,7 @@ import type onboarding from '../../locales/en/onboarding.json';
 import type journeys from '../../locales/en/journeys.json';
 import type insights from '../../locales/en/insights.json';
 import type tracking from '../../locales/en/tracking.json';
+import type timelineSamples from '../../locales/en/timelineSamples.json';
 
 type ExerciseFlowCopy = typeof exerciseFlowCourseCopy &
   typeof exerciseFlowModuleCopy &
@@ -39,6 +40,7 @@ declare module 'i18next' {
       journeys: typeof journeys;
       insights: typeof insights;
       tracking: typeof tracking;
+      timelineSamples: typeof timelineSamples;
     };
   }
 }

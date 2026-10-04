@@ -73,7 +73,8 @@
     "alternativeBeliefOutcome": "Crença e resultado alternativos",
     "gratitudeEntries": "Registros de gratidão",
     "reframedPerspective": "Perspectiva reformulada",
-    "gratitudePrompt": "Sou grato por..."
+    "gratitudePrompt": "Sou grato por...",
+    "ratingLabels": { "distress": "Desconforto", "mood": "Humor", "emotion": "Emoção", "calm": "Calma", "presence": "Presença", "tension": "Tensão", "anxiety": "Ansiedade", "focus": "Foco" }
   },
   "milestone": "{{count}} exercícios de atenção plena registrados! A constância faz diferença com o tempo.",
   "cbt": {
