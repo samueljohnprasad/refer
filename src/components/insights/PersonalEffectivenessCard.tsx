@@ -24,6 +24,7 @@ function EffectivenessRow({
   rank: number;
 }) {
   const { t } = useTranslation("common");
+  const { t: tInsights } = useTranslation("insights");
   const router = useRouter();
 
   return (
@@ -35,7 +36,10 @@ function EffectivenessRow({
         })
       }
       accessibilityRole="button"
-      accessibilityLabel={`${score.exerciseLabel}: average drop ${score.avgDrop}`}
+      accessibilityLabel={tInsights("personalEffectiveness.accessibilityLabel", {
+        exerciseLabel: score.exerciseLabel,
+        avgDrop: score.avgDrop,
+      })}
       className="flex-row items-center py-3 active:opacity-70"
     >
       <Text className="text-lg w-8">{MEDALS[rank] ?? `${rank + 1}.`}</Text>

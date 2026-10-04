@@ -5,6 +5,7 @@ import { ReflectionContextBlock, ReflectionDisclosure, ReflectionExampleRow, Ref
 import { ExerciseTextComposer } from "@/src/components/exercise/ExerciseTextComposer";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { useTranslation } from "react-i18next";
 import { ExerciseCopyText } from "@/src/components/exercise/ExerciseCopyText";
 import type { ThoughtReframingResponse, StepProps } from "@/src/types/exerciseFlow";
 import { CBT_COMPOSER_MIN_HEIGHT, StepShell, StepTitle, LoadingRow, AiUnavailableNote } from "./customStepShared";
@@ -25,6 +26,7 @@ export function TREvidenceAgainstStep({
   aiError,
 }: StepProps<ThoughtReframingResponse>) {
   const translateCopy = useExerciseCopy();
+  const { t } = useTranslation("exercises");
   const items = response.evidenceAgainst ?? [];
   const forItems = response.evidenceFor ?? [];
   const showBiasNote = items.length < forItems.length && items.length > 0;
@@ -89,8 +91,8 @@ export function TREvidenceAgainstStep({
       onClose={onClose}
     >
       <StepTitle
-        title="Evidence Against"
-        subtitle="What facts do not fit the prediction?"
+        title={t("flow.ui.thoughtReframing.evidenceAgainstTitle")}
+        subtitle={t("flow.ui.thoughtReframing.evidenceAgainstSubtitle")}
       />
 
       <ReflectionContextBlock
@@ -117,7 +119,7 @@ export function TREvidenceAgainstStep({
           expanded={showEvidenceSuggestions}
           onToggle={() => setShowEvidenceSuggestions((current) => !current)}
         >
-          {isAiLoading ? <LoadingRow message="Finding starting points..." /> : null}
+          {isAiLoading ? <LoadingRow message={t("flow.ui.thoughtReframing.findingStartingPoints")} /> : null}
           <AiUnavailableNote visible={!!aiError && !isAiLoading} />
 
           <ReflectionExampleRow

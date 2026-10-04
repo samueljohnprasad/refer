@@ -1,6 +1,6 @@
 import React, { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { format } from 'date-fns';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import {
   Delete01Icon,
@@ -31,9 +31,6 @@ const getHealthScoreColors = (score: number): { bg: string; text: string } => {
   return { bg: 'bg-red-50', text: 'text-red-500' };
 };
 
-const capitalize = (value: string): string =>
-  value.charAt(0).toUpperCase() + value.slice(1);
-
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface MealEntryCardProps {
@@ -53,6 +50,7 @@ export const MealEntryCard: React.FC<MealEntryCardProps> = memo(function MealEnt
   onShowMicronutrients,
   filterTrackedMicronutrients,
 }) {
+  const { t, i18n } = useTranslation("tracking");
   const colors = MEAL_TYPE_COLORS[entry.meal_type] ?? MEAL_TYPE_COLORS.snack;
   const healthScore = entry.health_score ?? 0;
   const healthScoreReasoning = entry.health_score_reasoning ?? '';
@@ -62,8 +60,9 @@ export const MealEntryCard: React.FC<MealEntryCardProps> = memo(function MealEnt
     const allMicronutrients = entry.total_micronutrients as MicronutrientEntry[];
     const tracked = filterTrackedMicronutrients(allMicronutrients);
     const micronutrientsToShow = tracked.length > 0 ? tracked : allMicronutrients;
-    onShowMicronutrients(`${capitalize(entry.meal_type)} Nutrients`, micronutrientsToShow);
-  }, [entry, filterTrackedMicronutrients, onShowMicronutrients]);
+    const mealType = t(`calorie.mealTypes.${entry.meal_type}`, { defaultValue: entry.meal_type });
+    onShowMicronutrients(t("calorie.mealNutrients", { mealType }), micronutrientsToShow);
+  }, [entry, filterTrackedMicronutrients, onShowMicronutrients, t]);
 
   const hasTotalMicronutrients =
     !!entry.total_micronutrients &&
@@ -78,7 +77,7 @@ export const MealEntryCard: React.FC<MealEntryCardProps> = memo(function MealEnt
         <HStack space="sm" className="items-center">
           <View className={`px-3 py-1 rounded-full ${colors.bg}`}>
             <Text className={`text-sm font-medium capitalize ${colors.text}`}>
-              {entry.meal_type}
+              {t(`calorie.mealTypes.${entry.meal_type}`, { defaultValue: entry.meal_type })}
             </Text>
           </View>
 
@@ -89,7 +88,7 @@ export const MealEntryCard: React.FC<MealEntryCardProps> = memo(function MealEnt
               activeOpacity={0.7}
             >
               <Text className={`text-xs font-medium ${healthColors.text}`}>
-                {healthScore}
+                {new Intl.NumberFormat(i18n.language).format(healthScore)}
               </Text>
             </TouchableOpacity>
           )}
@@ -97,9 +96,16 @@ export const MealEntryCard: React.FC<MealEntryCardProps> = memo(function MealEnt
 
         <HStack className="items-center" space="sm">
           <Text className="text-gray-500 text-sm">
-            {format(new Date(entry.created_at), 'h:mm a')}
+            {new Intl.DateTimeFormat(i18n.language, {
+              hour: "numeric",
+              minute: "2-digit",
+            }).format(new Date(entry.created_at))}
           </Text>
-          <TouchableOpacity onPress={() => onDelete(entry.id)}>
+          <TouchableOpacity
+            onPress={() => onDelete(entry.id)}
+            accessibilityRole="button"
+            accessibilityLabel={t("accessibility.deleteMeal")}
+          >
             <HugeiconsIcon icon={Delete01Icon} size={18} color="#9CA3AF" />
           </TouchableOpacity>
         </HStack>
@@ -131,14 +137,19 @@ export const MealEntryCard: React.FC<MealEntryCardProps> = memo(function MealEnt
 
       {/* Footer Row */}
       <HStack className="justify-between items-center mt-3 pt-3 border-t border-gray-50">
-        <Text className="text-gray-500 font-medium text-sm">Total</Text>
+        <Text className="text-gray-500 font-medium text-sm">{t("calorie.total")}</Text>
         <HStack className="items-center" space="md">
           <Text className="text-gray-900 font-semibold">
-            {entry.total_calories} cal
+            {new Intl.NumberFormat(i18n.language).format(entry.total_calories)} {t("calorie.calorieUnit")}
           </Text>
 
           {hasTotalMicronutrients && (
-            <TouchableOpacity onPress={handleShowEntryMicronutrients} activeOpacity={0.7}>
+            <TouchableOpacity
+              onPress={handleShowEntryMicronutrients}
+              activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={t("accessibility.showNutrientDetails")}
+            >
               <HugeiconsIcon icon={InformationCircleIcon} size={16} color="#D1D5DB" />
             </TouchableOpacity>
           )}

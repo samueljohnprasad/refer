@@ -186,7 +186,235 @@
       "scoreShiftLighter": "Lighter by {{count}}",
       "scoreBefore": "before /10",
       "scoreAfter": "after /10",
-      "applyIt": "Apply it → {{label}}"
+      "applyIt": "Apply it → {{label}}",
+        "engine": {
+          "exampleStarters": "Example starters",
+          "minutesShort": "min",
+          "timer": {
+            "start": "Start Timer",
+            "pause": "Pause Timer",
+            "nextArea": "Next Area",
+            "finish": "Finish",
+            "fallbackSubtitle": "Tense and release each muscle group using the timer.",
+            "tensing": "Tensing Muscles...",
+            "released": "Released!",
+            "seconds": "Seconds",
+            "runAgain": "Run Timer Again",
+            "skipAndRelease": "Skip Timer & Mark Released",
+            "areasReleased": "{{completed}} of {{total}} areas released"
+          }
+        },
+        "abc": {
+          "event": {
+            "title": "What happened?",
+            "subtitle": "Start with the moment, not what it meant.",
+            "tip": "Write what a camera could have seen or heard.",
+            "placeholder": "Describe what happened..."
+          },
+          "belief": {
+            "title": "Automatic thought",
+            "subtitle": "Write the sentence your mind added.",
+            "tip": "Do not make it fair yet. Just catch it.",
+            "placeholder": "The thought was..."
+          },
+          "behavior": {
+            "title": "What did you do next?",
+            "subtitle": "Name the reaction that followed.",
+            "tip": "What did you do, avoid, say, or repeat?",
+            "placeholder": "I responded by..."
+          },
+          "alternativeBelief": {
+            "title": "More balanced thought",
+            "subtitle": "Write a fairer version that still feels believable.",
+            "placeholder": "A fairer thought could be..."
+          },
+          "newConsequence": {
+            "title": "What might change now?",
+            "subtitle": "If you held that thought, what might feel or go differently?",
+            "placeholder": "With that thought, I might..."
+          },
+          "automaticThought": "Automatic thought",
+          "suggestions": {
+            "event": [
+              "My manager gave me difficult feedback.",
+              "I sent a message and did not get a reply.",
+              "My plans changed at the last minute."
+            ],
+            "belief": [
+              "I always mess things up.",
+              "They must be upset with me.",
+              "I cannot handle this."
+            ],
+            "behavior": [
+              "I shut down and stopped replying.",
+              "I avoided dealing with it.",
+              "I kept replaying it in my mind."
+            ],
+            "balancedThought": [
+              "This is hard, but one moment does not define me.",
+              "I do not know the full story yet.",
+              "I can take this one useful step at a time."
+            ],
+            "newConsequence": [
+              "I might feel calmer and respond more clearly.",
+              "I might pause instead of spiraling.",
+              "I might take one useful next step."
+            ]
+          }
+        },
+        "gratitude": {
+          "summaryTitle": "Gratitude noted",
+          "summarySubtitle": "Here is what you named and how your mood changed."
+        },
+        "thoughtReframing": {
+          "evidenceAgainstTitle": "Evidence Against",
+          "evidenceAgainstSubtitle": "What facts do not fit the prediction?",
+          "findingStartingPoints": "Finding starting points..."
+        },
+        "categoryEngine": {
+          "checkpoint": {
+            "workedSupport": "Worked Support",
+            "next": "Next",
+            "orderRetry": "Some items are in the wrong position. Try again!",
+            "checkOrder": "Check Order",
+            "revealAnswer": "Reveal Answer",
+            "needPractice": "Need Practice",
+            "gotIt": "Got It"
+          },
+          "socratic": {
+            "you": "YOU",
+            "person": "PERSON",
+            "guidance": "GUIDANCE",
+            "whatWeKnowSoFar": "What we know so far",
+            "prediction": "THE PREDICTION",
+            "whatWeKnow": "WHAT WE KNOW",
+            "balancedThought": "BALANCED THOUGHT",
+            "skill": "THE SKILL",
+            "showHint": "Show hint",
+            "hideHint": "Hide hint",
+            "hint": "Hint",
+          "hideHintAction": "Hide hint",
+          "youAsked": "You asked: {{text}}",
+          "personSays": "Person says: {{text}}",
+          "guidanceLabel": "Guidance: {{text}}",
+          "predictionLabel": "Prediction: {{text}}",
+          "evidenceLabel": "What we know: {{text}}",
+          "skillLabel": "The skill: {{text}}"
+          },
+          "explorable": {
+            "lever": "Lever",
+            "optionalSandbox": "Optional sandbox",
+            "reset": "Reset",
+            "complete": "You tested every lever.",
+            "exploreFreely": "Explore freely"
+          },
+          "concept": {
+            "myth": "THE MYTH",
+            "reality": "THE REALITY"
+          },
+          "surge": {
+            "elapsedSincePeak": "Elapsed time since peak",
+            "peak": "PEAK",
+            "tenMinutes": "+10 MIN",
+            "watchedWaveFall": "YOU WATCHED THE WAVE FALL",
+            "rememberThis": "REMEMBER THIS",
+            "veryHigh": "VERY HIGH",
+            "fading": "FADING",
+            "lower": "LOWER",
+            "muchLower": "MUCH LOWER",
+            "stillStrong": "The surge is still strong.",
+            "comingDown": "The surge is already coming down.",
+            "beginningToSettle": "Your body is beginning to settle.",
+            "passed": "Much of the surge has passed."
+          },
+          "lever": {
+            "lower": "LOWER",
+            "higher": "HIGHER",
+            "accessibilityShift": "{{label}}. Shifts alertness {{direction}}.",
+            "shiftInAlertness": "Shift in alertness",
+            "tryAccessibility": "{{label}}. Not explored. Try this lever.",
+            "tryThis": "Try this lever"
+          },
+          "workedRewrite": {
+            "move": "Move",
+            "notebook": "Worked rewrite notebook",
+            "originalThought": "Original thought",
+            "workingRewrite": "Working rewrite",
+            "moveApplied": "Move applied",
+            "balanced": "Balanced",
+            "lookAgain": "Look again"
+          },
+          "reframeBuilder": {
+            "hotThought": "Hot thought",
+            "fairerThought": "Fairer thought",
+            "slot": "Slot",
+            "ready": "Your fairer thought is ready to compare.",
+            "nextRemaining": "Next: {{labels}} ({{count}} left)"
+          },
+          "guidedDiscovery": {
+            "clue": "Clue",
+            "pattern": "The pattern"
+          },
+          "whatIf": {
+            "predicted": "You predicted",
+          "actualOutcome": "Actual outcome"
+          },
+          "lensReplay": {
+            "whatHappened": "WHAT HAPPENED",
+            "mindAdded": "WHAT THE MIND ADDED",
+            "idea": "THE IDEA",
+            "revealAccessibility": "{{text}}. Reveal.",
+            "progress": "{{explored}} of {{total}} highlights explored"
+          }
+        },
+        "celebration": {
+            "title": "Lesson complete!",
+            "perfectTitle": "Perfect lesson!",
+            "continue": "Continue",
+            "sharePerfect": "Perfect lesson",
+            "shareComplete": "Lesson complete",
+            "shareTitle": "Share your win",
+            "shareDialogTitle": "Share your win",
+            "chestDescription": "Perfect week chest",
+            "goalAchieved": "Daily goal achieved!",
+            "goalReached": "Daily goal reached. Beautiful.",
+            "goalAlmost": "Almost there!",
+            "xpToGo": "{{count}} XP to go",
+            "mute": "Mute celebration sounds",
+            "unmute": "Unmute celebration sounds",
+            "streakMessage": "Seven days straight. Look at you.",
+            "perfectBadge": "PERFECT LESSON",
+            "milestoneDays": "{{count}}-DAY STREAK",
+            "milestoneMessage3": "Three days in a row — a habit is forming.",
+            "milestoneMessage7": "A full week of showing up. Your mind thanks you.",
+            "milestoneMessage15": "Fifteen days strong. This is who you are now.",
+            "milestoneMessage30": "Thirty days. A whole month of choosing yourself.",
+            "xp": "XP",
+            "streak": "STREAK",
+            "thisWeek": "THIS WEEK",
+            "dailyGoal": "DAILY GOAL",
+            "day": "DAY",
+            "days": "DAYS",
+            "chestOpened": "Perfect week chest opened. Plus {{xp}} XP",
+            "chestOpen": "Perfect week. Tap to open your chest",
+            "perfectWeek": "PERFECT WEEK",
+            "sevenForSeven": "Seven for seven!",
+            "chestOpenedHint": "Every dot lit this week. Proud of you.",
+            "chestOpenHint": "Tap to open your bonus chest",
+            "preparing": "Preparing…",
+            "encouragements": [
+              "You showed up for yourself today.",
+              "Small steps, real change.",
+              "That's one more win for your mind.",
+              "Progress feels good, doesn't it?",
+              "You're building a calmer you."
+            ],
+            "perfectEncouragements": [
+              "Not a single slip. That's mastery.",
+              "Flawless — you really know this one.",
+              "Every answer landed. Take a bow."
+            ]
+          }
     }
   }
 }

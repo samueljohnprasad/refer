@@ -38,7 +38,7 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
   );
 
   const question = t(`motivation_followup.${motivation}.question`);
-  const questionWithPunctuation = /[?؟？]$/.test(question) ? question : `${question}${t("quiz_stress_level.question_mark", { defaultValue: "?" })}`;
+  const questionWithPunctuation = /[?؟？]$/.test(question) ? question : `${question}${t("quiz_stress_level.question_mark")}`;
 
   return (
     <ScrollView
@@ -54,7 +54,7 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
         entering={FadeIn.duration(160).delay(80)}
         className="text-[11px] font-bold uppercase tracking-wider text-sage-600"
       >
-        {t("quiz_stress_level.step_label", { defaultValue: "Set the pace" })}
+        {t("quiz_stress_level.step_label")}
       </Animated.Text>
 
       <Animated.View entering={FadeIn.duration(180).delay(140)} className="mt-2">

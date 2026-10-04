@@ -1,5 +1,6 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { forwardRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import ShortBottomModal from '@/src/components/ShortBottomModal';
@@ -29,6 +30,7 @@ interface MicronutrientSheetProps {
 // ─── Sub-component ───────────────────────────────────────────────────────────
 
 const MicronutrientRow: React.FC<MicronutrientRowProps> = ({ nutrient, index }) => {
+  const { t, i18n } = useTranslation("tracking");
   const config = getMicronutrientById(nutrient.name);
 
   // Guard: skip unknown or zero-value nutrients
@@ -43,9 +45,11 @@ const MicronutrientRow: React.FC<MicronutrientRowProps> = ({ nutrient, index }) 
   return (
     <View key={`${nutrient.name}-${index}`} className="mb-4 pb-4 border-b border-gray-100">
       <View className="flex-row justify-between items-center mb-2">
-        <Text className="text-gray-900 font-medium">{config.name}</Text>
+        <Text className="text-gray-900 font-medium">
+          {t(`nutrientItems.${config.id}.name`, { defaultValue: config.name })}
+        </Text>
         <Text className="text-gray-600">
-          {nutrient.amount.toFixed(1)} {config.unit}
+          {new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 1 }).format(nutrient.amount)} {config.unit}
         </Text>
       </View>
 
@@ -56,11 +60,13 @@ const MicronutrientRow: React.FC<MicronutrientRowProps> = ({ nutrient, index }) 
             style={{ width: `${percentage}%` }}
           />
         </View>
-        <Text className="text-xs text-gray-500 w-12 text-right">{percentage}%</Text>
+        <Text className="text-xs text-gray-500 w-12 text-right">
+          {new Intl.NumberFormat(i18n.language).format(percentage)}%
+        </Text>
       </View>
 
       <Text className="text-xs text-gray-400 mt-1">
-        Daily Value: {config.dailyValue} {config.unit}
+        {t("micronutrients.dailyValue")}: {new Intl.NumberFormat(i18n.language).format(config.dailyValue)} {config.unit}
       </Text>
     </View>
   );
@@ -70,6 +76,7 @@ const MicronutrientRow: React.FC<MicronutrientRowProps> = ({ nutrient, index }) 
 
 export const MicronutrientSheet = forwardRef<BottomSheetModal, MicronutrientSheetProps>(
   ({ title, micronutrients }, ref) => {
+    const { t } = useTranslation("tracking");
     const hasData = micronutrients.length > 0;
 
     return (
@@ -88,7 +95,7 @@ export const MicronutrientSheet = forwardRef<BottomSheetModal, MicronutrientShee
               marginBottom: 12,
             }}
           >
-            {title ?? 'Micronutrients'}
+            {title ?? t('micronutrients.title')}
           </Text>
         </View>
 
@@ -103,7 +110,7 @@ export const MicronutrientSheet = forwardRef<BottomSheetModal, MicronutrientShee
           </BottomSheetScrollView>
         ) : (
           <View className="py-8 items-center">
-            <Text className="text-gray-400 text-center">No micronutrient data available</Text>
+            <Text className="text-gray-400 text-center">{t('micronutrients.noData')}</Text>
           </View>
         )}
       </ShortBottomModal>

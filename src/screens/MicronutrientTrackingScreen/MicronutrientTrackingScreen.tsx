@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, ScrollView } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -38,6 +39,7 @@ const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
   deselectAll,
   headerHeight,
 }) => {
+  const { t, i18n } = useTranslation("tracking");
   const vitamins: MicronutrientConfig[] = getMicronutrientsByCategory("vitamin");
   const minerals: MicronutrientConfig[] = getMicronutrientsByCategory("mineral");
 
@@ -71,7 +73,7 @@ const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
                 variant="body-bold"
                 color={isTracked ? "ink" : "soft"}
               >
-                {nutrient.name}
+                {t(`nutrientItems.${nutrient.id}.name`, { defaultValue: nutrient.name })}
               </Text>
               <View className="ml-2 px-2.5 py-0.5 rounded-full happy-brand-status-chip">
                 <Text
@@ -82,7 +84,9 @@ const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
                       : "text-amber-600"
                   }
                 >
-                  {nutrient.category}
+                  {t(`micronutrients.categories.${nutrient.category}`, {
+                    defaultValue: nutrient.category,
+                  })}
                 </Text>
               </View>
             </View>
@@ -91,10 +95,10 @@ const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
               color="soft"
               className="text-[15px] leading-5 mb-1"
             >
-              {nutrient.description}
+              {t(`nutrientItems.${nutrient.id}.description`, { defaultValue: nutrient.description })}
             </Text>
             <Text variant="caption-muted">
-              Daily Target: {nutrient.dailyValue} {nutrient.unit}
+              {t("micronutrients.dailyTarget")}: {new Intl.NumberFormat(i18n.language).format(nutrient.dailyValue)} {nutrient.unit}
             </Text>
           </View>
 
@@ -131,14 +135,14 @@ const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
         <FadeInItem index={0}>
           <View className="flex-row gap-3 mb-10">
             <Button
-              label="Select All"
+              label={t("micronutrients.selectAll")}
               variant="primary"
               size="lg"
               onPress={selectAll}
               className="flex-1"
             />
             <Button
-              label="Clear All"
+              label={t("micronutrients.clearAll")}
               variant="secondary"
               size="lg"
               onPress={deselectAll}
@@ -161,12 +165,11 @@ const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
                 <HugeiconsIcon icon={Idea01Icon} size={18} color="#44633F" />
               </View>
               <Text variant="body-bold" color="sage">
-                How it works
+                {t("micronutrients.howItWorks")}
               </Text>
             </View>
             <Text variant="body" color="soft" className="text-[15px] leading-6">
-              Select nutrients to track. AI will analyze your meals and show how
-              much of each you're consuming in your daily summary.
+              {t("micronutrients.explanation")}
             </Text>
           </Card>
         </FadeInItem>
@@ -175,7 +178,7 @@ const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
         <View className="mb-12">
           <FadeInItem index={2}>
             <SectionHeader
-              title="Vitamins"
+              title={t("micronutrients.vitamins")}
               icon={WellnessIcon}
               count={`${trackedVitaminsCount} / ${vitamins.length}`}
               iconBgClass="bg-sage-50"
@@ -192,7 +195,7 @@ const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
         <View className="mb-12 pt-8 border-t border-brand-border/40">
           <FadeInItem index={3 + vitamins.length}>
             <SectionHeader
-              title="Minerals"
+              title={t("micronutrients.minerals")}
               icon={SparklesIcon}
               count={`${trackedMineralsCount} / ${minerals.length}`}
               iconBgClass="bg-otter-blue/10"

@@ -1,21 +1,21 @@
 import React from "react";
 import { MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
 import type { ABCAnalysisResponse, StepProps } from "@/src/types/exerciseFlow";
-import { NEW_CONSEQUENCE_SUGGESTIONS, SHARED_TEXT_STEP_PROPS } from "./customStepShared";
+import { useABCCopy } from "./customStepShared";
 
 export function ABCNewConsequenceStep(
   stepProps: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
+  const copy = useABCCopy();
   return (
     <MultiTextInputStep maxItems={1} 
       {...stepProps}
-      {...SHARED_TEXT_STEP_PROPS}
-      title="What might change now?"
-      subtitle="If you held that thought, what might feel or go differently?"
+      {...copy.sharedProps}
+      title={copy.t("flow.ui.abc.newConsequence.title")}
+      subtitle={copy.t("flow.ui.abc.newConsequence.subtitle")}
       fieldKey="newConsequence"
-      placeholder="With that thought, I might..."
-      suggestions={NEW_CONSEQUENCE_SUGGESTIONS}
+      placeholder={copy.t("flow.ui.abc.newConsequence.placeholder")}
+      suggestions={copy.newConsequenceSuggestions}
     />
   );
 }
-

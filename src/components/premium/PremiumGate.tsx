@@ -4,6 +4,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { useRevenueCat } from '@/src/context/RevenueCatProvider';
 import PremiumBadge from './PremiumBadge';
+import { useTranslation } from 'react-i18next';
 
 interface PremiumGateProps {
     children: React.ReactNode;
@@ -16,11 +17,12 @@ interface PremiumGateProps {
 const PremiumGate: React.FC<PremiumGateProps> = ({
     children,
     feature,
-    title = 'Premium Feature',
-    description = 'Upgrade to unlock this feature and get the most out of your journey.',
+    title,
+    description,
     onUpgradePress,
 }) => {
     const { hasPro, presentPaywall } = useRevenueCat();
+    const { t } = useTranslation('settings');
 
     if (hasPro) {
         return <>{children}</>;
@@ -45,21 +47,21 @@ const PremiumGate: React.FC<PremiumGateProps> = ({
             </View>
 
             <Text className="text-lg font-bold text-gray-800 text-center mb-2">
-                {title}
+                {title ?? t('premiumUi.premiumFeature')}
             </Text>
 
             <Text className="text-sm text-gray-500 font-medium text-center leading-5 mb-5 px-4">
-                {description}
+                {description ?? t('premiumUi.gateDescription')}
             </Text>
 
             <TouchableOpacity
                 onPress={handleUpgrade}
                 className="bg-purple-600 rounded-2xl py-3.5 px-8"
                 activeOpacity={0.8}
-                accessibilityLabel={`Upgrade to unlock ${feature}`}
+                accessibilityLabel={t('premiumUi.unlockAccessibility', { feature })}
                 accessibilityRole="button"
             >
-                <Text className="text-white text-sm font-bold">Unlock with Premium</Text>
+                <Text className="text-white text-sm font-bold">{t('premiumUi.unlockWithPremium')}</Text>
             </TouchableOpacity>
         </Animated.View>
     );

@@ -1,0 +1,125 @@
+{
+  "calorie": {
+    "title": "Suivi des calories",
+    "analyzingFood": "Analyse de votre nourriture...",
+    "identifyingNutrition": "L'IA identifie les informations nutritionnelles",
+    "analysisFailed": "Échec de l'analyse",
+    "tryAgain": "Réessayez",
+    "foodAdded": "Nourriture ajoutée avec succès !",
+    "undo": "Annuler",
+    "done": "Terminé",
+    "logged_one": "{{countLabel}} article • {{caloriesLabel}} calories enregistrées pour votre objectif quotidien.",
+    "logged_other": "{{countLabel}} articles • {{caloriesLabel}} calories enregistrées par rapport à votre objectif quotidien.",
+    "emptyTitle": "Prêt à enregistrer ?",
+    "emptyDescription": "Prenez une photo de votre repas pour suivre instantanément les calories et les macros.",
+    "takePhoto": "Prendre une photo",
+    "uploadPhoto": "Télécharger une photo",
+    "todayMeals": "Repas d'aujourd' hui",
+    "camera": "Appareil photo",
+    "upload": "Télécharger",
+    "total": "Total",
+    "calorieUnit": "cal",
+    "macros": {
+      "proteinShort": "P",
+      "carbsShort": "C",
+      "fatShort": "F"
+    },
+    "mealNutrients": "{{mealType}} nutriments",
+    "mealTypes": {
+      "breakfast": "Petit déjeuner",
+      "lunch": "Déjeuner",
+      "dinner": "Dîner",
+      "snack": "En-cas"
+    }
+  },
+  "permissions": {
+    "required": "Autorisation requise",
+    "camera": "L'autorisation de l'appareil photo est nécessaire pour prendre des photos de votre nourriture.",
+    "photoLibrary": "L'autorisation de la photothèque est nécessaire pour sélectionner des photos."
+  },
+  "deleteConfirmation": {
+    "title": "Supprimer l'entrée",
+    "message": "Êtes-vous sûr de vouloir supprimer ce repas ?",
+    "cancel": "Annuler",
+    "delete": "Supprimer"
+  },
+  "accessibility": {
+    "deleteMeal": "Supprimer repas",
+    "showNutrientDetails": "Afficher les détails nutritionnels",
+    "back": "Retour",
+    "close": "Fermer"
+  },
+  "micronutrients": {
+    "title": "Micronutriments",
+    "tracked": "{{countLabel}} sur {{totalLabel}} suivis",
+    "selectAll": "Tout sélectionner",
+    "clearAll": "Tout effacer",
+    "howItWorks": "Comment ça marche",
+    "explanation": "Sélectionnez les nutriments à suivre. L'IA analysera vos repas et montrera quelle quantité de chacun vous consommez dans votre récapitulatif quotidien.",
+    "vitamins": "Vitamines",
+    "minerals": "Minéraux",
+    "dailyTarget": "Objectif quotidien",
+    "dailyValue": "Valeur quotidienne",
+    "noData": "Aucune donnée sur les micronutriments disponible",
+    "categories": {
+      "vitamin": "vitamin",
+      "mineral": "mineral"
+    }
+  },
+  "healthScore": {
+    "title": "Analyse du score de santé",
+    "outOf100": "sur 100",
+    "why": "Pourquoi ce score ?",
+    "gotIt": "J'ai compris !"
+  },
+  "nutrientItems": {
+    "vitaminD2": {
+      "name": "Vitamine D2",
+      "description": "Soutient la santé des os et la fonction immunitaire"
+    },
+    "vitaminD3": {
+      "name": "Vitamine D3",
+      "description": "Essentiel pour l'absorption du calcium"
+    },
+    "vitaminC": {
+      "name": "Vitamine C",
+      "description": "Antioxydant, soutient le système immunitaire"
+    },
+    "vitaminB12": {
+      "name": "Vitamine B12",
+      "description": "Production d'énergie et fonction cérébrale"
+    },
+    "vitaminA": {
+      "name": "Vitamine A",
+      "description": "Santé visuelle et soutien immunitaire"
+    },
+    "vitaminE": {
+      "name": "Vitamine E",
+      "description": "Cellules protectrices antioxydantes"
+    },
+    "vitaminK": {
+      "name": "Vitamine K",
+      "description": "Caillot sanguin et santé osseuse"
+    },
+    "zinc": {
+      "name": "Zinc",
+      "description": "Fonction immunitaire et cicatrisation"
+    },
+    "potassium": {
+      "name": "Potassium",
+      "description": "Fonction cardiaque et musculaire"
+    },
+    "iron": {
+      "name": "Fer",
+      "description": "Transport d'oxygène dans le sang"
+    },
+    "calcium": {
+      "name": "Calcium",
+      "description": "Résistance des os et des dents"
+    },
+    "magnesium": {
+      "name": "Magnésium",
+      "description": "Fonction musculaire et nerveuse"
+    }
+  }
+}

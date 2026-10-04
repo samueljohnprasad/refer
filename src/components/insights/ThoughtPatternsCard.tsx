@@ -6,7 +6,7 @@ import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useThoughtPatterns } from "@/src/hooks/insights/useThoughtPatterns";
 
 export function ThoughtPatternsCard() {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation("insights");
   const { hasPro, presentPaywall } = useRevenueCat();
   const { data, isLoading } = useThoughtPatterns();
 
@@ -17,7 +17,7 @@ export function ThoughtPatternsCard() {
   if (isLoading) {
     return (
       <View className="happy-brand-card rounded-[24px] p-5" style={{ backgroundColor: "#FFFFFF" }}>
-        <Text className="happy-brand-eyebrow">{t("insights.ui.analyzingPatterns")}</Text>
+        <Text className="happy-brand-eyebrow">{t("thoughtPatterns.analyzing")}</Text>
       </View>
     );
   }
@@ -27,7 +27,7 @@ export function ThoughtPatternsCard() {
   return (
     <View className="happy-brand-card rounded-[24px] p-5" style={{ backgroundColor: "#FFFFFF" }}>
       <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3">
-        {t("insights.ui.yourThoughtPatterns")}
+        {t("thoughtPatterns.title")}
       </Text>
       <View className="flex-row flex-wrap gap-2 mb-3 mt-1">
         {data.themes.map((t) => (
@@ -55,6 +55,7 @@ export function ThoughtPatternsCard() {
 }
 
 function LockedCard({ onUnlock }: { onUnlock: () => void }) {
+  const { t } = useTranslation("insights");
   return (
     <Pressable
       onPress={onUnlock}
@@ -67,11 +68,11 @@ function LockedCard({ onUnlock }: { onUnlock: () => void }) {
       <View className="flex-row items-center gap-2 mb-1">
         <Text className="text-[14px]">🔒</Text>
         <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-0">
-          {t("insights.ui.yourThoughtPatterns")}
+          {t("thoughtPatterns.title")}
         </Text>
       </View>
       <Text className="happy-font-body text-[12px] text-ink-muted">
-        {t("insights.ui.unlockThemes")}
+        {t("thoughtPatterns.lockedDescription")}
       </Text>
     </Pressable>
   );

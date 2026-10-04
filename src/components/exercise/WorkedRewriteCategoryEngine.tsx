@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
@@ -11,6 +12,7 @@ import { createWorkedRewriteResponse, getWorkedRewriteOption, isWorkedRewriteRea
 import { workedRewriteStyles as styles } from "./workedRewriteStyles";
 
 export function WorkedRewriteCategoryEngine({ exercise, savedResponse, locked = false, onInteraction }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = readWorkedRewriteContent(exercise.content);
   const saved = readRecord(savedResponse);
   const response = content ? createWorkedRewriteResponse(content, saved) : null;
@@ -39,15 +41,15 @@ export function WorkedRewriteCategoryEngine({ exercise, savedResponse, locked = 
   return (
     <View style={styles.screen}>
       <CourseExerciseHeading title={content.title} instruction={content.instruction} />
-      <StageProgress stageIndex={response.stageIndex} stageCount={content.moves.length + 1} label="Move" />
-      <ExerciseWorkspace accessibilityLabel="Worked rewrite notebook" transitionKey={`${response.phase}-${response.stageIndex}`}>
+      <StageProgress stageIndex={response.stageIndex} stageCount={content.moves.length + 1} label={t("flow.ui.categoryEngine.workedRewrite.move")} />
+      <ExerciseWorkspace accessibilityLabel={t("flow.ui.categoryEngine.workedRewrite.notebook")} transitionKey={`${response.phase}-${response.stageIndex}`}>
         <View style={styles.reference}>
-          <Text style={styles.referenceLabel}>Original thought</Text>
+          <Text style={styles.referenceLabel}>{t("flow.ui.categoryEngine.workedRewrite.originalThought")}</Text>
           <Text style={styles.referenceText}>{content.original}</Text>
         </View>
         <CompletedSteps content={content.moves} completedIds={response.completedMoveIds} />
         <View style={styles.working}>
-          <Text style={styles.workingLabel}>Working rewrite</Text>
+          <Text style={styles.workingLabel}>{t("flow.ui.categoryEngine.workedRewrite.workingRewrite")}</Text>
           <HighlightedSentence sentence={workingSentence} phrase={feedbackMove?.changedPhrase ?? null} />
         </View>
         <View style={styles.activeRegion}>
@@ -55,7 +57,7 @@ export function WorkedRewriteCategoryEngine({ exercise, savedResponse, locked = 
           {recognition && response.phase === "active" ? <ChoiceTray choices={content.recognition.options} disabled={locked} onSelect={selectOption} /> : null}
           <InlineFeedback
             message={feedbackMove?.rationale ?? selectedOption?.feedback ?? null}
-            title={feedbackMove ? "Move applied" : selectedOption ? response.isCorrect ? "Balanced" : "Look again" : undefined}
+            title={feedbackMove ? t("flow.ui.categoryEngine.workedRewrite.moveApplied") : selectedOption ? response.isCorrect ? t("flow.ui.categoryEngine.workedRewrite.balanced") : t("flow.ui.categoryEngine.workedRewrite.lookAgain") : undefined}
             tone={response.isCorrect ? "supported" : "neutral"}
           />
         </View>

@@ -14,7 +14,6 @@ export interface HeaderConfig {
   progress?: number;
   progressFillColor?: string;
   progressTrackColor?: string;
-  trailingLabel?: string;
   trailingLabelColor?: string;
   trailingLabelTracking?: number;
   trailingLabelAlignment?: "center" | "end";
@@ -34,7 +33,6 @@ export const getHeaderConfig = (stepName: OnboardingStepName): HeaderConfig => {
     case "journey_map":
       return {
         visible: true,
-        trailingLabel: "YOUR COURSE",
         trailingLabelColor: "#7D8D7B",
         trailingLabelTracking: 0.6,
         trailingLabelAlignment: "end",
@@ -58,7 +56,6 @@ export const getHeaderConfig = (stepName: OnboardingStepName): HeaderConfig => {
       return {
         visible: true,
         showBackButton: false,
-        trailingLabel: "A QUIET MOMENT",
         trailingLabelColor: "#7D8D7B",
         trailingLabelTracking: 0.6,
         trailingLabelAlignment: "center",
@@ -121,7 +118,7 @@ export const OnboardingHeader: React.FC<OnboardingHeaderProps> = ({
                   : "arrow"
               }
               progress={headerConfig.progress}
-              trailingLabel={stepName === "journey_map" ? t("header.your_course", { defaultValue: "YOUR COURSE" }) : stepName === "letter_from_future" ? t("header.quiet_moment", { defaultValue: "A QUIET MOMENT" }) : headerConfig.trailingLabel}
+              trailingLabel={stepName === "journey_map" ? t("header.your_course") : stepName === "letter_from_future" ? t("header.quiet_moment") : undefined}
               iconColor={HEADER_ICON_COLOR}
               trailingLabelColor={headerConfig.trailingLabelColor ?? "#7D8D7B"}
               progressFillColor={headerConfig.progressFillColor}

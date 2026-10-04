@@ -186,7 +186,203 @@
       "scoreShiftLighter": "Um {{count}} leichter",
       "scoreBefore": "vorher /10",
       "scoreAfter": "nachher /10",
-      "applyIt": "Anwenden: {{label}}"
+      "applyIt": "Anwenden: {{label}}",
+        "engine": {
+          "exampleStarters": "Beispiele zum Einstieg",
+          "minutesShort": "Min.",
+          "timer": {
+            "start": "Timer starten",
+            "pause": "Timer pausieren",
+            "nextArea": "Nächster Bereich",
+            "finish": "Fertig",
+            "fallbackSubtitle": "Spanne jede Muskelgruppe mit dem Timer an und entspanne sie wieder.",
+            "tensing": "Muskeln anspannen…",
+            "released": "Entspannt!",
+            "seconds": "Sekunden",
+            "runAgain": "Timer erneut starten",
+            "skipAndRelease": "Timer überspringen und Entspannung markieren",
+            "areasReleased": "{{completed}} von {{total}} Bereichen entspannt"
+          }
+        },
+        "abc": {
+          "event": {
+            "title": "Was ist passiert?",
+            "subtitle": "Beginne mit dem Moment, nicht mit seiner Bedeutung.",
+            "tip": "Beschreibe, was eine Kamera hätte sehen oder hören können.",
+            "placeholder": "Beschreibe, was passiert ist …"
+          },
+          "belief": {
+            "title": "Automatischer Gedanke",
+            "subtitle": "Schreibe den Satz auf, den dein Kopf hinzugefügt hat.",
+            "tip": "Versuche noch nicht, fair zu sein. Halte ihn einfach fest.",
+            "placeholder": "Der Gedanke war …"
+          },
+          "behavior": {
+            "title": "Was hast du danach getan?",
+            "subtitle": "Benenne die Reaktion, die darauf folgte.",
+            "tip": "Was hast du getan, vermieden, gesagt oder wiederholt?",
+            "placeholder": "Ich habe darauf reagiert, indem ich …"
+          },
+          "alternativeBelief": {
+            "title": "Ausgewogenerer Gedanke",
+            "subtitle": "Formuliere eine fairere Version, die sich trotzdem glaubwürdig anfühlt.",
+            "placeholder": "Ein fairerer Gedanke könnte sein …"
+          },
+          "newConsequence": {
+            "title": "Was könnte sich jetzt ändern?",
+            "subtitle": "Wenn du an diesem Gedanken festhältst: Was könnte sich anders anfühlen oder entwickeln?",
+            "placeholder": "Mit diesem Gedanken könnte ich …"
+          },
+          "automaticThought": "Automatischer Gedanke",
+          "suggestions": {
+            "event": [
+              "Meine Führungskraft hat mir schwieriges Feedback gegeben.",
+              "Ich habe eine Nachricht gesendet und keine Antwort bekommen.",
+              "Meine Pläne haben sich kurzfristig geändert."
+            ],
+            "belief": [
+              "Ich mache immer alles falsch.",
+              "Sie müssen sauer auf mich sein.",
+              "Ich schaffe das nicht."
+            ],
+            "behavior": [
+              "Ich habe dichtgemacht und nicht mehr geantwortet.",
+              "Ich bin der Sache aus dem Weg gegangen.",
+              "Ich habe die Situation immer wieder durchgespielt."
+            ],
+            "balancedThought": [
+              "Das ist schwer, aber ein Moment macht mich nicht aus.",
+              "Ich kenne noch nicht die ganze Geschichte.",
+              "Ich kann einen hilfreichen Schritt nach dem anderen machen."
+            ],
+            "newConsequence": [
+              "Vielleicht fühle ich mich ruhiger und kann klarer reagieren.",
+              "Vielleicht halte ich kurz inne, statt mich hineinzusteigern.",
+              "Vielleicht mache ich einen hilfreichen nächsten Schritt."
+            ]
+          }
+        },
+        "gratitude": {
+          "summaryTitle": "Dankbarkeit festgehalten",
+          "summarySubtitle": "Das hast du benannt und so hat sich deine Stimmung verändert."
+        },
+        "thoughtReframing": {
+          "evidenceAgainstTitle": "Gegenbeweise",
+          "evidenceAgainstSubtitle": "Welche Fakten passen nicht zu dieser Vorhersage?",
+          "findingStartingPoints": "Mögliche Ansätze werden gesucht …"
+        },
+        "categoryEngine": {
+          "checkpoint": {
+            "workedSupport": "Beispielhilfe",
+            "next": "Weiter",
+            "orderRetry": "Einige Elemente sind falsch angeordnet. Versuch es noch einmal!",
+            "checkOrder": "Reihenfolge prüfen",
+            "revealAnswer": "Antwort anzeigen",
+            "needPractice": "Noch üben",
+            "gotIt": "Verstanden"
+          },
+          "socratic": {
+            "you": "DU",
+            "person": "PERSON",
+            "guidance": "HINWEIS",
+            "whatWeKnowSoFar": "Was wir bisher wissen",
+            "prediction": "DIE VORHERSAGE",
+            "whatWeKnow": "WAS WIR WISSEN",
+            "balancedThought": "AUSGEWOGENER GEDANKE",
+            "skill": "DIE FÄHIGKEIT",
+            "showHint": "Hinweis anzeigen",
+            "hideHint": "Hinweis ausblenden",
+            "hint": "Hinweis",
+          "hideHintAction": "Hinweis ausblenden",
+          "youAsked": "Du hast gefragt: {{text}}",
+          "personSays": "Die Person sagt: {{text}}",
+          "guidanceLabel": "Hinweis: {{text}}",
+          "predictionLabel": "Vorhersage: {{text}}",
+          "evidenceLabel": "Was wir wissen: {{text}}",
+          "skillLabel": "Die Fähigkeit: {{text}}"
+          },
+          "explorable": {
+            "lever": "Regler",
+            "optionalSandbox": "Optionale Testumgebung",
+            "reset": "Zurücksetzen",
+            "complete": "Du hast alle Regler ausprobiert.",
+            "exploreFreely": "Frei erkunden"
+          },
+          "concept": {
+            "myth": "DER MYTHOS",
+            "reality": "DIE REALITÄT"
+          },
+          "surge": {
+            "elapsedSincePeak": "Zeit seit dem Höhepunkt",
+            "peak": "HÖHEPUNKT",
+            "tenMinutes": "+10 MIN",
+            "watchedWaveFall": "DU HAST DEN ABKLINGENDEN VERLAUF BEOBACHTET",
+            "rememberThis": "DAS SOLLTEST DU DIR MERKEN",
+            "veryHigh": "SEHR STARK",
+            "fading": "LÄSST NACH",
+            "lower": "GERINGER",
+            "muchLower": "DEUTLICH GERINGER",
+            "stillStrong": "Die Anspannung ist noch stark.",
+            "comingDown": "Die Anspannung lässt bereits nach.",
+            "beginningToSettle": "Dein Körper kommt langsam zur Ruhe.",
+            "passed": "Der größte Teil der Anspannung ist abgeklungen."
+          },
+          "lever": {
+            "lower": "NIEDRIGER",
+            "higher": "HÖHER",
+            "accessibilityShift": "{{label}}. Verändert die Wachheit: {{direction}}.",
+            "shiftInAlertness": "Veränderung der Wachheit",
+            "tryAccessibility": "{{label}}. Noch nicht ausprobiert. Teste diesen Regler.",
+            "tryThis": "Regler testen"
+          },
+          "workedRewrite": {
+            "move": "Schritt",
+            "notebook": "Notizbuch zur Umformulierung",
+            "originalThought": "Ursprünglicher Gedanke",
+            "workingRewrite": "Überarbeiteter Gedanke",
+            "moveApplied": "Schritt angewendet",
+            "balanced": "Ausgewogen",
+            "lookAgain": "Noch einmal ansehen"
+          },
+          "reframeBuilder": {
+            "hotThought": "Belastender Gedanke",
+            "fairerThought": "Fairerer Gedanke",
+            "slot": "Feld",
+            "ready": "Dein fairerer Gedanke kann jetzt verglichen werden.",
+            "nextRemaining": "Als Nächstes: {{labels}} ({{count}} übrig)"
+          },
+          "guidedDiscovery": {
+            "clue": "Hinweis",
+            "pattern": "Das Muster"
+          },
+          "whatIf": {
+            "predicted": "Deine Vorhersage",
+          "actualOutcome": "Tatsächliches Ergebnis"
+          },
+          "lensReplay": {
+            "whatHappened": "WAS PASSIERT IST",
+            "mindAdded": "WAS DER KOPF HINZUGEFÜGT HAT",
+            "idea": "DIE IDEE",
+            "revealAccessibility": "{{text}}. Anzeigen.",
+            "progress": "{{explored}} von {{total}} Hervorhebungen erkundet"
+          }
+        },
+          "celebration": {
+            "title": "Lektion abgeschlossen!", "perfectTitle": "Perfekte Lektion!", "continue": "Weiter",
+            "sharePerfect": "Perfekte Lektion", "shareComplete": "Lektion abgeschlossen", "shareTitle": "Erfolg teilen",
+            "shareDialogTitle": "Erfolg teilen", "chestDescription": "Truhe für die perfekte Woche",
+            "goalAchieved": "Tagesziel erreicht!", "goalReached": "Tagesziel erreicht. Sehr schön.", "goalAlmost": "Fast geschafft!",
+            "xpToGo": "Noch {{count}} XP", "mute": "Feierklänge ausschalten", "unmute": "Feierklänge einschalten",
+            "streakMessage": "Sieben Tage am Stück. Stark!", "perfectBadge": "PERFEKTE LEKTION", "milestoneDays": "{{count}} TAGE IN FOLGE",
+            "milestoneMessage3": "Drei Tage in Folge – eine Gewohnheit entsteht.", "milestoneMessage7": "Eine ganze Woche drangeblieben. Dein Kopf dankt es dir.",
+            "milestoneMessage15": "Fünfzehn Tage stark. Das wird zu einem Teil von dir.", "milestoneMessage30": "Dreißig Tage. Ein ganzer Monat, in dem du dich für dich entschieden hast.",
+            "xp": "XP", "streak": "SERIE", "thisWeek": "DIESE WOCHE", "dailyGoal": "TAGESZIEL", "day": "TAG", "days": "TAGE",
+            "chestOpened": "Truhe der perfekten Woche geöffnet. Plus {{xp}} XP", "chestOpen": "Perfekte Woche. Tippe, um die Truhe zu öffnen",
+            "perfectWeek": "PERFEKTE WOCHE", "sevenForSeven": "Sieben von sieben!", "chestOpenedHint": "Jeder Tag dieser Woche zählt. Stark gemacht!",
+            "chestOpenHint": "Tippe, um deine Bonus-Truhe zu öffnen", "preparing": "Wird vorbereitet…",
+            "encouragements": ["Du hast dir heute Zeit für dich genommen.", "Kleine Schritte bewirken etwas.", "Ein weiterer Erfolg für deinen Kopf.", "Fortschritt fühlt sich gut an, oder?", "Du findest zu mehr Ruhe."],
+            "perfectEncouragements": ["Kein einziger Fehler. Das sitzt.", "Makellos – du kennst dich damit aus.", "Jede Antwort richtig. Hut ab!"]
+          }
     }
   }
 }

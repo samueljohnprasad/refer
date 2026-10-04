@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { View, Text, TextInput, Pressable, Alert } from "react-native";
+import { useTranslation } from "react-i18next";
 import { KeyboardToolbar } from "react-native-keyboard-controller";
 import { useGradualAnimation } from "@/hooks/useGradualAnimation";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
@@ -13,6 +14,7 @@ interface NameEditScreenProps {
 }
 
 export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
+  const { t } = useTranslation("common");
   const { height } = useGradualAnimation();
   const [name, setName] = useState("");
   const { mutate: updateDisplayName, isPending: isUpdating } = useUpdateDisplayName();
@@ -26,14 +28,14 @@ export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
 
   const handleSave = useCallback(() => {
     if (!name.trim()) {
-      Alert.alert("Error", "Name cannot be empty");
+      Alert.alert(t("errors.title"), t("profile.nameEdit.nameRequired"));
       return;
     }
     updateDisplayName(name.trim(), {
       onSuccess: () => setShowModal(false),
-      onError: () => Alert.alert("Error", "Failed to update name. Please try again."),
+      onError: () => Alert.alert(t("errors.title"), t("profile.nameEdit.updateFailed")),
     });
-  }, [name, updateDisplayName, setShowModal]);
+  }, [name, updateDisplayName, setShowModal, t]);
 
   const keyboardPadding = useAnimatedStyle(() => ({
     height: height.value,
@@ -47,16 +49,16 @@ export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
           onPress={() => setShowModal(false)}
           className="p-2 -ml-2 active:opacity-60"
         >
-          <Text className="text-[17px] text-foreground font-medium">Cancel</Text>
+          <Text className="text-[17px] text-foreground font-medium">{t("actions.cancel")}</Text>
         </Pressable>
-        <Text className="text-[17px] text-foreground font-semibold">Edit Name</Text>
+        <Text className="text-[17px] text-foreground font-semibold">{t("profile.nameEdit.title")}</Text>
         <Pressable 
           onPress={handleSave}
           disabled={isUpdating}
           className="p-2 -mr-2 active:opacity-60"
         >
           <Text className="text-[17px] text-foreground font-medium" style={{ opacity: isUpdating ? 0.5 : 1 }}>
-            {isUpdating ? "Saving" : "Save"}
+            {isUpdating ? t("actions.saving") : t("actions.save")}
           </Text>
         </Pressable>
       </View>
@@ -74,14 +76,14 @@ export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
             value={name}
             onChangeText={setName}
             maxLength={20}
-            placeholder="Your name"
+            placeholder={t("profile.nameEdit.placeholder")}
             placeholderTextColor="#8e8e93"
             autoFocus
             
           />
         </View>
         <Text className="text-[13px] text-muted-foreground text-center px-4">
-          This is your public display name. It can be changed at any time.
+          {t("profile.nameEdit.description")}
         </Text>
       </View>
       <Animated.View style={keyboardPadding} />
@@ -89,7 +91,7 @@ export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
       <KeyboardToolbar
         showArrows={false}
         insets={{ left: 16, right: 0 }}
-        doneText="Done"
+        doneText={t("actions.done")}
       />
     </View>
   );

@@ -36,7 +36,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
       d.setDate(today.getDate() + i);
       return {
         index: i + 1,
-        weekday: i === 0 ? t("pact_signing.today", { defaultValue: "Today" }) : new Intl.DateTimeFormat(i18n.language, { weekday: "short" }).format(d),
+        weekday: i === 0 ? t("pact_signing.today") : new Intl.DateTimeFormat(i18n.language, { weekday: "short" }).format(d),
         isToday: i === 0,
         isLast: i === 6,
       };

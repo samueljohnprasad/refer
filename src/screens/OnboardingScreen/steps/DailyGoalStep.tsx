@@ -6,7 +6,7 @@ import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import GoalCard from "../components/GoalCard";
 import { DailyGoalMinutes, MotivationAnswer } from "../types";
-import { DAILY_GOAL_CARDS, DAILY_GOAL_CONTEXT } from "../constants";
+import { DAILY_GOAL_CARDS } from "../constants";
 
 interface DailyGoalStepProps {
   selected: DailyGoalMinutes;
@@ -22,8 +22,6 @@ const DailyGoalStep: React.FC<DailyGoalStepProps> = ({
   const { t } = useTranslation("onboarding");
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
-  const ctx = DAILY_GOAL_CONTEXT[motivation];
-  const [headlineMain, headlineItalic] = ctx.headline.split(/(?=\s\w+$)/);
   const translatedHeadline = t(`daily_goal.${motivation}.headline`);
   const [translatedHeadlineMain, translatedHeadlineItalic] =
     translatedHeadline.split(/(?=\s\w+$)/);
@@ -45,14 +43,14 @@ const DailyGoalStep: React.FC<DailyGoalStepProps> = ({
     >
       <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <Text className="happy-font-heading mt-2 text-3xl leading-tight text-ink">
-          {translatedHeadlineMain || headlineMain}
+          {translatedHeadlineMain}
           <Text className="happy-font-heading-italic italic text-sage-500">
-            {translatedHeadlineItalic || headlineItalic}
+            {translatedHeadlineItalic}
           </Text>
           ?
         </Text>
         <Text className="happy-font-body mt-3 text-base leading-relaxed text-ink-soft">
-          {t(`daily_goal.${motivation}.subtext`, { defaultValue: ctx.subtext })}
+          {t(`daily_goal.${motivation}.subtext`)}
         </Text>
       </Animated.View>
 
@@ -73,16 +71,10 @@ const DailyGoalStep: React.FC<DailyGoalStepProps> = ({
         className="mt-6 rounded-2xl border border-sage-200 bg-brand-surface-soft p-4.5"
       >
         <Text className="happy-font-body italic text-sm leading-relaxed text-ink-muted">
-          {t(`daily_goal.${motivation}.testimonial.quote`, {
-            defaultValue: ctx.testimonial.quote,
-          })}
+          {t(`daily_goal.${motivation}.testimonial.quote`)}
         </Text>
         <Text className="happy-font-body-bold mt-2.5 text-xs font-bold text-sage-600">
-          {t(`daily_goal.${motivation}.testimonial.name`, {
-            defaultValue: ctx.testimonial.name,
-          })}, {t(`daily_goal.${motivation}.testimonial.age`, {
-            defaultValue: String(ctx.testimonial.age),
-          })}
+          {t(`daily_goal.${motivation}.testimonial.name`)}, {t(`daily_goal.${motivation}.testimonial.age`)}
         </Text>
       </Animated.View>
     </ScrollView>

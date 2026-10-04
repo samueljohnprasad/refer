@@ -54,14 +54,6 @@ const INITIAL_FORM_DATA: OnboardingFormData = {
   trialStarted: false,
 };
 
-const PLAN_NAME_MAP: Record<MotivationAnswer, string> = {
-  anxiety: "Quieting the Storm",
-  mood: "Finding Light Again",
-  stress: "Steady Under Pressure",
-  self_understanding: "Coming Home to Yourself",
-  sleep: "The Gentle Wind-Down",
-};
-
 export const useOnboardingFlow = (): UseOnboardingFlowReturn => {
   const { t } = useTranslation("onboarding");
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
@@ -83,7 +75,7 @@ export const useOnboardingFlow = (): UseOnboardingFlowReturn => {
   const progress = (currentStepIndex + 1) / TOTAL_ONBOARDING_STEPS;
 
   const derivedPlanName = useMemo(
-    () => t(`plan_names.${formData.motivation ?? "anxiety"}`, { defaultValue: PLAN_NAME_MAP[formData.motivation ?? "anxiety"] }),
+    () => t(`plan_names.${formData.motivation ?? "anxiety"}`),
     [formData.motivation, t],
   );
 

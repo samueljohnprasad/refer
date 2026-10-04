@@ -14,6 +14,7 @@ import type {
   GrowthInsight,
 } from "@/src/network/genAi";
 import { GrainyGradient } from "@/src/components/grainy-gradient";
+import { useTranslation } from "react-i18next";
 
 interface AIInsightsContentProps {
   loading?: boolean;
@@ -36,6 +37,7 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
   recommendations,
   growthInsights,
 }) => {
+  const { t } = useTranslation("insights");
   if (loading) {
     return (
       <View className="py-24 items-center justify-center overflow-hidden rounded-3xl mb-6 border border-purple-100">
@@ -46,7 +48,7 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
         />
         <ActivityIndicator size="large" color="#FFFFFF" />
         <Text variant="body" style={{ color: "white", marginTop: 16, fontWeight: "500" }}>
-          Generating insights...
+          {t("aiContent.generating")}
         </Text>
       </View>
     );
@@ -64,7 +66,7 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
               <HugeiconsIcon icon={Target03Icon} size={18} color="#7B61FF" />
             </View>
             <Text variant="h2">
-              Personalized Recommendations
+              {t("aiContent.recommendations")}
             </Text>
           </View>
           {recommendations.map((rec, index) => (
@@ -87,7 +89,7 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
                   }`}
                 >
                   <Text variant="chip" color="surface">
-                    {rec.priority.toUpperCase()}
+                    {t(`aiContent.impactLevels.${rec.priority}`, { defaultValue: rec.priority })}
                   </Text>
                 </View>
               </View>
@@ -97,7 +99,7 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
               </Text>
 
               <Text variant="label-bold" className="mb-2">
-                Action Steps:
+                {t("aiContent.actionSteps")}
               </Text>
               {rec.actionSteps.map((step, idx) => (
                 <View key={idx} className="flex-row mb-2 items-start">
@@ -122,7 +124,7 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
               <HugeiconsIcon icon={Leaf01Icon} size={18} color="#10B981" />
             </View>
             <Text variant="h2">
-              Deep Growth Insights
+              {t("aiContent.deepGrowth")}
             </Text>
           </View>
           {growthInsights.map((insight, index) => (
@@ -145,7 +147,7 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
                   }`}
                 >
                   <Text variant="chip" color="surface" className="uppercase">
-                    {insight.impactLevel} impact
+                    {t("aiContent.impact", { level: t(`aiContent.impactLevels.${insight.impactLevel}`, { defaultValue: insight.impactLevel }) })}
                   </Text>
                 </View>
               </View>
@@ -156,7 +158,7 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
 
               <View className="bg-gray-50 rounded-lg p-3 mb-3">
                 <Text variant="label-bold" className="mb-2">
-                  Supporting Evidence:
+                  {t("aiContent.supportingEvidence")}
                 </Text>
                 {insight.supportingEvidence.map((evidence, idx) => (
                   <Text
@@ -192,7 +194,7 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
           <View className="py-12 items-center">
             <HugeiconsIcon icon={InformationCircleIcon} size={48} color="#9CA3AF" />
             <Text variant="body" color="muted" className="text-center mt-3">
-              No insights available for this week
+              {t("aiContent.empty")}
             </Text>
           </View>
         )}

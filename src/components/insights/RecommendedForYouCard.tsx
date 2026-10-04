@@ -14,6 +14,7 @@ import { Card } from "@/src/components/ui/Card";
 
 export function RecommendedForYouCard() {
   const { t } = useTranslation("common");
+  const { t: tInsights } = useTranslation("insights");
   const router = useRouter();
   const { data } = usePersonalEffectiveness();
 
@@ -34,7 +35,10 @@ export function RecommendedForYouCard() {
       haptic="light"
       className="mb-5"
       contentClassName="p-5"
-      accessibilityLabel={`Recommended: ${best.exerciseLabel}. Average drop ${best.avgDrop} per session.`}
+      accessibilityLabel={tInsights("recommendedForYou.accessibilityLabel", {
+        exerciseLabel: best.exerciseLabel,
+        avgDrop: best.avgDrop,
+      })}
     >
       <Text className="text-[11px] font-bold text-sage-600 uppercase tracking-wider mb-3">
         {t("insights.ui.recommended")}

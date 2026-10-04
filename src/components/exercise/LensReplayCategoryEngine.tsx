@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
@@ -13,6 +14,7 @@ import {
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
+import { LensReplayFinalState } from "./LensReplayFinalState";
 
 interface LensSegment {
   text: string;
@@ -26,6 +28,7 @@ export function LensReplayCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const segments = readSegments(content.segments);
@@ -131,7 +134,7 @@ export function LensReplayCategoryEngine({
                   <Text
                     key={`${index}-${segment.text}`}
                     accessibilityRole="button"
-                    accessibilityLabel={`${segment.text}. Reveal.`}
+                    accessibilityLabel={t("flow.ui.categoryEngine.lensReplay.revealAccessibility", { text: segment.text })}
                     accessible={true}
                     onPress={() => openHighlight(index)}
                     style={[styles.highlightBase, highlightStyle]}
@@ -160,25 +163,8 @@ export function LensReplayCategoryEngine({
           ) : null}
         </Animated.View>
       ) : (
-        <Animated.View
-          style={[{ opacity: finalFadeAnim }, styles.finalStateContainer]}
-        >
-          <View style={styles.compactBlock}>
-            <Text style={styles.structuralLabel}>WHAT HAPPENED</Text>
-            <Text style={styles.compactText}>Everyone stopped talking.</Text>
-          </View>
-
-          <View style={styles.compactBlock}>
-            <Text style={styles.structuralLabel}>WHAT THE MIND ADDED</Text>
-            <Text style={styles.compactText}>
-              “They were talking about me.”
-            </Text>
-          </View>
-
-          <View style={styles.ideaCard}>
-            <Text style={styles.structuralLabel}>THE IDEA</Text>
-            <Text style={styles.ideaText}>{readString(content.insight)}</Text>
-          </View>
+        <Animated.View style={{ opacity: finalFadeAnim }}>
+          <LensReplayFinalState insight={readString(content.insight)} />
         </Animated.View>
       )}
 
@@ -186,7 +172,10 @@ export function LensReplayCategoryEngine({
       <Text style={styles.progressText}>
         {allSeen
           ? "Same lines. New eyes."
-          : `${seenIndexes.length} of ${highlightIndexes.length} highlights explored`}
+          : t("flow.ui.categoryEngine.lensReplay.progress", {
+              explored: seenIndexes.length,
+              total: highlightIndexes.length,
+            })}
       </Text>
     </View>
   );
@@ -294,40 +283,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
     marginTop: 6,
-  },
-  finalStateContainer: {
-    marginTop: 4,
-    gap: 16,
-  },
-  compactBlock: {
-    paddingHorizontal: 4,
-  },
-  structuralLabel: {
-    color: SEMANTIC_COLORS.brand.pressed,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyMedium,
-    fontSize: 11,
-    letterSpacing: 0.6,
-    textTransform: "uppercase",
-    marginBottom: 4,
-  },
-  compactText: {
-    color: SEMANTIC_COLORS.text.primary,
-    fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 18,
-    lineHeight: 26,
-  },
-  ideaCard: {
-    marginTop: 8,
-    borderRadius: 20,
-    backgroundColor: SEMANTIC_COLORS.surface.secondary,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-  },
-  ideaText: {
-    color: SEMANTIC_COLORS.text.primary,
-    fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 15,
-    lineHeight: 22,
   },
   progressText: {
     color: SEMANTIC_COLORS.text.secondary,

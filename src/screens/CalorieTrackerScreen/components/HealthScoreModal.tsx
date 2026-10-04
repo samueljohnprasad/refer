@@ -1,5 +1,6 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, Modal, TouchableOpacity } from 'react-native';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { Cancel01Icon } from '@hugeicons/core-free-icons';
@@ -35,8 +36,11 @@ export const HealthScoreModal: React.FC<HealthScoreModalProps> = ({
   score,
   reasoning,
   onClose,
-}) => (
-  <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+}) => {
+  const { t, i18n } = useTranslation("tracking");
+
+  return (
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
     <TouchableOpacity
       className="flex-1 bg-black/50 justify-center items-center px-5"
       activeOpacity={1}
@@ -53,11 +57,13 @@ export const HealthScoreModal: React.FC<HealthScoreModalProps> = ({
           <Text
             style={{ fontSize: 22, fontFamily: APP_FONT_FAMILIES.semiBold, color: '#1f2937' }}
           >
-            Health Score Analysis
+            {t("healthScore.title")}
           </Text>
           <TouchableOpacity
             onPress={onClose}
             className="w-8 h-8 items-center justify-center rounded-full bg-gray-100"
+            accessibilityRole="button"
+            accessibilityLabel={t("accessibility.close")}
           >
             <HugeiconsIcon icon={Cancel01Icon} size={20} color="#6B7280" />
           </TouchableOpacity>
@@ -69,25 +75,26 @@ export const HealthScoreModal: React.FC<HealthScoreModalProps> = ({
             className={`w-24 h-24 rounded-full items-center justify-center ${getScoreBgClass(score)}`}
           >
             <Text className={`text-4xl font-bold ${getScoreTextClass(score)}`}>
-              {score}
+              {new Intl.NumberFormat(i18n.language).format(score)}
             </Text>
           </View>
-          <Text className="text-gray-500 text-sm mt-2">out of 100</Text>
+          <Text className="text-gray-500 text-sm mt-2">{t("healthScore.outOf100")}</Text>
         </View>
 
         {/* Reasoning */}
         <View className="bg-gray-50 rounded-2xl p-4 mb-4">
-          <Text className="text-gray-900 font-semibold mb-2">Why this score?</Text>
+          <Text className="text-gray-900 font-semibold mb-2">{t("healthScore.why")}</Text>
           <Text className="text-gray-700 leading-6">{reasoning}</Text>
         </View>
 
         <CourseExercisePrimaryButton
-          label="Got it!"
+          label={t("healthScore.gotIt")}
           onPress={onClose}
           height={52}
           fontSize={16}
         />
       </TouchableOpacity>
     </TouchableOpacity>
-  </Modal>
-);
+    </Modal>
+  );
+};

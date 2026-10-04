@@ -15,7 +15,7 @@ import { getCourseImageSource } from "@/src/domains/journey/model/courseVisuals"
 import { resolveCourseForMotivation } from "../utils/courseResolver";
 import {
   PLAN_META,
-  getWhyThisCourse,
+  getWhyThisCourseKey,
   resolveCourseSummary,
 } from "../utils/planMeta";
 import type { MotivationAnswer, StressLevel } from "../types";
@@ -58,7 +58,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
   const courseTitle = overview?.title ?? displayPlanName;
   const courseDescription = resolveCourseSummary(
     overview?.description,
-    planMeta.youWillLearn,
+    t(planMeta.summaryKey),
   );
   const mascotArt = getCourseImageSource(motivation);
 
@@ -66,18 +66,18 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
   const milestones = useMemo(() => {
     if (overview?.sections && overview.sections.length > 0) {
       const phaseSubtitles = [
-        t("plan_reveal.phase_subtitles.foundation", { defaultValue: "Foundation & Awareness" }),
-        t("plan_reveal.phase_subtitles.practice", { defaultValue: "Skill Building & Practice" }),
-        t("plan_reveal.phase_subtitles.integration", { defaultValue: "Integration & Lasting Calm" }),
+        t("plan_reveal.phase_subtitles.foundation"),
+        t("plan_reveal.phase_subtitles.practice"),
+        t("plan_reveal.phase_subtitles.integration"),
       ];
       return overview.sections.slice(0, 3).map((section, idx) => ({
         title: section.title,
-        subtitle: phaseSubtitles[idx] || t("plan_reveal.units", { count: section.units.length, defaultValue: "{{count}} units" }),
+        subtitle: phaseSubtitles[idx] || t("plan_reveal.units", { count: section.units.length }),
       }));
     }
-    return planMeta.practiceItems.map((item, idx) => ({
-      title: item,
-      subtitle: idx === 0 ? t("plan_reveal.phase_subtitles.initial", { defaultValue: "Initial focus" }) : idx === 1 ? t("plan_reveal.phase_subtitles.core", { defaultValue: "Core practice" }) : t("plan_reveal.phase_subtitles.anchor", { defaultValue: "Long-term anchor" }),
+    return planMeta.practiceItemKeys.map((itemKey, idx) => ({
+      title: t(itemKey),
+      subtitle: idx === 0 ? t("plan_reveal.phase_subtitles.initial") : idx === 1 ? t("plan_reveal.phase_subtitles.core") : t("plan_reveal.phase_subtitles.anchor"),
     }));
   }, [overview, planMeta, t]);
 
@@ -139,7 +139,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
                 source={mascotArt}
                 className="h-20 w-20 -mr-1"
                 resizeMode="contain"
-                accessibilityLabel={t("plan_reveal.course_illustration", { title: courseTitle, defaultValue: "{{title}} illustration" })}
+                accessibilityLabel={t("plan_reveal.course_illustration", { title: courseTitle })}
               />
             )}
           </View>
@@ -186,7 +186,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
                 style={{ fontFamily: APP_FONT_FAMILIES.regular }}
                 className="mt-1 text-[14px] leading-relaxed text-ink-soft happy-font-body"
               >
-                {getWhyThisCourse(motivation, stressLevel)}
+                {t(getWhyThisCourseKey(motivation, stressLevel))}
               </Text>
             </View>
           </View>

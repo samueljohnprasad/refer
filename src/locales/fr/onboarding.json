@@ -1,4 +1,25 @@
 {
+  "future_letter_screen": {
+    "date_label": "{{date}} · {{weekday}}, {{moment}}",
+    "greeting": "Bonjour, toi,",
+    "header_label": "Quelque chose est arrivé pour toi",
+    "headline_start": "Une lettre de",
+    "headline_emphasis": "toi,",
+    "subtitle": "écrite dans 30 jours.",
+    "moments": { "morning": "matin", "afternoon": "après-midi", "evening": "soir", "night": "tard dans la nuit" },
+    "body": {
+      "intro": "Je t’écris un {{weekday}} {{moment}}. Je viens de fermer Happy",
+      "closed_app": "il y a cinq minutes.",
+      "just_like_you": "Comme tu le feras dans un instant.",
+      "honesty": "Je ne vais pas te mentir. Le bruit n’a pas disparu. Certains matins, les pensées s’emballent encore. Certains soirs, le poids est toujours là.",
+      "caught_it": "Mais hier, quand la spirale a commencé, je l’ai remarquée. Je l’ai nommée. Je suis resté·e avec elle trente secondes.",
+      "didnt_grow": "Et elle n’a pas pris plus d’ampleur.",
+      "thirty_days_ago": "Il y a trente jours, cela m’aurait semblé impossible.",
+      "showed_up": "Aujourd’hui, tu as pris ce moment pour toi. Cinq minutes, comme tu avais promis de le faire dans ton engagement.",
+      "keep_going": "Continue.",
+      "changed": "Nous ne sommes plus la même personne."
+    }
+  },
   "header": { "your_course": "TON PARCOURS", "quiet_moment": "UN MOMENT DE CALME" },
   "buttons": {
     "lets_begin": "COMMENÇONS",
@@ -17,6 +38,7 @@
     "subhead": "une pensée à la fois"
   },
   "welcome_nodes": {"0_0":"Continue d’avancer","1_0":"Réfléchis","1_1":"en profondeur","2_0":"Comprends","2_1":"qui tu es","4_0":"Crée une","4_1":"habitude","5_0":"Un esprit","5_1":"plus léger","today":"Aujourd’hui","start_here":"Commence ici"},
+  "checklist": { "title": "Pour commencer", "dismiss": "Fermer la liste", "incomplete": "À faire", "completed": "Terminé", "complete": "{{completed}}/{{total}} terminé(s)", "earnXp": "Gagnez {{count}} XP", "items": { "first_mood": "Noter votre première humeur", "first_journal": "Écrire votre première entrée de journal", "first_cbt": "Essayer un exercice de TCC", "setup_reminders": "Configurer les rappels quotidiens", "first_habit": "Créer votre première habitude" } },
   "mascot_greeting": {
     "label": "Ton guide",
     "hi": "Salut, je suis Mochi.",
@@ -118,6 +140,20 @@
   },
   "plan_names": {"anxiety":"Apaiser la tempête","mood":"Retrouver la lumière","stress":"Garder le cap sous pression","self_understanding":"Se retrouver","sleep":"Un coucher apaisé"},
   "plan_reveal": {
+    "course": {
+      "anxiety": { "summary": "Tu apprendras à repérer tôt les spirales de pensées, à apaiser la réaction d’alerte de ton corps et à sortir de l’inquiétude chronique.", "practice": { "first": "Comprendre le cycle de l’anxiété", "second": "Apaiser la réaction d’alerte du corps", "third": "Repérer les schémas plus tôt" } },
+      "mood": { "summary": "Tu apprendras à repérer les déclencheurs de ton humeur, à créer de petits repères quotidiens et à retrouver de la lumière dans les moments difficiles.", "practice": { "first": "Repérer les déclencheurs subtils de l’humeur", "second": "Pratiquer de petits repères au quotidien", "third": "Trouver des réponses plus stables aux moments difficiles" } },
+      "stress": { "summary": "Tu apprendras à remarquer la tension avant qu’elle ne monte, à décompresser ton système nerveux et à retrouver ton calme sous pression.", "practice": { "first": "Repérer la tension avant qu’elle ne monte", "second": "Décompresser le système nerveux", "third": "Retrouver ton calme quand la pression monte" } },
+      "self_understanding": { "summary": "Tu apprendras à comprendre tes réactions émotionnelles, à démêler les pensées récurrentes et à renouer avec ce qui compte vraiment pour toi.", "practice": { "first": "Repérer les boucles de pensées récurrentes", "second": "Mettre des mots sur ce que tu ressens", "third": "Faire des choix quotidiens adaptés à tes besoins" } },
+      "sleep": { "summary": "Tu apprendras à apaiser les pensées tardives, à relâcher les tensions physiques avant de dormir et à retrouver un sommeil réparateur.", "practice": { "first": "Apaiser les pensées qui s’emballent le soir", "second": "Relâcher les tensions physiques avant de dormir", "third": "Créer un rituel du soir régulier" } }
+    },
+    "why": {
+      "anxiety": { "heavy": "Tu nous as dit que l’anxiété pesait constamment. Nous commencerons par comprendre ce qui maintient ton système d’alerte en éveil et par chercher comment l’apaiser.", "moderate": "Tu nous as dit que l’anxiété se manifestait par une tension régulière. Nous commencerons par comprendre ce qui maintient ton système d’alerte en éveil et par chercher comment l’apaiser.", "overwhelming": "Tu nous as dit que l’anxiété prenait parfois toute la place. Nous commencerons par comprendre cette réaction d’alerte et par trouver des outils pour respirer un peu.", "default": "D’après ce que tu nous as partagé, nous commencerons par comprendre ce qui maintient ton système d’alerte en éveil et par pratiquer des façons de l’apaiser." },
+      "mood": "D’après ce que tu nous as partagé, nous commencerons par de petits repères qui t’aideront à voir ce qui illumine tes journées.",
+      "stress": "D’après ce que tu nous as partagé, nous nous concentrerons sur le repérage de la pression avant qu’elle ne monte et sur des façons de décompresser.",
+      "self_understanding": "D’après ce que tu nous as partagé, nous t’aiderons à comprendre tes schémas émotionnels et à mieux nommer ce que tu vis.",
+      "sleep": "D’après ce que tu nous as partagé, nous nous concentrerons sur des rituels du soir qui aideront ton corps à se sentir en sécurité avant de dormir."
+    },
     "step_label": "Ton plan sur mesure",
     "loading_milestones": "Chargement des étapes",
     "phase_subtitles": {"foundation":"Bases et prise de conscience","practice":"Apprendre et pratiquer","integration":"Intégrer durablement","initial":"Premier repère","core":"Pratique essentielle","anchor":"Un appui à long terme"},

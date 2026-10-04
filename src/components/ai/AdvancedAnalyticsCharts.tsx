@@ -11,6 +11,7 @@ import { EmotionRadarChart } from "@/src/components/charts/EmotionRadarChart";
 import { EmotionalVolatilityIndex } from "@/src/components/charts/EmotionalVolatilityIndex";
 import { CognitivePatternFlow } from "@/src/components/charts/CognitivePatternFlow";
 import { LifeDomainBalanceWheel } from "@/src/components/charts/LifeDomainBalanceWheel";
+import { useTranslation } from "react-i18next";
 
 interface AdvancedAnalyticsChartsProps {
   weeklySummary: WeeklySummary | null;
@@ -33,6 +34,7 @@ export const AdvancedAnalyticsCharts: React.FC<
   showTitle = true,
   onPremiumPress,
 }) => {
+  const { t } = useTranslation("insights");
   return (
     <View className="mb-10">
       {/* Header with Premium Badge */}
@@ -47,14 +49,14 @@ export const AdvancedAnalyticsCharts: React.FC<
               />
             </View>
             <Text variant="h2">
-              Advanced Analytics
+              {t("analytics.title")}
             </Text>
           </View>
           {showPremiumBadge && (
             <Button
               variant="premium"
               size="sm"
-              label="PREMIUM"
+              label={t("analytics.premium")}
               onPress={onPremiumPress}
               fullWidth={false}
               leftIcon={

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Stack, useRouter } from "expo-router";
 import {
   View,
@@ -37,6 +38,7 @@ import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 const STORAGE_KEY = "tracked_micronutrients";
 
 const MicronutrientHeader: React.FC = () => {
+  const { t, i18n } = useTranslation("tracking");
   const router = useRouter();
   const { height } = useWindowDimensions();
   const isLiquidGlass = isLiquidGlassAvailable();
@@ -98,6 +100,8 @@ const MicronutrientHeader: React.FC = () => {
           className="h-11 w-11 items-center justify-center rounded-full bg-sage-pill"
           activeOpacity={0.7}
           onPress={() => router.back()}
+          accessibilityRole="button"
+          accessibilityLabel={t("accessibility.back")}
         >
           <HugeiconsIcon icon={ArrowLeft02Icon} size={21} color={SEMANTIC_COLORS.brand.pressed} />
         </TouchableOpacity>
@@ -119,11 +123,14 @@ const MicronutrientHeader: React.FC = () => {
 
       <View className="items-center">
         <Text className="happy-font-heading-bold text-[32px] text-ink">
-          Micronutrients
+          {t("micronutrients.title")}
         </Text>
         <View className="mt-1 rounded-full bg-sage-pill px-3 py-1">
           <Text className="happy-font-body-bold text-sm text-sage-600">
-            {trackedCount} of {MICRONUTRIENTS_CONFIG.length} tracked
+            {t("micronutrients.tracked", {
+              countLabel: new Intl.NumberFormat(i18n.language).format(trackedCount),
+              totalLabel: new Intl.NumberFormat(i18n.language).format(MICRONUTRIENTS_CONFIG.length),
+            })}
           </Text>
         </View>
       </View>

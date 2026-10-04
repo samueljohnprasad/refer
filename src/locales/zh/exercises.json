@@ -186,7 +186,203 @@
       "scoreShiftLighter": "可信度减弱{{count}}",
       "scoreBefore": "之前 /10",
       "scoreAfter": "之后 /10",
-      "applyIt": "应用：{{label}}"
+      "applyIt": "应用：{{label}}",
+        "engine": {
+          "exampleStarters": "起步示例",
+          "minutesShort": "分钟",
+          "timer": {
+            "start": "开始计时",
+            "pause": "暂停计时",
+            "nextArea": "下一区域",
+            "finish": "完成",
+            "fallbackSubtitle": "使用计时器依次绷紧并放松每组肌肉。",
+            "tensing": "正在绷紧肌肉…",
+            "released": "已放松！",
+            "seconds": "秒",
+            "runAgain": "重新计时",
+            "skipAndRelease": "跳过计时并标记为已放松",
+            "areasReleased": "已放松 {{completed}}/{{total}} 个区域"
+          }
+        },
+        "abc": {
+          "event": {
+            "title": "发生了什么？",
+            "subtitle": "先从当时的情境开始，而不是它的含义。",
+            "tip": "写下摄像机可能看到或听到的内容。",
+            "placeholder": "描述发生了什么…"
+          },
+          "belief": {
+            "title": "自动想法",
+            "subtitle": "写下脑海中冒出的那句话。",
+            "tip": "暂时不用判断是否合理，先把它记下来。",
+            "placeholder": "当时的想法是…"
+          },
+          "behavior": {
+            "title": "之后你做了什么？",
+            "subtitle": "说说随后出现的反应。",
+            "tip": "你做了什么、回避了什么、说了什么或反复想了什么？",
+            "placeholder": "我的反应是…"
+          },
+          "alternativeBelief": {
+            "title": "更平衡的想法",
+            "subtitle": "试着写出一个更公允、又让你觉得可信的版本。",
+            "placeholder": "更公允的想法可能是…"
+          },
+          "newConsequence": {
+            "title": "现在可能有什么变化？",
+            "subtitle": "如果你保留这个想法，你的感受或行动可能会有什么不同？",
+            "placeholder": "有了这个想法，我可能会…"
+          },
+          "automaticThought": "自动想法",
+          "suggestions": {
+            "event": [
+              "经理给了我很难接受的反馈。",
+              "我发了消息，但没有收到回复。",
+              "我的计划临时改变了。"
+            ],
+            "belief": [
+              "我总是把事情搞砸。",
+              "他们一定对我不满。",
+              "我应付不了这件事。"
+            ],
+            "behavior": [
+              "我退缩了，也不再回复。",
+              "我回避了这件事。",
+              "我一直在脑中反复回想。"
+            ],
+            "balancedThought": [
+              "这很难，但一次经历不能定义我。",
+              "我还不了解事情的全貌。",
+              "我可以一次采取一个有帮助的小行动。"
+            ],
+            "newConsequence": [
+              "我也许会更平静，并更清楚地回应。",
+              "我也许可以先停一下，而不是陷入反复思虑。",
+              "我也许能迈出一个有帮助的下一步。"
+            ]
+          }
+        },
+        "gratitude": {
+          "summaryTitle": "记下了值得感恩的事",
+          "summarySubtitle": "这是你写下的内容，以及心情的变化。"
+        },
+        "thoughtReframing": {
+          "evidenceAgainstTitle": "相反证据",
+          "evidenceAgainstSubtitle": "有哪些事实与这个预测不符？",
+          "findingStartingPoints": "正在寻找思路…"
+        },
+        "categoryEngine": {
+          "checkpoint": {
+            "workedSupport": "示例提示",
+            "next": "下一步",
+            "orderRetry": "有些项目位置不对，请重试！",
+            "checkOrder": "检查顺序",
+            "revealAnswer": "显示答案",
+            "needPractice": "需要练习",
+            "gotIt": "知道了"
+          },
+          "socratic": {
+            "you": "你",
+            "person": "对方",
+            "guidance": "引导",
+            "whatWeKnowSoFar": "目前已知",
+            "prediction": "预测",
+            "whatWeKnow": "已知事实",
+            "balancedThought": "平衡的想法",
+            "skill": "技巧",
+            "showHint": "显示提示",
+            "hideHint": "隐藏提示",
+            "hint": "提示",
+          "hideHintAction": "隐藏提示",
+          "youAsked": "你问了：{{text}}",
+          "personSays": "对方说：{{text}}",
+          "guidanceLabel": "引导：{{text}}",
+          "predictionLabel": "预测：{{text}}",
+          "evidenceLabel": "已知事实：{{text}}",
+          "skillLabel": "技巧：{{text}}"
+          },
+          "explorable": {
+            "lever": "调节项",
+            "optionalSandbox": "可选体验区",
+            "reset": "重置",
+            "complete": "你已尝试所有调节项。",
+            "exploreFreely": "自由探索"
+          },
+          "concept": {
+            "myth": "误区",
+            "reality": "事实"
+          },
+          "surge": {
+            "elapsedSincePeak": "峰值后的时间",
+            "peak": "峰值",
+            "tenMinutes": "+10 分钟",
+            "watchedWaveFall": "你观察了焦虑波逐渐减弱",
+            "rememberThis": "记住这一点",
+            "veryHigh": "非常高",
+            "fading": "正在减弱",
+            "lower": "降低",
+            "muchLower": "大幅降低",
+            "stillStrong": "这股焦虑仍然很强。",
+            "comingDown": "焦虑强度已经开始下降。",
+            "beginningToSettle": "你的身体正在慢慢平静下来。",
+            "passed": "这股焦虑大部分已经过去。"
+          },
+          "lever": {
+            "lower": "降低",
+            "higher": "升高",
+            "accessibilityShift": "{{label}}。警觉程度变为：{{direction}}。",
+            "shiftInAlertness": "警觉程度变化",
+            "tryAccessibility": "{{label}}。尚未探索。试试这个调节项。",
+            "tryThis": "试试这个调节项"
+          },
+          "workedRewrite": {
+            "move": "步骤",
+            "notebook": "想法改写记录",
+            "originalThought": "原始想法",
+            "workingRewrite": "正在改写",
+            "moveApplied": "已应用步骤",
+            "balanced": "平衡",
+            "lookAgain": "再看看"
+          },
+          "reframeBuilder": {
+            "hotThought": "困扰的想法",
+            "fairerThought": "更公允的想法",
+            "slot": "位置",
+            "ready": "更公允的想法已准备好进行比较。",
+            "nextRemaining": "接下来：{{labels}}（还剩 {{count}} 个）"
+          },
+          "guidedDiscovery": {
+            "clue": "线索",
+            "pattern": "规律"
+          },
+          "whatIf": {
+            "predicted": "你的预测",
+          "actualOutcome": "实际结果"
+          },
+          "lensReplay": {
+            "whatHappened": "发生了什么",
+            "mindAdded": "想法添加了什么",
+            "idea": "核心想法",
+            "revealAccessibility": "{{text}}。点按以揭示。",
+            "progress": "已探索 {{explored}}/{{total}} 个重点"
+          }
+        },
+          "celebration": {
+            "title": "课程已完成！", "perfectTitle": "完美完成！", "continue": "继续",
+            "sharePerfect": "完美完成", "shareComplete": "课程已完成", "shareTitle": "分享你的成果",
+            "shareDialogTitle": "分享你的成果", "chestDescription": "完美一周宝箱",
+            "goalAchieved": "已达成每日目标！", "goalReached": "已完成每日目标，真棒。", "goalAlmost": "快要达成了！",
+            "xpToGo": "还差 {{count}} 点经验", "mute": "关闭庆祝音效", "unmute": "开启庆祝音效",
+            "streakMessage": "连续七天。真了不起！", "perfectBadge": "完美课程", "milestoneDays": "连续 {{count}} 天",
+            "milestoneMessage3": "连续三天，一个习惯正在形成。", "milestoneMessage7": "坚持了一整周，你的内心会感谢你。",
+            "milestoneMessage15": "坚持十五天，这正在成为你的一部分。", "milestoneMessage30": "三十天。整整一个月都在选择照顾自己。",
+            "xp": "经验", "streak": "连续记录", "thisWeek": "本周", "dailyGoal": "每日目标", "day": "天", "days": "天",
+            "chestOpened": "已开启完美一周宝箱，获得 {{xp}} 点经验", "chestOpen": "完美一周，点击开启宝箱",
+            "perfectWeek": "完美一周", "sevenForSeven": "七天全勤！", "chestOpenedHint": "本周每天都完成了，做得好！",
+            "chestOpenHint": "点击开启奖励宝箱", "preparing": "准备中…",
+            "encouragements": ["今天你为自己留出了时间。", "小小的进步也很重要。", "又一次为内心带来的胜利。", "进步的感觉很好，对吧？", "你正在变得更加平静。"],
+            "perfectEncouragements": ["一次都没出错，掌握得真好。", "完美无误，你已经很熟练了。", "每个答案都正确，真棒！"]
+          }
     }
   }
 }

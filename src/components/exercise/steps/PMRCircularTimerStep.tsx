@@ -6,6 +6,7 @@ import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
 import { CircularProgressTimer } from "@/src/components/ui/CircularProgressTimer";
 import type { StepProps } from "@/src/types/exerciseFlow";
+import { useTranslation } from "react-i18next";
 
 export interface PMRAreaConfig {
   value: string;
@@ -41,6 +42,7 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
     minCompleted = 5,
     setPrimaryOverride,
   }) => {
+    const { t } = useTranslation("exercises");
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
 
@@ -133,25 +135,25 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
       if (setPrimaryOverride) {
         if (!isRunning && !isCurrentCompleted) {
           setPrimaryOverride({
-            label: "Start Timer",
+            label: t("flow.ui.engine.timer.start"),
             action: handleToggleTimer,
             disabled: false,
           });
         } else if (isRunning) {
           setPrimaryOverride({
-            label: "Pause Timer",
+            label: t("flow.ui.engine.timer.pause"),
             action: handleToggleTimer,
             disabled: false,
           });
         } else if (isCurrentCompleted) {
           setPrimaryOverride({
-            label: currentIndex < areas.length - 1 ? "Next Area" : "Finish",
+            label: currentIndex < areas.length - 1 ? t("flow.ui.engine.timer.nextArea") : t("flow.ui.engine.timer.finish"),
             action: currentIndex < areas.length - 1 ? handleNextArea : onNext,
             disabled: false,
           });
         }
       }
-    }, [isRunning, isCurrentCompleted, handleToggleTimer, handleNextArea, onNext, currentIndex, areas.length, setPrimaryOverride]);
+    }, [isRunning, isCurrentCompleted, handleToggleTimer, handleNextArea, onNext, currentIndex, areas.length, setPrimaryOverride, t]);
 
     const timerProgress = Math.max(0, Math.min(1, 1 - remainingMs / durationMs));
     const secondsDisplay = Math.ceil(remainingMs / 1000);
@@ -159,7 +161,7 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
     return (
       <StepLayout
         title={title}
-        subtitle={subtitle ?? "Tense and release each muscle group using the timer."}
+        subtitle={subtitle ?? t("flow.ui.engine.timer.fallbackSubtitle")}
         progress={progress}
         stepIndex={stepIndex}
         totalSteps={totalSteps}
@@ -237,7 +239,7 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
                 {secondsDisplay}
               </Text>
               <Text variant="caption" className="text-xs text-ink-muted mt-2 uppercase tracking-widest font-semibold">
-                {isRunning ? "Tensing Muscles..." : isCurrentCompleted ? "Released!" : "Seconds"}
+                {isRunning ? t("flow.ui.engine.timer.tensing") : isCurrentCompleted ? t("flow.ui.engine.timer.released") : t("flow.ui.engine.timer.seconds")}
               </Text>
             </View>
           </CircularProgressTimer>
@@ -248,12 +250,12 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
           <View className="flex-row items-center justify-between pt-2">
             <Pressable onPress={handleSkipCurrent} className="py-2 px-3">
               <Text className="text-xs font-medium text-ink-muted underline">
-                {isCurrentCompleted ? "Run Timer Again" : "Skip Timer & Mark Released"}
+                {isCurrentCompleted ? t("flow.ui.engine.timer.runAgain") : t("flow.ui.engine.timer.skipAndRelease")}
               </Text>
             </Pressable>
 
             <Text className="text-xs font-medium text-sage-600">
-              {completedList.length} of {areas.length} areas released
+              {t("flow.ui.engine.timer.areasReleased", { completed: completedList.length, total: areas.length })}
             </Text>
           </View>
         </View>

@@ -1,0 +1,89 @@
+{
+  "calorie": {
+    "title": "Calorie Tracker",
+    "analyzingFood": "Analyzing your food...",
+    "identifyingNutrition": "AI is identifying nutritional information",
+    "analysisFailed": "Analysis Failed",
+    "tryAgain": "Try Again",
+    "foodAdded": "Food Added Successfully!",
+    "undo": "Undo",
+    "done": "Done",
+    "logged_one": "{{countLabel}} item • {{caloriesLabel}} calories logged to your daily goal.",
+    "logged_other": "{{countLabel}} items • {{caloriesLabel}} calories logged to your daily goal.",
+    "emptyTitle": "Ready to log?",
+    "emptyDescription": "Snap a photo of your meal to instantly track calories and macros.",
+    "takePhoto": "Take Photo",
+    "uploadPhoto": "Upload Photo",
+    "todayMeals": "Today's Meals",
+    "camera": "Camera",
+    "upload": "Upload",
+    "total": "Total",
+    "calorieUnit": "cal",
+    "macros": {
+      "proteinShort": "P",
+      "carbsShort": "C",
+      "fatShort": "F"
+    },
+    "mealNutrients": "{{mealType}} nutrients",
+    "mealTypes": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    }
+  },
+  "permissions": {
+    "required": "Permission Required",
+    "camera": "Camera permission is needed to take photos of your food.",
+    "photoLibrary": "Photo library permission is needed to select photos."
+  },
+  "deleteConfirmation": {
+    "title": "Delete Entry",
+    "message": "Are you sure you want to delete this meal?",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  },
+  "accessibility": {
+    "deleteMeal": "Delete meal",
+    "showNutrientDetails": "Show nutrient details",
+    "back": "Go back",
+    "close": "Close"
+  },
+  "micronutrients": {
+    "title": "Micronutrients",
+    "tracked": "{{countLabel}} of {{totalLabel}} tracked",
+    "selectAll": "Select All",
+    "clearAll": "Clear All",
+    "howItWorks": "How it works",
+    "explanation": "Select nutrients to track. AI will analyze your meals and show how much of each you're consuming in your daily summary.",
+    "vitamins": "Vitamins",
+    "minerals": "Minerals",
+    "dailyTarget": "Daily Target",
+    "dailyValue": "Daily Value",
+    "noData": "No micronutrient data available",
+    "categories": {
+      "vitamin": "vitamin",
+      "mineral": "mineral"
+    }
+  },
+  "healthScore": {
+    "title": "Health Score Analysis",
+    "outOf100": "out of 100",
+    "why": "Why this score?",
+    "gotIt": "Got it!"
+  },
+  "nutrientItems": {
+    "vitaminD2": { "name": "Vitamin D2", "description": "Supports bone health and immune function" },
+    "vitaminD3": { "name": "Vitamin D3", "description": "Essential for calcium absorption" },
+    "vitaminC": { "name": "Vitamin C", "description": "Antioxidant, supports immune system" },
+    "vitaminB12": { "name": "Vitamin B12", "description": "Energy production and brain function" },
+    "vitaminA": { "name": "Vitamin A", "description": "Vision health and immune support" },
+    "vitaminE": { "name": "Vitamin E", "description": "Antioxidant protecting cells" },
+    "vitaminK": { "name": "Vitamin K", "description": "Blood clotting and bone health" },
+    "zinc": { "name": "Zinc", "description": "Immune function and wound healing" },
+    "potassium": { "name": "Potassium", "description": "Heart and muscle function" },
+    "iron": { "name": "Iron", "description": "Oxygen transport in blood" },
+    "calcium": { "name": "Calcium", "description": "Bone and teeth strength" },
+    "magnesium": { "name": "Magnesium", "description": "Muscle and nerve function" }
+  }
+}

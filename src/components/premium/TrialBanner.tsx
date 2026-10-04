@@ -4,6 +4,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { useRevenueCat } from '@/src/context/RevenueCatProvider';
 import { TRIAL_DAYS } from '@/src/screens/OnboardingScreen/constants';
+import { useTranslation } from 'react-i18next';
 
 interface TrialBannerProps {
     trialStartDate: Date | null;
@@ -12,6 +13,7 @@ interface TrialBannerProps {
 
 const TrialBanner: React.FC<TrialBannerProps> = ({ trialStartDate, onUpgrade }) => {
     const { hasPro } = useRevenueCat();
+    const { t } = useTranslation('settings');
 
     const daysRemaining: number = useMemo(() => {
         if (!trialStartDate) return 0;
@@ -39,7 +41,7 @@ const TrialBanner: React.FC<TrialBannerProps> = ({ trialStartDate, onUpgrade }) 
             <TouchableOpacity
                 onPress={handlePress}
                 activeOpacity={0.8}
-                accessibilityLabel={`${daysRemaining} days left in trial. Tap to upgrade.`}
+                accessibilityLabel={t('premiumUi.trialAccessibility', { count: daysRemaining })}
                 accessibilityRole="button"
             >
                 <View
@@ -56,16 +58,16 @@ const TrialBanner: React.FC<TrialBannerProps> = ({ trialStartDate, onUpgrade }) 
                                     }`}
                             >
                                 {daysRemaining === 1
-                                    ? 'Last day of your trial!'
-                                    : `${daysRemaining} days left in your trial`}
+                                    ? t('premiumUi.trialLastDay')
+                                    : t('premiumUi.trialDaysLeft', { count: daysRemaining })}
                             </Text>
                             <Text
                                 className={`text-xs font-medium mt-0.5 ${isUrgent ? 'text-red-500' : 'text-purple-500'
                                     }`}
                             >
                                 {isUrgent
-                                    ? "Don't lose access to premium features"
-                                    : 'Upgrade to keep all features'}
+                                    ? t('premiumUi.keepPremiumAccess')
+                                    : t('premiumUi.keepAllFeatures')}
                             </Text>
                         </View>
                     </View>
@@ -73,7 +75,7 @@ const TrialBanner: React.FC<TrialBannerProps> = ({ trialStartDate, onUpgrade }) 
                         className={`rounded-full px-3 py-1.5 ${isUrgent ? 'bg-red-500' : 'bg-purple-600'
                             }`}
                     >
-                        <Text className="text-white text-xs font-bold">Upgrade</Text>
+                        <Text className="text-white text-xs font-bold">{t('premiumUi.upgrade')}</Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -82,4 +84,3 @@ const TrialBanner: React.FC<TrialBannerProps> = ({ trialStartDate, onUpgrade }) 
 };
 
 export default React.memo(TrialBanner);
-

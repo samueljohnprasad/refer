@@ -5,10 +5,11 @@ import { Card } from "@/src/components/ui/Card";
 import { LifeDomainScore } from "@/src/network/genAi";
 import { View } from "@/components/Themed";
 import { Pressable, TouchableOpacity, ActivityIndicator } from "react-native";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
-import { ScrollView } from "react-native-gesture-handler";
-import { LinearGradient } from "expo-linear-gradient";
+import { Feather } from "@expo/vector-icons";
 import { SkiaRadarChart, RadarDataPoint } from "./SkiaRadarChart";
+import { useTranslation } from "react-i18next";
+import { LifeDomainBalanceLocked } from "./LifeDomainBalanceLocked";
+import { LifeDomainBalanceDetails, translateLifeDomain } from "./LifeDomainBalanceDetails";
 
 interface LifeDomainBalanceWheelProps {
   data: LifeDomainScore[];
@@ -17,43 +18,20 @@ interface LifeDomainBalanceWheelProps {
   premium?: boolean;
 }
 
-const domainIcons: { [key: string]: string } = {
-  "Work/Career": "💼",
-  Relationships: "❤️",
-  Health: "🏃",
-  "Personal Growth": "🌱",
-  Recreation: "🎮",
-  Spirituality: "🧘",
-};
-
-const domainColors: { [key: string]: string } = {
-  "Work/Career": "#7B61FF",
-  Relationships: "#EC4899",
-  Health: "#10B981",
-  "Personal Growth": "#F59E0B",
-  Recreation: "#3B82F6",
-  Spirituality: "#8B5CF6",
-};
-
-const trendIcons = {
-  improving: "↗️",
-  stable: "→",
-  declining: "↘️",
-};
-
 export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
   data,
   insight,
   loading = false,
   premium = false,
 }) => {
+  const { t } = useTranslation("insights");
   const chartData: RadarDataPoint[] = useMemo(() => {
     if (!data || data.length === 0) return [];
     return data.map((d) => ({
-      label: d.domain,
+      label: translateLifeDomain(t, d.domain),
       value: d.score / 100,
     }));
-  }, [data]);
+  }, [data, t]);
 
   // Calculate statistics
   const stats = useMemo(() => {
@@ -107,32 +85,7 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
   if (!premium) {
     return (
       <TouchableOpacity activeOpacity={0.95}>
-        <LinearGradient
-          colors={["#7B61FF", "#9C7CFF"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          className="rounded-2xl p-8 shadow-lg"
-        >
-          <View className="items-center">
-            <View className="w-20 h-20 bg-white/30 rounded-full items-center justify-center mb-5">
-              <MaterialIcons name="donut-large" size={36} color="#FFF" />
-            </View>
-            <Text variant="h2" className="text-white mb-3">
-              Life Domain Balance Wheel
-            </Text>
-            <Text
-              variant="body"
-              className="text-white/90 text-center mb-5 font-medium"
-            >
-              Visualize balance across all areas of your life
-            </Text>
-            <View className="bg-white/30 px-5 py-2.5 rounded-full">
-              <Text variant="label-bold" className="text-white">
-                🔒 Premium Feature
-              </Text>
-            </View>
-          </View>
-        </LinearGradient>
+        <LifeDomainBalanceLocked />
       </TouchableOpacity>
     );
   }
@@ -143,7 +96,7 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
         <View className="items-center py-8">
           <ActivityIndicator size="large" color="#7B61FF" />
           <Text variant="body" className="text-gray-500 mt-4">
-            Analyzing life balance...
+            {t("lifeBalance.analyzing")}
           </Text>
         </View>
       </Card>
@@ -154,7 +107,7 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
     return (
       <View className="py-8 items-center justify-center">
         <Text variant="caption-muted" className="text-center font-medium">
-          No balance data yet.{"\n"}Journal about different life areas to see your wheel.
+          {t("lifeBalance.empty")}
         </Text>
       </View>
     );
@@ -166,7 +119,7 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
         <View className="flex-row items-center justify-between mb-2">
           <View className="flex-1">
             <View className="flex-row items-center">
-              <Text variant="h2">Life Domain Balance</Text>
+              <Text variant="h2">{t("lifeBalance.title")}</Text>
               <Tooltip
                 placement="bottom"
                 trigger={(triggerProps) => (
@@ -178,39 +131,35 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
                 <TooltipContent className="max-w-xs">
                   <TooltipText className="text-white">
                     <Text className="font-bold">
-                      How it's calculated:{"\n\n"}
+                      {t("lifeBalance.howCalculated")}:{"\n\n"}
                     </Text>
                     <Text>
-                      • Balance Score: Measures how evenly distributed your
-                      focus is across life domains (higher = more balanced)
+                      • {t("lifeBalance.balanceScore")}: {t("lifeBalance.balanceScoreHelp")}
                       {"\n"}
                     </Text>
                     <Text>
-                      • Domain Scores (0-100): AI analyzes journal entries to
-                      score each life area{"\n"}
+                      • {t("lifeBalance.domainScores")}: {t("lifeBalance.domainScoresHelp")}{"\n"}
                     </Text>
                     <Text>
-                      • Trends: Tracks if each domain is improving, stable, or
-                      declining{"\n"}
+                      • {t("lifeBalance.trends")}: {t("lifeBalance.trendsHelp")}{"\n"}
                     </Text>
                     <Text>
-                      • Predictions: Forecasts next month's scores based on
-                      current patterns{"\n\n"}
+                      • {t("lifeBalance.predictions")}: {t("lifeBalance.predictionsHelp")}{"\n\n"}
                     </Text>
                     <Text className="font-bold">
-                      Helps identify neglected life areas needing attention
+                      {t("lifeBalance.helpsIdentify")}
                     </Text>
                   </TooltipText>
                 </TooltipContent>
               </Tooltip>
             </View>
             <Text variant="caption-muted" className="mt-1">
-              Your life areas at a glance
+              {t("lifeBalance.atAGlance")}
             </Text>
           </View>
           <View className="items-end">
             <Text variant="h2">{stats.balanceScore.toFixed(0)}%</Text>
-            <Text variant="caption-muted">Balance Score</Text>
+            <Text variant="caption-muted">{t("lifeBalance.balanceScore")}</Text>
           </View>
         </View>
       </View>
@@ -232,141 +181,14 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
         />
       </View>
 
-      {/* Domain Details */}
-      <ScrollView className="px-6 pb-4 max-h-48">
-        <Text variant="label-bold" className="mb-3">
-          Domain Breakdown
-        </Text>
-        {data.map((domain, i) => (
-          <View key={i} className="mb-3">
-            <View className="flex-row items-center justify-between mb-1">
-              <View className="flex-row items-center flex-1">
-                <Text variant="body" className="text-lg mr-2">
-                  {domainIcons[domain.domain]}
-                </Text>
-                <Text variant="body" className="font-medium">
-                  {domain.domain}
-                </Text>
-                <Text variant="body" className="ml-2">
-                  {trendIcons[domain.trend]}
-                </Text>
-                {domain.attention_needed && (
-                  <View className="ml-2 bg-red-100 px-2 py-0.5 rounded-full">
-                    <Text
-                      variant="caption-muted"
-                      className="text-red-700 font-medium"
-                    >
-                      Needs Attention
-                    </Text>
-                  </View>
-                )}
-              </View>
-              <Text variant="label-bold">{domain.score}%</Text>
-            </View>
-            <View className="bg-gray-200 rounded-full h-2 overflow-hidden">
-              <View
-                className="h-full rounded-full"
-                style={{
-                  width: `${domain.score}%`,
-                  backgroundColor: domainColors[domain.domain],
-                }}
-              />
-            </View>
-            {domain.insights && (
-              <Text variant="caption-muted" className="mt-1">
-                {domain.insights}
-              </Text>
-            )}
-          </View>
-        ))}
-      </ScrollView>
-
-      {/* Key Insights */}
-      <View className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-        <Text variant="label-bold" className="mb-2">
-          Key Insights
-        </Text>
-        <View className="space-y-2">
-          {stats.lowestDomain && (
-            <View className="flex-row items-start">
-              <View className="w-2 h-2 bg-red-400 rounded-full mt-1.5 mr-2" />
-              <Text variant="body" className="flex-1">
-                <Text variant="label-bold">{stats.lowestDomain.domain}</Text>{" "}
-                needs the most attention ({stats.lowestDomain.score}%)
-              </Text>
-            </View>
-          )}
-          {stats.highestDomain && (
-            <View className="flex-row items-start">
-              <View className="w-2 h-2 bg-green-400 rounded-full mt-1.5 mr-2" />
-              <Text variant="body" className="flex-1">
-                <Text variant="label-bold">{stats.highestDomain.domain}</Text>{" "}
-                is your strongest area ({stats.highestDomain.score}%)
-              </Text>
-            </View>
-          )}
-          {stats.needsAttention.length > 1 && (
-            <View className="flex-row items-start">
-              <View className="w-2 h-2 bg-orange-400 rounded-full mt-1.5 mr-2" />
-              <Text variant="body" className="flex-1">
-                {stats.needsAttention.length} domains need immediate attention
-              </Text>
-            </View>
-          )}
-        </View>
-      </View>
-
-      {/* AI Insight */}
-      {insight && (
-        <View className="px-6 py-4 bg-purple-50 border-t border-purple-100">
-          <View className="flex-row items-start">
-            <Text variant="body" className="text-lg mr-2">
-              🎯
-            </Text>
-            <View className="flex-1">
-              <Text variant="label-bold" className="text-purple-900 mb-1">
-                Balance Recommendation
-              </Text>
-              <Text variant="body" className="text-purple-700">
-                {insight}
-              </Text>
-            </View>
-          </View>
-        </View>
-      )}
-
-      {/* Predicted Changes */}
-      <View className="px-6 py-4 border-t border-gray-100">
-        <Text variant="label-bold" className="mb-2">
-          Next Month Prediction
-        </Text>
-        <View className="bg-sage-50 rounded-lg p-3">
-          <View className="flex-row flex-wrap">
-            {predictions.map((pred, i) => (
-              <View key={i} className="flex-row items-center mr-4 mb-2">
-                <Text
-                  variant="caption-muted"
-                  className="font-medium text-gray-700"
-                >
-                  {pred.domain.split("/")[0]}:
-                </Text>
-                <View className="flex-row items-center ml-1">
-                  {pred.trend === "improving" ? (
-                    <Feather name="trending-up" size={12} color="#10B981" />
-                  ) : pred.trend === "declining" ? (
-                    <Feather name="trending-down" size={12} color="#EF4444" />
-                  ) : (
-                    <Feather name="minus" size={12} color="#6B7280" />
-                  )}
-                  <Text variant="caption-muted" className="ml-1 font-semibold">
-                    {pred.predicted}%
-                  </Text>
-                </View>
-              </View>
-            ))}
-          </View>
-        </View>
-      </View>
+      <LifeDomainBalanceDetails
+        data={data}
+        predictions={predictions}
+        lowestDomain={stats.lowestDomain}
+        highestDomain={stats.highestDomain}
+        needsAttentionCount={stats.needsAttention.length}
+        insight={insight}
+      />
     </Card>
   );
 };

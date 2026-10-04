@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   View,
   Text,
@@ -39,34 +40,42 @@ interface CalorieTrackerScreenProps {
 
 // ─── Sub-views ────────────────────────────────────────────────────────────────
 
-const AnalyzingBanner: React.FC = () => (
-  <View className="bg-white rounded-2xl px-6 py-7 mb-4 items-center shadow-sm border border-gray-100">
-    <ActivityIndicator size="large" color="#4B5563" />
-    <Text className="text-gray-800 font-medium mt-4 text-center">
-      Analyzing your food...
-    </Text>
-    <Text className="text-gray-500 text-sm mt-1 text-center">
-      AI is identifying nutritional information
-    </Text>
-  </View>
-);
+const AnalyzingBanner: React.FC = () => {
+  const { t } = useTranslation("tracking");
+
+  return (
+    <View className="bg-white rounded-2xl px-6 py-7 mb-4 items-center shadow-sm border border-gray-100">
+      <ActivityIndicator size="large" color="#4B5563" />
+      <Text className="text-gray-800 font-medium mt-4 text-center">
+        {t("calorie.analyzingFood")}
+      </Text>
+      <Text className="text-gray-500 text-sm mt-1 text-center">
+        {t("calorie.identifyingNutrition")}
+      </Text>
+    </View>
+  );
+};
 
 interface ErrorBannerProps {
   error: string;
   onRetry: () => void;
 }
-const ErrorBanner: React.FC<ErrorBannerProps> = ({ error, onRetry }) => (
-  <View className="bg-red-50 rounded-2xl p-4 mb-4 border border-red-100">
-    <Text className="text-red-600 font-medium">Analysis Failed</Text>
-    <Text className="text-red-500 text-sm mt-1">{error}</Text>
-    <TouchableOpacity
-      className="mt-3 bg-red-100 py-2 px-4 rounded-lg self-start"
-      onPress={onRetry}
-    >
-      <Text className="text-red-600 font-medium">Try Again</Text>
-    </TouchableOpacity>
-  </View>
-);
+const ErrorBanner: React.FC<ErrorBannerProps> = ({ error, onRetry }) => {
+  const { t } = useTranslation("tracking");
+
+  return (
+    <View className="bg-red-50 rounded-2xl p-4 mb-4 border border-red-100">
+      <Text className="text-red-600 font-medium">{t("calorie.analysisFailed")}</Text>
+      <Text className="text-red-500 text-sm mt-1">{error}</Text>
+      <TouchableOpacity
+        className="mt-3 bg-red-100 py-2 px-4 rounded-lg self-start"
+        onPress={onRetry}
+      >
+        <Text className="text-red-600 font-medium">{t("calorie.tryAgain")}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 interface SuccessBannerProps {
   itemCount: number;
@@ -79,28 +88,36 @@ const SuccessBanner: React.FC<SuccessBannerProps> = ({
   totalCalories,
   onDone,
   onUndo,
-}) => (
-  <View className="bg-green-50 rounded-2xl p-4 mb-4 border border-green-100">
-    <HStack className="justify-between items-center mb-2">
-      <Text className="text-green-800 font-semibold">
-        ✓ Food Added Successfully!
-      </Text>
-      <HStack space="md">
-        {onUndo && (
-          <TouchableOpacity onPress={onUndo}>
-            <Text className="text-green-700 font-medium opacity-70">Undo</Text>
+}) => {
+  const { t, i18n } = useTranslation("tracking");
+
+  return (
+    <View className="bg-green-50 rounded-2xl p-4 mb-4 border border-green-100">
+      <HStack className="justify-between items-center mb-2">
+        <Text className="text-green-800 font-semibold">
+          ✓ {t("calorie.foodAdded")}
+        </Text>
+        <HStack space="md">
+          {onUndo && (
+            <TouchableOpacity onPress={onUndo}>
+              <Text className="text-green-700 font-medium opacity-70">{t("calorie.undo")}</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity onPress={onDone}>
+            <Text className="text-green-700 font-medium">{t("calorie.done")}</Text>
           </TouchableOpacity>
-        )}
-        <TouchableOpacity onPress={onDone}>
-          <Text className="text-green-700 font-medium">Done</Text>
-        </TouchableOpacity>
+        </HStack>
       </HStack>
-    </HStack>
-    <Text className="text-green-600 text-sm mt-1">
-      {itemCount} item{itemCount !== 1 ? "s" : ""} • {totalCalories} calories logged to your daily goal.
-    </Text>
-  </View>
-);
+      <Text className="text-green-600 text-sm mt-1">
+        {t("calorie.logged", {
+          count: itemCount,
+          countLabel: new Intl.NumberFormat(i18n.language).format(itemCount),
+          caloriesLabel: new Intl.NumberFormat(i18n.language).format(totalCalories),
+        })}
+      </Text>
+    </View>
+  );
+};
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
@@ -108,6 +125,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
   selectedDate = new Date(),
 }) => {
   const router = useRouter();
+  const { t } = useTranslation("tracking");
 
   const {
     calorieEntries,
@@ -136,7 +154,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
         {/* Header - Only show when not empty */}
         {calorieEntries.length > 0 && (
           <SectionHeader
-            title="Calorie Tracker"
+            title={t("calorie.title")}
             icon={AppleIcon}
             count={
               dailySummary.mealCount > 0 ? dailySummary.mealCount : undefined
@@ -180,13 +198,13 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
           ) : calorieEntries.length === 0 ? (
             <EmptyState
               mascotState="panda-confused-thinking"
-              title="Ready to log?"
-              description="Snap a photo of your meal to instantly track calories and macros."
-              buttonText="Take Photo"
+              title={t("calorie.emptyTitle")}
+              description={t("calorie.emptyDescription")}
+              buttonText={t("calorie.takePhoto")}
               onButtonPress={takePhoto}
               buttonIcon={Camera01Icon}
               buttonLoading={isAnalyzing || isLoading}
-              secondaryButtonText="Upload Photo"
+              secondaryButtonText={t("calorie.uploadPhoto")}
               onSecondaryButtonPress={pickImage}
               secondaryButtonIcon={Image01Icon}
               secondaryButtonLoading={isAnalyzing || isLoading}
@@ -195,7 +213,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
           ) : (
             <View className="mt-4 mb-4">
               <Text className="text-gray-800 font-semibold text-base mb-3">
-                Today's Meals
+                {t("calorie.todayMeals")}
               </Text>
               {calorieEntries.map((entry) => (
                 <MealEntryCard
@@ -210,7 +228,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
               
               <View className="mt-6 flex-row gap-3">
                 <Button
-                  label="Camera"
+                  label={t("calorie.camera")}
                   variant="primary"
                   size="lg"
                   className="flex-1"
@@ -219,7 +237,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
                   loading={isAnalyzing || isLoading}
                 />
                 <Button
-                  label="Upload"
+                  label={t("calorie.upload")}
                   variant="secondary"
                   size="lg"
                   className="flex-1"

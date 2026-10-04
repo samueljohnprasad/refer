@@ -186,7 +186,203 @@
       "scoreShiftLighter": "Menos convincente por {{count}}",
       "scoreBefore": "antes /10",
       "scoreAfter": "después /10",
-      "applyIt": "Aplicar: {{label}}"
+      "applyIt": "Aplicar: {{label}}",
+        "engine": {
+          "exampleStarters": "Ejemplos para empezar",
+          "minutesShort": "min",
+          "timer": {
+            "start": "Iniciar temporizador",
+            "pause": "Pausar temporizador",
+            "nextArea": "Siguiente zona",
+            "finish": "Terminar",
+            "fallbackSubtitle": "Tensa y relaja cada grupo muscular con el temporizador.",
+            "tensing": "Tensando los músculos…",
+            "released": "¡Relajado!",
+            "seconds": "Segundos",
+            "runAgain": "Repetir temporizador",
+            "skipAndRelease": "Omitir y marcar como relajado",
+            "areasReleased": "{{completed}} de {{total}} zonas relajadas"
+          }
+        },
+        "abc": {
+          "event": {
+            "title": "¿Qué pasó?",
+            "subtitle": "Empieza por el momento, no por lo que significó.",
+            "tip": "Describe lo que una cámara podría haber visto u oído.",
+            "placeholder": "Describe lo que pasó…"
+          },
+          "belief": {
+            "title": "Pensamiento automático",
+            "subtitle": "Escribe la frase que añadió tu mente.",
+            "tip": "Aún no intentes ser justo. Solo identifícala.",
+            "placeholder": "El pensamiento fue…"
+          },
+          "behavior": {
+            "title": "¿Qué hiciste después?",
+            "subtitle": "Nombra la reacción que siguió.",
+            "tip": "¿Qué hiciste, evitaste, dijiste o repetiste?",
+            "placeholder": "Respondí…"
+          },
+          "alternativeBelief": {
+            "title": "Pensamiento más equilibrado",
+            "subtitle": "Escribe una versión más justa que siga pareciéndote creíble.",
+            "placeholder": "Un pensamiento más justo podría ser…"
+          },
+          "newConsequence": {
+            "title": "¿Qué podría cambiar ahora?",
+            "subtitle": "Si mantuvieras ese pensamiento, ¿qué podría sentirse o salir diferente?",
+            "placeholder": "Con ese pensamiento, podría…"
+          },
+          "automaticThought": "Pensamiento automático",
+          "suggestions": {
+            "event": [
+              "Mi responsable me dio comentarios difíciles.",
+              "Envié un mensaje y no recibí respuesta.",
+              "Mis planes cambiaron en el último momento."
+            ],
+            "belief": [
+              "Siempre lo estropeo todo.",
+              "Seguro que están molestos conmigo.",
+              "No puedo con esto."
+            ],
+            "behavior": [
+              "Me cerré y dejé de responder.",
+              "Evité ocuparme de ello.",
+              "No dejé de darle vueltas."
+            ],
+            "balancedThought": [
+              "Esto es difícil, pero un momento no me define.",
+              "Aún no conozco toda la historia.",
+              "Puedo dar un paso útil cada vez."
+            ],
+            "newConsequence": [
+              "Puede que me sienta más tranquilo y responda con más claridad.",
+              "Puede que haga una pausa en vez de agobiarme.",
+              "Puede que dé un siguiente paso útil."
+            ]
+          }
+        },
+        "gratitude": {
+          "summaryTitle": "Gratitud reconocida",
+          "summarySubtitle": "Esto es lo que nombraste y cómo cambió tu estado de ánimo."
+        },
+        "thoughtReframing": {
+          "evidenceAgainstTitle": "Pruebas en contra",
+          "evidenceAgainstSubtitle": "¿Qué hechos no encajan con la predicción?",
+          "findingStartingPoints": "Buscando ideas para empezar…"
+        },
+        "categoryEngine": {
+          "checkpoint": {
+            "workedSupport": "Ejemplo guiado",
+            "next": "Siguiente",
+            "orderRetry": "Algunos elementos no están en el lugar correcto. ¡Inténtalo de nuevo!",
+            "checkOrder": "Comprobar orden",
+            "revealAnswer": "Mostrar respuesta",
+            "needPractice": "Necesito practicar",
+            "gotIt": "Lo tengo"
+          },
+          "socratic": {
+            "you": "TÚ",
+            "person": "PERSONA",
+            "guidance": "GUÍA",
+            "whatWeKnowSoFar": "Lo que sabemos hasta ahora",
+            "prediction": "LA PREDICCIÓN",
+            "whatWeKnow": "LO QUE SABEMOS",
+            "balancedThought": "PENSAMIENTO EQUILIBRADO",
+            "skill": "LA HABILIDAD",
+            "showHint": "Mostrar pista",
+            "hideHint": "Ocultar pista",
+            "hint": "Pista",
+          "hideHintAction": "Ocultar pista",
+          "youAsked": "Preguntaste: {{text}}",
+          "personSays": "La persona dice: {{text}}",
+          "guidanceLabel": "Orientación: {{text}}",
+          "predictionLabel": "Predicción: {{text}}",
+          "evidenceLabel": "Lo que sabemos: {{text}}",
+          "skillLabel": "La habilidad: {{text}}"
+          },
+          "explorable": {
+            "lever": "Control",
+            "optionalSandbox": "Espacio de prueba opcional",
+            "reset": "Restablecer",
+            "complete": "Has probado todos los controles.",
+            "exploreFreely": "Explorar libremente"
+          },
+          "concept": {
+            "myth": "EL MITO",
+            "reality": "LA REALIDAD"
+          },
+          "surge": {
+            "elapsedSincePeak": "Tiempo transcurrido desde el pico",
+            "peak": "PICO",
+            "tenMinutes": "+10 MIN",
+            "watchedWaveFall": "HAS OBSERVADO CÓMO BAJA LA OLA",
+            "rememberThis": "RECUERDA ESTO",
+            "veryHigh": "MUY ALTO",
+            "fading": "BAJANDO",
+            "lower": "MÁS BAJO",
+            "muchLower": "MUCHO MÁS BAJO",
+            "stillStrong": "La intensidad aún es alta.",
+            "comingDown": "La intensidad ya está bajando.",
+            "beginningToSettle": "Tu cuerpo empieza a calmarse.",
+            "passed": "La mayor parte de la intensidad ya pasó."
+          },
+          "lever": {
+            "lower": "MÁS BAJO",
+            "higher": "MÁS ALTO",
+            "accessibilityShift": "{{label}}. Cambia el nivel de alerta: {{direction}}.",
+            "shiftInAlertness": "Cambio en el estado de alerta",
+            "tryAccessibility": "{{label}}. Aún no explorado. Prueba este control.",
+            "tryThis": "Probar este control"
+          },
+          "workedRewrite": {
+            "move": "Paso",
+            "notebook": "Cuaderno de reformulación",
+            "originalThought": "Pensamiento original",
+            "workingRewrite": "Reformulación en curso",
+            "moveApplied": "Paso aplicado",
+            "balanced": "Equilibrado",
+            "lookAgain": "Revisa de nuevo"
+          },
+          "reframeBuilder": {
+            "hotThought": "Pensamiento difícil",
+            "fairerThought": "Pensamiento más justo",
+            "slot": "Espacio",
+            "ready": "Tu pensamiento más justo está listo para compararlo.",
+            "nextRemaining": "Siguiente: {{labels}} (quedan {{count}})"
+          },
+          "guidedDiscovery": {
+            "clue": "Pista",
+            "pattern": "El patrón"
+          },
+          "whatIf": {
+            "predicted": "Lo que predijiste",
+          "actualOutcome": "Resultado real"
+          },
+          "lensReplay": {
+            "whatHappened": "QUÉ PASÓ",
+            "mindAdded": "LO QUE AÑADIÓ LA MENTE",
+            "idea": "LA IDEA",
+            "revealAccessibility": "{{text}}. Mostrar.",
+            "progress": "{{explored}} de {{total}} fragmentos explorados"
+          }
+        },
+          "celebration": {
+            "title": "¡Lección completada!", "perfectTitle": "¡Lección perfecta!", "continue": "Continuar",
+            "sharePerfect": "Lección perfecta", "shareComplete": "Lección completada", "shareTitle": "Comparte tu logro",
+            "shareDialogTitle": "Comparte tu logro", "chestDescription": "Cofre de semana perfecta",
+            "goalAchieved": "¡Objetivo diario alcanzado!", "goalReached": "Objetivo diario alcanzado. ¡Genial!", "goalAlmost": "¡Ya casi!",
+            "xpToGo": "Te faltan {{count}} XP", "mute": "Silenciar sonidos de celebración", "unmute": "Activar sonidos de celebración",
+            "streakMessage": "Siete días seguidos. ¡Mira qué bien!", "perfectBadge": "LECCIÓN PERFECTA", "milestoneDays": "{{count}} DÍAS SEGUIDOS",
+            "milestoneMessage3": "Tres días seguidos: se está formando un hábito.", "milestoneMessage7": "Una semana entera haciéndote presente. Tu mente te lo agradece.",
+            "milestoneMessage15": "Quince días con constancia. Esto ya forma parte de ti.", "milestoneMessage30": "Treinta días. Un mes entero eligiéndote.",
+            "xp": "XP", "streak": "RACHA", "thisWeek": "ESTA SEMANA", "dailyGoal": "OBJETIVO DIARIO", "day": "DÍA", "days": "DÍAS",
+            "chestOpened": "Cofre de semana perfecta abierto. Más {{xp}} XP", "chestOpen": "Semana perfecta. Toca para abrir el cofre",
+            "perfectWeek": "SEMANA PERFECTA", "sevenForSeven": "¡Siete de siete!", "chestOpenedHint": "Has completado todos los días de esta semana. ¡Bien hecho!",
+            "chestOpenHint": "Toca para abrir tu cofre de bonificación", "preparing": "Preparando…",
+            "encouragements": ["Hoy has estado ahí para ti.", "Los pequeños pasos sí cuentan.", "Una victoria más para tu mente.", "El progreso sienta bien, ¿verdad?", "Estás construyendo una versión más tranquila de ti."],
+            "perfectEncouragements": ["Ni un solo error. Eso es dominarlo.", "Impecable: sabes muy bien cómo hacerlo.", "Todas las respuestas acertadas. ¡Aplausos!"]
+          }
     }
   }
 }

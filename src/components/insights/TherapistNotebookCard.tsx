@@ -21,7 +21,7 @@ import {
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
-import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 if (
   Platform.OS === "android" &&
@@ -33,6 +33,7 @@ if (
 // ─── Locked state ────────────────────────────────────────────────────────────
 
 function LockedNotebookCard({ onUnlock }: { onUnlock: () => void }) {
+  const { t } = useTranslation("insights");
   return (
     <Pressable
       onPress={onUnlock}
@@ -43,15 +44,16 @@ function LockedNotebookCard({ onUnlock }: { onUnlock: () => void }) {
         <Text className="text-[16px]">📓</Text>
         <HugeiconsIcon icon={LockIcon} size={14} color={SEMANTIC_COLORS.text.tertiary} />
         <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-0">
-          Therapist's Notebook
+          {t("therapistNotebook.title")}
         </Text>
         <View className="flex-row items-center gap-1 px-2 py-1 rounded-[10px] border" style={[{ backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
-          <Text className="text-[11px] font-semibold" style={[{ color: "#7E22CE" }]}>PRO</Text>
+          <Text className="text-[11px] font-semibold" style={[{ color: "#7E22CE" }]}>
+            {t("shared.proLabel")}
+          </Text>
         </View>
       </View>
       <Text className="text-[12px] text-ink-muted leading-relaxed">
-        Your weekly AI analysis is ready. Unlock to see what patterns a
-        therapist would notice across your sessions.
+        {t("therapistNotebook.lockedDescription")}
       </Text>
     </Pressable>
   );
@@ -60,12 +62,13 @@ function LockedNotebookCard({ onUnlock }: { onUnlock: () => void }) {
 // ─── Expanded content ────────────────────────────────────────────────────────
 
 function NotebookContent({ insight }: { insight: TherapistInsight }) {
+  const { t } = useTranslation("insights");
   return (
     <View className="mt-3">
       {/* Core belief */}
       <View className="mb-4">
         <Text className="text-[11px] font-bold text-ink-muted uppercase tracking-wider mb-1.5">
-          Core belief detected
+          {t("therapistNotebook.coreBeliefDetected")}
         </Text>
         <View className="bg-red-50 rounded-xl p-3 border border-red-100">
           <Text className="text-[14px] font-semibold text-red-800 italic leading-relaxed">
@@ -77,7 +80,7 @@ function NotebookContent({ insight }: { insight: TherapistInsight }) {
       {/* Manifestations */}
       <View className="mb-4">
         <Text className="text-[11px] font-bold text-ink-muted uppercase tracking-wider mb-2">
-          How it shows up
+          {t("therapistNotebook.howItShowsUp")}
         </Text>
         {insight.manifestations.slice(0, 3).map((m, i) => (
           <View key={i} className="flex-row items-start mb-2">
@@ -106,7 +109,7 @@ function NotebookContent({ insight }: { insight: TherapistInsight }) {
       {/* What's working */}
       <View className="mb-4">
         <Text className="text-[11px] font-bold text-ink-muted uppercase tracking-wider mb-1.5">
-          What's working
+          {t("therapistNotebook.whatsWorking")}
         </Text>
         <Text className="text-[13px] text-ink leading-relaxed">
           {insight.whatIsWorking}
@@ -117,7 +120,7 @@ function NotebookContent({ insight }: { insight: TherapistInsight }) {
       {insight.bestEvidence && (
         <View className="mb-4">
           <Text className="text-[11px] font-bold text-ink-muted uppercase tracking-wider mb-1.5">
-            Your strongest evidence
+            {t("therapistNotebook.strongestEvidence")}
           </Text>
           <View
             className="rounded-xl p-3 border"
@@ -133,7 +136,7 @@ function NotebookContent({ insight }: { insight: TherapistInsight }) {
                 color={SEMANTIC_COLORS.brand.pressed}
               />
               <Text className="text-[11px] font-semibold text-sage-600">
-                Saved to Coping Cards
+                {t("therapistNotebook.savedToCopingCards")}
               </Text>
             </View>
           </View>
@@ -143,7 +146,7 @@ function NotebookContent({ insight }: { insight: TherapistInsight }) {
       {/* Suggestion */}
       <View className="bg-sage-pill rounded-xl p-3 border border-sage-200/50">
         <Text className="text-[11px] font-bold text-sage-700 uppercase tracking-wider mb-1">
-          Suggestion for this week
+          {t("therapistNotebook.weeklySuggestion")}
         </Text>
         <Text className="text-[13px] text-sage-800 leading-relaxed">
           {insight.suggestion}
@@ -152,7 +155,7 @@ function NotebookContent({ insight }: { insight: TherapistInsight }) {
 
       {/* Disclaimer */}
       <Text className="text-[10px] text-ink-muted mt-4 leading-relaxed text-center">
-        AI-detected patterns from your exercises. Not a clinical assessment.
+        {t("therapistNotebook.disclaimer")}
       </Text>
     </View>
   );
@@ -161,6 +164,7 @@ function NotebookContent({ insight }: { insight: TherapistInsight }) {
 // ─── Main component ──────────────────────────────────────────────────────────
 
 export function TherapistNotebookCard() {
+  const { t, i18n } = useTranslation("insights");
   const { data, isLoading } = useTherapistNotebook();
   const { hasPro, presentPaywall } = useRevenueCat();
   const [expanded, setExpanded] = useState(false);
@@ -171,7 +175,10 @@ export function TherapistNotebookCard() {
 
   if (isLoading || !data) return null;
 
-  const dateLabel = dayjs(data.generatedAt).format("MMM D");
+  const dateLabel = new Date(data.generatedAt).toLocaleDateString(
+    i18n.resolvedLanguage ?? i18n.language,
+    { month: "short", day: "numeric" },
+  );
 
   const toggleExpand = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -184,10 +191,12 @@ export function TherapistNotebookCard() {
         <View className="flex-row items-center gap-2 mb-1">
           <Text className="text-[16px]">📓</Text>
           <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-0">
-            Therapist's Notebook
+            {t("therapistNotebook.title")}
           </Text>
           <View className="flex-row items-center gap-1 px-2 py-1 rounded-[10px] border" style={[{ backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
-            <Text className="text-[11px] font-semibold" style={[{ color: "#7E22CE" }]}>PRO</Text>
+            <Text className="text-[11px] font-semibold" style={[{ color: "#7E22CE" }]}>
+              {t("shared.proLabel")}
+            </Text>
           </View>
           <View className="flex-1" />
           <HugeiconsIcon
@@ -199,7 +208,10 @@ export function TherapistNotebookCard() {
 
         {!expanded && (
           <Text className="text-[12px] text-ink-muted mt-1" numberOfLines={2}>
-            Updated {dateLabel}: “{data.coreBeliefIdentified}”
+          {t("therapistNotebook.updated", {
+            date: dateLabel,
+            belief: data.coreBeliefIdentified,
+          })}
           </Text>
         )}
       </Pressable>

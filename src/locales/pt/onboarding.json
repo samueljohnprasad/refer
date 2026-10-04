@@ -1,4 +1,25 @@
 {
+  "future_letter_screen": {
+    "date_label": "{{date}} · {{weekday}}, {{moment}}",
+    "greeting": "Olá,",
+    "header_label": "Chegou algo para ti",
+    "headline_start": "Uma carta de",
+    "headline_emphasis": "ti,",
+    "subtitle": "escrita daqui a 30 dias.",
+    "moments": { "morning": "de manhã", "afternoon": "à tarde", "evening": "à noite", "night": "já de madrugada" },
+    "body": {
+      "intro": "Escrevo-te numa {{weekday}} {{moment}}. Acabei de fechar a Happy",
+      "closed_app": "há cinco minutos.",
+      "just_like_you": "Tal como tu farás daqui a pouco.",
+      "honesty": "Não te vou mentir. O ruído não desapareceu. Algumas manhãs, os pensamentos continuam acelerados. Algumas noites, o peso continua lá.",
+      "caught_it": "Mas ontem, quando a espiral começou, dei por ela. Dei-lhe um nome e fiquei com ela durante trinta segundos.",
+      "didnt_grow": "E não cresceu mais.",
+      "thirty_days_ago": "Há trinta dias, isso não era possível.",
+      "showed_up": "Hoje estiveste presente. Cinco minutos, tal como prometeste no compromisso que assinaste.",
+      "keep_going": "Continua.",
+      "changed": "Já não somos a mesma pessoa."
+    }
+  },
   "header": {
     "your_course": "O SEU CURSO",
     "quiet_moment": "UM MOMENTO DE CALMA"
@@ -32,6 +53,7 @@
     "today": "Hoje",
     "start_here": "Comece aqui"
   },
+  "checklist": { "title": "Primeiros passos", "dismiss": "Fechar lista", "incomplete": "Por fazer", "completed": "Concluído", "complete": "{{completed}}/{{total}} concluídos", "earnXp": "Ganha {{count}} XP", "items": { "first_mood": "Regista o teu primeiro estado de espírito", "first_journal": "Escreve a tua primeira entrada no diário", "first_cbt": "Experimenta um exercício de TCC", "setup_reminders": "Configura lembretes diários", "first_habit": "Cria o teu primeiro hábito" } },
   "mascot_greeting": {
     "label": "O seu guia",
     "hi": "Olá, sou o Mochi.",
@@ -220,6 +242,20 @@
   },
   "plan_names": {"anxiety":"Acalmar a tempestade","mood":"Voltar a encontrar a luz","stress":"Serenidade sob pressão","self_understanding":"Voltar a si","sleep":"Desacelerar antes de dormir"},
   "plan_reveal": {
+    "course": {
+      "anxiety": { "summary": "Vais aprender a reconhecer ciclos de pensamentos mais cedo, acalmar a resposta de alerta do corpo e aliviar a preocupação persistente.", "practice": { "first": "Compreender o ciclo da ansiedade", "second": "Acalmar a resposta de alerta do corpo", "third": "Reconhecer padrões mais cedo" } },
+      "mood": { "summary": "Vais aprender a identificar o que afeta o teu humor, praticar pequenos pontos de apoio diários e encontrar mais leveza nos momentos difíceis.", "practice": { "first": "Identificar fatores subtis que afetam o humor", "second": "Praticar pequenos pontos de apoio diários", "third": "Encontrar respostas mais estáveis para momentos difíceis" } },
+      "stress": { "summary": "Vais aprender a notar a tensão antes de aumentar, ajudar o sistema nervoso a descontrair e recuperar a calma sob pressão.", "practice": { "first": "Reconhecer a tensão antes de aumentar", "second": "Ajudar o sistema nervoso a descontrair", "third": "Recuperar a calma quando a pressão aumenta" } },
+      "self_understanding": { "summary": "Vais aprender a compreender as tuas reações emocionais, destrinçar pensamentos recorrentes e reconectar-te com o que realmente importa para ti.", "practice": { "first": "Descobrir ciclos de pensamento repetitivos", "second": "Dar nome ao que realmente sentes", "third": "Alinhar as escolhas diárias com as tuas necessidades" } },
+      "sleep": { "summary": "Vais aprender a acalmar os pensamentos tardios, aliviar a tensão física antes de dormir e preparar o corpo para um sono tranquilo.", "practice": { "first": "Acalmar pensamentos acelerados à noite", "second": "Aliviar a tensão física antes de dormir", "third": "Criar uma rotina noturna previsível" } }
+    },
+    "why": {
+      "anxiety": { "heavy": "Disseste-nos que a ansiedade parece um peso constante. Vamos começar por compreender o que mantém o teu sistema de alerta ativo e procurar formas de o acalmar.", "moderate": "Disseste-nos que a ansiedade se manifesta como tensão frequente. Vamos começar por compreender o que mantém o teu sistema de alerta ativo e procurar formas de o acalmar.", "overwhelming": "Disseste-nos que, em alguns dias, a ansiedade toma conta de tudo. Vamos começar por compreender essa resposta de alerta e encontrar ferramentas que te deem algum espaço.", "default": "Com base no que partilhaste, vamos começar por compreender o que mantém o teu sistema de alerta ativo e praticar formas de o acalmar." },
+      "mood": "Com base no que partilhaste, vamos começar com pequenos pontos de apoio que te ajudem a perceber o que torna o teu dia melhor.",
+      "stress": "Com base no que partilhaste, vamos focar-nos em detetar a pressão antes de aumentar e dar espaço ao teu sistema nervoso para descontrair.",
+      "self_understanding": "Com base no que partilhaste, vamos ajudar-te a compreender padrões emocionais e a encontrar palavras mais claras para o que sentes.",
+      "sleep": "Com base no que partilhaste, vamos focar-nos em rotinas noturnas que ajudem o teu corpo a sentir-se seguro antes de dormir."
+    },
     "step_label": "O seu plano à medida",
     "loading_milestones": "A carregar etapas",
     "phase_subtitles": {"foundation":"Bases e consciência","practice":"Aprender e praticar","integration":"Integrar com calma","initial":"Primeiro passo","core":"Prática essencial","anchor":"Âncora a longo prazo"},

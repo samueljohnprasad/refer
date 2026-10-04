@@ -3,6 +3,7 @@ import React from "react";
 import { Pressable, Text, View } from "react-native";
 import { HelpCircleIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import { useTranslation } from "react-i18next";
 
 export function EyebrowLabel({
   children,
@@ -29,16 +30,17 @@ export interface DialogueBubbleProps {
 }
 
 export function DialogueBubble({ speaker, text }: DialogueBubbleProps): React.JSX.Element {
+  const { t } = useTranslation("exercises");
   const isYou = speaker === "you";
 
   if (isYou) {
     return (
       <View
-        accessibilityLabel={`You asked: ${text}`}
+        accessibilityLabel={t("flow.ui.categoryEngine.socratic.youAsked", { text })}
         accessibilityRole="text"
         className="max-w-[88%] self-end rounded-[18px] rounded-tr-sm border border-[#C8DAC9] bg-[#E8EFE9] px-3.5 py-3"
       >
-        <EyebrowLabel tone="green">YOU</EyebrowLabel>
+        <EyebrowLabel tone="green">{t("flow.ui.categoryEngine.socratic.you")}</EyebrowLabel>
         <Text className="happy-font-body text-[13.5px] leading-5 text-[#1B3B2B]">
           {text}
         </Text>
@@ -48,11 +50,11 @@ export function DialogueBubble({ speaker, text }: DialogueBubbleProps): React.JS
 
   return (
     <View
-      accessibilityLabel={`Person says: ${text}`}
+      accessibilityLabel={t("flow.ui.categoryEngine.socratic.personSays", { text })}
       accessibilityRole="text"
       className="max-w-[92%] self-start rounded-[18px] rounded-tl-sm border border-[#E8DFD1] bg-[#F9F4ED] px-3.5 py-3"
     >
-      <EyebrowLabel>PERSON</EyebrowLabel>
+      <EyebrowLabel>{t("flow.ui.categoryEngine.socratic.person")}</EyebrowLabel>
       <Text className="happy-font-body text-[13.5px] leading-5 text-[#201E1D]">
         {text}
       </Text>
@@ -65,13 +67,14 @@ export interface PedagogicalFeedbackProps {
 }
 
 export function PedagogicalFeedback({ text }: PedagogicalFeedbackProps): React.JSX.Element {
+  const { t } = useTranslation("exercises");
   return (
     <View
-      accessibilityLabel={`Guidance: ${text}`}
+      accessibilityLabel={t("flow.ui.categoryEngine.socratic.guidanceLabel", { text })}
       accessibilityRole="text"
       className="rounded-[16px] border border-[#ABC0A2] bg-[#F2F8EF] p-3"
     >
-      <EyebrowLabel tone="green">GUIDANCE</EyebrowLabel>
+      <EyebrowLabel tone="green">{t("flow.ui.categoryEngine.socratic.guidance")}</EyebrowLabel>
       <Text className="happy-font-body text-[13px] leading-4.5 text-[#201E1D]">
         {text}
       </Text>
@@ -88,20 +91,21 @@ export function CompressedStageCard({
   prediction,
   evidence,
 }: CompressedStageCardProps): React.JSX.Element {
+  const { t } = useTranslation("exercises");
   return (
     <View
-      accessibilityLabel="What we know so far"
+      accessibilityLabel={t("flow.ui.categoryEngine.socratic.whatWeKnowSoFar")}
       className="rounded-[18px] border border-[#E8DFD1] bg-[#F9F4ED] p-3.5"
     >
-      <View accessibilityLabel={`Prediction: ${prediction}`}>
-        <EyebrowLabel>THE PREDICTION</EyebrowLabel>
+      <View accessibilityLabel={t("flow.ui.categoryEngine.socratic.predictionLabel", { text: prediction })}>
+        <EyebrowLabel>{t("flow.ui.categoryEngine.socratic.prediction")}</EyebrowLabel>
         <Text className="happy-font-body-bold text-[13.5px] leading-5 text-[#201E1D]">
           {prediction}
         </Text>
       </View>
       <View className="my-2.5 h-px bg-[#EAE2D5]" />
-      <View accessibilityLabel={`What we know: ${evidence.join(", ")}`}>
-        <EyebrowLabel>WHAT WE KNOW</EyebrowLabel>
+      <View accessibilityLabel={t("flow.ui.categoryEngine.socratic.evidenceLabel", { text: evidence.join(", ") })}>
+        <EyebrowLabel>{t("flow.ui.categoryEngine.socratic.whatWeKnow")}</EyebrowLabel>
         {evidence.map((item, idx) => (
           <Text
             key={idx}
@@ -128,6 +132,7 @@ export function FinalSummaryCard({
   balancedThought,
   skill,
 }: FinalSummaryProps): React.JSX.Element {
+  const { t } = useTranslation("exercises");
   const [skillMain, skillSupport] = skill.includes("\n\n")
     ? skill.split("\n\n")
     : [skill, "Check the evidence before treating it as fact."];
@@ -136,8 +141,8 @@ export function FinalSummaryCard({
     <View className="gap-4">
       {/* 3-step cognitive model */}
       <View className="rounded-[18px] border border-[#E8DFD1] bg-[#F9F4ED] p-4">
-        <View accessibilityLabel={`Prediction: ${prediction}`}>
-          <EyebrowLabel>THE PREDICTION</EyebrowLabel>
+        <View accessibilityLabel={t("flow.ui.categoryEngine.socratic.predictionLabel", { text: prediction })}>
+          <EyebrowLabel>{t("flow.ui.categoryEngine.socratic.prediction")}</EyebrowLabel>
           <Text className="happy-font-body-bold text-[13.5px] leading-5 text-[#201E1D]">
             {prediction}
           </Text>
@@ -145,8 +150,8 @@ export function FinalSummaryCard({
 
         <View className="my-3.5 h-px bg-[#EAE2D5]" />
 
-        <View accessibilityLabel={`What we know: ${evidence.join(", ")}`}>
-          <EyebrowLabel>WHAT WE KNOW</EyebrowLabel>
+        <View accessibilityLabel={t("flow.ui.categoryEngine.socratic.evidenceLabel", { text: evidence.join(", ") })}>
+          <EyebrowLabel>{t("flow.ui.categoryEngine.socratic.whatWeKnow")}</EyebrowLabel>
           {evidence.map((item, idx) => (
             <Text
               key={idx}
@@ -160,7 +165,7 @@ export function FinalSummaryCard({
         <View className="my-3.5 h-px bg-[#EAE2D5]" />
 
         <View accessibilityLabel={`Balanced thought: ${balancedThought}`}>
-          <EyebrowLabel tone="green">BALANCED THOUGHT</EyebrowLabel>
+          <EyebrowLabel tone="green">{t("flow.ui.categoryEngine.socratic.balancedThought")}</EyebrowLabel>
           {balancedThought.split("\n\n").map((para, i) => (
             <Text
               key={i}
@@ -174,10 +179,10 @@ export function FinalSummaryCard({
 
       {/* The transferable rule — softened sage border */}
       <View
-        accessibilityLabel={`The skill: ${skill}`}
+        accessibilityLabel={t("flow.ui.categoryEngine.socratic.skillLabel", { text: skill })}
         className="rounded-[16px] border border-[#C8D9C2] bg-[#F2F8EF] p-4"
       >
-        <EyebrowLabel tone="green">THE SKILL</EyebrowLabel>
+        <EyebrowLabel tone="green">{t("flow.ui.categoryEngine.socratic.skill")}</EyebrowLabel>
         <Text className="happy-font-body-bold text-[13.5px] leading-5 text-[#201E1D]">
           {skillMain}
         </Text>
@@ -197,11 +202,12 @@ export interface HintButtonProps {
 }
 
 export function HintButton({ isOpen, onToggle }: HintButtonProps): React.JSX.Element {
+  const { t } = useTranslation("exercises");
   return (
     <View className="relative pb-[2px]">
       <View className="absolute inset-x-0 bottom-0 top-[2px] rounded-full bg-[#D5E2D0]" />
       <Pressable
-        accessibilityLabel={isOpen ? "Hide hint" : "Show hint"}
+        accessibilityLabel={t(isOpen ? "flow.ui.categoryEngine.socratic.hideHint" : "flow.ui.categoryEngine.socratic.showHint")}
         accessibilityRole="button"
         accessibilityState={{ expanded: isOpen }}
         onPress={onToggle}
@@ -209,7 +215,7 @@ export function HintButton({ isOpen, onToggle }: HintButtonProps): React.JSX.Ele
       >
         <HugeiconsIcon icon={HelpCircleIcon} size={13} color="#3C5A3E" />
         <Text className="happy-font-body-bold text-[11.5px] text-[#3C5A3E]">
-          Hint
+          {t("flow.ui.categoryEngine.socratic.hint")}
         </Text>
       </Pressable>
     </View>
@@ -223,6 +229,7 @@ export interface InlineHintCardProps {
 }
 
 export function InlineHintCard({ title, body, onClose }: InlineHintCardProps): React.JSX.Element {
+  const { t } = useTranslation("exercises");
   return (
     <View
       accessibilityRole="text"
@@ -235,13 +242,13 @@ export function InlineHintCard({ title, body, onClose }: InlineHintCardProps): R
         {body}
       </Text>
       <Pressable
-        accessibilityLabel="Hide hint"
+        accessibilityLabel={t("flow.ui.categoryEngine.socratic.hideHint")}
         accessibilityRole="button"
         onPress={onClose}
         className="mt-2 self-start py-0.5 active:opacity-60"
       >
         <Text className="happy-font-body-bold text-[11.5px] text-[#3C5A3E]">
-          Hide hint ↑
+          {t("flow.ui.categoryEngine.socratic.hideHintAction")} ↑
         </Text>
       </Pressable>
     </View>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
@@ -32,6 +33,7 @@ export function ExplorableModelCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = readExplorableModelContent(exercise.content);
   const saved = readRecord(savedResponse);
   const response = content ? createExplorableModelResponse(content, saved) : null;
@@ -90,7 +92,7 @@ export function ExplorableModelCategoryEngine({
       <StageProgress
         stageIndex={response.stageIndex}
         stageCount={content.stages.length}
-        label="Lever"
+        label={t("flow.ui.categoryEngine.explorable.lever")}
       />
       <ExerciseWorkspace transitionKey="maya-alarm-model">
         <Text style={styles.setup}>{content.setup}</Text>
@@ -111,7 +113,7 @@ export function ExplorableModelCategoryEngine({
         {response.phase === "complete" ? (
           response.sandboxOpen ? (
             <View style={styles.sandbox}>
-              <ActivePrompt context="Optional sandbox" prompt={content.sandboxPrompt} />
+              <ActivePrompt context={t("flow.ui.categoryEngine.explorable.optionalSandbox")} prompt={content.sandboxPrompt} />
               <View style={styles.sandboxControls}>
                 {content.stages.map(renderControl)}
               </View>
@@ -124,19 +126,19 @@ export function ExplorableModelCategoryEngine({
                 }}
                 style={({ pressed }) => [styles.reset, pressed && styles.pressed]}
               >
-                <Text style={styles.resetText}>Reset</Text>
+                <Text style={styles.resetText}>{t("flow.ui.categoryEngine.explorable.reset")}</Text>
               </Pressable>
             </View>
           ) : (
             <View accessibilityLiveRegion="polite" style={styles.complete}>
-              <Text style={styles.completeText}>You tested every lever.</Text>
+              <Text style={styles.completeText}>{t("flow.ui.categoryEngine.explorable.complete")}</Text>
               <Pressable
                 accessibilityRole="button"
                 disabled={locked}
                 onPress={() => onInteraction(openExplorableSandbox(response), true)}
                 style={({ pressed }) => [styles.inlineAction, pressed && styles.pressed]}
               >
-                <Text style={styles.inlineActionText}>Explore freely</Text>
+                <Text style={styles.inlineActionText}>{t("flow.ui.categoryEngine.explorable.exploreFreely")}</Text>
               </Pressable>
             </View>
           )

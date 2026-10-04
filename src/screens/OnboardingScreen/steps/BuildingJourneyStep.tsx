@@ -24,6 +24,21 @@ interface BuildingJourneyStepProps {
   stressLevel?: StressLevel;
 }
 
+type BuildingJourneyTaskKey =
+  | "building_journey.tasks.profile"
+  | "building_journey.tasks.plan"
+  | "building_journey.tasks.cbt"
+  | "building_journey.tasks.schedule"
+  | "building_journey.tasks.gentle_schedule";
+
+const getTaskCopyKey = (id: string, useGentlePace: boolean): BuildingJourneyTaskKey => {
+  if (id === "journey") return "building_journey.tasks.plan";
+  if (id === "profile") return "building_journey.tasks.profile";
+  if (id === "schedule" && useGentlePace) return "building_journey.tasks.gentle_schedule";
+  if (id === "schedule") return "building_journey.tasks.schedule";
+  return "building_journey.tasks.cbt";
+};
+
 // ponytail: responsive progress bar, celebrating mascot, and trust caption
 const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
   onComplete,
@@ -76,10 +91,10 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
           style={{ fontFamily: APP_FONT_FAMILIES.extraBold }}
           className="text-center text-2xl text-ink"
         >
-          {allComplete ? t("building_journey.ready_title", { defaultValue: "Your Journey is Ready!" }) : t("building_journey.title", { defaultValue: config.title })}
+          {allComplete ? t("building_journey.ready_title") : t("building_journey.title")}
         </Text>
         <Text className="mt-1 text-center text-sm text-ink-soft">
-          {allComplete ? t("building_journey.ready_subtitle", { defaultValue: "Personalized CBT path created for you" }) : t("building_journey.subtitle", { defaultValue: config.subtitle })}
+          {allComplete ? t("building_journey.ready_subtitle") : t("building_journey.subtitle")}
         </Text>
       </Animated.View>
 
@@ -90,7 +105,7 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
             style={{ fontFamily: APP_FONT_FAMILIES.bold }}
             className="text-xs text-ink-muted"
           >
-            {allComplete ? t("building_journey.complete", { defaultValue: "Complete" }) : t("building_journey.generating", { defaultValue: "Generating plan..." })}
+            {allComplete ? t("building_journey.complete") : t("building_journey.generating")}
           </Text>
           <Text
             style={{ fontFamily: APP_FONT_FAMILIES.extraBold, color: SAGE[600] }}
@@ -122,7 +137,7 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
         {tasks.map((task, index) => (
           <LoadingTaskRow
             key={task.id}
-            label={t(`building_journey.tasks.${task.id === "journey" ? "plan" : task.id === "profile" ? "profile" : task.id === "schedule" && (stressLevel === "heavy" || stressLevel === "overwhelming") ? "gentle_schedule" : task.id}`, { defaultValue: task.label })}
+            label={t(getTaskCopyKey(task.id, stressLevel === "heavy" || stressLevel === "overwhelming"))}
             completed={task.completed}
             inProgress={task.inProgress}
             index={index}
@@ -147,7 +162,7 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }}
           className="text-xs"
         >
-          {t("building_journey.private", { defaultValue: "Private and tailored to you" })}
+          {t("building_journey.private")}
         </Text>
       </Animated.View>
     </View>

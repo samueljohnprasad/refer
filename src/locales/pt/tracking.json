@@ -1,0 +1,125 @@
+{
+  "calorie": {
+    "title": "Rastreador de calorias",
+    "analyzingFood": "Analisando sua refeição...",
+    "identifyingNutrition": "A IA está identificando as informações nutricionais",
+    "analysisFailed": "Falha na análise",
+    "tryAgain": "Tentar novamente",
+    "foodAdded": "Refeição adicionada com sucesso!",
+    "undo": "Desfazer",
+    "done": "Concluído",
+    "logged_one": "{{countLabel}} refeição • {{caloriesLabel}} calorias registradas para sua meta diária.",
+    "logged_other": "{{countLabel}} refeições • {{caloriesLabel}} calorias registradas para sua meta diária.",
+    "emptyTitle": "Pronto para registrar?",
+    "emptyDescription": "Tire uma foto da refeição para acompanhar calorias e macronutrientes na hora.",
+    "takePhoto": "Tirar foto",
+    "uploadPhoto": "Enviar foto",
+    "todayMeals": "Refeições de hoje",
+    "camera": "Câmera",
+    "upload": "Enviar",
+    "total": "Total",
+    "calorieUnit": "cal",
+    "macros": {
+      "proteinShort": "P",
+      "carbsShort": "C",
+      "fatShort": "F"
+    },
+    "mealNutrients": "Nutrientes de {{mealType}}",
+    "mealTypes": {
+      "breakfast": "Café da manhã",
+      "lunch": "Almoço",
+      "dinner": "Jantar",
+      "snack": "Lanche"
+    }
+  },
+  "permissions": {
+    "required": "Permissão necessária",
+    "camera": "A permissão da câmera é necessária para fotografar sua refeição.",
+    "photoLibrary": "A permissão da biblioteca de fotos é necessária para selecionar imagens."
+  },
+  "deleteConfirmation": {
+    "title": "Excluir registro",
+    "message": "Tem certeza de que deseja excluir esta refeição?",
+    "cancel": "Cancelar",
+    "delete": "Excluir"
+  },
+  "accessibility": {
+    "deleteMeal": "Excluir refeição",
+    "showNutrientDetails": "Mostrar detalhes dos nutrientes",
+    "back": "Voltar",
+    "close": "Fechar"
+  },
+  "micronutrients": {
+    "title": "Micronutrientes",
+    "tracked": "{{countLabel}} de {{totalLabel}} acompanhados",
+    "selectAll": "Selecionar tudo",
+    "clearAll": "Limpar seleção",
+    "howItWorks": "Como funciona",
+    "explanation": "Selecione os nutrientes que deseja acompanhar. A IA analisará suas refeições e mostrará quanto de cada um você está consumindo no resumo diário.",
+    "vitamins": "Vitaminas",
+    "minerals": "Minerais",
+    "dailyTarget": "Meta diária",
+    "dailyValue": "Valor diário",
+    "noData": "Não há dados de micronutrientes disponíveis",
+    "categories": {
+      "vitamin": "vitamin",
+      "mineral": "mineral"
+    }
+  },
+  "healthScore": {
+    "title": "Análise da pontuação de saúde",
+    "outOf100": "de 100",
+    "why": "Por que esta pontuação?",
+    "gotIt": "Entendi!"
+  },
+  "nutrientItems": {
+    "vitaminD2": {
+      "name": "Vitamina D2",
+      "description": "Ajuda na saúde dos ossos e no funcionamento do sistema imunológico"
+    },
+    "vitaminD3": {
+      "name": "Vitamina D3",
+      "description": "Essencial para a absorção de cálcio"
+    },
+    "vitaminC": {
+      "name": "Vitamina C",
+      "description": "Antioxidante que ajuda o sistema imunológico"
+    },
+    "vitaminB12": {
+      "name": "Vitamina B12",
+      "description": "Produção de energia e funcionamento do cérebro"
+    },
+    "vitaminA": {
+      "name": "Vitamina A",
+      "description": "Saúde da visão e suporte imunológico"
+    },
+    "vitaminE": {
+      "name": "Vitamina E",
+      "description": "Antioxidante que protege as células"
+    },
+    "vitaminK": {
+      "name": "Vitamina K",
+      "description": "Coagulação do sangue e saúde dos ossos"
+    },
+    "zinc": {
+      "name": "Zinco",
+      "description": "Funcionamento imunológico e cicatrização"
+    },
+    "potassium": {
+      "name": "Potássio",
+      "description": "Funcionamento do coração e dos músculos"
+    },
+    "iron": {
+      "name": "Ferro",
+      "description": "Transporte de oxigênio no sangue"
+    },
+    "calcium": {
+      "name": "Cálcio",
+      "description": "Fortalecimento dos ossos e dentes"
+    },
+    "magnesium": {
+      "name": "Magnésio",
+      "description": "Funcionamento muscular e nervoso"
+    }
+  }
+}

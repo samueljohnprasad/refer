@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View, AccessibilityInfo } from "react-native";
 import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
@@ -25,6 +26,7 @@ export function LeverCheckCategoryEngine({
   savedResponse,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const levers = readLevers(content.levers);
@@ -44,8 +46,8 @@ export function LeverCheckCategoryEngine({
     const nextIds = [...pulledLeverIds, lever.id];
     
     // Accessibility announcement
-    const direction = lever.tone === "olive" ? "lower" : "higher";
-    AccessibilityInfo.announceForAccessibility(`${lever.label}. Shifts alertness ${direction}.`);
+    const direction = lever.tone === "olive" ? t("flow.ui.categoryEngine.lever.lower") : t("flow.ui.categoryEngine.lever.higher");
+    AccessibilityInfo.announceForAccessibility(t("flow.ui.categoryEngine.lever.accessibilityShift", { label: lever.label, direction }));
 
     onInteraction(
       createResponse({ ...saved, pulledLeverIds: nextIds }),
@@ -63,12 +65,12 @@ export function LeverCheckCategoryEngine({
       {/* Scale Indicator */}
       <View className="mb-6 mt-2">
         <Text className="text-[11px] font-semibold tracking-widest text-ink-muted uppercase text-center mb-1.5">
-          Shift in Alertness
+          {t("flow.ui.categoryEngine.lever.shiftInAlertness")}
         </Text>
         <View className="flex-row justify-between items-center">
-          <Text className="text-[11px] font-medium text-ink-soft">LOWER</Text>
+          <Text className="text-[11px] font-medium text-ink-soft">{t("flow.ui.categoryEngine.lever.lower")}</Text>
           <View className="flex-1 h-[1px] bg-sage-200 mx-2" />
-          <Text className="text-[11px] font-medium text-ink-soft">HIGHER</Text>
+          <Text className="text-[11px] font-medium text-ink-soft">{t("flow.ui.categoryEngine.lever.higher")}</Text>
         </View>
       </View>
 
@@ -125,6 +127,7 @@ function LeverRow({
   onPress: () => void;
   reduceMotion: boolean;
 }) {
+  const { t } = useTranslation("exercises");
   const isOlive = lever.tone === "olive";
   const position = useSharedValue(50); // Start at 50% center
 
@@ -176,12 +179,12 @@ function LeverRow({
       ) : (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={`${lever.label}. Not explored. Try this lever.`}
+          accessibilityLabel={t("flow.ui.categoryEngine.lever.tryAccessibility", { label: lever.label })}
           onPress={onPress}
           className="mt-2.5 bg-transparent border border-sage-300 py-1.5 rounded-full items-center active:bg-sage-100/50"
         >
           <Text className="text-ink text-[14.5px] font-medium tracking-wide">
-            Try this lever
+            {t("flow.ui.categoryEngine.lever.tryThis")}
           </Text>
         </Pressable>
       )}

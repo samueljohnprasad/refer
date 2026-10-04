@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ZapIcon, FireIcon, Clapping01Icon } from "@hugeicons/core-free-icons";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
+import { useTranslation } from "react-i18next";
 
 export const SHARE_CARD_WIDTH = 360;
 export const SHARE_CARD_HEIGHT = 450;
@@ -28,6 +29,8 @@ export const ShareWinCard = forwardRef<View, ShareWinCardProps>(function ShareWi
   { lessonTitle, totalXP, streakDays, isPerfect },
   ref,
 ) {
+  const { t } = useTranslation("common");
+
   return (
     <View ref={ref} collapsable={false} style={styles.card}>
       <LinearGradient
@@ -51,11 +54,13 @@ export const ShareWinCard = forwardRef<View, ShareWinCardProps>(function ShareWi
       {isPerfect ? (
         <View style={styles.perfectPill}>
           <HugeiconsIcon icon={Clapping01Icon} size={14} color="#8A5A12" strokeWidth={2.4} />
-          <Text style={styles.perfectText}>PERFECT LESSON</Text>
+          <Text style={styles.perfectText}>{t("celebrations.shareWin.perfectBadge")}</Text>
         </View>
       ) : null}
 
-      <Text style={styles.title}>{isPerfect ? "Flawless lesson!" : "Lesson complete!"}</Text>
+      <Text style={styles.title}>
+        {t(isPerfect ? "celebrations.shareWin.perfectTitle" : "celebrations.shareWin.completeTitle")}
+      </Text>
       {lessonTitle ? (
         <Text style={styles.subtitle} numberOfLines={2}>
           {lessonTitle}
@@ -65,17 +70,24 @@ export const ShareWinCard = forwardRef<View, ShareWinCardProps>(function ShareWi
       <View style={styles.statsRow}>
         <View style={[styles.stat, { borderColor: "#F6D97A", backgroundColor: "#FFF7E0" }]}>
           <HugeiconsIcon icon={ZapIcon} size={18} color="#B4791B" strokeWidth={2.4} />
-          <Text style={[styles.statValue, { color: "#8A5A12" }]}>+{totalXP} XP</Text>
+          <Text style={[styles.statValue, { color: "#8A5A12" }]}>
+            {t("celebrations.shareWin.xpReward", { totalXP })}
+          </Text>
         </View>
         <View style={[styles.stat, { borderColor: "#FFC9A3", backgroundColor: "#FFF0E6" }]}>
           <HugeiconsIcon icon={FireIcon} size={18} color="#D9571E" strokeWidth={2.4} />
           <Text style={[styles.statValue, { color: "#A63E10" }]}>
-            {streakDays} day{streakDays === 1 ? "" : "s"}
+            {t(
+              streakDays === 1
+                ? "celebrations.shareWin.streak.oneDay"
+                : "celebrations.shareWin.streak.otherDays",
+              { count: streakDays },
+            )}
           </Text>
         </View>
       </View>
 
-      <Text style={styles.footer}>Join me on Happy — small steps, calmer mind.</Text>
+      <Text style={styles.footer}>{t("celebrations.shareWin.footer")}</Text>
     </View>
   );
 });

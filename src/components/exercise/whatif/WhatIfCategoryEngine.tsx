@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, Text, ScrollView } from "react-native";
 import type { WhatIfContent } from "./whatIfContent";
 import type { WhatIfResponse } from "./whatIfResponse";
@@ -7,6 +8,7 @@ import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseH
 import { CourseExerciseOptionButton } from "@/src/components/exercise/CourseExerciseOptionButton";
 
 export const WhatIfCategoryEngine: React.FC<V1CategoryEngineProps> = ({ exercise, savedResponse, onInteraction, locked }) => {
+  const { t } = useTranslation("exercises");
   const content = exercise.content as WhatIfContent;
   const response = (savedResponse as WhatIfResponse) || { phase: "prediction", consequenceIndex: 0 };
   const { phase, selectedPredictionId, consequenceIndex } = response;
@@ -85,11 +87,11 @@ export const WhatIfCategoryEngine: React.FC<V1CategoryEngineProps> = ({ exercise
       <CourseExerciseHeading title={content.takeaway || "Review"} instruction={content.rule || "Here is how reality compared to your prediction."} />
       <View className="gap-4 mt-2">
         <View className="p-4 rounded-2xl bg-brand-surface-soft border border-brand-border">
-          <Text className="happy-font-label text-brand-ink-muted uppercase tracking-wider mb-2 text-xs">You Predicted</Text>
+          <Text className="happy-font-label text-brand-ink-muted uppercase tracking-wider mb-2 text-xs">{t("flow.ui.categoryEngine.whatIf.predicted")}</Text>
           <Text className="happy-font-body text-brand-ink text-[17px] leading-6">{userPrediction?.label}</Text>
         </View>
         <View className="p-4 rounded-2xl bg-brand-surface border border-brand-border">
-          <Text className="happy-font-label text-brand-ink-muted uppercase tracking-wider mb-2 text-xs">Actual Outcome</Text>
+          <Text className="happy-font-label text-brand-ink-muted uppercase tracking-wider mb-2 text-xs">{t("flow.ui.categoryEngine.whatIf.actualOutcome")}</Text>
           <Text className="happy-font-body-bold text-brand-ink text-[17px] leading-6">{finalConsequence?.body}</Text>
         </View>
       </View>

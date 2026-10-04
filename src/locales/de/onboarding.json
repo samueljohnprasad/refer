@@ -1,4 +1,25 @@
 {
+  "future_letter_screen": {
+    "date_label": "{{date}} · {{weekday}}, {{moment}}",
+    "greeting": "Hallo, du,",
+    "header_label": "Da ist etwas für dich angekommen",
+    "headline_start": "Ein Brief von",
+    "headline_emphasis": "dir,",
+    "subtitle": "geschrieben in 30 Tagen.",
+    "moments": { "morning": "Morgen", "afternoon": "Nachmittag", "evening": "Abend", "night": "späte Nacht" },
+    "body": {
+      "intro": "Ich schreibe dir an einem {{weekday}} {{moment}}. Ich habe Happy gerade geschlossen",
+      "closed_app": "vor fünf Minuten.",
+      "just_like_you": "Genau wie du es gleich tun wirst.",
+      "honesty": "Ich will ehrlich zu dir sein. Das Gedankenrauschen ist nicht verschwunden. An manchen Morgen rasen die Gedanken noch. An manchen Abenden ist die Schwere noch da.",
+      "caught_it": "Aber gestern, als die Gedankenspirale begann, habe ich sie bemerkt. Ich habe sie benannt und dreißig Sekunden ausgehalten.",
+      "didnt_grow": "Und sie wurde nicht größer.",
+      "thirty_days_ago": "Vor dreißig Tagen wäre das noch nicht möglich gewesen.",
+      "showed_up": "Heute hast du dir fünf Minuten genommen – genau wie du es in deinem Versprechen zugesagt hast.",
+      "keep_going": "Mach weiter.",
+      "changed": "Wir sind nicht mehr dieselbe Person."
+    }
+  },
   "header": { "your_course": "DEIN KURS", "quiet_moment": "EIN RUHIGER MOMENT" },
   "buttons": {
     "lets_begin": "LOS GEHT'S",
@@ -17,6 +38,7 @@
     "subhead": "einen Gedanken nach dem anderen"
   },
   "welcome_nodes": {"0_0":"Wachse weiter","1_0":"Denke","1_1":"in Ruhe nach","2_0":"Verstehe","2_1":"dich selbst","4_0":"Baue eine","4_1":"Gewohnheit auf","5_0":"Ein klarerer","5_1":"Kopf","today":"Heute","start_here":"Starte hier"},
+  "checklist": { "title": "Erste Schritte", "dismiss": "Checkliste schließen", "incomplete": "Offen", "completed": "Erledigt", "complete": "{{completed}}/{{total}} erledigt", "earnXp": "Verdiene {{count}} XP", "items": { "first_mood": "Erfasse deine erste Stimmung", "first_journal": "Schreibe deinen ersten Tagebucheintrag", "first_cbt": "Probiere eine CBT-Übung aus", "setup_reminders": "Richte tägliche Erinnerungen ein", "first_habit": "Erstelle deine erste Gewohnheit" } },
   "mascot_greeting": {
     "label": "Dein Begleiter",
     "hi": "Hallo, ich bin Mochi.",
@@ -118,6 +140,20 @@
   },
   "plan_names": {"anxiety":"Den Sturm beruhigen","mood":"Licht wiederfinden","stress":"Gelassen unter Druck","self_understanding":"Zu dir selbst finden","sleep":"Sanft zur Ruhe kommen"},
   "plan_reveal": {
+    "course": {
+      "anxiety": { "summary": "Du lernst, Gedankenspiralen früh zu erkennen, die Alarmreaktion deines Körpers zu beruhigen und anhaltende Sorgen zu lindern.", "practice": { "first": "Den Angstkreislauf verstehen", "second": "Die Alarmreaktion des Körpers beruhigen", "third": "Muster früher erkennen" } },
+      "mood": { "summary": "Du lernst, Auslöser deiner Stimmung zu erkennen, kleine tägliche Anker zu üben und auch in schwierigen Momenten wieder Licht zu finden.", "practice": { "first": "Feine Stimmungsauslöser erkennen", "second": "Kleine tägliche Anker üben", "third": "Stabilere Reaktionen auf schwierige Momente finden" } },
+      "stress": { "summary": "Du lernst, Anspannung zu bemerken, bevor sie ihren Höhepunkt erreicht, dein Nervensystem zu entlasten und unter Druck wieder zur Ruhe zu finden.", "practice": { "first": "Anspannung erkennen, bevor sie ihren Höhepunkt erreicht", "second": "Das Nervensystem entlasten", "third": "Bei wachsendem Druck wieder zur Ruhe finden" } },
+      "self_understanding": { "summary": "Du lernst, emotionale Reaktionen zu verstehen, wiederkehrende Gedanken zu entwirren und dich wieder auf das zu besinnen, was dir wichtig ist.", "practice": { "first": "Wiederkehrende Gedankenschleifen erkennen", "second": "Benennen, was du wirklich fühlst", "third": "Deine täglichen Entscheidungen an deinen Bedürfnissen ausrichten" } },
+      "sleep": { "summary": "Du lernst, späte Gedanken zur Ruhe zu bringen, körperliche Anspannung vor dem Schlafengehen zu lösen und leichter in erholsamen Schlaf zu finden.", "practice": { "first": "Rasende Gedanken am späten Abend beruhigen", "second": "Körperliche Anspannung vor dem Schlafengehen lösen", "third": "Einen verlässlichen Abendrhythmus schaffen" } }
+    },
+    "why": {
+      "anxiety": { "heavy": "Du hast uns erzählt, dass sich Angst wie eine ständige Last anfühlt. Wir beginnen damit, zu verstehen, was dein Alarmsystem wach hält, und Wege zu finden, es zu beruhigen.", "moderate": "Du hast uns erzählt, dass Angst sich oft als Anspannung zeigt. Wir beginnen damit, zu verstehen, was dein Alarmsystem wach hält, und Wege zu finden, es zu beruhigen.", "overwhelming": "Du hast uns erzählt, dass Angst an manchen Tagen alles einnimmt. Wir beginnen damit, deine Alarmreaktion zu verstehen und Werkzeuge zu finden, die dir etwas Raum geben.", "default": "Ausgehend von dem, was du geteilt hast, schauen wir zuerst, was dein Alarmsystem wach hält, und üben Wege, es zu beruhigen." },
+      "mood": "Ausgehend von dem, was du geteilt hast, beginnen wir mit kleinen Ankern, die dir zeigen, was deinen Tag leichter macht.",
+      "stress": "Ausgehend von dem, was du geteilt hast, üben wir, Druck früh zu bemerken und deinem Nervensystem Raum zum Entspannen zu geben.",
+      "self_understanding": "Ausgehend von dem, was du geteilt hast, helfen wir dir, emotionale Muster zu verstehen und klarere Worte für dein Erleben zu finden.",
+      "sleep": "Ausgehend von dem, was du geteilt hast, konzentrieren wir uns auf Abendrituale, die deinem Körper vor dem Schlafengehen Sicherheit vermitteln."
+    },
     "step_label": "Dein maßgeschneiderter Plan",
     "loading_milestones": "Meilensteine werden geladen",
     "phase_subtitles": {"foundation":"Grundlagen und Wahrnehmung","practice":"Fähigkeiten üben","integration":"Langfristig verankern","initial":"Erster Schwerpunkt","core":"Wichtige Übung","anchor":"Langfristige Stütze"},

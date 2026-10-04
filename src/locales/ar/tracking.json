@@ -1,0 +1,129 @@
+{
+  "calorie": {
+    "title": "متعقب السعرات الحرارية",
+    "analyzingFood": "تحليل طعامك...",
+    "identifyingNutrition": "الذكاء الاصطناعي يحدد المعلومات الغذائية",
+    "analysisFailed": "فشل التحليل",
+    "tryAgain": "حاول مرة أخرى",
+    "foodAdded": "تمت إضافة الطعام بنجاح!",
+    "undo": "تراجع",
+    "done": "تم",
+    "logged_one": "{{countLabel}} عنصر • {{caloriesLabel}} سعرة حرارية مسجلة ضمن هدفك اليومي.",
+    "logged_other": "{{countLabel}} عناصر • {{caloriesLabel}} سعرات حرارية تم تسجيلها لتحقيق هدفك اليومي.",
+    "emptyTitle": "هل أنت مستعد للتسجيل ؟",
+    "emptyDescription": "التقط صورة لوجبتك لتتبع السعرات الحرارية ووحدات الماكرو على الفور.",
+    "takePhoto": "التقط صورة",
+    "uploadPhoto": "تحميل الصورة",
+    "todayMeals": "وجبات اليوم",
+    "camera": "الكاميرا",
+    "upload": "تحميل",
+    "total": "الإجمالي",
+    "calorieUnit": "كال",
+    "macros": {
+      "proteinShort": "P",
+      "carbsShort": "C",
+      "fatShort": "F"
+    },
+    "mealNutrients": "{{mealType}} مغذيات",
+    "mealTypes": {
+      "breakfast": "الإفطار",
+      "lunch": "الغداء",
+      "dinner": "العشاء",
+      "snack": "وجبة خفيفة"
+    },
+    "logged_zero": "لم يتم تسجيل أي أطعمة • {{caloriesLabel}} سعرة حرارية ضمن هدفك اليومي.",
+    "logged_two": "عنصران • {{caloriesLabel}} سعرة حرارية مسجلة ضمن هدفك اليومي.",
+    "logged_few": "{{countLabel}} عناصر • {{caloriesLabel}} سعرة حرارية مسجلة ضمن هدفك اليومي.",
+    "logged_many": "{{countLabel}} عنصرًا • {{caloriesLabel}} سعرة حرارية مسجلة ضمن هدفك اليومي."
+  },
+  "permissions": {
+    "required": "الإذن مطلوب",
+    "camera": "يلزم الحصول على إذن الكاميرا لالتقاط صور لطعامك.",
+    "photoLibrary": "إذن مكتبة الصور مطلوب لتحديد الصور."
+  },
+  "deleteConfirmation": {
+    "title": "حذف الإدخال",
+    "message": "هل أنت متأكد أنك تريد حذف هذه الوجبة ؟",
+    "cancel": "إلغاء",
+    "delete": "حذف"
+  },
+  "accessibility": {
+    "deleteMeal": "حذف الوجبة",
+    "showNutrientDetails": "عرض تفاصيل المغذيات",
+    "back": "رجوع",
+    "close": "إغلاق"
+  },
+  "micronutrients": {
+    "title": "المغذيات الدقيقة",
+    "tracked": "{{countLabel}} من {{totalLabel}} متتبع",
+    "selectAll": "تحديد الكل",
+    "clearAll": "مسح الكل",
+    "howItWorks": "كيف تعمل",
+    "explanation": "حدد العناصر الغذائية لتتبعها. سيقوم الذكاء الاصطناعي بتحليل وجباتك وإظهار مقدار ما تستهلكه في ملخصك اليومي.",
+    "vitamins": "الفيتامينات",
+    "minerals": "المعادن",
+    "dailyTarget": "الهدف اليومي",
+    "dailyValue": "القيمة اليومية",
+    "noData": "لا تتوفر بيانات المغذيات الدقيقة",
+    "categories": {
+      "vitamin": "vitamin",
+      "mineral": "mineral"
+    }
+  },
+  "healthScore": {
+    "title": "تحليل درجة الصحة",
+    "outOf100": "من 100",
+    "why": "لماذا هذه الدرجة؟",
+    "gotIt": "فهمت!"
+  },
+  "nutrientItems": {
+    "vitaminD2": {
+      "name": "فيتامين D2",
+      "description": "يدعم صحة العظام ووظائف المناعة"
+    },
+    "vitaminD3": {
+      "name": "فيتامين D3",
+      "description": "ضروري لامتصاص الكالسيوم"
+    },
+    "vitaminC": {
+      "name": "فيتامين C",
+      "description": "مضاد أكسدة يدعم الجهاز المناعي"
+    },
+    "vitaminB12": {
+      "name": "فيتامين B12",
+      "description": "إنتاج الطاقة ووظائف الدماغ"
+    },
+    "vitaminA": {
+      "name": "فيتامين A",
+      "description": "يدعم صحة البصر والمناعة"
+    },
+    "vitaminE": {
+      "name": "فيتامين E",
+      "description": "مضاد أكسدة يحمي الخلايا"
+    },
+    "vitaminK": {
+      "name": "فيتامين K",
+      "description": "تخثر الدم وصحة العظام"
+    },
+    "zinc": {
+      "name": "الزنك",
+      "description": "وظائف المناعة والتئام الجروح"
+    },
+    "potassium": {
+      "name": "البوتاسيوم",
+      "description": "وظائف القلب والعضلات"
+    },
+    "iron": {
+      "name": "الحديد",
+      "description": "نقل الأكسجين في الدم"
+    },
+    "calcium": {
+      "name": "الكالسيوم",
+      "description": "تقوية العظام والأسنان"
+    },
+    "magnesium": {
+      "name": "المغنيسيوم",
+      "description": "وظائف العضلات والأعصاب"
+    }
+  }
+}

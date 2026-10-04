@@ -3,7 +3,8 @@ import { View, ActivityIndicator } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { LinearGradient } from "expo-linear-gradient";
-import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { SkiaRadarChart, RadarDataPoint } from "./SkiaRadarChart";
 
 interface EmotionData {
@@ -48,6 +49,7 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
   loading = false,
   premium = false,
 }) => {
+  const { t, i18n } = useTranslation("insights");
   const emotionalBalance = useMemo(() => {
     if (!data || data.length === 0) {
       return {
@@ -78,15 +80,15 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
   const radarData: RadarDataPoint[] = useMemo(() => {
     if (!data || data.length === 0) return [];
     return data.map((d) => ({
-      label: d.emotion,
+      label: translateEmotion(t, d.emotion),
       value: d.score / 100,
     }));
-  }, [data]);
+  }, [data, t]);
 
   if (loading) {
     return (
       <View>
-        <Text variant="body">Analyzing emotions...</Text>
+        <Text variant="body">{t("emotionBalance.loading")}</Text>
       </View>
     );
   }
@@ -96,7 +98,7 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
     return (
       <View className="py-8 items-center justify-center">
         <Text variant="caption-muted" className="text-center font-medium">
-          No emotion data yet.{"\n"}Start journaling this week to see insights.
+          {t("emotionBalance.emptyTitle")}{"\n"}{t("emotionBalance.emptyDescription")}
         </Text>
       </View>
     );
@@ -121,7 +123,7 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
           }}
         >
           <Text className="text-white text-xs font-extrabold tracking-wider">
-            PREMIUM
+            {t("chart.premium")}
           </Text>
         </LinearGradient>
       )}
@@ -130,9 +132,9 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
       <View className="p-5 pb-0">
         <View className="flex-row items-center justify-between">
           <View>
-            <Text variant="h2">Emotional Balance</Text>
+            <Text variant="h2">{t("emotionBalance.title")}</Text>
             <Text variant="caption-muted" className="mt-1">
-              {format(startDate, "MMM d")} - {format(endDate, "MMM d, yyyy")}
+              {new Intl.DateTimeFormat(i18n.language, { month: "short", day: "numeric" }).format(startDate)} - {new Intl.DateTimeFormat(i18n.language, { month: "short", day: "numeric", year: "numeric" }).format(endDate)}
             </Text>
           </View>
           <View className="items-end">
@@ -154,7 +156,7 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
               </Text>
             </View>
             <Text variant="caption-muted" className="mt-1.5 font-medium">
-              Balance Score
+              {t("emotionBalance.balanceScore")}
             </Text>
           </View>
         </View>
@@ -166,7 +168,7 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
             style={{ backgroundColor: "#F0F9FF" }}
           >
             <Text variant="label-bold" className="text-blue-700 mb-1">
-              🤖 AI Insight
+              🤖 {t("emotionBalance.aiInsight")}
             </Text>
             <Text variant="body" className="text-blue-600">
               {emotionInsight}
@@ -227,7 +229,7 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
                 variant="caption-muted"
                 className="font-medium text-gray-700"
               >
-                {emotion.emotion}: {emotion.score.toFixed(0)}%
+                {translateEmotion(t, emotion.emotion)}: {emotion.score.toFixed(0)}%
               </Text>
             </View>
           ))}
@@ -238,3 +240,19 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
 };
 
 export default EmotionRadarChart;
+
+const EMOTION_KEYS: Record<string, string> = {
+  Joy: "joy",
+  Gratitude: "gratitude",
+  Confidence: "confidence",
+  Peace: "peace",
+  Anxiety: "anxiety",
+  Sadness: "sadness",
+  Anger: "anger",
+  Fear: "fear",
+};
+
+function translateEmotion(t: TFunction<"insights">, emotion: string) {
+  const key = EMOTION_KEYS[emotion];
+  return key ? String(t(`emotionBalance.emotions.${key}`, { defaultValue: emotion })) : emotion;
+}

@@ -20,6 +20,7 @@ import {
 import { DailyGoalRing } from "@/src/components/celebration/DailyGoalRing";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
+import { useTranslation } from "react-i18next";
 
 const AUTO_HIDE_MS = 4500;
 
@@ -64,6 +65,7 @@ interface DailyGoalToastProps {
 
 /** Small card that rises above the tab bar, then slips away on its own. */
 export function DailyGoalToast({ visible, todayXP, goal, onDismiss }: DailyGoalToastProps) {
+  const { t } = useTranslation("common");
   const isDark = useColorScheme() === "dark";
   const insets = useSafeAreaInsets();
   // Same breathing room above the native tab bar as NextJourneyBridgeDock.
@@ -117,7 +119,7 @@ export function DailyGoalToast({ visible, todayXP, goal, onDismiss }: DailyGoalT
     >
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`Daily goal done. ${todayXP} of ${goal} XP today. Dismiss`}
+        accessibilityLabel={t("xp.dailyGoal.accessibilityLabel", { todayXP, goal })}
         onPress={hide}
         style={[
           styles.card,
@@ -139,9 +141,11 @@ export function DailyGoalToast({ visible, todayXP, goal, onDismiss }: DailyGoalT
           <HugeiconsIcon icon={Tick02Icon} size={18} color={green} strokeWidth={2.8} />
         </DailyGoalRing>
         <View style={styles.text}>
-          <Text style={[styles.title, { color: SEMANTIC_COLORS.text.primary }]}>Daily goal done</Text>
+          <Text style={[styles.title, { color: SEMANTIC_COLORS.text.primary }]}>
+            {t("xp.dailyGoal.title")}
+          </Text>
           <Text style={[styles.subtitle, { color: SEMANTIC_COLORS.text.secondary }]}>
-            {todayXP} XP today. Anything more is a bonus — rest if you need to.
+            {t("xp.dailyGoal.message", { todayXP })}
           </Text>
         </View>
       </Pressable>

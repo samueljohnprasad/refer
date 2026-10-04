@@ -7,20 +7,23 @@ import { OnboardingChecklistItem } from '@/src/screens/OnboardingScreen/types';
 import { useOnboardingChecklist } from '@/hooks/data/useOnboardingChecklist';
 import { Card } from '@/src/components/ui/Card';
 import StageProgressBar from '@/src/components/ui/StageProgressBar';
+import { useTranslation } from 'react-i18next';
 
 interface ChecklistRowProps {
     item: OnboardingChecklistItem;
     index: number;
     onPress: (item: OnboardingChecklistItem) => void;
+    label: string;
+    completionLabel: string;
 }
 
-const ChecklistRow: React.FC<ChecklistRowProps> = ({ item, index, onPress }) => (
+const ChecklistRow: React.FC<ChecklistRowProps> = ({ item, index, onPress, label, completionLabel }) => (
     <Animated.View entering={FadeInDown.duration(300).delay(100 + index * 60)}>
         <TouchableOpacity
             onPress={() => onPress(item)}
             activeOpacity={0.7}
             className="flex-row items-center py-3"
-            accessibilityLabel={`${item.completed ? 'Completed' : 'Incomplete'}: ${item.label}`}
+            accessibilityLabel={`${completionLabel}: ${label}`}
             accessibilityRole="button"
         >
             <View
@@ -38,7 +41,7 @@ const ChecklistRow: React.FC<ChecklistRowProps> = ({ item, index, onPress }) => 
                     }`}
                 style={{ opacity: item.completed ? 0.45 : 1 }}
             >
-                {item.label}
+                {label}
             </Text>
             <Text className="happy-font-body-bold text-xs text-sage-600">+{item.xpReward} XP</Text>
         </TouchableOpacity>
@@ -46,6 +49,14 @@ const ChecklistRow: React.FC<ChecklistRowProps> = ({ item, index, onPress }) => 
 );
 
 const OnboardingChecklist: React.FC = () => {
+    const { t } = useTranslation('onboarding');
+    const itemLabelKeys = {
+        first_mood: 'checklist.items.first_mood',
+        first_journal: 'checklist.items.first_journal',
+        first_cbt: 'checklist.items.first_cbt',
+        setup_reminders: 'checklist.items.setup_reminders',
+        first_habit: 'checklist.items.first_habit',
+    } as const;
     const {
         items,
         completedCount,
@@ -84,12 +95,12 @@ const OnboardingChecklist: React.FC = () => {
                 <View className="flex-row items-center justify-between mb-3">
                     <View className="flex-row items-center">
                         <Text style={{ fontSize: 16 }} className="mr-2">🚀</Text>
-                        <Text className="happy-font-body-bold text-[18px] text-ink">Getting Started</Text>
+                        <Text className="happy-font-body-bold text-[18px] text-ink">{t('checklist.title')}</Text>
                     </View>
                     <TouchableOpacity
                         onPress={handleDismiss}
                         className="p-1"
-                        accessibilityLabel="Dismiss checklist"
+                        accessibilityLabel={t('checklist.dismiss')}
                         accessibilityRole="button"
                     >
                         <Text className="happy-font-body-bold text-ink-muted text-xs">✕</Text>
@@ -99,10 +110,10 @@ const OnboardingChecklist: React.FC = () => {
                 <View className="mb-4">
                     <View className="flex-row items-center justify-between mb-2">
                         <Text className="happy-font-body-semibold text-xs text-ink-muted">
-                            {completedCount}/{totalCount} complete
+                            {t('checklist.complete', { completed: completedCount, total: totalCount })}
                         </Text>
                         <Text className="happy-font-body-bold text-xs text-sage-600">
-                            Earn {totalXpReward} XP
+                            {t('checklist.earnXp', { count: totalXpReward })}
                         </Text>
                     </View>
                     <StageProgressBar
@@ -118,6 +129,8 @@ const OnboardingChecklist: React.FC = () => {
                             item={item}
                             index={index}
                             onPress={handleItemPress}
+                            label={String(t(itemLabelKeys[item.id as keyof typeof itemLabelKeys]))}
+                            completionLabel={t(item.completed ? 'checklist.completed' : 'checklist.incomplete')}
                         />
                     ))}
                 </View>

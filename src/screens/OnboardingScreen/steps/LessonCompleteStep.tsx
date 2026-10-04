@@ -57,7 +57,7 @@ const LessonCompleteStep: React.FC = () => {
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="text-center text-[34px] leading-[1.05] tracking-[-0.01em] text-ink"
           >
-            {t("lesson_complete.you_did_it", { defaultValue: "You did it." })}{" "}
+            {t("lesson_complete.you_did_it")}{" "}
             <Text
               style={{
                 fontFamily: APP_FONT_FAMILIES.regular,
@@ -65,7 +65,7 @@ const LessonCompleteStep: React.FC = () => {
                 color: SEMANTIC_COLORS.brand.primary,
               }}
             >
-              {t("lesson_complete.truly", { defaultValue: "Truly." })}
+              {t("lesson_complete.truly")}
             </Text>
           </Text>
         </Animated.View>

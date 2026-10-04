@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
@@ -29,6 +30,7 @@ export function ReframeBuilderCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const builder = readReframeBuilderContent(content);
   const saved = readRecord(savedResponse);
@@ -91,16 +93,16 @@ export function ReframeBuilderCategoryEngine({
         title={readString(content.title) ?? "Build a fairer thought"}
         instruction={readString(content.instruction) ?? "Choose one phrase at a time."}
       />
-      <View accessibilityLabel="Hot thought" style={styles.hotThought}>
-        <Text style={styles.hotThoughtLabel}>Hot thought</Text>
+      <View accessibilityLabel={t("flow.ui.categoryEngine.reframeBuilder.hotThought")} style={styles.hotThought}>
+        <Text style={styles.hotThoughtLabel}>{t("flow.ui.categoryEngine.reframeBuilder.hotThought")}</Text>
         <Text numberOfLines={2} style={styles.hotThoughtText}>{builder.hotThought}</Text>
       </View>
-      <StageProgress stageIndex={response.stageIndex} stageCount={builder.trays.length} label="Slot" />
+      <StageProgress stageIndex={response.stageIndex} stageCount={builder.trays.length} label={t("flow.ui.categoryEngine.reframeBuilder.slot")} />
       <ExerciseWorkspace transitionKey={`${response.phase}-${activeTrayId ?? "ready"}`}>
         {complete && fairerThought ? (
           <ExerciseComparison
-            before={{ label: "Hot thought", value: builder.hotThought }}
-            after={{ label: "Fairer thought", value: fairerThought }}
+            before={{ label: t("flow.ui.categoryEngine.reframeBuilder.hotThought"), value: builder.hotThought }}
+            after={{ label: t("flow.ui.categoryEngine.reframeBuilder.fairerThought"), value: fairerThought }}
             caption={builder.comparisonFeedback}
           />
         ) : (
@@ -117,13 +119,16 @@ export function ReframeBuilderCategoryEngine({
                 />
                 {futureTrays.length > 0 ? (
                   <Text style={styles.future}>
-                    Next: {futureTrays.map((tray) => tray.slotLabel).join(" · ")} ({futureTrays.length} remaining)
+                    {t("flow.ui.categoryEngine.reframeBuilder.nextRemaining", {
+                      labels: futureTrays.map((tray) => tray.slotLabel).join(" · "),
+                      count: futureTrays.length,
+                    })}
                   </Text>
                 ) : null}
               </>
             ) : (
               <View style={styles.ready}>
-                <Text style={styles.readyText}>Your fairer thought is ready to compare.</Text>
+                <Text style={styles.readyText}>{t("flow.ui.categoryEngine.reframeBuilder.ready")}</Text>
               </View>
             )}
           </>

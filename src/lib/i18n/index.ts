@@ -17,6 +17,8 @@ import habitsEn from '../../locales/en/habits.json';
 import settingsEn from '../../locales/en/settings.json';
 import onboardingEn from '../../locales/en/onboarding.json';
 import journeysEn from '../../locales/en/journeys.json';
+import insightsEn from '../../locales/en/insights.json';
+import trackingEn from '../../locales/en/tracking.json';
 
 import commonFr from '../../locales/fr/common.json';
 import homeFr from '../../locales/fr/home.json';
@@ -30,6 +32,8 @@ import exercisesFrCourseCopy from '../../locales/fr/exerciseFlowCourseContent.js
 import exercisesFrModuleCopy from '../../locales/fr/exerciseFlowModuleContent.json';
 import exercisesFrRendererCopy from '../../locales/fr/exerciseFlowRendererCopy.json';
 import exercisesFrSharedCopy from '../../locales/fr/exerciseFlowSharedCopy.json';
+import insightsFr from '../../locales/fr/insights.json';
+import trackingFr from '../../locales/fr/tracking.json';
 
 import commonEs from '../../locales/es/common.json';
 import homeEs from '../../locales/es/home.json';
@@ -43,6 +47,8 @@ import exercisesEsCourseCopy from '../../locales/es/exerciseFlowCourseContent.js
 import exercisesEsModuleCopy from '../../locales/es/exerciseFlowModuleContent.json';
 import exercisesEsRendererCopy from '../../locales/es/exerciseFlowRendererCopy.json';
 import exercisesEsSharedCopy from '../../locales/es/exerciseFlowSharedCopy.json';
+import insightsEs from '../../locales/es/insights.json';
+import trackingEs from '../../locales/es/tracking.json';
 
 import commonDe from '../../locales/de/common.json';
 import homeDe from '../../locales/de/home.json';
@@ -56,6 +62,8 @@ import exercisesDeCourseCopy from '../../locales/de/exerciseFlowCourseContent.js
 import exercisesDeModuleCopy from '../../locales/de/exerciseFlowModuleContent.json';
 import exercisesDeRendererCopy from '../../locales/de/exerciseFlowRendererCopy.json';
 import exercisesDeSharedCopy from '../../locales/de/exerciseFlowSharedCopy.json';
+import insightsDe from '../../locales/de/insights.json';
+import trackingDe from '../../locales/de/tracking.json';
 
 import commonAr from '../../locales/ar/common.json';
 import homeAr from '../../locales/ar/home.json';
@@ -69,6 +77,8 @@ import exercisesArCourseCopy from '../../locales/ar/exerciseFlowCourseContent.js
 import exercisesArModuleCopy from '../../locales/ar/exerciseFlowModuleContent.json';
 import exercisesArRendererCopy from '../../locales/ar/exerciseFlowRendererCopy.json';
 import exercisesArSharedCopy from '../../locales/ar/exerciseFlowSharedCopy.json';
+import insightsAr from '../../locales/ar/insights.json';
+import trackingAr from '../../locales/ar/tracking.json';
 
 import commonPt from '../../locales/pt/common.json';
 import homePt from '../../locales/pt/home.json';
@@ -82,6 +92,8 @@ import exercisesPtCourseCopy from '../../locales/pt/exerciseFlowCourseContent.js
 import exercisesPtModuleCopy from '../../locales/pt/exerciseFlowModuleContent.json';
 import exercisesPtRendererCopy from '../../locales/pt/exerciseFlowRendererCopy.json';
 import exercisesPtSharedCopy from '../../locales/pt/exerciseFlowSharedCopy.json';
+import insightsPt from '../../locales/pt/insights.json';
+import trackingPt from '../../locales/pt/tracking.json';
 
 import commonIt from '../../locales/it/common.json';
 import homeIt from '../../locales/it/home.json';
@@ -95,6 +107,8 @@ import exercisesItCourseCopy from '../../locales/it/exerciseFlowCourseContent.js
 import exercisesItModuleCopy from '../../locales/it/exerciseFlowModuleContent.json';
 import exercisesItRendererCopy from '../../locales/it/exerciseFlowRendererCopy.json';
 import exercisesItSharedCopy from '../../locales/it/exerciseFlowSharedCopy.json';
+import insightsIt from '../../locales/it/insights.json';
+import trackingIt from '../../locales/it/tracking.json';
 
 import commonZh from '../../locales/zh/common.json';
 import homeZh from '../../locales/zh/home.json';
@@ -108,6 +122,8 @@ import exercisesZhCourseCopy from '../../locales/zh/exerciseFlowCourseContent.js
 import exercisesZhModuleCopy from '../../locales/zh/exerciseFlowModuleContent.json';
 import exercisesZhRendererCopy from '../../locales/zh/exerciseFlowRendererCopy.json';
 import exercisesZhSharedCopy from '../../locales/zh/exerciseFlowSharedCopy.json';
+import insightsZh from '../../locales/zh/insights.json';
+import trackingZh from '../../locales/zh/tracking.json';
 
 function composeExerciseNamespace<T extends { flow: { ui: object } }>(
   base: T,
@@ -198,7 +214,7 @@ export async function initI18n(): Promise<void> {
       lng,
       fallbackLng: 'en',
       supportedLngs: [...SUPPORTED_LANGUAGES],
-      ns: ['common', 'home', 'exercises', 'journal', 'habits', 'settings', 'onboarding', 'journeys'],
+      ns: ['common', 'home', 'exercises', 'journal', 'habits', 'settings', 'onboarding', 'journeys', 'insights', 'tracking'],
       defaultNS: 'common',
       compatibilityJSON: 'v4',
       resources: {
@@ -211,14 +227,16 @@ export async function initI18n(): Promise<void> {
           settings: settingsEn,
           onboarding: onboardingEn,
           journeys: journeysEn,
+          insights: insightsEn,
+          tracking: trackingEn,
         },
-        fr: { common: commonFr, home: homeFr, settings: settingsFr, onboarding: onboardingFr, exercises: exercisesByLocale.fr, journal: journalFr, habits: habitsFr, journeys: journeysFr },
-        es: { common: commonEs, home: homeEs, settings: settingsEs, onboarding: onboardingEs, exercises: exercisesByLocale.es, journal: journalEs, habits: habitsEs, journeys: journeysEs },
-        de: { common: commonDe, home: homeDe, settings: settingsDe, onboarding: onboardingDe, exercises: exercisesByLocale.de, journal: journalDe, habits: habitsDe, journeys: journeysDe },
-        ar: { common: commonAr, home: homeAr, settings: settingsAr, onboarding: onboardingAr, exercises: exercisesByLocale.ar, journal: journalAr, habits: habitsAr, journeys: journeysAr },
-        pt: { common: commonPt, home: homePt, settings: settingsPt, onboarding: onboardingPt, exercises: exercisesByLocale.pt, journal: journalPt, habits: habitsPt, journeys: journeysPt },
-        it: { common: commonIt, home: homeIt, settings: settingsIt, onboarding: onboardingIt, exercises: exercisesByLocale.it, journal: journalIt, habits: habitsIt, journeys: journeysIt },
-        zh: { common: commonZh, home: homeZh, settings: settingsZh, onboarding: onboardingZh, exercises: exercisesByLocale.zh, journal: journalZh, habits: habitsZh, journeys: journeysZh },
+        fr: { common: commonFr, home: homeFr, settings: settingsFr, onboarding: onboardingFr, exercises: exercisesByLocale.fr, journal: journalFr, habits: habitsFr, journeys: journeysFr, insights: insightsFr, tracking: trackingFr },
+        es: { common: commonEs, home: homeEs, settings: settingsEs, onboarding: onboardingEs, exercises: exercisesByLocale.es, journal: journalEs, habits: habitsEs, journeys: journeysEs, insights: insightsEs, tracking: trackingEs },
+        de: { common: commonDe, home: homeDe, settings: settingsDe, onboarding: onboardingDe, exercises: exercisesByLocale.de, journal: journalDe, habits: habitsDe, journeys: journeysDe, insights: insightsDe, tracking: trackingDe },
+        ar: { common: commonAr, home: homeAr, settings: settingsAr, onboarding: onboardingAr, exercises: exercisesByLocale.ar, journal: journalAr, habits: habitsAr, journeys: journeysAr, insights: insightsAr, tracking: trackingAr },
+        pt: { common: commonPt, home: homePt, settings: settingsPt, onboarding: onboardingPt, exercises: exercisesByLocale.pt, journal: journalPt, habits: habitsPt, journeys: journeysPt, insights: insightsPt, tracking: trackingPt },
+        it: { common: commonIt, home: homeIt, settings: settingsIt, onboarding: onboardingIt, exercises: exercisesByLocale.it, journal: journalIt, habits: habitsIt, journeys: journeysIt, insights: insightsIt, tracking: trackingIt },
+        zh: { common: commonZh, home: homeZh, settings: settingsZh, onboarding: onboardingZh, exercises: exercisesByLocale.zh, journal: journalZh, habits: habitsZh, journeys: journeysZh, insights: insightsZh, tracking: trackingZh },
       },
       partialBundledLanguages: true,
       interpolation: {

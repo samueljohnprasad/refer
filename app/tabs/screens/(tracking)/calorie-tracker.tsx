@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Stack, useRouter, useLocalSearchParams } from "expo-router";
 import {
   View,
@@ -11,12 +12,12 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Host } from "@expo/ui/swift-ui";
-import { format } from "date-fns";
 import CalorieTrackerScreen from "@/src/screens/CalorieTrackerScreen/CalorieTrackerScreen";
 
 const CalorieTrackerHeader: React.FC<{ selectedDate: Date }> = ({
   selectedDate,
 }) => {
+  const { t, i18n } = useTranslation("tracking");
   const router = useRouter();
   const { height } = useWindowDimensions();
   const isLiquidGlass = isLiquidGlassAvailable();
@@ -37,6 +38,8 @@ const CalorieTrackerHeader: React.FC<{ selectedDate: Date }> = ({
           className="w-10 h-10 rounded-full justify-center items-center bg-[#7C5CFF]"
           activeOpacity={0.7}
           onPress={() => router.back()}
+          accessibilityRole="button"
+          accessibilityLabel={t("accessibility.back")}
         >
           <HugeiconsIcon icon={ArrowLeft02Icon} size={20} color="#FFF" />
         </TouchableOpacity>
@@ -55,11 +58,15 @@ const CalorieTrackerHeader: React.FC<{ selectedDate: Date }> = ({
 
       <View className="items-center">
         <Text className="text-[28px] font-extrabold text-[#0F172A] font-cormorantBold">
-          Calorie Tracker
+          {t("calorie.title")}
         </Text>
         <View className="bg-purple-100 px-3 py-1 rounded-full mt-1">
           <Text className="text-sm font-semibold text-purple-700">
-            {format(selectedDate, "EEE, MMM d")}
+            {new Intl.DateTimeFormat(i18n.language, {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+            }).format(selectedDate)}
           </Text>
         </View>
       </View>

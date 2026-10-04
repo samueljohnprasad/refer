@@ -1,0 +1,36 @@
+import { StyleSheet } from "react-native";
+import { SHARE_CARD_WIDTH, SHARE_CARD_HEIGHT } from "@/src/components/celebration/ShareWinCard";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
+
+export const styles = StyleSheet.create({
+  shareCardHost: { position: "absolute", left: -10000, top: -10000, width: SHARE_CARD_WIDTH, height: SHARE_CARD_HEIGHT, zIndex: -9999 },
+  scroll: { flex: 1 },
+  content: { flexGrow: 1, paddingHorizontal: 24, alignItems: "center" },
+  muteButton: { position: "absolute", right: 20, width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center", zIndex: 10 },
+  mascotZone: { width: "100%", alignItems: "center", justifyContent: "center", minHeight: 165, marginTop: 2, marginBottom: 4 },
+  confettiLayer: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, alignItems: "center", justifyContent: "center" },
+  glow: { position: "absolute", width: 240, height: 240, borderRadius: 120 },
+  mascotWrap: { width: 175, height: 175, alignItems: "center", justifyContent: "center" },
+  mascot: { width: "100%", height: "100%" },
+  title: { fontFamily: APP_FONT_FAMILIES.extraBold, fontSize: 30, letterSpacing: -0.5, textAlign: "center" },
+  messageWrap: { marginTop: 6, paddingHorizontal: 12 },
+  message: { fontFamily: APP_FONT_FAMILIES.semiBold, fontSize: 16, lineHeight: 22, textAlign: "center" },
+  badge: { marginTop: 18, flexDirection: "row", alignItems: "center", gap: 8, paddingVertical: 8, paddingLeft: 14, paddingRight: 8, borderRadius: 999, borderWidth: 2 },
+  badgeText: { fontFamily: APP_FONT_FAMILIES.extraBold, fontSize: 12, letterSpacing: 1.2 },
+  badgeBonus: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 999 },
+  badgeBonusText: { fontFamily: APP_FONT_FAMILIES.extraBold, fontSize: 12 },
+  statsRow: { marginTop: 14, flexDirection: "row", gap: 12, width: "100%" },
+  statLabel: { fontFamily: APP_FONT_FAMILIES.extraBold, fontSize: 11, letterSpacing: 1.2 },
+  statValueRow: { marginTop: 6, flexDirection: "row", alignItems: "center", gap: 4 },
+  statValue: { fontFamily: APP_FONT_FAMILIES.extraBold, fontSize: 22 },
+  goalText: { flex: 1 },
+  goalValue: { fontFamily: APP_FONT_FAMILIES.extraBold, fontSize: 20, marginTop: 2 },
+  goalOf: { fontFamily: APP_FONT_FAMILIES.bold, fontSize: 14 },
+  goalHint: { fontFamily: APP_FONT_FAMILIES.semiBold, fontSize: 13, marginTop: 2 },
+  chestCardWrap: { width: "100%", marginTop: 10 },
+  chestIcon: { width: 48, height: 48, borderRadius: 16, alignItems: "center", justifyContent: "center" },
+  spacer: { flex: 1, minHeight: 8 },
+  weekDotsHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 6 },
+  buttonWrap: { width: "100%", marginTop: 14, gap: 8 },
+  continueWrap: { width: "100%" },
+});

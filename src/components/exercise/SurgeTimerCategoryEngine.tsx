@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import Slider from "@react-native-community/slider";
 import { CartesianChart, Line } from "victory-native-v4";
@@ -18,6 +19,7 @@ export function SurgeTimerCategoryEngine({
   savedResponse,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   
@@ -67,10 +69,10 @@ export function SurgeTimerCategoryEngine({
         {/* Wave Stage Interpretation */}
         <View className="items-center py-5 min-h-[110px] justify-center">
           <Text className="happy-font-heading-bold text-[22px] tracking-[1px] text-[#29452A] mb-2 uppercase text-center">
-             {stage.label}
+             {t(stage.labelKey)}
           </Text>
           <Text className="happy-font-body text-[16px] leading-[22px] text-[#3F3A34] text-center px-4">
-             {stage.desc}
+             {t(stage.descriptionKey)}
           </Text>
         </View>
 
@@ -131,7 +133,7 @@ export function SurgeTimerCategoryEngine({
         {/* Timeline Slider */}
         <View className="w-full px-2 mt-1">
           <Slider
-            accessibilityLabel="Elapsed time since peak"
+            accessibilityLabel={t("flow.ui.categoryEngine.surge.elapsedSincePeak")}
             accessibilityRole="adjustable"
             accessibilityValue={{ min: 0, max: 100, now: progress }}
             minimumValue={0}
@@ -145,8 +147,8 @@ export function SurgeTimerCategoryEngine({
             style={{ height: 44, width: "100%" }}
           />
           <View className="flex-row justify-between mt-0.5 px-1">
-            <Text className="happy-font-body-bold text-[11px] text-[#82796A] tracking-[0.5px]">PEAK</Text>
-            <Text className="happy-font-body-bold text-[11px] text-[#82796A] tracking-[0.5px]">+10 MIN</Text>
+            <Text className="happy-font-body-bold text-[11px] text-[#82796A] tracking-[0.5px]">{t("flow.ui.categoryEngine.surge.peak")}</Text>
+            <Text className="happy-font-body-bold text-[11px] text-[#82796A] tracking-[0.5px]">{t("flow.ui.categoryEngine.surge.tenMinutes")}</Text>
           </View>
         </View>
       </View>
@@ -156,13 +158,13 @@ export function SurgeTimerCategoryEngine({
           <View className="flex-row items-center justify-center mb-3.5 gap-2">
             <Text className="happy-font-body-bold text-[#185A37] text-[15px]">✓</Text>
             <Text className="happy-font-body-bold text-[11.5px] text-[#82796A] uppercase tracking-[0.7px]">
-              YOU WATCHED THE WAVE FALL
+              {t("flow.ui.categoryEngine.surge.watchedWaveFall")}
             </Text>
           </View>
           
           <View className="rounded-[22px] bg-[#F2F8EF] px-5 py-[18px]">
             <Text className="happy-font-body-bold mb-1.5 text-[11px] tracking-[0.8px] text-[#29452A] uppercase">
-              REMEMBER THIS
+              {t("flow.ui.categoryEngine.surge.rememberThis")}
             </Text>
             <Text className="happy-font-body text-[15px] leading-[22px] text-[#3F4A31]">
               {readString(content.numberToKeep) ?? "The peak does not last forever. The body can begin settling even before you find the perfect technique."}
@@ -186,8 +188,8 @@ function createResponse(extra: Record<string, unknown> = {}) {
 }
 
 function getQualitativeStage(progress: number) {
-  if (progress < 20) return { label: "VERY HIGH", desc: "The surge is still strong." };
-  if (progress < 50) return { label: "FADING", desc: "The surge is already coming down." };
-  if (progress < 80) return { label: "LOWER", desc: "Your body is beginning to settle." };
-  return { label: "MUCH LOWER", desc: "Much of the surge has passed." };
+  if (progress < 20) return { labelKey: "flow.ui.categoryEngine.surge.veryHigh" as const, descriptionKey: "flow.ui.categoryEngine.surge.stillStrong" as const };
+  if (progress < 50) return { labelKey: "flow.ui.categoryEngine.surge.fading" as const, descriptionKey: "flow.ui.categoryEngine.surge.comingDown" as const };
+  if (progress < 80) return { labelKey: "flow.ui.categoryEngine.surge.lower" as const, descriptionKey: "flow.ui.categoryEngine.surge.beginningToSettle" as const };
+  return { labelKey: "flow.ui.categoryEngine.surge.muchLower" as const, descriptionKey: "flow.ui.categoryEngine.surge.passed" as const };
 }

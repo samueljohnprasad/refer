@@ -1,25 +1,25 @@
 import React from "react";
 import { MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
 import type { ABCAnalysisResponse, StepProps } from "@/src/types/exerciseFlow";
-import { BALANCED_THOUGHT_SUGGESTIONS, SHARED_TEXT_STEP_PROPS } from "./customStepShared";
+import { useABCCopy } from "./customStepShared";
 
 export function ABCAlternativeBeliefStep(
   stepProps: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
+  const copy = useABCCopy();
   return (
     <MultiTextInputStep maxItems={1} 
       {...stepProps}
-      {...SHARED_TEXT_STEP_PROPS}
-      title="More balanced thought"
-      subtitle="Write a fairer version that still feels believable."
+      {...copy.sharedProps}
+      title={copy.t("flow.ui.abc.alternativeBelief.title")}
+      subtitle={copy.t("flow.ui.abc.alternativeBelief.subtitle")}
       fieldKey="alternativeBelief"
-      placeholder="A fairer thought could be..."
-      suggestions={BALANCED_THOUGHT_SUGGESTIONS}
+      placeholder={copy.t("flow.ui.abc.alternativeBelief.placeholder")}
+      suggestions={copy.balancedThoughtSuggestions}
       referenceQuote={{
-        label: "Automatic thought",
+        label: copy.t("flow.ui.abc.automaticThought"),
         text: stepProps.response.belief,
       }}
     />
   );
 }
-

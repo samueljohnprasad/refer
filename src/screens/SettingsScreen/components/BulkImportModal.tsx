@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   View,
   Text,
@@ -12,7 +13,6 @@ import {
   Calendar01Icon,
   Download02Icon,
 } from "@hugeicons/core-free-icons";
-import { format } from "date-fns";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 import { Card } from "@/src/components/ui/Card";
@@ -40,6 +40,7 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
   importDaysCount,
   setImportDaysCount,
 }) => {
+  const { i18n, t } = useTranslation("settings");
   const progressPercent =
     progress.total > 0
       ? Math.round((progress.current / progress.total) * 100)
@@ -77,11 +78,11 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
                 />
               </View>
               <Text className="happy-font-body-bold text-xl text-ink">
-                Bulk Import
+                {t("bulkImport.title")}
               </Text>
             </View>
             <Text className="happy-font-body-medium text-[13px] text-ink-muted leading-4">
-              Import sample journal entries for testing
+              {t("bulkImport.sampleDescription")}
             </Text>
           </View>
 
@@ -89,7 +90,7 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
             {/* Start Date */}
             <View className="mb-4">
               <Text className="happy-brand-eyebrow mb-1.5">
-                Start Date
+                {t("bulkImport.startDate")}
               </Text>
               <View className="flex-row items-center bg-sage-50 p-3.5 rounded-xl border border-sage-100 gap-2.5">
                 <HugeiconsIcon
@@ -99,18 +100,22 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
                   strokeWidth={1.8}
                 />
                 <Text className="happy-font-body-medium text-base text-ink">
-                  {format(importStartDate, "MMM dd, yyyy")}
+                  {importStartDate.toLocaleDateString(i18n.language, {
+                    month: "short",
+                    day: "2-digit",
+                    year: "numeric",
+                  })}
                 </Text>
               </View>
               <Text className="happy-font-body text-[12px] text-ink-muted mt-1.5">
-                Entries will be created from this date forward
+                {t("bulkImport.startDateDescription")}
               </Text>
             </View>
 
             {/* Number of Days */}
             <View className="mb-4">
               <Text className="happy-brand-eyebrow mb-1.5">
-                Number of Days
+                {t("bulkImport.daysLabel")}
               </Text>
               <TextInput
                 className="happy-font-body-medium bg-sage-50 p-3.5 rounded-xl border border-sage-100 text-base text-ink"
@@ -121,12 +126,12 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
                 placeholderTextColor={SEMANTIC_COLORS.text.tertiary}
                 maxLength={2}
                 editable={!importing}
-                accessibilityLabel="Number of days to import"
+                accessibilityLabel={t("bulkImport.daysAccessibility")}
               />
               <Text className="happy-font-body text-[12px] text-ink-muted mt-1.5">
-                {importDaysCount}{" "}
-                {parseInt(importDaysCount) === 1 ? "entry" : "entries"} will be
-                imported
+                {t("bulkImport.entriesWillImport", {
+                  count: Number.parseInt(importDaysCount, 10) || 0,
+                })}
               </Text>
             </View>
 
@@ -135,7 +140,7 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
               <View className="mb-4 items-center">
                 <ActivityIndicator size="small" color={SEMANTIC_COLORS.brand.pressed} />
                 <Text className="happy-font-body-medium text-[13px] text-ink-muted mt-2 mb-2">
-                  Importing {progress.current} of {progress.total}...
+                  {t("bulkImport.importingProgress", progress)}
                 </Text>
                 {/* Progress bar */}
                 <StageProgressBar
@@ -153,7 +158,7 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
             {/* Action Buttons */}
             <View className="flex-row gap-3">
               <Button
-                label="Cancel"
+                label={t("bulkImport.cancel")}
                 variant="secondary"
                 onPress={onClose}
                 disabled={importing}
@@ -161,7 +166,7 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
                 className="flex-1"
               />
               <Button
-                label={importing ? "Importing…" : "Import"}
+                label={importing ? t("bulkImport.importing") : t("bulkImport.import")}
                 variant="primary"
                 onPress={onImport}
                 loading={importing}

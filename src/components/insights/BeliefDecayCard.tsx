@@ -90,6 +90,7 @@ function BeliefRow({ cluster }: { cluster: BeliefCluster }) {
 
 function LockedBeliefCard({ onUnlock }: { onUnlock: () => void }) {
   const { t } = useTranslation("common");
+  const { t: tInsights } = useTranslation("insights");
   return (
     <Pressable
       onPress={onUnlock}
@@ -102,7 +103,9 @@ function LockedBeliefCard({ onUnlock }: { onUnlock: () => void }) {
           {t("insights.ui.beliefTracker")}
         </Text>
         <View className="flex-row items-center gap-1 px-2 py-1 rounded-[10px] border" style={[{ backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
-          <Text className="text-[11px] font-semibold" style={[{ color: "#7E22CE" }]}>PRO</Text>
+          <Text className="text-[11px] font-semibold" style={[{ color: "#7E22CE" }]}>
+            {tInsights("shared.proLabel")}
+          </Text>
         </View>
       </View>
       <Text className="text-[12px] text-ink-muted leading-relaxed">
@@ -115,6 +118,7 @@ function LockedBeliefCard({ onUnlock }: { onUnlock: () => void }) {
 // ─── Main component ──────────────────────────────────────────────────────────
 
 export function BeliefDecayCard() {
+  const { t } = useTranslation("insights");
   const { data, isLoading } = useBeliefDecay();
   const { hasPro, presentPaywall } = useRevenueCat();
 
@@ -128,14 +132,16 @@ export function BeliefDecayCard() {
     <View className="happy-brand-card rounded-[24px] p-5 mb-4" style={{ backgroundColor: "#FFFFFF" }}>
       <View className="flex-row items-center gap-2 mb-1">
         <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-0">
-          Belief Tracker
+          {t("beliefDecay.title")}
         </Text>
         <View className="flex-row items-center gap-1 px-2 py-1 rounded-[10px] border" style={[{ backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
-          <Text className="text-[11px] font-semibold" style={[{ color: "#7E22CE" }]}>PRO</Text>
+          <Text className="text-[11px] font-semibold" style={[{ color: "#7E22CE" }]}>
+            {t("shared.proLabel")}
+          </Text>
         </View>
       </View>
       <Text className="text-[12px] text-ink-muted mb-2">
-        How your core beliefs are changing over time
+        {t("beliefDecay.description")}
       </Text>
 
       {data.clusters.map((cluster) => (

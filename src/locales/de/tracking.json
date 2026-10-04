@@ -1,0 +1,125 @@
+{
+  "calorie": {
+    "title": "Kalorien-Tracker",
+    "analyzingFood": "Analysieren Sie Ihre Lebensmittel...",
+    "identifyingNutrition": "KI identifiziert Nährwertinformationen",
+    "analysisFailed": "Analyse fehlgeschlagen",
+    "tryAgain": "Erneut versuchen",
+    "foodAdded": "Lebensmittel erfolgreich hinzugefügt!",
+    "undo": "Rückgängig",
+    "done": "Fertig",
+    "logged_one": "{{countLabel}} Eintrag • {{caloriesLabel}} Kalorien für dein Tagesziel erfasst.",
+    "logged_other": "{{countLabel}} Artikel • {{caloriesLabel}} Kalorien, die zu Ihrem Tagesziel protokolliert wurden.",
+    "emptyTitle": "Bereit zum Protokollieren?",
+    "emptyDescription": "Machen Sie ein Foto Ihrer Mahlzeit, um Kalorien und Makros sofort zu verfolgen.",
+    "takePhoto": "Foto machen",
+    "uploadPhoto": "Foto hochladen",
+    "todayMeals": "Heutige Mahlzeiten",
+    "camera": "Kamera",
+    "upload": "Hochladen",
+    "total": "Summe",
+    "calorieUnit": "cal",
+    "macros": {
+      "proteinShort": "P",
+      "carbsShort": "C",
+      "fatShort": "F"
+    },
+    "mealNutrients": "{{mealType}} Nährstoffe",
+    "mealTypes": {
+      "breakfast": "Frühstück",
+      "lunch": "Mittagessen",
+      "dinner": "Abendessen",
+      "snack": "Snack"
+    }
+  },
+  "permissions": {
+    "required": "Berechtigung erforderlich",
+    "camera": "Eine Kameraerlaubnis ist erforderlich, um Fotos von Ihrem Essen zu machen.",
+    "photoLibrary": "Für die Auswahl von Fotos ist die Erlaubnis der Fotobibliothek erforderlich."
+  },
+  "deleteConfirmation": {
+    "title": "Eintrag löschen",
+    "message": "Sind Sie sicher, dass Sie diese Mahlzeit löschen möchten?",
+    "cancel": "Abbrechen",
+    "delete": "Löschen"
+  },
+  "accessibility": {
+    "deleteMeal": "Mahlzeit löschen",
+    "showNutrientDetails": "Nährstoffdetails anzeigen",
+    "back": "Zurück",
+    "close": "Schließen"
+  },
+  "micronutrients": {
+    "title": "Mikronährstoffe",
+    "tracked": "{{countLabel}} von {{totalLabel}} verfolgt",
+    "selectAll": "Alle auswählen",
+    "clearAll": "Alles löschen",
+    "howItWorks": "So funktioniert's",
+    "explanation": "Wählen Sie die zu verfolgenden Nährstoffe aus. Die KI analysiert Ihre Mahlzeiten und zeigt in Ihrer täglichen Zusammenfassung an, wie viel von jedem Sie zu sich nehmen.",
+    "vitamins": "Vitamine",
+    "minerals": "Mineralien",
+    "dailyTarget": "Tagesziel",
+    "dailyValue": "Tageswert",
+    "noData": "Keine Mikronährstoffdaten verfügbar",
+    "categories": {
+      "vitamin": "vitamin",
+      "mineral": "mineral"
+    }
+  },
+  "healthScore": {
+    "title": "Gesundheitsbewertungsanalyse",
+    "outOf100": "von 100",
+    "why": "Warum dieser Score?",
+    "gotIt": "Verstanden!"
+  },
+  "nutrientItems": {
+    "vitaminD2": {
+      "name": "Vitamin D2",
+      "description": "Unterstützt die Knochengesundheit und Immunfunktion"
+    },
+    "vitaminD3": {
+      "name": "Vitamin D3",
+      "description": "Essentiell für die Kalziumaufnahme"
+    },
+    "vitaminC": {
+      "name": "Vitamin C",
+      "description": "Antioxidans, unterstützt das Immunsystem"
+    },
+    "vitaminB12": {
+      "name": "Vitamin B12",
+      "description": "Energieproduktion und Gehirnfunktion"
+    },
+    "vitaminA": {
+      "name": "Vitamin A",
+      "description": "Sehkraftgesundheit und Immununterstützung"
+    },
+    "vitaminE": {
+      "name": "Vitamin E",
+      "description": "Antioxidative Schutzzellen"
+    },
+    "vitaminK": {
+      "name": "Vitamin K",
+      "description": "Blutgerinnung und Knochengesundheit"
+    },
+    "zinc": {
+      "name": "Zink",
+      "description": "Immunfunktion und Wundheilung"
+    },
+    "potassium": {
+      "name": "Kalium",
+      "description": "Herz- und Muskelfunktion"
+    },
+    "iron": {
+      "name": "Eisen",
+      "description": "Sauerstofftransport im Blut"
+    },
+    "calcium": {
+      "name": "Calcium",
+      "description": "Knochen- und Zahnstärke"
+    },
+    "magnesium": {
+      "name": "Magnesium",
+      "description": "Muskel- und Nervenfunktion"
+    }
+  }
+}

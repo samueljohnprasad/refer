@@ -1,0 +1,125 @@
+{
+  "calorie": {
+    "title": "卡路里记录",
+    "analyzingFood": "正在分析食物…",
+    "identifyingNutrition": "AI 正在识别营养信息",
+    "analysisFailed": "分析失败",
+    "tryAgain": "重试",
+    "foodAdded": "餐食添加成功！",
+    "undo": "撤销",
+    "done": "完成",
+    "logged_one": "已记录 {{caloriesLabel}} 千卡，计入每日目标（{{countLabel}} 项餐食）。",
+    "logged_other": "已记录 {{caloriesLabel}} 千卡，计入每日目标（{{countLabel}} 项餐食）。",
+    "emptyTitle": "准备好记录了吗？",
+    "emptyDescription": "拍下餐食照片，即可快速追踪卡路里和宏量营养素。",
+    "takePhoto": "拍照",
+    "uploadPhoto": "上传照片",
+    "todayMeals": "今日餐食",
+    "camera": "相机",
+    "upload": "上传",
+    "total": "总计",
+    "calorieUnit": "千卡",
+    "macros": {
+      "proteinShort": "P",
+      "carbsShort": "C",
+      "fatShort": "F"
+    },
+    "mealNutrients": "{{mealType}}营养素",
+    "mealTypes": {
+      "breakfast": "早餐",
+      "lunch": "午餐",
+      "dinner": "晚餐",
+      "snack": "加餐"
+    }
+  },
+  "permissions": {
+    "required": "需要权限",
+    "camera": "拍摄食物照片需要相机权限。",
+    "photoLibrary": "选择照片需要访问照片图库。"
+  },
+  "deleteConfirmation": {
+    "title": "删除记录",
+    "message": "确定要删除这顿餐食吗？",
+    "cancel": "取消",
+    "delete": "删除"
+  },
+  "accessibility": {
+    "deleteMeal": "删除餐食",
+    "showNutrientDetails": "显示营养素详情",
+    "back": "返回",
+    "close": "关闭"
+  },
+  "micronutrients": {
+    "title": "微量营养素",
+    "tracked": "已追踪 {{countLabel}} / {{totalLabel}} 项",
+    "selectAll": "全选",
+    "clearAll": "清除全部",
+    "howItWorks": "使用方法",
+    "explanation": "选择要追踪的营养素。AI 会分析你的餐食，并在每日摘要中显示各项摄入量。",
+    "vitamins": "维生素",
+    "minerals": "矿物质",
+    "dailyTarget": "每日目标",
+    "dailyValue": "每日参考值",
+    "noData": "暂无微量营养素数据",
+    "categories": {
+      "vitamin": "vitamin",
+      "mineral": "mineral"
+    }
+  },
+  "healthScore": {
+    "title": "健康评分分析",
+    "outOf100": "满分 100",
+    "why": "为什么是这个评分？",
+    "gotIt": "知道了！"
+  },
+  "nutrientItems": {
+    "vitaminD2": {
+      "name": "维生素 D2",
+      "description": "有助于骨骼健康和免疫功能"
+    },
+    "vitaminD3": {
+      "name": "维生素 D3",
+      "description": "对钙吸收至关重要"
+    },
+    "vitaminC": {
+      "name": "维生素 C",
+      "description": "抗氧化，有助于支持免疫系统"
+    },
+    "vitaminB12": {
+      "name": "维生素 B12",
+      "description": "有助于能量生成和大脑功能"
+    },
+    "vitaminA": {
+      "name": "维生素 A",
+      "description": "有助于视力健康和免疫支持"
+    },
+    "vitaminE": {
+      "name": "维生素 E",
+      "description": "抗氧化，保护细胞"
+    },
+    "vitaminK": {
+      "name": "维生素 K",
+      "description": "有助于血液凝固和骨骼健康"
+    },
+    "zinc": {
+      "name": "锌",
+      "description": "有助于免疫功能和伤口愈合"
+    },
+    "potassium": {
+      "name": "钾",
+      "description": "有助于心脏和肌肉功能"
+    },
+    "iron": {
+      "name": "铁",
+      "description": "帮助血液输送氧气"
+    },
+    "calcium": {
+      "name": "钙",
+      "description": "有助于骨骼和牙齿强健"
+    },
+    "magnesium": {
+      "name": "镁",
+      "description": "有助于肌肉和神经功能"
+    }
+  }
+}

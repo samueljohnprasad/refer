@@ -44,6 +44,7 @@ export const EraseDataConfirmationModal: React.FC<
 > = ({ visible, onClose, onConfirm, isDeleting = false }) => {
   const { t } = useTranslation("settings");
   const insets = useSafeAreaInsets();
+  const confirmationToken = t("deleteConfirmation.confirmationToken");
   // ponytail: 2-step deliberate confirmation flow inside single sheet
   const [step, setStep] = useState<1 | 2>(1);
   const [confirmText, setConfirmText] = useState<string>("");
@@ -65,7 +66,7 @@ export const EraseDataConfirmationModal: React.FC<
   };
 
   const handleConfirm = async (): Promise<void> => {
-    if (confirmText.trim().toUpperCase() !== "DELETE") return;
+    if (confirmText.trim().toUpperCase() !== confirmationToken.toUpperCase()) return;
     Keyboard.dismiss();
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     await onConfirm();
@@ -74,7 +75,7 @@ export const EraseDataConfirmationModal: React.FC<
     onClose();
   };
 
-  const isDeleteConfirmed = confirmText.trim().toUpperCase() === "DELETE";
+  const isDeleteConfirmed = confirmText.trim().toUpperCase() === confirmationToken.toUpperCase();
   const paddingBottom = Math.max(insets.bottom, 16) + 4;
 
   return (
@@ -192,12 +193,12 @@ export const EraseDataConfirmationModal: React.FC<
                       </Text>
 
                       <Text className="text-center text-[13px] leading-4 text-ink happy-font-body-bold mb-2">
-                        {t("deleteConfirmation.typeToConfirm")}
+                        {t("deleteConfirmation.typeToConfirm", { token: confirmationToken })}
                       </Text>
 
                       <TextInput
                         className="w-full h-11 rounded-xl bg-neutral-100 border border-neutral-300 px-4 text-center text-[15px] happy-font-body-bold text-ink tracking-wider mb-2"
-                        placeholder="DELETE"
+                        placeholder={confirmationToken}
                         placeholderTextColor={SEMANTIC_COLORS.text.tertiary as string}
                         value={confirmText}
                         onChangeText={setConfirmText}

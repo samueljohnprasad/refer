@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, DeviceEventEmitter } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,6 +28,7 @@ interface SelectedMicronutrients {
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export const useCalorieTrackerScreen = (selectedDate: Date) => {
+  const { t } = useTranslation("tracking");
   const formattedDate = format(selectedDate, 'yyyy-MM-dd');
 
   const { calorieEntries, dailySummary, isLoading, isAnalyzing, analysisError, analyzeAndSaveFood, deleteEntry } =
@@ -66,7 +68,7 @@ export const useCalorieTrackerScreen = (selectedDate: Date) => {
   const takePhoto = useCallback(async (): Promise<void> => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permission Required', 'Camera permission is needed to take photos of your food.');
+      Alert.alert(t("permissions.required"), t("permissions.camera"));
       return;
     }
 
@@ -79,12 +81,12 @@ export const useCalorieTrackerScreen = (selectedDate: Date) => {
 
     if (result.canceled || !result.assets[0]) return;
     await processImage(result.assets[0].uri);
-  }, []);
+  }, [t]);
 
   const pickImage = useCallback(async (): Promise<void> => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permission Required', 'Photo library permission is needed to select photos.');
+      Alert.alert(t("permissions.required"), t("permissions.photoLibrary"));
       return;
     }
 
@@ -97,7 +99,7 @@ export const useCalorieTrackerScreen = (selectedDate: Date) => {
 
     if (result.canceled || !result.assets[0]) return;
     await processImage(result.assets[0].uri);
-  }, []);
+  }, [t]);
 
   // ─── Listen for external CTA events ──────────────────────────────────────
 
@@ -127,9 +129,9 @@ export const useCalorieTrackerScreen = (selectedDate: Date) => {
   const resetCapture = (): void => setAnalysisResult(null);
 
   const handleDeleteEntry = (entryId: string): void => {
-    Alert.alert('Delete Entry', 'Are you sure you want to delete this meal?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: () => deleteEntry(entryId) },
+    Alert.alert(t("deleteConfirmation.title"), t("deleteConfirmation.message"), [
+      { text: t("deleteConfirmation.cancel"), style: 'cancel' },
+      { text: t("deleteConfirmation.delete"), style: 'destructive', onPress: () => deleteEntry(entryId) },
     ]);
   };
 

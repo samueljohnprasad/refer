@@ -1,4 +1,25 @@
 {
+  "future_letter_screen": {
+    "date_label": "{{date}} · {{weekday}} {{moment}}",
+    "greeting": "嘿，朋友：",
+    "header_label": "有一封信送给你",
+    "headline_start": "一封来自",
+    "headline_emphasis": "你的信，",
+    "subtitle": "写于30天之后。",
+    "moments": { "morning": "早上", "afternoon": "下午", "evening": "晚上", "night": "深夜" },
+    "body": {
+      "intro": "我在{{weekday}}{{moment}}给你写下这段话。刚刚关掉了 Happy",
+      "closed_app": "五分钟前。",
+      "just_like_you": "就像你马上也会做的那样。",
+      "honesty": "我不想骗你。那些杂念并没有消失。有些早晨，思绪还是会飞快转动；有些晚上，那份沉重感仍然存在。",
+      "caught_it": "但昨天，思绪漩涡刚开始时，我察觉到了它。我给它命名，陪它待了三十秒。",
+      "didnt_grow": "它没有变得更强烈。",
+      "thirty_days_ago": "三十天前，这还做不到。",
+      "showed_up": "今天你为自己留出了五分钟，就像你在写下的承诺中说的那样。",
+      "keep_going": "继续走下去。",
+      "changed": "我们已经不再是同一个人。"
+    }
+  },
   "header": {
     "your_course": "你的课程",
     "quiet_moment": "片刻宁静"
@@ -32,6 +53,7 @@
     "today": "今天",
     "start_here": "从这里开始"
   },
+  "checklist": { "title": "开始使用", "dismiss": "关闭清单", "incomplete": "未完成", "completed": "已完成", "complete": "已完成 {{completed}}/{{total}} 项", "earnXp": "赚取 {{count}} XP", "items": { "first_mood": "记录首次心情", "first_journal": "写下第一篇日记", "first_cbt": "尝试一次 CBT 练习", "setup_reminders": "设置每日提醒", "first_habit": "创建第一个习惯" } },
   "mascot_greeting": {
     "label": "你的指引者",
     "hi": "嗨，我是Mochi。",
@@ -220,6 +242,20 @@
   },
   "plan_names": {"anxiety":"平息内心风暴","mood":"重新找到光亮","stress":"压力下稳住自己","self_understanding":"重新认识自己","sleep":"温柔入睡"},
   "plan_reveal": {
+    "course": {
+      "anxiety": { "summary": "你会学习及早发现思绪打转，安抚身体的警觉反应，并减轻持续的担忧。", "practice": { "first": "了解焦虑循环", "second": "安抚身体的警觉反应", "third": "更早发现思维模式" } },
+      "mood": { "summary": "你会学习发现影响心情的因素，练习小而日常的支点，并在艰难时刻找到一些光亮。", "practice": { "first": "发现细微的情绪触发因素", "second": "练习日常的小支点", "third": "在艰难时刻找到更稳定的应对方式" } },
+      "stress": { "summary": "你会学习在紧张达到高峰前察觉它，帮助神经系统放松，并在压力下重新找回平静。", "practice": { "first": "在紧张加剧前察觉它", "second": "帮助神经系统放松", "third": "在压力增加时找回平静" } },
+      "self_understanding": { "summary": "你会学习理解情绪反应，理清反复出现的想法，并重新靠近真正重要的事。", "practice": { "first": "发现反复出现的思维循环", "second": "说清自己真实的感受", "third": "让日常选择更贴合自己的需要" } },
+      "sleep": { "summary": "你会学习平复深夜思绪，在睡前放松身体紧张，并逐步进入更安稳的睡眠。", "practice": { "first": "平复深夜飞转的思绪", "second": "睡前放松身体紧张", "third": "建立稳定的睡前节奏" } }
+    },
+    "why": {
+      "anxiety": { "heavy": "你告诉我们，焦虑像持续的重担。我们会先了解是什么让身体一直保持警觉，再一起寻找让它安定下来的方法。", "moderate": "你告诉我们，焦虑常常表现为紧张。我们会先了解是什么让身体保持警觉，再一起寻找让它安定下来的方法。", "overwhelming": "你告诉我们，有些日子焦虑会占据全部注意力。我们会先了解这种警觉反应，并找到能为你留出一点空间的工具。", "default": "根据你分享的情况，我们会先了解是什么让身体保持警觉，并练习让它安定下来的方法。" },
+      "mood": "根据你分享的情况，我们会从小小的日常支点开始，帮助你发现什么能让一天好过一些。",
+      "stress": "根据你分享的情况，我们会练习在压力累积前察觉它，并给神经系统一些放松的空间。",
+      "self_understanding": "根据你分享的情况，我们会帮助你理解情绪模式，并更清楚地表达自己的感受。",
+      "sleep": "根据你分享的情况，我们会从睡前放松练习开始，帮助身体在入睡前感到安心。"
+    },
     "step_label": "量身定制的方案",
     "loading_milestones": "正在加载里程碑",
     "phase_subtitles": {"foundation":"基础与觉察","practice":"学习并练习技能","integration":"融入日常生活","initial":"从这里开始","core":"核心练习","anchor":"长期坚持"},

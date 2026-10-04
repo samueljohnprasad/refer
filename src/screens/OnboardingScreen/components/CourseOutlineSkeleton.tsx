@@ -7,7 +7,7 @@ export function CourseOutlineSkeleton(): React.JSX.Element {
   const { t } = useTranslation("onboarding");
 
   return (
-    <View className="mt-2 gap-3" accessibilityLabel={t("plan_reveal.loading_milestones", { defaultValue: "Loading milestones" })}>
+    <View className="mt-2 gap-3" accessibilityLabel={t("plan_reveal.loading_milestones")}>
       {Array.from({ length: 3 }).map((_, index) => (
         <View
           key={index}

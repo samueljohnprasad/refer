@@ -168,7 +168,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
           await updateUserStreak();
           await xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
             customAmount: 15,
-            customDescription: t("xp_first_step", { defaultValue: "First step on your journey" }),
+            customDescription: t("xp_first_step"),
           });
 
           await onComplete(skipped);

@@ -17,19 +17,12 @@ interface LetterFromFutureStepProps {
   timing?: StressTiming;
 }
 
-const TIMING_MOMENTS: Record<StressTiming, string> = {
-  morning: "morning",
-  afternoon: "afternoon",
-  evening: "evening",
-  night: "late night",
-};
-
 const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
   timing,
 }) => {
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
-  const { i18n } = useTranslation("onboarding");
+  const { i18n, t } = useTranslation("onboarding");
   const futureLetterMeta = useMemo(() => {
     const date = new Date();
     date.setDate(date.getDate() + 30);
@@ -41,14 +34,18 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
     const weekday = date.toLocaleDateString(i18n.language, {
       weekday: "long",
     });
-    const moment = timing ? TIMING_MOMENTS[timing] : "evening";
+    const moment = t(`future_letter_screen.moments.${timing ?? "evening"}`);
 
     return {
-      dateLabel: `${calendarDate} · ${weekday} ${moment}`,
+      dateLabel: t("future_letter_screen.date_label", {
+        date: calendarDate,
+        weekday: weekday.toLowerCase(),
+        moment,
+      }),
       weekdayLower: weekday.toLowerCase(),
       moment,
     };
-  }, [timing, i18n.language]);
+  }, [i18n.language, t, timing]);
 
   return (
     <ScrollView
@@ -89,7 +86,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
               letterSpacing: 0.3,
             }}
           >
-            Something arrived for you
+            {t("future_letter_screen.header_label")}
           </Text>
         </View>
 
@@ -103,14 +100,14 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             color: "#142414",
           }}
         >
-          A letter from{" "}
+          {t("future_letter_screen.headline_start")} {" "}
           <Text
             style={{
               fontFamily: APP_FONT_FAMILIES.regularItalic,
               color: "#5F7F58",
             }}
           >
-            you,
+            {t("future_letter_screen.headline_emphasis")}
           </Text>
         </Text>
         <Text
@@ -123,7 +120,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             color: "#4F604F",
           }}
         >
-          written 30 days from now.
+          {t("future_letter_screen.subtitle")}
         </Text>
       </Animated.View>
 
@@ -221,7 +218,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
               color: "#142414",
             }}
           >
-            Hey, friend,           </Text>
+            {t("future_letter_screen.greeting")}          </Text>
 
           <FutureLetterBody weekday={futureLetterMeta.weekdayLower} moment={futureLetterMeta.moment} />
 

@@ -13,6 +13,7 @@ import { LevelTier } from "@/src/types/levels";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { getLevelIcon } from "./LevelBadge";
 import * as Haptics from "expo-haptics";
+import { useTranslation } from "react-i18next";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -38,6 +39,19 @@ const CONFETTI_COLORS = [
   "#AA96DA",
 ];
 
+const LEVEL_NAME_KEYS = {
+  1: "xp.levelNames.level1",
+  2: "xp.levelNames.level2",
+  3: "xp.levelNames.level3",
+  4: "xp.levelNames.level4",
+  5: "xp.levelNames.level5",
+  6: "xp.levelNames.level6",
+  7: "xp.levelNames.level7",
+  8: "xp.levelNames.level8",
+  9: "xp.levelNames.level9",
+  10: "xp.levelNames.level10",
+} as const;
+
 /**
  * Celebration modal shown when user levels up
  * Features confetti animation and level info
@@ -47,6 +61,7 @@ export const LevelUpCelebration: React.FC<LevelUpCelebrationProps> = ({
   newLevel,
   onDismiss,
 }) => {
+  const { t } = useTranslation("common");
   const [confetti, setConfetti] = useState<ConfettiPiece[]>([]);
   const scale = useSharedValue(0);
   const opacity = useSharedValue(0);
@@ -120,7 +135,7 @@ export const LevelUpCelebration: React.FC<LevelUpCelebrationProps> = ({
 
           {/* Title */}
           <Text className="text-2xl font-bold text-gray-900 mb-2">
-            Level Up! 🎉
+            {t("xp.levelUp.title")}
           </Text>
 
           {/* Level Name */}
@@ -128,13 +143,12 @@ export const LevelUpCelebration: React.FC<LevelUpCelebrationProps> = ({
             className="text-xl font-semibold mb-4"
             style={{ color: newLevel.color }}
           >
-            {newLevel.name}
+            {String(t(LEVEL_NAME_KEYS[newLevel.level as keyof typeof LEVEL_NAME_KEYS]))}
           </Text>
 
           {/* Description */}
           <Text className="text-gray-500 text-center mb-6">
-            Congratulations! You've reached level {newLevel.level}.{"\n"}Keep up
-            the great work!
+            {t("xp.levelUp.message", { level: newLevel.level })}
           </Text>
 
           {/* Dismiss Button */}
@@ -142,7 +156,9 @@ export const LevelUpCelebration: React.FC<LevelUpCelebrationProps> = ({
             onPress={onDismiss}
             className="bg-gray-900 px-8 py-3 rounded-full"
           >
-            <Text className="text-white font-semibold">Continue</Text>
+            <Text className="text-white font-semibold">
+              {t("xp.levelUp.continue")}
+            </Text>
           </Pressable>
         </Animated.View>
       </Pressable>

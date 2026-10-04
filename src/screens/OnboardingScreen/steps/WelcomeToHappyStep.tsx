@@ -24,7 +24,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
 }) => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("onboarding");
-  const displayPlanName = planName.replace(/\.$/, "") || t("welcome_to_happy.personal_plan", { defaultValue: "Personal Plan" });
+  const displayPlanName = planName.replace(/\.$/, "") || t("welcome_to_happy.personal_plan");
 
   return (
     <ScrollView
@@ -45,13 +45,13 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
             hitSlop={12}
             className="flex-row items-center rounded-full bg-sage-100/80 px-3 py-1 active:opacity-70"
             accessibilityRole="button"
-            accessibilityLabel={t("welcome_to_happy.login_accessibility", { defaultValue: "Already have an account? Log in" })}
+            accessibilityLabel={t("welcome_to_happy.login_accessibility")}
           >
             <Text
               style={{ fontFamily: APP_FONT_FAMILIES.bold }}
               className="text-[12px] text-sage-800"
             >
-              {t("welcome_to_happy.login", { defaultValue: "Log in" })}
+              {t("welcome_to_happy.login")}
             </Text>
           </Pressable>
         )}

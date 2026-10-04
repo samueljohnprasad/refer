@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Button } from "@/src/components/ui/Button";
 import { CheckpointSingleChoice, CheckpointOrdering, CheckpointMatching, CheckpointRecall } from "./checkpointContent";
 import { CheckpointResponse } from "./checkpointResponse";
+import { useTranslation } from "react-i18next";
 
 interface AdapterProps<T> {
   item: T;
@@ -12,6 +13,7 @@ interface AdapterProps<T> {
 }
 
 export const SingleChoiceAdapter: React.FC<AdapterProps<CheckpointSingleChoice>> = ({ item, response, onComplete }) => {
+  const { t } = useTranslation("exercises");
   const attempts = response.itemAttempts[item.id] || 0;
   const showWorkedSupport = attempts >= 2;
 
@@ -20,10 +22,10 @@ export const SingleChoiceAdapter: React.FC<AdapterProps<CheckpointSingleChoice>>
       <View className="space-y-6">
         <Text className="text-2xl font-cormorant text-ink">{item.question}</Text>
         <View className="p-4 bg-sage-50 rounded-xl border border-sage-200">
-          <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider mb-2">Worked Support</Text>
+          <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider mb-2">{t("flow.ui.categoryEngine.checkpoint.workedSupport")}</Text>
           <Text className="text-lg font-geist text-ink">{item.workedSupport}</Text>
         </View>
-        <Button label="Next" onPress={() => onComplete(false)} size="lg" />
+        <Button label={t("flow.ui.categoryEngine.checkpoint.next")} onPress={() => onComplete(false)} size="lg" />
       </View>
     );
   }
@@ -47,6 +49,7 @@ export const SingleChoiceAdapter: React.FC<AdapterProps<CheckpointSingleChoice>>
 };
 
 export const OrderingAdapter: React.FC<AdapterProps<CheckpointOrdering>> = ({ item, response, onComplete }) => {
+  const { t } = useTranslation("exercises");
   const attempts = response.itemAttempts[item.id] || 0;
   const showWorkedSupport = attempts >= 2;
   const [order, setOrder] = useState([...item.items]);
@@ -56,10 +59,10 @@ export const OrderingAdapter: React.FC<AdapterProps<CheckpointOrdering>> = ({ it
       <View className="space-y-6">
         <Text className="text-2xl font-cormorant text-ink">{item.instruction}</Text>
         <View className="p-4 bg-sage-50 rounded-xl border border-sage-200">
-          <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider mb-2">Worked Support</Text>
+          <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider mb-2">{t("flow.ui.categoryEngine.checkpoint.workedSupport")}</Text>
           <Text className="text-lg font-geist text-ink">{item.workedSupport}</Text>
         </View>
-        <Button label="Next" onPress={() => onComplete(false)} size="lg" />
+        <Button label={t("flow.ui.categoryEngine.checkpoint.next")} onPress={() => onComplete(false)} size="lg" />
       </View>
     );
   }
@@ -81,7 +84,7 @@ export const OrderingAdapter: React.FC<AdapterProps<CheckpointOrdering>> = ({ it
     <View className="space-y-6">
       <Text className="text-2xl font-cormorant text-ink">{item.instruction}</Text>
       {attempts === 1 && (
-        <Text className="text-sm font-geist text-amber-700 uppercase tracking-wider mb-2">Some items are in the wrong position. Try again!</Text>
+        <Text className="text-sm font-geist text-amber-700 uppercase tracking-wider mb-2">{t("flow.ui.categoryEngine.checkpoint.orderRetry")}</Text>
       )}
       <View className="space-y-2">
         {order.map((o, index) => {
@@ -103,13 +106,14 @@ export const OrderingAdapter: React.FC<AdapterProps<CheckpointOrdering>> = ({ it
         })}
       </View>
       <View className="mt-4">
-        <Button label="Check Order" onPress={handleCheck} size="lg" />
+        <Button label={t("flow.ui.categoryEngine.checkpoint.checkOrder")} onPress={handleCheck} size="lg" />
       </View>
     </View>
   );
 };
 
 export const MatchingAdapter: React.FC<AdapterProps<CheckpointMatching>> = ({ item, response, onComplete, onResponse }) => {
+  const { t } = useTranslation("exercises");
   const attempts = response.itemAttempts[item.id] || 0;
   const showWorkedSupport = attempts >= 2;
   const { leftId, rightId } = response.currentMatchSelection;
@@ -122,10 +126,10 @@ export const MatchingAdapter: React.FC<AdapterProps<CheckpointMatching>> = ({ it
       <View className="space-y-6">
         <Text className="text-2xl font-cormorant text-ink">{item.instruction}</Text>
         <View className="p-4 bg-sage-50 rounded-xl border border-sage-200">
-          <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider mb-2">Worked Support</Text>
+          <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider mb-2">{t("flow.ui.categoryEngine.checkpoint.workedSupport")}</Text>
           <Text className="text-lg font-geist text-ink">{item.workedSupport}</Text>
         </View>
-        <Button label="Next" onPress={() => onComplete(false)} size="lg" />
+        <Button label={t("flow.ui.categoryEngine.checkpoint.next")} onPress={() => onComplete(false)} size="lg" />
       </View>
     );
   }
@@ -198,6 +202,7 @@ export const MatchingAdapter: React.FC<AdapterProps<CheckpointMatching>> = ({ it
 };
 
 export const RecallAdapter: React.FC<AdapterProps<CheckpointRecall>> = ({ item, response, onComplete }) => {
+  const { t } = useTranslation("exercises");
   const [revealed, setRevealed] = useState(false);
   
   return (
@@ -212,7 +217,7 @@ export const RecallAdapter: React.FC<AdapterProps<CheckpointRecall>> = ({ item, 
           </View>
         ) : (
           <TouchableOpacity onPress={() => setRevealed(true)} className="px-6 py-3 bg-sage-100 rounded-full">
-            <Text className="text-sage-800 font-geist font-bold">Reveal Answer</Text>
+            <Text className="text-sage-800 font-geist font-bold">{t("flow.ui.categoryEngine.checkpoint.revealAnswer")}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -221,7 +226,7 @@ export const RecallAdapter: React.FC<AdapterProps<CheckpointRecall>> = ({ item, 
         <View className="flex-row gap-3">
           <View className="flex-1">
             <Button
-              label="Need Practice"
+              label={t("flow.ui.categoryEngine.checkpoint.needPractice")}
               variant="secondary"
               onPress={() => onComplete(false)}
               size="lg"
@@ -229,7 +234,7 @@ export const RecallAdapter: React.FC<AdapterProps<CheckpointRecall>> = ({ item, 
           </View>
           <View className="flex-1">
             <Button
-              label="Got It"
+              label={t("flow.ui.categoryEngine.checkpoint.gotIt")}
               variant="primary"
               onPress={() => onComplete(true)}
               size="lg"

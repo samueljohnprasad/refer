@@ -1,4 +1,25 @@
 {
+  "future_letter_screen": {
+    "date_label": "{{date}} · {{weekday}}, {{moment}}",
+    "greeting": "Ciao,",
+    "header_label": "È arrivato qualcosa per te",
+    "headline_start": "Una lettera da",
+    "headline_emphasis": "te,",
+    "subtitle": "scritta tra 30 giorni.",
+    "moments": { "morning": "di mattina", "afternoon": "di pomeriggio", "evening": "di sera", "night": "a notte fonda" },
+    "body": {
+      "intro": "Ti scrivo di {{weekday}} {{moment}}. Ho appena chiuso Happy",
+      "closed_app": "cinque minuti fa.",
+      "just_like_you": "Proprio come farai tu tra poco.",
+      "honesty": "Non voglio mentirti. Il rumore non è sparito. Alcune mattine i pensieri corrono ancora. In alcune sere il peso è ancora lì.",
+      "caught_it": "Ma ieri, quando è iniziata la spirale, me ne sono accorto. Le ho dato un nome e ci sono rimasto per trenta secondi.",
+      "didnt_grow": "E non è diventata più grande.",
+      "thirty_days_ago": "Trenta giorni fa non sembrava possibile.",
+      "showed_up": "Oggi ti sei dedicato cinque minuti, proprio come avevi promesso nel tuo impegno.",
+      "keep_going": "Continua così.",
+      "changed": "Non siamo più la stessa persona."
+    }
+  },
   "header": {
     "your_course": "IL TUO CORSO",
     "quiet_moment": "UN MOMENTO DI CALMA"
@@ -32,6 +53,7 @@
     "today": "Oggi",
     "start_here": "Inizia qui"
   },
+  "checklist": { "title": "Per iniziare", "dismiss": "Chiudi la lista", "incomplete": "Da fare", "completed": "Completato", "complete": "{{completed}}/{{total}} completati", "earnXp": "Ottieni {{count}} XP", "items": { "first_mood": "Registra il tuo primo stato d’animo", "first_journal": "Scrivi la tua prima voce di diario", "first_cbt": "Prova un esercizio di CBT", "setup_reminders": "Imposta promemoria giornalieri", "first_habit": "Crea la tua prima abitudine" } },
   "mascot_greeting": {
     "label": "La tua guida",
     "hi": "Ciao, sono Mochi.",
@@ -220,6 +242,20 @@
   },
   "plan_names": {"anxiety":"Calmare la tempesta","mood":"Ritrovare la luce","stress":"Serenità sotto pressione","self_understanding":"Ritrovare te stesso","sleep":"Rallentare prima di dormire"},
   "plan_reveal": {
+    "course": {
+      "anxiety": { "summary": "Imparerai a riconoscere sul nascere i pensieri a spirale, calmare la risposta di allarme del corpo e alleggerire le preoccupazioni persistenti.", "practice": { "first": "Capire il ciclo dell’ansia", "second": "Calmare la risposta di allarme del corpo", "third": "Riconoscere prima gli schemi" } },
+      "mood": { "summary": "Imparerai a individuare cosa influenza il tuo umore, creare piccoli punti di appoggio quotidiani e ritrovare un po’ di luce nei momenti difficili.", "practice": { "first": "Individuare i segnali sottili dell’umore", "second": "Creare piccoli punti di appoggio quotidiani", "third": "Trovare risposte più stabili nei momenti difficili" } },
+      "stress": { "summary": "Imparerai a notare la tensione prima che raggiunga il culmine, aiutare il sistema nervoso a distendersi e ritrovare la calma sotto pressione.", "practice": { "first": "Notare la tensione prima che aumenti", "second": "Aiutare il sistema nervoso a distendersi", "third": "Ritrovare la calma quando la pressione cresce" } },
+      "self_understanding": { "summary": "Imparerai a comprendere le reazioni emotive, districare i pensieri ricorrenti e ritrovare ciò che conta davvero per te.", "practice": { "first": "Individuare i cicli di pensiero ricorrenti", "second": "Dare un nome a ciò che provi davvero", "third": "Allineare le scelte quotidiane ai tuoi bisogni" } },
+      "sleep": { "summary": "Imparerai a calmare i pensieri serali, sciogliere la tensione fisica prima di dormire e accompagnarti verso un sonno riposante.", "practice": { "first": "Calmare i pensieri che corrono la sera", "second": "Sciogliere la tensione fisica prima di dormire", "third": "Creare una routine serale regolare" } }
+    },
+    "why": {
+      "anxiety": { "heavy": "Ci hai detto che l’ansia sembra un peso costante. Inizieremo a capire cosa mantiene attivo il tuo sistema di allerta e a trovare modi per calmarlo.", "moderate": "Ci hai detto che l’ansia si manifesta come tensione frequente. Inizieremo a capire cosa mantiene attivo il tuo sistema di allerta e a trovare modi per calmarlo.", "overwhelming": "Ci hai detto che alcuni giorni l’ansia prende il sopravvento. Inizieremo a capire questa risposta di allerta e a trovare strumenti che ti diano un po’ di spazio.", "default": "Da ciò che ci hai raccontato, inizieremo a capire cosa mantiene attivo il tuo sistema di allerta e a praticare modi per calmarlo." },
+      "mood": "Da ciò che ci hai raccontato, inizieremo con piccoli punti di appoggio che ti aiutino a notare cosa migliora la tua giornata.",
+      "stress": "Da ciò che ci hai raccontato, ci concentreremo sul notare la pressione prima che aumenti e sul dare al sistema nervoso spazio per rilassarsi.",
+      "self_understanding": "Da ciò che ci hai raccontato, ti aiuteremo a capire gli schemi emotivi e a trovare parole più chiare per ciò che vivi.",
+      "sleep": "Da ciò che ci hai raccontato, ci concentreremo su abitudini serali che aiutino il corpo a sentirsi al sicuro prima di dormire."
+    },
     "step_label": "Il tuo piano su misura",
     "loading_milestones": "Caricamento delle tappe",
     "phase_subtitles": {"foundation":"Basi e consapevolezza","practice":"Imparare e praticare","integration":"Integrare con calma","initial":"Primo passo","core":"Pratica essenziale","anchor":"Un sostegno duraturo"},

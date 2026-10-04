@@ -1,0 +1,125 @@
+{
+  "calorie": {
+    "title": "Rastreador de calorías",
+    "analyzingFood": "Analizando tu comida...",
+    "identifyingNutrition": "La IA está identificando información nutricional",
+    "analysisFailed": "Error en el análisis",
+    "tryAgain": "Inténtalo de nuevo",
+    "foodAdded": "¡Comida añadida con éxito!",
+    "undo": "Deshacer",
+    "done": "Listo",
+    "logged_one": "{{countLabel}} alimento • {{caloriesLabel}} calorías registradas para tu objetivo diario.",
+    "logged_other": "{{countLabel}} artículos • {{caloriesLabel}} calorías registradas en tu objetivo diario.",
+    "emptyTitle": "¿Listo para iniciar sesión?",
+    "emptyDescription": "Haz una foto de tu comida para realizar un seguimiento instantáneo de calorías y macros.",
+    "takePhoto": "Haz una foto",
+    "uploadPhoto": "Subir foto",
+    "todayMeals": "Comidas de hoy",
+    "camera": "Cámara",
+    "upload": "Subir",
+    "total": "Total",
+    "calorieUnit": "cal",
+    "macros": {
+      "proteinShort": "P",
+      "carbsShort": "C",
+      "fatShort": "F"
+    },
+    "mealNutrients": "{{mealType}} nutrientes",
+    "mealTypes": {
+      "breakfast": "Desayuno",
+      "lunch": "Almuerzo",
+      "dinner": "Cena",
+      "snack": "Aperitivo"
+    }
+  },
+  "permissions": {
+    "required": "Se requiere permiso",
+    "camera": "Se necesita permiso de la cámara para tomar fotos de tu comida.",
+    "photoLibrary": "Se necesita permiso de la biblioteca de fotos para seleccionar fotos."
+  },
+  "deleteConfirmation": {
+    "title": "Eliminar entrada",
+    "message": "¿Seguro que quieres eliminar esta comida?",
+    "cancel": "Cancelar",
+    "delete": "Eliminar"
+  },
+  "accessibility": {
+    "deleteMeal": "Eliminar comida",
+    "showNutrientDetails": "Mostrar detalles de nutrientes",
+    "back": "Volver",
+    "close": "Cerrar"
+  },
+  "micronutrients": {
+    "title": "Micronutrientes",
+    "tracked": "{{countLabel}} de {{totalLabel}} rastreados",
+    "selectAll": "Seleccionar todo",
+    "clearAll": "Borrar todo",
+    "howItWorks": "Cómo funciona",
+    "explanation": "Seleccionar nutrientes para realizar un seguimiento. La IA analizará tus comidas y mostrará cuánto de cada una estás consumiendo en tu resumen diario.",
+    "vitamins": "Vitaminas",
+    "minerals": "Minerales",
+    "dailyTarget": "Objetivo diario",
+    "dailyValue": "Valor diario",
+    "noData": "No hay datos de micronutrientes disponibles",
+    "categories": {
+      "vitamin": "vitamin",
+      "mineral": "mineral"
+    }
+  },
+  "healthScore": {
+    "title": "Análisis del puntaje de salud",
+    "outOf100": "de 100",
+    "why": "¿Por qué esta puntuación?",
+    "gotIt": "¡Entendido!"
+  },
+  "nutrientItems": {
+    "vitaminD2": {
+      "name": "Vitamina D2",
+      "description": "Apoya la salud ósea y la función inmunológica"
+    },
+    "vitaminD3": {
+      "name": "Vitamina D3",
+      "description": "Esencial para la absorción de calcio"
+    },
+    "vitaminC": {
+      "name": "Vitamina C",
+      "description": "Antioxidante, apoya el sistema inmunológico"
+    },
+    "vitaminB12": {
+      "name": "Vitamina B12",
+      "description": "Producción de energía y función cerebral"
+    },
+    "vitaminA": {
+      "name": "Vitamina A",
+      "description": "Salud visual y apoyo inmunológico"
+    },
+    "vitaminE": {
+      "name": "Vitamina E",
+      "description": "Células protectoras antioxidantes"
+    },
+    "vitaminK": {
+      "name": "Vitamina K",
+      "description": "Coagulación sanguínea y salud ósea"
+    },
+    "zinc": {
+      "name": "Zinc",
+      "description": "Función inmune y cicatrización de heridas"
+    },
+    "potassium": {
+      "name": "Potasio",
+      "description": "Función cardíaca y muscular"
+    },
+    "iron": {
+      "name": "Hierro",
+      "description": "Transporte de oxígeno en sangre"
+    },
+    "calcium": {
+      "name": "Calcio",
+      "description": "Resistencia ósea y dental"
+    },
+    "magnesium": {
+      "name": "Magnesio",
+      "description": "Función muscular y nerviosa"
+    }
+  }
+}

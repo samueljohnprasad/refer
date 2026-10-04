@@ -5,6 +5,7 @@ import { StarsIcon } from "@hugeicons/core-free-icons";
 import { XPGainAnimation } from "./XPGainAnimation";
 import { LevelBadge } from "../Level";
 import { getLevelFromXP } from "@/src/types/levels";
+import { useTranslation } from "react-i18next";
 
 interface XPGain {
   id: string;
@@ -23,6 +24,19 @@ interface XPDisplayProps {
   onPress?: () => void;
 }
 
+const LEVEL_NAME_KEYS = {
+  1: "xp.levelNames.level1",
+  2: "xp.levelNames.level2",
+  3: "xp.levelNames.level3",
+  4: "xp.levelNames.level4",
+  5: "xp.levelNames.level5",
+  6: "xp.levelNames.level6",
+  7: "xp.levelNames.level7",
+  8: "xp.levelNames.level8",
+  9: "xp.levelNames.level9",
+  10: "xp.levelNames.level10",
+} as const;
+
 export const XPDisplay: React.FC<XPDisplayProps> = ({
   totalXP,
   todayXP = 0,
@@ -32,6 +46,13 @@ export const XPDisplay: React.FC<XPDisplayProps> = ({
   compact = false,
   onPress,
 }) => {
+  const { t } = useTranslation("common");
+  const level = getLevelFromXP(totalXP);
+  const localizedLevel = {
+    ...level,
+    name: String(t(LEVEL_NAME_KEYS[level.level as keyof typeof LEVEL_NAME_KEYS])),
+  };
+
   if (compact) {
     return (
       <TouchableOpacity
@@ -46,7 +67,7 @@ export const XPDisplay: React.FC<XPDisplayProps> = ({
           </Text>
           <View className="ml-2">
             <LevelBadge
-              level={getLevelFromXP(totalXP)}
+              level={localizedLevel}
               size="sm"
               showName={false}
             />
@@ -80,19 +101,21 @@ export const XPDisplay: React.FC<XPDisplayProps> = ({
             </View>
             <View className="ml-3">
               <Text className="text-gray-500 text-xs font-medium">
-                Total XP
+                {t("xp.display.total")}
               </Text>
               <Text className="text-2xl font-bold text-gray-900">
                 {totalXP.toLocaleString()}
               </Text>
             </View>
-            <LevelBadge level={getLevelFromXP(totalXP)} size="md" />
+            <LevelBadge level={localizedLevel} size="md" />
           </View>
 
           {/* Today's XP */}
           {showToday && (
             <View className="items-end">
-              <Text className="text-gray-500 text-xs font-medium">Today</Text>
+              <Text className="text-gray-500 text-xs font-medium">
+                {t("xp.display.today")}
+              </Text>
               <Text className="text-lg font-bold text-yellow-600">
                 +{todayXP}
               </Text>

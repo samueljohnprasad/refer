@@ -1,4 +1,25 @@
 {
+  "future_letter_screen": {
+    "date_label": "{{date}} · {{weekday}}, {{moment}}",
+    "greeting": "Hola,",
+    "header_label": "Ha llegado algo para ti",
+    "headline_start": "Una carta de",
+    "headline_emphasis": "ti,",
+    "subtitle": "escrita dentro de 30 días.",
+    "moments": { "morning": "por la mañana", "afternoon": "por la tarde", "evening": "por la noche", "night": "a altas horas de la noche" },
+    "body": {
+      "intro": "Te escribo el {{weekday}} {{moment}}. Acabo de cerrar Happy",
+      "closed_app": "hace cinco minutos.",
+      "just_like_you": "Igual que tú lo harás dentro de un momento.",
+      "honesty": "No voy a mentirte. El ruido no desapareció. Algunas mañanas los pensamientos siguen acelerados. Algunas noches, el peso sigue ahí.",
+      "caught_it": "Pero ayer, cuando empezó la espiral, me di cuenta. Le puse nombre. Me quedé con ella durante treinta segundos.",
+      "didnt_grow": "Y no se hizo más grande.",
+      "thirty_days_ago": "Hace treinta días, eso no parecía posible.",
+      "showed_up": "Hoy estuviste aquí. Cinco minutos, tal como prometiste en el compromiso que firmaste.",
+      "keep_going": "Sigue adelante.",
+      "changed": "Ya no somos la misma persona."
+    }
+  },
   "header": { "your_course": "TU CURSO", "quiet_moment": "UN MOMENTO DE CALMA" },
   "buttons": {
     "lets_begin": "¡EMPECEMOS!",
@@ -17,6 +38,7 @@
     "subhead": "un pensamiento a la vez"
   },
   "welcome_nodes": {"0_0":"Sigue creciendo","1_0":"Reflexiona","1_1":"a fondo","2_0":"Conócete","2_1":"mejor","4_0":"Crea un","4_1":"hábito","5_0":"Una mente","5_1":"más clara","today":"Hoy","start_here":"Empieza aquí"},
+  "checklist": { "title": "Primeros pasos", "dismiss": "Cerrar la lista", "incomplete": "Pendiente", "completed": "Completado", "complete": "{{completed}}/{{total}} completados", "earnXp": "Gana {{count}} XP", "items": { "first_mood": "Registra tu primer estado de ánimo", "first_journal": "Escribe tu primera entrada del diario", "first_cbt": "Prueba un ejercicio de TCC", "setup_reminders": "Configura recordatorios diarios", "first_habit": "Crea tu primer hábito" } },
   "mascot_greeting": {
     "label": "Tu guía",
     "hi": "Hola, soy Mochi.",
@@ -118,6 +140,20 @@
   },
   "plan_names": {"anxiety":"Calmar la tormenta","mood":"Volver a encontrar la luz","stress":"Serenidad bajo presión","self_understanding":"Volver a ti","sleep":"Descanso tranquilo"},
   "plan_reveal": {
+    "course": {
+      "anxiety": { "summary": "Aprenderás a reconocer a tiempo las espirales de pensamientos, calmar la respuesta de alerta de tu cuerpo y aliviar la preocupación constante.", "practice": { "first": "Comprender el ciclo de la ansiedad", "second": "Calmar la respuesta de alerta del cuerpo", "third": "Detectar patrones antes" } },
+      "mood": { "summary": "Aprenderás a identificar los desencadenantes de tu estado de ánimo, practicar pequeños apoyos diarios y encontrar algo de luz en los momentos difíciles.", "practice": { "first": "Identificar los desencadenantes sutiles del ánimo", "second": "Practicar pequeños apoyos diarios", "third": "Encontrar respuestas más estables ante momentos difíciles" } },
+      "stress": { "summary": "Aprenderás a notar la tensión antes de que alcance su punto máximo, aliviar la carga de tu sistema nervioso y recuperar la calma bajo presión.", "practice": { "first": "Reconocer la tensión antes de que aumente", "second": "Aliviar la carga del sistema nervioso", "third": "Recuperar la calma cuando aumenta la presión" } },
+      "self_understanding": { "summary": "Aprenderás a comprender tus reacciones emocionales, desenredar pensamientos recurrentes y reconectar con lo que de verdad te importa.", "practice": { "first": "Descubrir bucles de pensamiento repetitivos", "second": "Poner nombre a lo que sientes", "third": "Ajustar tus decisiones diarias a tus necesidades" } },
+      "sleep": { "summary": "Aprenderás a calmar los pensamientos nocturnos, soltar la tensión física antes de acostarte y descansar mejor.", "practice": { "first": "Calmar los pensamientos acelerados por la noche", "second": "Soltar la tensión física antes de acostarte", "third": "Crear una rutina nocturna predecible" } }
+    },
+    "why": {
+      "anxiety": { "heavy": "Nos contaste que la ansiedad se siente como un peso constante. Empezaremos por entender qué mantiene activa tu alerta y buscar formas de calmarla.", "moderate": "Nos contaste que la ansiedad suele sentirse como tensión. Empezaremos por entender qué mantiene activa tu alerta y buscar formas de calmarla.", "overwhelming": "Nos contaste que algunos días la ansiedad lo ocupa todo. Empezaremos por entender esa respuesta de alerta y encontrar herramientas que te den un poco de espacio.", "default": "Por lo que nos contaste, empezaremos por entender qué mantiene activa tu alerta y practicar formas de calmarla." },
+      "mood": "Por lo que nos contaste, empezaremos con pequeños apoyos que te ayuden a notar qué mejora tu día.",
+      "stress": "Por lo que nos contaste, nos centraremos en detectar la presión antes de que aumente y dar espacio a tu sistema nervioso para descansar.",
+      "self_understanding": "Por lo que nos contaste, te ayudaremos a comprender tus patrones emocionales y a expresar mejor lo que vives.",
+      "sleep": "Por lo que nos contaste, nos centraremos en rutinas para la noche que ayuden a tu cuerpo a sentirse a salvo antes de dormir."
+    },
     "step_label": "Tu plan personalizado",
     "loading_milestones": "Cargando etapas",
     "phase_subtitles": {"foundation":"Bases y conciencia","practice":"Aprender y practicar","integration":"Integrar con calma","initial":"Primer objetivo","core":"Práctica principal","anchor":"Apoyo a largo plazo"},

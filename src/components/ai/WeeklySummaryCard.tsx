@@ -11,6 +11,7 @@ import {
   StarIcon,
 } from "@hugeicons/core-free-icons";
 import type { WeeklySummary } from "@/src/network/genAi";
+import { useTranslation } from "react-i18next";
 
 interface WeeklySummaryCardProps {
   weeklySummary: WeeklySummary | null;
@@ -25,6 +26,7 @@ export const WeeklySummaryCard: React.FC<WeeklySummaryCardProps> = ({
   weeklySummary,
   showTitle = true,
 }) => {
+  const { t } = useTranslation("insights");
   if (!weeklySummary) return null;
 
   const getTrendIcon = () => {
@@ -51,7 +53,7 @@ export const WeeklySummaryCard: React.FC<WeeklySummaryCardProps> = ({
             />
           </View>
           <Text variant="h2">
-            Weekly Summary
+            {t("weeklySummary.title")}
           </Text>
         </View>
       )}
@@ -59,7 +61,7 @@ export const WeeklySummaryCard: React.FC<WeeklySummaryCardProps> = ({
         {/* Mood Trend */}
         <View className="flex-row items-center mb-4">
           <Text variant="label-bold" className="mr-3">
-            Mood Trend:
+            {t("weeklySummary.moodTrend")}
           </Text>
           <View
             className="px-3 py-1.5 rounded-full flex-row items-center gap-1.5"
@@ -86,7 +88,7 @@ export const WeeklySummaryCard: React.FC<WeeklySummaryCardProps> = ({
           weeklySummary.topEmotions.length > 0 && (
             <View className="mb-4">
               <Text variant="h3" className="mb-2.5">
-                Top Emotions
+                {t("weeklySummary.topEmotions")}
               </Text>
               <View className="flex-row flex-wrap gap-2">
                 {weeklySummary.topEmotions.map((emotion, idx) => (
@@ -111,7 +113,7 @@ export const WeeklySummaryCard: React.FC<WeeklySummaryCardProps> = ({
               <View className="flex-row items-center gap-2 mb-2.5">
                 <HugeiconsIcon icon={SparklesIcon} size={16} color="#7B61FF" />
                 <Text variant="h3">
-                  Key Highlights
+                  {t("weeklySummary.keyHighlights")}
                 </Text>
               </View>
               {weeklySummary.keyHighlights.map((highlight, idx) => (
@@ -146,7 +148,7 @@ export const WeeklySummaryCard: React.FC<WeeklySummaryCardProps> = ({
               <View className="flex-row items-center gap-2 mb-2.5">
                 <HugeiconsIcon icon={Target03Icon} size={16} color="#7B61FF" />
                 <Text variant="h3">
-                  Next Week Focus
+                  {t("weeklySummary.nextWeekFocus")}
                 </Text>
               </View>
               {weeklySummary.nextWeekFocus.map((focus, idx) => (

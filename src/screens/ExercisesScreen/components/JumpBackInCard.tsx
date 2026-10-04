@@ -6,6 +6,7 @@ import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { PlayIcon, ZapIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { useTranslation } from "react-i18next";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 
 import { CircularRevealWrapper } from "@/src/components/CircularRevealWrapper";
 import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
@@ -54,6 +55,9 @@ export const JumpBackInCard = memo(function JumpBackInCard({
   onPress,
 }: JumpBackInCardProps) {
   const { t } = useTranslation("exercises");
+  const translateCopy = useExerciseCopy();
+  const exerciseTitle = translateCopy(exercise.title);
+  const duration = exercise.duration.replace(/\smin$/, ` ${t("flow.ui.engine.minutesShort")}`);
   const theme = CATEGORY_THEME[exercise.category] ?? CATEGORY_THEME.cbt_core;
 
   const handlePress = () => {
@@ -77,7 +81,7 @@ export const JumpBackInCard = memo(function JumpBackInCard({
           height: "100%",
         }}
         contentClassName="p-3.5 justify-between flex-1"
-        accessibilityLabel={`${t("library.start")} ${exercise.title}`}
+        accessibilityLabel={`${t("library.start")} ${exerciseTitle}`}
       >
         <View style={styles.topRow}>
           <View style={[styles.iconWell, { backgroundColor: theme.iconBg }]}>
@@ -93,13 +97,13 @@ export const JumpBackInCard = memo(function JumpBackInCard({
             ) : (
               <Feather name="clock" size={11} color="#52525B" />
             )}
-            <Text style={styles.durationText}>{exercise.duration}</Text>
+              <Text style={styles.durationText}>{duration}</Text>
           </View>
         </View>
 
         <View style={styles.content}>
           <Text style={styles.title} numberOfLines={2}>
-            {exercise.title}
+            {exerciseTitle}
           </Text>
         </View>
 

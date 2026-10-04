@@ -2,17 +2,13 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
-  useWindowDimensions,
-  Image,
 } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedScrollHandler,
   useAnimatedStyle,
-  interpolateColor,
   interpolate,
   Extrapolate,
 } from "react-native-reanimated";
@@ -20,68 +16,35 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import { Feather } from "@expo/vector-icons";
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { useUserProfile } from "@/hooks/data/useUserProfile";
 import {
   usePreviousWeekSummary,
   useGenerateWeeklySummary,
 } from "@/hooks/data/useWeeklyAISummaries";
-import { subWeeks, format, startOfWeek, endOfWeek } from "date-fns";
+import { subWeeks, startOfWeek, endOfWeek } from "date-fns";
 import { AIInsightsContent } from "@/src/components/ai/AIInsightsContent";
 import { WeeklySummaryCard } from "@/src/components/ai/WeeklySummaryCard";
 import { AdvancedAnalyticsCharts } from "@/src/components/ai/AdvancedAnalyticsCharts";
-import { BlurView } from "expo-blur";
 import { useWeeklyInsightsLimit } from "@/hooks/useWeeklyInsightsLimit";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useTotalJournalCount } from "@/hooks/data/useTotalJournalCount";
 import { useCurrentWeekJournalCount } from "@/hooks/data/useCurrentWeekJournalCount";
-import { weeklyAnalysis } from "@/assets/images";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Target03Icon } from "@hugeicons/core-free-icons";
+import { useTranslation } from "react-i18next";
+import { AIInsightsScreenHeader } from "./AIInsightsScreenHeader";
+import { WeeklySummaryEmptyState } from "./WeeklySummaryEmptyState";
 
 export default function AIInsightsScreen() {
-  const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
   const scrollY = useSharedValue(0);
   const insets = useSafeAreaInsets();
-
+  const { t, i18n } = useTranslation("insights");
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
       scrollY.value = event.contentOffset.y;
     },
-  });
-
-  // Animated header background color
-  const headerAnimatedStyle = useAnimatedStyle(() => {
-    const backgroundColor = interpolateColor(
-      scrollY.value,
-      [0, 100, 150],
-      [
-        "rgba(123, 97, 255, 0)",
-        "rgba(123, 97, 255, 0.5)",
-        "rgba(123, 97, 255, 1)",
-      ]
-    );
-
-    return {
-      backgroundColor,
-    };
-  });
-
-  // Animated stats in header - fade in as card passes under
-  const headerStatsStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(
-      scrollY.value,
-      [40, 90, 200],
-      [0, 0, 1],
-      Extrapolate.CLAMP
-    );
-
-    return {
-      opacity,
-    };
   });
 
   // Animated stats in card - fade out as it goes under header
@@ -98,8 +61,6 @@ export default function AIInsightsScreen() {
     };
   });
 
-  const { data: profile } = useUserProfile();
-
   // Get cached summary for previous week
   const {
     data: cachedSummary,
@@ -107,11 +68,11 @@ export default function AIInsightsScreen() {
     refetch,
   } = usePreviousWeekSummary();
   const generateSummary = useGenerateWeeklySummary();
-  const { height } = useWindowDimensions();
   const previousWeek = subWeeks(new Date(), 1);
   const prevWeekStart = startOfWeek(previousWeek);
   const prevWeekEnd = endOfWeek(previousWeek);
-  const prevWeekRangeLabel = `${format(prevWeekStart, "MMM dd")}, ${format(prevWeekEnd, "MMM dd, yyyy")}`;
+  const dateOptions: Intl.DateTimeFormatOptions = { month: "short", day: "2-digit" };
+  const prevWeekRangeLabel = `${new Intl.DateTimeFormat(i18n.language, dateOptions).format(prevWeekStart)}, ${new Intl.DateTimeFormat(i18n.language, { ...dateOptions, year: "numeric" }).format(prevWeekEnd)}`;
 
   const weeklySummary = cachedSummary?.weekly_summary;
   const recommendations = cachedSummary?.recommendations;
@@ -127,7 +88,7 @@ export default function AIInsightsScreen() {
   const overallAverageMood = journalStats?.averageMood ?? null;
   const formattedMood = overallAverageMood
     ? `${overallAverageMood.toFixed(1)} / 5`
-    : "N/A";
+    : t("screen.notAvailable");
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -137,7 +98,7 @@ export default function AIInsightsScreen() {
 
   const handleGenerateSummary = async () => {
     if (totalJournalCount === 0) {
-      alert("Please log at least one journal entry to generate AI Insights.");
+      alert(t("screen.needJournalEntry"));
       return;
     }
 
@@ -149,7 +110,7 @@ export default function AIInsightsScreen() {
     try {
       await generateSummary.mutateAsync(previousWeek);
     } catch (error: any) {
-      alert(error.message || "Failed to generate AI summary");
+      alert(error.message || t("screen.generationFailed"));
     }
   };
 
@@ -161,79 +122,20 @@ export default function AIInsightsScreen() {
         options={{
           headerShown: true,
           headerTransparent: true,
-          headerTitle: "AI Insights",
+          headerTitle: t("screen.title"),
           headerBlurEffect: "light", // <--- this enables native blur
           headerTintColor: "#000",
           headerTitleStyle: { fontWeight: "600" },
-          header: () => {
-            return (
-              <Animated.View
-                style={[
-                  {
-                    paddingTop: insets.top,
-                    minHeight: insets.top + 60,
-                    justifyContent: "flex-end", // Align content to bottom of header area
-                    overflow: "hidden",
-                  },
-                  headerAnimatedStyle,
-                ]}
-              >
-                <BlurView
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                  }}
-                  intensity={50}
-                  tint="light"
-                />
-
-                {/* Main Header Content Container */}
-                <View className="pb-4 pt-2">
-                  {/* Animated Stats in Header */}
-                  <Animated.View
-                    style={[headerStatsStyle]}
-                    className="flex-row items-center justify-around w-full px-5 mt-2" // Reduced margin top
-                  >
-                    <View className="items-center">
-                      <Text className="text-xl font-bold text-white">
-                        {isLoadingWeekCount ? "-" : currentWeekCount || 0}
-                      </Text>
-                      <Text className="text-[11px] text-white opacity-90">
-                        This Week
-                      </Text>
-                    </View>
-
-                    <View className="w-px h-8 bg-white opacity-30" />
-
-                    <View className="items-center">
-                      <Text className="text-xl font-bold text-white">
-                        {isLoadingStats ? "-" : totalJournalCount}
-                      </Text>
-                      <Text className="text-[11px] text-white opacity-90">
-                        All Entries
-                      </Text>
-                    </View>
-
-                    <View className="w-px h-8 bg-white opacity-30" />
-
-                    <View className="items-center">
-                      <Text className="text-xl font-bold text-white">
-                        {isLoadingStats
-                          ? "-"
-                          : formattedMood}
-                      </Text>
-                      <Text className="text-[11px] text-white opacity-90">
-                        Overall Mood
-                      </Text>
-                    </View>
-                  </Animated.View>
-                </View>
-              </Animated.View>
-            );
-          },
+          header: () => <AIInsightsScreenHeader
+            scrollY={scrollY}
+            topInset={insets.top}
+            weekCount={currentWeekCount || 0}
+            totalEntryCount={totalJournalCount}
+            formattedMood={formattedMood}
+            isLoadingWeekCount={isLoadingWeekCount}
+            isLoadingStats={isLoadingStats}
+            labels={{ thisWeek: t("screen.thisWeek"), allEntries: t("screen.allEntries"), overallMood: t("screen.overallMood") }}
+          />,
         }}
       />
 
@@ -263,7 +165,7 @@ export default function AIInsightsScreen() {
             }}
           >
             <Text className="text-[28px] font-cormorantSemiBold text-white mb-6">
-              Your Journey
+              {t("screen.yourJourney")}
             </Text>
             <Animated.View
               style={[cardStatsStyle]}
@@ -274,7 +176,7 @@ export default function AIInsightsScreen() {
                   {isLoadingWeekCount ? "-" : currentWeekCount || 0}
                 </Text>
                 <Text className="text-sm text-white/90 mt-2 font-medium">
-                  This Week
+                  {t("screen.thisWeek")}
                 </Text>
               </View>
               <View className="w-px h-14 bg-white/20" />
@@ -283,7 +185,7 @@ export default function AIInsightsScreen() {
                   {isLoadingStats ? "-" : totalJournalCount}
                 </Text>
                 <Text className="text-sm text-white/90 mt-2 font-medium">
-                  All Entries
+                  {t("screen.allEntries")}
                 </Text>
               </View>
               <View className="w-px h-14 bg-white/20" />
@@ -292,7 +194,7 @@ export default function AIInsightsScreen() {
                   {isLoadingStats ? "-" : formattedMood}
                 </Text>
                 <Text className="text-sm text-white/90 mt-2 font-medium">
-                  Overall Mood
+                  {t("screen.overallMood")}
                 </Text>
               </View>
             </Animated.View>
@@ -305,70 +207,26 @@ export default function AIInsightsScreen() {
             <View className="flex-row items-center gap-2">
               <HugeiconsIcon icon={Target03Icon} size={24} color="#7B61FF" />
               <Text className="text-[22px] font-extrabold text-[#0F172A] tracking-normal font-cormorantBold">
-                AI Insights for Previous Week
+                {t("screen.previousWeekTitle")}
               </Text>
             </View>
           </View>
 
           {!loadingCached && !cachedSummary && (
-            <View className="bg-white rounded-3xl overflow-hidden items-center shadow-sm">
-              <Image
-                source={weeklyAnalysis}
-                style={{ width: "100%", height: 240 }}
-                resizeMode="cover"
-              />
-              <View className="px-8 pt-6 pb-8">
-                <Text className="text-[28px] font-cormorantBold text-[#0F172A] mb-3 text-center leading-tight">
-                  No AI Summary Yet
-                </Text>
-                <Text className="text-[15px] text-[#64748B] text-center mb-6 leading-6 font-jakartaMedium">
-                  Generate personalized AI insights for the week of{"\n"}
-                  <Text className="font-jakartaBold text-[#475569]">
-                    {prevWeekRangeLabel}
-                  </Text>
-                </Text>
-              </View>
-
-              <View className="w-full px-6 pb-6">
-                <TouchableOpacity
-                  className="rounded-2xl overflow-hidden w-full active:opacity-90"
-                  onPress={handleGenerateSummary}
-                  disabled={isGenerating}
-                >
-                  <LinearGradient
-                    colors={
-                      isGenerating ? ["#999", "#777"] : ["#7B61FF", "#9C7CFF"]
-                    }
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    className="flex-row items-center justify-center py-4 px-6 gap-2"
-                  >
-                    {isGenerating ? (
-                      <ActivityIndicator size="small" color="#FFF" />
-                    ) : (
-                      <Feather
-                        name={shouldShowPaywall ? "lock" : "zap"}
-                        size={18}
-                        color="#FFF"
-                      />
-                    )}
-                    <Text className="text-base font-bold text-white font-jakarta">
-                      {isGenerating
-                        ? "Generating..."
-                        : shouldShowPaywall
-                        ? "Unlock AI Insights (PRO)"
-                        : "Get AI Insights for Past Week"}
-                    </Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-              </View>
-
-              {isGenerating && (
-                <Text className="text-[13px] text-[#6B7280] mt-4 text-center italic">
-                  Analyzing your journals with AI... This may take a minute.
-                </Text>
-              )}
-            </View>
+            <WeeklySummaryEmptyState
+              dateRange={prevWeekRangeLabel}
+              isGenerating={isGenerating}
+              shouldShowPaywall={shouldShowPaywall}
+              onGenerate={handleGenerateSummary}
+              labels={{
+                title: t("screen.noSummary"),
+                description: t("screen.generateDescription"),
+                generate: t("screen.generate"),
+                unlock: t("screen.unlock"),
+                generating: t("screen.generating"),
+                analyzing: t("screen.analyzing"),
+              }}
+            />
           )}
           {loadingCached && (
             <View className="p-10 items-center">

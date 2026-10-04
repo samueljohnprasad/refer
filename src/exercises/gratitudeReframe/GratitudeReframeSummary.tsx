@@ -24,6 +24,7 @@ import type {
   GratitudeReframeResponse,
   StepProps,
 } from "@/src/types/exerciseFlow";
+import { useTranslation } from "react-i18next";
 
 export function getMoodShiftInterpretation(
   pre: number,
@@ -134,6 +135,7 @@ export function GratitudeReframeSummary({
   readOnly,
   onNavigateDeeper,
 }: StepProps<GratitudeReframeResponse>): React.JSX.Element {
+  const { t } = useTranslation("exercises");
   const translateCopy = useExerciseCopy();
   const { saveCard } = useCopingCards();
   const [cardSaved, setCardSaved] = useState(false);
@@ -233,8 +235,8 @@ export function GratitudeReframeSummary({
 
   return (
     <ThoughtRecordRecap
-      title="Gratitude noted"
-      subtitle="Here is what you named and how your mood changed."
+      title={t("flow.ui.gratitude.summaryTitle")}
+      subtitle={t("flow.ui.gratitude.summarySubtitle")}
       showMascot={false}
       sections={sections}
       afterTimeline={afterTimeline}

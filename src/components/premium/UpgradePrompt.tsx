@@ -10,6 +10,7 @@ import Animated, {
 import * as Haptics from 'expo-haptics';
 import { useRevenueCat } from '@/src/context/RevenueCatProvider';
 import PremiumBadge from './PremiumBadge';
+import { useTranslation } from 'react-i18next';
 
 interface UpgradePromptProps {
     title: string;
@@ -26,11 +27,13 @@ const UpgradePrompt: React.FC<UpgradePromptProps> = ({
     description,
     emoji,
     feature,
-    ctaLabel = 'Upgrade to Premium',
+    ctaLabel,
     onDismiss,
     showDismiss = true,
 }) => {
     const { presentPaywall } = useRevenueCat();
+    const { t } = useTranslation('settings');
+    const upgradeLabel = ctaLabel ?? t('premiumUi.upgradeCta');
     const scale = useSharedValue(1);
 
     const animatedStyle = useAnimatedStyle(() => ({
@@ -83,14 +86,14 @@ const UpgradePrompt: React.FC<UpgradePromptProps> = ({
                     scale.value = withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true });
                 }}
                 activeOpacity={1}
-                accessibilityLabel={ctaLabel}
+                accessibilityLabel={upgradeLabel}
                 accessibilityRole="button"
             >
                 <Animated.View
                     style={animatedStyle}
                     className="bg-purple-600 rounded-xl py-3 items-center"
                 >
-                    <Text className="text-white text-sm font-bold">{ctaLabel}</Text>
+                    <Text className="text-white text-sm font-bold">{upgradeLabel}</Text>
                 </Animated.View>
             </TouchableOpacity>
 
@@ -98,10 +101,10 @@ const UpgradePrompt: React.FC<UpgradePromptProps> = ({
                 <TouchableOpacity
                     onPress={handleDismiss}
                     className="items-center mt-2 py-2"
-                    accessibilityLabel="Dismiss upgrade prompt"
+                    accessibilityLabel={t('premiumUi.dismissAccessibility')}
                     accessibilityRole="button"
                 >
-                    <Text className="text-gray-400 text-xs font-medium">Not now</Text>
+                    <Text className="text-gray-400 text-xs font-medium">{t('premiumUi.notNow')}</Text>
                 </TouchableOpacity>
             )}
         </Animated.View>

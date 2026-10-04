@@ -7,6 +7,7 @@ import { CircularGauge } from "./CircularGauge";
 import { WeeklyBarChart } from "./WeeklyBarChart";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Time02Icon } from "@hugeicons/core-free-icons";
+import { useTranslation } from "react-i18next";
 
 const DashedDivider = () => (
   <View style={styles.dividerContainer}>
@@ -15,12 +16,13 @@ const DashedDivider = () => (
 );
 
 export function CBTPracticeScoreCard() {
+  const { t } = useTranslation("insights");
   const { data, isLoading } = useWeeklyCBTSummary();
 
   if (isLoading || !data) {
     return (
       <View style={[styles.card, { minHeight: 200, justifyContent: 'center', alignItems: 'center' }]}>
-        <Text style={{ color: '#94A3B8' }}>Loading practice score...</Text>
+        <Text style={{ color: '#94A3B8' }}>{t("practiceScore.loading")}</Text>
       </View>
     );
   }
@@ -33,10 +35,10 @@ export function CBTPracticeScoreCard() {
       <View style={styles.header}>
         <View style={styles.badge}>
           <HugeiconsIcon icon={Time02Icon} size={14} color="#16A34A" />
-          <Text style={styles.badgeText}>Practice score</Text>
+          <Text style={styles.badgeText}>{t("practiceScore.title")}</Text>
         </View>
         <Text style={styles.description}>
-          Practice score analyses the consistency and impact of your CBT sessions
+          {t("practiceScore.description")}
         </Text>
       </View>
 
@@ -44,7 +46,7 @@ export function CBTPracticeScoreCard() {
 
       {/* Today's Score Section */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionEyebrow}>TODAY'S SCORE</Text>
+        <Text style={styles.sectionEyebrow}>{t("practiceScore.today")}</Text>
       </View>
       <View style={styles.row}>
         <View style={styles.textColumn}>
@@ -66,7 +68,7 @@ export function CBTPracticeScoreCard() {
 
       {/* 7 Days Average Section */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionEyebrow}>Average 7 days practice score</Text>
+        <Text style={styles.sectionEyebrow}>{t("practiceScore.sevenDayAverage")}</Text>
       </View>
       <View style={styles.row}>
         <View style={styles.textColumn}>

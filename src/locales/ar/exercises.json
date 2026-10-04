@@ -186,7 +186,203 @@
       "scoreShiftLighter": "أخف بمقدار {{count}}",
       "scoreBefore": "قبل /10",
       "scoreAfter": "بعد /10",
-      "applyIt": "طبّق: {{label}}"
+      "applyIt": "طبّق: {{label}}",
+        "engine": {
+          "exampleStarters": "أمثلة للبدء",
+          "minutesShort": "د",
+          "timer": {
+            "start": "ابدأ المؤقّت",
+            "pause": "أوقف المؤقّت مؤقتًا",
+            "nextArea": "المنطقة التالية",
+            "finish": "إنهاء",
+            "fallbackSubtitle": "شدّ كل مجموعة عضلية ثم أرخها باستخدام المؤقّت.",
+            "tensing": "شدّ العضلات…",
+            "released": "استرخاء!",
+            "seconds": "ثوانٍ",
+            "runAgain": "أعد تشغيل المؤقّت",
+            "skipAndRelease": "تخطَّ المؤقّت وسجّل الاسترخاء",
+            "areasReleased": "تم إرخاء {{completed}} من {{total}} مناطق"
+          }
+        },
+        "abc": {
+          "event": {
+            "title": "ماذا حدث؟",
+            "subtitle": "ابدأ باللحظة نفسها، لا بما تعنيه.",
+            "tip": "اكتب ما كان يمكن لكاميرا أن تراه أو تسمعه.",
+            "placeholder": "صف ما حدث…"
+          },
+          "belief": {
+            "title": "فكرة تلقائية",
+            "subtitle": "اكتب العبارة التي أضافها ذهنك.",
+            "tip": "لا تحاول جعلها منصفة الآن. التقطها كما هي.",
+            "placeholder": "كانت الفكرة…"
+          },
+          "behavior": {
+            "title": "ماذا فعلت بعد ذلك؟",
+            "subtitle": "سمِّ رد الفعل الذي تلا ذلك.",
+            "tip": "ماذا فعلت أو تجنبت أو قلت أو كررت؟",
+            "placeholder": "كان ردّي…"
+          },
+          "alternativeBelief": {
+            "title": "فكرة أكثر توازنًا",
+            "subtitle": "اكتب صياغة أعدل وما زالت تبدو معقولة.",
+            "placeholder": "قد تكون الفكرة الأعدل…"
+          },
+          "newConsequence": {
+            "title": "ما الذي قد يتغير الآن؟",
+            "subtitle": "إذا تمسكت بهذه الفكرة، فما الذي قد يتغير في شعورك أو تصرفك؟",
+            "placeholder": "مع هذه الفكرة، قد…"
+          },
+          "automaticThought": "الفكرة التلقائية",
+          "suggestions": {
+            "event": [
+              "قدّم لي مديري ملاحظات صعبة.",
+              "أرسلت رسالة ولم أتلقَّ ردًا.",
+              "تغيّرت خططي في اللحظة الأخيرة."
+            ],
+            "belief": [
+              "أفسد الأمور دائمًا.",
+              "لا بد أنهم مستاؤون مني.",
+              "لا أستطيع التعامل مع هذا."
+            ],
+            "behavior": [
+              "انسحبت وتوقفت عن الرد.",
+              "تجنبت التعامل مع الأمر.",
+              "ظللت أستعيده في ذهني."
+            ],
+            "balancedThought": [
+              "هذا صعب، لكن لحظة واحدة لا تعرّفني.",
+              "لا أعرف القصة كاملة بعد.",
+              "يمكنني اتخاذ خطوة مفيدة واحدة كل مرة."
+            ],
+            "newConsequence": [
+              "قد أهدأ وأردّ بوضوح أكبر.",
+              "قد أتوقف قليلًا بدلًا من الانجراف.",
+              "قد أتخذ خطوة مفيدة تالية."
+            ]
+          }
+        },
+        "gratitude": {
+          "summaryTitle": "سجّلت ما تشعر بالامتنان له",
+          "summarySubtitle": "إليك ما سمّيته وكيف تغيّر مزاجك."
+        },
+        "thoughtReframing": {
+          "evidenceAgainstTitle": "أدلة معاكسة",
+          "evidenceAgainstSubtitle": "ما الحقائق التي لا تتفق مع هذا التوقّع؟",
+          "findingStartingPoints": "جارٍ البحث عن نقاط بداية…"
+        },
+        "categoryEngine": {
+          "checkpoint": {
+            "workedSupport": "مثال إرشادي",
+            "next": "التالي",
+            "orderRetry": "بعض العناصر في مواضع غير صحيحة. حاول مرة أخرى!",
+            "checkOrder": "تحقّق من الترتيب",
+            "revealAnswer": "إظهار الإجابة",
+            "needPractice": "أحتاج إلى التمرّن",
+            "gotIt": "فهمت"
+          },
+          "socratic": {
+            "you": "أنت",
+            "person": "الشخص",
+            "guidance": "إرشاد",
+            "whatWeKnowSoFar": "ما نعرفه حتى الآن",
+            "prediction": "التوقّع",
+            "whatWeKnow": "ما نعرفه",
+            "balancedThought": "فكرة متوازنة",
+            "skill": "المهارة",
+            "showHint": "إظهار التلميح",
+            "hideHint": "إخفاء التلميح",
+            "hint": "تلميح",
+          "hideHintAction": "إخفاء التلميح",
+          "youAsked": "سألتَ: {{text}}",
+          "personSays": "يقول الشخص: {{text}}",
+          "guidanceLabel": "إرشاد: {{text}}",
+          "predictionLabel": "التوقّع: {{text}}",
+          "evidenceLabel": "ما نعرفه: {{text}}",
+          "skillLabel": "المهارة: {{text}}"
+          },
+          "explorable": {
+            "lever": "مؤشر",
+            "optionalSandbox": "مساحة تجربة اختيارية",
+            "reset": "إعادة ضبط",
+            "complete": "جرّبت كل المؤشرات.",
+            "exploreFreely": "استكشف بحرية"
+          },
+          "concept": {
+            "myth": "الخرافة",
+            "reality": "الحقيقة"
+          },
+          "surge": {
+            "elapsedSincePeak": "الوقت منذ الذروة",
+            "peak": "الذروة",
+            "tenMinutes": "+١٠ دقائق",
+            "watchedWaveFall": "تابعتَ انخفاض الموجة",
+            "rememberThis": "تذكّر هذا",
+            "veryHigh": "مرتفع جدًا",
+            "fading": "يتراجع",
+            "lower": "أقل",
+            "muchLower": "أقل بكثير",
+            "stillStrong": "ما زالت الموجة قوية.",
+            "comingDown": "بدأت الموجة تتراجع.",
+            "beginningToSettle": "بدأ جسمك يهدأ.",
+            "passed": "انقضى معظم اندفاع القلق."
+          },
+          "lever": {
+            "lower": "أقل",
+            "higher": "أعلى",
+            "accessibilityShift": "{{label}}. يغيّر مستوى التنبه: {{direction}}.",
+            "shiftInAlertness": "التغيّر في مستوى التنبه",
+            "tryAccessibility": "{{label}}. لم تستكشفه بعد. جرّب هذا المؤشر.",
+            "tryThis": "جرّب هذا المؤشر"
+          },
+          "workedRewrite": {
+            "move": "خطوة",
+            "notebook": "دفتر إعادة الصياغة",
+            "originalThought": "الفكرة الأصلية",
+            "workingRewrite": "صياغة قيد العمل",
+            "moveApplied": "تم تطبيق الخطوة",
+            "balanced": "متوازنة",
+            "lookAgain": "أعد النظر"
+          },
+          "reframeBuilder": {
+            "hotThought": "الفكرة المزعجة",
+            "fairerThought": "فكرة أكثر إنصافًا",
+            "slot": "خانة",
+            "ready": "أصبحت فكرتك الأكثر إنصافًا جاهزة للمقارنة.",
+            "nextRemaining": "التالي: {{labels}} (متبقٍ {{count}})"
+          },
+          "guidedDiscovery": {
+            "clue": "دليل",
+            "pattern": "النمط"
+          },
+          "whatIf": {
+            "predicted": "توقّعتَ",
+          "actualOutcome": "النتيجة الفعلية"
+          },
+          "lensReplay": {
+            "whatHappened": "ما حدث",
+            "mindAdded": "ما أضافه الذهن",
+            "idea": "الفكرة",
+            "revealAccessibility": "{{text}}. اكشف.",
+            "progress": "استكشفت {{explored}} من {{total}} من المواضع المميّزة"
+          }
+        },
+          "celebration": {
+            "title": "اكتمل الدرس!", "perfectTitle": "درس مثالي!", "continue": "متابعة",
+            "sharePerfect": "درس مثالي", "shareComplete": "اكتمل الدرس", "shareTitle": "شارك إنجازك",
+            "shareDialogTitle": "شارك إنجازك", "chestDescription": "صندوق الأسبوع المثالي",
+            "goalAchieved": "تم تحقيق الهدف اليومي!", "goalReached": "وصلت إلى هدفك اليومي. رائع.", "goalAlmost": "أوشكت على الوصول!",
+            "xpToGo": "بقي {{count}} من نقاط الخبرة", "mute": "كتم أصوات الاحتفال", "unmute": "تشغيل أصوات الاحتفال",
+            "streakMessage": "سبعة أيام متتالية. أحسنت!", "perfectBadge": "درس مثالي", "milestoneDays": "{{count}} أيام متتالية",
+            "milestoneMessage3": "ثلاثة أيام متتالية؛ بدأت العادة تتشكل.", "milestoneMessage7": "أسبوع كامل من الالتزام. ذهنك يشكرك.",
+            "milestoneMessage15": "خمسة عشر يومًا من الثبات. هذا أصبح جزءًا منك.", "milestoneMessage30": "ثلاثون يومًا. شهر كامل اخترت فيه نفسك.",
+            "xp": "نقاط خبرة", "streak": "تتابع", "thisWeek": "هذا الأسبوع", "dailyGoal": "الهدف اليومي", "day": "يوم", "days": "أيام",
+            "chestOpened": "فُتح صندوق الأسبوع المثالي. أضيفت {{xp}} نقاط خبرة", "chestOpen": "أسبوع مثالي. اضغط لفتح الصندوق",
+            "perfectWeek": "أسبوع مثالي", "sevenForSeven": "سبعة من سبعة!", "chestOpenedHint": "أكملت كل أيام هذا الأسبوع. أحسنت!",
+            "chestOpenHint": "اضغط لفتح صندوق المكافأة", "preparing": "جارٍ التحضير…",
+            "encouragements": ["خصصت وقتًا لنفسك اليوم.", "الخطوات الصغيرة تصنع فرقًا.", "إنجاز جديد لراحة ذهنك.", "التقدم شعور جميل، أليس كذلك؟", "أنت تبني نسخة أكثر هدوءًا من نفسك."],
+            "perfectEncouragements": ["لم تخطئ مرة واحدة. هذا إتقان.", "بلا أخطاء، أنت تعرف هذا جيدًا.", "كل الإجابات صحيحة. أحسنت!"]
+          }
     }
   }
 }

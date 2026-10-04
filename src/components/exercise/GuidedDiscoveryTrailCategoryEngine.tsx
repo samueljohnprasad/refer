@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
@@ -27,6 +28,7 @@ export function GuidedDiscoveryTrailCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const trail = readGuidedDiscoveryTrailContent(content);
   const saved = readRecord(savedResponse);
@@ -75,11 +77,11 @@ export function GuidedDiscoveryTrailCategoryEngine({
         title={readString(content.title) ?? "Follow the evidence"}
         instruction={readString(content.instruction) ?? "Choose one clue at a time."}
       />
-      <StageProgress stageIndex={stageIndex} stageCount={questions.length} label="Clue" />
+      <StageProgress stageIndex={stageIndex} stageCount={questions.length} label={t("flow.ui.categoryEngine.guidedDiscovery.clue")} />
       <ExerciseWorkspace transitionKey={`${phase}-${stageIndex}`}>
         {phase === "complete" ? (
           <View style={styles.conclusion} accessibilityLiveRegion="polite">
-            <Text style={styles.conclusionLabel}>The pattern</Text>
+            <Text style={styles.conclusionLabel}>{t("flow.ui.categoryEngine.guidedDiscovery.pattern")}</Text>
             <Text style={styles.conclusionText}>{trail.stamp}</Text>
           </View>
         ) : (

@@ -126,7 +126,7 @@
       }
     }
   },
- "building_journey": {
+  "building_journey": {
     "title": "Building your journey...",
     "subtitle": "Personalizing from what you shared",
     "ready_title": "Your journey is ready!",
@@ -143,11 +143,45 @@
       "schedule": "Optimizing your daily schedule"
     }
   },
+  "checklist": {
+    "title": "Getting Started",
+    "dismiss": "Dismiss checklist",
+    "incomplete": "Incomplete",
+    "completed": "Completed",
+    "complete": "{{completed}}/{{total}} complete",
+    "earnXp": "Earn {{count}} XP",
+    "items": {
+      "first_mood": "Log your first mood",
+      "first_journal": "Write your first journal entry",
+      "first_cbt": "Try a CBT exercise",
+      "setup_reminders": "Set up daily reminders",
+      "first_habit": "Create your first habit"
+    }
+  },
   "plan_names": {"anxiety":"Quieting the Storm","mood":"Finding Light Again","stress":"Steady Under Pressure","self_understanding":"Coming Home to Yourself","sleep":"The Gentle Wind-Down"},
   "plan_reveal": {
     "step_label": "Your tailored plan",
     "loading_milestones": "Loading milestones",
     "phase_subtitles": {"foundation":"Foundation & Awareness","practice":"Skill Building & Practice","integration":"Integration & Lasting Calm","initial":"Initial focus","core":"Core practice","anchor":"Long-term anchor"},
+    "course": {
+      "anxiety": { "summary": "You’ll learn to spot thought spirals early, calm your body’s alert response, and break free from chronic worry.", "practice": { "first": "Understanding the anxiety loop", "second": "Settling the body’s alert response", "third": "Catching patterns earlier" } },
+      "mood": { "summary": "You’ll learn to identify mood triggers, practice small daily anchors, and find steady light through difficult moments.", "practice": { "first": "Identifying subtle mood triggers", "second": "Practicing tiny daily anchors", "third": "Finding steadier responses to hard moments" } },
+      "stress": { "summary": "You’ll learn to notice tension before it peaks, decompress your nervous system, and reset under pressure.", "practice": { "first": "Recognizing tension before it peaks", "second": "Decompressing the nervous system", "third": "Resetting when pressure mounts" } },
+      "self_understanding": { "summary": "You’ll learn to decode emotional reactions, untangle recurring thoughts, and reconnect with what truly matters to you.", "practice": { "first": "Uncovering repetitive thought loops", "second": "Naming what you actually feel", "third": "Aligning daily choices with your needs" } },
+      "sleep": { "summary": "You’ll learn to quiet late-night thoughts, release physical tension before bed, and ease into restful sleep.", "practice": { "first": "Quieting late-night racing thoughts", "second": "Releasing physical tension before bed", "third": "Creating a predictable wind-down rhythm" } }
+    },
+    "why": {
+      "anxiety": {
+        "heavy": "You told us anxiety feels like a constant weight, so we’ll start by understanding what keeps your alert system switched on and finding ways to settle it.",
+        "moderate": "You told us anxiety feels like regular tension, so we’ll start by understanding what keeps your alert system switched on and finding ways to settle it.",
+        "overwhelming": "You told us anxiety takes over some days, so we’ll start by understanding your alert response and finding tools that create a little space.",
+        "default": "Based on what you shared, we’ll start by understanding what keeps your alert system switched on and practicing ways to settle it."
+      },
+      "mood": "Based on what you shared, we’ll start with small anchors that help you notice what lifts your day.",
+      "stress": "Based on what you shared, we’ll focus on catching pressure before it builds and giving your nervous system room to decompress.",
+      "self_understanding": "Based on what you shared, we’ll help you understand emotional patterns and find clearer words for what you experience.",
+      "sleep": "Based on what you shared, we’ll focus on evening wind-down practices that help your body feel safe before bed."
+    },
     "units": "{{count}} units",
     "course_illustration": "{{title}} illustration",
     "title": "Your journey is ready",
@@ -281,5 +315,31 @@
   },
   "progressGraph": { "title": "See your journaling impact", "description": "Watch how consistent journaling can steady your emotions over time, instead of letting tough days pile up unnoticed.", "primaryLabel": "Your mood", "comparisonLabel": "Without journaling", "entriesLabel": "Journal entries", "chartA11y": "Projected {{days}}-day clarity growth chart comparing progress with Happy versus without journaling" },
   "pact_text": "I commit to showing up for myself, even on the days I don't feel like it. Just {{minutes}} minutes. That's all it takes.",
-  "future_letter": "You did it. You actually showed up, not once, but every single day for 30 days.\n\nRemember how heavy things felt when you started? The {{timing}} were the hardest. But you kept coming back. {{minutes}} minutes at a time.\n\nYou're not the same person who opened this app a month ago. You're calmer. You notice your thoughts before they spiral. You have tools now.\n\nI'm proud of you."
+  "future_letter": "You did it. You actually showed up, not once, but every single day for 30 days.\n\nRemember how heavy things felt when you started? The {{timing}} were the hardest. But you kept coming back. {{minutes}} minutes at a time.\n\nYou're not the same person who opened this app a month ago. You're calmer. You notice your thoughts before they spiral. You have tools now.\n\nI'm proud of you.",
+  "future_letter_screen": {
+    "date_label": "{{date}} · {{weekday}} {{moment}}",
+    "greeting": "Hey, friend,",
+    "header_label": "Something arrived for you",
+    "headline_start": "A letter from",
+    "headline_emphasis": "you,",
+    "subtitle": "written 30 days from now.",
+    "moments": {
+      "morning": "morning",
+      "afternoon": "afternoon",
+      "evening": "evening",
+      "night": "late night"
+    },
+    "body": {
+      "intro": "I'm writing from a {{weekday}} {{moment}}. I closed Happy",
+      "closed_app": "five minutes ago.",
+      "just_like_you": "Just like you will, in a moment.",
+      "honesty": "I won't lie to you. The noise didn't stop. Some mornings the thoughts still race. Some evenings the weight is still there.",
+      "caught_it": "But yesterday, when the spiral started, I caught it. I named it. I sat with it for thirty seconds.",
+      "didnt_grow": "And it didn't get bigger.",
+      "thirty_days_ago": "Thirty days ago, that wasn't possible.",
+      "showed_up": "You showed up today. Five minutes. Just like you said you would, in that pact you signed.",
+      "keep_going": "Keep going.",
+      "changed": "We're not the same person anymore."
+    }
+  }
 }

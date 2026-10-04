@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { HStack } from '@/components/ui/hstack';
 import { FoodItem as FoodItemType } from '@/src/network/calorieAi';
@@ -10,7 +11,13 @@ interface FoodItemProps {
   onPress: () => void;
 }
 
-const FoodItemContent: React.FC<{ food: FoodItemType }> = ({ food }) => (
+const FoodItemContent: React.FC<{ food: FoodItemType }> = ({ food }) => {
+  const { t, i18n } = useTranslation("tracking");
+  const formatNumber = new Intl.NumberFormat(i18n.language, {
+    maximumFractionDigits: 1,
+  });
+
+  return (
   <>
     <View className="flex-1">
       <Text className="text-gray-900 font-medium text-base">{food.name}</Text>
@@ -19,16 +26,19 @@ const FoodItemContent: React.FC<{ food: FoodItemType }> = ({ food }) => (
 
     <HStack className="items-center" space="md">
       <View className="items-end">
-        <Text className="text-gray-900 font-semibold">{food.calories} cal</Text>
+        <Text className="text-gray-900 font-semibold">
+          {formatNumber.format(food.calories)} {t("calorie.calorieUnit")}
+        </Text>
         <HStack space="xs">
-          <Text className="text-xs text-gray-500">P:{food.protein}g</Text>
-          <Text className="text-xs text-gray-500">C:{food.carbs}g</Text>
-          <Text className="text-xs text-gray-500">F:{food.fat}g</Text>
+          <Text className="text-xs text-gray-500">{t("calorie.macros.proteinShort")}:{formatNumber.format(food.protein)}g</Text>
+          <Text className="text-xs text-gray-500">{t("calorie.macros.carbsShort")}:{formatNumber.format(food.carbs)}g</Text>
+          <Text className="text-xs text-gray-500">{t("calorie.macros.fatShort")}:{formatNumber.format(food.fat)}g</Text>
         </HStack>
       </View>
     </HStack>
   </>
-);
+  );
+};
 
 export const FoodItem: React.FC<FoodItemProps> = ({
   food,

@@ -28,6 +28,15 @@ import { useTranslation } from "react-i18next";
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
+const WELCOME_NODE_COPY_KEYS = {
+  0: ["welcome_nodes.0_0"],
+  1: ["welcome_nodes.1_0", "welcome_nodes.1_1"],
+  2: ["welcome_nodes.2_0", "welcome_nodes.2_1"],
+  4: ["welcome_nodes.4_0", "welcome_nodes.4_1"],
+  5: ["welcome_nodes.5_0", "welcome_nodes.5_1"],
+} as const;
+type WelcomeNodeCopyKey = (typeof WELCOME_NODE_COPY_KEYS)[keyof typeof WELCOME_NODE_COPY_KEYS][number];
+
 interface LabelProps {
   index: number;
   frame: SharedValue<number>;
@@ -86,7 +95,7 @@ export function WelcomeLabel({ index, frame, scale }: LabelProps): React.JSX.Ele
             textAlign: node.side === "left" ? "right" : "left",
           }}
         >
-          {t(`welcome_nodes.${index}_${i}`, { defaultValue: line })}
+          {t(WELCOME_NODE_COPY_KEYS[index as keyof typeof WELCOME_NODE_COPY_KEYS][i] as WelcomeNodeCopyKey)}
         </Text>
       ))}
     </Animated.View>
@@ -136,7 +145,7 @@ export function TodayCallout({ frame, scale }: { frame: SharedValue<number>; sca
             textAlign: "right",
           }}
         >
-          {t("welcome_nodes.today", { defaultValue: "Today" })}
+          {t("welcome_nodes.today")}
         </Text>
         <Text
           style={{
@@ -148,7 +157,7 @@ export function TodayCallout({ frame, scale }: { frame: SharedValue<number>; sca
             textAlign: "right",
           }}
         >
-          {t("welcome_nodes.start_here", { defaultValue: "Start here" })}
+          {t("welcome_nodes.start_here")}
         </Text>
       </Animated.View>
 

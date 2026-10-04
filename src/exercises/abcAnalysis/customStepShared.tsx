@@ -1,35 +1,32 @@
 import { EMOTION_OPTIONS } from "@/src/screens/ThoughtReframingScreen/data/emotions";
-import type { SuggestionItem } from "@/src/components/exercise/SuggestionCards";
+import { useTranslation } from "react-i18next";
 
-const EVENT_SUGGESTIONS: SuggestionItem[] = [
-  { label: "My manager gave me difficult feedback.", emoji: "🗣️" },
-  { label: "I sent a message and did not get a reply.", emoji: "📱" },
-  { label: "My plans changed at the last minute.", emoji: "📆" },
-];
+export function useABCCopy() {
+  const { t } = useTranslation("exercises");
+  const translate = t as unknown as (key: string) => string;
+  const suggestions = (group: string, emojis: string[]) =>
+    emojis.map((emoji, index) => ({
+      label: translate(`flow.ui.abc.suggestions.${group}.${index}`),
+      emoji,
+    }));
 
-const BELIEF_SUGGESTIONS: SuggestionItem[] = [
-  { label: "I always mess things up.", emoji: "😣" },
-  { label: "They must be upset with me.", emoji: "😟" },
-  { label: "I cannot handle this.", emoji: "😰" },
-];
-
-const BEHAVIOR_SUGGESTIONS: SuggestionItem[] = [
-  { label: "I shut down and stopped replying.", emoji: "🫥" },
-  { label: "I avoided dealing with it.", emoji: "🏃" },
-  { label: "I kept replaying it in my mind.", emoji: "🔁" },
-];
-
-const BALANCED_THOUGHT_SUGGESTIONS: SuggestionItem[] = [
-  { label: "This is hard, but one moment does not define me.", emoji: "🌿" },
-  { label: "I do not know the full story yet.", emoji: "🧭" },
-  { label: "I can take this one useful step at a time.", emoji: "👣" },
-];
-
-const NEW_CONSEQUENCE_SUGGESTIONS: SuggestionItem[] = [
-  { label: "I might feel calmer and respond more clearly.", emoji: "🌤️" },
-  { label: "I might pause instead of spiraling.", emoji: "⏸️" },
-  { label: "I might take one useful next step.", emoji: "✅" },
-];
+  return {
+    t,
+    sharedProps: {
+      showVoice: true,
+      alwaysShowVoice: true,
+      composerGlow: false,
+      showExamplesInitially: true,
+      suggestionsTitle: translate("flow.ui.engine.exampleStarters"),
+      showStepCount: false,
+    },
+    eventSuggestions: suggestions("event", ["🗣️", "📱", "📆"]),
+    beliefSuggestions: suggestions("belief", ["😣", "😟", "😰"]),
+    behaviorSuggestions: suggestions("behavior", ["🫥", "🏃", "🔁"]),
+    balancedThoughtSuggestions: suggestions("balancedThought", ["🌿", "🧭", "👣"]),
+    newConsequenceSuggestions: suggestions("newConsequence", ["🌤️", "⏸️", "✅"]),
+  };
+}
 
 const ABC_EMOTION_OPTIONS = EMOTION_OPTIONS.filter(
   (emotion) =>
@@ -104,13 +101,4 @@ export function getABCEmotionDisplayLabels(value: string): string {
   return value.trim();
 }
 
-const SHARED_TEXT_STEP_PROPS = {
-  showVoice: true,
-  alwaysShowVoice: true,
-  composerGlow: false,
-  showExamplesInitially: true,
-  suggestionsTitle: "Example starters",
-  showStepCount: false,
-} as const;
-
-export { EVENT_SUGGESTIONS, BELIEF_SUGGESTIONS, BEHAVIOR_SUGGESTIONS, BALANCED_THOUGHT_SUGGESTIONS, NEW_CONSEQUENCE_SUGGESTIONS, ABC_EMOTION_OPTIONS, emotionOptionByNormalizedValue, normalizeABCEmotion, splitABCEmotionTokens, getABCEmotionTokenState, createEmotionSelectionStorage, SHARED_TEXT_STEP_PROPS };
+export { ABC_EMOTION_OPTIONS, emotionOptionByNormalizedValue, normalizeABCEmotion, splitABCEmotionTokens, getABCEmotionTokenState, createEmotionSelectionStorage };

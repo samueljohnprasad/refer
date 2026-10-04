@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
@@ -66,14 +67,15 @@ function MythCard({
   reality: string | null;
   note?: string | null;
 }) {
+  const { t } = useTranslation("exercises");
   return (
     <View style={styles.mythStack}>
       <View style={styles.mythPanel}>
-        <Text style={styles.neutralKicker}>THE MYTH</Text>
+        <Text style={styles.neutralKicker}>{t("flow.ui.categoryEngine.concept.myth")}</Text>
         <Text style={styles.mythText}>{myth}</Text>
       </View>
       <View style={styles.realityPanel}>
-        <Text style={styles.oliveKicker}>THE REALITY</Text>
+        <Text style={styles.oliveKicker}>{t("flow.ui.categoryEngine.concept.reality")}</Text>
         <Text style={styles.realityText}>{reality}</Text>
         {note ? <Text style={styles.note}>{note}</Text> : null}
       </View>
