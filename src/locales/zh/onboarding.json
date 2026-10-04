@@ -7,6 +7,11 @@
     "headline_emphasis": "你的信，",
     "subtitle": "写于30天之后。",
     "moments": { "morning": "早上", "afternoon": "下午", "evening": "晚上", "night": "深夜" },
+    "closing": {
+      "signature": "30天后的你。",
+      "postscript": "附言：有时我仍会焦虑，只是不再那么害怕它。",
+      "keepNote": "记住这些话。有些日子，你需要想起自己正在成为怎样的人。"
+    },
     "body": {
       "intro": "我在{{weekday}}{{moment}}给你写下这段话。刚刚关掉了 Happy",
       "closed_app": "五分钟前。",

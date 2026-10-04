@@ -3,14 +3,16 @@
 
 import React from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { Skeleton } from "@/src/components/ui/Skeleton";
 
 export function ContinueJourneyCardSkeleton(): React.JSX.Element {
+  const { t } = useTranslation("home");
   return (
     <View
       className="rounded-2xl border border-sand/40 bg-surface-card p-4"
       accessibilityRole="progressbar"
-      accessibilityLabel="Loading learning journey"
+      accessibilityLabel={t("journey.a11yLoading")}
     >
       <View className="flex-row items-center justify-between">
         <View className="flex-1 pr-3">

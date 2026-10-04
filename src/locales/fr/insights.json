@@ -52,7 +52,7 @@
     "analyzing": "L’IA analyse vos entrées de journal. Cela peut prendre une minute.",
     "notAvailable": "Indisponible"
   },
-  "chart": { "premiumFeature": "Fonctionnalité Premium", "premium": "Premium" },
+  "chart": { "premiumFeature": "Fonctionnalité Premium", "premium": "Premium", "weeklyMood": { "tabs": { "day": "Jour", "week": "Semaine", "dayView": "Vue par jour", "dayHint": "Afficher l’humeur de chaque jour", "weekView": "Vue par semaine", "weekHint": "Afficher les moyennes d’humeur par semaine" }, "headers": { "thisWeekMood": "Humeur de cette semaine", "todayMood": "Humeur du jour", "yesterdayMood": "Humeur d’hier", "weekdayMood": "Humeur du {{weekday}}" }, "tooltip": { "mood": "Humeur : {{mood}}", "day": "Jour : {{day}}", "time": "Heure : {{time}}" }, "error": "Impossible de charger les données d’humeur.", "average": "Moyenne :", "scale": { "accessibilityLabel": "Échelle d’humeur, de très bonne à très mauvaise", "level": "Niveau d’humeur : {{mood}}", "moods": { "great": "Très bien", "good": "Bien", "fine": "Ça va", "bad": "Mal", "terrible": "Très mal" } } } },
   "lifeBalance": {
     "title": "Équilibre des domaines de vie",
     "lockedDescription": "Visualisez l’équilibre entre les différents domaines de votre vie.",

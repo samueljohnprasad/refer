@@ -1,5 +1,6 @@
 import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View, Pressable, TextInput } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
@@ -41,6 +42,7 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
     readOnly,
     autoFocus,
   }) => {
+    const { t } = useTranslation("exercises");
     const checked: string[] = (response as Record<string, any>)[fieldKey] ?? [];
     const [customDraft, setCustomDraft] = useState("");
 
@@ -120,10 +122,10 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
               value={customDraft}
               onChangeText={setCustomDraft}
               onSubmitEditing={addCustom}
-              placeholder="Add custom item..."
+              placeholder={t("flow.ui.copy.step_checklist_add_custom_item")}
               placeholderTextColor={SEMANTIC_COLORS.text.disabled}
               returnKeyType="done"
-              accessibilityLabel="Add custom checklist item"
+              accessibilityLabel={t("flow.ui.copy.step_checklist_add_custom_item_accessibility")}
               className="flex-1 text-sm text-ink bg-white rounded-xl p-3 mr-2"
               style={{ borderWidth: 2, borderColor: SEMANTIC_COLORS.border.default }}
               editable={!readOnly}
@@ -144,7 +146,12 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
         )}
 
         <Text className="text-xs text-ink-muted mt-2">
-          {checked.length} checked{minChecked > 0 ? ` (min ${minChecked})` : ""}
+          {minChecked > 0
+            ? t("flow.ui.copy.step_checklist_checked_count_minimum", {
+                count: checked.length,
+                minimum: minChecked,
+              })
+            : t("flow.ui.copy.step_checklist_checked_count", { count: checked.length })}
         </Text>
       </StepLayout>
     );

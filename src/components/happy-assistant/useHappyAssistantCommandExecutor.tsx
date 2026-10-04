@@ -12,6 +12,7 @@ import { useSetAtom } from "jotai";
 import type { CustomerInfo } from "react-native-purchases";
 
 import { useToast } from "heroui-native";
+import { useTranslation } from "react-i18next";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import {
   openAIInsightsAtom,
@@ -63,6 +64,7 @@ export function useHappyAssistantCommandExecutor(): UseHappyAssistantCommandExec
   const setKeyboardJournalOpen = useSetAtom(keyboardJournalOpenAtom);
   const setOpenAIInsights = useSetAtom(openAIInsightsAtom);
   const { restorePurchases } = useRevenueCat();
+  const { t } = useTranslation("settings");
   const { data: historyData } = useCBTHistory();
   const history = useMemo(() => historyData?.pages.flatMap((p) => p.data) || [], [historyData]);
   const { toast } = useToast();
@@ -150,7 +152,9 @@ export function useHappyAssistantCommandExecutor(): UseHappyAssistantCommandExec
         const hasPremium = hasPremiumEntitlement(info);
 
         showToast(
-          hasPremium ? "Premium restored." : "No active Premium found.",
+          hasPremium
+            ? t("purchaseRestore.restored")
+            : t("purchaseRestore.notFound"),
           hasPremium ? "success" : "info",
         );
       },
@@ -161,6 +165,7 @@ export function useHappyAssistantCommandExecutor(): UseHappyAssistantCommandExec
     [
       latestIncompleteExercise,
       restorePurchases,
+      t,
       setKeyboardJournalOpen,
       setOpenAIInsights,
       setRecorderOpen,
@@ -182,7 +187,11 @@ export function useHappyAssistantCommandExecutor(): UseHappyAssistantCommandExec
     const timer = setTimeout(() => {
       void executeCommand(activeCommand)
         .catch(() => {
-          showToast("Happy could not complete that action.", "error");
+          const message =
+            activeCommand === HappyAssistantCommandEnum.RestorePurchases
+              ? t("purchaseRestore.failed")
+              : "Happy could not complete that action.";
+          showToast(message, "error");
         })
         .finally(() => {
           dispatch(clearCommand());
@@ -190,7 +199,7 @@ export function useHappyAssistantCommandExecutor(): UseHappyAssistantCommandExec
     }, ASSISTANT_COMMAND_EXECUTION_DELAY_MS);
 
     return () => clearTimeout(timer);
-  }, [activeCommand, dispatch, executeCommand, showToast]);
+  }, [activeCommand, dispatch, executeCommand, showToast, t]);
 
   return {
     signInSheetRef,

@@ -52,7 +52,7 @@
     "analyzing": "La IA está revisando tus entradas del diario. Puede tardar un minuto.",
     "notAvailable": "No disponible"
   },
-  "chart": { "premiumFeature": "Función Premium", "premium": "Premium" },
+  "chart": { "premiumFeature": "Función Premium", "premium": "Premium", "weeklyMood": { "tabs": { "day": "Día", "week": "Semana", "dayView": "Vista diaria", "dayHint": "Mostrar el ánimo de cada día", "weekView": "Vista semanal", "weekHint": "Mostrar los promedios semanales del ánimo" }, "headers": { "thisWeekMood": "Ánimo de esta semana", "todayMood": "Ánimo de hoy", "yesterdayMood": "Ánimo de ayer", "weekdayMood": "Ánimo del {{weekday}}" }, "tooltip": { "mood": "Ánimo: {{mood}}", "day": "Día: {{day}}", "time": "Hora: {{time}}" }, "error": "No se pudieron cargar los datos del ánimo.", "average": "Promedio:", "scale": { "accessibilityLabel": "Escala del ánimo de excelente a muy malo", "level": "Nivel de ánimo: {{mood}}", "moods": { "great": "Excelente", "good": "Bien", "fine": "Regular", "bad": "Mal", "terrible": "Muy mal" } } } },
   "lifeBalance": {
     "title": "Equilibrio de las áreas de tu vida",
     "lockedDescription": "Observa el equilibrio entre las distintas áreas de tu vida.",

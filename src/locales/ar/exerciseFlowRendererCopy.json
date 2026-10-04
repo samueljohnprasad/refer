@@ -1,4 +1,15 @@
 {
+  "text_composer_voice_unavailable": "الملاحظة الصوتية غير متاحة. يمكنك كتابة هذا العنصر بدلًا من ذلك.",
+  "text_composer_recording_failed": "تعذّر بدء التسجيل. يمكنك كتابة هذا العنصر بدلًا من ذلك.",
+  "text_composer_voice_placeholder": "اكتب أو استخدم الصوت...",
+  "text_composer_item_placeholder": "اكتب عنصرًا...",
+  "text_composer_remove_item_accessibility": "إزالة العنصر {{index}}: {{item}}",
+  "text_composer_listening": "جارٍ الاستماع...",
+  "text_composer_stop_recording_item": "إيقاف تسجيل العنصر",
+  "text_composer_start_voice_input": "بدء الإدخال الصوتي",
+  "text_composer_add_item_accessibility": "إضافة عنصر",
+  "text_composer_add_item": "إضافة",
+  "text_composer_stop_voice_input": "إيقاف الإدخال الصوتي",
   "match_the_two_sides_5j1723": "تطابق الجانبين",
   "tap_an_observation_then_its_useful_reading_1v9jxsm": "اضغط على الملاحظة، ثم قراءتها المفيدة.",
   "observation_1073nnx": "ملاحظة",
@@ -41,5 +52,98 @@
   "even_a_small_shift_matters_you_made_room_for_a_m_bqxdz4": "حتى التغيير البسيط مهم. لقد أفسحت المجال لحالة أكثر توازنا.",
   "checked_again_ko7wr6": "فحص مرة أخرى",
   "reality_check_1ryst8b": "التحقق من الواقع",
-  "finish_185ucaa": "ينهي"
+  "finish_185ucaa": "ينهي",
+  "step_checklist_add_custom_item": "إضافة عنصر مخصص...",
+  "step_checklist_add_custom_item_accessibility": "إضافة عنصر مخصص إلى القائمة",
+  "step_checklist_checked_count": "تم تحديد {{count}}",
+  "step_checklist_checked_count_minimum": "تم تحديد {{count}} (الحد الأدنى {{minimum}})",
+  "step_time_picker_example_placeholder": "مثال: ١٠:٣٠ مساءً أو غدًا الساعة ٣",
+  "wave_order_empty_slot": "اضغط على مقطع لوضعه هنا",
+  "wave_order_slot_accessibility": "الموضع {{index}}: {{stage}}. اضغط للإزالة.",
+  "wave_order_pattern_heading": "النمط",
+  "wave_order_pattern_title": "تتغير موجة الهلع مع الوقت.",
+  "wave_order_pattern_fallback": "يرتفع الإنذار ويبلغ ذروته، ثم يبدأ بالهدوء.",
+  "wave_order_retry_title": "جرّب الترتيب مرة أخرى",
+  "wave_order_wrong_fallback": "{{rightCount}} من {{total}} في الموضع الصحيح. أعد ترتيب {{remaining}} المتبقية.",
+  "wave_order_clue_prefix": "تلميح",
+  "surge_diagram": {
+    "title": "يتغير الإنذار مع مرور الوقت",
+    "instruction": "تابع شكل موجة الشدة.",
+    "axisLabel": "مرور الوقت",
+    "patternLabel": "النمط",
+    "takeaway": "قد تبدو الموجة بلا نهاية أثناء مرورك بها.\n\nلكن شدتها قد تتغير مع الوقت.",
+    "note": "نمط توضيحي؛ تختلف المدة والشدة.",
+    "completedAnnouncement": "بدأت الشدة تهدأ. وصلت إلى النهاية. النمط: قد تبدو الموجة بلا نهاية، لكن شدتها تتغير مع الوقت.",
+    "phaseAnnouncement": "{{tag}}. {{caption}}",
+    "chartAccessibilityLabel": "منحنى شدة يوضح البداية والتصاعد والذروة والهدوء مع مرور الوقت",
+    "sliderAccessibilityLabel": "الخط الزمني للموجة",
+    "incrementAccessibilityLabel": "تقدم في الوقت",
+    "decrementAccessibilityLabel": "ارجع في الوقت",
+    "phase": {
+      "beginning": { "tag": "البداية", "caption": "تحرك عبر الزمن." },
+      "rising": { "tag": "تصاعد", "caption": "الإنذار يزداد قوة." },
+      "peak": {
+        "tag": "الذروة",
+        "caption": "هذه أكثر نقطة شدة في هذا المثال."
+      },
+      "easing": { "tag": "هدوء", "caption": "الشدة تتغير." }
+    }
+  },
+  "two_dial_sandbox": {
+    "title": "مؤشران يشكلان أسبوعك",
+    "instruction": "عدّل مستوى المتطلبات والتعافي لترى كيف يستجيب جسمك.",
+    "currentState": "الحالة الحالية",
+    "statesDiscovered": "الحالات التي اكتشفتها",
+    "discoveredCount": "{{count}} من 4",
+    "patternLabel": "النمط",
+    "takeaway": "المتطلبات وحدها لا تحدد شعورك خلال الأسبوع.\n\nالتعافي يغيّر أثر المتطلبات نفسها عليك.",
+    "completedAnnouncement": "اكتشفت الحالات الأربع. النمط: المتطلبات وحدها لا تحدد شعورك خلال الأسبوع. التعافي يغيّر أثر المتطلبات نفسها عليك.",
+    "demand": {
+      "label": "المتطلبات",
+      "low": "هدوء",
+      "high": "كل شيء دفعة واحدة",
+      "accessibilityLabel": "مؤشر المتطلبات"
+    },
+    "recovery": {
+      "label": "التعافي",
+      "low": "مستنزف",
+      "high": "مفعم بالطاقة",
+      "accessibilityLabel": "مؤشر التعافي"
+    },
+    "value": {
+      "highDemand": "متطلبات مرتفعة",
+      "lowDemand": "متطلبات منخفضة",
+      "highRecovery": "تعافٍ مرتفع",
+      "lowRecovery": "تعافٍ منخفض"
+    },
+    "outcomes": {
+      "HL": {
+        "title": "ضغط المواعيد",
+        "body": "قد تُبقي المتطلبات الكثيرة مع قلة التعافي الجسم في حالة استنفار."
+      },
+      "HH": {
+        "title": "إيقاع متوازن",
+        "body": "هناك متطلبات، لكن التعافي يجدد طاقتك."
+      },
+      "LH": {
+        "title": "استعادة هادئة",
+        "body": "تمنح المتطلبات الأقل التعافي مساحة لاستعادة طاقتك."
+      },
+      "LL": {
+        "title": "حلقة راكدة",
+        "body": "قد تجعل المتطلبات القليلة مع قلة التعافي أسبوعك يبدو باهتًا."
+      }
+    }
+  },
+  "teaching_panel": {
+    "takeawayPrefix": "الخلاصة:",
+    "thinkingHeading": "إليك الفكرة"
+  },
+  "lever_scenario": {
+    "feedback": {
+      "whyFits": "لماذا تناسب؟",
+      "thinkingHeading": "إليك الفكرة",
+      "notQuite": "ليس تمامًا"
+    }
+  }
 }

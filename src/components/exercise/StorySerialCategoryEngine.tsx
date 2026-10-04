@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Pressable, Text, View, LayoutAnimation } from "react-native";
+import { useTranslation } from "react-i18next";
 import * as Haptics from "expo-haptics";
 import { useReducedMotion } from "react-native-reanimated";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
@@ -25,6 +26,7 @@ export function StorySerialCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const branches = readBranches(content.branches);
@@ -143,8 +145,8 @@ export function StorySerialCategoryEngine({
     <View className="flex-1 -mt-5 px-2 pb-6">
       <View className="mb-2.5">
         <CourseExerciseHeading
-          title={readString(content.title) ?? "Walk both alarm paths"}
-          instruction={!comparisonReady ? (readString(content.instruction) ?? "Walk one path, then rewind and compare.") : undefined}
+          title={readString(content.title) ?? t("flow.ui.categoryEngine.storySerial.titleFallback")}
+          instruction={!comparisonReady ? (readString(content.instruction) ?? t("flow.ui.categoryEngine.storySerial.instructionFallback")) : undefined}
         />
       </View>
 
@@ -158,14 +160,14 @@ export function StorySerialCategoryEngine({
       ) : !comparisonReady ? (
         <View
           accessible
-          accessibilityLabel="Same start. Unexpected meeting and tight chest."
+          accessibilityLabel={t("flow.ui.categoryEngine.storySerial.sameStartAccessibility", { start: comparison.start.join(" and ") })}
           className="mb-4 w-full rounded-[16px] border border-[#EAE4D9] bg-[#FAF7F2] px-4 py-2"
         >
           <Text className="happy-font-heading-bold mb-0.5 text-[10px] uppercase tracking-wider text-[#8C8275]">
-            SAME START
+            {t("flow.ui.categoryEngine.storySerial.sameStart")}
           </Text>
           <Text className="happy-font-body-bold text-[13.5px] text-[#2C2723]">
-            Unexpected meeting + tight chest
+            {comparison.start.join(" + ")}
           </Text>
         </View>
       ) : null}
@@ -174,7 +176,7 @@ export function StorySerialCategoryEngine({
       {firstBranchIndex == null && (
         <View className="mt-2">
           <Text className="happy-font-heading-bold mb-3 text-[11px] uppercase tracking-wider text-[#82796A]">
-            YOU CHOOSE FOR SAM
+            {t("flow.ui.categoryEngine.storySerial.chooseForSam")}
           </Text>
           <View className="gap-3">
             {branches.map((branch, index) => (
@@ -194,7 +196,12 @@ export function StorySerialCategoryEngine({
       {hasRewound && !comparisonReady && firstBranch && (
         <View
           accessible
-          accessibilityLabel={`${firstBranch.label.includes("SIGNAL") ? "Alarm as signal" : "Alarm as proof"} path summary: ${(firstBranchIndex === 0 ? comparison.path1 : comparison.path2).join(", ")}`}
+          accessibilityLabel={t("flow.ui.categoryEngine.storySerial.pathSummaryAccessibility", {
+            pathType: firstBranch.label.includes("SIGNAL")
+              ? t("flow.ui.categoryEngine.storySerial.alarmSignal")
+              : t("flow.ui.categoryEngine.storySerial.alarmProof"),
+            summary: (firstBranchIndex === 0 ? comparison.path1 : comparison.path2).join(", "),
+          })}
           className={`mb-4 w-full rounded-[16px] border px-4 py-2.5 opacity-85 ${
             firstBranchIndex === 0
               ? "border-[#E8DCCB] bg-[#FAF5EE]"
@@ -222,7 +229,9 @@ export function StorySerialCategoryEngine({
       {activeBranch && !comparisonReady && (
         <View
           accessible
-          accessibilityLabel={isSignal ? "Alarm as signal." : "Alarm as proof."}
+          accessibilityLabel={t(isSignal
+            ? "flow.ui.categoryEngine.storySerial.alarmSignal"
+            : "flow.ui.categoryEngine.storySerial.alarmProof")}
           className={`w-full rounded-[18px] border px-4 py-3.5 ${
             isSignal
               ? "border-[#ABC0A2] bg-[#F2F7F0]"
@@ -254,7 +263,7 @@ export function StorySerialCategoryEngine({
             className="min-h-[50px] w-full items-center justify-center rounded-[16px] border border-[#ABC0A2] bg-white px-5 active:translate-y-[3px]"
           >
             <Text className="happy-font-body-bold text-[15px] text-[#3C5A3E]">
-              Rewind and walk the other path
+              {t("flow.ui.categoryEngine.storySerial.rewindCTA")}
             </Text>
           </Pressable>
         </View>

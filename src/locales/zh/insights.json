@@ -52,7 +52,7 @@
     "analyzing": "AI 正在分析你的日记记录，可能需要一分钟。",
     "notAvailable": "暂无数据"
   },
-  "chart": { "premiumFeature": "高级功能", "premium": "高级" },
+  "chart": { "premiumFeature": "高级功能", "premium": "高级", "weeklyMood": { "tabs": { "day": "日", "week": "周", "dayView": "日视图", "dayHint": "查看每天的情绪图表", "weekView": "周视图", "weekHint": "查看每周情绪平均值" }, "headers": { "thisWeekMood": "本周情绪", "todayMood": "今日情绪", "yesterdayMood": "昨日情绪", "weekdayMood": "{{weekday}}的情绪" }, "tooltip": { "mood": "情绪：{{mood}}", "day": "日期：{{day}}", "time": "时间：{{time}}" }, "error": "无法加载情绪数据。", "average": "平均：", "scale": { "accessibilityLabel": "情绪等级从很好到很差", "level": "情绪等级：{{mood}}", "moods": { "great": "很好", "good": "不错", "fine": "一般", "bad": "不好", "terrible": "很差" } } } },
   "lifeBalance": {
     "title": "生活领域平衡图",
     "lockedDescription": "查看生活中不同领域之间的平衡状态。",

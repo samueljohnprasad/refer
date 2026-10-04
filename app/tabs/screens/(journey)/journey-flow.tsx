@@ -95,7 +95,7 @@ export default function JourneyFlowRoute() {
           nodeId: nodeId || "",
           content: {
             title: node?.title || t("lessonComplete"),
-            takeaway: "You showed up for yourself today.",
+            takeaway: t("defaultLessonTakeaway"),
             primaryActionLabel: t("continue"),
           },
         };

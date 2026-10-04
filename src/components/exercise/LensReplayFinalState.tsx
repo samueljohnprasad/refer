@@ -19,14 +19,18 @@ export function LensReplayFinalState({
         <Text style={styles.structuralLabel}>
           {t("flow.ui.categoryEngine.lensReplay.whatHappened")}
         </Text>
-        <Text style={styles.compactText}>Everyone stopped talking.</Text>
+        <Text style={styles.compactText}>
+          {t("flow.ui.categoryEngine.lensReplay.observedScene")}
+        </Text>
       </View>
 
       <View style={styles.compactBlock}>
         <Text style={styles.structuralLabel}>
           {t("flow.ui.categoryEngine.lensReplay.mindAdded")}
         </Text>
-        <Text style={styles.compactText}>“They were talking about me.”</Text>
+        <Text style={styles.compactText}>
+          {t("flow.ui.categoryEngine.lensReplay.assumedMeaning")}
+        </Text>
       </View>
 
       <View style={styles.ideaCard}>

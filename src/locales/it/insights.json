@@ -52,7 +52,7 @@
     "analyzing": "L’IA sta analizzando le voci del tuo diario. Potrebbe volerci un minuto.",
     "notAvailable": "Non disponibile"
   },
-  "chart": { "premiumFeature": "Funzione Premium", "premium": "Premium" },
+  "chart": { "premiumFeature": "Funzione Premium", "premium": "Premium", "weeklyMood": { "tabs": { "day": "Giorno", "week": "Settimana", "dayView": "Vista giornaliera", "dayHint": "Mostra l’umore dei singoli giorni", "weekView": "Vista settimanale", "weekHint": "Mostra le medie settimanali dell’umore" }, "headers": { "thisWeekMood": "Umore di questa settimana", "todayMood": "Umore di oggi", "yesterdayMood": "Umore di ieri", "weekdayMood": "Umore di {{weekday}}" }, "tooltip": { "mood": "Umore: {{mood}}", "day": "Giorno: {{day}}", "time": "Ora: {{time}}" }, "error": "Impossibile caricare i dati dell’umore.", "average": "Media:", "scale": { "accessibilityLabel": "Scala dell’umore da ottimo a pessimo", "level": "Livello dell’umore: {{mood}}", "moods": { "great": "Ottimo", "good": "Bene", "fine": "Così così", "bad": "Male", "terrible": "Pessimo" } } } },
   "lifeBalance": {
     "title": "Equilibrio delle aree della vita",
     "lockedDescription": "Scopri l’equilibrio tra le diverse aree della tua vita.",

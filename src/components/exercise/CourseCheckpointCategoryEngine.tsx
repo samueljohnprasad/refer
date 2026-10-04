@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Pressable, Text, View, ViewStyle } from "react-native";
+import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { Pressable, Text, View, type ViewStyle } from "react-native";
 import * as Haptics from "expo-haptics";
-import Animated, { FadeIn, FadeInUp, LinearTransition } from "react-native-reanimated";
-import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
+import Animated, { FadeInUp, LinearTransition } from "react-native-reanimated";
+import { CourseCheckpointIntro } from "@/src/components/exercise/CourseCheckpointIntro";
+import { CourseCheckpointSummary } from "@/src/components/exercise/CourseCheckpointSummary";
 import {
   readRecord,
   readString,
@@ -11,7 +13,6 @@ import {
   readBooleanResults,
   readCheckpointItems,
   readResponseIndex,
-  type CheckpointItem,
 } from "@/src/components/exercise/courseCheckpointContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
@@ -22,6 +23,7 @@ export function CourseCheckpointCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const phase = readString(saved?.phase) ?? "intro";
@@ -62,10 +64,10 @@ export function CourseCheckpointCategoryEngine({
   };
 
   if (phase === "intro") {
-    return <CheckpointIntro content={content} />;
+    return <CourseCheckpointIntro content={content} />;
   }
   if (phase === "summary") {
-    return <CheckpointSummary content={content} items={items} saved={saved} />;
+    return <CourseCheckpointSummary content={content} items={items} saved={saved} />;
   }
   if (!item) return null;
 
@@ -124,7 +126,7 @@ export function CourseCheckpointCategoryEngine({
                 </Text>
                 {isFeedback && incorrect && (
                   <Text className="mt-1 happy-font-body-bold text-[10px] tracking-[0.5px] text-[#A74141] uppercase">
-                    YOUR ANSWER
+                    {t("flow.ui.categoryEngine.checkpoint.yourAnswer")}
                   </Text>
                 )}
               </View>
@@ -138,7 +140,7 @@ export function CourseCheckpointCategoryEngine({
         <Animated.View entering={FadeInUp.duration(200)} layout={LinearTransition} className="mt-6 mb-2">
           <View className="rounded-[16px] border border-[#EBDDC5] bg-[#FDF9F5] p-5">
             <Text className="happy-font-heading-bold mb-3.5 text-[12px] tracking-[0.8px] text-[#29452A] uppercase">
-              WHAT HAPPENED?
+              {t("flow.ui.categoryEngine.checkpoint.whatHappened")}
             </Text>
             <View className="gap-2">
               {feedbackLines.map((line, idx) => {
@@ -161,111 +163,6 @@ export function CourseCheckpointCategoryEngine({
           </View>
         </Animated.View>
       ) : null}
-    </View>
-  );
-}
-
-function CheckpointIntro({ content }: { content: Record<string, unknown> }) {
-  const title = readString(content.title) ?? "Sleep science checkpoint";
-  const introTitle = readString(content.introTitle) ?? "Let’s see what stuck.";
-  const intro = readString(content.intro) ?? "4 quick questions about the sleep system.\nA miss just gives you something to revisit.";
-  const tag = readString(content.introTag) ?? "4 QUESTIONS · ~1 MIN";
-
-  return (
-    <View className="px-3 pb-6 pt-2 items-center">
-      <CourseExerciseHeading title={title} />
-      <Animated.View entering={FadeIn} className="mt-6 w-full items-center">
-        <View className="w-full rounded-[22px] border border-[#EBDDC5] bg-[#FDF9F5] p-5 items-center">
-          <Text className="happy-font-heading-bold text-[20px] text-center text-[#29452A] mb-2.5">
-            {introTitle}
-          </Text>
-          <Text className="happy-font-body text-[14.5px] leading-[22px] text-center text-[#3F3A34] mb-5">
-            {intro}
-          </Text>
-          <View className="rounded-full bg-[#EBDDC5] px-3.5 py-1.5">
-            <Text className="happy-font-body-bold text-[10.5px] tracking-[0.8px] text-[#5C5346] uppercase">
-              {tag}
-            </Text>
-          </View>
-        </View>
-      </Animated.View>
-    </View>
-  );
-}
-
-function CheckpointSummary({
-  content,
-  items,
-  saved,
-}: {
-  content: Record<string, unknown>;
-  items: CheckpointItem[];
-  saved: Record<string, unknown> | null;
-}) {
-  const results = readBooleanResults(saved?.results);
-  const solid = items.filter((_, index) => results[index] === true);
-  const revisit = items.filter((_, index) => results[index] !== true);
-
-  return (
-    <View className="px-3 pb-6 pt-2">
-      <CourseExerciseHeading
-        title={readString(content.title) ?? "Checkpoint"}
-        instruction="What the review showed."
-      />
-      <View className="mt-5 gap-4">
-        <SummaryGroup title="FEELS SOLID" items={solid} solid />
-        <SummaryGroup title="WORTH A TWO-MINUTE REVISIT" items={revisit} />
-        <View className="rounded-[18px] border border-[#EBDDC5] bg-[#FDF9F5] p-4 mt-1">
-          <Text className="happy-font-body text-[13.5px] leading-[21px] text-[#3F3A34]">
-            {readString(
-              revisit.length > 0 ? content.revisitMessage : content.solidMessage,
-            ) ?? (revisit.length > 0
-              ? "The marked ideas are worth a short revisit before changing your routine. Nothing is lost."
-              : "The map is holding. Next, use it to run one small experiment and read what changes.")}
-          </Text>
-        </View>
-      </View>
-    </View>
-  );
-}
-
-function SummaryGroup({
-  title,
-  items,
-  solid = false,
-}: {
-  title: string;
-  items: CheckpointItem[];
-  solid?: boolean;
-}) {
-  if (!items.length) return null;
-  return (
-    <View>
-      <Text
-        className={
-          solid
-            ? "happy-font-body-bold mb-2 text-[10.5px] tracking-[0.8px] text-[#29452A] uppercase"
-            : "happy-font-body-bold mb-2 text-[10.5px] tracking-[0.8px] text-[#82796A] uppercase"
-        }
-      >
-        {title}
-      </Text>
-      <View className="flex-row flex-wrap gap-2">
-        {items.map((item) => (
-          <View
-            key={item.concept}
-            className={
-              solid
-                ? "rounded-full bg-[#E1EAD9] border border-[#29452A]/20 px-3.5 py-1.5"
-                : "rounded-full bg-[#EBDDC5] border border-[#D8C7AD] px-3.5 py-1.5"
-            }
-          >
-            <Text className="happy-font-body-bold text-[13px] text-[#3F3A34]">
-              {item.concept}
-            </Text>
-          </View>
-        ))}
-      </View>
     </View>
   );
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useColorScheme } from "react-native";
 import { Stack, router } from "expo-router";
 import Animated from "react-native-reanimated";
@@ -42,6 +43,7 @@ export const JourneyMapView = React.memo(function JourneyMapView({
   actions,
   isOnboarding,
 }: JourneyMapViewProps): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   const isDark = useColorScheme() === "dark";
 
   const {
@@ -248,7 +250,7 @@ export const JourneyMapView = React.memo(function JourneyMapView({
           isVisible={true}
           context={{
             type: 'unit',
-            eyebrowText: 'UNIT COMPLETE',
+            eyebrowText: t("unitComplete"),
             primaryText: controller.pendingCelebration.content.capabilityStatement,
             secondaryText: controller.pendingCelebration.unitTitle,
             pandaAnimationKey: 'generic_success',
@@ -264,7 +266,7 @@ export const JourneyMapView = React.memo(function JourneyMapView({
           isVisible={true}
           context={{
             type: 'course',
-            eyebrowText: 'COURSE COMPLETE',
+            eyebrowText: t("courseComplete"),
             primaryText: controller.pendingCelebration.content.acknowledgement,
             secondaryText: controller.pendingCelebration.courseTitle,
             pandaAnimationKey: 'generic_success',

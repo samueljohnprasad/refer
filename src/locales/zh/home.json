@@ -20,7 +20,9 @@
     "bad": "不好",
     "okay": "一般",
     "good": "很好",
-    "great": "极佳"
+    "great": "极佳",
+    "accessibilityLog": "记录{{mood}}情绪{{loggedCount}}",
+    "accessibilityCount_other": "，已记录{{count}}次"
   },
   "prompts": {
     "1": "今天你感恩什么？",
@@ -44,13 +46,23 @@
     "continueLearning": "继续学习",
     "continueJourney": "继续你的旅程",
     "pickUpWhereLeft": "从上次离开的地方继续。",
-    "openJourneys": "打开旅程"
+    "openJourneys": "打开旅程",
+    "a11yActive": "{{courseTitle}}。下一项活动：{{activityTitle}}{{duration}}。轻点继续学习。",
+    "a11yNoCourse": "寻找下一步。选择一段旅程开始学习。轻点探索旅程。",
+    "a11yCompleted": "旅程已完成。你可以回顾所学的技能。轻点查看技能。",
+    "a11yError": "继续你的旅程。轻点打开旅程。",
+    "a11yLoading": "正在加载学习旅程",
+    "a11yDuration_other": "{{count}}分钟",
+    "durationCompact": "{{count}}分钟"
   },
   "streak": {
     "streakCount_one": "连续打卡 {{count}} 天",
     "streakCount_other": "连续打卡 {{count}} 天",
     "weekDays": ["日", "一", "二", "三", "四", "五", "六"],
-    "a11yLabel": "当前连续打卡：{{count}} 天。轻点查看打卡历史。"
+    "a11yLabel": "当前连续打卡：{{count}} 天。轻点查看打卡历史。",
+    "dayLabel": "连续打卡",
+    "newStreakMessage": "新的连续打卡开始了！每天回来继续积累进度吧。",
+    "continue": "继续"
   },
   "errors": {
     "loadTitle": "出现了问题",

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, { FadeIn, FadeOut, FadeInUp, LinearTransition } from 'react-native-reanimated';
 
 export function InteractiveReframeStagger({ 
@@ -11,6 +12,7 @@ export function InteractiveReframeStagger({
   onComplete: () => void,
   content?: Record<string, any>
 }) {
+  const { t } = useTranslation("exercises");
   const [step, setStep] = useState(0);
 
   useEffect(() => {
@@ -38,17 +40,16 @@ export function InteractiveReframeStagger({
     return () => timers.forEach(clearTimeout);
   }, [path]);
 
-  const correctOption = content?.correctOption || "What might have changed";
-  const wrongCascade1 = content?.wrongCascade?.[0] || "TRY HARDER";
-  const wrongCascade2 = content?.wrongCascade?.[1] || "“Is it working yet?”";
-  const wrongCascade3 = content?.wrongCascade?.[2] || "more checking";
-  const wrongCascade4 = content?.wrongCascade?.[3] || "more pressure";
-
-  const correctHeroMorph = content?.correctHeroMorph || "“Something may have shifted.”";
-  const correctCascade1 = content?.correctCascade?.[0] || "WHAT CHANGED?";
-  const correctCascade2 = content?.correctCascade?.[1] || "timing · pressure · arousal";
-  const correctCascade3 = content?.correctCascade?.[2] || "nap · light · stress · routine...";
-  const correctCascade4 = content?.correctCascade?.[3] || "something I can investigate";
+  const correctOption = content?.correctOption || t("flow.ui.categoryEngine.interactiveReframe.correctOption");
+  const wrongCascade1 = content?.wrongCascade?.[0] || t("flow.ui.categoryEngine.interactiveReframe.wrongCascade1");
+  const wrongCascade2 = content?.wrongCascade?.[1] || t("flow.ui.categoryEngine.interactiveReframe.wrongCascade2");
+  const wrongCascade3 = content?.wrongCascade?.[2] || t("flow.ui.categoryEngine.interactiveReframe.wrongCascade3");
+  const wrongCascade4 = content?.wrongCascade?.[3] || t("flow.ui.categoryEngine.interactiveReframe.wrongCascade4");
+  const correctHeroMorph = content?.correctHeroMorph || t("flow.ui.categoryEngine.interactiveReframe.correctHeroMorph");
+  const correctCascade1 = content?.correctCascade?.[0] || t("flow.ui.categoryEngine.interactiveReframe.correctCascade1");
+  const correctCascade2 = content?.correctCascade?.[1] || t("flow.ui.categoryEngine.interactiveReframe.correctCascade2");
+  const correctCascade3 = content?.correctCascade?.[2] || t("flow.ui.categoryEngine.interactiveReframe.correctCascade3");
+  const correctCascade4 = content?.correctCascade?.[3] || t("flow.ui.categoryEngine.interactiveReframe.correctCascade4");
 
   if (path === 'wrong') {
     return (

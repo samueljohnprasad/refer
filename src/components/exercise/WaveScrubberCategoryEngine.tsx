@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import Slider from "@react-native-community/slider";
 import Svg, { Circle, Line, Polyline } from "react-native-svg";
@@ -43,31 +44,31 @@ const CURVE_POINTS = WAVE_POINTS.map(
 const DEFAULT_PHASES: ScrubberPhase[] = [
   {
     label: "EARLY RISE",
-    body: "The alarm is switching on.\nThe sensations can build quickly.",
+    body: "",
     tone: "olive",
     until: 2.0,
   },
   {
     label: "PEAK",
-    body: "The alarm is at its strongest.\n\nStrong sensations can feel convincing, even when they aren't proof of danger.",
+    body: "",
     tone: "olive",
     until: 3.8,
   },
   {
     label: "SETTLING",
-    body: "The surge is beginning to ease.\n\nYour body may still feel activated while the alarm comes down.",
+    body: "",
     tone: "olive",
     until: 6.0,
   },
   {
     label: "ANOTHER RISE",
-    body: "A sensation or worried thought can push the alarm upward again.\n\nAnother rise doesn't mean you're back at the beginning.",
+    body: "",
     tone: "olive",
     until: 7.5,
   },
   {
     label: "SETTLING AGAIN",
-    body: "The alarm is easing again.\n\nWaves can rise and fall more than once.",
+    body: "",
     tone: "olive",
     until: 10,
   },
@@ -78,11 +79,12 @@ export function WaveScrubberCategoryEngine({
   savedResponse,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const parsedPhases = readScrubberPhases(content.phases);
-  const phases = parsedPhases.length > 0 ? parsedPhases : DEFAULT_PHASES;
-
+  const usesDefaultPhases = parsedPhases.length === 0;
+  const phases = usesDefaultPhases ? DEFAULT_PHASES : parsedPhases;
   const [minute, setMinute] = useState<number>(() => readNumber(saved?.minute) ?? 0);
   const savedVisited = readStringArray(saved?.visitedPhases);
   const [visitedPhases, setVisitedPhases] = useState<Set<string>>(
@@ -93,6 +95,15 @@ export function WaveScrubberCategoryEngine({
   );
 
   const phase = useMemo(() => findPhase(phases, minute), [phases, minute]);
+  const visiblePhase = usesDefaultPhases
+    ? [
+        { label: t("flow.ui.categoryEngine.waveScrubber.phases.earlyRise.label"), body: t("flow.ui.categoryEngine.waveScrubber.phases.earlyRise.body") },
+        { label: t("flow.ui.categoryEngine.waveScrubber.phases.peak.label"), body: t("flow.ui.categoryEngine.waveScrubber.phases.peak.body") },
+        { label: t("flow.ui.categoryEngine.waveScrubber.phases.settling.label"), body: t("flow.ui.categoryEngine.waveScrubber.phases.settling.body") },
+        { label: t("flow.ui.categoryEngine.waveScrubber.phases.anotherRise.label"), body: t("flow.ui.categoryEngine.waveScrubber.phases.anotherRise.body") },
+        { label: t("flow.ui.categoryEngine.waveScrubber.phases.settlingAgain.label"), body: t("flow.ui.categoryEngine.waveScrubber.phases.settlingAgain.body") },
+      ][DEFAULT_PHASES.indexOf(phase)] ?? phase
+    : phase;
   const marker = useMemo(() => getWavePosition(minute), [minute]);
   const lastHapticPhaseRef = useRef<string>(phase.label);
 
@@ -147,10 +158,10 @@ export function WaveScrubberCategoryEngine({
     <View className="flex-1 -mt-6 px-2 pb-8 pt-0">
       <View className="mb-4">
         <CourseExerciseHeading
-          title={readString(content.title) ?? "One wave, up close"}
+          title={readString(content.title) ?? t("flow.ui.categoryEngine.waveScrubber.titleFallback")}
           instruction={
             readString(content.instruction) ??
-            "Drag through the wave to see how it changes."
+            t("flow.ui.categoryEngine.waveScrubber.instructionFallback")
           }
         />
       </View>
@@ -158,14 +169,14 @@ export function WaveScrubberCategoryEngine({
       {/* ponytail: graph card is informational, not tactile */}
       <View className="rounded-[24px] border border-[#EBDDC8] bg-[#FAF6F0] p-4 shadow-sm shadow-black/5">
         <Text className="happy-font-body-bold mb-2 text-[11px] uppercase tracking-wider text-[#82796A]">
-          ALARM INTENSITY
+          {t("flow.ui.categoryEngine.waveScrubber.alarmIntensity")}
         </Text>
 
         <Svg
           height={136}
           width="100%"
           viewBox="0 0 300 126"
-          accessibilityLabel="An anxiety wave showing rise, peak, settling, second rise, and recovery"
+          accessibilityLabel={t("flow.ui.categoryEngine.waveScrubber.waveAccessibility")}
         >
           <Line
             x1="12"
@@ -199,8 +210,8 @@ export function WaveScrubberCategoryEngine({
 
         <View className="mt-2">
           <Slider
-            accessibilityLabel="Wave progression"
-            accessibilityValue={{ text: phase.label }}
+            accessibilityLabel={t("flow.ui.categoryEngine.waveScrubber.progressionAccessibility")}
+            accessibilityValue={{ text: visiblePhase.label }}
             minimumTrackTintColor="#5F7F58"
             maximumTrackTintColor="#E5DFD7"
             minimumValue={0}
@@ -213,10 +224,10 @@ export function WaveScrubberCategoryEngine({
           />
           <View className="flex-row justify-between px-1">
             <Text className="happy-font-body-bold text-[11.5px] tracking-wider text-[#82796A]">
-              START
+              {t("flow.ui.categoryEngine.waveScrubber.start")}
             </Text>
             <Text className="happy-font-body-bold text-[11.5px] tracking-wider text-[#82796A]">
-              LATER
+              {t("flow.ui.categoryEngine.waveScrubber.later")}
             </Text>
           </View>
         </View>
@@ -225,10 +236,10 @@ export function WaveScrubberCategoryEngine({
       {/* ponytail: flat phase explanation without second card wrapper */}
       <View className="mt-5 px-1">
         <Text className="happy-font-body-bold text-[12px] uppercase tracking-wider text-[#5F7F58]">
-          {phase.label}
+          {visiblePhase.label}
         </Text>
         <Text className="happy-font-body mt-1.5 text-[15px] leading-[22px] text-[#201E1D]">
-          {phase.body}
+          {visiblePhase.body}
         </Text>
       </View>
 
@@ -236,13 +247,13 @@ export function WaveScrubberCategoryEngine({
       {isComplete ? (
         <View className="mt-6 rounded-[20px] border border-[#E5DFD7] bg-[#F9F7F2] p-4">
           <Text className="happy-font-body-bold text-[12px] uppercase tracking-wider text-[#5F7F58]">
-            THE PATTERN
+            {t("flow.ui.categoryEngine.waveScrubber.patternTitle")}
           </Text>
           <Text className="happy-font-body-bold mt-1.5 text-[15px] leading-5 text-[#201E1D]">
-            A surge changes over time.
+            {t("flow.ui.categoryEngine.waveScrubber.patternSummary")}
           </Text>
           <Text className="happy-font-body mt-1 text-[14px] leading-5 text-[#5A524A]">
-            It can rise quickly, peak, ease, and sometimes rise again before settling.
+            {t("flow.ui.categoryEngine.waveScrubber.patternDescription")}
           </Text>
         </View>
       ) : null}
@@ -287,4 +298,3 @@ function toX(minute: number): number {
 function toY(intensity: number): number {
   return 112 - intensity * 92;
 }
-

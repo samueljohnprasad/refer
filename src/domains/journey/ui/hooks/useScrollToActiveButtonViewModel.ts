@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import {
   useSharedValue,
   useAnimatedStyle,
@@ -29,9 +31,12 @@ export const getHiddenOffset = (
 export const getAccessibilityLabel = (
   mode: ScrollToActiveButtonMode,
   direction: ScrollToActiveButtonDirection,
+  t: TFunction<"journeys">,
 ): string => {
-  if (mode === "focus") return "Return to current lesson";
-  return `Scroll ${direction} to active lesson`;
+  if (mode === "focus") return t("returnToCurrentLesson");
+  return direction === "up"
+    ? t("scrollUpToActiveLesson")
+    : t("scrollDownToActiveLesson");
 };
 
 export function useScrollToActiveButtonViewModel({
@@ -40,6 +45,7 @@ export function useScrollToActiveButtonViewModel({
   mode = "direction",
   onPress,
 }: ScrollToActiveButtonProps) {
+  const { t } = useTranslation("journeys");
   const hiddenOffset = getHiddenOffset(mode, direction);
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(hiddenOffset);
@@ -63,7 +69,7 @@ export function useScrollToActiveButtonViewModel({
     transform: [{ translateY: translateY.value }],
   }));
 
-  const accessibilityLabel = getAccessibilityLabel(mode, direction);
+  const accessibilityLabel = getAccessibilityLabel(mode, direction, t);
 
   return {
     animatedStyle,

@@ -1,5 +1,6 @@
 // ponytail: SocraticDialogueCategoryEngine with 2-stage guided discovery and 3-step compression
 import React, { useEffect, useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { AccessibilityInfo, Pressable, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { readRecord, readString } from "@/src/components/exercise/courseExerciseContent";
@@ -48,6 +49,7 @@ export function SocraticDialogueCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps): React.JSX.Element {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const initialDone = saved?.done === true;
@@ -210,7 +212,7 @@ export function SocraticDialogueCategoryEngine({
             evidence={CONTENT.evidence}
           />
 
-          <EyebrowLabel className="mt-1">WHAT WOULD YOU ASK NEXT?</EyebrowLabel>
+          <EyebrowLabel className="mt-1">{t("flow.ui.categoryEngine.socratic.askNext")}</EyebrowLabel>
 
           {step === 4 ? (
             <>

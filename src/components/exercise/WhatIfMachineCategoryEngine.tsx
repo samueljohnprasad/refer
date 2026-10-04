@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import { CourseExerciseOptionButton } from "@/src/components/exercise/CourseExerciseOptionButton";
@@ -22,6 +23,7 @@ export function WhatIfMachineCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const options = readCourseExerciseOptions(content.options);
@@ -66,8 +68,14 @@ export function WhatIfMachineCategoryEngine({
   return (
     <View style={styles.screenContent}>
       <CourseExerciseHeading
-        title={readString(content.title) ?? "What if?"}
-        instruction={readString(content.instruction) ?? "Predict, then run it."}
+        title={
+          readString(content.title) ??
+          t("flow.ui.categoryEngine.whatIfMachine.titleFallback")
+        }
+        instruction={
+          readString(content.instruction) ??
+          t("flow.ui.categoryEngine.whatIfMachine.instructionFallback")
+        }
       />
 
       {!running ? (
@@ -87,7 +95,9 @@ export function WhatIfMachineCategoryEngine({
       ) : (
         <View>
           <View style={styles.betRow}>
-            <Text style={styles.betLabel}>YOUR BET</Text>
+            <Text style={styles.betLabel}>
+              {t("flow.ui.categoryEngine.whatIfMachine.betLabel")}
+            </Text>
             <View style={styles.betPill}>
               <Text style={styles.betText}>{selectedLabel}</Text>
             </View>

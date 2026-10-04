@@ -54,6 +54,21 @@ function placeholders(value) {
   return [...new Set([...value.matchAll(PLACEHOLDER)].map((match) => match[1]))].sort();
 }
 
+function pluralBase(key) {
+  return key.replace(/_(?:zero|one|two|few|many|other)$/, '');
+}
+
+function groupPluralKeys(entries) {
+  const groups = new Map();
+  for (const [key, value] of entries) {
+    const base = pluralBase(key);
+    const group = groups.get(base) ?? [];
+    group.push(value);
+    groups.set(base, group);
+  }
+  return groups;
+}
+
 async function readNamespace(file, errors) {
   try {
     const content = JSON.parse(await readFile(file, 'utf8'));
@@ -93,25 +108,31 @@ async function validateLocales(errors) {
 }
 
 function compareNamespace(locale, name, english, translated, errors) {
-  for (const [key, source] of english) {
-    if (!translated.has(key)) {
+  const sourceGroups = groupPluralKeys(english);
+  const translatedGroups = groupPluralKeys(translated);
+  for (const [key, sourceValues] of sourceGroups) {
+    const translatedValues = translatedGroups.get(key);
+    if (!translatedValues) {
       errors.push(`Missing key: ${locale}/${name}:${key}`);
       continue;
     }
-    const target = translated.get(key);
+    const source = sourceValues[0];
+    const target = translatedValues[0];
     if (typeof source !== typeof target || (typeof source === 'symbol' && source !== target)) {
       errors.push(`Value type drift: ${locale}/${name}:${key} expected ${valueKind(source)} got ${valueKind(target)}`);
       continue;
     }
     if (typeof source !== 'string') continue;
-    const expected = placeholders(source);
-    const actual = placeholders(target);
+    const expected = [...new Set(sourceValues.flatMap((value) =>
+      typeof value === 'string' ? placeholders(value) : []))].sort();
+    const actual = [...new Set(translatedValues.flatMap((value) =>
+      typeof value === 'string' ? placeholders(value) : []))].sort();
     if (expected.join(',') !== actual.join(',')) {
       errors.push(`Placeholder drift: ${locale}/${name}:${key} expected [${expected}] got [${actual}]`);
     }
   }
-  for (const key of translated.keys()) {
-    if (!english.has(key)) errors.push(`Extra key: ${locale}/${name}:${key}`);
+  for (const key of translatedGroups.keys()) {
+    if (!sourceGroups.has(key)) errors.push(`Extra key: ${locale}/${name}:${key}`);
   }
 }
 
@@ -126,6 +147,24 @@ function literalText(node) {
   if (ts.isJsxText(node)) return node.getText().trim().replace(/\s+/g, ' ');
   if (ts.isTemplateExpression(node)) return node.head.text.trim();
   return '';
+}
+
+function isTranslationKey(node, value) {
+  if (!/^[\w.-]+$/.test(value)) return false;
+  let current = node;
+  while (current.parent) {
+    const parent = current.parent;
+    if (ts.isCallExpression(parent) && parent.arguments[0] === current) {
+      const method = parent.expression.getText().split('.').at(-1);
+      return method === 't';
+    }
+    if (ts.isParenthesizedExpression(parent)) {
+      current = parent;
+      continue;
+    }
+    return false;
+  }
+  return false;
 }
 
 function copyContext(node) {
@@ -187,7 +226,7 @@ function collectLiterals(file, content) {
   function visit(node) {
     const context = copyContext(node);
     const value = literalText(node);
-    if (context && isHumanCopy(value)) {
+    if (context && !isTranslationKey(node, value) && isHumanCopy(value)) {
       const line = source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1;
       found.push({ file: path.relative(ROOT, file), line, context, value: value.slice(0, 90) });
     }

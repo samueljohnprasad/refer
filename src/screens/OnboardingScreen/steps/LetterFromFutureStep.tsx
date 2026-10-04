@@ -238,7 +238,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
                 color: "#C8694B",
               }}
             >
-              You, in 30 days.
+              {t("future_letter_screen.closing.signature")}
             </Text>
             <Text
               style={{
@@ -250,7 +250,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
                 letterSpacing: 0.3,
               }}
             >
-              P.S. Still anxious sometimes. Just less afraid of it.
+              {t("future_letter_screen.closing.postscript")}
             </Text>
           </View>
         </LinearGradient>
@@ -282,8 +282,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             color: "#3A4B3A",
           }}
         >
-          Hold onto this. Some days you&apos;ll need to remember who you&apos;re
-          becoming.
+          {t("future_letter_screen.closing.keepNote")}
         </Text>
       </Animated.View>
     </ScrollView>

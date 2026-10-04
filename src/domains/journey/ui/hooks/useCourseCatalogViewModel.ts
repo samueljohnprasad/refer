@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { FlatList } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
@@ -23,6 +24,7 @@ export interface CourseCatalogSheetProps {
 
 export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
   const { enrolledCourses, isPresented, onClose, onCourseSelect } = props;
+  const { t } = useTranslation("journeys");
   const insets = useSafeAreaInsets();
   const listRef = useRef<FlatList<CourseCatalogListItem> | null>(null);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
@@ -89,7 +91,7 @@ export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
         if (!enrolledCourseIds.has(courseId)) {
           if (isAtCapacityLimit) {
             setEnrollmentError(
-              `Maximum of ${maxCapacityLimit} active courses reached. Complete or unenroll from an active course to start a new one.`,
+              t("courseCapacityReached", { max: maxCapacityLimit }),
             );
             return;
           }
@@ -98,10 +100,10 @@ export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
         onCourseSelect?.(courseId);
         onClose();
       } catch (error) {
-        setEnrollmentError(getErrorMessage(error));
+        setEnrollmentError(getErrorMessage(error, t("courseOpenError")));
       }
     },
-    [catalogCourses, enrolledCourseIds, isAtCapacityLimit, maxCapacityLimit, onClose, onCourseSelect, startCourse],
+    [catalogCourses, enrolledCourseIds, isAtCapacityLimit, maxCapacityLimit, onClose, onCourseSelect, startCourse, t],
   );
 
   const handleUnenrollCourse = useCallback(
@@ -111,10 +113,10 @@ export function useCourseCatalogViewModel(props: CourseCatalogSheetProps) {
         await unenrollCourse(courseId).unwrap();
         setSelectedCourseId(null);
       } catch (error) {
-        setEnrollmentError(getErrorMessage(error));
+        setEnrollmentError(getErrorMessage(error, t("courseOpenError")));
       }
     },
-    [unenrollCourse],
+    [t, unenrollCourse],
   );
 
   return {
@@ -169,11 +171,11 @@ function useCourseCatalogPresentation(
   }, [isPresented, setSelectedCourseId, setShouldRender]);
 }
 
-function getErrorMessage(error: unknown): string {
+function getErrorMessage(error: unknown, fallbackMessage: string): string {
   if (error instanceof Error) return error.message;
   if (typeof error === "object" && error !== null && "error" in error) {
     const value = (error as { error?: unknown }).error;
     if (typeof value === "string") return value;
   }
-  return "Something went wrong while opening this course.";
+  return fallbackMessage;
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View, AccessibilityInfo } from "react-native";
 import * as Haptics from "expo-haptics";
 import Animated, { FadeIn, useAnimatedStyle, withTiming } from "react-native-reanimated";
@@ -26,6 +27,7 @@ export function SituationLanguageCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const cards = readCards(content.cards);
@@ -62,9 +64,9 @@ export function SituationLanguageCategoryEngine({
     const card = cards[cardIndex];
     if (card) {
       if (mode === "situation") {
-        AccessibilityInfo.announceForAccessibility(`Experience selected. ${card.situationText}.`);
+        AccessibilityInfo.announceForAccessibility(t("flow.ui.categoryEngine.situationLanguage.experienceSelected", { text: card.situationText }));
       } else {
-        AccessibilityInfo.announceForAccessibility(`Identity selected. ${card.identityText}.`);
+        AccessibilityInfo.announceForAccessibility(t("flow.ui.categoryEngine.situationLanguage.identitySelected", { text: card.identityText }));
       }
     }
 
@@ -86,8 +88,8 @@ export function SituationLanguageCategoryEngine({
   return (
     <View className="px-5 pb-8 pt-0">
       <CourseExerciseHeading
-        title={readString(content.title) ?? "Change the frame"}
-        instruction={readString(content.instruction) ?? "Flip each sentence from identity to experience."}
+        title={readString(content.title) ?? t("flow.ui.categoryEngine.situationLanguage.titleFallback")}
+        instruction={readString(content.instruction) ?? t("flow.ui.categoryEngine.situationLanguage.instructionFallback")}
       />
 
       {/* Cards list */}
@@ -117,11 +119,11 @@ export function SituationLanguageCategoryEngine({
           accessibilityRole="summary"
         >
           <Text className="text-[12px] font-bold tracking-widest text-sage-600 mb-1.5 uppercase">
-            {readString(content.rule) ?? "THE SHIFT"}
+            {readString(content.rule) ?? t("flow.ui.categoryEngine.situationLanguage.shift")}
           </Text>
           <Text className="text-[15px] leading-[22px] text-ink">
             {readString(content.takeaway) ??
-              "A setback or feeling can describe a moment without defining who you are.\n\nDescribe what’s happening without turning it into who you are."}
+              t("flow.ui.categoryEngine.situationLanguage.takeawayFallback")}
           </Text>
         </Animated.View>
       ) : null}
@@ -142,6 +144,7 @@ function CardItem({
   onSelectIdentity: () => void;
   onSelectSituation: () => void;
 }) {
+  const { t } = useTranslation("exercises");
   const identityOp = useAnimatedStyle(() => ({
     opacity: reduceMotion ? (situation ? 0 : 1) : withTiming(situation ? 0 : 1, { duration: 180 }),
   }));
@@ -174,24 +177,24 @@ function CardItem({
         <Pressable
           accessibilityRole="radio"
           accessibilityState={{ selected: !situation }}
-          accessibilityLabel="Identity"
+          accessibilityLabel={t("flow.ui.categoryEngine.situationLanguage.identity")}
           onPress={onSelectIdentity}
           className="flex-1 min-h-[36px] justify-center items-center z-10"
         >
           <Text className={`font-semibold text-[12.5px] tracking-wider ${!situation ? "text-ink" : "text-[#8A8A85]"}`}>
-            IDENTITY
+            {t("flow.ui.categoryEngine.situationLanguage.identity")}
           </Text>
         </Pressable>
 
         <Pressable
           accessibilityRole="radio"
           accessibilityState={{ selected: situation }}
-          accessibilityLabel="Experience"
+          accessibilityLabel={t("flow.ui.categoryEngine.situationLanguage.experience")}
           onPress={onSelectSituation}
           className="flex-1 min-h-[36px] justify-center items-center z-10"
         >
           <Text className={`font-semibold text-[12.5px] tracking-wider ${situation ? "text-white" : "text-[#8A8A85]"}`}>
-            EXPERIENCE
+            {t("flow.ui.categoryEngine.situationLanguage.experience")}
           </Text>
         </Pressable>
       </View>

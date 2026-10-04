@@ -272,6 +272,55 @@
           "findingStartingPoints": "正在寻找思路…"
         },
         "categoryEngine": {
+          "curiosityBet": { "yourBet": "你的猜测", "theAnswer": "答案" },
+          "nameIt": { "familySelected": "已选择{{family}}情绪类别。", "wordSelected": "已选择{{word}}。" },
+          "paradoxCard": { "alertnessIncreased": "身体警觉度升高，趋于紧绷状态", "explanationRevealed": "已显示解释" },
+          "waveScrubber": {
+            "titleFallback": "近距离观察一阵情绪波动",
+            "instructionFallback": "沿着波形拖动，看看它如何变化。",
+            "alarmIntensity": "警报强度",
+            "waveAccessibility": "一阵焦虑波形，经历上升、峰值、回落、再次上升和恢复",
+            "progressionAccessibility": "波形变化进度",
+            "start": "开始",
+            "later": "之后",
+            "patternTitle": "变化规律",
+            "patternSummary": "一阵情绪波动会随时间变化。",
+            "patternDescription": "它可能迅速上升、达到峰值、逐渐缓和，有时会再次上升，然后稳定下来。",
+            "phases": {
+              "earlyRise": { "label": "开始上升", "body": "警报开始启动。\n身体感受可能很快变强。" },
+              "peak": { "label": "达到峰值", "body": "警报此时最强。\n\n强烈的感受可能让人信以为真，但它们并不能证明有危险。" },
+              "settling": { "label": "逐渐缓和", "body": "这阵波动开始减弱。\n\n警报减弱时，身体仍可能处于警觉状态。" },
+              "anotherRise": { "label": "再次上升", "body": "一种身体感受或担忧的想法，可能让警报再次升高。\n\n再次上升不代表你又回到了起点。" },
+              "settlingAgain": { "label": "再次缓和", "body": "警报又开始减弱。\n\n情绪波动可能不止一次起伏。" }
+            }
+          },
+          "panicWaveCommit": {
+            "titleFallback": "恐慌浪潮：先做出预测",
+            "instructionFallback": "先做出预测，再揭晓答案。",
+            "waveAccessibility": "持续二十分钟的恐慌浪潮",
+            "guessNever": "你的预测：永远不会",
+            "guessLabel": "你的预测",
+            "minuteMarker": "{{count}} 分钟",
+            "myGuess": "我的预测",
+            "neverComesDown": "它永远不会减弱",
+            "aboutMinutes": "大约 {{count}} 分钟",
+            "guessAccessibility": "以分钟为单位的预测；最右侧表示永远不会",
+            "never": "永远不会"
+          },
+          "leverMatch": {
+            "leftSelected": "已选择{{label}}。请选择一个结果。",
+            "rightSelected": "已选择{{label}}。请选择一个行动。",
+            "pairMatched": "{{left}}与{{right}}已匹配。已匹配{{matched}}/{{total}}对。",
+            "allPairsMatched": "所有配对均已完成。",
+            "mismatch": "配对不正确，请重试。",
+            "stateMatched": "已匹配",
+            "stateSelected": "已选择",
+            "stateUnmatched": "未匹配"
+          },
+          "layerZoom": {
+            "layer": "层级",
+            "accessibilityLabel": "分层说明"
+          },
           "checkpoint": {
             "workedSupport": "示例提示",
             "next": "下一步",
@@ -279,7 +328,19 @@
             "checkOrder": "检查顺序",
             "revealAnswer": "显示答案",
             "needPractice": "需要练习",
-            "gotIt": "知道了"
+            "gotIt": "知道了",
+            "yourAnswer": "你的回答",
+            "whatHappened": "发生了什么？",
+            "introTitleFallback": "睡眠知识回顾",
+            "introHeadingFallback": "看看你记住了哪些内容。",
+            "introBodyFallback": "关于睡眠系统的 4 个快速问题。\n答错也没关系，它会告诉你哪些内容值得再看一遍。",
+            "introTagFallback": "4 个问题 · 约 1 分钟",
+            "summaryTitleFallback": "回顾",
+            "summaryInstruction": "回顾结果如下。",
+            "solidGroupTitle": "掌握得不错",
+            "revisitGroupTitle": "值得再花两分钟回顾",
+            "revisitMessageFallback": "改变日常安排前，可以简短回顾一下标记的内容。没有什么丢失了。",
+            "solidMessageFallback": "你已经掌握了这张地图。接下来可以用它做一个小实验，看看有什么变化。"
           },
           "socratic": {
             "you": "你",
@@ -299,7 +360,8 @@
           "guidanceLabel": "引导：{{text}}",
           "predictionLabel": "预测：{{text}}",
           "evidenceLabel": "已知事实：{{text}}",
-          "skillLabel": "技巧：{{text}}"
+          "skillLabel": "技巧：{{text}}",
+          "askNext": "接下来你会问什么？"
           },
           "explorable": {
             "lever": "调节项",
@@ -359,14 +421,118 @@
             "predicted": "你的预测",
           "actualOutcome": "实际结果"
           },
+          "whatIfMachine": {
+            "titleFallback": "如果……会怎样？",
+            "instructionFallback": "先做出预测，再试试看。",
+            "betLabel": "你的预测"
+          },
           "lensReplay": {
+            "titleFallback": "重现这个场景",
+            "instructionFallback": "点击高亮部分，看看你注意到了什么，以及你的想法又补充了什么。",
             "whatHappened": "发生了什么",
-            "mindAdded": "想法添加了什么",
-            "idea": "核心想法",
-            "revealAccessibility": "{{text}}。点按以揭示。",
-            "progress": "已探索 {{explored}}/{{total}} 个重点"
-          }
-        },
+            "observedScene": "大家都停止了交谈。",
+            "mindAdded": "想法补充了什么",
+            "assumedMeaning": "“他们在谈论我。”",
+            "idea": "想法",
+            "completionMessage": "还是那些话，却有了新的看法。",
+            "revealAccessibility": "{{text}}。揭示。",
+            "progress": "已查看 {{explored}}/{{total}} 个重点"
+          },
+          "fillBlank": {
+            "titleFallback": "完成这个句子",
+            "instructionFallback": "输入缺少的词语。",
+            "inputLabel": "缺少的词语",
+            "inputPlaceholder": "在此输入",
+            "wordBank": "词语提示",
+            "feedbackThinking": "这是思路",
+            "feedbackFits": "为什么合适",
+            "feedbackTryAnother": "试试另一种方式。",
+            "newCapability": "新能力："
+          },
+          "whiteBear": {
+            "titleFallback": "10秒小实验",
+            "instructionFallback": "试着不要去想一只白熊。",
+            "term": "白熊",
+            "debrief": "那么……发生了什么？"
+          },
+          "fadedThoughtRecord": {
+            "stage": "栏目",
+            "notebookAccessibility": "想法记录本",
+            "completedExample": "记录已完成",
+            "fieldComplete": "栏目已完成",
+            "aClue": "一条提示",
+            "yourTurnNext": "接下来轮到你",
+            "chooseBelow": "请在下方选择"
+          },
+          "situationLanguage": {
+            "titleFallback": "换个角度看",
+            "instructionFallback": "把每句话从身份描述转为经历描述。",
+            "identity": "身份",
+            "experience": "经历",
+            "identitySelected": "已选择身份。{{text}}。",
+            "experienceSelected": "已选择经历。{{text}}。",
+            "shift": "转变",
+            "takeawayFallback": "挫折或感受描述的是一个时刻，并不能定义你是谁。\n\n描述正在发生的事，不要把它变成对自己的定义。"
+          },
+          "ifThenPlan": {
+            "titleFallback": "安排下一个小测试",
+            "chooseCue": "选择一个你注意到的线索。",
+            "chooseAction": "选择你要如何验证它。",
+            "ifLabel": "如果",
+            "thenLabel": "那么我会",
+            "summaryLabel": "你的小测试",
+            "privateNote": "仅你可见 · 除非你主动要求，否则不会提醒你。",
+            "ifCue": "如果{{cue}}，",
+            "thenAction": "那么我会{{action}}。",
+            "saved": "✓ 已添加到我的计划"
+          },
+            "storySerial": {
+              "titleFallback": "体验警报的两种反应路径",
+              "instructionFallback": "先走一条路径，再返回比较另一条。",
+              "sameStart": "相同起点",
+              "sameStartAccessibility": "相同起点：{{start}}",
+              "chooseForSam": "替萨姆做出选择",
+              "alarmSignal": "把警报看作信号",
+              "alarmProof": "把警报看作证据",
+              "pathSummaryAccessibility": "{{pathType}}路径摘要：{{summary}}",
+              "rewindCTA": "返回并体验另一条路径",
+              "comparisonAccessibility": "路径对比",
+              "proofPathAccessibility": "把警报当作证据的路径：{{path}}",
+              "proofPathHeading": "警报 = 证据",
+              "signalPathAccessibility": "把警报当作信号的路径：{{path}}",
+              "signalPathHeading": "警报 = 信号",
+              "notQuite": "还不太对",
+              "patternHeading": "规律",
+              "quickRelief": "短暂缓解",
+              "checkReality": "核对现实"
+            },
+            "interactiveReframe": {
+              "titleFallback": "艰难的一夜之后……",
+              "heroWrongText": "“我的身体坏掉了。”",
+              "question": "你应该先关注什么？",
+              "correctOption": "可能发生了哪些变化",
+              "wrongOption": "我是否需要更努力",
+              "wrongPathTitle": "我是否需要更努力",
+              "correctFinale": "同一个夜晚。\n不同的故事。",
+              "wrongAnswerLabel": "× 你的答案",
+              "wrongCascade1": "再努力一些",
+              "wrongCascade2": "“这样有用了吗？”",
+              "wrongCascade3": "反复检查更多次",
+              "wrongCascade4": "施加更多压力",
+              "correctHeroMorph": "“或许有些事情发生了变化。”",
+              "correctCascade1": "发生了什么变化？",
+              "correctCascade2": "时间 · 压力 · 身体唤醒",
+              "correctCascade3": "午睡 · 光线 · 压力 · 日常安排……",
+              "correctCascade4": "一件我可以进一步了解的事"
+            },
+            "mayaAlarmChart": {
+              "bedtime": "晚上11点",
+              "threshold": "停止活动线",
+              "startTime": "早上7点",
+              "afternoonTime": "下午4点",
+            "endTime": "凌晨1点"
+            }
+          },
           "celebration": {
             "title": "课程已完成！", "perfectTitle": "完美完成！", "continue": "继续",
             "sharePerfect": "完美完成", "shareComplete": "课程已完成", "shareTitle": "分享你的成果",

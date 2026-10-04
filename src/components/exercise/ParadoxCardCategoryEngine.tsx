@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, AccessibilityInfo } from "react-native";
 import * as Haptics from "expo-haptics";
+import { useTranslation } from "react-i18next";
 import Animated, { useAnimatedStyle, withTiming, Easing, FadeInUp, LinearTransition, FadeOutDown, useReducedMotion } from "react-native-reanimated";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import { readRecord } from "@/src/components/exercise/courseExerciseContent";
@@ -13,6 +14,7 @@ export function ParadoxCardCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const saved = readRecord(savedResponse);
   const stage = (saved?.stage as string) || "ready";
   const reducedMotion = useReducedMotion();
@@ -49,12 +51,16 @@ export function ParadoxCardCategoryEngine({
   useEffect(() => {
     if (stage === "result") {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-      AccessibilityInfo.announceForAccessibility("Body alertness increased toward wired");
+      AccessibilityInfo.announceForAccessibility(
+        t("flow.ui.categoryEngine.paradoxCard.alertnessIncreased"),
+      );
     } else if (stage === "explanation") {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      AccessibilityInfo.announceForAccessibility("Explanation revealed");
+      AccessibilityInfo.announceForAccessibility(
+        t("flow.ui.categoryEngine.paradoxCard.explanationRevealed"),
+      );
     }
-  }, [stage]);
+  }, [stage, t]);
 
   const title = exercise.content?.title || "Try harder to sleep";
   const expectationHeading = exercise.content?.expectationHeading || "Expectation";

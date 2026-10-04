@@ -20,7 +20,14 @@
     "bad": "سيء",
     "okay": "عادي",
     "good": "جيد",
-    "great": "رائع"
+    "great": "رائع",
+    "accessibilityLog": "سجّل مزاج {{mood}}{{loggedCount}}",
+    "accessibilityCount_zero": "لمرات {{count}}",
+    "accessibilityCount_one": "{{count}} مرة",
+    "accessibilityCount_two": "{{count}} مرة",
+    "accessibilityCount_few": "{{count}} مرات",
+    "accessibilityCount_many": "{{count}} مرة",
+    "accessibilityCount_other": "{{count}} مرة"
   },
   "prompts": {
     "1": "ما الذي تشعر بالامتنان له اليوم؟",
@@ -44,13 +51,28 @@
     "continueLearning": "متابعة التعلم",
     "continueJourney": "واصل رحلتك",
     "pickUpWhereLeft": "تابع من حيث توقفت.",
-    "openJourneys": "افتح الرحلات"
+    "openJourneys": "افتح الرحلات",
+    "a11yActive": "{{courseTitle}}. النشاط التالي: {{activityTitle}}{{duration}}. انقر لمتابعة التعلم.",
+    "a11yNoCourse": "ابحث عن خطوتك التالية. اختر رحلة لبدء التعلم. انقر لاستكشاف الرحلات.",
+    "a11yCompleted": "اكتملت الرحلة. يمكنك مراجعة المهارات التي تعلمتها. انقر لمراجعتها.",
+    "a11yError": "واصل رحلتك. انقر لفتح الرحلات.",
+    "a11yLoading": "جارٍ تحميل رحلة التعلم",
+    "a11yDuration_zero": "{{count}} دقيقة",
+    "a11yDuration_one": "{{count}} دقيقة",
+    "a11yDuration_two": "{{count}} دقيقتان",
+    "a11yDuration_few": "{{count}} دقائق",
+    "a11yDuration_many": "{{count}} دقيقة",
+    "a11yDuration_other": "{{count}} دقيقة",
+    "durationCompact": "{{count}} د"
   },
   "streak": {
     "streakCount_one": "سلسلة يوم {{count}}",
     "streakCount_other": "سلسلة {{count}} أيام",
     "weekDays": ["ح", "ن", "ث", "ر", "خ", "ج", "س"],
-    "a11yLabel": "السلسلة الحالية: {{count}} أيام. انقر لعرض السجل."
+    "a11yLabel": "السلسلة الحالية: {{count}} أيام. انقر لعرض السجل.",
+    "dayLabel": "أيام متتالية",
+    "newStreakMessage": "بدأت سلسلة جديدة! واصل العودة كل يوم لتتابع تقدمك.",
+    "continue": "متابعة"
   },
   "errors": {
     "loadTitle": "حدث خطأ ما",

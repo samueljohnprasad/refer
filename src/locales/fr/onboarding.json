@@ -7,6 +7,11 @@
     "headline_emphasis": "toi,",
     "subtitle": "écrite dans 30 jours.",
     "moments": { "morning": "matin", "afternoon": "après-midi", "evening": "soir", "night": "tard dans la nuit" },
+    "closing": {
+      "signature": "Toi, dans 30 jours.",
+      "postscript": "P.-S. Parfois, l’anxiété est toujours là. Mais elle me fait moins peur.",
+      "keepNote": "Garde ces mots. Certains jours, tu auras besoin de te rappeler qui tu deviens."
+    },
     "body": {
       "intro": "Je t’écris un {{weekday}} {{moment}}. Je viens de fermer Happy",
       "closed_app": "il y a cinq minutes.",

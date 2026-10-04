@@ -272,6 +272,55 @@
           "findingStartingPoints": "Recherche de pistes…"
         },
         "categoryEngine": {
+          "curiosityBet": { "yourBet": "VOTRE PARI", "theAnswer": "LA RÉPONSE" },
+          "nameIt": { "familySelected": "Famille « {{family}} » sélectionnée.", "wordSelected": "« {{word}} » sélectionné." },
+          "paradoxCard": { "alertnessIncreased": "Le niveau d’éveil du corps augmente vers l’agitation", "explanationRevealed": "Explication dévoilée" },
+          "waveScrubber": {
+            "titleFallback": "Une vague, de près",
+            "instructionFallback": "Faites glisser le curseur sur la vague pour voir son évolution.",
+            "alarmIntensity": "INTENSITÉ DE L’ALARME",
+            "waveAccessibility": "Une vague d’anxiété qui monte, atteint un pic, redescend, remonte puis s’apaise",
+            "progressionAccessibility": "Évolution de la vague",
+            "start": "DÉBUT",
+            "later": "PLUS TARD",
+            "patternTitle": "LE SCHÉMA",
+            "patternSummary": "Une montée évolue au fil du temps.",
+            "patternDescription": "Elle peut monter vite, atteindre un pic, s’apaiser, puis parfois remonter avant de redescendre.",
+            "phases": {
+              "earlyRise": { "label": "MONTÉE", "body": "L’alarme se déclenche.\nLes sensations peuvent monter rapidement." },
+              "peak": { "label": "PIC", "body": "L’alarme est à son maximum.\n\nDes sensations intenses peuvent sembler convaincantes sans pour autant prouver qu’il y a un danger." },
+              "settling": { "label": "APAISEMENT", "body": "La vague commence à diminuer.\n\nVotre corps peut rester activé pendant que l’alarme redescend." },
+              "anotherRise": { "label": "NOUVELLE MONTÉE", "body": "Une sensation ou une pensée inquiète peut faire remonter l’alarme.\n\nUne nouvelle montée ne signifie pas que vous êtes revenu au début." },
+              "settlingAgain": { "label": "NOUVEL APAISEMENT", "body": "L’alarme diminue à nouveau.\n\nLes vagues peuvent monter et redescendre plusieurs fois." }
+            }
+          },
+          "panicWaveCommit": {
+            "titleFallback": "La vague de panique : faites votre pari",
+            "instructionFallback": "Faites votre estimation avant de découvrir la réponse.",
+            "waveAccessibility": "Une vague de panique sur vingt minutes",
+            "guessNever": "votre estimation : jamais",
+            "guessLabel": "votre estimation",
+            "minuteMarker": "{{count}} min",
+            "myGuess": "Mon estimation",
+            "neverComesDown": "elle ne redescend jamais",
+            "aboutMinutes": "environ {{count}} min",
+            "guessAccessibility": "Votre estimation en minutes ; tout à droite signifie jamais",
+            "never": "jamais"
+          },
+          "leverMatch": {
+            "leftSelected": "{{label}} sélectionné. Choisissez une conséquence.",
+            "rightSelected": "{{label}} sélectionné. Choisissez une action.",
+            "pairMatched": "{{left}} associé à {{right}}. {{matched}} paire(s) sur {{total}} associée(s).",
+            "allPairsMatched": "Toutes les paires sont associées.",
+            "mismatch": "Ce n’est pas une paire. Réessayez.",
+            "stateMatched": "associé",
+            "stateSelected": "sélectionné",
+            "stateUnmatched": "non associé"
+          },
+          "layerZoom": {
+            "layer": "Couche",
+            "accessibilityLabel": "Explication en plusieurs couches"
+          },
           "checkpoint": {
             "workedSupport": "Aide guidée",
             "next": "Suivant",
@@ -279,7 +328,19 @@
             "checkOrder": "Vérifier l’ordre",
             "revealAnswer": "Afficher la réponse",
             "needPractice": "À revoir",
-            "gotIt": "Compris"
+            "gotIt": "Compris",
+            "yourAnswer": "VOTRE RÉPONSE",
+            "whatHappened": "QUE S’EST-IL PASSÉ ?",
+            "introTitleFallback": "Point de contrôle sur le sommeil",
+            "introHeadingFallback": "Voyons ce que vous avez retenu.",
+            "introBodyFallback": "4 questions rapides sur le sommeil.\nUne erreur indique simplement ce qu’il faut revoir.",
+            "introTagFallback": "4 QUESTIONS · ~1 MIN",
+            "summaryTitleFallback": "Point de contrôle",
+            "summaryInstruction": "Ce que montre la révision.",
+            "solidGroupTitle": "BIEN ACQUIS",
+            "revisitGroupTitle": "À REVOIR EN DEUX MINUTES",
+            "revisitMessageFallback": "Les idées indiquées méritent une courte révision avant de modifier votre routine. Rien n’est perdu.",
+            "solidMessageFallback": "Vos repères sont solides. Ensuite, utilisez-les pour tenter une petite expérience et observer les changements."
           },
           "socratic": {
             "you": "VOUS",
@@ -299,7 +360,8 @@
           "guidanceLabel": "Conseil : {{text}}",
           "predictionLabel": "Prédiction : {{text}}",
           "evidenceLabel": "Ce que l’on sait : {{text}}",
-          "skillLabel": "La compétence : {{text}}"
+          "skillLabel": "La compétence : {{text}}",
+          "askNext": "QUE DEMANDERIEZ-VOUS ENSUITE ?"
           },
           "explorable": {
             "lever": "Levier",
@@ -359,14 +421,118 @@
             "predicted": "Votre prédiction",
           "actualOutcome": "Résultat réel"
           },
+          "whatIfMachine": {
+            "titleFallback": "Et si ?",
+            "instructionFallback": "Faites une prédiction, puis lancez l’expérience.",
+            "betLabel": "VOTRE PRÉDICTION"
+          },
           "lensReplay": {
+            "titleFallback": "Rejouez la scène",
+            "instructionFallback": "Touchez les passages en surbrillance pour voir ce que vous avez remarqué et ce que votre esprit a ajouté.",
             "whatHappened": "CE QUI S’EST PASSÉ",
+            "observedScene": "Tout le monde a cessé de parler.",
             "mindAdded": "CE QUE L’ESPRIT A AJOUTÉ",
+            "assumedMeaning": "« Ils parlaient de moi. »",
             "idea": "L’IDÉE",
+            "completionMessage": "Les mêmes mots. Un nouveau regard.",
             "revealAccessibility": "{{text}}. Révéler.",
-            "progress": "{{explored}} éléments révélés sur {{total}}"
-          }
-        },
+            "progress": "{{explored}} sur {{total}} passages explorés"
+          },
+          "fillBlank": {
+            "titleFallback": "Complétez la phrase",
+            "instructionFallback": "Saisissez le mot manquant.",
+            "inputLabel": "Mot manquant",
+            "inputPlaceholder": "Saisir ici",
+            "wordBank": "Banque de mots",
+            "feedbackThinking": "Voici le raisonnement",
+            "feedbackFits": "Pourquoi cela convient",
+            "feedbackTryAnother": "Essayez une autre approche.",
+            "newCapability": "Nouvelle capacité :"
+          },
+          "whiteBear": {
+            "titleFallback": "Une expérience de 10 secondes",
+            "instructionFallback": "Essayez de ne pas penser à un ours blanc.",
+            "term": "ours blanc",
+            "debrief": "Alors… que s’est-il passé ?"
+          },
+          "fadedThoughtRecord": {
+            "stage": "Champ",
+            "notebookAccessibility": "Carnet de pensées",
+            "completedExample": "Note terminée",
+            "fieldComplete": "Champ complété",
+            "aClue": "Un indice",
+            "yourTurnNext": "À vous ensuite",
+            "chooseBelow": "Choisissez ci-dessous"
+          },
+          "situationLanguage": {
+            "titleFallback": "Changer de perspective",
+            "instructionFallback": "Reformulez chaque phrase en passant de l’identité à l’expérience.",
+            "identity": "Identité",
+            "experience": "Expérience",
+            "identitySelected": "Identité sélectionnée. {{text}}.",
+            "experienceSelected": "Expérience sélectionnée. {{text}}.",
+            "shift": "Le changement",
+            "takeawayFallback": "Un revers ou une émotion décrit un moment, pas qui vous êtes.\n\nDécrivez ce qui se passe sans en faire une définition de vous-même."
+          },
+          "ifThenPlan": {
+            "titleFallback": "Préparez le prochain petit test",
+            "chooseCue": "Choisissez quelque chose que vous avez remarqué.",
+            "chooseAction": "Choisissez comment vous allez le tester.",
+            "ifLabel": "SI",
+            "thenLabel": "ALORS JE VAIS",
+            "summaryLabel": "Votre petit test",
+            "privateNote": "Privé pour vous · Aucun rappel sauf si vous le demandez.",
+            "ifCue": "Si {{cue}},",
+            "thenAction": "alors je vais {{action}}.",
+            "saved": "✓ Ajouté à mes plans"
+          },
+            "storySerial": {
+              "titleFallback": "Suivez les deux réactions à l’alarme",
+              "instructionFallback": "Suivez un parcours, revenez en arrière, puis comparez.",
+              "sameStart": "MÊME DÉPART",
+              "sameStartAccessibility": "Même départ : {{start}}",
+              "chooseForSam": "CHOISISSEZ POUR SAM",
+              "alarmSignal": "L’alarme comme signal",
+              "alarmProof": "L’alarme comme preuve",
+              "pathSummaryAccessibility": "Résumé du parcours {{pathType}} : {{summary}}",
+              "rewindCTA": "Revenir en arrière et suivre l’autre parcours",
+              "comparisonAccessibility": "Comparaison des parcours",
+              "proofPathAccessibility": "Parcours où l’alarme sert de preuve : {{path}}",
+              "proofPathHeading": "ALARME = PREUVE",
+              "signalPathAccessibility": "Parcours où l’alarme sert de signal : {{path}}",
+              "signalPathHeading": "ALARME = SIGNAL",
+              "notQuite": "PAS TOUT À FAIT",
+              "patternHeading": "LE SCHÉMA",
+              "quickRelief": "SOULAGEMENT RAPIDE",
+              "checkReality": "VÉRIFIER LA RÉALITÉ"
+            },
+            "interactiveReframe": {
+              "titleFallback": "Après une nuit difficile…",
+              "heroWrongText": "« Mon corps est cassé. »",
+              "question": "Sur quoi devriez-vous vous pencher d’abord ?",
+              "correctOption": "Ce qui a pu changer",
+              "wrongOption": "Si je dois faire plus d’efforts",
+              "wrongPathTitle": "Si je dois faire plus d’efforts",
+              "correctFinale": "Même nuit.\nUne autre histoire.",
+              "wrongAnswerLabel": "× VOTRE RÉPONSE",
+              "wrongCascade1": "FAIRE PLUS D’EFFORTS",
+              "wrongCascade2": "« Est-ce que ça marche ? »",
+              "wrongCascade3": "plus de vérifications",
+              "wrongCascade4": "plus de pression",
+              "correctHeroMorph": "« Quelque chose a peut-être changé. »",
+              "correctCascade1": "QU’EST-CE QUI A CHANGÉ ?",
+              "correctCascade2": "rythme · pression · activation",
+              "correctCascade3": "sieste · lumière · stress · routine…",
+              "correctCascade4": "une piste à explorer"
+            },
+            "mayaAlarmChart": {
+              "bedtime": "23 h",
+              "threshold": "seuil de repos",
+              "startTime": "7 h",
+              "afternoonTime": "16 h",
+            "endTime": "1 h"
+            }
+          },
           "celebration": {
             "title": "Leçon terminée !", "perfectTitle": "Leçon parfaite !", "continue": "Continuer",
             "sharePerfect": "Leçon parfaite", "shareComplete": "Leçon terminée", "shareTitle": "Partager votre réussite",

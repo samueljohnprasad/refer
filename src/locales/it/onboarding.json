@@ -7,6 +7,11 @@
     "headline_emphasis": "te,",
     "subtitle": "scritta tra 30 giorni.",
     "moments": { "morning": "di mattina", "afternoon": "di pomeriggio", "evening": "di sera", "night": "a notte fonda" },
+    "closing": {
+      "signature": "Tu, tra 30 giorni.",
+      "postscript": "P.S. A volte provo ancora ansia. Solo che ne ho meno paura.",
+      "keepNote": "Conserva queste parole. Alcuni giorni avrai bisogno di ricordarti chi stai diventando."
+    },
     "body": {
       "intro": "Ti scrivo di {{weekday}} {{moment}}. Ho appena chiuso Happy",
       "closed_app": "cinque minuti fa.",

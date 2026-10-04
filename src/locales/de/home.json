@@ -20,7 +20,10 @@
     "bad": "Schlecht",
     "okay": "Geht so",
     "good": "Gut",
-    "great": "Großartig"
+    "great": "Großartig",
+    "accessibilityLog": "Stimmung {{mood}} erfassen{{loggedCount}}",
+    "accessibilityCount_one": "{{count}}-mal protokolliert",
+    "accessibilityCount_other": "{{count}}-mal protokolliert"
   },
   "prompts": {
     "1": "Wofür bist du heute dankbar?",
@@ -44,13 +47,24 @@
     "continueLearning": "Weiterlernen",
     "continueJourney": "Reise fortsetzen",
     "pickUpWhereLeft": "Mach da weiter, wo du aufgehört hast.",
-    "openJourneys": "Reisen öffnen"
+    "openJourneys": "Reisen öffnen",
+    "a11yActive": "{{courseTitle}}. Nächste Aktivität: {{activityTitle}}{{duration}}. Tippe, um weiterzulernen.",
+    "a11yNoCourse": "Finde deinen nächsten Schritt. Wähle eine Reise zum Lernen. Tippe, um Reisen zu erkunden.",
+    "a11yCompleted": "Reise abgeschlossen. Du kannst gelernte Fähigkeiten wiederholen. Tippe, um sie anzusehen.",
+    "a11yError": "Setze deine Reise fort. Tippe, um Reisen zu öffnen.",
+    "a11yLoading": "Lernreise wird geladen",
+    "a11yDuration_one": "{{count}} Minute",
+    "a11yDuration_other": "{{count}} Minuten",
+    "durationCompact": "{{count}} Min."
   },
   "streak": {
     "streakCount_one": "{{count}} Tag Serie",
     "streakCount_other": "{{count}} Tage Serie",
     "weekDays": ["S", "M", "D", "M", "D", "F", "S"],
-    "a11yLabel": "Aktuelle Serie: {{count}} Tage. Tippen für Verlauf."
+    "a11yLabel": "Aktuelle Serie: {{count}} Tage. Tippen für Verlauf.",
+    "dayLabel": "Tage in Folge",
+    "newStreakMessage": "Eine neue Serie beginnt! Bleib jeden Tag dabei und mach weiter Fortschritte.",
+    "continue": "Weiter"
   },
   "errors": {
     "loadTitle": "Etwas ist schiefgelaufen",

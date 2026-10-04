@@ -52,7 +52,7 @@
     "analyzing": "Die KI prüft deine Tagebucheinträge. Das kann eine Minute dauern.",
     "notAvailable": "Nicht verfügbar"
   },
-  "chart": { "premiumFeature": "Premium-Funktion", "premium": "Premium" },
+  "chart": { "premiumFeature": "Premium-Funktion", "premium": "Premium", "weeklyMood": { "tabs": { "day": "Tag", "week": "Woche", "dayView": "Tagesansicht", "dayHint": "Stimmung für einzelne Tage anzeigen", "weekView": "Wochenansicht", "weekHint": "Wöchentliche Stimmungsdurchschnitte anzeigen" }, "headers": { "thisWeekMood": "Stimmung dieser Woche", "todayMood": "Stimmung heute", "yesterdayMood": "Stimmung gestern", "weekdayMood": "Stimmung am {{weekday}}" }, "tooltip": { "mood": "Stimmung: {{mood}}", "day": "Tag: {{day}}", "time": "Uhrzeit: {{time}}" }, "error": "Stimmungsdaten konnten nicht geladen werden.", "average": "Durchschnitt:", "scale": { "accessibilityLabel": "Stimmungsskala von großartig bis schrecklich", "level": "Stimmungsniveau: {{mood}}", "moods": { "great": "Großartig", "good": "Gut", "fine": "Okay", "bad": "Schlecht", "terrible": "Schrecklich" } } } },
   "lifeBalance": {
     "title": "Balance deiner Lebensbereiche",
     "lockedDescription": "Sieh, wie ausgeglichen sich die verschiedenen Bereiche deines Lebens anfühlen.",

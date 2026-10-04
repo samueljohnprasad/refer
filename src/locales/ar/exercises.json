@@ -272,6 +272,55 @@
           "findingStartingPoints": "جارٍ البحث عن نقاط بداية…"
         },
         "categoryEngine": {
+          "curiosityBet": { "yourBet": "توقّعك", "theAnswer": "الإجابة" },
+          "nameIt": { "familySelected": "تم اختيار فئة المشاعر {{family}}.", "wordSelected": "تم اختيار {{word}}." },
+          "paradoxCard": { "alertnessIncreased": "ازداد تنبّه الجسم نحو التوتر", "explanationRevealed": "تم إظهار التفسير" },
+          "waveScrubber": {
+            "titleFallback": "موجة عن قرب",
+            "instructionFallback": "حرّك المؤشر عبر الموجة لترى كيف تتغير.",
+            "alarmIntensity": "شدة الإنذار",
+            "waveAccessibility": "موجة قلق ترتفع وتبلغ ذروتها ثم تهدأ وترتفع مرة أخرى قبل التعافي",
+            "progressionAccessibility": "تطور الموجة",
+            "start": "البداية",
+            "later": "لاحقًا",
+            "patternTitle": "النمط",
+            "patternSummary": "تتغير الموجة مع مرور الوقت.",
+            "patternDescription": "قد ترتفع بسرعة وتبلغ ذروتها ثم تهدأ، وقد ترتفع مرة أخرى قبل أن تستقر.",
+            "phases": {
+              "earlyRise": { "label": "بداية الارتفاع", "body": "يبدأ الإنذار بالعمل.\nوقد تشتد الأحاسيس بسرعة." },
+              "peak": { "label": "الذروة", "body": "الإنذار في أقوى حالاته.\n\nقد تبدو الأحاسيس القوية مقنعة، لكنها لا تثبت وجود خطر." },
+              "settling": { "label": "الهدوء", "body": "بدأت الموجة تخف.\n\nقد يظل جسمك متأهبًا بينما يهدأ الإنذار." },
+              "anotherRise": { "label": "ارتفاع آخر", "body": "قد يعيد إحساس أو خاطر مقلق رفع مستوى الإنذار.\n\nلا يعني الارتفاع من جديد أنك عدت إلى البداية." },
+              "settlingAgain": { "label": "هدوء من جديد", "body": "يخف الإنذار مرة أخرى.\n\nقد ترتفع الموجات وتهدأ أكثر من مرة." }
+            }
+          },
+          "panicWaveCommit": {
+            "titleFallback": "موجة الهلع: اختر توقعك",
+            "instructionFallback": "ثبّت توقعك قبل كشف الإجابة.",
+            "waveAccessibility": "موجة هلع على مدى عشرين دقيقة",
+            "guessNever": "توقعك: أبدًا",
+            "guessLabel": "توقعك",
+            "minuteMarker": "{{count}} دقيقة",
+            "myGuess": "توقعي",
+            "neverComesDown": "لا تنخفض أبدًا",
+            "aboutMinutes": "نحو {{count}} دقيقة",
+            "guessAccessibility": "توقعك بالدقائق؛ أقصى اليمين يعني أبدًا",
+            "never": "أبدًا"
+          },
+          "leverMatch": {
+            "leftSelected": "تم اختيار {{label}}. اختر نتيجة.",
+            "rightSelected": "تم اختيار {{label}}. اختر إجراءً.",
+            "pairMatched": "تمت مطابقة {{left}} مع {{right}}. تمت مطابقة {{matched}} من أصل {{total}}.",
+            "allPairsMatched": "تمت مطابقة كل الأزواج.",
+            "mismatch": "هذه ليست مطابقة. حاول مرة أخرى.",
+            "stateMatched": "تمت المطابقة",
+            "stateSelected": "محدد",
+            "stateUnmatched": "غير مطابق"
+          },
+          "layerZoom": {
+            "layer": "طبقة",
+            "accessibilityLabel": "شرح متعدد الطبقات"
+          },
           "checkpoint": {
             "workedSupport": "مثال إرشادي",
             "next": "التالي",
@@ -279,7 +328,19 @@
             "checkOrder": "تحقّق من الترتيب",
             "revealAnswer": "إظهار الإجابة",
             "needPractice": "أحتاج إلى التمرّن",
-            "gotIt": "فهمت"
+            "gotIt": "فهمت",
+            "yourAnswer": "إجابتك",
+            "whatHappened": "ماذا حدث؟",
+            "introTitleFallback": "مراجعة حول النوم",
+            "introHeadingFallback": "لنرَ ما الذي بقي في ذاكرتك.",
+            "introBodyFallback": "٤ أسئلة سريعة عن نظام النوم.\nالإجابة غير الصحيحة تساعدك فقط على معرفة ما يستحق المراجعة.",
+            "introTagFallback": "٤ أسئلة · نحو دقيقة",
+            "summaryTitleFallback": "مراجعة",
+            "summaryInstruction": "ما الذي أظهرته المراجعة.",
+            "solidGroupTitle": "أفكار راسخة",
+            "revisitGroupTitle": "تستحق مراجعة قصيرة",
+            "revisitMessageFallback": "تستحق الأفكار المحددة مراجعة قصيرة قبل تغيير روتينك. لم يضع شيء.",
+            "solidMessageFallback": "أصبحت لديك خريطة واضحة. استخدمها الآن لتجربة خطوة صغيرة وملاحظة ما يتغير."
           },
           "socratic": {
             "you": "أنت",
@@ -299,7 +360,8 @@
           "guidanceLabel": "إرشاد: {{text}}",
           "predictionLabel": "التوقّع: {{text}}",
           "evidenceLabel": "ما نعرفه: {{text}}",
-          "skillLabel": "المهارة: {{text}}"
+          "skillLabel": "المهارة: {{text}}",
+          "askNext": "ما السؤال الذي ستطرحه بعد ذلك؟"
           },
           "explorable": {
             "lever": "مؤشر",
@@ -359,14 +421,118 @@
             "predicted": "توقّعتَ",
           "actualOutcome": "النتيجة الفعلية"
           },
+          "whatIfMachine": {
+            "titleFallback": "ماذا لو؟",
+            "instructionFallback": "توقّع ما سيحدث، ثم جرّب.",
+            "betLabel": "توقّعك"
+          },
           "lensReplay": {
+            "titleFallback": "أعِد المشهد",
+            "instructionFallback": "اضغط على الأجزاء المظللة لترى ما لاحظته وما أضافه ذهنك.",
             "whatHappened": "ما حدث",
+            "observedScene": "توقف الجميع عن الكلام.",
             "mindAdded": "ما أضافه الذهن",
+            "assumedMeaning": "«كانوا يتحدثون عني».",
             "idea": "الفكرة",
+            "completionMessage": "الكلمات نفسها، بنظرة جديدة.",
             "revealAccessibility": "{{text}}. اكشف.",
-            "progress": "استكشفت {{explored}} من {{total}} من المواضع المميّزة"
-          }
-        },
+            "progress": "استكشفت {{explored}} من {{total}} أجزاء مميزة"
+          },
+          "fillBlank": {
+            "titleFallback": "أكمل الجملة",
+            "instructionFallback": "اكتب الكلمة الناقصة.",
+            "inputLabel": "الكلمة الناقصة",
+            "inputPlaceholder": "اكتب هنا",
+            "wordBank": "مجموعة الكلمات",
+            "feedbackThinking": "هكذا يعمل التفكير",
+            "feedbackFits": "لماذا تناسب؟",
+            "feedbackTryAnother": "جرّب طريقة أخرى.",
+            "newCapability": "قدرة جديدة:"
+          },
+          "whiteBear": {
+            "titleFallback": "تجربة لمدة 10 ثوانٍ",
+            "instructionFallback": "حاول ألا تفكر في دب أبيض.",
+            "term": "دب أبيض",
+            "debrief": "إذًا… ماذا حدث؟"
+          },
+          "fadedThoughtRecord": {
+            "stage": "حقل",
+            "notebookAccessibility": "دفتر سجل الأفكار",
+            "completedExample": "اكتمل السجل",
+            "fieldComplete": "اكتمل الحقل",
+            "aClue": "تلميح",
+            "yourTurnNext": "دورك التالي",
+            "chooseBelow": "اختر أدناه"
+          },
+          "situationLanguage": {
+            "titleFallback": "غيّر زاوية النظر",
+            "instructionFallback": "حوّل كل جملة من وصف الهوية إلى وصف التجربة.",
+            "identity": "الهوية",
+            "experience": "التجربة",
+            "identitySelected": "تم اختيار الهوية. {{text}}.",
+            "experienceSelected": "تم اختيار التجربة. {{text}}.",
+            "shift": "التحوّل",
+            "takeawayFallback": "قد تصف الصعوبة أو المشاعر لحظةً ما، لكنها لا تحدد من أنت.\n\nصف ما يحدث من دون تحويله إلى تعريف لنفسك."
+          },
+          "ifThenPlan": {
+            "titleFallback": "خطّط للتجربة الصغيرة التالية",
+            "chooseCue": "اختر شيئًا لاحظته.",
+            "chooseAction": "اختر كيف ستختبره.",
+            "ifLabel": "إذا",
+            "thenLabel": "فسأقوم بـ",
+            "summaryLabel": "تجربتك الصغيرة",
+            "privateNote": "هذا خاص بك · لن تصلك تذكيرات إلا إذا طلبت ذلك.",
+            "ifCue": "إذا {{cue}}،",
+            "thenAction": "فسأقوم بـ {{action}}.",
+            "saved": "✓ أُضيفت إلى خططي"
+          },
+            "storySerial": {
+              "titleFallback": "استكشف مساري الإنذار",
+              "instructionFallback": "استكشف مسارًا، ثم عُد وقارنه بالآخر.",
+              "sameStart": "البداية نفسها",
+              "sameStartAccessibility": "البداية نفسها: {{start}}",
+              "chooseForSam": "اختر نيابةً عن سام",
+              "alarmSignal": "الإنذار كإشارة",
+              "alarmProof": "الإنذار كدليل",
+              "pathSummaryAccessibility": "ملخص مسار {{pathType}}: {{summary}}",
+              "rewindCTA": "عُد واستكشف المسار الآخر",
+              "comparisonAccessibility": "مقارنة بين المسارين",
+              "proofPathAccessibility": "مسار اعتبار الإنذار دليلًا: {{path}}",
+              "proofPathHeading": "الإنذار = دليل",
+              "signalPathAccessibility": "مسار اعتبار الإنذار إشارة: {{path}}",
+              "signalPathHeading": "الإنذار = إشارة",
+              "notQuite": "ليس تمامًا",
+              "patternHeading": "النمط",
+              "quickRelief": "راحة سريعة",
+              "checkReality": "التحقق من الواقع"
+            },
+            "interactiveReframe": {
+              "titleFallback": "بعد ليلة صعبة…",
+              "heroWrongText": "«جسدي معطوب».",
+              "question": "ما أول شيء يجدر بك النظر إليه؟",
+              "correctOption": "ما الذي ربما تغيّر؟",
+              "wrongOption": "هل عليّ أن أحاول بجهد أكبر؟",
+              "wrongPathTitle": "هل عليّ أن أحاول بجهد أكبر؟",
+              "correctFinale": "الليلة نفسها.\nقصة مختلفة.",
+              "wrongAnswerLabel": "× إجابتك",
+              "wrongCascade1": "حاول بجهد أكبر",
+              "wrongCascade2": "«هل بدأ الأمر ينجح؟»",
+              "wrongCascade3": "مزيد من التحقق",
+              "wrongCascade4": "مزيد من الضغط",
+              "correctHeroMorph": "«ربما تغيّر شيء ما».",
+              "correctCascade1": "ما الذي تغيّر؟",
+              "correctCascade2": "التوقيت · الضغط · الاستثارة",
+              "correctCascade3": "قيلولة · ضوء · توتر · روتين…",
+              "correctCascade4": "شيء يمكنني استكشافه"
+            },
+            "mayaAlarmChart": {
+              "bedtime": "١١ مساءً",
+              "threshold": "خط التهدئة",
+              "startTime": "٧ صباحًا",
+              "afternoonTime": "٤ مساءً",
+            "endTime": "١ صباحًا"
+            }
+          },
           "celebration": {
             "title": "اكتمل الدرس!", "perfectTitle": "درس مثالي!", "continue": "متابعة",
             "sharePerfect": "درس مثالي", "shareComplete": "اكتمل الدرس", "shareTitle": "شارك إنجازك",

@@ -52,7 +52,7 @@
     "analyzing": "A IA está analisando suas entradas do diário. Isso pode levar um minuto.",
     "notAvailable": "Indisponível"
   },
-  "chart": { "premiumFeature": "Recurso Premium", "premium": "Premium" },
+  "chart": { "premiumFeature": "Recurso Premium", "premium": "Premium", "weeklyMood": { "tabs": { "day": "Dia", "week": "Semana", "dayView": "Vista diária", "dayHint": "Mostrar o humor de cada dia", "weekView": "Vista semanal", "weekHint": "Mostrar médias semanais do humor" }, "headers": { "thisWeekMood": "Humor desta semana", "todayMood": "Humor de hoje", "yesterdayMood": "Humor de ontem", "weekdayMood": "Humor de {{weekday}}" }, "tooltip": { "mood": "Humor: {{mood}}", "day": "Dia: {{day}}", "time": "Hora: {{time}}" }, "error": "Não foi possível carregar os dados de humor.", "average": "Média:", "scale": { "accessibilityLabel": "Escala de humor de ótimo a péssimo", "level": "Nível de humor: {{mood}}", "moods": { "great": "Ótimo", "good": "Bem", "fine": "Razoável", "bad": "Mal", "terrible": "Péssimo" } } } },
   "lifeBalance": {
     "title": "Equilíbrio das áreas da vida",
     "lockedDescription": "Veja o equilíbrio entre as diferentes áreas da sua vida.",

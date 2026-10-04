@@ -1,8 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, Pressable, Text, View, AccessibilityInfo, LayoutAnimation, UIManager, Platform } from "react-native";
+import {
+  Text,
+  View,
+  AccessibilityInfo,
+  LayoutAnimation,
+  UIManager,
+  Platform,
+} from "react-native";
 import { useReducedMotion } from "react-native-reanimated";
 
-if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 import * as Haptics from "expo-haptics";
@@ -12,14 +22,15 @@ import {
   readString,
   readStringArray,
 } from "@/src/components/exercise/courseExerciseContent";
+import { LeverMatchCard } from "@/src/components/exercise/LeverMatchCard";
+import {
+  createResponse,
+  readCount,
+  readPairs,
+} from "@/src/components/exercise/leverMatchState";
+import type { LeverPair } from "@/src/components/exercise/leverMatchState";
+import { useTranslation } from "react-i18next";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
-import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
-
-interface LeverPair {
-  id: string;
-  left: string;
-  right: string;
-}
 
 interface WrongPair {
   leftId: string;
@@ -32,6 +43,7 @@ export function LeverMatchCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const pairs = readPairs(content.pairs);
@@ -64,7 +76,7 @@ export function LeverMatchCategoryEngine({
     if (allMatched && !hasReordered) {
       if (!reducedMotion) {
         LayoutAnimation.configureNext(
-          LayoutAnimation.create(250, 'easeInEaseOut', 'opacity')
+          LayoutAnimation.create(250, "easeInEaseOut", "opacity"),
         );
       }
       setOrderedRightPairs(pairs);
@@ -79,8 +91,11 @@ export function LeverMatchCategoryEngine({
       resolvePair(id, selectedRightId);
       return;
     }
-    const label = pairs.find(p => p.id === id)?.left;
-    if (label) AccessibilityInfo.announceForAccessibility(`${label} selected. Choose a consequence.`);
+    const label = pairs.find((p) => p.id === id)?.left;
+    if (label)
+      AccessibilityInfo.announceForAccessibility(
+        t("flow.ui.categoryEngine.leverMatch.leftSelected", { label }),
+      );
     onInteraction(
       createResponse({ ...saved, selectedLeftId: id, selectedRightId: null }),
       false,
@@ -94,8 +109,11 @@ export function LeverMatchCategoryEngine({
       resolvePair(selectedLeftId, id);
       return;
     }
-    const label = pairs.find(p => p.id === id)?.right;
-    if (label) AccessibilityInfo.announceForAccessibility(`${label} selected. Choose an action.`);
+    const label = pairs.find((p) => p.id === id)?.right;
+    if (label)
+      AccessibilityInfo.announceForAccessibility(
+        t("flow.ui.categoryEngine.leverMatch.rightSelected", { label }),
+      );
     onInteraction(
       createResponse({ ...saved, selectedLeftId: null, selectedRightId: id }),
       false,
@@ -106,15 +124,24 @@ export function LeverMatchCategoryEngine({
     if (leftId === rightId) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       const nextMatched = [...new Set([...matchedIds, leftId])];
-      const leftLabel = pairs.find(p => p.id === leftId)?.left;
-      const rightLabel = pairs.find(p => p.id === leftId)?.right; // same id
-      
+      const leftLabel = pairs.find((p) => p.id === leftId)?.left;
+      const rightLabel = pairs.find((p) => p.id === leftId)?.right; // same id
+
       if (nextMatched.length >= pairs.length) {
-        AccessibilityInfo.announceForAccessibility("All 3 pairs matched.");
+        AccessibilityInfo.announceForAccessibility(
+          t("flow.ui.categoryEngine.leverMatch.allPairsMatched"),
+        );
       } else {
-        AccessibilityInfo.announceForAccessibility(`${leftLabel} matched with ${rightLabel}. ${nextMatched.length} of ${pairs.length} matched.`);
+        AccessibilityInfo.announceForAccessibility(
+          t("flow.ui.categoryEngine.leverMatch.pairMatched", {
+            left: leftLabel,
+            right: rightLabel,
+            matched: nextMatched.length,
+            total: pairs.length,
+          }),
+        );
       }
-      
+
       onInteraction(
         createResponse({
           ...saved,
@@ -128,7 +155,9 @@ export function LeverMatchCategoryEngine({
     }
 
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-    AccessibilityInfo.announceForAccessibility("Not a match. Try again.");
+    AccessibilityInfo.announceForAccessibility(
+      t("flow.ui.categoryEngine.leverMatch.mismatch"),
+    );
     setWrongPair({ leftId, rightId });
     const nextMismatchCount = mismatchCount + 1;
     onInteraction(
@@ -159,7 +188,7 @@ export function LeverMatchCategoryEngine({
           return (
             <View className="flex-row gap-2" key={leftPair.id}>
               <View className="flex-1">
-                <MatchCard
+                <LeverMatchCard
                   label={leftPair.left}
                   selected={selectedLeftId === leftPair.id}
                   matched={matchedIds.includes(leftPair.id)}
@@ -169,7 +198,7 @@ export function LeverMatchCategoryEngine({
                 />
               </View>
               <View className="flex-1">
-                <MatchCard
+                <LeverMatchCard
                   key={rightPair.id}
                   label={rightPair.right}
                   selected={selectedRightId === rightPair.id}
@@ -210,78 +239,4 @@ export function LeverMatchCategoryEngine({
       )}
     </View>
   );
-}
-
-function MatchCard({
-  label,
-  selected,
-  matched,
-  wrong,
-  showCheck,
-  onPress,
-}: {
-  label: string;
-  selected: boolean;
-  matched: boolean;
-  wrong: boolean;
-  showCheck?: boolean;
-  onPress: () => void;
-}) {
-  const className = matched
-    ? "min-h-[56px] justify-center rounded-[16px] border border-[#ABC0A2] bg-[#F2F8EF] px-3 py-1.5"
-    : wrong
-      ? "min-h-[64px] justify-center rounded-[16px] border-[1.5px] border-[#D1A796] bg-[#FFF5F0] px-3 py-2"
-      : selected
-        ? "min-h-[64px] justify-center rounded-[16px] border-[1.5px] border-[#7E9874] bg-[#F2F8EF] px-3 py-2"
-        : "min-h-[64px] justify-center rounded-[16px] border border-[#E8DCCB] bg-[#FDF8F3] px-3 py-2 active:bg-[#F2ECE4]";
-  
-  const textClassName = matched
-    ? "happy-font-body-bold text-center text-[13px] leading-[18px] text-[#3F4A31]"
-    : "happy-font-body-bold text-center text-[13px] leading-[18px] text-[#201E1D]";
-
-  // Accessibility announcement strings
-  const stateLabel = matched ? "matched" : selected ? "selected" : "unmatched";
-
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityState={{ selected, disabled: matched }}
-      accessibilityLabel={`${label}, ${stateLabel}`}
-      disabled={matched}
-      onPress={onPress}
-      className={className}
-    >
-      <Text className={textClassName}>
-        {matched && showCheck ? `✓ ${label}` : label}
-      </Text>
-    </Pressable>
-  );
-}
-
-function readPairs(value: unknown): LeverPair[] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((item) => {
-    const pair = readRecord(item);
-    const id = readString(pair?.id);
-    const left = readString(pair?.left);
-    const right = readString(pair?.right);
-    return id && left && right ? [{ id, left, right }] : [];
-  });
-}
-
-function readCount(value: unknown): number {
-  return typeof value === "number" && Number.isFinite(value) ? value : 0;
-}
-
-function createResponse(extra: Record<string, unknown> = {}) {
-  return {
-    format: CourseExerciseCategoryEnum.LeverMatch,
-    phase: "matching",
-    matchedIds: [],
-    selectedLeftId: null,
-    selectedRightId: null,
-    mismatchCount: 0,
-    isCorrect: true,
-    ...extra,
-  };
 }

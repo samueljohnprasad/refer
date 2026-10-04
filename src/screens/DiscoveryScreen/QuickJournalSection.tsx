@@ -14,10 +14,7 @@ import { useTranslation } from "react-i18next";
 
 interface QuickJournalPrompt {
   id: string;
-  title: string;
   emoji: string;
-  description: string;
-  category: "Personal" | "Family" | "Work" | "Health" | "Gratitude";
   bgColorClass?: string;
   categoryTextColorClass?: string;
   categoryBgColorClass?: string;
@@ -28,40 +25,28 @@ interface QuickJournalPrompt {
 const QUICK_JOURNAL_PROMPTS: QuickJournalPrompt[] = [
   {
     id: "1",
-    title: "Pause & reflect",
     emoji: "🌿",
-    description: "What are you grateful for today?",
-    category: "Personal",
     bgColorClass: "bg-brand-surface",
     categoryTextColorClass: "text-sage-600",
     categoryBgColorClass: "bg-sage-pill",
   },
   {
     id: "2",
-    title: "Set Intentions",
     emoji: "😊",
-    description: "How do you want to feel?",
-    category: "Family",
     bgColorClass: "bg-brand-surface",
     categoryTextColorClass: "text-sage-600",
     categoryBgColorClass: "bg-sage-pill",
   },
   {
     id: "3",
-    title: "Emotional Check-in",
     emoji: "💚",
-    description: "Let go of stress and anxiety",
-    category: "Health",
     bgColorClass: "bg-brand-surface",
     categoryTextColorClass: "text-sage-600",
     categoryBgColorClass: "bg-sage-pill",
   },
   {
     id: "4",
-    title: "Daily Wins",
     emoji: "🏆",
-    description: "What went well today?",
-    category: "Work",
     bgColorClass: "bg-brand-surface",
     categoryTextColorClass: "text-sage-600",
     categoryBgColorClass: "bg-sage-pill",
@@ -94,9 +79,9 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
       transform: [{ scale: scale.value }],
       opacity: opacity.value,
     }));
-    const title = t(`promptBrowser.items.${prompt.id}.title`, { defaultValue: prompt.title });
-    const description = tHome(`prompts.${prompt.id}`, { defaultValue: prompt.description });
-    const category = t(`promptBrowser.items.${prompt.id}.category`, { defaultValue: prompt.category });
+    const title = t(`promptBrowser.items.${prompt.id}.title`);
+    const description = tHome(`prompts.${prompt.id}`);
+    const category = t(`promptBrowser.items.${prompt.id}.category`);
 
     return (
       <Animated.View style={entranceStyle} className="mr-3">

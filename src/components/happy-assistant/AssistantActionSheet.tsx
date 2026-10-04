@@ -11,6 +11,7 @@ import {
 import type { HappyAssistantActionDescriptor } from "./types";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { Text } from "@/src/components/ui/Text";
+import { useTranslation } from "react-i18next";
 
 interface AssistantActionSheetProps {
   title: string;
@@ -26,6 +27,7 @@ export function AssistantActionSheet({
   actions,
   onCommandPress,
 }: AssistantActionSheetProps): ReactElement {
+  const { t } = useTranslation("settings");
   const quickActions = actions.filter((action) => !isAccountAction(action));
   const accountAction = actions.find(isAccountAction);
 
@@ -42,7 +44,7 @@ export function AssistantActionSheet({
             onCommandPress(HappyAssistantCommandEnum.GoHome);
           }}
           accessibilityRole="button"
-          accessibilityLabel="Go to Home Screen"
+          accessibilityLabel={t("assistantUi.actions.goHome.label")}
         >
           <Mascot state="panda-happy" size={42} />
         </Pressable>
@@ -63,7 +65,7 @@ export function AssistantActionSheet({
         </View>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Open settings"
+          accessibilityLabel={t("assistantUi.actions.open_settings.label")}
           onPress={handleSettingsPress}
           className="h-11 w-11 items-center justify-center rounded-full active:opacity-80"
         >

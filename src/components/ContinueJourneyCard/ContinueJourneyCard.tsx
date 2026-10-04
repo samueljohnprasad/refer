@@ -40,14 +40,20 @@ export function ContinueJourneyCard({
   // Determine accessibility label based on state
   let a11yLabel = t("sections.continueJourney");
   if (state.type === "active_next_activity") {
-    const duration = state.estimatedMins ? `, ${state.estimatedMins} minutes` : "";
-    a11yLabel = `${state.courseTitle}. Next activity: ${state.activityTitle}${duration}. Tap to continue learning.`;
+    const duration = state.estimatedMins
+      ? `, ${t("journey.a11yDuration", { count: state.estimatedMins })}`
+      : "";
+    a11yLabel = t("journey.a11yActive", {
+      courseTitle: state.courseTitle,
+      activityTitle: state.activityTitle,
+      duration,
+    });
   } else if (state.type === "no_active_course") {
-    a11yLabel = "Find your next step. Choose a journey to start learning. Tap to explore journeys.";
+    a11yLabel = t("journey.a11yNoCourse");
   } else if (state.type === "course_completed") {
-    a11yLabel = "Journey complete. You can revisit the skills you've learned. Tap to review your skills.";
+    a11yLabel = t("journey.a11yCompleted");
   } else if (state.type === "error_fallback") {
-    a11yLabel = "Continue your journey. Tap to open journeys.";
+    a11yLabel = t("journey.a11yError");
   }
 
   return (
@@ -92,7 +98,7 @@ export function ContinueJourneyCard({
                       tintColor={SEMANTIC_COLORS.text.tertiary as string}
                     />
                     <Text className="text-[11px] font-medium text-ink-muted ml-1">
-                      {state.estimatedMins} min
+                      {t("journey.durationCompact", { count: state.estimatedMins })}
                     </Text>
                   </View>
                 ) : null}
@@ -121,7 +127,7 @@ export function ContinueJourneyCard({
 
             {/* Primary Action Row */}
             <ContinueJourneyActionRow
-              label={t("journey.continueLearning", { defaultValue: state.actionLabel })}
+              label={t("journey.continueLearning")}
             />
           </>
         )}
@@ -131,10 +137,10 @@ export function ContinueJourneyCard({
             <View className="flex-row items-center justify-between">
               <View className="flex-1 pr-3">
                 <Text className="font-bold text-[16px] text-ink tracking-tight">
-                  {t("journey.findNextStep", { defaultValue: state.title })}
+                  {t("journey.findNextStep")}
                 </Text>
                 <Text className="text-[14px] text-ink-soft mt-0.5">
-                  {t("journey.chooseJourney", { defaultValue: state.description })}
+                  {t("journey.chooseJourney")}
                 </Text>
               </View>
               <View className="w-10 h-10 rounded-full bg-sage-100 items-center justify-center">
@@ -147,7 +153,7 @@ export function ContinueJourneyCard({
             </View>
             {/* Primary Action Row */}
             <ContinueJourneyActionRow
-              label={t("journey.exploreJourneys", { defaultValue: state.actionLabel })}
+              label={t("journey.exploreJourneys")}
             />
           </>
         )}
@@ -157,10 +163,10 @@ export function ContinueJourneyCard({
             <View className="flex-row items-center justify-between">
               <View className="flex-1 pr-3">
                 <Text className="font-bold text-[16px] text-ink tracking-tight">
-                  {t("journey.completeTitle", { defaultValue: state.title })}
+                  {t("journey.completeTitle")}
                 </Text>
                 <Text className="text-[14px] text-ink-soft mt-0.5">
-                  {t("journey.completeDesc", { defaultValue: state.description })}
+                  {t("journey.completeDesc")}
                 </Text>
               </View>
               {getCourseImageSource(state.courseTitle) ? (
@@ -177,7 +183,7 @@ export function ContinueJourneyCard({
             </View>
             {/* Primary Action Row */}
             <ContinueJourneyActionRow
-              label={t("journey.reviewSkills", { defaultValue: state.actionLabel })}
+              label={t("journey.reviewSkills")}
             />
           </>
         )}
@@ -187,10 +193,10 @@ export function ContinueJourneyCard({
             <View className="flex-row items-center justify-between">
               <View className="flex-1 pr-3">
                 <Text className="font-bold text-[16px] text-ink tracking-tight">
-                  {t("journey.continueJourney", { defaultValue: "Continue your journey" })}
+                  {t("journey.continueJourney")}
                 </Text>
                 <Text className="text-[14px] text-ink-soft mt-0.5">
-                  {t("journey.pickUpWhereLeft", { defaultValue: "Pick up where you left off." })}
+                  {t("journey.pickUpWhereLeft")}
                 </Text>
               </View>
               <View className="w-10 h-10 rounded-full bg-sand/30 items-center justify-center">
@@ -203,7 +209,7 @@ export function ContinueJourneyCard({
             </View>
             {/* Primary Action Row */}
             <ContinueJourneyActionRow
-              label={t("journey.openJourneys", { defaultValue: state.actionLabel })}
+              label={t("journey.openJourneys")}
             />
           </>
         )}

@@ -1,5 +1,6 @@
 import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View, Pressable, TextInput } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
@@ -32,6 +33,7 @@ export const TimePickerStep: React.FC<TimePickerStepProps> = React.memo(
     readOnly,
     autoFocus = true,
   }) => {
+    const { t } = useTranslation("exercises");
     const value = (response as Record<string, any>)[fieldKey] ?? "";
     const [customValue, setCustomValue] = useState(value);
 
@@ -90,7 +92,7 @@ export const TimePickerStep: React.FC<TimePickerStepProps> = React.memo(
         <TextInput
           value={customValue}
           onChangeText={handleCustom}
-          placeholder="e.g., 10:30 PM or Tomorrow 3pm"
+          placeholder={t("flow.ui.copy.step_time_picker_example_placeholder")}
           placeholderTextColor={SEMANTIC_COLORS.text.disabled}
           accessibilityLabel={title}
           className="text-base text-ink bg-white rounded-xl p-4"

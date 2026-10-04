@@ -51,7 +51,7 @@ function ClusterRow({ cluster }: { cluster: TriggerCluster }) {
         {cluster.peakHours.length > 0 && (
           <View className="bg-blue-50 px-2 py-0.5 rounded-full">
             <Text className="text-[10px] font-semibold text-blue-600">
-              {t("insights.ui.peak", { defaultValue: "Peak: {{start}}-{{end}}h", start: cluster.peakHours[0], end: cluster.peakHours[2] + 1 })}
+              {t("insights.ui.peak", { start: cluster.peakHours[0], end: cluster.peakHours[2] + 1 })}
             </Text>
           </View>
         )}
@@ -69,7 +69,7 @@ function ClusterRow({ cluster }: { cluster: TriggerCluster }) {
           className="flex-row items-center gap-1 active:opacity-70 mt-0.5"
         >
           <Text className="text-[11px] text-sage-600 font-semibold">
-            {t("insights.ui.bestToolValue", { defaultValue: "Best tool: {{label}} (−{{value}})", label: cluster.bestExercise.label, value: cluster.bestExercise.avgDrop })}
+            {t("insights.ui.bestToolValue", { label: cluster.bestExercise.label, value: cluster.bestExercise.avgDrop })}
           </Text>
           <HugeiconsIcon icon={ArrowRight01Icon} size={10} color={SEMANTIC_COLORS.brand.primary} />
         </Pressable>

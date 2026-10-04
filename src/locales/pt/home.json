@@ -20,7 +20,10 @@
     "bad": "Ruim",
     "okay": "Mais ou menos",
     "good": "Bem",
-    "great": "Excelente"
+    "great": "Excelente",
+    "accessibilityLog": "Registar humor {{mood}}{{loggedCount}}",
+    "accessibilityCount_one": "registado {{count}} vez",
+    "accessibilityCount_other": "registado {{count}} vezes"
   },
   "prompts": {
     "1": "Pelo que você é grato hoje?",
@@ -44,13 +47,24 @@
     "continueLearning": "Continuar aprendendo",
     "continueJourney": "Continuar sua jornada",
     "pickUpWhereLeft": "Continue de onde parou.",
-    "openJourneys": "Abrir jornadas"
+    "openJourneys": "Abrir jornadas",
+    "a11yActive": "{{courseTitle}}. Próxima atividade: {{activityTitle}}{{duration}}. Toque para continuar a aprender.",
+    "a11yNoCourse": "Encontre o próximo passo. Escolha uma jornada para começar a aprender. Toque para explorar jornadas.",
+    "a11yCompleted": "Jornada concluída. Pode rever as competências que aprendeu. Toque para as rever.",
+    "a11yError": "Continue a sua jornada. Toque para abrir as jornadas.",
+    "a11yLoading": "A carregar jornada de aprendizagem",
+    "a11yDuration_one": "{{count}} minuto",
+    "a11yDuration_other": "{{count}} minutos",
+    "durationCompact": "{{count}} min"
   },
   "streak": {
     "streakCount_one": "{{count}} dia de sequência",
     "streakCount_other": "{{count}} dias de sequência",
     "weekDays": ["D", "S", "T", "Q", "Q", "S", "S"],
-    "a11yLabel": "Sequência atual: {{count}} dias. Toque para ver o histórico."
+    "a11yLabel": "Sequência atual: {{count}} dias. Toque para ver o histórico.",
+    "dayLabel": "Dias de sequência",
+    "newStreakMessage": "Uma nova sequência começa! Volte todos os dias para continuar a progredir.",
+    "continue": "Continuar"
   },
   "errors": {
     "loadTitle": "Algo correu mal",

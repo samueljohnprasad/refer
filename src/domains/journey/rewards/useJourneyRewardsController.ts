@@ -23,8 +23,10 @@ import {
 } from "@/src/domains/journey/state/journeySelectors";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { requestReviewForMilestone } from "@/src/hooks/useReviewPrompt";
+import { useTranslation } from "react-i18next";
 
 export function useJourneyRewardsController(courseId: string) {
+  const { t } = useTranslation("journeys");
   const [rewardNode, setRewardNode] = useState<PathNodeData | null>(null);
   const [isClaimingReward, setIsClaimingReward] = useState(false);
   const pushedFinaleCourseRef = useRef<string | null>(null);
@@ -85,10 +87,10 @@ export function useJourneyRewardsController(courseId: string) {
       rewardUnit?.rewardContent ??
       (rewardNodeEntity?.rewardContent as UnitRewardContent | null) ??
       (rewardNode.rewardContent as UnitRewardContent | null) ?? {
-        title: rewardUnit?.title ?? rewardNode.label ?? "Unit Complete",
-        capabilityLabel: "Achievement",
-        capabilityStatement: "You've completed this unit!",
-        primaryActionLabel: "Continue",
+        title: rewardUnit?.title ?? rewardNode.label ?? t("rewardFallback.unitComplete"),
+        capabilityLabel: t("rewardFallback.achievement"),
+        capabilityStatement: t("rewardFallback.unitCompletedMessage"),
+        primaryActionLabel: t("rewardFallback.continue"),
       };
 
     dispatch(
@@ -101,7 +103,7 @@ export function useJourneyRewardsController(courseId: string) {
             rewardUnit?.title ??
             rewardNodeEntity?.title ??
             rewardNode.label ??
-            "Unit Complete",
+            t("rewardFallback.unitComplete"),
           content: unitReward,
         },
       }),
@@ -140,7 +142,7 @@ export function useJourneyRewardsController(courseId: string) {
       toast.show({
         placement: "top",
         variant: "danger",
-        label: "We could not claim that reward. Try again.",
+        label: t("rewardFallback.claimError"),
       });
     } finally {
       setIsClaimingReward(false);

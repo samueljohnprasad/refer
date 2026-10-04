@@ -272,6 +272,55 @@
           "findingStartingPoints": "Cerco spunti per iniziare…"
         },
         "categoryEngine": {
+          "curiosityBet": { "yourBet": "LA TUA IPOTESI", "theAnswer": "LA RISPOSTA" },
+          "nameIt": { "familySelected": "Famiglia emotiva {{family}} selezionata.", "wordSelected": "{{word}} selezionato." },
+          "paradoxCard": { "alertnessIncreased": "La vigilanza del corpo è aumentata verso uno stato di agitazione", "explanationRevealed": "Spiegazione mostrata" },
+          "waveScrubber": {
+            "titleFallback": "Un’onda, da vicino",
+            "instructionFallback": "Scorri lungo l’onda per vedere come cambia.",
+            "alarmIntensity": "INTENSITÀ DELL’ALLARME",
+            "waveAccessibility": "Un’ondata d’ansia che sale, raggiunge il picco, si attenua, risale e poi si calma",
+            "progressionAccessibility": "Andamento dell’ondata",
+            "start": "INIZIO",
+            "later": "PIÙ TARDI",
+            "patternTitle": "LO SCHEMA",
+            "patternSummary": "Un’ondata cambia nel tempo.",
+            "patternDescription": "Può salire rapidamente, raggiungere il picco, attenuarsi e talvolta risalire prima di calmarsi.",
+            "phases": {
+              "earlyRise": { "label": "PRIMA SALITA", "body": "L’allarme si attiva.\nLe sensazioni possono intensificarsi rapidamente." },
+              "peak": { "label": "PICCO", "body": "L’allarme è al massimo.\n\nLe sensazioni intense possono sembrare convincenti, ma non dimostrano che ci sia un pericolo." },
+              "settling": { "label": "CALMA", "body": "L’ondata comincia ad attenuarsi.\n\nIl corpo può restare attivato mentre l’allarme diminuisce." },
+              "anotherRise": { "label": "NUOVA SALITA", "body": "Una sensazione o un pensiero preoccupante può far salire di nuovo l’allarme.\n\nUna nuova salita non significa che sei tornato al punto di partenza." },
+              "settlingAgain": { "label": "NUOVA CALMA", "body": "L’allarme si sta attenuando di nuovo.\n\nLe ondate possono salire e scendere più di una volta." }
+            }
+          },
+          "panicWaveCommit": {
+            "titleFallback": "L’ondata di panico: fai la tua previsione",
+            "instructionFallback": "Fai la tua previsione prima di vedere la risposta.",
+            "waveAccessibility": "Un’ondata di panico nell’arco di venti minuti",
+            "guessNever": "la tua previsione: mai",
+            "guessLabel": "la tua previsione",
+            "minuteMarker": "{{count}} min",
+            "myGuess": "La mia previsione",
+            "neverComesDown": "non scende mai",
+            "aboutMinutes": "circa {{count}} min",
+            "guessAccessibility": "La tua previsione in minuti; all’estrema destra significa mai",
+            "never": "mai"
+          },
+          "leverMatch": {
+            "leftSelected": "{{label}} selezionato. Scegli una conseguenza.",
+            "rightSelected": "{{label}} selezionato. Scegli un’azione.",
+            "pairMatched": "{{left}} è associato a {{right}}. {{matched}} coppie su {{total}} associate.",
+            "allPairsMatched": "Tutte le coppie sono associate.",
+            "mismatch": "Non è una coppia. Riprova.",
+            "stateMatched": "associato",
+            "stateSelected": "selezionato",
+            "stateUnmatched": "non associato"
+          },
+          "layerZoom": {
+            "layer": "Livello",
+            "accessibilityLabel": "Spiegazione a livelli"
+          },
           "checkpoint": {
             "workedSupport": "Esempio guidato",
             "next": "Avanti",
@@ -279,7 +328,19 @@
             "checkOrder": "Controlla l’ordine",
             "revealAnswer": "Mostra risposta",
             "needPractice": "Devo esercitarmi",
-            "gotIt": "Ho capito"
+            "gotIt": "Ho capito",
+            "yourAnswer": "LA TUA RISPOSTA",
+            "whatHappened": "CHE COSA È SUCCESSO?",
+            "introTitleFallback": "Ripasso sul sonno",
+            "introHeadingFallback": "Vediamo cosa è rimasto.",
+            "introBodyFallback": "4 domande rapide sul sistema del sonno.\nUna risposta sbagliata ti indica solo cosa ripassare.",
+            "introTagFallback": "4 DOMANDE · ~1 MIN",
+            "summaryTitleFallback": "Ripasso",
+            "summaryInstruction": "Cosa è emerso dal ripasso.",
+            "solidGroupTitle": "CONCETTI ASSIMILATI",
+            "revisitGroupTitle": "DA RIPASSARE IN DUE MINUTI",
+            "revisitMessageFallback": "Prima di cambiare la tua routine, ripassa brevemente i concetti indicati. Non hai perso nulla.",
+            "solidMessageFallback": "La mappa è chiara. Ora usala per provare un piccolo esperimento e osservare cosa cambia."
           },
           "socratic": {
             "you": "TU",
@@ -299,7 +360,8 @@
           "guidanceLabel": "Indicazione: {{text}}",
           "predictionLabel": "Previsione: {{text}}",
           "evidenceLabel": "Ciò che sappiamo: {{text}}",
-          "skillLabel": "L’abilità: {{text}}"
+          "skillLabel": "L’abilità: {{text}}",
+          "askNext": "COSA CHIEDERESTI DOPO?"
           },
           "explorable": {
             "lever": "Leva",
@@ -359,14 +421,118 @@
             "predicted": "La tua previsione",
           "actualOutcome": "Risultato reale"
           },
+          "whatIfMachine": {
+            "titleFallback": "E se?",
+            "instructionFallback": "Fai una previsione, poi prova.",
+            "betLabel": "LA TUA PREVISIONE"
+          },
           "lensReplay": {
+            "titleFallback": "Rivivi la scena",
+            "instructionFallback": "Tocca le parti evidenziate per vedere cosa hai notato e cosa ha aggiunto la tua mente.",
             "whatHappened": "CHE COSA È SUCCESSO",
+            "observedScene": "Tutti hanno smesso di parlare.",
             "mindAdded": "CIÒ CHE HA AGGIUNTO LA MENTE",
+            "assumedMeaning": "«Stavano parlando di me».",
             "idea": "L’IDEA",
+            "completionMessage": "Le stesse parole. Uno sguardo nuovo.",
             "revealAccessibility": "{{text}}. Rivela.",
-            "progress": "Hai esplorato {{explored}} punti su {{total}}"
-          }
-        },
+            "progress": "{{explored}} su {{total}} parti esplorate"
+          },
+          "fillBlank": {
+            "titleFallback": "Completa la frase",
+            "instructionFallback": "Scrivi la parola mancante.",
+            "inputLabel": "Parola mancante",
+            "inputPlaceholder": "Scrivi qui",
+            "wordBank": "Elenco di parole",
+            "feedbackThinking": "Ecco il ragionamento",
+            "feedbackFits": "Perché funziona",
+            "feedbackTryAnother": "Prova in un altro modo.",
+            "newCapability": "Nuova capacità:"
+          },
+          "whiteBear": {
+            "titleFallback": "Un esperimento di 10 secondi",
+            "instructionFallback": "Prova a non pensare a un orso bianco.",
+            "term": "orso bianco",
+            "debrief": "E allora… cos’è successo?"
+          },
+          "fadedThoughtRecord": {
+            "stage": "Campo",
+            "notebookAccessibility": "Quaderno dei pensieri",
+            "completedExample": "Registrazione completata",
+            "fieldComplete": "Campo completato",
+            "aClue": "Un indizio",
+            "yourTurnNext": "Tocca a te dopo",
+            "chooseBelow": "Scegli qui sotto"
+          },
+          "situationLanguage": {
+            "titleFallback": "Cambia prospettiva",
+            "instructionFallback": "Trasforma ogni frase da identità a esperienza.",
+            "identity": "Identità",
+            "experience": "Esperienza",
+            "identitySelected": "Identità selezionata. {{text}}.",
+            "experienceSelected": "Esperienza selezionata. {{text}}.",
+            "shift": "Il cambiamento",
+            "takeawayFallback": "Una difficoltà o un’emozione descrive un momento, non chi sei.\n\nDescrivi ciò che sta succedendo senza trasformarlo in una definizione di te."
+          },
+          "ifThenPlan": {
+            "titleFallback": "Prepara il prossimo piccolo test",
+            "chooseCue": "Scegli qualcosa che hai notato.",
+            "chooseAction": "Scegli come metterlo alla prova.",
+            "ifLabel": "SE",
+            "thenLabel": "ALLORA IO",
+            "summaryLabel": "Il tuo piccolo test",
+            "privateNote": "Solo per te · Nessun promemoria, a meno che tu lo chieda.",
+            "ifCue": "Se {{cue}},",
+            "thenAction": "allora io {{action}}.",
+            "saved": "✓ Aggiunto ai miei piani"
+          },
+            "storySerial": {
+              "titleFallback": "Percorri entrambi i percorsi dell’allarme",
+              "instructionFallback": "Percorri un percorso, torna indietro e confrontali.",
+              "sameStart": "STESSO INIZIO",
+              "sameStartAccessibility": "Stesso inizio: {{start}}",
+              "chooseForSam": "SCEGLI TU PER SAM",
+              "alarmSignal": "Allarme come segnale",
+              "alarmProof": "Allarme come prova",
+              "pathSummaryAccessibility": "Riepilogo del percorso {{pathType}}: {{summary}}",
+              "rewindCTA": "Torna indietro e percorri l’altro percorso",
+              "comparisonAccessibility": "Confronto tra i percorsi",
+              "proofPathAccessibility": "Percorso in cui l’allarme è una prova: {{path}}",
+              "proofPathHeading": "ALLARME = PROVA",
+              "signalPathAccessibility": "Percorso in cui l’allarme è un segnale: {{path}}",
+              "signalPathHeading": "ALLARME = SEGNALE",
+              "notQuite": "NON PROPRIO",
+              "patternHeading": "LO SCHEMA",
+              "quickRelief": "SOLLIEVO IMMEDIATO",
+              "checkReality": "VERIFICARE LA REALTÀ"
+            },
+            "interactiveReframe": {
+              "titleFallback": "Dopo una notte difficile…",
+              "heroWrongText": "“Il mio corpo è guasto.”",
+              "question": "Su cosa dovresti concentrarti per prima cosa?",
+              "correctOption": "Cosa potrebbe essere cambiato",
+              "wrongOption": "Se devo impegnarmi di più",
+              "wrongPathTitle": "Se devo impegnarmi di più",
+              "correctFinale": "La stessa notte.\nUna storia diversa.",
+              "wrongAnswerLabel": "× LA TUA RISPOSTA",
+              "wrongCascade1": "IMPEGNATI DI PIÙ",
+              "wrongCascade2": "“Sta già funzionando?”",
+              "wrongCascade3": "più controlli",
+              "wrongCascade4": "più pressione",
+              "correctHeroMorph": "“Forse qualcosa è cambiato.”",
+              "correctCascade1": "CHE COSA È CAMBIATO?",
+              "correctCascade2": "orario · pressione · attivazione",
+              "correctCascade3": "pisolino · luce · stress · routine…",
+              "correctCascade4": "qualcosa che posso approfondire"
+            },
+            "mayaAlarmChart": {
+              "bedtime": "23:00",
+              "threshold": "linea di spegnimento",
+              "startTime": "7:00",
+              "afternoonTime": "16:00",
+            "endTime": "1:00"
+            }
+          },
           "celebration": {
             "title": "Lezione completata!", "perfectTitle": "Lezione perfetta!", "continue": "Continua",
             "sharePerfect": "Lezione perfetta", "shareComplete": "Lezione completata", "shareTitle": "Condividi il tuo risultato",

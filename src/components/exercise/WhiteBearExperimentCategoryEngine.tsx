@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
@@ -21,6 +22,7 @@ export function WhiteBearExperimentCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const started = saved?.started === true;
@@ -69,9 +71,9 @@ export function WhiteBearExperimentCategoryEngine({
   return (
     <View style={styles.screenContent}>
       <CourseExerciseHeading
-        title={readString(content.title) ?? "A 10-second experiment"}
+        title={readString(content.title) ?? t("flow.ui.categoryEngine.whiteBear.titleFallback")}
         instruction={
-          readString(content.instruction) ?? "Do not think about a white bear."
+          readString(content.instruction) ?? t("flow.ui.categoryEngine.whiteBear.instructionFallback")
         }
       />
       <View style={styles.countdownCard}>
@@ -84,13 +86,13 @@ export function WhiteBearExperimentCategoryEngine({
             bearIsPeeking ? styles.bearVisible : styles.bearHidden,
           ]}
         >
-          <Text style={styles.bearLabel}>“white bear”</Text>
+          <Text style={styles.bearLabel}>“{t("flow.ui.categoryEngine.whiteBear.term")}”</Text>
         </View>
       </View>
 
       {ended ? (
         <View style={styles.debrief}>
-          <Text style={styles.debriefLabel}>SO… WHAT HAPPENED?</Text>
+          <Text style={styles.debriefLabel}>{t("flow.ui.categoryEngine.whiteBear.debrief")}</Text>
           {options.map((option) => (
             <CourseExerciseOptionButton
               key={option.id}

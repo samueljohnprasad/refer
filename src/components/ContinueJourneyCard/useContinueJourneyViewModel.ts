@@ -59,16 +59,13 @@ export function useContinueJourneyViewModel(): UseContinueJourneyViewModelResult
     // 2. Error state (State E)
     const hasError = Boolean(activeCourseError || (courseId && mapError));
     if (hasError && !course) {
-      return { type: "error_fallback", actionLabel: "Open journeys" };
+      return { type: "error_fallback" };
     }
 
     // 3. No active course state (State B)
     if (!courseId || !course) {
       return {
         type: "no_active_course",
-        title: "Find your next step",
-        description: "Choose a journey to start learning.",
-        actionLabel: "Explore journeys",
       };
     }
 
@@ -92,7 +89,6 @@ export function useContinueJourneyViewModel(): UseContinueJourneyViewModelResult
           currentNode.estimatedMins && currentNode.estimatedMins > 0
             ? currentNode.estimatedMins
             : null,
-        actionLabel: "Continue learning",
         isInProgress,
       };
     }
@@ -102,9 +98,6 @@ export function useContinueJourneyViewModel(): UseContinueJourneyViewModelResult
       type: "course_completed",
       courseId,
       courseTitle: course.title,
-      title: "Journey complete",
-      description: "You can revisit the skills you’ve learned.",
-      actionLabel: "Review your skills",
     };
   }, [
     activeCourseError,

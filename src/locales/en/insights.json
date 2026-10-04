@@ -59,7 +59,7 @@
     "analyzing": "AI is reviewing your journal entries. This may take a minute.",
     "notAvailable": "Not available"
   },
-  "chart": { "premiumFeature": "Premium feature", "premium": "Premium" },
+  "chart": { "premiumFeature": "Premium feature", "premium": "Premium", "weeklyMood": { "tabs": { "day": "Day", "week": "Week", "dayView": "Day view", "dayHint": "Show mood chart for individual days", "weekView": "Week view", "weekHint": "Show mood chart for weekly averages" }, "headers": { "thisWeekMood": "This Week's Mood", "todayMood": "Today's Mood", "yesterdayMood": "Yesterday's Mood", "weekdayMood": "{{weekday}}'s Mood" }, "tooltip": { "mood": "Mood: {{mood}}", "day": "Day: {{day}}", "time": "Time: {{time}}" }, "error": "Failed to load mood data.", "average": "Average:", "scale": { "accessibilityLabel": "Mood scale from Great to Terrible", "level": "Mood level: {{mood}}", "moods": { "great": "Great", "good": "Good", "fine": "Okay", "bad": "Bad", "terrible": "Terrible" } } } },
   "lifeBalance": {
     "title": "Life domain balance wheel",
     "lockedDescription": "See how balanced the different areas of your life feel.",

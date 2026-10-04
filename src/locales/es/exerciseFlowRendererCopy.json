@@ -1,4 +1,15 @@
 {
+  "text_composer_voice_unavailable": "La nota de voz no está disponible. Puedes escribir este elemento.",
+  "text_composer_recording_failed": "No se pudo iniciar la grabación. Puedes escribir este elemento.",
+  "text_composer_voice_placeholder": "Escribe o usa la voz...",
+  "text_composer_item_placeholder": "Escribe un elemento...",
+  "text_composer_remove_item_accessibility": "Eliminar elemento {{index}}: {{item}}",
+  "text_composer_listening": "Escuchando...",
+  "text_composer_stop_recording_item": "Detener la grabación del elemento",
+  "text_composer_start_voice_input": "Iniciar entrada de voz",
+  "text_composer_add_item_accessibility": "Añadir elemento",
+  "text_composer_add_item": "Añadir",
+  "text_composer_stop_voice_input": "Detener entrada de voz",
   "finding_personalized_options_3gywg0": "Buscando opciones personalizadas...",
   "ai_picks_87cufd": "Selecciones de IA",
   "you_took_a_moment_to_check_in_with_yourself_145uhyl": "Te tomaste un momento para comprobarlo contigo mismo.",
@@ -41,5 +52,101 @@
   "verified_correct_label_1phun7l": "Asociación correcta: {{label}}",
   "incorrect_match_label_q8efnb": "Asociación incorrecta: {{label}}",
   "paired_as_badge_label_1msv831": "Asociada como {{badge}}: {{label}}",
-  "unpaired_label_52531d": "Sin asociar: {{label}}"
+  "unpaired_label_52531d": "Sin asociar: {{label}}",
+  "step_checklist_add_custom_item": "Añadir elemento personalizado...",
+  "step_checklist_add_custom_item_accessibility": "Añadir elemento personalizado a la lista",
+  "step_checklist_checked_count": "{{count}} marcados",
+  "step_checklist_checked_count_minimum": "{{count}} marcados (mín. {{minimum}})",
+  "step_time_picker_example_placeholder": "P. ej., 22:30 o mañana a las 15:00",
+  "wave_order_empty_slot": "Toca una ficha para colocarla aquí",
+  "wave_order_slot_accessibility": "Espacio {{index}}: {{stage}}. Toca para quitarlo.",
+  "wave_order_pattern_heading": "EL PATRÓN",
+  "wave_order_pattern_title": "Una subida de pánico cambia con el tiempo.",
+  "wave_order_pattern_fallback": "La alarma sube, llega a un punto máximo y empieza a bajar.",
+  "wave_order_retry_title": "Prueba el orden otra vez",
+  "wave_order_wrong_fallback": "{{rightCount}} de {{total}} están en su sitio. Reordena los {{remaining}} restantes.",
+  "wave_order_clue_prefix": "Pista",
+  "surge_diagram": {
+    "title": "La alarma cambia con el tiempo",
+    "instruction": "Sigue la forma de una oleada.",
+    "axisLabel": "Con el paso del tiempo",
+    "patternLabel": "EL PATRÓN",
+    "takeaway": "Una oleada puede parecer interminable mientras la atraviesas.\n\nPero su intensidad puede cambiar con el tiempo.",
+    "note": "Patrón ilustrativo; la duración y la intensidad varían.",
+    "completedAnnouncement": "La intensidad baja. Has llegado al final. El patrón: una oleada puede parecer interminable, pero su intensidad cambia con el tiempo.",
+    "phaseAnnouncement": "{{tag}}. {{caption}}",
+    "chartAccessibilityLabel": "Curva de intensidad que muestra el inicio, la subida, el punto máximo y el descenso con el paso del tiempo",
+    "sliderAccessibilityLabel": "Cronología de la oleada",
+    "incrementAccessibilityLabel": "Avanzar en el tiempo",
+    "decrementAccessibilityLabel": "Retroceder en el tiempo",
+    "phase": {
+      "beginning": { "tag": "INICIO", "caption": "Avanza por el tiempo." },
+      "rising": { "tag": "SUBIDA", "caption": "La alarma se intensifica." },
+      "peak": {
+        "tag": "PUNTO MÁXIMO",
+        "caption": "Este es el punto más intenso de este ejemplo."
+      },
+      "easing": {
+        "tag": "DESCENSO",
+        "caption": "La intensidad está cambiando."
+      }
+    }
+  },
+  "two_dial_sandbox": {
+    "title": "Dos controles dan forma a tu semana",
+    "instruction": "Ajusta la exigencia y la recuperación para ver cómo responde el sistema.",
+    "currentState": "ESTADO ACTUAL",
+    "statesDiscovered": "ESTADOS DESCUBIERTOS",
+    "discoveredCount": "{{count}} de 4",
+    "patternLabel": "EL PATRÓN",
+    "takeaway": "La exigencia por sí sola no determina cómo se siente la semana.\n\nLa recuperación cambia el coste de esa misma exigencia.",
+    "completedAnnouncement": "Has descubierto los cuatro estados. El patrón: la exigencia por sí sola no determina cómo se siente la semana. La recuperación cambia el coste de esa misma exigencia.",
+    "demand": {
+      "label": "EXIGENCIA",
+      "low": "tranquilidad",
+      "high": "todo a la vez",
+      "accessibilityLabel": "Control de exigencia"
+    },
+    "recovery": {
+      "label": "RECUPERACIÓN",
+      "low": "agotamiento",
+      "high": "con energía",
+      "accessibilityLabel": "Control de recuperación"
+    },
+    "value": {
+      "highDemand": "Exigencia alta",
+      "lowDemand": "Exigencia baja",
+      "highRecovery": "Recuperación alta",
+      "lowRecovery": "Recuperación baja"
+    },
+    "outcomes": {
+      "HL": {
+        "title": "Presión de plazos",
+        "body": "Mucha exigencia y poca recuperación pueden mantener el sistema al límite."
+      },
+      "HH": {
+        "title": "Ritmo estable",
+        "body": "Hay exigencias, pero la recuperación renueva la capacidad."
+      },
+      "LH": {
+        "title": "Descanso tranquilo",
+        "body": "Menos exigencia deja espacio para que la recuperación reponga fuerzas."
+      },
+      "LL": {
+        "title": "Ciclo estancado",
+        "body": "Poca exigencia y poca recuperación pueden hacer que la semana se sienta apagada."
+      }
+    }
+  },
+  "teaching_panel": {
+    "takeawayPrefix": "Idea clave:",
+    "thinkingHeading": "ASÍ SE ENTIENDE"
+  },
+  "lever_scenario": {
+    "feedback": {
+      "whyFits": "Por qué encaja",
+      "thinkingHeading": "Así se entiende",
+      "notQuite": "No del todo"
+    }
+  }
 }

@@ -589,8 +589,8 @@ export const DEFAULT_CHECKLIST_ITEMS: readonly OnboardingChecklistItem[] = [
 
 export const TRIAL_DAYS = 7;
 export const POST_TRIAL_DISCOUNT_PERCENT = 30;
-export const POST_TRIAL_ANNUAL_PRICE = "$69.99/year";
-export const POST_TRIAL_ANNUAL_PER_MONTH = "$5.83/mo";
+export const POST_TRIAL_ANNUAL_PRICE_AMOUNT = "$69.99";
+export const POST_TRIAL_ANNUAL_MONTHLY_PRICE_AMOUNT = "$5.83";
 
 export interface PersonalizedCourseConfig {
   /** Placeholder UUID — replace with real Supabase course ID when seeded. */

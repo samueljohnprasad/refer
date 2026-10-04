@@ -3,6 +3,64 @@
     "name": "Happy",
     "slug": "happy",
     "version": "1.5.2",
+    "locales": {
+      "en": {
+        "ios": {
+          "NSMicrophoneUsageDescription": "The app needs access to the microphone to record your voice for journal entries. For example, this allows you to speak your thoughts and save them as audio reflections in your daily journal.",
+          "NSPhotoLibraryUsageDescription": "Happy needs access to your photos to upload handwritten journal notes and attach photos to your reflections.",
+          "NSCameraUsageDescription": "Happy needs access to the camera to take photos of your handwritten journal pages to convert them into reflections."
+        }
+      },
+      "fr": {
+        "ios": {
+          "NSMicrophoneUsageDescription": "L’app a besoin d’accéder au microphone pour enregistrer votre voix dans vos entrées de journal. Cela vous permet, par exemple, de dicter vos pensées et de les conserver sous forme de réflexions audio dans votre journal quotidien.",
+          "NSPhotoLibraryUsageDescription": "Happy a besoin d’accéder à vos photos pour importer des notes de journal manuscrites et joindre des photos à vos réflexions.",
+          "NSCameraUsageDescription": "Happy a besoin d’accéder à l’appareil photo pour photographier les pages manuscrites de votre journal et les convertir en réflexions."
+        }
+      },
+      "de": {
+        "ios": {
+          "NSMicrophoneUsageDescription": "Die App benötigt Zugriff auf das Mikrofon, um deine Stimme für Tagebucheinträge aufzunehmen. So kannst du zum Beispiel deine Gedanken einsprechen und als Audioreflexionen in deinem täglichen Tagebuch speichern.",
+          "NSPhotoLibraryUsageDescription": "Happy benötigt Zugriff auf deine Fotos, damit du handschriftliche Tagebuchnotizen hochladen und Fotos zu deinen Reflexionen hinzufügen kannst.",
+          "NSCameraUsageDescription": "Happy benötigt Zugriff auf die Kamera, um handschriftliche Tagebuchseiten zu fotografieren und in Reflexionen umzuwandeln."
+        }
+      },
+      "es": {
+        "ios": {
+          "NSMicrophoneUsageDescription": "La app necesita acceder al micrófono para grabar tu voz en las entradas del diario. Por ejemplo, así puedes expresar tus pensamientos y guardarlos como reflexiones de audio en tu diario.",
+          "NSPhotoLibraryUsageDescription": "Happy necesita acceder a tus fotos para subir notas manuscritas del diario y adjuntar fotos a tus reflexiones.",
+          "NSCameraUsageDescription": "Happy necesita acceder a la cámara para fotografiar las páginas manuscritas de tu diario y convertirlas en reflexiones."
+        }
+      },
+      "ar": {
+        "ios": {
+          "NSMicrophoneUsageDescription": "يحتاج التطبيق إلى الوصول إلى الميكروفون لتسجيل صوتك في إدخالات اليوميات. يتيح لك ذلك، مثلًا، تدوين أفكارك صوتيًا وحفظها كتأملات صوتية في يومياتك اليومية.",
+          "NSPhotoLibraryUsageDescription": "يحتاج Happy إلى الوصول إلى صورك لتحميل ملاحظات اليوميات المكتوبة بخط اليد وإرفاق الصور بتأملاتك.",
+          "NSCameraUsageDescription": "يحتاج Happy إلى الوصول إلى الكاميرا لالتقاط صور لصفحات يومياتك المكتوبة بخط اليد وتحويلها إلى تأملات."
+        }
+      },
+      "pt": {
+        "ios": {
+          "NSMicrophoneUsageDescription": "A app precisa de acesso ao microfone para gravar a sua voz nas entradas do diário. Por exemplo, pode falar sobre os seus pensamentos e guardá-los como reflexões em áudio no seu diário.",
+          "NSPhotoLibraryUsageDescription": "O Happy precisa de acesso às suas fotografias para carregar notas manuscritas do diário e anexar fotografias às suas reflexões.",
+          "NSCameraUsageDescription": "O Happy precisa de acesso à câmara para fotografar páginas manuscritas do seu diário e convertê-las em reflexões."
+        }
+      },
+      "it": {
+        "ios": {
+          "NSMicrophoneUsageDescription": "L’app ha bisogno di accedere al microfono per registrare la tua voce nelle voci del diario. Ad esempio, puoi dettare i tuoi pensieri e salvarli come riflessioni audio nel diario quotidiano.",
+          "NSPhotoLibraryUsageDescription": "Happy ha bisogno di accedere alle tue foto per caricare appunti scritti a mano nel diario e allegare foto alle tue riflessioni.",
+          "NSCameraUsageDescription": "Happy ha bisogno di accedere alla fotocamera per fotografare le pagine scritte a mano del diario e convertirle in riflessioni."
+        }
+      },
+      "zh-Hans": {
+        "ios": {
+          "NSMicrophoneUsageDescription": "Happy 需要使用麦克风录制日记语音。例如，你可以口述想法，并将其保存为每日语音日记。",
+          "NSPhotoLibraryUsageDescription": "Happy 需要访问你的照片，以便上传手写日记笔记并在反思记录中附加照片。",
+          "NSCameraUsageDescription": "Happy 需要使用相机拍摄手写日记页面，并将其转换为反思记录。"
+        }
+      }
+    },
     "orientation": "portrait",
     "icon": "./assets/icons/icon-panda.png",
     "scheme": "happy",

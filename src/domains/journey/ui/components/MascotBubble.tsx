@@ -18,13 +18,14 @@ interface SpeechBubbleProps {
 }
 
 function SpeechBubble({ message, side }: SpeechBubbleProps): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   const isLeft: boolean = side === MascotSide.LEFT;
 
   return (
     <View
       className="rounded-2xl px-3 py-2 bg-brand-surface"
       accessibilityRole="text"
-      accessibilityLabel={`Mascot says: ${message}`}
+      accessibilityLabel={t("mascotSays", { message })}
       accessibilityLiveRegion="polite"
       style={{
         maxWidth: MASCOT_SIZE.bubbleMaxWidth,

@@ -10,6 +10,7 @@ import {
 } from "@/src/components/exercise/courseExerciseContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
+import { useTranslation } from "react-i18next";
 
 interface ScenarioOption {
   id: string;
@@ -33,6 +34,7 @@ export function LeverScenarioCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const variants = readVariants(content.variants);
@@ -97,7 +99,10 @@ export function LeverScenarioCategoryEngine({
             <Pressable
               key={option.id}
               accessibilityRole="radio"
-              accessibilityState={{ selected, disabled: showingFeedback || locked }}
+              accessibilityState={{
+                selected,
+                disabled: showingFeedback || locked,
+              }}
               disabled={locked || showingFeedback}
               onPress={() => selectOption(option)}
               className={
@@ -116,7 +121,7 @@ export function LeverScenarioCategoryEngine({
                     ? "h-5 w-5 items-center justify-center rounded-full border-2 border-[#5F7F58] bg-[#5F7F58]"
                     : selectedIncorrect
                       ? "h-5 w-5 items-center justify-center rounded-full border-2 border-[#A84432] bg-[#A84432]"
-                    : "h-5 w-5 rounded-full border-2 border-[#B6AB9B]"
+                      : "h-5 w-5 rounded-full border-2 border-[#B6AB9B]"
                 }
               >
                 {selected ? (
@@ -125,9 +130,17 @@ export function LeverScenarioCategoryEngine({
                   </Text>
                 ) : null}
               </View>
-              <Text className={`happy-font-body-bold flex-1 text-[13.5px] leading-[19px] ${
-                selectedCorrect ? "text-selection-foreground" : selectedIncorrect ? "text-error-foreground" : showingFeedback ? "text-text-secondary" : "text-text-primary"
-              }`}>
+              <Text
+                className={`happy-font-body-bold flex-1 text-[13.5px] leading-[19px] ${
+                  selectedCorrect
+                    ? "text-selection-foreground"
+                    : selectedIncorrect
+                      ? "text-error-foreground"
+                      : showingFeedback
+                        ? "text-text-secondary"
+                        : "text-text-primary"
+                }`}
+              >
                 {option.label}
               </Text>
             </Pressable>
@@ -138,7 +151,7 @@ export function LeverScenarioCategoryEngine({
       {showingFeedback && selectedOption ? (
         <CourseExerciseTeachingPanel
           correct={selectedOption.isCorrect}
-          title={getFeedbackTitle(selectedOption.isCorrect, attempts)}
+          title={t(getFeedbackTitleKey(selectedOption.isCorrect, attempts))}
           body={selectedOption.feedback}
           capability={
             selectedOption.isCorrect ? readString(content.capability) : null
@@ -156,10 +169,17 @@ export function LeverScenarioCategoryEngine({
   );
 }
 
-function getFeedbackTitle(correct: boolean, attempts: number): string {
-  if (correct) return "Why it fits";
-  if (attempts >= 3) return "Here’s the thinking";
-  return "Not quite";
+function getFeedbackTitleKey(
+  correct: boolean,
+  attempts: number,
+):
+  | "flow.ui.copy.lever_scenario.feedback.whyFits"
+  | "flow.ui.copy.lever_scenario.feedback.thinkingHeading"
+  | "flow.ui.copy.lever_scenario.feedback.notQuite" {
+  if (correct) return "flow.ui.copy.lever_scenario.feedback.whyFits";
+  if (attempts >= 3)
+    return "flow.ui.copy.lever_scenario.feedback.thinkingHeading";
+  return "flow.ui.copy.lever_scenario.feedback.notQuite";
 }
 
 function readVariants(value: unknown): LeverScenario[] {

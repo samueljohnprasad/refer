@@ -74,7 +74,11 @@ const EmotionItem: React.FC<{
       scale={0.93}
       hapticStyle="light"
       accessibilityRole="button"
-      accessibilityLabel={`Log ${moodName} mood${count > 0 ? `, logged ${count} times` : ""}`}
+      accessibilityLabel={t("moods.accessibilityLog", {
+        mood: moodName,
+        loggedCount:
+          count > 0 ? `, ${t("moods.accessibilityCount", { count })}` : "",
+      })}
       className="flex-1 items-center justify-center min-h-[56px] py-1"
     >
       <View className="relative items-center justify-center">

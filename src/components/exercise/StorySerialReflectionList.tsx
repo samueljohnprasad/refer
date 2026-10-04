@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { CourseExerciseOptionButton } from "@/src/components/exercise/CourseExerciseOptionButton";
 import type { ReflectionOption } from "@/src/components/exercise/storySerialContent";
 
@@ -16,6 +17,7 @@ export function StorySerialReflectionList({
   locked: boolean;
   onSelect: (option: ReflectionOption) => void;
 }) {
+  const { t } = useTranslation("exercises");
   return (
     <View className="mb-2 gap-3">
       {options.map((option) => {
@@ -38,7 +40,7 @@ export function StorySerialReflectionList({
             {isWrongSelected && (
               <View className="mb-2 ml-2 mt-2 border-l-[2px] border-[#D8C7B5] py-1 pl-3">
                 <Text className="happy-font-heading-bold mb-1 text-[11px] uppercase tracking-wider text-[#82796A]">
-                  NOT QUITE
+                  {t("flow.ui.categoryEngine.storySerial.notQuite")}
                 </Text>
                 <Text className="happy-font-body text-[13.5px] leading-[19px] text-[#5C5549]">
                   {option.feedback}

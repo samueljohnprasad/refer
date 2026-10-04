@@ -9,6 +9,64 @@
   "dailyGoal": { "title": "Objetivo diario de XP", "summary": "{{goal}} XP al día · unas {{count}} lecciones", "option": "{{option}} XP, {{label}}", "labels": { "10": "Fácil", "20": "Constante", "30": "Serio", "50": "Intenso" } },
   "premium": { "unlockAccessibility": "Desbloquear Happy Premium. Análisis, resúmenes y más", "unlockTitle": "Desbloquear Happy Premium", "unlockSubtitle": "Análisis, resúmenes y más", "checking": "Comprobando el estado de Premium", "active": "Premium está activo", "lifetime": "Acceso Premium de por vida", "renews": "Se renueva el {{date}}", "activeUntil": "Activo hasta {{date}}", "activeTitle": "Premium activo", "status": "{{status}}. Todas las funciones Premium están desbloqueadas." },
   "premiumUi": { "upgradeCta": "Pasar a Premium", "dismissAccessibility": "Cerrar invitación a Premium", "notNow": "Ahora no", "trialLastDay": "¡Último día de tu prueba!", "trialDaysLeft": "Quedan {{count}} días de prueba", "trialAccessibility_one": "Queda 1 día de prueba. Toca para actualizar.", "trialAccessibility_other": "Quedan {{count}} días de prueba. Toca para actualizar.", "keepPremiumAccess": "No pierdas el acceso a las funciones Premium", "keepAllFeatures": "Pásate para conservar todas las funciones", "upgrade": "Actualizar", "premiumFeature": "Función Premium", "gateDescription": "Pásate a Premium para desbloquear esta función y aprovechar mejor tu recorrido.", "unlockWithPremium": "Desbloquear con Premium", "unlockAccessibility": "Pásate a Premium para desbloquear {{feature}}" },
+  "accountAuth": {
+    "toasts": {
+      "signedIn": "Has iniciado sesión.",
+      "signInFailed": "No se pudo iniciar sesión. Inténtalo de nuevo.",
+      "premiumRefreshNeeded": "Cuenta guardada. Hay que actualizar Premium.",
+      "accountCreated": "Cuenta creada.",
+      "premiumNotFound": "No se encontró Premium. Contacta con soporte.",
+      "premiumRestored": "Premium restaurado.",
+      "switchFailed": "No se pudo cambiar de cuenta. Inténtalo de nuevo.",
+      "premiumRestoreFailed": "No se pudo restaurar Premium automáticamente.",
+      "accountSwitched": "Has cambiado a la cuenta existente."
+    },
+    "recovery": {
+      "refreshTitle": "Hay que actualizar Premium",
+      "restoreTitle": "Hay que restaurar Premium",
+      "claimDescription": "Tu perfil está guardado, pero no se pudo actualizar Premium para este inicio de sesión. Intenta restaurarlo de nuevo o comparte estos ID con soporte.",
+      "moveDescription": "Ahora usas la cuenta existente, pero no se pudo restaurar Premium automáticamente. Inténtalo de nuevo o comparte estos ID con soporte.",
+      "revenueCatId": "ID de usuario de RevenueCat",
+      "supabaseId": "ID de usuario de Supabase",
+      "unavailable": "No disponible",
+      "tryRestoreAgain": "Intentar restaurar de nuevo",
+      "continue": "Continuar",
+      "continueWithoutPremium": "Continuar sin Premium"
+    },
+    "conflict": {
+      "premiumTitle": "Premium está activo aquí",
+      "existingTitle": "Se encontró una cuenta existente",
+      "premiumDescription": "Tu Premium y tu progreso pertenecen a este perfil. Este inicio de sesión con {{provider}} ya está vinculado a otra cuenta de Happy. Puedes conservar este perfil o cambiar a tu cuenta existente e intentar restaurar Premium allí. Tu progreso actual no se transferirá.",
+      "description": "Este inicio de sesión con {{provider}} ya está vinculado a otra cuenta de Happy. Si continúas, cambiarás a esa cuenta y tu progreso actual no se transferirá.",
+      "keepPremium": "Conservar este perfil Premium",
+      "continueExisting": "Continuar con la cuenta existente",
+      "moveExisting": "Cambiar a la cuenta existente",
+      "stayCurrent": "Conservar mi progreso actual"
+    },
+    "signIn": {
+      "createAccount": "Crear tu cuenta",
+      "welcomeBack": "Te damos la bienvenida",
+      "createDescription": "Sincroniza tu curso, reflexiones y racha con tu cuenta.",
+      "welcomeDescription": "Inicia sesión para sincronizar tu curso, reflexiones y racha entre dispositivos.",
+      "continueApple": "Continuar con Apple",
+      "continueGoogle": "Continuar con Google",
+      "maybeLater": "Quizá más tarde"
+    }
+  },
+  "postTrial": {
+    "heading": "Una oferta especial para ti",
+    "trialEndedLead": "Tu prueba ha terminado. Consigue",
+    "discountOff": "un {{percent}} % de descuento en",
+    "trialEndedTail": "tu suscripción anual.",
+    "annualPlan": "Plan anual",
+    "annualPrice": "{{price}}/año",
+    "originalAnnualPrice": "39,99 $/año",
+    "monthlyPrice": "Solo {{price}} al mes",
+    "discountBadge": "{{percent}} % DE DESCUENTO",
+    "claimDiscount": "Consigue tu descuento del {{percent}} %",
+    "dismissAccessibility": "Cerrar oferta",
+    "claimAccessibility": "Aplicar descuento y pasar a Premium"
+  },
   "developer": { "appleIntelligence": "Apple Intelligence", "aiModel": "Modelo de IA", "support": "Soporte", "animatedSymbols": "Símbolos animados", "courseExercises": "Ejercicios del curso" },
   "bulkImport": {
     "title": "Importación masiva", "sampleDescription": "Importa entradas de diario de muestra para probar", "startDate": "Fecha de inicio", "startDateDescription": "Las entradas se crearán a partir de esta fecha", "daysLabel": "Número de días", "daysAccessibility": "Número de días que se importarán", "entriesWillImport_one": "Se importará {{count}} entrada", "entriesWillImport_other": "Se importarán {{count}} entradas", "importingProgress": "Importando {{current}} de {{total}}…", "cancel": "Cancelar", "import": "Importar", "importing": "Importando…",
@@ -21,5 +79,7 @@
   "reminders": { "title": "Recordatorios diarios", "description": "Configura pequeños avisos para crear un hábito de escritura constante", "permissionTitle": "Se necesita permiso para notificaciones", "permissionMessage": "Activa el acceso a las notificaciones en Ajustes para recibir recordatorios.", "openSettings": "Abrir Ajustes", "cancel": "Cancelar", "slots": { "1": { "title": "Reflexión matutina", "body": "Empieza el día con claridad ☀️ Tómate un momento para reflexionar y definir tus intenciones." }, "2": { "title": "Pausa del mediodía", "body": "¿Cómo va tu día? 🌿 Haz una pausa y captura tus pensamientos ahora." }, "3": { "title": "Desconexión nocturna", "body": "Es hora de relajarte 🌙 Reflexiona sobre tu día y celebra tus logros." } } },
   "share": { "message": "¡Descubre Happy AI Journal! https://apps.apple.com/us/app/happy-ai-journal/id6755650433" },
   "languageOk": "Aceptar",
-  "device": "Idioma del dispositivo"
+  "device": "Idioma del dispositivo",
+  "purchaseRestore": { "action": "Restaurar compras", "actionDescription": "Recupera Premium desde el App Store.", "restored": "Se ha restaurado Premium.", "notFound": "No se encontró ningún Premium activo.", "failed": "Happy no pudo restaurar las compras. Inténtalo de nuevo." },
+  "assistantUi": { "button": { "label": "Abrir el asistente Happy", "hint": "Arrastra para mover. Toca para ver acciones rápidas." }, "moodSheet": { "title": "Revisar mi ánimo", "description": "Indica cómo te sientes hoy. Basta con un toque.", "close": "Cerrar revisión del ánimo" }, "contexts": { "exercises": { "title": "Hola, soy Happy", "subtitle": "¿Qué te ayudaría ahora?" }, "journal": { "title": "Hola, soy Happy", "subtitle": "Anota algo, revisa cómo estás o abre tus ideas." }, "record": { "title": "Hola, soy Happy", "subtitle": "Escribir en tu diario, sin complicaciones." }, "journeys": { "title": "Hola, soy Happy", "subtitle": "Avanza en tu camino con calma." }, "settings": { "title": "Hola, soy Happy", "subtitle": "Accesos al perfil, las compras y la ayuda." }, "default": { "title": "Hola, soy Happy", "subtitle": "Elige una pequeña acción útil." } }, "actions": { "save_progress": { "label": "Guardar tu progreso", "description": "Crea una cuenta para conservar tu progreso." }, "save_premium_profile": { "label": "Guardar tu progreso", "description": "Crea una cuenta para conservar Premium y tu progreso." }, "resume_exercise": { "label": "Continuar ejercicio", "description": "Sigue donde lo dejaste." }, "try_1min_breathing": { "label": "Probar respiración de 1 min", "description": "Una pausa breve cuando tienes la mente ocupada." }, "try_breathing": { "label": "Probar respiración", "description": "Tómate un minuto para relajar el cuerpo." }, "calm_me_down": { "label": "Ayúdame a calmarme", "description": "Una breve pausa para respirar antes de continuar." }, "thought_catcher": { "label": "Capturar pensamientos", "description": "Identifica y desenreda un pensamiento ansioso." }, "view_exercise_log": { "label": "Ver registro de ejercicios", "description": "Consulta lo que ya has completado." }, "voice_journal": { "label": "Diario por voz", "description": "Habla y conviértelo en una entrada de diario." }, "keyboard_journal": { "label": "Diario escrito", "description": "Escribe una nota privada rápidamente." }, "mood_check": { "label": "Revisar mi ánimo", "description": "Registra cómo te sientes en unos segundos." }, "ai_insight": { "label": "Análisis con IA", "description": "Abre el resumen de reflexión semanal." }, "continue_journey": { "label": "Continuar recorrido", "description": "Vuelve al recorrido que estás siguiendo." }, "restore_purchases": { "label": "Restaurar compras", "description": "Recupera Premium desde el App Store." }, "support": { "label": "Contactar con soporte", "description": "Obtén ayuda con tu cuenta o Premium." }, "open_settings": { "label": "Abrir ajustes", "description": "Gestiona Premium, tu cuenta y la ayuda." }, "goHome": { "label": "Ir a la pantalla de inicio" } } }
 }

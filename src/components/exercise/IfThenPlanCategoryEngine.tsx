@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { View, Text, ScrollView } from "react-native";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import { CourseExerciseOptionButton } from "@/src/components/exercise/CourseExerciseOptionButton";
@@ -17,6 +18,7 @@ export function IfThenPlanCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   
@@ -73,12 +75,12 @@ export function IfThenPlanCategoryEngine({
       showsVerticalScrollIndicator={false}
     >
       <CourseExerciseHeading
-        title={readString(content.title) ?? "Set up the next small test"}
+        title={readString(content.title) ?? t("flow.ui.categoryEngine.ifThenPlan.titleFallback")}
         instruction={
           phase === "selecting_trigger"
-            ? "Choose something you've noticed."
+            ? t("flow.ui.categoryEngine.ifThenPlan.chooseCue")
             : phase === "selecting_action"
-            ? "Choose how you'll test it."
+            ? t("flow.ui.categoryEngine.ifThenPlan.chooseAction")
             : ""
         }
       />
@@ -86,7 +88,7 @@ export function IfThenPlanCategoryEngine({
       {phase === "selecting_trigger" && (
         <View className="mb-4">
           <Text className="happy-font-body-bold mb-3 text-[10.5px] tracking-[0.5px] text-[#82796A] uppercase">
-            IF
+            {t("flow.ui.categoryEngine.ifThenPlan.ifLabel")}
           </Text>
           <View className="gap-2.5">
             {cues.map(cue => (
@@ -105,7 +107,7 @@ export function IfThenPlanCategoryEngine({
       {phase === "selecting_action" && selectedCue && (
         <View className="mb-4">
           <Text className="happy-font-body-bold mb-3 text-[10.5px] tracking-[0.5px] text-[#82796A] uppercase">
-            IF
+            {t("flow.ui.categoryEngine.ifThenPlan.ifLabel")}
           </Text>
           <View className="mb-6 opacity-90">
              <CourseExerciseOptionButton
@@ -118,7 +120,7 @@ export function IfThenPlanCategoryEngine({
           </View>
 
           <Text className="happy-font-body-bold mb-3 text-[10.5px] tracking-[0.5px] text-[#82796A] uppercase">
-            THEN I WILL
+            {t("flow.ui.categoryEngine.ifThenPlan.thenLabel")}
           </Text>
           <View className="gap-2.5">
             {selectedCue.actions.map(action => (
@@ -138,14 +140,14 @@ export function IfThenPlanCategoryEngine({
         <View>
           <View className="mb-3">
              <Text className="happy-font-body-bold mb-2 text-[10.5px] tracking-[0.5px] text-[#82796A] uppercase">
-               Your small test
+               {t("flow.ui.categoryEngine.ifThenPlan.summaryLabel")}
              </Text>
              <View className="rounded-[20px] border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-5 py-5">
                <Text className="happy-font-heading-bold text-[18px] leading-[26px] text-[#3F4A31]">
-                 If {selectedCue.text},
+                 {t("flow.ui.categoryEngine.ifThenPlan.ifCue", { cue: selectedCue.text })}
                </Text>
                <Text className="happy-font-heading-bold mt-3 text-[18px] leading-[26px] text-[#3F4A31]">
-                 then I will {selectedAction.text}.
+                 {t("flow.ui.categoryEngine.ifThenPlan.thenAction", { action: selectedAction.text })}
                </Text>
              </View>
           </View>
@@ -153,7 +155,7 @@ export function IfThenPlanCategoryEngine({
           {phase === "review" && (
             <View className="mt-4 px-2">
               <Text className="happy-font-body text-center text-[13px] text-[#82796A]">
-                Private to you · No reminders unless you ask.
+                {t("flow.ui.categoryEngine.ifThenPlan.privateNote")}
               </Text>
             </View>
           )}
@@ -161,7 +163,7 @@ export function IfThenPlanCategoryEngine({
           {phase === "complete" && (
             <View className="mt-4">
               <CourseExerciseTeachingPanel
-                title="✓ Added to My Plans"
+                title={t("flow.ui.categoryEngine.ifThenPlan.saved")}
                 body=""
               />
             </View>

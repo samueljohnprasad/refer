@@ -20,7 +20,10 @@
     "bad": "Bad",
     "okay": "Okay",
     "good": "Good",
-    "great": "Great"
+    "great": "Great",
+    "accessibilityLog": "Log {{mood}} mood{{loggedCount}}",
+    "accessibilityCount_one": "logged {{count}} time",
+    "accessibilityCount_other": "logged {{count}} times"
   },
   "prompts": {
     "1": "What are you grateful for today?",
@@ -44,13 +47,24 @@
     "continueLearning": "Continue learning",
     "continueJourney": "Continue your journey",
     "pickUpWhereLeft": "Pick up where you left off.",
-    "openJourneys": "Open journeys"
+    "openJourneys": "Open journeys",
+    "a11yActive": "{{courseTitle}}. Next activity: {{activityTitle}}{{duration}}. Tap to continue learning.",
+    "a11yNoCourse": "Find your next step. Choose a journey to start learning. Tap to explore journeys.",
+    "a11yCompleted": "Journey complete. You can revisit the skills you've learned. Tap to review your skills.",
+    "a11yError": "Continue your journey. Tap to open journeys.",
+    "a11yLoading": "Loading learning journey",
+    "a11yDuration_one": "{{count}} minute",
+    "a11yDuration_other": "{{count}} minutes",
+    "durationCompact": "{{count}} min"
   },
   "streak": {
     "streakCount_one": "{{count}} day streak",
     "streakCount_other": "{{count}} day streak",
     "weekDays": ["S", "M", "T", "W", "T", "F", "S"],
-    "a11yLabel": "Current streak: {{count}} days. Tap to view streak history."
+    "a11yLabel": "Current streak: {{count}} days. Tap to view streak history.",
+    "dayLabel": "Day streak",
+    "newStreakMessage": "A new streak begins! Keep showing up each day to build your progress.",
+    "continue": "Continue"
   },
   "errors": {
     "loadTitle": "Something went wrong",

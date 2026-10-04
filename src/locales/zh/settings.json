@@ -9,6 +9,64 @@
   "dailyGoal": { "title": "每日 XP 目标", "summary": "每天 {{goal}} XP · 约 {{count}} 节课程", "option": "{{option}} XP，{{label}}", "labels": { "10": "轻松", "20": "稳定", "30": "认真", "50": "高强度" } },
   "premium": { "unlockAccessibility": "解锁 Happy Premium。获取分析、总结等更多功能", "unlockTitle": "解锁 Happy Premium", "unlockSubtitle": "分析、总结等更多功能", "checking": "正在检查 Premium 状态", "active": "Premium 已激活", "lifetime": "永久 Premium 访问权限", "renews": "续订日期：{{date}}", "activeUntil": "有效期至 {{date}}", "activeTitle": "Premium 已激活", "status": "{{status}}。所有 Premium 功能均已解锁。" },
   "premiumUi": { "upgradeCta": "升级到 Premium", "dismissAccessibility": "关闭 Premium 升级提示", "notNow": "暂不", "trialLastDay": "试用期的最后一天！", "trialDaysLeft": "试用期还剩 {{count}} 天", "trialAccessibility_other": "试用期还剩 {{count}} 天。轻点即可升级。", "keepPremiumAccess": "继续使用 Premium 功能", "keepAllFeatures": "升级以继续使用全部功能", "upgrade": "升级", "premiumFeature": "Premium 功能", "gateDescription": "升级以解锁此功能，更好地继续你的旅程。", "unlockWithPremium": "使用 Premium 解锁", "unlockAccessibility": "升级以解锁{{feature}}" },
+  "accountAuth": {
+    "toasts": {
+      "signedIn": "登录成功。",
+      "signInFailed": "登录失败，请重试。",
+      "premiumRefreshNeeded": "账户已保存，请刷新 Premium 状态。",
+      "accountCreated": "账户已创建。",
+      "premiumNotFound": "未找到 Premium，请联系支持团队。",
+      "premiumRestored": "Premium 已恢复。",
+      "switchFailed": "无法切换账户，请重试。",
+      "premiumRestoreFailed": "无法自动恢复 Premium。",
+      "accountSwitched": "已切换到现有账户。"
+    },
+    "recovery": {
+      "refreshTitle": "需要刷新 Premium",
+      "restoreTitle": "需要恢复 Premium",
+      "claimDescription": "个人资料已保存，但此登录无法刷新 Premium。请重试恢复，或将这些 ID 提供给支持团队。",
+      "moveDescription": "你现在使用的是现有账户，但无法自动恢复 Premium。请重试，或将这些 ID 提供给支持团队。",
+      "revenueCatId": "RevenueCat 用户 ID",
+      "supabaseId": "Supabase 用户 ID",
+      "unavailable": "不可用",
+      "tryRestoreAgain": "重试恢复",
+      "continue": "继续",
+      "continueWithoutPremium": "不使用 Premium 继续"
+    },
+    "conflict": {
+      "premiumTitle": "此账户已开通 Premium",
+      "existingTitle": "找到现有账户",
+      "premiumDescription": "此个人资料关联着你的 Premium 和当前进度。此 {{provider}} 登录方式已关联到另一个 Happy 账户。你可以保留此资料，也可以切换到现有账户并尝试恢复 Premium。当前进度不会转移。",
+      "description": "此 {{provider}} 登录方式已关联到另一个 Happy 账户。继续后，你将切换到该账户，当前进度不会转移。",
+      "keepPremium": "保留此 Premium 资料",
+      "continueExisting": "继续使用现有账户",
+      "moveExisting": "切换到现有账户",
+      "stayCurrent": "保留当前进度"
+    },
+    "signIn": {
+      "createAccount": "创建账户",
+      "welcomeBack": "欢迎回来",
+      "createDescription": "将课程、反思记录和连续练习天数同步到你的账户。",
+      "welcomeDescription": "登录后即可在不同设备间同步课程、反思记录和连续练习天数。",
+      "continueApple": "使用 Apple 继续",
+      "continueGoogle": "使用 Google 继续",
+      "maybeLater": "以后再说"
+    }
+  },
+  "postTrial": {
+    "heading": "为你准备的特别优惠",
+    "trialEndedLead": "试用期已结束，立即享受",
+    "discountOff": "{{percent}}% 折扣，适用于",
+    "trialEndedTail": "年度订阅！",
+    "annualPlan": "年度方案",
+    "annualPrice": "每年 {{price}}",
+    "originalAnnualPrice": "每年 $39.99",
+    "monthlyPrice": "每月仅需 {{price}}",
+    "discountBadge": "优惠 {{percent}}%",
+    "claimDiscount": "领取 {{percent}}% 优惠",
+    "dismissAccessibility": "关闭优惠",
+    "claimAccessibility": "领取优惠并升级到 Premium"
+  },
   "developer": { "appleIntelligence": "Apple Intelligence", "aiModel": "AI 模型", "support": "支持", "animatedSymbols": "动态符号", "courseExercises": "课程练习" },
   "bulkImport": {
     "title": "批量导入", "sampleDescription": "导入示例日记条目以进行测试", "startDate": "开始日期", "startDateDescription": "将从此日期开始创建条目", "daysLabel": "天数", "daysAccessibility": "要导入的天数", "entriesWillImport_other": "将导入 {{count}} 条日记", "importingProgress": "正在导入 {{current}} / {{total}}…", "cancel": "取消", "import": "导入", "importing": "正在导入…",
@@ -21,5 +79,7 @@
   "reminders": { "title": "每日提醒", "description": "设置温和的提醒，帮助你养成稳定的写日记习惯", "permissionTitle": "需要通知权限", "permissionMessage": "请在设置中允许通知，以接收提醒。", "openSettings": "打开设置", "cancel": "取消", "slots": { "1": { "title": "晨间反思", "body": "带着清晰开始新的一天 ☀️ 花一点时间反思并设定目标。" }, "2": { "title": "午间记录", "body": "今天过得怎么样？🌿 停下来，记录此刻的想法。" }, "3": { "title": "晚间放松", "body": "该放松了 🌙 回顾今天，庆祝你的收获。" } } },
   "share": { "message": "试试 Happy AI Journal！https://apps.apple.com/us/app/happy-ai-journal/id6755650433" },
   "languageOk": "确定",
-  "device": "设备语言"
+  "device": "设备语言",
+  "purchaseRestore": { "action": "恢复购买", "actionDescription": "从 App Store 恢复 Premium。", "restored": "Premium 已恢复。", "notFound": "未找到有效的 Premium。", "failed": "Happy 无法恢复购买，请重试。" },
+  "assistantUi": { "button": { "label": "打开 Happy 助手", "hint": "拖动即可移动。轻点可查看快捷操作。" }, "moodSheet": { "title": "记录心情", "description": "说说今天的感受吧。轻点一次就够了。", "close": "关闭心情记录" }, "contexts": { "exercises": { "title": "你好，我是 Happy", "subtitle": "现在做些什么会对你有帮助？" }, "journal": { "title": "你好，我是 Happy", "subtitle": "记录想法、看看感受，或查看洞察。" }, "record": { "title": "你好，我是 Happy", "subtitle": "让写日记变得轻松一些。" }, "journeys": { "title": "你好，我是 Happy", "subtitle": "慢慢继续你的旅程。" }, "settings": { "title": "你好，我是 Happy", "subtitle": "账户、恢复购买和支持快捷入口。" }, "default": { "title": "你好，我是 Happy", "subtitle": "选择一个简单有用的小行动。" } }, "actions": { "save_progress": { "label": "保存进度", "description": "添加登录账户以保留你的进度。" }, "save_premium_profile": { "label": "保存进度", "description": "添加登录账户以保留 Premium 和你的进度。" }, "resume_exercise": { "label": "继续练习", "description": "从上次停下的地方继续。" }, "try_1min_breathing": { "label": "试试 1 分钟呼吸", "description": "思绪纷乱时，短暂休息一下。" }, "try_breathing": { "label": "试试呼吸练习", "description": "用一分钟让身体平静下来。" }, "calm_me_down": { "label": "帮我平静下来", "description": "继续之前，先做一次简短呼吸练习。" }, "thought_catcher": { "label": "捕捉想法", "description": "留意并梳理一个令人焦虑的想法。" }, "view_exercise_log": { "label": "查看练习记录", "description": "看看你目前完成了哪些练习。" }, "voice_journal": { "label": "语音日记", "description": "说出想法，并将它记成日记。" }, "keyboard_journal": { "label": "文字日记", "description": "快速写下一条私密记录。" }, "mood_check": { "label": "记录心情", "description": "花几秒钟记录你的感受。" }, "ai_insight": { "label": "AI 洞察", "description": "打开每周反思摘要。" }, "continue_journey": { "label": "继续旅程", "description": "回到你正在进行的旅程。" }, "restore_purchases": { "label": "恢复购买", "description": "从 App Store 恢复 Premium。" }, "support": { "label": "联系支持", "description": "获取账户或 Premium 相关帮助。" }, "open_settings": { "label": "打开设置", "description": "管理 Premium、账户和支持。" }, "goHome": { "label": "返回主屏幕" } } }
 }

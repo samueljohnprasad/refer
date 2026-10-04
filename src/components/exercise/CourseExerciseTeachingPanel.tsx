@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 interface CourseExerciseTeachingPanelProps {
   body: string;
@@ -16,6 +17,8 @@ export function CourseExerciseTeachingPanel({
   capability,
   workedExample,
 }: CourseExerciseTeachingPanelProps) {
+  const { t } = useTranslation("exercises");
+
   return (
     <View className="mt-6 gap-2.5">
       <View
@@ -33,14 +36,14 @@ export function CourseExerciseTeachingPanel({
         </Text>
         {capability ? (
           <Text className="happy-font-body-bold mt-2 text-[12.5px] leading-[18px] text-brand-onSoft">
-            Takeaway: {capability}
+            {t("flow.ui.copy.teaching_panel.takeawayPrefix")} {capability}
           </Text>
         ) : null}
       </View>
       {workedExample ? (
         <View className="rounded-[20px] border border-[#DCD3C4] bg-[#F9F4ED] px-4 py-[14px]">
           <Text className="happy-font-body-bold text-[10.5px] tracking-[0.5px] text-[#29452A]">
-            HERE’S THE THINKING
+            {t("flow.ui.copy.teaching_panel.thinkingHeading")}
           </Text>
           <Text className="happy-font-body mt-1 text-[13.5px] leading-5 text-[#3F3A34]">
             {workedExample}

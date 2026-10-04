@@ -1,4 +1,15 @@
 {
+  "text_composer_voice_unavailable": "Nota vocale non disponibile. Puoi digitare questo elemento.",
+  "text_composer_recording_failed": "Impossibile avviare la registrazione. Puoi digitare questo elemento.",
+  "text_composer_voice_placeholder": "Scrivi o usa la voce...",
+  "text_composer_item_placeholder": "Scrivi un elemento...",
+  "text_composer_remove_item_accessibility": "Rimuovi elemento {{index}}: {{item}}",
+  "text_composer_listening": "In ascolto...",
+  "text_composer_stop_recording_item": "Interrompi la registrazione dell’elemento",
+  "text_composer_start_voice_input": "Avvia input vocale",
+  "text_composer_add_item_accessibility": "Aggiungi elemento",
+  "text_composer_add_item": "Aggiungi",
+  "text_composer_stop_voice_input": "Interrompi input vocale",
   "finding_personalized_options_3gywg0": "Ricerca di opzioni personalizzate…",
   "ai_picks_87cufd": "Scelte AI",
   "you_took_a_moment_to_check_in_with_yourself_145uhyl": "Ti sei preso un momento per verificare te stesso.",
@@ -41,5 +52,104 @@
   "verified_correct_label_1phun7l": "Abbinamento corretto: {{label}}",
   "incorrect_match_label_q8efnb": "Abbinamento errato: {{label}}",
   "paired_as_badge_label_1msv831": "Abbinata come {{badge}}: {{label}}",
-  "unpaired_label_52531d": "Non abbinata: {{label}}"
+  "unpaired_label_52531d": "Non abbinata: {{label}}",
+  "step_checklist_add_custom_item": "Aggiungi elemento personalizzato...",
+  "step_checklist_add_custom_item_accessibility": "Aggiungi elemento personalizzato alla lista",
+  "step_checklist_checked_count": "{{count}} selezionati",
+  "step_checklist_checked_count_minimum": "{{count}} selezionati (min. {{minimum}})",
+  "step_time_picker_example_placeholder": "Es. 22:30 o domani alle 15:00",
+  "wave_order_empty_slot": "Tocca una scheda per inserirla qui",
+  "wave_order_slot_accessibility": "Spazio {{index}}: {{stage}}. Tocca per rimuovere.",
+  "wave_order_pattern_heading": "LO SCHEMA",
+  "wave_order_pattern_title": "Un’ondata di panico cambia nel tempo.",
+  "wave_order_pattern_fallback": "L’allarme sale, raggiunge il picco e poi inizia a calmarsi.",
+  "wave_order_retry_title": "Prova di nuovo l’ordine",
+  "wave_order_wrong_fallback": "{{rightCount}} su {{total}} sono al posto giusto. Riordina i {{remaining}} rimanenti.",
+  "wave_order_clue_prefix": "Indizio",
+  "surge_diagram": {
+    "title": "L’allarme cambia nel tempo",
+    "instruction": "Segui l’andamento di un’ondata.",
+    "axisLabel": "Con il passare del tempo",
+    "patternLabel": "LO SCHEMA",
+    "takeaway": "Un’ondata può sembrare interminabile mentre la stai attraversando.\n\nMa la sua intensità può cambiare nel tempo.",
+    "note": "Schema illustrativo; durata e intensità variano.",
+    "completedAnnouncement": "L’intensità si sta attenuando. Fine del percorso. Lo schema: un’ondata può sembrare interminabile, ma la sua intensità cambia nel tempo.",
+    "phaseAnnouncement": "{{tag}}. {{caption}}",
+    "chartAccessibilityLabel": "Curva dell’intensità che mostra inizio, aumento, picco e attenuazione nel tempo",
+    "sliderAccessibilityLabel": "Linea temporale dell’ondata",
+    "incrementAccessibilityLabel": "Avanti nel tempo",
+    "decrementAccessibilityLabel": "Indietro nel tempo",
+    "phase": {
+      "beginning": { "tag": "INIZIO", "caption": "Avanza nel tempo." },
+      "rising": {
+        "tag": "AUMENTO",
+        "caption": "L’allarme si sta intensificando."
+      },
+      "peak": {
+        "tag": "PICCO",
+        "caption": "Questo è il punto più intenso dell’esempio."
+      },
+      "easing": {
+        "tag": "ATTENUAZIONE",
+        "caption": "L’intensità sta cambiando."
+      }
+    }
+  },
+  "two_dial_sandbox": {
+    "title": "Due manopole danno forma alla tua settimana",
+    "instruction": "Regola impegni e recupero per vedere come reagisce il sistema.",
+    "currentState": "STATO ATTUALE",
+    "statesDiscovered": "STATI ESPLORATI",
+    "discoveredCount": "{{count}} di 4",
+    "patternLabel": "LO SCHEMA",
+    "takeaway": "Gli impegni da soli non determinano come ti senti durante la settimana.\n\nIl recupero cambia il costo degli stessi impegni.",
+    "completedAnnouncement": "Hai esplorato tutti e quattro gli stati. Lo schema: gli impegni da soli non determinano come ti senti durante la settimana. Il recupero cambia il costo degli stessi impegni.",
+    "demand": {
+      "label": "IMPEGNI",
+      "low": "tranquillità",
+      "high": "tutto insieme",
+      "accessibilityLabel": "Manopola degli impegni"
+    },
+    "recovery": {
+      "label": "RECUPERO",
+      "low": "senza energie",
+      "high": "carico di energie",
+      "accessibilityLabel": "Manopola del recupero"
+    },
+    "value": {
+      "highDemand": "Impegni elevati",
+      "lowDemand": "Impegni ridotti",
+      "highRecovery": "Recupero elevato",
+      "lowRecovery": "Recupero ridotto"
+    },
+    "outcomes": {
+      "HL": {
+        "title": "Corsa contro il tempo",
+        "body": "Molti impegni e poco recupero possono mantenere il sistema sotto pressione."
+      },
+      "HH": {
+        "title": "Ritmo costante",
+        "body": "Gli impegni ci sono, ma il recupero ricarica le energie."
+      },
+      "LH": {
+        "title": "Ricarica tranquilla",
+        "body": "Meno impegni lasciano al recupero lo spazio per ricostruire le energie."
+      },
+      "LL": {
+        "title": "Ciclo bloccato",
+        "body": "Pochi impegni e poco recupero possono rendere la settimana piatta."
+      }
+    }
+  },
+  "teaching_panel": {
+    "takeawayPrefix": "In sintesi:",
+    "thinkingHeading": "ECCO IL RAGIONAMENTO"
+  },
+  "lever_scenario": {
+    "feedback": {
+      "whyFits": "Perché funziona",
+      "thinkingHeading": "Ecco il ragionamento",
+      "notQuite": "Non proprio"
+    }
+  }
 }

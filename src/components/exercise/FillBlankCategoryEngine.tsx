@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
@@ -17,6 +18,7 @@ export function FillBlankCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const variants = readFillBlankVariants(content.variants);
@@ -53,9 +55,9 @@ export function FillBlankCategoryEngine({
   return (
     <View className="px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
-        title={readString(content.title) ?? "Complete the sentence"}
+        title={readString(content.title) ?? t("flow.ui.categoryEngine.fillBlank.titleFallback")}
         instruction={
-          readString(content.instruction) ?? "Type the missing word."
+          readString(content.instruction) ?? t("flow.ui.categoryEngine.fillBlank.instructionFallback")
         }
       />
 
@@ -64,12 +66,12 @@ export function FillBlankCategoryEngine({
           {variant?.pre}
         </Text>
         <TextInput
-          accessibilityLabel="Missing word"
+          accessibilityLabel={t("flow.ui.categoryEngine.fillBlank.inputLabel")}
           autoCapitalize="none"
           autoCorrect={false}
           editable={!locked && phase === "entry"}
           onChangeText={updateInput}
-          placeholder="type here"
+          placeholder={t("flow.ui.categoryEngine.fillBlank.inputPlaceholder")}
           placeholderTextColor="#82796A"
           returnKeyType="done"
           value={input}
@@ -83,7 +85,7 @@ export function FillBlankCategoryEngine({
       {phase === "entry" && attemptCount >= 2 ? (
         <View className="mt-3">
           <Text className="happy-font-body-bold mb-2 text-[11px] tracking-[0.45px] text-[#82796A]">
-            WORD BANK
+            {t("flow.ui.categoryEngine.fillBlank.wordBank")}
           </Text>
           <View className="flex-row flex-wrap gap-2">
             {variant?.exampleWords.map((word) => (
@@ -125,6 +127,7 @@ function FillBlankFeedback({
   feedbackText: string | null;
   supported: boolean;
 }) {
+  const { t } = useTranslation("exercises");
   const positive = correct || supported;
   return (
     <View
@@ -148,17 +151,17 @@ function FillBlankFeedback({
           }
         >
           {supported
-            ? "Here’s the thinking"
+            ? t("flow.ui.categoryEngine.fillBlank.feedbackThinking")
             : correct
-              ? "Why it fits"
-              : "Try another way."}
+              ? t("flow.ui.categoryEngine.fillBlank.feedbackFits")
+              : t("flow.ui.categoryEngine.fillBlank.feedbackTryAnother")}
         </Text>
         <Text className="happy-font-body mt-1.5 text-[13.5px] leading-5 text-[#201E1D]">
           {feedbackText}
         </Text>
         {correct && capability ? (
           <Text className="happy-font-body mt-2 text-[13px] leading-[18px] text-[#29452A]">
-            <Text className="happy-font-body-bold">New capability: </Text>
+            <Text className="happy-font-body-bold">{t("flow.ui.categoryEngine.fillBlank.newCapability")} </Text>
             {capability}
           </Text>
         ) : null}

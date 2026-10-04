@@ -1,5 +1,6 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Text, View, useWindowDimensions } from "react-native";
 
 import { DividerCell } from "./DividerCell";
@@ -77,6 +78,7 @@ export function JourneyMapLoadingState(): React.JSX.Element {
 }
 
 export function JourneyMapEmptyState(): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
     <View className="flex-1 items-center justify-center px-8 pb-16">
       <MochiMascot expression="concentrating" size={100} delay={0} />
@@ -86,13 +88,13 @@ export function JourneyMapEmptyState(): React.JSX.Element {
         adjustsFontSizeToFit
         numberOfLines={2}
       >
-        Your journey is being prepared
+        {t("mapEmptyTitle")}
       </Text>
       <Text
         style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
         className="mt-2.5 text-center text-[15px] leading-relaxed text-ink-soft"
       >
-        Check back shortly. Your personalized path will be ready soon.
+        {t("mapEmptyDescription")}
       </Text>
     </View>
   );

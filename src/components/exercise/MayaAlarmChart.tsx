@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import Svg, { Line, Polyline, Text as SvgText } from "react-native-svg";
 import {
   COURSE_EXERCISE_FONTS,
@@ -20,6 +21,7 @@ export function MayaAlarmChart({
   replay,
   coffee,
 }: MayaAlarmChartProps) {
+  const { t } = useTranslation("exercises");
   const inputs = { load, walk, replay, coffee };
   const points: string[] = [];
   for (let time = 7; time <= 25.01; time += 0.25) {
@@ -43,21 +45,21 @@ export function MayaAlarmChart({
         stroke={SEMANTIC_COLORS.brand.primaryLight} strokeWidth={2} strokeDasharray="4 4" />
       <SvgText x={bedtimeX} y={11} fill={SEMANTIC_COLORS.brand.pressed}
         fontFamily={COURSE_EXERCISE_FONTS.bodyBold} fontSize={9} textAnchor="middle">
-        11pm
+        {t("flow.ui.categoryEngine.mayaAlarmChart.bedtime")}
       </SvgText>
       <Line x1={12} y1={thresholdY} x2={292} y2={thresholdY}
         stroke={SEMANTIC_COLORS.brand.primary} strokeWidth={2}
         strokeDasharray="3 5" strokeLinecap="round" />
       <SvgText x={290} y={thresholdY - 5} fill={SEMANTIC_COLORS.brand.pressed}
         fontFamily={COURSE_EXERCISE_FONTS.bodyBold} fontSize={9} textAnchor="end">
-        switch-off line
+        {t("flow.ui.categoryEngine.mayaAlarmChart.threshold")}
       </SvgText>
       <Polyline points={points.join(" ")} fill="none"
         stroke={SEMANTIC_COLORS.brand.primary} strokeWidth={3.5}
         strokeLinecap="round" strokeLinejoin="round" />
-      <AxisLabel x={12} anchor="start">7am</AxisLabel>
-      <AxisLabel x={152} anchor="middle">4pm</AxisLabel>
-      <AxisLabel x={292} anchor="end">1am</AxisLabel>
+      <AxisLabel x={12} anchor="start">{t("flow.ui.categoryEngine.mayaAlarmChart.startTime")}</AxisLabel>
+      <AxisLabel x={152} anchor="middle">{t("flow.ui.categoryEngine.mayaAlarmChart.afternoonTime")}</AxisLabel>
+      <AxisLabel x={292} anchor="end">{t("flow.ui.categoryEngine.mayaAlarmChart.endTime")}</AxisLabel>
     </Svg>
   );
 }

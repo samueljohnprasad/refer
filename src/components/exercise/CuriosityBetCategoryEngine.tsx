@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Pressable, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
+import { useTranslation } from "react-i18next";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
   readNumber,
@@ -17,6 +18,7 @@ export function CuriosityBetCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const options = readStringArray(content.options);
@@ -68,14 +70,14 @@ export function CuriosityBetCategoryEngine({
         <View className="mt-3.5 gap-2 rounded-[24px] bg-[#F9F4ED] px-[22px] py-5 shadow-md shadow-black/10">
           <View className="flex-row flex-wrap items-center gap-2">
             <Text className="happy-font-body-bold text-[11px] tracking-[0.45px] text-[#82796A]">
-              YOUR BET
+              {t("flow.ui.categoryEngine.curiosityBet.yourBet")}
             </Text>
             <Text className="happy-font-body-semibold rounded-full border-[1.5px] border-[#ABC0A2] bg-[#F2F8EF] px-[13px] py-[5px] text-[13px] text-[#201E1D]">
               {selectedOptionIndex == null ? "" : options[selectedOptionIndex]}
             </Text>
           </View>
           <Text className="happy-font-body-bold text-[11px] tracking-[0.45px] text-[#29452A]">
-            THE ANSWER
+            {t("flow.ui.categoryEngine.curiosityBet.theAnswer")}
           </Text>
           <Text className="happy-font-heading-bold text-[26px] leading-[31px] text-[#29452A]">
             {readString(content.answer)}

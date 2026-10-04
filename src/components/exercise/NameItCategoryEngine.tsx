@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { AccessibilityInfo, LayoutAnimation, Pressable, Text, View } from "react-native";
 import { useReducedMotion } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
+import { useTranslation } from "react-i18next";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
   readRecord,
@@ -26,6 +27,7 @@ export function NameItCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const families = readFamilies(content.families);
@@ -58,7 +60,9 @@ export function NameItCategoryEngine({
 
   const selectFamily = (family: FeelingFamily) => {
     Haptics.selectionAsync();
-    AccessibilityInfo.announceForAccessibility(`${family.name} family selected.`);
+    AccessibilityInfo.announceForAccessibility(
+      t("flow.ui.categoryEngine.nameIt.familySelected", { family: family.name }),
+    );
     animate();
     onInteraction(
       {
@@ -72,7 +76,9 @@ export function NameItCategoryEngine({
 
   const selectWord = (word: string) => {
     Haptics.selectionAsync();
-    AccessibilityInfo.announceForAccessibility(`${word} selected.`);
+    AccessibilityInfo.announceForAccessibility(
+      t("flow.ui.categoryEngine.nameIt.wordSelected", { word }),
+    );
     if (!selectedWord) {
       animate(); // Animate feedback block appearing
     }

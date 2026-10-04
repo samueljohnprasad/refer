@@ -1,4 +1,15 @@
 {
+  "text_composer_voice_unavailable": "Nota de voz indisponível. Você pode digitar este item.",
+  "text_composer_recording_failed": "Não foi possível iniciar a gravação. Você pode digitar este item.",
+  "text_composer_voice_placeholder": "Digite ou use a voz...",
+  "text_composer_item_placeholder": "Digite um item...",
+  "text_composer_remove_item_accessibility": "Remover item {{index}}: {{item}}",
+  "text_composer_listening": "Ouvindo...",
+  "text_composer_stop_recording_item": "Parar gravação do item",
+  "text_composer_start_voice_input": "Iniciar entrada de voz",
+  "text_composer_add_item_accessibility": "Adicionar item",
+  "text_composer_add_item": "Adicionar",
+  "text_composer_stop_voice_input": "Parar entrada de voz",
   "match_the_two_sides_5j1723": "Combine os dois lados",
   "tap_an_observation_then_its_useful_reading_1v9jxsm": "Toque em uma observação e, em seguida, em sua leitura útil.",
   "observation_1073nnx": "Observação",
@@ -41,5 +52,104 @@
   "even_a_small_shift_matters_you_made_room_for_a_m_bqxdz4": "Mesmo uma pequena mudança é importante. Você abriu espaço para um estado mais equilibrado.",
   "checked_again_ko7wr6": "Verificado novamente",
   "reality_check_1ryst8b": "Verificação da realidade",
-  "finish_185ucaa": "Terminar"
+  "finish_185ucaa": "Terminar",
+  "step_checklist_add_custom_item": "Adicionar item personalizado...",
+  "step_checklist_add_custom_item_accessibility": "Adicionar item personalizado à lista",
+  "step_checklist_checked_count": "{{count}} marcados",
+  "step_checklist_checked_count_minimum": "{{count}} marcados (mín. {{minimum}})",
+  "step_time_picker_example_placeholder": "Ex.: 22h30 ou amanhã às 15h",
+  "wave_order_empty_slot": "Toque numa ficha para a colocar aqui",
+  "wave_order_slot_accessibility": "Espaço {{index}}: {{stage}}. Toque para remover.",
+  "wave_order_pattern_heading": "O PADRÃO",
+  "wave_order_pattern_title": "Uma onda de pânico muda com o tempo.",
+  "wave_order_pattern_fallback": "O alarme aumenta, atinge um pico e começa a acalmar.",
+  "wave_order_retry_title": "Tente a ordem outra vez",
+  "wave_order_wrong_fallback": "{{rightCount}} de {{total}} estão no lugar certo. Reordene os {{remaining}} restantes.",
+  "wave_order_clue_prefix": "Pista",
+  "surge_diagram": {
+    "title": "O alarme muda ao longo do tempo",
+    "instruction": "Acompanha a forma de uma onda de intensidade.",
+    "axisLabel": "Com o passar do tempo",
+    "patternLabel": "O PADRÃO",
+    "takeaway": "Uma onda pode parecer interminável enquanto a atravessas.\n\nMas a intensidade pode mudar ao longo do tempo.",
+    "note": "Padrão ilustrativo; a duração e a intensidade variam.",
+    "completedAnnouncement": "A intensidade está a diminuir. Chegaste ao fim. O padrão: uma onda pode parecer interminável, mas a intensidade muda com o tempo.",
+    "phaseAnnouncement": "{{tag}}. {{caption}}",
+    "chartAccessibilityLabel": "Curva de intensidade que mostra o início, a subida, o pico e a diminuição ao longo do tempo",
+    "sliderAccessibilityLabel": "Cronologia da onda de intensidade",
+    "incrementAccessibilityLabel": "Avançar no tempo",
+    "decrementAccessibilityLabel": "Retroceder no tempo",
+    "phase": {
+      "beginning": { "tag": "INÍCIO", "caption": "Avança no tempo." },
+      "rising": {
+        "tag": "SUBIDA",
+        "caption": "O alarme está a intensificar-se."
+      },
+      "peak": {
+        "tag": "PICO",
+        "caption": "Este é o ponto mais intenso deste exemplo."
+      },
+      "easing": {
+        "tag": "DIMINUIÇÃO",
+        "caption": "A intensidade está a mudar."
+      }
+    }
+  },
+  "two_dial_sandbox": {
+    "title": "Dois controlos moldam a tua semana",
+    "instruction": "Ajusta a exigência e a recuperação para ver como o sistema reage.",
+    "currentState": "ESTADO ATUAL",
+    "statesDiscovered": "ESTADOS DESCOBERTOS",
+    "discoveredCount": "{{count}} de 4",
+    "patternLabel": "O PADRÃO",
+    "takeaway": "A exigência, por si só, não determina como a semana se sente.\n\nA recuperação altera o custo dessa mesma exigência.",
+    "completedAnnouncement": "Descobriste os quatro estados. O padrão: a exigência, por si só, não determina como a semana se sente. A recuperação altera o custo dessa mesma exigência.",
+    "demand": {
+      "label": "EXIGÊNCIA",
+      "low": "calma",
+      "high": "tudo ao mesmo tempo",
+      "accessibilityLabel": "Controlo da exigência"
+    },
+    "recovery": {
+      "label": "RECUPERAÇÃO",
+      "low": "sem energia",
+      "high": "com energia",
+      "accessibilityLabel": "Controlo da recuperação"
+    },
+    "value": {
+      "highDemand": "Exigência alta",
+      "lowDemand": "Exigência baixa",
+      "highRecovery": "Recuperação alta",
+      "lowRecovery": "Recuperação baixa"
+    },
+    "outcomes": {
+      "HL": {
+        "title": "Pressão dos prazos",
+        "body": "Muita exigência com pouca recuperação pode manter o sistema em esforço constante."
+      },
+      "HH": {
+        "title": "Ritmo estável",
+        "body": "Há exigências, mas a recuperação repõe a capacidade."
+      },
+      "LH": {
+        "title": "Descanso tranquilo",
+        "body": "Menos exigência dá espaço para a recuperação reconstruir as forças."
+      },
+      "LL": {
+        "title": "Ciclo estagnado",
+        "body": "Pouca exigência com pouca recuperação pode deixar a semana sem energia."
+      }
+    }
+  },
+  "teaching_panel": {
+    "takeawayPrefix": "Conclusão:",
+    "thinkingHeading": "ESTE É O RACIOCÍNIO"
+  },
+  "lever_scenario": {
+    "feedback": {
+      "whyFits": "Porque faz sentido",
+      "thinkingHeading": "Este é o raciocínio",
+      "notQuite": "Não é bem isso"
+    }
+  }
 }

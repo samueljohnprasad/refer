@@ -20,7 +20,10 @@
     "bad": "Mal",
     "okay": "Regular",
     "good": "Bien",
-    "great": "Genial"
+    "great": "Genial",
+    "accessibilityLog": "Registrar el estado de ánimo {{mood}}{{loggedCount}}",
+    "accessibilityCount_one": "registrado {{count}} vez",
+    "accessibilityCount_other": "registrado {{count}} veces"
   },
   "prompts": {
     "1": "¿De qué estás agradecido hoy?",
@@ -44,13 +47,24 @@
     "continueLearning": "Continuar aprendiendo",
     "continueJourney": "Continuar tu camino",
     "pickUpWhereLeft": "Retoma donde lo dejaste.",
-    "openJourneys": "Abrir caminos"
+    "openJourneys": "Abrir caminos",
+    "a11yActive": "{{courseTitle}}. Próxima actividad: {{activityTitle}}{{duration}}. Toca para seguir aprendiendo.",
+    "a11yNoCourse": "Encuentra tu próximo paso. Elige un camino para empezar a aprender. Toca para explorar caminos.",
+    "a11yCompleted": "Camino completado. Puedes repasar las habilidades aprendidas. Toca para repasarlas.",
+    "a11yError": "Continúa tu camino. Toca para abrir los caminos.",
+    "a11yLoading": "Cargando recorrido de aprendizaje",
+    "a11yDuration_one": "{{count}} minuto",
+    "a11yDuration_other": "{{count}} minutos",
+    "durationCompact": "{{count}} min"
   },
   "streak": {
     "streakCount_one": "{{count}} día de racha",
     "streakCount_other": "{{count}} días de racha",
     "weekDays": ["D", "L", "M", "M", "J", "V", "S"],
-    "a11yLabel": "Racha actual: {{count}} días. Toca para ver el historial."
+    "a11yLabel": "Racha actual: {{count}} días. Toca para ver el historial.",
+    "dayLabel": "Días de racha",
+    "newStreakMessage": "¡Empieza una nueva racha! Vuelve cada día para seguir avanzando.",
+    "continue": "Continuar"
   },
   "errors": {
     "loadTitle": "Algo salió mal",

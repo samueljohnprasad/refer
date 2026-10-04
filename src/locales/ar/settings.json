@@ -9,6 +9,64 @@
   "dailyGoal": { "title": "هدف XP اليومي", "summary": "{{goal}} XP يوميًا · نحو {{count}} درس", "option": "{{option}} XP، {{label}}", "labels": { "10": "سهل", "20": "منتظم", "30": "جاد", "50": "مكثف" } },
   "premium": { "unlockAccessibility": "افتح Happy Premium. تحليلات وملخصات والمزيد", "unlockTitle": "فتح Happy Premium", "unlockSubtitle": "تحليلات وملخصات والمزيد", "checking": "جارٍ التحقق من حالة Premium", "active": "Premium مفعّل", "lifetime": "وصول Premium مدى الحياة", "renews": "يتجدد في {{date}}", "activeUntil": "نشط حتى {{date}}", "activeTitle": "Premium مفعّل", "status": "{{status}}. جميع ميزات Premium مفتوحة." },
   "premiumUi": { "upgradeCta": "الترقية إلى Premium", "dismissAccessibility": "إغلاق دعوة الترقية إلى Premium", "notNow": "ليس الآن", "trialLastDay": "هذا آخر يوم في الفترة التجريبية!", "trialDaysLeft_one": "بقي يوم واحد في الفترة التجريبية", "trialDaysLeft_two": "بقي يومان في الفترة التجريبية", "trialDaysLeft_few": "بقيت {{count}} أيام في الفترة التجريبية", "trialDaysLeft_many": "بقي {{count}} يومًا في الفترة التجريبية", "trialDaysLeft_other": "بقي {{count}} يوم في الفترة التجريبية", "trialAccessibility_one": "بقي يوم واحد في الفترة التجريبية. اضغط للترقية.", "trialAccessibility_two": "بقي يومان في الفترة التجريبية. اضغط للترقية.", "trialAccessibility_few": "بقيت {{count}} أيام في الفترة التجريبية. اضغط للترقية.", "trialAccessibility_many": "بقي {{count}} يومًا في الفترة التجريبية. اضغط للترقية.", "trialAccessibility_other": "بقي {{count}} يوم في الفترة التجريبية. اضغط للترقية.", "keepPremiumAccess": "لا تفقد الوصول إلى ميزات Premium", "keepAllFeatures": "رقِّ للاحتفاظ بكل الميزات", "upgrade": "ترقية", "premiumFeature": "ميزة Premium", "gateDescription": "رقِّ لفتح هذه الميزة والاستفادة أكثر من رحلتك.", "unlockWithPremium": "افتح مع Premium", "unlockAccessibility": "رقِّ لفتح {{feature}}" },
+  "accountAuth": {
+    "toasts": {
+      "signedIn": "تم تسجيل الدخول بنجاح.",
+      "signInFailed": "تعذّر تسجيل الدخول. حاول مرة أخرى.",
+      "premiumRefreshNeeded": "تم حفظ الحساب. يلزم تحديث Premium.",
+      "accountCreated": "تم إنشاء الحساب.",
+      "premiumNotFound": "لم يتم العثور على Premium. تواصل مع الدعم.",
+      "premiumRestored": "تمت استعادة Premium.",
+      "switchFailed": "تعذّر تبديل الحساب. حاول مرة أخرى.",
+      "premiumRestoreFailed": "تعذّرت استعادة Premium تلقائيًا.",
+      "accountSwitched": "تم الانتقال إلى الحساب الحالي."
+    },
+    "recovery": {
+      "refreshTitle": "يلزم تحديث Premium",
+      "restoreTitle": "يلزم استعادة Premium",
+      "claimDescription": "تم حفظ ملفك الشخصي، لكن تعذّر تحديث Premium لهذا الدخول. حاول الاستعادة مرة أخرى أو شارك هذه المعرّفات مع الدعم.",
+      "moveDescription": "أنت الآن تستخدم الحساب الحالي، لكن تعذّرت استعادة Premium تلقائيًا. حاول مرة أخرى أو شارك هذه المعرّفات مع الدعم.",
+      "revenueCatId": "معرّف مستخدم RevenueCat",
+      "supabaseId": "معرّف مستخدم Supabase",
+      "unavailable": "غير متاح",
+      "tryRestoreAgain": "حاول الاستعادة مجددًا",
+      "continue": "متابعة",
+      "continueWithoutPremium": "المتابعة دون Premium"
+    },
+    "conflict": {
+      "premiumTitle": "Premium مفعّل هنا",
+      "existingTitle": "تم العثور على حساب موجود",
+      "premiumDescription": "اشتراك Premium وتقدّمك مرتبطان بهذا الملف الشخصي. تسجيل الدخول عبر {{provider}} مرتبط بالفعل بحساب Happy آخر. يمكنك الاحتفاظ بهذا الملف أو الانتقال إلى حسابك الحالي ومحاولة استعادة Premium هناك. لن ينتقل تقدّمك الحالي.",
+      "description": "تسجيل الدخول عبر {{provider}} مرتبط بالفعل بحساب Happy آخر. إذا تابعت، ستنتقل إلى ذلك الحساب ولن ينتقل تقدّمك الحالي.",
+      "keepPremium": "الاحتفاظ بهذا الملف المميز",
+      "continueExisting": "المتابعة إلى الحساب الحالي",
+      "moveExisting": "الانتقال إلى الحساب الحالي",
+      "stayCurrent": "الاحتفاظ بتقدّمي الحالي"
+    },
+    "signIn": {
+      "createAccount": "أنشئ حسابك",
+      "welcomeBack": "مرحبًا بعودتك",
+      "createDescription": "زامن دروسك وتأملاتك وسلسلتك مع حسابك.",
+      "welcomeDescription": "سجّل الدخول لمزامنة دروسك وتأملاتك وسلسلتك بين أجهزتك.",
+      "continueApple": "المتابعة باستخدام Apple",
+      "continueGoogle": "المتابعة باستخدام Google",
+      "maybeLater": "ربما لاحقًا"
+    }
+  },
+  "postTrial": {
+    "heading": "عرض خاص لك",
+    "trialEndedLead": "انتهت فترتك التجريبية. احصل على",
+    "discountOff": "خصم {{percent}}٪ على",
+    "trialEndedTail": "اشتراكك السنوي!",
+    "annualPlan": "الخطة السنوية",
+    "annualPrice": "{{price}} سنويًا",
+    "originalAnnualPrice": "39.99 دولارًا سنويًا",
+    "monthlyPrice": "فقط {{price}} شهريًا",
+    "discountBadge": "خصم {{percent}}٪",
+    "claimDiscount": "احصل على خصم {{percent}}٪",
+    "dismissAccessibility": "إغلاق العرض",
+    "claimAccessibility": "استخدم الخصم وترقَّ إلى Premium"
+  },
   "developer": { "appleIntelligence": "Apple Intelligence", "aiModel": "نموذج الذكاء الاصطناعي", "support": "الدعم", "animatedSymbols": "الرموز المتحركة", "courseExercises": "تمارين الدورة" },
   "bulkImport": {
     "title": "استيراد دفعة واحدة", "sampleDescription": "استورد نماذج من إدخالات اليوميات للاختبار", "startDate": "تاريخ البدء", "startDateDescription": "سيتم إنشاء الإدخالات بدءًا من هذا التاريخ", "daysLabel": "عدد الأيام", "daysAccessibility": "عدد الأيام المطلوب استيرادها", "entriesWillImport_zero": "لن يتم استيراد أي إدخالات", "entriesWillImport_one": "سيتم استيراد إدخال واحد", "entriesWillImport_two": "سيتم استيراد إدخالين", "entriesWillImport_few": "سيتم استيراد {{count}} إدخالات", "entriesWillImport_many": "سيتم استيراد {{count}} إدخالًا", "entriesWillImport_other": "سيتم استيراد {{count}} إدخال", "importingProgress": "جارٍ استيراد {{current}} من {{total}}…", "cancel": "إلغاء", "import": "استيراد", "importing": "جارٍ الاستيراد…",
@@ -21,5 +79,7 @@
   "reminders": { "title": "التذكيرات اليومية", "description": "أعد تذكيرات لطيفة تساعدك على بناء عادة كتابة منتظمة", "permissionTitle": "يلزم السماح بالإشعارات", "permissionMessage": "يرجى تفعيل الوصول إلى الإشعارات من الإعدادات لتلقي التذكيرات.", "openSettings": "فتح الإعدادات", "cancel": "إلغاء", "slots": { "1": { "title": "تأمل الصباح", "body": "ابدأ يومك بوضوح ☀️ خذ لحظة للتأمل وتحديد نواياك." }, "2": { "title": "تسجيل منتصف اليوم", "body": "كيف يسير يومك؟ 🌿 توقف قليلًا وسجل أفكارك الآن." }, "3": { "title": "استرخاء المساء", "body": "حان وقت الاسترخاء 🌙 تأمل يومك واحتفل بإنجازاتك." } } },
   "share": { "message": "جرّب تطبيق Happy AI Journal! https://apps.apple.com/us/app/happy-ai-journal/id6755650433" },
   "languageOk": "موافق",
-  "device": "لغة الجهاز"
+  "device": "لغة الجهاز",
+  "purchaseRestore": { "action": "استعادة المشتريات", "actionDescription": "استعادة Premium من App Store.", "restored": "تمت استعادة Premium.", "notFound": "لم يتم العثور على اشتراك Premium نشط.", "failed": "تعذّر على Happy استعادة المشتريات. يُرجى المحاولة مرة أخرى." },
+  "assistantUi": { "button": { "label": "افتح مساعد Happy", "hint": "اسحب لنقله. اضغط لعرض الإجراءات السريعة." }, "moodSheet": { "title": "تسجيل المزاج", "description": "اختر ما يصف شعورك اليوم. لمسة واحدة تكفي.", "close": "إغلاق تسجيل المزاج" }, "contexts": { "exercises": { "title": "مرحبًا، أنا Happy", "subtitle": "ما الذي قد يساعدك الآن؟" }, "journal": { "title": "مرحبًا، أنا Happy", "subtitle": "دوّن فكرة، أو سجّل شعورك، أو افتح ملخصك." }, "record": { "title": "مرحبًا، أنا Happy", "subtitle": "لنجعل كتابة اليوميات أسهل." }, "journeys": { "title": "مرحبًا، أنا Happy", "subtitle": "واصل رحلتك بهدوء." }, "settings": { "title": "مرحبًا، أنا Happy", "subtitle": "اختصارات للحساب والاستعادة والدعم." }, "default": { "title": "مرحبًا، أنا Happy", "subtitle": "اختر خطوة صغيرة ومفيدة." } }, "actions": { "save_progress": { "label": "احفظ تقدمك", "description": "أنشئ حسابًا للاحتفاظ بتقدمك." }, "save_premium_profile": { "label": "احفظ تقدمك", "description": "أنشئ حسابًا للاحتفاظ بـ Premium وتقدمك." }, "resume_exercise": { "label": "متابعة التمرين", "description": "تابع من حيث توقفت." }, "try_1min_breathing": { "label": "جرّب تنفسًا لدقيقة", "description": "استراحة قصيرة عندما ينشغل ذهنك." }, "try_breathing": { "label": "جرّب تمرين التنفس", "description": "خذ دقيقة لتهدئة جسدك." }, "calm_me_down": { "label": "ساعدني على الهدوء", "description": "استراحة تنفس قصيرة قبل المتابعة." }, "thought_catcher": { "label": "التقاط الأفكار", "description": "لاحظ فكرة قلقة وحاول تفكيكها." }, "view_exercise_log": { "label": "عرض سجل التمارين", "description": "اطّلع على ما أكملته حتى الآن." }, "voice_journal": { "label": "يوميات صوتية", "description": "تحدث وحوّل كلامك إلى تدوينة." }, "keyboard_journal": { "label": "يوميات مكتوبة", "description": "اكتب ملاحظة خاصة بسرعة." }, "mood_check": { "label": "تسجيل المزاج", "description": "سجّل شعورك خلال ثوانٍ." }, "ai_insight": { "label": "رؤية بالذكاء الاصطناعي", "description": "افتح ملخص تأملاتك الأسبوعي." }, "continue_journey": { "label": "متابعة الرحلة", "description": "عُد إلى مسارك الحالي." }, "restore_purchases": { "label": "استعادة المشتريات", "description": "استعادة Premium من App Store." }, "support": { "label": "التواصل مع الدعم", "description": "احصل على مساعدة بشأن حسابك أو Premium." }, "open_settings": { "label": "فتح الإعدادات", "description": "إدارة Premium والحساب والدعم." }, "goHome": { "label": "الانتقال إلى الشاشة الرئيسية" } } }
 }

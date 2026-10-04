@@ -1,21 +1,13 @@
-import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo } from "react";
 import {
   ActivityIndicator,
   Pressable,
-  StyleSheet,
-  TextInput,
   TextInputSubmitEditingEvent,
   View,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import {
-  Add01Icon,
-  AudioWave01Icon,
-  Cancel01Icon,
-  StopCircleIcon,
-} from "@hugeicons/core-free-icons";
+import { AudioWave01Icon } from "@hugeicons/core-free-icons";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -24,23 +16,14 @@ import Animated, {
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
-import * as Haptics from "expo-haptics";
-
-import useAudioRecording from "@/hooks/useAudioRecording";
-import { useTranscribeAudio } from "@/hooks/useTranscribeAudio";
-import { Text } from "@/src/components/ui/Text";
+import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
+import {
+  ComposerMeta,
+  ComposerShell,
+  composerStyles,
+} from "@/src/components/exercise/ExerciseComposerParts";
+import { ExerciseTextListComposer } from "@/src/components/exercise/ExerciseTextListComposer";
 import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
-
-const canvasPadding = 50;
-const borderRadius = 20;
-const glowHeightExpansion = 10;
-const actionSize = 44;
-
-const glowGradientColors = [SEMANTIC_COLORS.border.default, SEMANTIC_COLORS.surface.elevated, SEMANTIC_COLORS.border.default];
-const glowPositions = [0, 0.5, 1];
-
-const travelingColors = ["transparent", SEMANTIC_COLORS.border.selected, SEMANTIC_COLORS.brand.primary, "transparent"];
-const travelingPositions = [0.3, 0.75, 0.4, 1];
 
 type BaseComposerProps = {
   minHeight?: number;
@@ -79,14 +62,11 @@ type ListComposerProps = BaseComposerProps & {
   maxItems?: number;
 };
 
-export type ExerciseTextComposerProps =
-  | SingleComposerProps
-  | ListComposerProps;
+export type ExerciseTextComposerProps = SingleComposerProps | ListComposerProps;
 
-const WaveBar = ({ delay }: { delay: number }) => {
+function WaveBar({ delay }: { delay: number }) {
   const height = useSharedValue(4);
-
-  useEffect(() => {
+  React.useEffect(() => {
     height.value = withDelay(
       delay,
       withRepeat(
@@ -99,9 +79,7 @@ const WaveBar = ({ delay }: { delay: number }) => {
       ),
     );
   }, [delay, height]);
-
   const style = useAnimatedStyle(() => ({ height: height.value }));
-
   return (
     <Animated.View
       style={[
@@ -115,151 +93,55 @@ const WaveBar = ({ delay }: { delay: number }) => {
       ]}
     />
   );
-};
-
-function ComposerShell({
-  value,
-  onChange,
-  placeholder,
-  minHeight,
-  glow = false,
-  readOnly = false,
-  blurOnSubmit = false,
-  onSubmitEditing,
-  footer,
-  isRecording = false,
-  isTranscribing = false,
-  maxLength,
-  submitBehavior,
-  autoFocus = true,
-}: {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  minHeight: number;
-  glow?: boolean;
-  readOnly?: boolean;
-  blurOnSubmit?: boolean;
-  onSubmitEditing?: (e: TextInputSubmitEditingEvent) => void;
-  footer?: React.ReactNode;
-  isRecording?: boolean;
-  isTranscribing?: boolean;
-  maxLength?: number;
-  submitBehavior?: "submit" | "newline";
-  autoFocus?: boolean;
-}) {
-  const [isFocused, setIsFocused] = useState(false);
-  const inputRef = useRef<TextInput>(null);
-
-  useEffect(() => {
-    if (autoFocus && !readOnly && !isTranscribing) {
-      const timer = setTimeout(() => {
-        inputRef.current?.focus();
-      }, 450); // delay focus to avoid keyboard rising during screen transition
-      return () => clearTimeout(timer);
-    }
-  }, [autoFocus, readOnly, isTranscribing]);
-
-  return (
-    <View style={styles.container}>
-      <View
-        style={[
-          styles.inputWrapper,
-          isFocused && styles.inputWrapperFocused,
-          isRecording && styles.inputWrapperRecording,
-        ]}
-      >
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            ref={inputRef}
-            style={[styles.input, { minHeight }]}
-            value={value}
-            onChangeText={onChange}
-            placeholder={placeholder}
-            placeholderTextColor={SEMANTIC_COLORS.text.secondary}
-            onSubmitEditing={onSubmitEditing}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            returnKeyType="send"
-            multiline
-            editable={!readOnly && !isTranscribing}
-            autoFocus={false}
-            blurOnSubmit={blurOnSubmit}
-            maxLength={maxLength}
-            submitBehavior={submitBehavior}
-          />
-          {footer ? <View style={styles.footerContainer}>{footer}</View> : null}
-        </View>
-      </View>
-    </View>
-  );
 }
 
-function ComposerMeta({
-  helperText,
-  requirementText,
-  requirementVisible,
-  statusText,
-  statusVisible,
-  count,
-  maxLength,
+function VoiceButton({
+  isRecording,
+  isTranscribing,
+  onPress,
 }: {
-  helperText?: string;
-  requirementText?: string;
-  requirementVisible?: boolean;
-  statusText?: string;
-  statusVisible?: boolean;
-  count?: number;
-  maxLength?: number;
+  isRecording?: boolean;
+  isTranscribing?: boolean;
+  onPress?: () => void;
 }) {
-  const showCount =
-    typeof count === "number" &&
-    typeof maxLength === "number" &&
-    count > Math.floor(maxLength * 0.8);
-
+  const { t } = useTranslation("exercises");
   return (
-    <>
-      <View className="mt-2 min-h-[24px] flex-row items-start justify-between gap-3">
-        {helperText ? (
-          <Text className="flex-1 text-[12px] leading-[18px] text-ink-soft">
-            {helperText}
-          </Text>
-        ) : (
-          <View className="flex-1" />
-        )}
-
-        {showCount ? (
-          <Text
-            className={`text-right text-[13px] ${
-              count > maxLength * 0.9 ? "text-amber-500" : "text-ink-soft"
-            }`}
-          >
-            {count} / {maxLength}
-          </Text>
-        ) : null}
-      </View>
-
-      {requirementVisible && requirementText ? (
-        <Text variant="caption" className="mt-1 mb-2 text-ink-soft leading-relaxed">
-          {requirementText}
-        </Text>
-      ) : null}
-
-      {statusVisible && statusText ? (
-        <View className="mt-2 mb-4 flex-row items-start px-1">
-          <View className="mr-3 mt-[1px] h-5 w-5 rounded-full bg-sage-100 items-center justify-center">
-            <Text className="text-[12px] text-sage-700">✓</Text>
-          </View>
-          <Text
-            variant="caption"
-            className="flex-1 text-[13px] leading-[19px] text-sage-800"
-          >
-            {statusText}
-          </Text>
+    <Pressable
+      style={({ pressed }) => [
+        composerStyles.waveButton,
+        isRecording && composerStyles.waveButtonRecording,
+        pressed && composerStyles.pressed,
+      ]}
+      onPress={onPress}
+      disabled={isTranscribing || !onPress}
+      accessibilityRole="button"
+      accessibilityLabel={t(
+        isRecording
+          ? "flow.ui.copy.text_composer_stop_voice_input"
+          : "flow.ui.copy.text_composer_start_voice_input",
+      )}
+    >
+      {isTranscribing ? (
+        <ActivityIndicator
+          size="small"
+          color={SEMANTIC_COLORS.text.secondary}
+        />
+      ) : isRecording ? (
+        <View
+          style={{ flexDirection: "row", alignItems: "center", height: 16 }}
+        >
+          {[0, 150, 75, 200].map((delay) => (
+            <WaveBar key={delay} delay={delay} />
+          ))}
         </View>
-      ) : null}
-    </>
+      ) : (
+        <HugeiconsIcon
+          icon={AudioWave01Icon}
+          size={16}
+          color={SEMANTIC_COLORS.text.secondary}
+        />
+      )}
+    </Pressable>
   );
 }
 
@@ -282,55 +164,37 @@ function SingleComposer(props: SingleComposerProps) {
     alwaysShowVoice = false,
     onSubmitEditing,
     blurOnSubmit = true,
-    glow = false,
     readOnly = false,
     autoFocus = true,
   } = props;
-
   const { isVoiceEnabled } = useVoiceFeature();
-
   const footer = useMemo(() => {
-    const hasFooterActions = showVoice && isVoiceEnabled;
-
-    if (!hasFooterActions) return null;
-
-    if (alwaysShowVoice) {
+    if (!showVoice || !isVoiceEnabled) return null;
+    const voiceAction = (
+      <VoiceButton
+        isRecording={isRecording}
+        isTranscribing={isTranscribing}
+        onPress={onWavePress}
+      />
+    );
+    if (alwaysShowVoice)
       return (
-        <View style={styles.footer}>
-          <View style={styles.leftActions} />
-          <View style={styles.rightActions}>
-            {showVoice ? (
-              <VoiceButton
-                isRecording={isRecording}
-                isTranscribing={isTranscribing}
-                onPress={onWavePress}
-              />
-            ) : null}
-          </View>
+        <View style={composerStyles.footer}>
+          <View style={composerStyles.leftActions} />
+          <View style={composerStyles.rightActions}>{voiceAction}</View>
         </View>
       );
-    }
-
-    return (
-      <>
-        {showVoice && !value.trim() ? (
-          <View style={[styles.footer, styles.absoluteFooter]}>
-            <View style={styles.leftActions} />
-            <View style={styles.rightActions}>
-              <VoiceButton
-                isRecording={isRecording}
-                isTranscribing={isTranscribing}
-                onPress={onWavePress}
-              />
-            </View>
-          </View>
-        ) : null}
-      </>
-    );
+    return showVoice && !value.trim() ? (
+      <View style={[composerStyles.footer, composerStyles.absoluteFooter]}>
+        <View style={composerStyles.leftActions} />
+        <View style={composerStyles.rightActions}>{voiceAction}</View>
+      </View>
+    ) : null;
   }, [
     alwaysShowVoice,
     isRecording,
     isTranscribing,
+    isVoiceEnabled,
     onWavePress,
     showVoice,
     value,
@@ -341,13 +205,10 @@ function SingleComposer(props: SingleComposerProps) {
       <ComposerShell
         value={value}
         onChange={(nextValue) => {
-          if (!maxLength || nextValue.length <= maxLength) {
-            onChange(nextValue);
-          }
+          if (!maxLength || nextValue.length <= maxLength) onChange(nextValue);
         }}
         placeholder={placeholder}
         minHeight={minHeight}
-        glow={glow}
         readOnly={readOnly}
         autoFocus={autoFocus}
         blurOnSubmit={blurOnSubmit}
@@ -355,8 +216,8 @@ function SingleComposer(props: SingleComposerProps) {
         footer={footer}
         isRecording={isRecording}
         isTranscribing={isTranscribing}
+        maxLength={maxLength}
       />
-
       <ComposerMeta
         helperText={helperText}
         requirementText={requirementText}
@@ -370,386 +231,12 @@ function SingleComposer(props: SingleComposerProps) {
   );
 }
 
-function VoiceButton({
-  isRecording,
-  isTranscribing,
-  onPress,
-}: {
-  isRecording?: boolean;
-  isTranscribing?: boolean;
-  onPress?: () => void;
-}) {
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.waveButton,
-        isRecording && styles.waveButtonRecording,
-        pressed && styles.pressed,
-      ]}
-      onPress={onPress}
-      disabled={isTranscribing || !onPress}
-      accessibilityRole="button"
-      accessibilityLabel={isRecording ? "Stop voice input" : "Start voice input"}
-    >
-      {isTranscribing ? (
-        <ActivityIndicator size="small" color={SEMANTIC_COLORS.text.secondary} />
-      ) : isRecording ? (
-        <View style={{ flexDirection: "row", alignItems: "center", height: 16 }}>
-          {[0, 150, 75, 200].map((delay, index) => (
-            <WaveBar key={index} delay={delay} />
-          ))}
-        </View>
-      ) : (
-        <HugeiconsIcon icon={AudioWave01Icon} size={16} color={SEMANTIC_COLORS.text.secondary} />
-      )}
-    </Pressable>
-  );
-}
-
-function ListComposer(props: ListComposerProps) {
-  const {
-    items,
-    onAdd,
-    onRemove,
-    maxItems,
-    maxLength,
-    placeholder = "Type or use voice...",
-    readOnly = false,
-    addLabel = "Add",
-    minHeight = 118,
-    helperText,
-    requirementText,
-    requirementVisible,
-    statusText,
-    statusVisible,
-    autoFocus = true,
-  } = props;
-  const { isVoiceEnabled } = useVoiceFeature();
-  const [value, setValue] = useState("");
-  const [voiceError, setVoiceError] = useState<string | null>(null);
-  const { recordedStatus, recordingCurrentState, record, stopRecording } =
-    useAudioRecording();
-  const { transcribeAudio, isTranscribing } = useTranscribeAudio();
-  const processedRecordingUrlRef = useRef<string | null>(null);
-  const effectivePlaceholder =
-    !isVoiceEnabled && placeholder === "Type or use voice..."
-      ? "Type an item..."
-      : placeholder;
-
-  const isRecording = recordingCurrentState === "recording";
-  const hasReachedMaxItems = maxItems !== undefined && items.length >= maxItems;
-  const canAdd = value.trim().length > 0 && !hasReachedMaxItems;
-
-  const commitValue = (nextValue: string) => {
-    const normalized = nextValue.trim();
-    const boundedValue =
-      typeof maxLength === "number" ? normalized.slice(0, maxLength) : normalized;
-    if (!boundedValue || hasReachedMaxItems) return;
-    onAdd(boundedValue);
-    setValue("");
-    setVoiceError(null);
-  };
-
-  useEffect(() => {
-    const uri = recordedStatus?.url;
-    if (
-      !recordedStatus?.isFinished ||
-      !uri ||
-      processedRecordingUrlRef.current === uri
-    ) {
-      return;
-    }
-
-    processedRecordingUrlRef.current = uri;
-    let cancelled = false;
-
-    const transcribeFinishedRecording = async () => {
-      try {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        const result = await transcribeAudio(uri);
-        if (!cancelled && result?.transcript) {
-          commitValue(result.transcript);
-        }
-      } catch {
-        if (!cancelled) {
-          setVoiceError("Voice note unavailable. You can type this item instead.");
-        }
-      }
-    };
-
-    void transcribeFinishedRecording();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [recordedStatus, transcribeAudio]);
-
-  const handleToggleRecording = async () => {
-    if (!isVoiceEnabled) return;
-    setVoiceError(null);
-
-    if (isRecording) {
-      try {
-        const recorderState = await stopRecording();
-        const uri = recorderState?.url;
-        if (uri) {
-          processedRecordingUrlRef.current = uri;
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          const result = await transcribeAudio(uri);
-          if (result?.transcript) {
-            commitValue(result.transcript);
-          }
-        }
-      } catch {
-        setVoiceError("Voice note unavailable. You can type this item instead.");
-      }
-      return;
-    }
-
-    try {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      await record();
-    } catch {
-      setVoiceError("Could not start recording. You can type this item instead.");
-    }
-  };
-
-  return (
-    <View>
-      {items.length > 0 ? (
-        <View className="mb-3 border-t border-sage-100/70">
-          {items.map((item, index) => (
-            <View
-              key={`${item}-${index}`}
-              className="min-h-[52px] flex-row items-start border-b border-sage-100/70 py-3"
-            >
-              <View
-                className="mr-3 mt-2 h-2 w-2 rounded-full"
-                style={{ backgroundColor: SEMANTIC_COLORS.border.selected }}
-              />
-              <Text className="flex-1 pr-2 text-[15px] leading-[21px] text-ink">
-                {item}
-              </Text>
-              {!readOnly ? (
-                <Pressable
-                  onPress={() => onRemove(index)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Remove item ${index + 1}: ${item}`}
-                  className="h-11 w-11 items-center justify-center active:opacity-60"
-                >
-                  <HugeiconsIcon
-                    icon={Cancel01Icon}
-                    size={16}
-                    color={SEMANTIC_COLORS.brand.primary}
-                  />
-                </Pressable>
-              ) : null}
-            </View>
-          ))}
-        </View>
-      ) : null}
-
-      {!readOnly && (!hasReachedMaxItems || isRecording || isTranscribing) ? (
-        <>
-          <ComposerShell
-            value={value}
-            onChange={(nextValue) => {
-              if (!maxLength || nextValue.length <= maxLength) {
-                setValue(nextValue);
-              }
-            }}
-            placeholder={isRecording ? "Listening..." : effectivePlaceholder}
-            minHeight={minHeight}
-            autoFocus={autoFocus}
-            onSubmitEditing={() => commitValue(value)}
-            isRecording={isRecording}
-            isTranscribing={isTranscribing}
-            maxLength={maxLength}
-            submitBehavior="submit"
-            footer={
-              <View style={styles.footer}>
-                {isVoiceEnabled ? (
-                  <Pressable
-                    onPress={handleToggleRecording}
-                    disabled={isTranscribing || (hasReachedMaxItems && !isRecording)}
-                    accessibilityRole="button"
-                    accessibilityLabel={
-                      isRecording ? "Stop recording item" : "Start voice input"
-                    }
-                    accessibilityState={{
-                      busy: isTranscribing,
-                      selected: isRecording,
-                    }}
-                    style={({ pressed }) => [
-                      styles.waveButton,
-                      isRecording && styles.waveButtonRecording,
-                      pressed && styles.pressed,
-                    ]}
-                  >
-                    {isTranscribing ? (
-                      <ActivityIndicator size="small" color={SEMANTIC_COLORS.text.secondary} />
-                    ) : (
-                      <HugeiconsIcon
-                        icon={isRecording ? StopCircleIcon : AudioWave01Icon}
-                        size={20}
-                        color={isRecording ? SEMANTIC_COLORS.surface.primary : SEMANTIC_COLORS.text.secondary}
-                        strokeWidth={2}
-                      />
-                    )}
-                  </Pressable>
-                ) : null}
-
-                <Pressable
-                  onPress={() => commitValue(value)}
-                  disabled={!canAdd || isRecording}
-                  accessibilityRole="button"
-                  accessibilityLabel="Add item"
-                  accessibilityState={{ disabled: !canAdd || isRecording }}
-                  style={({ pressed }) => [
-                    styles.inlineActionButton,
-                    {
-                      backgroundColor: canAdd && !isRecording ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.surface.elevated,
-                      borderColor: canAdd && !isRecording ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.surface.secondary,
-                      opacity: canAdd && !isRecording ? 1 : 0.62,
-                    },
-                    pressed && styles.pressed,
-                  ]}
-                >
-                  <HugeiconsIcon
-                    icon={Add01Icon}
-                    size={18}
-                    color={canAdd && !isRecording ? SEMANTIC_COLORS.surface.primary : SEMANTIC_COLORS.brand.primary}
-                    strokeWidth={2}
-                  />
-                  <Text
-                    className="ml-2 text-[14px] font-bold"
-                    style={{
-                      color: canAdd && !isRecording ? SEMANTIC_COLORS.surface.primary : SEMANTIC_COLORS.brand.primary,
-                    }}
-                  >
-                    {addLabel}
-                  </Text>
-                </Pressable>
-              </View>
-            }
-          />
-
-          {voiceError ? (
-            <Text className="mt-2 text-[13px] leading-relaxed text-ink-soft">
-              {voiceError}
-            </Text>
-          ) : null}
-        </>
-      ) : null}
-
-      <ComposerMeta
-        helperText={helperText}
-        requirementText={requirementText}
-        requirementVisible={requirementVisible}
-        statusText={statusText}
-        statusVisible={statusVisible}
-      />
-    </View>
-  );
-}
-
 export function ExerciseTextComposer(props: ExerciseTextComposerProps) {
-  if (props.mode === "list") {
-    return <ListComposer {...props} />;
-  }
-
-  return <SingleComposer {...props} />;
+  return props.mode === "list" ? (
+    <ExerciseTextListComposer {...props} />
+  ) : (
+    <SingleComposer {...props} />
+  );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    paddingBottom: 20,
-    backgroundColor: "transparent",
-  },
-  inputWrapper: {
-    position: "relative",
-    width: "100%",
-    borderRadius,
-    borderWidth: 1,
-    borderColor: SEMANTIC_COLORS.border.default,
-    backgroundColor: SEMANTIC_COLORS.surface.primary,
-  },
-  inputWrapperFocused: {
-    borderColor: SEMANTIC_COLORS.brand.primary,
-  },
-  inputWrapperRecording: {
-    borderColor: SEMANTIC_COLORS.text.secondary,
-    backgroundColor: SEMANTIC_COLORS.surface.elevated,
-  },
-  inputContainer: {
-    backgroundColor: "transparent",
-    borderRadius,
-    paddingHorizontal: 16,
-    paddingTop: 14,
-    paddingBottom: 12,
-  },
-  input: {
-    fontSize: 16,
-    lineHeight: 23,
-    color: SEMANTIC_COLORS.text.primary,
-    textAlignVertical: "top",
-    paddingTop: 0,
-    paddingBottom: 0,
-  },
-  footerContainer: {
-    minHeight: actionSize,
-    marginTop: 8,
-    position: "relative",
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-  },
-  absoluteFooter: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  leftActions: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  rightActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  waveButton: {
-    width: actionSize,
-    height: actionSize,
-    borderRadius: actionSize / 2,
-    backgroundColor: SEMANTIC_COLORS.surface.elevated,
-    borderWidth: 1,
-    borderColor: SEMANTIC_COLORS.surface.secondary,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  waveButtonRecording: {
-    backgroundColor: SEMANTIC_COLORS.surface.secondary,
-    borderColor: SEMANTIC_COLORS.text.disabled,
-  },
-  inlineActionButton: {
-    height: actionSize,
-    borderRadius: actionSize / 2,
-    borderWidth: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 16,
-  },
-  pressed: {
-    opacity: 0.72,
-    transform: [{ scale: 0.98 }],
-  },
-});
 
 export default ExerciseTextComposer;

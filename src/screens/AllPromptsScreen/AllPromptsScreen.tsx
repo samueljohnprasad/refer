@@ -11,7 +11,6 @@ import { SafeAreaView } from "@/src/components/tw";
 import { router } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import {
-  QUICK_JOURNAL_PROMPTS,
   QuickJournalPrompt,
 } from "../DiscoveryScreen/QuickJournalSection";
 import { useAtom, useSetAtom } from "jotai";
@@ -27,91 +26,61 @@ import { useTranslation } from "react-i18next";
 export const ALL_PROMPTS: QuickJournalPrompt[] = [
   {
     id: "1",
-    title: "Pause & reflect",
     emoji: "🌿",
-    description: "What are you grateful for today?",
-    category: "Personal",
     bgColor: "#F1F7F0", // Soft Sage Green
     categoryColor: "#5F7F58",
   },
   {
     id: "2",
-    title: "Set Intentions",
     emoji: "😊",
-    description: "How do you want to feel?",
-    category: "Family",
     bgColor: "#FAF5EE", // Soft Honey/Cream
     categoryColor: "#B38F4D",
   },
   {
     id: "3",
-    title: "Emotional Check-in",
     emoji: "💚",
-    description: "Let go of stress and anxiety",
-    category: "Health",
     bgColor: "#EDF7F6", // Soft Mint
     categoryColor: "#3D8076",
   },
   {
     id: "4",
-    title: "Daily Wins",
     emoji: "🏆",
-    description: "What went well today?",
-    category: "Work",
     bgColor: "#FAF2EE", // Soft Terracotta
     categoryColor: "#C77A58",
   },
   {
     id: "5",
-    title: "Morning Reflection",
     emoji: "☀️",
-    description: "What are you looking forward to today?",
-    category: "Personal",
     bgColor: "#FAF7E8", // Soft Buttercream
     categoryColor: "#8E753E",
   },
   {
     id: "6",
-    title: "Evening Wind Down",
     emoji: "🌙",
-    description: "What made you smile today?",
-    category: "Gratitude",
     bgColor: "#F6F2FC", // Dusty Lavender
     categoryColor: "#7E63A8",
   },
   {
     id: "7",
-    title: "Work Progress",
     emoji: "💼",
-    description: "What challenges did you overcome?",
-    category: "Work",
     bgColor: "#F2F6FC", // Ice Blue
     categoryColor: "#4A729D",
   },
   {
     id: "8",
-    title: "Self Care",
     emoji: "🧘",
-    description: "How are you taking care of yourself?",
-    category: "Health",
     bgColor: "#FCF2F2", // Soft Dusty Rose
     categoryColor: "#9C5B5B",
   },
   {
     id: "9",
-    title: "Relationships",
     emoji: "❤️",
-    description: "Who made your day better?",
-    category: "Family",
     bgColor: "#FCF2F7", // Soft Blossom
     categoryColor: "#A05A7B",
   },
   {
     id: "10",
-    title: "Learning Moment",
     emoji: "📚",
-    description: "What did you learn today?",
-    category: "Personal",
     bgColor: "#F2FAF6", // Soft Tea Green
     categoryColor: "#4D8F70",
   },
@@ -126,9 +95,9 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
   ({ prompt, onPress }) => {
     const { t } = useTranslation("common");
     const { t: tHome } = useTranslation("home");
-    const title = t(`promptBrowser.items.${prompt.id}.title`, { defaultValue: prompt.title });
-    const description = tHome(`prompts.${prompt.id}`, { defaultValue: prompt.description });
-    const category = t(`promptBrowser.items.${prompt.id}.category`, { defaultValue: prompt.category });
+    const title = t(`promptBrowser.items.${prompt.id}.title`);
+    const description = tHome(`prompts.${prompt.id}`);
+    const category = t(`promptBrowser.items.${prompt.id}.category`);
 
     return (
       <TouchableOpacity
@@ -202,6 +171,7 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
 PromptCard.displayName = "PromptCard";
 
 export default function AllPromptsScreen() {
+  const { t: tHome } = useTranslation("home");
   const [, setRecorderOpen] = useAtom(recorderOpenAtom);
   const setStartRecording = useSetAtom(startRecordingAtom);
   const { setPrompt } = useJournalEntry();
@@ -215,7 +185,7 @@ export default function AllPromptsScreen() {
         presentPaywall();
         return;
       }
-      setPrompt(prompt.description);
+      setPrompt(tHome(`prompts.${prompt.id}`));
       if (isVoiceEnabled) {
         setStartRecording(true);
       }
@@ -226,6 +196,7 @@ export default function AllPromptsScreen() {
       isVoiceEnabled,
       presentPaywall,
       setPrompt,
+      tHome,
       setStartRecording,
       journalRoute,
     ],

@@ -104,10 +104,13 @@ export function LensReplayCategoryEngine({
   return (
     <View style={styles.container}>
       <CourseExerciseHeading
-        title={readString(content.title) ?? "Replay the Scene"}
+        title={
+          readString(content.title) ??
+          t("flow.ui.categoryEngine.lensReplay.titleFallback")
+        }
         instruction={
           readString(content.instruction) ??
-          "Tap the highlighted parts to see what you noticed, and what your mind added."
+          t("flow.ui.categoryEngine.lensReplay.instructionFallback")
         }
       />
 
@@ -171,7 +174,7 @@ export function LensReplayCategoryEngine({
       {/* Progress or Punchline */}
       <Text style={styles.progressText}>
         {allSeen
-          ? "Same lines. New eyes."
+          ? t("flow.ui.categoryEngine.lensReplay.completionMessage")
           : t("flow.ui.categoryEngine.lensReplay.progress", {
               explored: seenIndexes.length,
               total: highlightIndexes.length,

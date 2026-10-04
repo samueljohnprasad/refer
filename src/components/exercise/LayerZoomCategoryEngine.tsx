@@ -1,5 +1,6 @@
 import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React, { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { AccessibilityInfo, StyleSheet, Text, View } from "react-native";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import { readRecord } from "@/src/components/exercise/courseExerciseContent";
@@ -11,6 +12,7 @@ import { createLayerZoomResponse } from "./layerZoomState";
 import { COURSE_EXERCISE_FONTS } from "./courseExerciseTheme";
 
 export function LayerZoomCategoryEngine({ exercise, savedResponse, onInteraction }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = readLayerZoomContent(exercise.content);
   const saved = readRecord(savedResponse);
   const response = content ? createLayerZoomResponse(content, saved) : null;
@@ -40,8 +42,8 @@ export function LayerZoomCategoryEngine({ exercise, savedResponse, onInteraction
     ? `layer-zoom-${response.stageIndex}` : undefined;
   return <View style={styles.screen}>
     <CourseExerciseHeading title={content.title} instruction={content.instruction} />
-    <StageProgress stageIndex={response.stageIndex} stageCount={content.layers.length} label="Layer" />
-    <ExerciseWorkspace accessibilityLabel="Layered explanation" transitionKey={transitionKey}>
+    <StageProgress stageIndex={response.stageIndex} stageCount={content.layers.length} label={t("flow.ui.categoryEngine.layerZoom.layer")} />
+    <ExerciseWorkspace accessibilityLabel={t("flow.ui.categoryEngine.layerZoom.accessibilityLabel")} transitionKey={transitionKey}>
       <View style={styles.surface}>
         {content.layers.slice(0, response.stageIndex).map((layer) => <CompactLayerBand key={layer.id} label={layer.label} title={layer.title} />)}
         <View accessibilityLiveRegion="polite" style={styles.expandedLayer}>

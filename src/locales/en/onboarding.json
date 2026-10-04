@@ -329,6 +329,11 @@
       "evening": "evening",
       "night": "late night"
     },
+    "closing": {
+      "signature": "You, in 30 days.",
+      "postscript": "P.S. Still anxious sometimes. Just less afraid of it.",
+      "keepNote": "Hold onto this. Some days you’ll need to remember who you’re becoming."
+    },
     "body": {
       "intro": "I'm writing from a {{weekday}} {{moment}}. I closed Happy",
       "closed_app": "five minutes ago.",

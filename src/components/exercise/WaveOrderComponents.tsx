@@ -1,5 +1,6 @@
 import React from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import Animated, { FadeIn, ReduceMotion } from "react-native-reanimated";
 import { Button } from "@/src/components/ui/Button";
 
@@ -22,6 +23,7 @@ export function WaveOrderSlot({
   locked,
   onPress,
 }: WaveOrderSlotProps) {
+  const { t } = useTranslation("exercises");
   const isEvaluated = phase === "feedback" || phase === "complete";
   const isCorrect = isEvaluated && mark === true;
   const isEmpty = !stage;
@@ -38,7 +40,7 @@ export function WaveOrderSlot({
           </Text>
         </View>
         <Text className="happy-font-body flex-1 text-[15px] leading-5 text-[#8C8477]">
-          Tap a chip to place it here
+          {t("flow.ui.copy.wave_order_empty_slot")}
         </Text>
       </View>
     );
@@ -72,7 +74,7 @@ export function WaveOrderSlot({
       fullWidth
       disabled={locked || phase === "complete"}
       onPress={onPress}
-      accessibilityLabel={`Slot ${index + 1}: ${stage}. Tap to remove.`}
+      accessibilityLabel={t("flow.ui.copy.wave_order_slot_accessibility", { index: index + 1, stage })}
       leftIcon={
         <View className="h-6 w-6 items-center justify-center rounded-full bg-[#E8E2D6]">
           <Text className="happy-font-body-bold text-[12px] text-[#4A453F]">
@@ -117,6 +119,7 @@ export function WaveOrderFeedbackCard({
   rightCount: number;
   total: number;
 }) {
+  const { t } = useTranslation("exercises");
   if (isCorrect) {
     return (
       <Animated.View
@@ -126,14 +129,13 @@ export function WaveOrderFeedbackCard({
         accessibilityRole="summary"
       >
         <Text className="text-[11.5px] font-bold uppercase tracking-wider text-[#2D5A32] mb-1">
-          THE PATTERN
+          {t("flow.ui.copy.wave_order_pattern_heading")}
         </Text>
         <Text className="happy-font-heading-bold text-[16px] leading-[22px] text-[#1B3B2B]">
-          A panic surge changes over time.
+          {t("flow.ui.copy.wave_order_pattern_title")}
         </Text>
         <Text className="happy-font-body text-[14px] leading-5 text-[#201E1D] mt-1.5">
-          {feedbackText ??
-            "The alarm rises, reaches a peak, and then begins to settle."}
+          {feedbackText ?? t("flow.ui.copy.wave_order_pattern_fallback")}
         </Text>
       </Animated.View>
     );
@@ -148,19 +150,21 @@ export function WaveOrderFeedbackCard({
       accessibilityRole="alert"
     >
       <Text className="happy-font-heading-bold text-[15.5px] leading-5 text-[#1B3B2B]">
-        Try the order again
+        {t("flow.ui.copy.wave_order_retry_title")}
       </Text>
       <Text className="happy-font-body text-[14px] leading-5 text-[#5A524A] mt-1.5">
-        {feedbackText ??
-          `${rightCount} of ${total} in the right place. Reorder the remaining ${
-            total - rightCount
-          }.`}
+        {feedbackText ?? t("flow.ui.copy.wave_order_wrong_fallback", {
+          rightCount,
+          total,
+          remaining: total - rightCount,
+        })}
       </Text>
     </Animated.View>
   );
 }
 
 export function WaveOrderClueCard({ clue }: { clue: string }) {
+  const { t } = useTranslation("exercises");
   return (
     <Animated.View
       entering={FadeIn.duration(180).reduceMotion(ReduceMotion.System)}
@@ -171,7 +175,7 @@ export function WaveOrderClueCard({ clue }: { clue: string }) {
         <Text className="happy-font-body-bold text-[11px] text-[#5F7F58]">?</Text>
       </View>
       <Text className="happy-font-body text-[13.5px] leading-[19px] text-[#3F3A34] flex-1">
-        <Text className="happy-font-body-bold text-[#201E1D]">Clue: </Text>
+        <Text className="happy-font-body-bold text-[#201E1D]">{t("flow.ui.copy.wave_order_clue_prefix")}: </Text>
         {clue}
       </Text>
     </Animated.View>

@@ -1,4 +1,15 @@
 {
+  "text_composer_voice_unavailable": "Sprachnotiz nicht verfügbar. Du kannst diesen Eintrag stattdessen eingeben.",
+  "text_composer_recording_failed": "Aufnahme konnte nicht gestartet werden. Du kannst diesen Eintrag stattdessen eingeben.",
+  "text_composer_voice_placeholder": "Tippen oder sprechen...",
+  "text_composer_item_placeholder": "Eintrag eingeben...",
+  "text_composer_remove_item_accessibility": "Eintrag {{index}} entfernen: {{item}}",
+  "text_composer_listening": "Höre zu...",
+  "text_composer_stop_recording_item": "Aufnahme des Eintrags stoppen",
+  "text_composer_start_voice_input": "Spracheingabe starten",
+  "text_composer_add_item_accessibility": "Eintrag hinzufügen",
+  "text_composer_add_item": "Hinzufügen",
+  "text_composer_stop_voice_input": "Spracheingabe stoppen",
   "finding_personalized_options_3gywg0": "Suche nach personalisierten Optionen…",
   "ai_picks_87cufd": "KI-Tipps",
   "you_took_a_moment_to_check_in_with_yourself_145uhyl": "Du hast dir einen Moment Zeit genommen, um dich selbst zu überprüfen.",
@@ -41,5 +52,101 @@
   "verified_correct_label_1phun7l": "Richtig zugeordnet: {{label}}",
   "incorrect_match_label_q8efnb": "Falsch zugeordnet: {{label}}",
   "paired_as_badge_label_1msv831": "Als {{badge}} zugeordnet: {{label}}",
-  "unpaired_label_52531d": "Nicht zugeordnet: {{label}}"
+  "unpaired_label_52531d": "Nicht zugeordnet: {{label}}",
+  "step_checklist_add_custom_item": "Eigenen Eintrag hinzufügen...",
+  "step_checklist_add_custom_item_accessibility": "Eigenen Checklistenpunkt hinzufügen",
+  "step_checklist_checked_count": "{{count}} abgehakt",
+  "step_checklist_checked_count_minimum": "{{count}} abgehakt (mind. {{minimum}})",
+  "step_time_picker_example_placeholder": "Z. B. 22:30 Uhr oder morgen um 15 Uhr",
+  "wave_order_empty_slot": "Tippe auf einen Chip, um ihn hier abzulegen",
+  "wave_order_slot_accessibility": "Platz {{index}}: {{stage}}. Zum Entfernen tippen.",
+  "wave_order_pattern_heading": "DAS MUSTER",
+  "wave_order_pattern_title": "Eine Panikwelle verändert sich mit der Zeit.",
+  "wave_order_pattern_fallback": "Der Alarm steigt, erreicht einen Höhepunkt und klingt dann langsam ab.",
+  "wave_order_retry_title": "Versuche die Reihenfolge erneut",
+  "wave_order_wrong_fallback": "{{rightCount}} von {{total}} sind richtig platziert. Ordne die übrigen {{remaining}} neu.",
+  "wave_order_clue_prefix": "Hinweis",
+  "surge_diagram": {
+    "title": "Ein Alarm verändert sich mit der Zeit",
+    "instruction": "Verfolge den Verlauf einer Anspannungswelle.",
+    "axisLabel": "Im Laufe der Zeit",
+    "patternLabel": "DAS MUSTER",
+    "takeaway": "Eine Anspannungswelle kann endlos wirken, solange du mittendrin bist.\n\nDoch ihre Intensität kann sich mit der Zeit verändern.",
+    "note": "Beispielhafter Verlauf; Dauer und Intensität sind unterschiedlich.",
+    "completedAnnouncement": "Die Anspannung lässt nach. Ende erreicht. Das Muster: Eine Anspannungswelle kann endlos wirken, doch ihre Intensität verändert sich mit der Zeit.",
+    "phaseAnnouncement": "{{tag}}. {{caption}}",
+    "chartAccessibilityLabel": "Kurve der Anspannungsintensität mit Beginn, Anstieg, Höhepunkt und Abklingen im Zeitverlauf",
+    "sliderAccessibilityLabel": "Zeitverlauf der Anspannungswelle",
+    "incrementAccessibilityLabel": "In der Zeit vorwärtsgehen",
+    "decrementAccessibilityLabel": "In der Zeit zurückgehen",
+    "phase": {
+      "beginning": { "tag": "BEGINN", "caption": "Gehe in der Zeit weiter." },
+      "rising": { "tag": "ANSTIEG", "caption": "Der Alarm wird stärker." },
+      "peak": {
+        "tag": "HÖHEPUNKT",
+        "caption": "Das ist der intensivste Punkt in diesem Beispiel."
+      },
+      "easing": {
+        "tag": "ABKLINGEN",
+        "caption": "Die Intensität verändert sich."
+      }
+    }
+  },
+  "two_dial_sandbox": {
+    "title": "Zwei Regler prägen deine Woche",
+    "instruction": "Passe Anforderungen und Erholung an, um zu sehen, wie das System reagiert.",
+    "currentState": "AKTUELLER ZUSTAND",
+    "statesDiscovered": "ENTDECKTE ZUSTÄNDE",
+    "discoveredCount": "{{count}} von 4",
+    "patternLabel": "DAS MUSTER",
+    "takeaway": "Die Anforderungen allein bestimmen nicht, wie sich die Woche anfühlt.\n\nErholung verändert, was dieselben Anforderungen kosten.",
+    "completedAnnouncement": "Alle vier Zustände entdeckt. Das Muster: Die Anforderungen allein bestimmen nicht, wie sich die Woche anfühlt. Erholung verändert, was dieselben Anforderungen kosten.",
+    "demand": {
+      "label": "ANFORDERUNGEN",
+      "low": "ruhig",
+      "high": "alles auf einmal",
+      "accessibilityLabel": "Regler für Anforderungen"
+    },
+    "recovery": {
+      "label": "ERHOLUNG",
+      "low": "am Limit",
+      "high": "gut erholt",
+      "accessibilityLabel": "Regler für Erholung"
+    },
+    "value": {
+      "highDemand": "Hohe Anforderungen",
+      "lowDemand": "Geringe Anforderungen",
+      "highRecovery": "Viel Erholung",
+      "lowRecovery": "Wenig Erholung"
+    },
+    "outcomes": {
+      "HL": {
+        "title": "Termindruck",
+        "body": "Hohe Anforderungen bei wenig Erholung können das System dauerhaft auf Hochtouren halten."
+      },
+      "HH": {
+        "title": "Stabiler Rhythmus",
+        "body": "Es gibt Anforderungen, aber Erholung füllt die Kapazitäten wieder auf."
+      },
+      "LH": {
+        "title": "Ruhige Erholung",
+        "body": "Geringere Anforderungen geben der Erholung Raum, die Kräfte wieder aufzubauen."
+      },
+      "LL": {
+        "title": "Stockender Kreislauf",
+        "body": "Wenig Anforderungen und wenig Erholung können die Woche eintönig wirken lassen."
+      }
+    }
+  },
+  "teaching_panel": {
+    "takeawayPrefix": "Das Wichtigste:",
+    "thinkingHeading": "DAS STECKT DAHINTER"
+  },
+  "lever_scenario": {
+    "feedback": {
+      "whyFits": "Warum das passt",
+      "thinkingHeading": "Das steckt dahinter",
+      "notQuite": "Noch nicht ganz"
+    }
+  }
 }

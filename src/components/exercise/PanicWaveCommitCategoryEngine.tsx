@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import Slider from "@react-native-community/slider";
 import Svg, { Line, Polyline, Text as SvgText } from "react-native-svg";
@@ -19,6 +20,7 @@ export function PanicWaveCommitCategoryEngine({
   savedResponse,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content ?? {};
   const saved = readRecord(savedResponse);
   const phase = readCommitPhase(saved?.phase);
@@ -59,9 +61,9 @@ export function PanicWaveCommitCategoryEngine({
   return (
     <View className="px-2 pb-3 pt-1.5">
       <CourseExerciseHeading
-        title={readString(content.title) ?? "The panic wave: commit your guess"}
+        title={readString(content.title) ?? t("flow.ui.categoryEngine.panicWaveCommit.titleFallback")}
         instruction={
-          readString(content.instruction) ?? "Commit before the reveal."
+          readString(content.instruction) ?? t("flow.ui.categoryEngine.panicWaveCommit.instructionFallback")
         }
       />
 
@@ -70,7 +72,7 @@ export function PanicWaveCommitCategoryEngine({
           height={150}
           width="100%"
           viewBox="0 0 300 150"
-          accessibilityLabel="A panic wave over twenty minutes"
+          accessibilityLabel={t("flow.ui.categoryEngine.panicWaveCommit.waveAccessibility")}
         >
           <Line
             x1="14"
@@ -101,7 +103,9 @@ export function PanicWaveCommitCategoryEngine({
                 fontWeight="700"
                 textAnchor="middle"
               >
-                {guess >= 21 ? "your guess: never" : "your guess"}
+                {guess >= 21
+                  ? t("flow.ui.categoryEngine.panicWaveCommit.guessNever")
+                  : t("flow.ui.categoryEngine.panicWaveCommit.guessLabel")}
               </SvgText>
             </>
           ) : null}
@@ -114,7 +118,7 @@ export function PanicWaveCommitCategoryEngine({
             strokeLinejoin="round"
           />
           <SvgText x="14" y="146" fill="#82796A" fontSize="9" fontWeight="700">
-            0 min
+            {t("flow.ui.categoryEngine.panicWaveCommit.minuteMarker", { count: 0 })}
           </SvgText>
           <SvgText
             x="153"
@@ -124,7 +128,7 @@ export function PanicWaveCommitCategoryEngine({
             fontWeight="700"
             textAnchor="middle"
           >
-            10 min
+            {t("flow.ui.categoryEngine.panicWaveCommit.minuteMarker", { count: 10 })}
           </SvgText>
           <SvgText
             x="292"
@@ -134,13 +138,13 @@ export function PanicWaveCommitCategoryEngine({
             fontWeight="700"
             textAnchor="end"
           >
-            20 min
+            {t("flow.ui.categoryEngine.panicWaveCommit.minuteMarker", { count: 20 })}
           </SvgText>
         </Svg>
 
         <View className="mt-1 flex-row items-baseline justify-between gap-2 px-1">
           <Text className="happy-font-body-bold text-[13.5px] text-[#201E1D]">
-            My guess
+            {t("flow.ui.categoryEngine.panicWaveCommit.myGuess")}
           </Text>
           <Text
             className={
@@ -150,12 +154,12 @@ export function PanicWaveCommitCategoryEngine({
             }
           >
             {guess >= 21
-              ? "it never comes down"
-              : `about ${guess} minute${guess > 1 ? "s" : ""}`}
+              ? t("flow.ui.categoryEngine.panicWaveCommit.neverComesDown")
+              : t("flow.ui.categoryEngine.panicWaveCommit.aboutMinutes", { count: guess })}
           </Text>
         </View>
         <Slider
-          accessibilityLabel="Your guess in minutes; the far right means never"
+          accessibilityLabel={t("flow.ui.categoryEngine.panicWaveCommit.guessAccessibility")}
           disabled={phase !== "ready"}
           minimumTrackTintColor="#5F7F58"
           maximumTrackTintColor="#DCD3C4"
@@ -169,13 +173,13 @@ export function PanicWaveCommitCategoryEngine({
         />
         <View className="flex-row justify-between px-1">
           <Text className="happy-font-body-bold text-[11px] text-[#82796A]">
-            1 min
+            {t("flow.ui.categoryEngine.panicWaveCommit.minuteMarker", { count: 1 })}
           </Text>
           <Text className="happy-font-body-bold text-[11px] text-[#82796A]">
-            20 min
+            {t("flow.ui.categoryEngine.panicWaveCommit.minuteMarker", { count: 20 })}
           </Text>
           <Text className="happy-font-body-bold text-[11px] text-[#29452A]">
-            never
+            {t("flow.ui.categoryEngine.panicWaveCommit.never")}
           </Text>
         </View>
       </View>

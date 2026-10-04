@@ -7,6 +7,11 @@
     "headline_emphasis": "ti,",
     "subtitle": "escrita daqui a 30 dias.",
     "moments": { "morning": "de manhã", "afternoon": "à tarde", "evening": "à noite", "night": "já de madrugada" },
+    "closing": {
+      "signature": "Você, daqui a 30 dias.",
+      "postscript": "P.S. Às vezes ainda sinto ansiedade. Só tenho menos medo dela.",
+      "keepNote": "Guarde estas palavras. Em alguns dias, você vai precisar lembrar quem está se tornando."
+    },
     "body": {
       "intro": "Escrevo-te numa {{weekday}} {{moment}}. Acabei de fechar a Happy",
       "closed_app": "há cinco minutos.",

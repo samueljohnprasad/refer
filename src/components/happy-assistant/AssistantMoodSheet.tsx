@@ -3,6 +3,7 @@ import { useMemo, type ReactElement } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
 import EmotionLogger from "@/src/components/EmotionLogger";
+import { useTranslation } from "react-i18next";
 
 interface AssistantMoodSheetProps {
   visible: boolean;
@@ -13,6 +14,7 @@ export function AssistantMoodSheet({
   visible,
   onClose,
 }: AssistantMoodSheetProps): ReactElement {
+  const { t } = useTranslation("settings");
   const selectedDate = useMemo(() => new Date(), [visible]);
 
   return (
@@ -27,7 +29,7 @@ export function AssistantMoodSheet({
       <View style={styles.root}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Close mood check"
+          accessibilityLabel={t("assistantUi.moodSheet.close")}
           style={StyleSheet.absoluteFill}
           onPress={onClose}
         />
@@ -38,10 +40,10 @@ export function AssistantMoodSheet({
               className="text-2xl text-slate-950"
               style={styles.title}
             >
-              Mood check
+              {t("assistantUi.moodSheet.title")}
             </Text>
             <Text className="text-sm font-medium leading-5 text-slate-500">
-              Mark how today feels. One tap is enough.
+              {t("assistantUi.moodSheet.description")}
             </Text>
           </View>
           <EmotionLogger selectedDate={selectedDate} />

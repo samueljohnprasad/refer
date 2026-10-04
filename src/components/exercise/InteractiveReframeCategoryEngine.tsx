@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import * as Haptics from "expo-haptics";
 import Animated, { FadeIn, FadeOut, FadeInUp, FadeOutDown, LinearTransition } from "react-native-reanimated";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
@@ -14,6 +15,7 @@ export function InteractiveReframeCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const [step, setStep] = useState(0);
   const [selectedPath, setSelectedPath] = useState<'correct' | 'wrong' | null>(null);
   const [cascadeDone, setCascadeDone] = useState(false);
@@ -74,13 +76,13 @@ export function InteractiveReframeCategoryEngine({
     }
   }, [cascadeDone, selectedPath]);
 
-  const title = exercise.content?.title || "After a hard night...";
-  const heroWrongText = exercise.content?.heroWrongText || "“My body is broken.”";
-  const question = exercise.content?.question || "What should you look at first?";
-  const correctOption = exercise.content?.correctOption || "What might have changed";
-  const wrongOption = exercise.content?.wrongOption || "Whether I need to try harder";
-  const wrongPathTitle = exercise.content?.wrongPathTitle || "Whether I need to try harder";
-  const correctFinale = exercise.content?.correctFinale || "Same night.\nDifferent story.";
+  const title = exercise.content?.title || t("flow.ui.categoryEngine.interactiveReframe.titleFallback");
+  const heroWrongText = exercise.content?.heroWrongText || t("flow.ui.categoryEngine.interactiveReframe.heroWrongText");
+  const question = exercise.content?.question || t("flow.ui.categoryEngine.interactiveReframe.question");
+  const correctOption = exercise.content?.correctOption || t("flow.ui.categoryEngine.interactiveReframe.correctOption");
+  const wrongOption = exercise.content?.wrongOption || t("flow.ui.categoryEngine.interactiveReframe.wrongOption");
+  const wrongPathTitle = exercise.content?.wrongPathTitle || t("flow.ui.categoryEngine.interactiveReframe.wrongPathTitle");
+  const correctFinale = exercise.content?.correctFinale || t("flow.ui.categoryEngine.interactiveReframe.correctFinale");
 
   return (
     <View className="px-4 pb-16 pt-0">
@@ -148,7 +150,7 @@ export function InteractiveReframeCategoryEngine({
           <Animated.View entering={FadeInUp} exiting={FadeOutDown} className="items-center mt-8 w-full">
             <View className="w-full min-h-[56px] items-center justify-center rounded-[28px] bg-[#FDF9F5] border-2 border-[#A74141] mb-8 relative">
               <View className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#A74141] px-2 py-0.5 rounded-full flex-row items-center">
-                <Text className="happy-font-body-bold text-[10px] text-white tracking-[0.5px]">× YOUR ANSWER</Text>
+              <Text className="happy-font-body-bold text-[10px] text-white tracking-[0.5px]">{t("flow.ui.categoryEngine.interactiveReframe.wrongAnswerLabel")}</Text>
               </View>
               <Text className="happy-font-body-bold text-[15px] text-[#A74141] text-center mt-1">
                 {wrongPathTitle}

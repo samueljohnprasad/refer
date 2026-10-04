@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { NODE_SIZE } from "@/src/data/journey/constants";
@@ -33,6 +34,7 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
   courseId,
   completedNodeId,
 }: JourneyNodeCellViewProps): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   const isModalNodeType =
     item.type === "chest" ||
     item.type === "checkpoint" ||
@@ -91,7 +93,7 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
               label={item.label}
               iconName={item.icon}
               onPress={handlePress}
-              accessibilityLabel={nodeA11yLabel(item.type, nodeState)}
+              accessibilityLabel={nodeA11yLabel(item.type, nodeState, t)}
             />
           </Link.Trigger>
         </Link>
@@ -106,7 +108,7 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
           label={item.label}
           iconName={item.icon}
           onPress={handlePress}
-          accessibilityLabel={nodeA11yLabel(item.type, nodeState)}
+          accessibilityLabel={nodeA11yLabel(item.type, nodeState, t)}
         />
       )}
     </View>

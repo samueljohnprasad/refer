@@ -114,13 +114,13 @@ export default function JournalCalendarScreen() {
 
   const handleQuickJournalPress = useCallback(
     (prompt: QuickJournalPrompt) => {
-      setPrompt(prompt.description);
+      setPrompt(tHome(`prompts.${prompt.id}`));
       if (isVoiceEnabled) {
         setStartRecording(true);
       }
       router.push(journalRoute);
     },
-    [setPrompt, setStartRecording, isVoiceEnabled, journalRoute],
+    [setPrompt, setStartRecording, isVoiceEnabled, journalRoute, tHome],
   );
 
 

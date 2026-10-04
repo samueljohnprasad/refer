@@ -7,6 +7,11 @@
     "headline_emphasis": "dir,",
     "subtitle": "geschrieben in 30 Tagen.",
     "moments": { "morning": "Morgen", "afternoon": "Nachmittag", "evening": "Abend", "night": "späte Nacht" },
+    "closing": {
+      "signature": "Du, in 30 Tagen.",
+      "postscript": "P.S. Manchmal bin ich noch ängstlich. Aber ich habe weniger Angst davor.",
+      "keepNote": "Bewahre diese Worte. An manchen Tagen musst du dich daran erinnern, zu wem du wirst."
+    },
     "body": {
       "intro": "Ich schreibe dir an einem {{weekday}} {{moment}}. Ich habe Happy gerade geschlossen",
       "closed_app": "vor fünf Minuten.",

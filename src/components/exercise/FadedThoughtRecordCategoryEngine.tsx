@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
@@ -34,6 +35,7 @@ export function FadedThoughtRecordCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = readFadedThoughtRecordContent(exercise.content);
   const saved = readRecord(savedResponse);
   const response = content ? createFadedThoughtRecordResponse(content, saved) : null;
@@ -64,9 +66,9 @@ export function FadedThoughtRecordCategoryEngine({
   return (
     <View style={styles.screen}>
       <CourseExerciseHeading title={content.title} instruction={content.instruction} />
-      <StageProgress stageIndex={response.stageIndex} stageCount={steps.length} label="Field" />
+      <StageProgress stageIndex={response.stageIndex} stageCount={steps.length} label={t("flow.ui.categoryEngine.fadedThoughtRecord.stage")} />
       <ExerciseWorkspace
-        accessibilityLabel="Thought record notebook"
+        accessibilityLabel={t("flow.ui.categoryEngine.fadedThoughtRecord.notebookAccessibility")}
         transitionKey="faded-thought-record-notebook"
       >
         {showCompletedExample ? (
@@ -74,7 +76,7 @@ export function FadedThoughtRecordCategoryEngine({
             items={[{
               id: content.examples[0].id,
               label: content.examples[0].label,
-              value: "Record completed",
+              value: t("flow.ui.categoryEngine.fadedThoughtRecord.completedExample"),
             }]}
           />
         ) : null}
@@ -110,7 +112,9 @@ export function FadedThoughtRecordCategoryEngine({
             <InlineFeedback
               message={getFeedbackMessage(currentStep, selectedOption?.feedback, response)}
               title={response.phase === "feedback"
-                ? response.isCorrect ? "Field complete" : "A clue"
+                ? response.isCorrect
+                  ? t("flow.ui.categoryEngine.fadedThoughtRecord.fieldComplete")
+                  : t("flow.ui.categoryEngine.fadedThoughtRecord.aClue")
                 : undefined}
               tone={response.isCorrect ? "supported" : "neutral"}
             />
@@ -130,10 +134,15 @@ function ThoughtRecordFieldRow({
   field: ThoughtRecordField;
   response: FadedThoughtRecordResponse;
 }) {
+  const { t } = useTranslation("exercises");
   const value = getFieldValue(example, field.id, response);
   const active = response.phase !== "complete" && response.activeFieldId === field.id;
   const future = !value && !active && example.activeFieldOrder.includes(field.id);
-  const displayValue = value ?? (future ? "Your turn next" : "Choose below");
+  const displayValue = value ?? t(
+    future
+      ? "flow.ui.categoryEngine.fadedThoughtRecord.yourTurnNext"
+      : "flow.ui.categoryEngine.fadedThoughtRecord.chooseBelow",
+  );
   return (
     <View
       accessible

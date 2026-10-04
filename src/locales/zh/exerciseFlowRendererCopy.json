@@ -1,4 +1,15 @@
 {
+  "text_composer_voice_unavailable": "语音便笺不可用。你可以改为输入此项。",
+  "text_composer_recording_failed": "无法开始录音。你可以改为输入此项。",
+  "text_composer_voice_placeholder": "输入或使用语音...",
+  "text_composer_item_placeholder": "输入一项...",
+  "text_composer_remove_item_accessibility": "移除第 {{index}} 项：{{item}}",
+  "text_composer_listening": "正在聆听...",
+  "text_composer_stop_recording_item": "停止录制此项",
+  "text_composer_start_voice_input": "开始语音输入",
+  "text_composer_add_item_accessibility": "添加项目",
+  "text_composer_add_item": "添加",
+  "text_composer_stop_voice_input": "停止语音输入",
   "match_the_two_sides_5j1723": "将两侧对齐",
   "tap_an_observation_then_its_useful_reading_1v9jxsm": "点击一个观察结果，然后阅读它的有用内容。",
   "observation_1073nnx": "观察",
@@ -41,5 +52,95 @@
   "even_a_small_shift_matters_you_made_room_for_a_m_bqxdz4": "即使是一个小转变也很重要。你为更平衡的状态腾出了空间。",
   "checked_again_ko7wr6": "再次检查",
   "reality_check_1ryst8b": "现实检验",
-  "finish_185ucaa": "结束"
+  "finish_185ucaa": "结束",
+  "step_checklist_add_custom_item": "添加自定义项目...",
+  "step_checklist_add_custom_item_accessibility": "添加自定义清单项目",
+  "step_checklist_checked_count": "已勾选 {{count}} 项",
+  "step_checklist_checked_count_minimum": "已勾选 {{count}} 项（至少 {{minimum}} 项）",
+  "step_time_picker_example_placeholder": "例如：晚上10:30或明天下午3点",
+  "wave_order_empty_slot": "点击一个标签将它放在这里",
+  "wave_order_slot_accessibility": "位置{{index}}：{{stage}}。点击移除。",
+  "wave_order_pattern_heading": "规律",
+  "wave_order_pattern_title": "恐慌浪潮会随时间变化。",
+  "wave_order_pattern_fallback": "警报会升高、达到峰值，然后开始平复。",
+  "wave_order_retry_title": "再试一次排序",
+  "wave_order_wrong_fallback": "{{total}} 项中有 {{rightCount}} 项位置正确。请重新排列其余 {{remaining}} 项。",
+  "wave_order_clue_prefix": "线索",
+  "surge_diagram": {
+    "title": "警报会随时间变化",
+    "instruction": "观察这阵强烈感受的变化曲线。",
+    "axisLabel": "时间推移",
+    "patternLabel": "变化规律",
+    "takeaway": "身处其中时，这阵强烈感受可能像是永远不会结束。\n\n但它的强度会随时间变化。",
+    "note": "此曲线仅作示意；持续时间和强度因人而异。",
+    "completedAnnouncement": "强度正在缓和。已到达终点。变化规律：这阵强烈感受可能像是永远不会结束，但强度会随时间变化。",
+    "phaseAnnouncement": "{{tag}}。{{caption}}",
+    "chartAccessibilityLabel": "显示强烈感受随时间开始、增强、达到高峰并缓和的曲线",
+    "sliderAccessibilityLabel": "强烈感受时间线",
+    "incrementAccessibilityLabel": "向前移动时间",
+    "decrementAccessibilityLabel": "向后移动时间",
+    "phase": {
+      "beginning": { "tag": "开始", "caption": "沿时间向前移动。" },
+      "rising": { "tag": "增强", "caption": "警报感正在变强。" },
+      "peak": { "tag": "高峰", "caption": "这是此示例中感受最强烈的时刻。" },
+      "easing": { "tag": "缓和", "caption": "感受强度正在变化。" }
+    }
+  },
+  "two_dial_sandbox": {
+    "title": "两个旋钮影响你的一周",
+    "instruction": "调整压力和恢复，看看身心状态如何变化。",
+    "currentState": "当前状态",
+    "statesDiscovered": "已探索的状态",
+    "discoveredCount": "{{count}} / 4",
+    "patternLabel": "变化规律",
+    "takeaway": "压力本身并不能决定这一周的感受。\n\n恢复会改变同样压力带来的影响。",
+    "completedAnnouncement": "已探索全部四种状态。变化规律：压力本身并不能决定这一周的感受。恢复会改变同样压力带来的影响。",
+    "demand": {
+      "label": "压力",
+      "low": "轻松",
+      "high": "事情接踵而至",
+      "accessibilityLabel": "压力调节旋钮"
+    },
+    "recovery": {
+      "label": "恢复",
+      "low": "精力耗尽",
+      "high": "精力充足",
+      "accessibilityLabel": "恢复调节旋钮"
+    },
+    "value": {
+      "highDemand": "压力较高",
+      "lowDemand": "压力较低",
+      "highRecovery": "恢复较充分",
+      "lowRecovery": "恢复较少"
+    },
+    "outcomes": {
+      "HL": {
+        "title": "截止日期压力",
+        "body": "压力大而恢复不足，可能让身心一直处于紧绷状态。"
+      },
+      "HH": {
+        "title": "稳定节奏",
+        "body": "虽然有压力，但恢复能不断补充精力。"
+      },
+      "LH": {
+        "title": "安静充电",
+        "body": "压力较小时，恢复有更多空间补充精力。"
+      },
+      "LL": {
+        "title": "停滞循环",
+        "body": "压力少而恢复也不足，可能让这一周显得乏力。"
+      }
+    }
+  },
+  "teaching_panel": {
+    "takeawayPrefix": "要点：",
+    "thinkingHeading": "思路解析"
+  },
+  "lever_scenario": {
+    "feedback": {
+      "whyFits": "为什么合适",
+      "thinkingHeading": "思路解析",
+      "notQuite": "还不太对"
+    }
+  }
 }

@@ -52,7 +52,7 @@
     "analyzing": "يراجع الذكاء الاصطناعي إدخالات يومياتك. قد يستغرق ذلك دقيقة.",
     "notAvailable": "غير متاح"
   },
-  "chart": { "premiumFeature": "ميزة مميزة", "premium": "مميز" },
+  "chart": { "premiumFeature": "ميزة مميزة", "premium": "مميز", "weeklyMood": { "tabs": { "day": "يوم", "week": "أسبوع", "dayView": "عرض يومي", "dayHint": "عرض الحالة المزاجية لكل يوم", "weekView": "عرض أسبوعي", "weekHint": "عرض متوسط الحالة المزاجية الأسبوعي" }, "headers": { "thisWeekMood": "الحالة المزاجية لهذا الأسبوع", "todayMood": "الحالة المزاجية اليوم", "yesterdayMood": "الحالة المزاجية أمس", "weekdayMood": "الحالة المزاجية يوم {{weekday}}" }, "tooltip": { "mood": "الحالة المزاجية: {{mood}}", "day": "اليوم: {{day}}", "time": "الوقت: {{time}}" }, "error": "تعذر تحميل بيانات الحالة المزاجية.", "average": "المتوسط:", "scale": { "accessibilityLabel": "مقياس الحالة المزاجية من ممتاز إلى سيئ جدًا", "level": "مستوى الحالة المزاجية: {{mood}}", "moods": { "great": "ممتاز", "good": "جيد", "fine": "مقبول", "bad": "سيئ", "terrible": "سيئ جدًا" } } } },
   "lifeBalance": {
     "title": "توازن مجالات الحياة",
     "lockedDescription": "استكشف مدى توازن الجوانب المختلفة في حياتك.",

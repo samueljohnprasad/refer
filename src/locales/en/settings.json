@@ -111,6 +111,64 @@
     "unlockWithPremium": "Unlock with Premium",
     "unlockAccessibility": "Upgrade to unlock {{feature}}"
   },
+  "accountAuth": {
+    "toasts": {
+      "signedIn": "Signed in successfully.",
+      "signInFailed": "Sign-in failed. Please try again.",
+      "premiumRefreshNeeded": "Account saved. Premium needs a refresh.",
+      "accountCreated": "Account created.",
+      "premiumNotFound": "Premium was not found. Please contact support.",
+      "premiumRestored": "Premium restored.",
+      "switchFailed": "Could not switch accounts. Please try again.",
+      "premiumRestoreFailed": "Premium could not be restored automatically.",
+      "accountSwitched": "Switched to existing account."
+    },
+    "recovery": {
+      "refreshTitle": "Premium Refresh Needed",
+      "restoreTitle": "Premium Restore Needed",
+      "claimDescription": "Your profile is saved, but Premium could not be refreshed for this login. Try restoring again, or share these IDs with support.",
+      "moveDescription": "You are now on the existing account, but Premium could not be restored automatically. Try restoring again, or share these IDs with support.",
+      "revenueCatId": "RevenueCat app user ID",
+      "supabaseId": "Supabase user ID",
+      "unavailable": "Unavailable",
+      "tryRestoreAgain": "Try Restore Again",
+      "continue": "Continue",
+      "continueWithoutPremium": "Continue Without Premium"
+    },
+    "conflict": {
+      "premiumTitle": "Premium Is Active Here",
+      "existingTitle": "Existing Account Found",
+      "premiumDescription": "Your Premium and progress belong to this profile. This {{provider}} sign-in is already linked to another Happy account. You can keep this profile or switch to your existing account and try restoring Premium there. Your current progress will not transfer.",
+      "description": "This {{provider}} sign-in is already linked to another Happy account. If you continue, you will switch to that account and your current progress will not transfer.",
+      "keepPremium": "Keep This Premium Profile",
+      "continueExisting": "Continue to Existing Account",
+      "moveExisting": "Move to Existing Account",
+      "stayCurrent": "Stay on Current Progress"
+    },
+    "signIn": {
+      "createAccount": "Create your account",
+      "welcomeBack": "Welcome back",
+      "createDescription": "Keep your course, reflections, and streak synced to your account.",
+      "welcomeDescription": "Sign in to sync your course, reflections, and streak across devices.",
+      "continueApple": "Continue with Apple",
+      "continueGoogle": "Continue with Google",
+      "maybeLater": "Maybe later"
+    }
+  },
+  "postTrial": {
+    "heading": "Special Offer for You",
+    "trialEndedLead": "Your trial has ended. Get",
+    "discountOff": "{{percent}}% off",
+    "trialEndedTail": "your annual subscription!",
+    "annualPlan": "Annual Plan",
+    "annualPrice": "{{price}}/year",
+    "originalAnnualPrice": "$39.99/year",
+    "monthlyPrice": "Just {{price}} per month",
+    "discountBadge": "{{percent}}% OFF",
+    "claimDiscount": "Claim Your {{percent}}% Discount",
+    "dismissAccessibility": "Dismiss discount banner",
+    "claimAccessibility": "Claim discount and upgrade to Premium"
+  },
   "developer": {
     "appleIntelligence": "Apple Intelligence",
     "aiModel": "AI Model",
@@ -163,5 +221,37 @@
   "deleteConfirmation": { "title": "Delete all data?", "message": "This permanently deletes your private data from Happy.", "warning": "This cannot be undone.", "items": { "journal": "Journal entries and transcripts", "mood": "Mood history", "ai": "AI insights and analysis", "progress": "Streaks and progress", "account": "Account and profile data" }, "signedOut": "You'll be signed out.", "continue": "Continue", "cancel": "Cancel", "finalTitle": "Delete everything permanently?", "finalMessage": "All of your Happy history will be erased and you will be signed out.", "typeToConfirm": "Type {{token}} to confirm.", "confirmationToken": "DELETE", "deleting": "Deleting...", "confirm": "Delete All Data" },
   "share": { "message": "Check out Happy AI Journal! https://apps.apple.com/us/app/happy-ai-journal/id6755650433" },
   "languageOk": "OK",
-  "device": "Device Language"
+  "device": "Device Language",
+  "purchaseRestore": { "action": "Restore Purchases", "actionDescription": "Refresh Premium from the App Store.", "restored": "Premium restored.", "notFound": "No active Premium found.", "failed": "Happy could not restore purchases. Please try again." },
+  "assistantUi": {
+    "button": { "label": "Open Happy Assistant", "hint": "Drag to move. Tap for quick actions." },
+    "moodSheet": { "title": "Mood check", "description": "Mark how today feels. One tap is enough.", "close": "Close mood check" },
+    "contexts": {
+      "exercises": { "title": "Hi, I'm Happy", "subtitle": "What would help right now?" },
+      "journal": { "title": "Hi, I'm Happy", "subtitle": "Capture, check in, or open your insight." },
+      "record": { "title": "Hi, I'm Happy", "subtitle": "Let's make journaling frictionless." },
+      "journeys": { "title": "Hi, I'm Happy", "subtitle": "Keep the journey moving gently." },
+      "settings": { "title": "Hi, I'm Happy", "subtitle": "Account, restore, and support shortcuts." },
+      "default": { "title": "Hi, I'm Happy", "subtitle": "Pick one tiny helpful action." }
+    },
+    "actions": {
+      "save_progress": { "label": "Save your progress", "description": "Add a login to keep your progress." },
+      "save_premium_profile": { "label": "Save your progress", "description": "Add a login to keep Premium and your progress." },
+      "resume_exercise": { "label": "Resume Exercise", "description": "Continue where you left off." },
+      "try_1min_breathing": { "label": "Try 1-Min Breathing", "description": "A quick reset when your mind feels busy." },
+      "try_breathing": { "label": "Try Breathing", "description": "Take one minute to settle your body." },
+      "calm_me_down": { "label": "Calm Me Down", "description": "A tiny breathing reset before continuing." },
+      "thought_catcher": { "label": "Thought Catcher", "description": "Catch and untangle one anxious thought." },
+      "view_exercise_log": { "label": "View Exercise Log", "description": "See what you have completed so far." },
+      "voice_journal": { "label": "Voice Journal", "description": "Start talking and turn it into a journal." },
+      "keyboard_journal": { "label": "Keyboard Journal", "description": "Write a quick private note." },
+      "mood_check": { "label": "Mood Check", "description": "Log how you feel in a few seconds." },
+      "ai_insight": { "label": "AI Insight", "description": "Open your weekly reflection summary." },
+      "continue_journey": { "label": "Continue Journey", "description": "Jump back into your current path." },
+      "restore_purchases": { "label": "Restore Purchases", "description": "Refresh Premium from the App Store." },
+      "support": { "label": "Contact Support", "description": "Get help with account or Premium issues." },
+      "open_settings": { "label": "Open Settings", "description": "Manage Premium, account, and support." },
+      "goHome": { "label": "Go to Home Screen" }
+    }
+  }
 }

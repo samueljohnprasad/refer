@@ -1,4 +1,15 @@
 {
+  "text_composer_voice_unavailable": "Voice note unavailable. You can type this item instead.",
+  "text_composer_recording_failed": "Could not start recording. You can type this item instead.",
+  "text_composer_voice_placeholder": "Type or use voice...",
+  "text_composer_item_placeholder": "Type an item...",
+  "text_composer_remove_item_accessibility": "Remove item {{index}}: {{item}}",
+  "text_composer_listening": "Listening...",
+  "text_composer_stop_recording_item": "Stop recording item",
+  "text_composer_start_voice_input": "Start voice input",
+  "text_composer_add_item_accessibility": "Add item",
+  "text_composer_add_item": "Add",
+  "text_composer_stop_voice_input": "Stop voice input",
   "finding_personalized_options_3gywg0": "Finding personalized options…",
   "ai_picks_87cufd": "AI Picks",
   "you_took_a_moment_to_check_in_with_yourself_145uhyl": "You took a moment to check in with yourself.",
@@ -41,5 +52,101 @@
   "verified_correct_label_1phun7l": "Verified correct: {{label}}",
   "incorrect_match_label_q8efnb": "Incorrect match: {{label}}",
   "paired_as_badge_label_1msv831": "Paired as {{badge}}: {{label}}",
-  "unpaired_label_52531d": "Unpaired: {{label}}"
+  "unpaired_label_52531d": "Unpaired: {{label}}",
+  "step_checklist_add_custom_item": "Add custom item...",
+  "step_checklist_add_custom_item_accessibility": "Add custom checklist item",
+  "step_checklist_checked_count": "{{count}} checked",
+  "step_checklist_checked_count_minimum": "{{count}} checked (min {{minimum}})",
+  "step_time_picker_example_placeholder": "e.g., 10:30 PM or Tomorrow 3pm",
+  "wave_order_empty_slot": "Tap a chip to place it here",
+  "wave_order_slot_accessibility": "Slot {{index}}: {{stage}}. Tap to remove.",
+  "wave_order_pattern_heading": "THE PATTERN",
+  "wave_order_pattern_title": "A panic surge changes over time.",
+  "wave_order_pattern_fallback": "The alarm rises, reaches a peak, and then begins to settle.",
+  "wave_order_retry_title": "Try the order again",
+  "wave_order_wrong_fallback": "{{rightCount}} of {{total}} in the right place. Reorder the remaining {{remaining}}.",
+  "wave_order_clue_prefix": "Clue",
+  "surge_diagram": {
+    "title": "An alarm changes over time",
+    "instruction": "Follow the shape of a surge.",
+    "axisLabel": "Time passing",
+    "patternLabel": "THE PATTERN",
+    "takeaway": "A surge can feel endless while you’re inside it.\n\nBut intensity can change over time.",
+    "note": "Illustrative pattern; timing and intensity vary.",
+    "completedAnnouncement": "Easing. Reached the end. The pattern: A surge can feel endless, but intensity changes over time.",
+    "phaseAnnouncement": "{{tag}}. {{caption}}",
+    "chartAccessibilityLabel": "Surge intensity curve showing beginning, rise, peak, and easing over time",
+    "sliderAccessibilityLabel": "Surge timeline",
+    "incrementAccessibilityLabel": "Forward in time",
+    "decrementAccessibilityLabel": "Backward in time",
+    "phase": {
+      "beginning": { "tag": "BEGINNING", "caption": "Move through time." },
+      "rising": {
+        "tag": "RISING",
+        "caption": "The alarm is getting stronger."
+      },
+      "peak": {
+        "tag": "PEAK",
+        "caption": "This is the most intense point in this example."
+      },
+      "easing": { "tag": "EASING", "caption": "The intensity is changing." }
+    }
+  },
+  "two_dial_sandbox": {
+    "title": "Two dials shape your week",
+    "instruction": "Adjust demand and recovery to see how the system reacts.",
+    "currentState": "CURRENT STATE",
+    "statesDiscovered": "STATES DISCOVERED",
+    "discoveredCount": "{{count}} of 4",
+    "patternLabel": "THE PATTERN",
+    "takeaway": "Demand alone doesn’t decide how the week feels.\n\nRecovery changes what the same demand costs you.",
+    "completedAnnouncement": "All four states discovered. The pattern: Demand alone doesn’t decide how the week feels. Recovery changes what the same demand costs you.",
+    "demand": {
+      "label": "DEMAND",
+      "low": "quiet",
+      "high": "everything at once",
+      "accessibilityLabel": "Demand dial"
+    },
+    "recovery": {
+      "label": "RECOVERY",
+      "low": "running dry",
+      "high": "topped up",
+      "accessibilityLabel": "Recovery dial"
+    },
+    "value": {
+      "highDemand": "High demand",
+      "lowDemand": "Low demand",
+      "highRecovery": "High recovery",
+      "lowRecovery": "Low recovery"
+    },
+    "outcomes": {
+      "HL": {
+        "title": "Deadline crunch",
+        "body": "High demand with little recovery can keep the system running hot."
+      },
+      "HH": {
+        "title": "Steady rhythm",
+        "body": "Demand is present, but recovery keeps replenishing capacity."
+      },
+      "LH": {
+        "title": "Quiet recharge",
+        "body": "Lower demand gives recovery room to rebuild."
+      },
+      "LL": {
+        "title": "Stalled loop",
+        "body": "Low demand with little recovery can leave the week feeling flat."
+      }
+    }
+  },
+  "teaching_panel": {
+    "takeawayPrefix": "Takeaway:",
+    "thinkingHeading": "HERE’S THE THINKING"
+  },
+  "lever_scenario": {
+    "feedback": {
+      "whyFits": "Why it fits",
+      "thinkingHeading": "Here’s the thinking",
+      "notQuite": "Not quite"
+    }
+  }
 }

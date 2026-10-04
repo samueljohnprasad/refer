@@ -7,6 +7,7 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 import { Mascot } from "@/src/components/ui/Mascot";
 import { Text } from "@/src/components/ui/Text";
+import { useTranslation } from "react-i18next";
 import type { HappyAssistantPosition } from "@/src/store/slices/happyAssistantSlice";
 import {
   ASSISTANT_BUTTON_INNER_SIZE,
@@ -29,6 +30,7 @@ export function FloatingAssistantButton({
   onOpen,
   onPositionChange,
 }: FloatingAssistantButtonProps): ReactElement {
+  const { t } = useTranslation("settings");
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
   const { assistantGesture, animatedStyle } = useFloatingAssistantButtonMotion({
@@ -49,8 +51,8 @@ export function FloatingAssistantButton({
       <Animated.View
         accessible
         accessibilityRole="button"
-        accessibilityLabel="Open Happy Assistant"
-        accessibilityHint="Drag to move. Tap for quick actions."
+        accessibilityLabel={t("assistantUi.button.label")}
+        accessibilityHint={t("assistantUi.button.hint")}
         onAccessibilityTap={onOpen}
         pointerEvents="box-only"
         style={[styles.container, animatedStyle]}

@@ -1,4 +1,15 @@
 {
+  "text_composer_voice_unavailable": "Note vocale indisponible. Vous pouvez saisir cet élément.",
+  "text_composer_recording_failed": "Impossible de démarrer l’enregistrement. Vous pouvez saisir cet élément.",
+  "text_composer_voice_placeholder": "Saisissez ou dictez...",
+  "text_composer_item_placeholder": "Saisissez un élément...",
+  "text_composer_remove_item_accessibility": "Supprimer l’élément {{index}} : {{item}}",
+  "text_composer_listening": "Écoute en cours...",
+  "text_composer_stop_recording_item": "Arrêter l’enregistrement de l’élément",
+  "text_composer_start_voice_input": "Démarrer la saisie vocale",
+  "text_composer_add_item_accessibility": "Ajouter un élément",
+  "text_composer_add_item": "Ajouter",
+  "text_composer_stop_voice_input": "Arrêter la saisie vocale",
   "finding_personalized_options_3gywg0": "Trouver des options personnalisées…",
   "ai_picks_87cufd": "Choix d'IA",
   "you_took_a_moment_to_check_in_with_yourself_145uhyl": "Vous avez pris un moment pour vérifier avec vous-même.",
@@ -41,5 +52,98 @@
   "verified_correct_label_1phun7l": "Association vérifiée : {{label}}",
   "incorrect_match_label_q8efnb": "Association incorrecte : {{label}}",
   "paired_as_badge_label_1msv831": "Associé comme {{badge}} : {{label}}",
-  "unpaired_label_52531d": "Non associé : {{label}}"
+  "unpaired_label_52531d": "Non associé : {{label}}",
+  "step_checklist_add_custom_item": "Ajouter un élément personnalisé...",
+  "step_checklist_add_custom_item_accessibility": "Ajouter un élément personnalisé à la liste",
+  "step_checklist_checked_count": "{{count}} coché(s)",
+  "step_checklist_checked_count_minimum": "{{count}} coché(s) (min. {{minimum}})",
+  "step_time_picker_example_placeholder": "Ex. : 22 h 30 ou demain à 15 h",
+  "wave_order_empty_slot": "Touchez une étiquette pour la placer ici",
+  "wave_order_slot_accessibility": "Emplacement {{index}} : {{stage}}. Touchez pour retirer.",
+  "wave_order_pattern_heading": "LE SCHÉMA",
+  "wave_order_pattern_title": "Une montée d’angoisse évolue avec le temps.",
+  "wave_order_pattern_fallback": "L’alarme monte, atteint un pic, puis commence à s’apaiser.",
+  "wave_order_retry_title": "Réessayez dans un autre ordre",
+  "wave_order_wrong_fallback": "{{rightCount}} sur {{total}} au bon endroit. Réorganisez les {{remaining}} restantes.",
+  "wave_order_clue_prefix": "Indice",
+  "surge_diagram": {
+    "title": "L’alarme évolue avec le temps",
+    "instruction": "Suivez la forme d’une montée.",
+    "axisLabel": "Le temps passe",
+    "patternLabel": "LE SCHÉMA",
+    "takeaway": "Une montée peut sembler interminable quand on la traverse.\n\nMais l’intensité peut évoluer avec le temps.",
+    "note": "Schéma illustratif ; la durée et l’intensité varient.",
+    "completedAnnouncement": "L’apaisement commence. Fin du parcours. Le schéma : une montée peut sembler interminable, mais son intensité évolue avec le temps.",
+    "phaseAnnouncement": "{{tag}}. {{caption}}",
+    "chartAccessibilityLabel": "Courbe d’intensité montrant le début, la montée, le pic et l’apaisement au fil du temps",
+    "sliderAccessibilityLabel": "Chronologie de la montée",
+    "incrementAccessibilityLabel": "Avancer dans le temps",
+    "decrementAccessibilityLabel": "Reculer dans le temps",
+    "phase": {
+      "beginning": { "tag": "DÉBUT", "caption": "Avancez dans le temps." },
+      "rising": { "tag": "MONTÉE", "caption": "L’alarme devient plus forte." },
+      "peak": {
+        "tag": "PIC",
+        "caption": "C’est le point le plus intense de cet exemple."
+      },
+      "easing": { "tag": "APAISEMENT", "caption": "L’intensité évolue." }
+    }
+  },
+  "two_dial_sandbox": {
+    "title": "Deux curseurs façonnent votre semaine",
+    "instruction": "Ajustez la demande et la récupération pour voir comment le système réagit.",
+    "currentState": "ÉTAT ACTUEL",
+    "statesDiscovered": "ÉTATS EXPLORÉS",
+    "discoveredCount": "{{count}} sur 4",
+    "patternLabel": "LE SCHÉMA",
+    "takeaway": "La demande seule ne détermine pas le déroulement de la semaine.\n\nLa récupération change le coût d’une même demande.",
+    "completedAnnouncement": "Les quatre états ont été explorés. Le schéma : la demande seule ne détermine pas le déroulement de la semaine. La récupération change le coût d’une même demande.",
+    "demand": {
+      "label": "DEMANDE",
+      "low": "calme",
+      "high": "tout à la fois",
+      "accessibilityLabel": "Curseur de demande"
+    },
+    "recovery": {
+      "label": "RÉCUPÉRATION",
+      "low": "à bout",
+      "high": "pleinement ressourcé",
+      "accessibilityLabel": "Curseur de récupération"
+    },
+    "value": {
+      "highDemand": "Demande élevée",
+      "lowDemand": "Demande faible",
+      "highRecovery": "Récupération élevée",
+      "lowRecovery": "Récupération faible"
+    },
+    "outcomes": {
+      "HL": {
+        "title": "Course contre la montre",
+        "body": "Une forte demande avec peu de récupération peut maintenir le système sous tension."
+      },
+      "HH": {
+        "title": "Rythme régulier",
+        "body": "La demande est présente, mais la récupération renouvelle les capacités."
+      },
+      "LH": {
+        "title": "Recharge au calme",
+        "body": "Une demande plus faible laisse à la récupération la place de reconstruire les réserves."
+      },
+      "LL": {
+        "title": "Boucle au ralenti",
+        "body": "Une faible demande avec peu de récupération peut rendre la semaine monotone."
+      }
+    }
+  },
+  "teaching_panel": {
+    "takeawayPrefix": "À retenir :",
+    "thinkingHeading": "VOICI LE RAISONNEMENT"
+  },
+  "lever_scenario": {
+    "feedback": {
+      "whyFits": "Pourquoi cette réponse convient",
+      "thinkingHeading": "Voici le raisonnement",
+      "notQuite": "Pas tout à fait"
+    }
+  }
 }
