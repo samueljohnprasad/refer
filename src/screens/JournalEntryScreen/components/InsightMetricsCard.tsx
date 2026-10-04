@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Feather } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 
 interface MetricItemProps {
   value: number;
@@ -17,22 +18,22 @@ interface InsightMetricsCardProps {
   sleepQuality: number | null;
 }
 
-function getEnergyDescriptor(value: number): { descriptor: string; color: string } {
-  if (value >= 4) return { descriptor: "Vibrant", color: "#D97706" };
-  if (value === 3) return { descriptor: "Balanced", color: "#B45309" };
-  return { descriptor: "Resting", color: "#78350F" };
+function getEnergyDescriptor(value: number, translate: (key: string) => string): { descriptor: string; color: string } {
+  if (value >= 4) return { descriptor: translate("insights.energy.vibrant"), color: "#D97706" };
+  if (value === 3) return { descriptor: translate("insights.energy.balanced"), color: "#B45309" };
+  return { descriptor: translate("insights.energy.resting"), color: "#78350F" };
 }
 
-function getStressDescriptor(value: number): { descriptor: string; color: string } {
-  if (value >= 4) return { descriptor: "High Load", color: "#B45309" };
-  if (value === 3) return { descriptor: "Moderate", color: "#92400E" };
-  return { descriptor: "Calm", color: "#15803D" };
+function getStressDescriptor(value: number, translate: (key: string) => string): { descriptor: string; color: string } {
+  if (value >= 4) return { descriptor: translate("insights.stress.highLoad"), color: "#B45309" };
+  if (value === 3) return { descriptor: translate("insights.stress.moderate"), color: "#92400E" };
+  return { descriptor: translate("insights.stress.calm"), color: "#15803D" };
 }
 
-function getSleepDescriptor(value: number): { descriptor: string; color: string } {
-  if (value >= 4) return { descriptor: "Restful", color: "#6D28D9" };
-  if (value === 3) return { descriptor: "Steady", color: "#5B21B6" };
-  return { descriptor: "Light", color: "#4C1D95" };
+function getSleepDescriptor(value: number, translate: (key: string) => string): { descriptor: string; color: string } {
+  if (value >= 4) return { descriptor: translate("insights.sleep.restful"), color: "#6D28D9" };
+  if (value === 3) return { descriptor: translate("insights.sleep.steady"), color: "#5B21B6" };
+  return { descriptor: translate("insights.sleep.light"), color: "#4C1D95" };
 }
 
 const VitalityItem: React.FC<MetricItemProps> = ({
@@ -87,14 +88,15 @@ const VitalityItem: React.FC<MetricItemProps> = ({
  */
 export const InsightMetricsCard: React.FC<InsightMetricsCardProps> = React.memo(
   ({ energyLevel, stressLevel, sleepQuality }) => {
+    const { t } = useTranslation("journal");
     const hasData: boolean =
       energyLevel !== null || stressLevel !== null || sleepQuality !== null;
 
     if (!hasData) return null;
 
-    const energyInfo = energyLevel !== null ? getEnergyDescriptor(energyLevel) : null;
-    const stressInfo = stressLevel !== null ? getStressDescriptor(stressLevel) : null;
-    const sleepInfo = sleepQuality !== null ? getSleepDescriptor(sleepQuality) : null;
+    const energyInfo = energyLevel !== null ? getEnergyDescriptor(energyLevel, t) : null;
+    const stressInfo = stressLevel !== null ? getStressDescriptor(stressLevel, t) : null;
+    const sleepInfo = sleepQuality !== null ? getSleepDescriptor(sleepQuality, t) : null;
 
     return (
       <View className="mb-3">
@@ -102,7 +104,7 @@ export const InsightMetricsCard: React.FC<InsightMetricsCardProps> = React.memo(
           <View className="flex-row items-center">
             <Feather name="activity" size={15} color="#5C6B5E" />
             <Text variant="body-bold" className="ml-2 text-[15px] text-ink">
-              Vitality & Balance
+              {t("insights.vitalityBalance")}
             </Text>
           </View>
         </View>
@@ -111,7 +113,7 @@ export const InsightMetricsCard: React.FC<InsightMetricsCardProps> = React.memo(
           {energyLevel !== null && energyInfo && (
             <VitalityItem
               value={energyLevel}
-              label="Energy"
+              label={t("insights.energy.label")}
               icon="zap"
               descriptor={energyInfo.descriptor}
               accentColor={energyInfo.color}
@@ -120,7 +122,7 @@ export const InsightMetricsCard: React.FC<InsightMetricsCardProps> = React.memo(
           {stressLevel !== null && stressInfo && (
             <VitalityItem
               value={stressLevel}
-              label="Stress"
+              label={t("insights.stress.label")}
               icon="wind"
               descriptor={stressInfo.descriptor}
               accentColor={stressInfo.color}
@@ -129,7 +131,7 @@ export const InsightMetricsCard: React.FC<InsightMetricsCardProps> = React.memo(
           {sleepQuality !== null && sleepInfo && (
             <VitalityItem
               value={sleepQuality}
-              label="Sleep"
+              label={t("insights.sleep.label")}
               icon="moon"
               descriptor={sleepInfo.descriptor}
               accentColor={sleepInfo.color}

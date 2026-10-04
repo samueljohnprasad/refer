@@ -5,6 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Coins01Icon, CheckmarkBadge01Icon } from "@hugeicons/core-free-icons";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
+import { useTranslation } from "react-i18next";
 
 interface RewardCardProps {
   reward: Reward;
@@ -22,11 +23,16 @@ export const RewardCard: React.FC<RewardCardProps> = ({
   canAfford,
   onPurchase,
 }) => {
+  const { t } = useTranslation("common");
+  const name = t(`rewards.items.${reward.id}.name`, { defaultValue: reward.name });
+  const description = t(`rewards.items.${reward.id}.description`, { defaultValue: reward.description });
   return (
     <Pressable
       onPress={!isOwned && canAfford ? onPurchase : undefined}
       className="happy-brand-card mb-3 rounded-[24px] p-4 active:opacity-90"
       style={{ opacity: isOwned ? 0.7 : 1 }}
+      accessibilityRole="button"
+      accessibilityLabel={name}
     >
       <View className="flex-row items-center">
         <View
@@ -38,13 +44,13 @@ export const RewardCard: React.FC<RewardCardProps> = ({
 
         <View className="flex-1 ml-3">
           <Text className="happy-font-body-bold text-base text-ink">
-            {reward.name}
+            {name}
           </Text>
           <Text
             className="happy-font-body-medium mt-0.5 text-xs leading-4 text-ink-muted"
             numberOfLines={2}
           >
-            {reward.description}
+            {description}
           </Text>
         </View>
 
@@ -57,7 +63,7 @@ export const RewardCard: React.FC<RewardCardProps> = ({
               strokeWidth={2}
             />
             <Text className="happy-font-body-bold text-xs text-sage-600">
-              Owned
+              {t("rewards.owned")}
             </Text>
           </View>
         ) : (

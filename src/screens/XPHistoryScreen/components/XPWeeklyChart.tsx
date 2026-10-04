@@ -12,6 +12,7 @@ import Animated, {
   SharedValue,
 } from 'react-native-reanimated';
 import { ChartDayData } from '../utils/chartUtils';
+import { useTranslation } from "react-i18next";
 
 type WeekData = ChartDayData[];
 
@@ -96,6 +97,7 @@ const WeeklyChart: React.FC<{ width: number; height: number; data: SharedValue<W
 };
 
 export const XPWeeklyChart = ({ weeklyData, weekLabels }: { weeklyData: ChartDayData[][]; weekLabels: string[] }) => {
+  const { t } = useTranslation("common");
   const { width: windowWidth } = useWindowDimensions();
   const animatedRef = useAnimatedRef<any>();
   const scrollOffset = useScrollViewOffset(animatedRef);
@@ -127,8 +129,8 @@ export const XPWeeklyChart = ({ weeklyData, weekLabels }: { weeklyData: ChartDay
           getItemLayout={(_, index) => ({ length: windowWidth, offset: windowWidth * index, index })}
           renderItem={({ index }) => (
             <View style={[{ width: windowWidth }, styles.labelContainer]}>
-              <Text style={styles.eyebrow}>This Week</Text>
-              <Text style={styles.weekLabel}>{weekLabels[index]}</Text>
+              <Text style={styles.eyebrow}>{t("xp.thisWeek")}</Text>
+              <Text style={styles.weekLabel}>{t("xp.weekOf", { date: weekLabels[index] })}</Text>
             </View>
           )}
         />

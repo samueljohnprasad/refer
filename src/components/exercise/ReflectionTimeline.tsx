@@ -2,6 +2,7 @@ import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Text } from "@/src/components/ui/Text";
 
@@ -97,6 +98,7 @@ export function ReflectionScoreShift({
   detail,
   accentColor = SEMANTIC_COLORS.brand.pressed,
 }: ReflectionScoreShiftProps) {
+  const { t } = useTranslation("exercises");
   return (
     <View>
       <View className="flex-row items-center">
@@ -111,7 +113,7 @@ export function ReflectionScoreShift({
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.secondary }}
             className="mt-1 text-[11px] leading-[15px]"
           >
-            before /10
+            {t("flow.ui.scoreBefore")}
           </Text>
         </View>
 
@@ -131,7 +133,7 @@ export function ReflectionScoreShift({
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: accentColor }}
             className="mt-1 text-[11px] leading-[15px]"
           >
-            after /10
+            {t("flow.ui.scoreAfter")}
           </Text>
         </View>
 

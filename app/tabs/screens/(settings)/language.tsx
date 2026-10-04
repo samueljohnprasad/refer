@@ -1,18 +1,18 @@
 // ponytail: dedicated language selection screen with native stack toolbar
 import React, { useCallback, useState } from "react";
-import { View, Alert } from "react-native";
+import { View, Alert, I18nManager } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "@/src/components/tw";
 
 import { useLanguage } from "@/src/hooks/useLanguage";
 import { LanguagePicker } from "@/src/components/settings/LanguagePicker";
-import type { SupportedLanguage } from "@/src/lib/i18n";
+import { RTL_LANGUAGES, type SupportedLanguage } from "@/src/lib/i18n";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
 export default function LanguageScreen() {
   const router = useRouter();
-  const { t } = useTranslation("settings");
+  const { t, i18n } = useTranslation("settings");
   const { currentLanguage, isCustomLanguage, setLanguage, resetToDeviceLanguage } = useLanguage();
   const [switchingLang, setSwitchingLang] = useState<string | null>(null);
 
@@ -21,40 +21,44 @@ export default function LanguageScreen() {
       if (switchingLang) return;
       setSwitchingLang(lang);
       try {
-        const wasRTL = currentLanguage === "ar";
-        const willBeRTL = lang === "ar";
+        const needsRestart = I18nManager.isRTL !== RTL_LANGUAGES.includes(lang);
         await setLanguage(lang);
-        if (wasRTL !== willBeRTL) {
+        if (needsRestart) {
           Alert.alert(
-            t("language.restartPromptTitle"),
-            t("language.restartPromptMessage"),
-            [{ text: "OK" }],
+            i18n.t("language.restartPromptTitle", { ns: "settings" }),
+            i18n.t("language.restartPromptMessage", { ns: "settings" }),
+            [{ text: t("languageOk") }],
           );
         }
+      } catch (error) {
+        console.warn("[i18n] Failed selecting language", error);
+        Alert.alert(t("language.errorTitle"), t("language.changeError"));
       } finally {
         setSwitchingLang(null);
       }
     },
-    [currentLanguage, setLanguage, switchingLang, t],
+    [i18n, setLanguage, switchingLang, t],
   );
 
   const handleResetLanguage = useCallback(async (): Promise<void> => {
     if (switchingLang) return;
     setSwitchingLang("device");
     try {
-      const wasRTL = currentLanguage === "ar";
       await resetToDeviceLanguage();
-      if (wasRTL) {
+      if (I18nManager.isRTL !== (i18n.language === "ar")) {
         Alert.alert(
-          t("language.restartPromptTitle"),
-          t("language.restartPromptMessage"),
-          [{ text: "OK" }],
+          i18n.t("language.restartPromptTitle", { ns: "settings" }),
+          i18n.t("language.restartPromptMessage", { ns: "settings" }),
+          [{ text: t("languageOk") }],
         );
       }
+    } catch (error) {
+      console.warn("[i18n] Failed resetting device language", error);
+      Alert.alert(t("language.errorTitle"), t("language.changeError"));
     } finally {
       setSwitchingLang(null);
     }
-  }, [currentLanguage, resetToDeviceLanguage, switchingLang, t]);
+  }, [i18n, resetToDeviceLanguage, switchingLang, t]);
 
   const textColor = String(SEMANTIC_COLORS.text.primary ?? "#243323");
 
@@ -63,7 +67,7 @@ export default function LanguageScreen() {
       <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
         <Stack.Screen
           options={{
-            title: t("language.title") || "Language",
+            title: t("language.title"),
             headerShown: true,
             headerTransparent: false,
             headerShadowVisible: false,

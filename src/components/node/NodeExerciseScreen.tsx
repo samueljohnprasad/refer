@@ -8,6 +8,7 @@ import { readString } from "@/src/components/exercise/courseExerciseContent";
 import { ExerciseSkipAction } from "@/src/components/exercise/ExerciseSkipAction";
 import { FeedbackPanel } from "@/src/components/node/NodeEngineRouterPanels";
 import { LessonScreen } from "@/src/components/ui/LessonScreen";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import type { Exercise } from "@/src/types/journeyV5";
 import type { V1CheckStatus } from "@/src/types/journeyLearning";
@@ -40,6 +41,11 @@ interface NodeExerciseScreenProps {
 
 export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
   const insets = useSafeAreaInsets();
+  const translateCopy = useExerciseCopy();
+  const primaryLabel = translateCopy(props.primaryLabel);
+  const successTitle = readString(props.exercise.content?.feedbackTitle);
+  const successTakeaway = readString(props.exercise.content?.feedbackTakeaway);
+  const skipLabel = readString(props.exercise.content?.skipLabel);
   const usesInlineFeedback =
     props.config?.presentation?.showsFeedbackInline?.(
       props.exercise,
@@ -79,17 +85,25 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
               <CourseExerciseFeedbackPanel
                 canContinueAfterExplanation={props.canContinueAfterExplanation}
                 checkStatus={props.checkStatus}
-                explanationText={props.explanationText}
-                feedbackText={usesInlineFeedback ? null : props.feedbackText}
-                successTitle={
-                  usesInlineFeedback
+                explanationText={
+                  props.explanationText
+                    ? translateCopy(props.explanationText)
+                    : null
+                }
+                feedbackText={
+                  usesInlineFeedback || !props.feedbackText
                     ? null
-                    : readString(props.exercise.content?.feedbackTitle)
+                    : translateCopy(props.feedbackText)
+                }
+                successTitle={
+                  usesInlineFeedback || !successTitle
+                    ? null
+                    : translateCopy(successTitle)
                 }
                 successTakeaway={
-                  usesInlineFeedback
+                  usesInlineFeedback || !successTakeaway
                     ? null
-                    : readString(props.exercise.content?.feedbackTakeaway)
+                    : translateCopy(successTakeaway)
                 }
               />
             ) : null}
@@ -98,11 +112,11 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
         </LessonScreen>
         <CourseExerciseFooter
           hidePrimary={props.hideFooter}
-          primaryLabel={props.primaryLabel}
+          primaryLabel={primaryLabel}
           primaryDisabled={!props.ready}
           primaryLoading={props.primaryLoading}
           onPrimaryPress={props.onPrimaryPress}
-          skipLabel={readString(props.exercise.content?.skipLabel) ?? undefined}
+          skipLabel={skipLabel ? translateCopy(skipLabel) : undefined}
           onSkip={props.onSkip}
         />
       </View>
@@ -114,7 +128,7 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
       progress={props.progress}
       trailingLabel={props.trailingLabel}
       onClose={props.onClose}
-      primaryLabel={props.primaryLabel}
+      primaryLabel={primaryLabel}
       primaryDisabled={!props.ready}
       primaryLoading={props.primaryLoading}
       onPrimaryPress={props.onPrimaryPress}
@@ -126,8 +140,14 @@ export function NodeExerciseScreen(props: NodeExerciseScreenProps) {
         <FeedbackPanel
           canContinueAfterExplanation={props.canContinueAfterExplanation}
           checkStatus={props.checkStatus}
-          explanationText={props.explanationText}
-          feedbackText={props.feedbackText}
+          explanationText={
+            props.explanationText
+              ? translateCopy(props.explanationText)
+              : null
+          }
+          feedbackText={
+            props.feedbackText ? translateCopy(props.feedbackText) : null
+          }
         />
       ) : null}
       {props.showingSkipAction && props.onSkip ? (

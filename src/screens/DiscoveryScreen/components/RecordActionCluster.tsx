@@ -4,6 +4,7 @@ import * as Haptics from "expo-haptics";
 import { SymbolView } from "expo-symbols";
 import { Button } from "@/src/components/ui/Button";
 import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
+import { useTranslation } from "react-i18next";
 
 interface RecordActionClusterProps {
   onScanJournal: () => void;
@@ -15,6 +16,7 @@ interface RecordActionClusterProps {
 export const RecordActionCluster = React.memo<RecordActionClusterProps>(
   ({ onScanJournal, onOpenRecorder, onOpenKeyboard }) => {
     const { isVoiceEnabled } = useVoiceFeature();
+    const { t } = useTranslation("journal");
 
     const handlePhotoPress = useCallback(() => {
       Haptics.selectionAsync();
@@ -42,7 +44,7 @@ export const RecordActionCluster = React.memo<RecordActionClusterProps>(
               width={52}
               round
               fullWidth={false}
-              accessibilityLabel="Add photo"
+              accessibilityLabel={t("capture.actions.photo")}
               leftIcon={
                 <SymbolView
                   name="camera"
@@ -58,11 +60,11 @@ export const RecordActionCluster = React.memo<RecordActionClusterProps>(
             onPress={handlePhotoPress}
             hitSlop={8}
             accessibilityRole="button"
-            accessibilityLabel="Add photo"
+            accessibilityLabel={t("capture.actions.photo")}
             className="active:opacity-60"
           >
             <Text className="mt-2 text-[12px] text-[#736B63] happy-font-body-bold">
-              Photo
+              {t("capture.actions.photo")}
             </Text>
           </Pressable>
         </View>
@@ -77,7 +79,7 @@ export const RecordActionCluster = React.memo<RecordActionClusterProps>(
                 width={68}
                 round
                 fullWidth={false}
-                accessibilityLabel="Record voice"
+                accessibilityLabel={t("capture.actions.voice")}
                 haptic="light"
                 leftIcon={
                   <SymbolView
@@ -94,11 +96,11 @@ export const RecordActionCluster = React.memo<RecordActionClusterProps>(
               onPress={handleVoicePress}
               hitSlop={8}
               accessibilityRole="button"
-              accessibilityLabel="Record voice"
+              accessibilityLabel={t("capture.actions.voice")}
               className="active:opacity-60"
             >
               <Text className="mt-2 text-[12px] text-[#2D4D28] happy-font-body-bold">
-                Voice
+                {t("capture.actions.voice")}
               </Text>
             </Pressable>
           </View>
@@ -113,7 +115,7 @@ export const RecordActionCluster = React.memo<RecordActionClusterProps>(
               width={isVoiceEnabled ? 52 : 68}
               round
               fullWidth={false}
-              accessibilityLabel="Write text"
+              accessibilityLabel={t("capture.actions.text")}
               haptic={isVoiceEnabled ? undefined : "light"}
               leftIcon={
                 <SymbolView
@@ -130,7 +132,7 @@ export const RecordActionCluster = React.memo<RecordActionClusterProps>(
             onPress={handleTextPress}
             hitSlop={8}
             accessibilityRole="button"
-            accessibilityLabel="Write text"
+            accessibilityLabel={t("capture.actions.text")}
             className="active:opacity-60"
           >
             <Text
@@ -138,7 +140,7 @@ export const RecordActionCluster = React.memo<RecordActionClusterProps>(
                 isVoiceEnabled ? "text-[#736B63]" : "text-[#2D4D28]"
               }`}
             >
-              Text
+              {t("capture.actions.text")}
             </Text>
           </Pressable>
         </View>
@@ -148,5 +150,4 @@ export const RecordActionCluster = React.memo<RecordActionClusterProps>(
 );
 
 RecordActionCluster.displayName = "RecordActionCluster";
-
 

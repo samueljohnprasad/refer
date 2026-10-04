@@ -2,6 +2,7 @@
 // Persistent floating milestone dock displayed on completed journey maps.
 
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View, Text, Pressable } from "react-native";
 import * as Haptics from "expo-haptics";
 import Animated, {
@@ -34,10 +35,12 @@ export const NextJourneyBridgeDock: React.FC<NextJourneyBridgeDockProps> = React
     isLoading = false,
     onStartNextCourse,
     onBrowseCatalog,
-    currentCourseTitle = "Course",
+    currentCourseTitle,
     completionMessage,
     onClose,
   }) {
+    const { t } = useTranslation("journeys");
+    const displayCourseTitle = currentCourseTitle ?? t("course");
     const insets = useSafeAreaInsets();
     // 24pt+ visual breathing room above native tab bar (~49pt + insets.bottom + 25pt margin)
     const bottomOffset = Math.max(insets.bottom + 74, 88);
@@ -107,7 +110,7 @@ export const NextJourneyBridgeDock: React.FC<NextJourneyBridgeDockProps> = React
               hitSlop={12}
               className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 items-center justify-center active:opacity-60"
               accessibilityRole="button"
-              accessibilityLabel="Close"
+              accessibilityLabel={t("closePractice")}
             >
               <SymbolView name="xmark" size={12} tintColor="#6B7280" weight="bold" />
             </Pressable>
@@ -120,24 +123,24 @@ export const NextJourneyBridgeDock: React.FC<NextJourneyBridgeDockProps> = React
                   <SymbolView name="trophy.fill" size={14} tintColor="#059669" />
                 </Animated.View>
                 <Text className="text-[11px] font-nunito-extrabold tracking-wider uppercase text-emerald-700 dark:text-emerald-400">
-                  ALL COURSES COMPLETE
+                  {t("allCoursesComplete")}
                 </Text>
               </View>
               <Text className="text-[21px] font-nunito-bold text-neutral-900 dark:text-neutral-50 mb-1.5 leading-snug pr-8">
-                All Caught Up!
+                {t("allCaughtUp")}
               </Text>
               <Text className="text-[15px] font-nunito-medium text-neutral-600 dark:text-neutral-400 leading-relaxed mb-5">
-                You've completed all available journeys. Check back soon for new content or explore the catalog.
+                {t("allJourneysDone")}
               </Text>
               <Button
-                label="Browse Course Catalog"
+                label={t("exploreTitle")}
                 variant="primary"
                 size="md"
                 height={50}
                 fullWidth
                 loading={isLoading}
                 onPress={onBrowseCatalog}
-                accessibilityLabel="Browse course catalog"
+                accessibilityLabel={t("exploreTitle")}
               />
             </Animated.View>
           </View>
@@ -150,16 +153,16 @@ export const NextJourneyBridgeDock: React.FC<NextJourneyBridgeDockProps> = React
     }
 
     // Authored copy or concise fallback per design specification
-    const isSleepCourse = currentCourseTitle.toLowerCase().includes("sleep");
+    const isSleepCourse = displayCourseTitle.toLowerCase().includes("sleep");
     const courseCompletionText = isSleepCourse
-      ? "You built tools you can return to when sleep gets difficult."
-      : completionMessage || "You built tools you can return to whenever you need them.";
+      ? t("sleepToolsReady")
+      : completionMessage || t("toolsReady");
 
     const nextCourseDesc =
       nextCourse.title.toLowerCase().includes("anxiety")
-        ? "Learn to recognize the alarm, test its predictions, and respond differently."
+        ? t("nextJourneyDescription")
         : nextCourse.description ||
-          "Continue your progress with the next learning journey.";
+          t("nextJourneyDescription");
 
     return (
       <View
@@ -173,7 +176,7 @@ export const NextJourneyBridgeDock: React.FC<NextJourneyBridgeDockProps> = React
             hitSlop={12}
             className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 items-center justify-center active:opacity-60"
             accessibilityRole="button"
-            accessibilityLabel="Close"
+            accessibilityLabel={t("closePractice")}
           >
             <SymbolView name="xmark" size={12} tintColor="#6B7280" weight="bold" />
           </Pressable>
@@ -191,11 +194,11 @@ export const NextJourneyBridgeDock: React.FC<NextJourneyBridgeDockProps> = React
                 <SymbolView name="trophy.fill" size={14} tintColor="#059669" />
               </Animated.View>
               <Text className="text-[11px] font-nunito-extrabold tracking-wider uppercase text-emerald-700 dark:text-emerald-400">
-                COURSE COMPLETE
+                {t("courseComplete")}
               </Text>
             </View>
             <Text className="text-[21px] font-nunito-bold text-neutral-900 dark:text-neutral-50 mb-1.5 leading-snug pr-8">
-              {currentCourseTitle}
+              {displayCourseTitle}
             </Text>
             <Text className="text-[15px] font-nunito-medium text-neutral-600 dark:text-neutral-400 leading-relaxed">
               {courseCompletionText}
@@ -208,7 +211,7 @@ export const NextJourneyBridgeDock: React.FC<NextJourneyBridgeDockProps> = React
             className="px-5 pt-4 pb-5 bg-[#F2F6F1] dark:bg-neutral-800/60 border-t border-black/[0.04] dark:border-white/[0.05]"
           >
             <Text className="text-[11px] font-nunito-extrabold tracking-wider uppercase text-emerald-700 dark:text-emerald-400 mb-1">
-              NEXT JOURNEY
+              {t("nextJourney")}
             </Text>
             <Text
               numberOfLines={2}
@@ -223,24 +226,24 @@ export const NextJourneyBridgeDock: React.FC<NextJourneyBridgeDockProps> = React
               {nextCourseDesc}
             </Text>
             <Button
-              label="START NEXT JOURNEY"
+              label={t("startJourney").toUpperCase()}
               variant="primary"
               size="md"
               height={50}
               fullWidth
               loading={isLoading}
               onPress={() => onStartNextCourse(nextCourse.id)}
-              accessibilityLabel="Start next journey"
+              accessibilityLabel={t("startJourney")}
             />
             <Pressable
               onPress={onBrowseCatalog}
               hitSlop={12}
               className="pt-3.5 pb-0.5 items-center justify-center"
               accessibilityRole="button"
-              accessibilityLabel="Browse all courses"
+              accessibilityLabel={t("exploreTitle")}
             >
               <Text className="text-sm font-nunito-bold text-neutral-600 dark:text-neutral-300">
-                Browse all courses
+                {t("exploreTitle")}
               </Text>
             </Pressable>
           </Animated.View>

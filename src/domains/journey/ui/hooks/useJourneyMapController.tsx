@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type Dispatch, type RefObject, type SetStateAction } from "react";
+import { useTranslation } from "react-i18next";
 import type { LegendListRef, ViewToken } from "@legendapp/list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
@@ -74,6 +75,7 @@ export function useJourneyMapController(
   courseId: string,
   completedNodeId?: string,
 ): JourneyMapController {
+  const { t } = useTranslation("journeys");
   const legendListRef = useRef<LegendListRef | null>(null);
   const [isSectionSheetOpen, setIsSectionSheetOpen] = useState(false);
   const insets = useSafeAreaInsets();
@@ -185,7 +187,7 @@ export function useJourneyMapController(
         toast.show({
           placement: "top",
           variant: "warning",
-          label: "Keep going! This will unlock soon.",
+          label: t("lockedNodeHint"),
         });
         return;
       }
@@ -211,7 +213,7 @@ export function useJourneyMapController(
       // Routing for active/completed nodes is handled declaratively by <Link> in JourneyNodeCell
       return;
     },
-    [openCheckpointSheet, rewards, toast],
+    [openCheckpointSheet, rewards, t, toast],
   );
 
   const handleOpenSections = useCallback((): void => {
@@ -256,7 +258,7 @@ export function useJourneyMapController(
     activeNodeInitialScrollIndex,
     bottomSpacerHeight:
       LIST_BOTTOM_SPACER_HEIGHT + insets.bottom + (recommendation.isCompleted ? 200 : 0),
-    courseTitle: course?.title ?? "Journey",
+    courseTitle: course?.title ?? t("yourJourney"),
     courseCompletionMessage: course?.rewardContent?.acknowledgement,
     flashListData,
     handleListLoad,

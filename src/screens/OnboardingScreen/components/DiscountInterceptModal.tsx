@@ -5,6 +5,7 @@ import Animated, { FadeIn, SlideInDown } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import MochiMascot from "./MochiMascot";
 import TactileButton from "./TactileButton";
+import { useTranslation } from "react-i18next";
 
 interface DiscountInterceptModalProps {
   visible: boolean;
@@ -17,6 +18,9 @@ const DiscountInterceptModal: React.FC<DiscountInterceptModalProps> = ({
   onAccept,
   onDismiss,
 }) => {
+  const { t } = useTranslation("onboarding");
+  const offerPrice = "$4.99";
+  const regularPrice = "$14.99";
   return (
     <Modal visible={visible} transparent animationType="none">
       <Animated.View
@@ -33,19 +37,19 @@ const DiscountInterceptModal: React.FC<DiscountInterceptModalProps> = ({
               style={{ fontFamily: APP_FONT_FAMILIES.bold }}
               className="mt-2 text-xs font-bold uppercase tracking-widest text-sage-500"
             >
-              Wait, one more thing
+              {t("paywall.discount.wait")}
             </Text>
             <Text
               style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="mt-2 text-center text-2xl text-ink"
             >
-              Try Happy Plus for $4.99
+              {t("paywall.discount.title", { price: offerPrice })}
             </Text>
             <Text
               style={{ fontFamily: APP_FONT_FAMILIES.regular }}
               className="mt-2 text-center text-sm text-ink-soft"
             >
-              A first month, on us, almost. No pressure. No catch.
+              {t("paywall.discount.description")}
             </Text>
           </View>
 
@@ -55,26 +59,26 @@ const DiscountInterceptModal: React.FC<DiscountInterceptModalProps> = ({
                 style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                 className="text-xl text-sage-700"
               >
-                $4.99
+                {offerPrice}
               </Text>
               <Text
                 style={{ fontFamily: APP_FONT_FAMILIES.regular }}
                 className="text-sm text-ink-muted line-through"
               >
-                $14.99
+                {regularPrice}
               </Text>
             </View>
             <Text
               style={{ fontFamily: APP_FONT_FAMILIES.regular }}
               className="mt-1 text-xs text-ink-muted"
             >
-              After month 1: continues at $14.99/mo · Cancel anytime
+              {t("paywall.discount.afterMonth", { price: regularPrice })}
             </Text>
           </View>
 
           <View className="mt-5">
             <TactileButton
-              label="YES, I'LL TRY IT FOR $4.99"
+              label={t("paywall.discount.accept", { price: offerPrice })}
               onPress={() => {
                 Haptics.notificationAsync(
                   Haptics.NotificationFeedbackType.Success,
@@ -87,7 +91,7 @@ const DiscountInterceptModal: React.FC<DiscountInterceptModalProps> = ({
                 style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                 className="text-sm text-ink-muted"
               >
-                No thanks, continue with free
+                {t("paywall.discount.decline")}
               </Text>
             </Pressable>
           </View>

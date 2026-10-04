@@ -12,6 +12,7 @@ import { useToast } from "heroui-native";
 import { recorderOpenAtom } from "@/src/screens/DiscoveryScreen/helpers";
 import { useAtom } from "jotai";
 import { createLogger } from "@/src/lib/logger";
+import { useTranslation } from "react-i18next";
 
 const log = createLogger("AudioRecording");
 
@@ -40,6 +41,7 @@ const useAudioRecording = () => {
   const recorderState = useAudioRecorderState(audioRecorder);
 
   const { toast } = useToast();
+  const { t } = useTranslation("common");
 
   // Configure audio session on mount
   useEffect(() => {
@@ -76,14 +78,14 @@ const useAudioRecording = () => {
       if (!status.granted) {
         log.warn("Microphone permission denied by user");
         Alert.alert(
-          "Microphone Permission Needed",
-          "Please enable microphone access in Settings.",
+          t("permissions.microphoneTitle"),
+          t("permissions.microphoneMessage"),
           [
             {
-              text: "Open Settings",
+              text: t("actions.openSettings"),
               onPress: () => Linking.openURL("app-settings:"),
             },
-            { text: "Cancel", style: "cancel" },
+            { text: t("actions.cancel"), style: "cancel" },
           ]
         );
         return setRecorderOpen(false);
@@ -112,7 +114,7 @@ const useAudioRecording = () => {
       toast.show({
         placement: "top",
         variant: "danger",
-        label: "Failed to start recording. Please try again.",
+        label: t("errors.recordingStart"),
       });
     }
   };

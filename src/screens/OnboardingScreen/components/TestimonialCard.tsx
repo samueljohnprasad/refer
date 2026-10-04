@@ -3,6 +3,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { StarIcon } from "@hugeicons/core-free-icons";
+import { useTranslation } from "react-i18next";
 
 type TestimonialTone = "terracotta" | "lavender" | "sky" | "sage";
 
@@ -33,6 +34,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
   metaLabel,
   tone = "terracotta",
 }) => {
+  const { t, i18n } = useTranslation("onboarding");
   const colors = TONE_COLORS[tone];
 
   return (
@@ -64,7 +66,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
               style={{ fontFamily: APP_FONT_FAMILIES.bold }}
               className="text-[13px] text-ink"
             >
-              {name}, {age}
+              {name}, {age.toLocaleString(i18n.language)}
             </Text>
             {metaLabel && (
               <Text
@@ -80,7 +82,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
         {/* Rating Stars using native Hugeicons */}
         <View
           accessible={true}
-          accessibilityLabel="5 out of 5 stars"
+          accessibilityLabel={t("paywall.fiveStars")}
           className="flex-row gap-0.5"
         >
           {[...Array(5)].map((_, i) => (

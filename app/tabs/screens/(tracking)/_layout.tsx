@@ -1,9 +1,11 @@
 import React from "react";
 import { Stack } from "expo-router";
 import { useCSSVariable } from "uniwind";
+import { useTranslation } from "react-i18next";
 
 export default function TrackingGroupLayout() {
   const appBackground = useCSSVariable("--app-background") as string;
+  const { t } = useTranslation("common");
 
   return (
     <Stack
@@ -17,7 +19,7 @@ export default function TrackingGroupLayout() {
         name="calorie-tracker"
         options={{
           headerShown: false,
-          title: "Calorie Tracker",
+          title: t("tracking.calorieTracker"),
           freezeOnBlur: true,
           animation: "slide_from_right",
         }}
@@ -34,7 +36,7 @@ export default function TrackingGroupLayout() {
         name="insights"
         options={{
           headerShown: false,
-          title: "Insights",
+          title: t("tracking.insights"),
           freezeOnBlur: true,
           animation: "slide_from_right",
         }}
@@ -43,7 +45,7 @@ export default function TrackingGroupLayout() {
         name="micronutrient-tracking"
         options={{
           headerShown: false,
-          title: "Micronutrients",
+          title: t("tracking.micronutrients"),
           animation: "slide_from_right",
         }}
       />

@@ -18,6 +18,8 @@ import { Text } from "@/src/components/ui/Text";
 import { EXERCISE_LINKING_MAP } from "@/src/data/exerciseLinkingMap";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { ExerciseCopyText } from "@/src/components/exercise/ExerciseCopyText";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 import { getABCEmotionDisplayLabels } from "./customSteps";
 import type {
   ABCAnalysisResponse,
@@ -36,19 +38,20 @@ function SaveCopingCardAction({
   onPress: () => void;
   error: string | null;
 }) {
+  const translateCopy = useExerciseCopy();
   return (
     <View>
       <Pressable
         onPress={onPress}
         disabled={cardSaved || isSavingCard}
         accessibilityRole="button"
-        accessibilityLabel={
+        accessibilityLabel={translateCopy(
           cardSaved
             ? "Saved to coping cards"
             : isSavingCard
               ? "Saving coping card"
               : "Save as coping card"
-        }
+        )}
         accessibilityState={{
           disabled: cardSaved || isSavingCard,
           busy: isSavingCard,
@@ -61,7 +64,7 @@ function SaveCopingCardAction({
           color={SEMANTIC_COLORS.brand.onSoft}
           strokeWidth={2}
         />
-        <Text
+        <ExerciseCopyText
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.onSoft }}
           className="ml-2 text-[14px] leading-[20px]"
         >
@@ -70,7 +73,7 @@ function SaveCopingCardAction({
             : isSavingCard
               ? "Saving..."
               : "Save for a difficult moment"}
-        </Text>
+        </ExerciseCopyText>
       </Pressable>
 
       {error ? (
@@ -132,6 +135,7 @@ export function ABCSummaryStep({
   readOnly,
   onNavigateDeeper,
 }: StepProps<ABCAnalysisResponse>): React.JSX.Element {
+  const translateCopy = useExerciseCopy();
   const router = useRouter();
   const { saveCard } = useCopingCards();
   const [cardSaved, setCardSaved] = useState(false);
@@ -179,18 +183,18 @@ export function ABCSummaryStep({
       await saveCard({
         exercise_type: "abc_analysis",
         reframe_text: response.alternativeBelief,
-        reframe_label: "More balanced thought",
+        reframe_label: translateCopy("More balanced thought"),
       });
       setCardSaved(true);
       void Haptics.notificationAsync(
         Haptics.NotificationFeedbackType.Success,
       ).catch(() => undefined);
     } catch {
-      setCardSaveError("Could not save this coping card. Try again.");
+      setCardSaveError(translateCopy("Could not save this coping card. Try again."));
     } finally {
       setIsSavingCard(false);
     }
-  }, [cardSaved, isSavingCard, response.alternativeBelief, saveCard]);
+  }, [cardSaved, isSavingCard, response.alternativeBelief, saveCard, translateCopy]);
 
   const handleNavigateDeeper = useCallback(
     (type: ExerciseType) => {
@@ -214,14 +218,14 @@ export function ABCSummaryStep({
           <Pressable
             onPress={onBack}
             accessibilityRole="button"
-            accessibilityLabel="Edit answers"
+            accessibilityLabel={translateCopy("Edit answers")}
             className="min-h-11 self-start py-2 active:opacity-60"
           >
             <Text
               style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.pressed }}
               className="text-[14px] leading-[20px]"
             >
-              Edit answers
+              {translateCopy("Edit answers")}
             </Text>
           </Pressable>
         ) : null}
@@ -237,7 +241,7 @@ export function ABCSummaryStep({
 
         {link && !readOnly ? (
           <FollowupLink
-            label={`Go deeper: ${link.label}`}
+            label={`${translateCopy("Go deeper:")} ${translateCopy(link.label)}`}
             onPress={() => handleNavigateDeeper(link.exerciseType)}
           />
         ) : null}
@@ -251,6 +255,7 @@ export function ABCSummaryStep({
     isSavingCard,
     onBack,
     readOnly,
+    translateCopy,
   ]);
 
   const preScore = response.preEmotionalIntensity ?? 5;

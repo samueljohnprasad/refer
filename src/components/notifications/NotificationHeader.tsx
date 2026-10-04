@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { Text } from "@/src/components/ui/Text";
 import Animated, {
   useAnimatedStyle,
@@ -12,6 +12,7 @@ import Animated, {
  * Animated header section with motivational text
  */
 export const NotificationHeader: React.FC = () => {
+  const { t } = useTranslation("settings");
   const headerOpacity = useSharedValue(0);
 
   React.useEffect(() => {
@@ -26,9 +27,8 @@ export const NotificationHeader: React.FC = () => {
   return (
     <Animated.View style={headerAnimatedStyle} className="mt-2 mb-6">
       <Text className="happy-font-body-medium text-center text-ink-muted text-[15px] leading-6 px-6">
-        Set up gentle nudges to help you build a consistent journaling habit
+        {t("reminders.description")}
       </Text>
     </Animated.View>
   );
 };
-

@@ -13,6 +13,7 @@ import { AchievementBadge } from "@/src/components/Achievements";
 import type { AchievementCategory } from "@/src/types/achievements";
 import type { AchievementProgressItem } from "./AchievementBadgeDetailSheet";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { useTranslation } from "react-i18next";
 
 const CATEGORY_META: Record<AchievementCategory, { label: string; icon: any }> = {
   journaling: { label: "Journaling", icon: NoteIcon },
@@ -34,6 +35,7 @@ export const AchievementCategorySection = memo(function AchievementCategorySecti
   items,
   onBadgePress,
 }: AchievementCategorySectionProps) {
+  const { t } = useTranslation("common");
   if (items.length === 0) return null;
   const meta = CATEGORY_META[category] ?? { label: category, icon: Medal01Icon };
 
@@ -49,7 +51,7 @@ export const AchievementCategorySection = memo(function AchievementCategorySecti
           />
         </View>
         <Text className="happy-font-body-bold text-[16px] text-ink">
-          {meta.label}
+          {t(`achievements.categories.${category}`, { defaultValue: meta.label })}
         </Text>
       </View>
 

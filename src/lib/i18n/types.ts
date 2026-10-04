@@ -6,6 +6,7 @@ import type journal from '../../locales/en/journal.json';
 import type habits from '../../locales/en/habits.json';
 import type settings from '../../locales/en/settings.json';
 import type onboarding from '../../locales/en/onboarding.json';
+import type journeys from '../../locales/en/journeys.json';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
@@ -18,6 +19,7 @@ declare module 'i18next' {
       habits: typeof habits;
       settings: typeof settings;
       onboarding: typeof onboarding;
+      journeys: typeof journeys;
     };
   }
 }

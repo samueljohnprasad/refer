@@ -6,6 +6,7 @@ import { StepLayout } from "./StepLayout";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import { CircularProgressTimer } from "@/src/components/ui/CircularProgressTimer";
 import type { StepProps, TimerStepConfig } from "@/src/types/exerciseFlow";
+import { useTranslation } from "react-i18next";
 
 interface CountdownTimerStepProps extends StepProps {
   title: string;
@@ -37,6 +38,7 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
     psychoeducationText,
     setPrimaryOverride,
   }) => {
+    const { t } = useTranslation("exercises");
     const [remaining, setRemaining] = useState(timerConfig.durationMs);
     const [isRunning, setIsRunning] = useState(false);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -84,10 +86,10 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
     useEffect(() => {
       if (setPrimaryOverride) {
         if (!isRunning && !completed) {
-          setPrimaryOverride({ label: "Start Timer", action: startTimer, disabled: false });
+          setPrimaryOverride({ label: t("flow.ui.startTimer"), action: startTimer, disabled: false });
         } else if (isRunning) {
           setPrimaryOverride({ 
-            label: timerConfig.skippable ? "Skip" : "Running...", 
+            label: timerConfig.skippable ? t("flow.ui.skip") : t("flow.ui.running"),
             action: timerConfig.skippable ? handleSkip : () => {}, 
             disabled: !timerConfig.skippable 
           });
@@ -95,7 +97,7 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
           setPrimaryOverride(null); // use default when completed
         }
       }
-    }, [isRunning, completed, startTimer, timerConfig.skippable, handleSkip, setPrimaryOverride]);
+    }, [isRunning, completed, startTimer, timerConfig.skippable, handleSkip, setPrimaryOverride, t]);
 
     const handleTap = useCallback(() => {
       if (tapCountFieldKey && isRunning) {
@@ -170,8 +172,8 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
           {tapCountFieldKey && isRunning && (
             <Button
               onPress={handleTap}
-              accessibilityLabel="Tap when mind wanders"
-              label={`Tap here (${(response as Record<string, any>)[tapCountFieldKey] ?? 0})`}
+              accessibilityLabel={t("flow.ui.tapWhenMindWanders")}
+              label={t("flow.ui.tapCount", { count: (response as Record<string, any>)[tapCountFieldKey] ?? 0 })}
               variant="secondary"
               size="option"
               className="mb-4"

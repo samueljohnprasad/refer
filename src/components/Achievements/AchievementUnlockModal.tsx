@@ -18,6 +18,7 @@ import Animated, {
 import { Achievement } from "@/src/types/achievements";
 import * as Haptics from "expo-haptics";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import { useTranslation } from "react-i18next";
 // FIX #33: Use an X/close icon for the dismiss button instead of just a text label
 import { Cancel01Icon, StarsIcon } from "@hugeicons/core-free-icons";
 
@@ -56,6 +57,7 @@ export const AchievementUnlockModal: React.FC<AchievementUnlockModalProps> = ({
   achievement,
   onDismiss,
 }) => {
+  const { t } = useTranslation("common");
   // FIX #32: useWindowDimensions for safe responsive sizing
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
 
@@ -149,16 +151,16 @@ export const AchievementUnlockModal: React.FC<AchievementUnlockModalProps> = ({
           <View className="items-center px-6 pt-6 pb-8 w-full">
             {/* FIX #41: Title split into eyebrow + name hierarchy */}
             <Text className="text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-1">
-              Achievement Unlocked 🎉
+              {t("achievements.unlockedTitle")}
             </Text>
             <Text className="text-2xl font-black text-gray-900 text-center mb-1">
-              {achievement.name}
+              {t(`achievements.items.${achievement.id}.name`, { defaultValue: achievement.name })}
             </Text>
 
             {/* Description */}
             {/* FIX #42: Description now uses text-gray-600 for better contrast */}
             <Text className="text-gray-600 text-center text-sm leading-5 mb-5">
-              {achievement.description}
+              {t(`achievements.items.${achievement.id}.description`, { defaultValue: achievement.description })}
             </Text>
 
             {/* XP Bonus */}
@@ -171,7 +173,7 @@ export const AchievementUnlockModal: React.FC<AchievementUnlockModalProps> = ({
                 strokeWidth={1.8}
               />
               <Text className="text-amber-700 font-bold text-base">
-                +{achievement.xpBonus} XP Bonus!
+                {t("achievements.xpBonus", { xp: achievement.xpBonus })}
               </Text>
             </View>
 
@@ -180,14 +182,14 @@ export const AchievementUnlockModal: React.FC<AchievementUnlockModalProps> = ({
             <Pressable
               onPress={onDismiss}
               accessibilityRole="button"
-              accessibilityLabel="Continue"
+              accessibilityLabel={t("achievements.continue")}
               style={({ pressed }) => ({
                 opacity: pressed ? 0.8 : 1,
                 width: "100%",
               })}
               className="bg-gray-900 rounded-2xl py-3.5 items-center"
             >
-              <Text className="text-white font-bold text-base">Continue</Text>
+              <Text className="text-white font-bold text-base">{t("achievements.continue")}</Text>
             </Pressable>
 
             {/* FIX #45: Hint text below button */}

@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 import Animated, { FadeOut } from "react-native-reanimated";
 import { FullWindowOverlay } from "react-native-screens";
@@ -69,16 +70,17 @@ export const EditorialHeaderView = memo(function EditorialHeaderView({
   activeCourseSummary,
   onAddCoursePress,
 }: EditorialHeaderViewProps): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
     <View
       className="flex-row items-center justify-between gap-2 px-5 pb-3 pt-2.5"
       onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
     >
       <HeaderButton
-        accessibilityLabel={`${enrolledCourseCount} enrolled courses`}
+        accessibilityLabel={t("courseHeaderA11y", { count: enrolledCourseCount })}
         Icon={CourseHeaderIcon}
         onPress={openCourseOverlay}
-        title={activeCourseSummary?.title || "Your Journey"}
+        title={activeCourseSummary?.title || t("yourJourney")}
       />
 
       <Text className="text-sm text-ink-muted/60 tracking-wider uppercase font-medium">

@@ -1,10 +1,12 @@
 import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
 export function ExerciseSkipAction({ onSkip }: { onSkip: () => void }) {
+  const { t } = useTranslation("exercises");
   const handlePress = () => {
     triggerSelectionHaptic();
     onSkip();
@@ -22,7 +24,7 @@ export function ExerciseSkipAction({ onSkip }: { onSkip: () => void }) {
           variant="label-bold"
           style={{ color: SEMANTIC_COLORS.brand.pressed, fontSize: 15, lineHeight: 20 }}
         >
-          Skip for now
+          {t("runtime.skipForNow")}
         </Text>
       </Pressable>
     </View>

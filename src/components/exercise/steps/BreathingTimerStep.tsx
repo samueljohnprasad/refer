@@ -7,14 +7,15 @@ import { WellnessIcon } from "@hugeicons/core-free-icons";
 import { StepLayout } from "./StepLayout";
 import type { StepProps, BreathingPattern } from "@/src/types/exerciseFlow";
 import { useBreathingHaptic } from "@/lib/haptics/useHaptic";
+import { useTranslation } from "react-i18next";
 
 type Phase = "inhale" | "holdIn" | "exhale" | "holdOut";
 
-const PHASE_LABELS: Record<Phase, string> = {
-  inhale: "Breathe In",
-  holdIn: "Hold",
-  exhale: "Breathe Out",
-  holdOut: "Hold",
+const PHASE_KEYS: Record<Phase, string> = {
+  inhale: "flow.ui.breatheIn",
+  holdIn: "flow.ui.hold",
+  exhale: "flow.ui.breatheOut",
+  holdOut: "flow.ui.hold",
 };
 
 interface BreathingTimerStepProps extends StepProps {
@@ -42,6 +43,7 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
     isSaving,
     setPrimaryOverride,
   }) => {
+    const { t } = useTranslation("exercises");
     const [isRunning, setIsRunning] = useState(false);
     const [currentRound, setCurrentRound] = useState(0);
     const [currentPhase, setCurrentPhase] = useState<Phase>("inhale");
@@ -68,10 +70,10 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
     useEffect(() => {
       if (setPrimaryOverride) {
         if (!isRunning && !completed) {
-          setPrimaryOverride({ label: "Start", action: startTimer, disabled: false });
+          setPrimaryOverride({ label: t("flow.ui.start"), action: startTimer, disabled: false });
         } else if (isRunning) {
           setPrimaryOverride({ 
-            label: "Running...", 
+            label: t("flow.ui.running"),
             action: () => {}, 
             disabled: true 
           });
@@ -79,7 +81,7 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
           setPrimaryOverride(null);
         }
       }
-    }, [isRunning, completed, startTimer, setPrimaryOverride]);
+    }, [isRunning, completed, startTimer, setPrimaryOverride, t]);
 
     useEffect(() => {
       if (isRunning) {
@@ -207,7 +209,7 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
                   {phaseTime}s
                 </Text>
                 <Text variant="body-bold" className="text-blue-500 mt-1">
-                  {PHASE_LABELS[currentPhase]}
+                  {t(PHASE_KEYS[currentPhase] as never)}
                 </Text>
               </View>
             ) : (
@@ -226,7 +228,7 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
               variant="caption-muted"
               className="mb-4 font-bold text-center"
             >
-              Round {currentRound + 1} of {pattern.rounds}
+              {t("flow.ui.roundCount", { current: currentRound + 1, total: pattern.rounds })}
             </Text>
           )}
         </View>

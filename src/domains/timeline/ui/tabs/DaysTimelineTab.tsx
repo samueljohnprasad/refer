@@ -1,6 +1,7 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useState, useMemo } from 'react';
 import { View, Text } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useToast } from 'heroui-native';
 import { showAppToast } from '@/src/lib/showToast';
 import { Timeline } from '@/src/components/ui/Timeline/Timeline';
@@ -17,6 +18,7 @@ import { MOCK_DAYS_TIMELINE_DATA } from './mockData';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
+  const { t } = useTranslation('common');
   const headerHeight = useHeaderHeight();
   const { toast } = useToast();
   const { data, isLoading, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useDailyTimeline({ pageSize: 10 });
@@ -33,11 +35,11 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     
     try {
       await generateInsight({ date });
-    } catch (e) {
+    } catch {
       showAppToast(toast, {
         variant: 'danger',
-        title: 'Generation Failed',
-        description: 'Could not generate insight. Please try again later.',
+        title: t('timeline.generationFailed'),
+        description: t('timeline.generationFailedDescription'),
       });
     } finally {
       setGeneratingDates(prev => {
@@ -75,8 +77,8 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     return (
       <View className="px-6 pb-6 pt-2 items-center opacity-80">
         <Text className="text-center text-[15px] leading-6 tracking-[0.2px] text-[#767676]" style={{ fontFamily: APP_FONT_FAMILIES.regular }}>
-          <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: '#142414' }}>Sample Data</Text>
-          {'\n'}Your insights will look like this once generated.
+          <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: '#142414' }}>{t('timeline.sampleData')}</Text>
+          {'\n'}{t('timeline.sampleDataDescription')}
         </Text>
       </View>
     );
@@ -93,13 +95,23 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
       );
     }
     
-    return <GenerateInsightCard isGenerating={isGenerating} onPress={() => handleGenerate(item.originalDateString)} />;
+    return <GenerateInsightCard title={t('timeline.generate')} isGenerating={isGenerating} onPress={() => handleGenerate(item.originalDateString)} />;
   };
 
   if (isLoading) {
     return (
       <View className="px-4 py-6" style={{ paddingTop: headerHeight + 16 }}>
         <TimelineShimmer />
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View className="flex-1 items-center justify-center px-6" style={{ paddingTop: headerHeight }}>
+        <Text className="text-center text-[15px] text-[#666666]" style={{ fontFamily: APP_FONT_FAMILIES.regular }}>
+          {t('timeline.loadFailed')}
+        </Text>
       </View>
     );
   }

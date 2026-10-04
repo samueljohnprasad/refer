@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Animated, Share } from "react-native";
+import { useTranslation } from "react-i18next";
 import * as Application from "expo-application";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
@@ -21,7 +22,7 @@ import {
 } from "@hugeicons/core-free-icons";
 
 import { useLanguage } from "@/src/hooks/useLanguage";
-import { LANGUAGE_METADATA } from "@/src/components/settings/LanguagePicker";
+import { LANGUAGE_METADATA, formatLanguageLabel } from "@/src/components/settings/LanguagePicker";
 import type { SupportedLanguage } from "@/src/lib/i18n";
 
 import { PromoCard } from "./components/PromoCard";
@@ -40,6 +41,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { PremiumStatusCard } from "./components/PremiumStatusCard";
 
 export default function SettingsScreen() {
+  const { t } = useTranslation("settings");
   const router = useRouter();
   const signInSheetRef = React.useRef<BottomSheetModal>(null);
   const { customerInfo, hasPro, isLoadingRevenueCat } = useRevenueCat();
@@ -81,14 +83,16 @@ export default function SettingsScreen() {
   const currentLanguageMeta =
     LANGUAGE_METADATA[currentLanguage as SupportedLanguage];
   const currentLanguageLabel = currentLanguageMeta
-    ? `${currentLanguageMeta.nativeName} (${currentLanguageMeta.name})`
-    : "Device Language";
+    ? formatLanguageLabel(
+        t(`language.languages.${currentLanguage as SupportedLanguage}`),
+        currentLanguageMeta.nativeName,
+      )
+    : t("language.device");
 
   const handleShareApp = async () => {
     try {
       await Share.share({
-        message:
-          "Check out Happy AI Journal! https://apps.apple.com/us/app/happy-ai-journal/id6755650433",
+        message: t("share.message"),
       });
     } catch (error) {
       console.error(error);
@@ -131,11 +135,11 @@ export default function SettingsScreen() {
         {/* Post-trial 30% discount banner */}
         <PostTrialDiscountBanner />
 
-        <SettingsSection title="Preferences">
+        <SettingsSection title={t("sections.preferences")}>
           <DailyGoalPicker />
           <SettingsItem
             icon={Globe02Icon}
-            title="Language"
+            title={t("language.title")}
             subtitle={currentLanguageLabel}
             onPress={() => {
               Haptics.selectionAsync();
@@ -144,8 +148,8 @@ export default function SettingsScreen() {
           />
           <SettingsItem
             icon={Notification01Icon}
-            title="Daily Reminders"
-            subtitle="Schedule your reminders"
+            title={t("reminders.title")}
+            subtitle={t("items.reminders.subtitle")}
             onPress={() => {
               Haptics.selectionAsync();
               router.push("/tabs/screens/reminders");
@@ -153,8 +157,8 @@ export default function SettingsScreen() {
           />
           <SettingsItem
             icon={Settings01Icon}
-            title="Notifications"
-            subtitle="Alerts & quiet hours"
+            title={t("items.notifications.title")}
+            subtitle={t("items.notifications.subtitle")}
             onPress={() => {
               Haptics.selectionAsync();
               router.push("/tabs/screens/notification-preferences");
@@ -162,26 +166,26 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
 
-        <SettingsSection title="Account">
+        <SettingsSection title={t("sections.account")}>
           <SettingsItem
             icon={UserIcon}
-            title="Edit Name"
+            title={t("items.editName.title")}
             onPress={() => handlePress("edit-name")}
             showArrow={false}
           />
           <SettingsItem
             icon={Copy01Icon}
-            title="Copy User ID"
+            title={t("items.copyUserId.title")}
             onPress={handleCopyUserId}
             showArrow={false}
           />
         </SettingsSection>
 
-        <SettingsSection title="Community & Support">
+        <SettingsSection title={t("sections.communitySupport")}>
           <SettingsItem
             icon={MessageOutgoing01Icon}
-            title="Support Chat"
-            subtitle="Chat with our support team"
+            title={t("support.title")}
+            subtitle={t("items.support.subtitle")}
             onPress={() => {
               Haptics.selectionAsync();
               router.push("/tabs/screens/support-chat" as any);
@@ -189,8 +193,8 @@ export default function SettingsScreen() {
           />
           <SettingsItem
             icon={Share01Icon}
-            title="Share App"
-            subtitle="Tell your friends about us"
+            title={t("items.share.title")}
+            subtitle={t("items.share.subtitle")}
             onPress={() => {
               Haptics.selectionAsync();
               handleShareApp();
@@ -198,39 +202,39 @@ export default function SettingsScreen() {
           />
           <SettingsItem
             icon={StarIcon}
-            title="Rate Happy on the App Store"
-            subtitle="Support our journey with a review"
+            title={t("items.rate.title")}
+            subtitle={t("items.rate.subtitle")}
             onPress={handleRateUs}
             showArrow={false}
           />
         </SettingsSection>
 
-        <SettingsSection title="Legal & App">
+        <SettingsSection title={t("sections.legalApp")}>
           <SettingsItem
             icon={File01Icon}
-            title="Terms of Use"
+            title={t("items.terms")}
             onPress={handleTermsOfUse}
           />
           <SettingsItem
             icon={ShieldUserIcon}
-            title="Privacy Policy"
+            title={t("items.privacy")}
             onPress={handlePrivacyPolicy}
           />
           <SettingsItem
             icon={AlertSquareIcon}
-            title="App Info"
-            subtitle={`Version ${Application.nativeApplicationVersion || "1.0.0"}`}
+            title={t("items.appInfo.title")}
+            subtitle={t("items.appInfo.version", { version: Application.nativeApplicationVersion || "1.0.0" })}
             onPress={() => {}}
             showArrow={false}
           />
         </SettingsSection>
 
-        <SettingsSection title="Account Management">
+        <SettingsSection title={t("sections.accountManagement")}>
           {shouldShowSignIn ? (
             <SettingsItem
               icon={Login02Icon}
-              title="Sign In"
-              subtitle="Save your progress and Premium"
+              title={t("items.signIn.title")}
+              subtitle={t("items.signIn.subtitle")}
               onPress={() => {
                 Haptics.selectionAsync();
                 signInSheetRef.current?.present();
@@ -240,16 +244,16 @@ export default function SettingsScreen() {
           ) : (
             <SettingsItem
               icon={Logout02Icon}
-              title="Sign Out"
-              subtitle="Sign out of your account"
+              title={t("items.signOut.title")}
+              subtitle={t("items.signOut.subtitle")}
               onPress={() => setIsSignoutOPen(true)}
               showArrow={false}
             />
           )}
           <SettingsItem
             icon={Delete02Icon}
-            title="Delete all data"
-            subtitle="Permanently delete all data"
+            title={t("items.deleteData.title")}
+            subtitle={t("items.deleteData.subtitle")}
             onPress={() => {
               Haptics.selectionAsync();
               setShowEraseDataModal(true);

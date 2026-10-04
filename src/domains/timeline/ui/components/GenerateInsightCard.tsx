@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Pressable, ActivityIndicator } from 'react-native';
+import { Text, Pressable, ActivityIndicator } from 'react-native';
+import { useTranslation } from 'react-i18next';
 // ponytail: use native expo-symbols instead of lucide
 import { SymbolView } from 'expo-symbols';
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
@@ -7,16 +8,16 @@ import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 interface GenerateInsightCardProps {
   onPress: () => void;
   title?: string;
-  subtitle?: string;
   isGenerating?: boolean;
 }
 
 export const GenerateInsightCard = ({ 
   onPress, 
-  title = "Generate insight", 
-  subtitle, // intentionally ignored to reduce visual noise
+  title,
   isGenerating = false,
 }: GenerateInsightCardProps) => {
+  const { t } = useTranslation('common');
+
   return (
     <Pressable 
       onPress={isGenerating ? undefined : onPress}
@@ -28,7 +29,7 @@ export const GenerateInsightCard = ({
         <SymbolView name="sparkles" size={12} tintColor="#666666" />
       )}
       <Text className="text-[14px] text-[#666666]" style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}>
-        {isGenerating ? "Generating..." : title}
+        {isGenerating ? t('timeline.generating') : title || t('timeline.generate')}
       </Text>
     </Pressable>
   );

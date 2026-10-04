@@ -8,6 +8,8 @@ import {
   readString,
 } from "@/src/components/exercise/courseExerciseContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { translateStepCopyProps } from "@/src/lib/i18n/exerciseCopy";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
 export function IntuitionCheckCategoryEngine({
@@ -16,7 +18,8 @@ export function IntuitionCheckCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
-  const content = exercise.content ?? {};
+  const translateCopy = useExerciseCopy();
+  const content = translateStepCopyProps(exercise.content ?? {}, translateCopy);
   const options = readCourseExerciseOptions(content.options);
   const selectedOptionId = readString(
     readRecord(savedResponse)?.selectedOptionId,
@@ -43,7 +46,9 @@ export function IntuitionCheckCategoryEngine({
   return (
     <View className="px-2 pb-5 pt-1.5">
       <CourseExerciseHeading
-        title={readString(content.title) ?? "What does your gut say?"}
+        title={
+          readString(content.title) ?? translateCopy("What does your gut say?")
+        }
         instruction={readString(content.instruction)}
         prompt={readString(content.prompt)}
       />
@@ -111,7 +116,9 @@ export function IntuitionCheckCategoryEngine({
             }
           >
             {readString(content.revealTitle) ??
-              (isBestSelected ? "THAT'S EXACTLY IT" : "YOU'RE NOT ALONE")}
+              translateCopy(
+                isBestSelected ? "THAT'S EXACTLY IT" : "YOU'RE NOT ALONE",
+              )}
           </Text>
           <Text
             className={

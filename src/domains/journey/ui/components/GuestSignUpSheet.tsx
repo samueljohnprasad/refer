@@ -1,5 +1,6 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { forwardRef } from "react";
+import { useTranslation } from "react-i18next";
 import { View, Text, TouchableOpacity } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -30,6 +31,7 @@ export const GuestSignUpSheetView = React.memo(function GuestSignUpSheetView({
   onDismiss,
   bottomSheetRef,
 }: GuestSignUpSheetViewProps): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
     <>
       <ShortBottomModal
@@ -50,34 +52,31 @@ export const GuestSignUpSheetView = React.memo(function GuestSignUpSheetView({
               lineHeight: 32,
             }}
           >
-            Sign up to keep going
+            {t("signUpToKeepGoing")}
           </Text>
           <Text className="text-ink-soft text-base leading-6 mb-5">
-            You've completed{" "}
-            <Text className="text-ink font-semibold">
-              {completedCount} {completedCount === 1 ? "node" : "nodes"}
-            </Text>{" "}
-            and earned{" "}
-            <Text className="text-ink font-semibold">
-              {guestProgress.tempXP} IP
-            </Text>
-            . Create a free account to save your progress and unlock the rest
-            of your journey.
+            {t("guestProgressMessage", {
+              count: completedCount,
+              unit: t(completedCount === 1 ? "nodeDone" : "nodesDone"),
+              points: guestProgress.tempXP,
+            })}
           </Text>
 
           {completedCount > 0 && (
             <View className="flex-row items-center gap-2 bg-purple-50 rounded-2xl px-4 py-3 mb-5">
               <HugeiconsIcon icon={SparklesIcon} size={18} color="#7B61FF" />
               <Text className="text-ink text-sm font-semibold">
-                {completedCount} {completedCount === 1 ? "lesson" : "lessons"} ·{" "}
-                {guestProgress.tempXP} Insight Points saved
+                {t("insightPointsSaved", {
+                  count: completedCount,
+                  points: guestProgress.tempXP,
+                })}
               </Text>
             </View>
           )}
 
           <View className="w-full mb-3">
             <CourseExercisePrimaryButton
-              label="Save My Progress"
+              label={t("saveMyProgress")}
               onPress={handleSaveProgress}
               height={56}
               fontSize={16}
@@ -89,9 +88,9 @@ export const GuestSignUpSheetView = React.memo(function GuestSignUpSheetView({
             activeOpacity={0.7}
             className="w-full h-11 items-center justify-center"
             accessibilityRole="button"
-            accessibilityLabel="Dismiss, not now"
+            accessibilityLabel={t("notNow")}
           >
-            <Text className="text-ink-muted text-sm font-medium">Not Now</Text>
+            <Text className="text-ink-muted text-sm font-medium">{t("notNow")}</Text>
           </TouchableOpacity>
         </View>
       </ShortBottomModal>

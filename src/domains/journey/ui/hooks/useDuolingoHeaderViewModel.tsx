@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useWindowDimensions } from "react-native";
 import * as Haptics from "expo-haptics";
 import {
@@ -40,6 +41,7 @@ export function useDuolingoHeaderViewModel({
   onAddCoursePress,
   onCourseSelect,
 }: DuolingoHeaderProps) {
+  const { t } = useTranslation("journeys");
   const [headerHeight, setHeaderHeight] = useState(0);
   const { height: windowHeight } = useWindowDimensions();
   const translateY = useSharedValue(0);
@@ -128,7 +130,7 @@ export function useDuolingoHeaderViewModel({
 
   const buttons = [
     {
-      accessibilityLabel: `${enrolledCourseCount} enrolled courses`,
+      accessibilityLabel: t("courseHeaderA11y", { count: enrolledCourseCount }),
       name: "Courses",
       Icon: CourseHeaderIcon,
       onPress: openCourseOverlay,
@@ -136,7 +138,7 @@ export function useDuolingoHeaderViewModel({
       textClassName: "text-ink",
     },
     {
-      accessibilityLabel: `${streak} day streak`,
+      accessibilityLabel: t("streakHeaderA11y", { count: streak }),
       name: "Fire",
       Icon: FireIconComponent,
       onPress: openStreakOverlay,

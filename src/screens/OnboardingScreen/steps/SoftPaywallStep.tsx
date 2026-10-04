@@ -8,10 +8,10 @@ import MochiMascot from '../components/MochiMascot';
 import PricingTierCard from '../components/PricingTierCard';
 import TactileButton from '../components/TactileButton';
 import DiscountInterceptModal from '../components/DiscountInterceptModal';
-import { StackedCarousel } from '../../../animations/stacked-carousel';
 import { PricingTier } from '../types';
-import { PRICING_PLANS, PAYWALL_BENEFITS } from '../constants';
+import { PRICING_PLANS } from '../constants';
 import TestimonialCard from '../components/TestimonialCard';
+import { useTranslation } from 'react-i18next';
 
 interface SoftPaywallStepProps {
   selectedTier?: PricingTier;
@@ -20,23 +20,7 @@ interface SoftPaywallStepProps {
   onContinueFree: () => void;
 }
 
-const LOCKED_LESSONS = [
-  {
-    day: 2,
-    title: 'The Thought Spiral',
-    meta: 'Day 2 · 5 min · Cognitive distortions',
-  },
-  {
-    day: 3,
-    title: 'Body as Compass',
-    meta: 'Day 3 · 5 min · Somatic awareness',
-  },
-  {
-    day: 4,
-    title: 'Thought Records: Your First CBT Tool',
-    meta: 'Day 4 · 7 min · Hands-on exercise',
-  },
-] as const;
+const LOCKED_LESSONS = [2, 3, 4] as const;
 
 const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
   selectedTier,
@@ -45,6 +29,8 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
   onContinueFree,
 }) => {
   const [showIntercept, setShowIntercept] = useState(false);
+  const { t, i18n } = useTranslation('onboarding');
+  const formatCount = (count: number) => new Intl.NumberFormat(i18n.language, { notation: 'compact' }).format(count);
 
   const handleContinueFree = () => {
     Haptics.selectionAsync();
@@ -68,7 +54,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
               style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="text-[12px] text-sage-800"
             >
-              App of the Day
+              {t('paywall.appOfTheDay')}
             </Text>
           </View>
           <MochiMascot expression="happy" size={84} delay={200} />
@@ -76,28 +62,28 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="mt-3 text-center text-[26px] leading-[1.15] tracking-[-0.02em] text-ink"
           >
-            Become someone who doesn&apos;t run from{' '}
+            {t('paywall.headlineStart')}{' '}
             <Text
               style={{ fontFamily: APP_FONT_FAMILIES.regularItalic, color: '#5F7F58' }}
             >
-              how they feel.
+              {t('paywall.headlineEnd')}
             </Text>
           </Text>
           <Text
             style={{ fontFamily: APP_FONT_FAMILIES.regular }}
             className="mt-1.5 text-center text-[13px] text-ink-soft"
           >
-            12 journeys · 800+ exercises · Unlimited AI insights
+            {t('paywall.featureSummary', { journeys: 12, exercises: 800 })}
           </Text>
         </Animated.View>
 
         <Animated.View entering={FadeIn.duration(180).delay(160)} className="mt-3.5 gap-2">
-          {PAYWALL_BENEFITS.map((benefit) => (
+          {(['journeys', 'ai', 'cbt', 'streak'] as const).map((benefit) => (
             <View key={benefit} className="flex-row items-center gap-2.5">
               <View className="h-[22px] w-[22px] items-center justify-center rounded-full bg-sage-500">
                 <Text className="text-xs font-extrabold text-white">✓</Text>
               </View>
-              <Text className="flex-1 text-[13px] font-medium text-ink">{benefit}</Text>
+              <Text className="flex-1 text-[13px] font-medium text-ink">{t(`paywall.benefits.${benefit}`)}</Text>
             </View>
           ))}
         </Animated.View>
@@ -107,11 +93,11 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="mb-2.5 text-[13px] text-sage-800"
           >
-            Your next 3 lessons (locked without Plus)
+            {t('paywall.lockedTitle', { count: LOCKED_LESSONS.length })}
           </Text>
           {LOCKED_LESSONS.map((lesson) => (
               <View
-                key={lesson.day}
+                key={lesson}
                 style={{ borderCurve: 'continuous' }}
                 className="relative mb-1.5 flex-row items-center gap-3 overflow-hidden rounded-xl border border-sage-100 bg-warm-white px-3 py-2.5"
               >
@@ -121,7 +107,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
                       style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                       className="text-sm text-ink-muted"
                     >
-                      {lesson.day}
+                      {lesson}
                     </Text>
                   </View>
                   <View className="flex-1">
@@ -129,13 +115,13 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
                       style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                       className="text-[13px] text-ink"
                     >
-                      {lesson.title}
+                      {t(`paywall.lessons.day${lesson}.title`)}
                     </Text>
                     <Text
                       style={{ fontFamily: APP_FONT_FAMILIES.regular }}
                       className="mt-0.5 text-[11px] text-ink-muted"
                     >
-                      {lesson.meta}
+                      {t(`paywall.lessons.day${lesson}.meta`)}
                     </Text>
                   </View>
                 </View>
@@ -161,7 +147,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
             style={{ fontFamily: APP_FONT_FAMILIES.regularItalic }}
             className="mt-2 text-center text-[13px] text-ink-muted"
           >
-            Continue your journey or restart from Day 1.
+            {t('paywall.restartNote')}
           </Text>
         </Animated.View>
 
@@ -178,17 +164,17 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
 
         <Animated.View entering={FadeIn.duration(180).delay(300)} className="mt-4">
           <Text className="text-center text-[11px] text-ink-muted">
-            7-day free trial · No charge until day 8 · Cancel anytime
+            {t('paywall.trialTerms')}
           </Text>
           <Text className="mt-1 text-center text-[11px] text-ink-muted">
-            💚 30-day full refund · No questions asked
+            {t('paywall.refundTerms')}
           </Text>
         </Animated.View>
 
         <View className="mt-5">
-          <TactileButton label="Start my 7-day free trial" onPress={onStartTrial} />
+          <TactileButton label={t('paywall.startTrial')} onPress={onStartTrial} />
           <Pressable onPress={handleContinueFree} className="mt-3 items-center py-2">
-            <Text className="text-sm text-ink-muted">Continue with free</Text>
+            <Text className="text-sm text-ink-muted">{t('paywall.continueFree')}</Text>
           </Pressable>
         </View>
 
@@ -198,23 +184,23 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
         >
           <View className="items-center">
             <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }} className="text-base text-sage-600">
-              3 in 4
+              {t('paywall.sleepRatio')}
             </Text>
             <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }} className="text-[11.5px] text-ink-soft">
-              sleep better by Day 14
+              {t('paywall.sleepCaption', { day: 14 })}
             </Text>
           </View>
           <View className="items-center">
             <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }} className="text-base text-sage-600">
-              ★ 4.9
+              {t('paywall.rating', { value: new Intl.NumberFormat(i18n.language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(4.9) })}
             </Text>
-            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }} className="text-[11.5px] text-ink-soft">12k reviews</Text>
+            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }} className="text-[11.5px] text-ink-soft">{t('paywall.reviews', { count: formatCount(12000) })}</Text>
           </View>
           <View className="items-center">
             <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }} className="text-base text-sage-600">
-              220k
+              {formatCount(220000)}
             </Text>
-            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }} className="text-[11.5px] text-ink-soft">in the Grove</Text>
+            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold }} className="text-[11.5px] text-ink-soft">{t('paywall.groveCaption')}</Text>
           </View>
         </Animated.View>
 
@@ -225,10 +211,10 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           <TestimonialCard
             initial="M"
             tone="sage"
-            quote={`"I'm a 47-year-old guy. Never thought I'd journal. The CBT lessons are why I stayed, they actually teach you something. Day 89."`}
+            quote={t('paywall.testimonialQuote')}
             name="Marcus"
             age={47}
-            metaLabel="Happy Plus member"
+            metaLabel={t('paywall.memberLabel')}
           />
         </Animated.View>
       </ScrollView>

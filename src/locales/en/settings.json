@@ -1,19 +1,129 @@
 {
   "title": "Settings",
   "language": {
+    "device": "Device Language",
+    "deviceDescription": "Follow iOS system setting",
     "title": "Language",
     "useDevice": "Use Device Language",
     "restartPromptTitle": "Restart App Needed",
-    "restartPromptMessage": "Please restart Happy to apply the right-to-left layout direction.",
+    "restartPromptMessage": "Please restart Happy to apply the new layout direction.",
+    "errorTitle": "Language not changed",
+    "changeError": "Could not save your language choice. Please try again.",
     "languages": {
       "en": "English",
-      "fr": "Français",
-      "de": "Deutsch",
-      "es": "Español",
-      "ar": "العربية",
-      "pt": "Português",
-      "it": "Italiano",
-      "zh": "中文"
+      "fr": "French",
+      "de": "German",
+      "es": "Spanish",
+      "ar": "Arabic",
+      "pt": "Portuguese",
+      "it": "Italian",
+      "zh": "Chinese (Simplified)"
     }
-  }
+  },
+  "sections": {
+    "preferences": "Preferences",
+    "account": "Account",
+    "communitySupport": "Community & Support",
+    "legalApp": "Legal & App",
+    "accountManagement": "Account Management"
+  },
+  "items": {
+    "reminders": { "subtitle": "Schedule your reminders" },
+    "notifications": { "title": "Notifications", "subtitle": "Alerts & quiet hours" },
+    "editName": { "title": "Edit Name" },
+    "copyUserId": { "title": "Copy User ID" },
+    "support": { "title": "Support Chat", "subtitle": "Chat with our support team" },
+    "share": { "title": "Share App", "subtitle": "Tell your friends about us" },
+    "rate": { "title": "Rate Happy on the App Store", "subtitle": "Support our journey with a review" },
+    "terms": "Terms of Use",
+    "privacy": "Privacy Policy",
+    "appInfo": { "title": "App Info", "version": "Version {{version}}" },
+    "signIn": { "title": "Sign In", "subtitle": "Save your progress and Premium" },
+    "signOut": { "title": "Sign Out", "subtitle": "Sign out of your account" },
+    "deleteData": { "title": "Delete all data", "subtitle": "Permanently delete all data" }
+  },
+  "name": {
+    "title": "Profile",
+    "errorTitle": "Error",
+    "label": "Full Name",
+    "save": "Update Profile",
+    "saving": "Saving...",
+    "description": "This is your public display name. It can be changed at any time.",
+    "emptyError": "Name cannot be empty",
+    "updateError": "Failed to update name. Please try again."
+  },
+  "notifications": {
+    "title": "Notification Preferences",
+    "push": "Push Notifications",
+    "pushDescription": "Receive personalized reminders to journal, track mood, and maintain streaks",
+    "types": "Notification Types",
+    "streaks": "Streak Reminders",
+    "streaksDescription": "Get notified when your journal streak is at risk",
+    "mood": "Mood Check-ins",
+    "moodDescription": "Daily reminders to log your mood",
+    "habits": "Habit Reminders",
+    "habitsDescription": "Reminders for your active habits",
+    "achievements": "Achievement Nudges",
+    "achievementsDescription": "Get notified when you're close to unlocking an achievement",
+    "quietHours": "Quiet hours: {{start}}:00 - {{end}}:00",
+    "limit": "Max {{count}} notification per day. We use AI to find the best time to send you notifications based on your usage patterns."
+  },
+  "reminders": {
+    "title": "Daily Reminders",
+    "description": "Set up gentle nudges to help you build a consistent journaling habit",
+    "permissionTitle": "Notification Permission Needed",
+    "permissionMessage": "Please enable notification access in Settings to receive reminders.",
+    "openSettings": "Open Settings",
+    "cancel": "Cancel",
+    "slots": { "1": { "title": "Morning Reflection", "body": "Start your day with clarity ☀️ Take a moment to reflect and set your intentions." }, "2": { "title": "Midday Check-in", "body": "How's your day going? 🌿 Pause and capture your thoughts right now." }, "3": { "title": "Evening Wind-down", "body": "Time to unwind 🌙 Reflect on your day and celebrate your wins." } }
+  },
+  "dailyGoal": {
+    "title": "Daily XP goal",
+    "summary": "{{goal}} XP a day · about {{count}} lessons",
+    "option": "{{option}} XP, {{label}}",
+    "labels": { "10": "Easy", "20": "Steady", "30": "Serious", "50": "Intense" }
+  },
+  "premium": {
+    "unlockAccessibility": "Unlock Happy Premium. Insights, summaries & more",
+    "unlockTitle": "Unlock Happy Premium",
+    "unlockSubtitle": "Insights, summaries & more",
+    "checking": "Checking Premium status",
+    "active": "Premium is active",
+    "lifetime": "Lifetime Premium access",
+    "renews": "Renews {{date}}",
+    "activeUntil": "Active until {{date}}",
+    "activeTitle": "Premium Active",
+    "status": "{{status}}. All Premium features are unlocked."
+  },
+  "developer": {
+    "appleIntelligence": "Apple Intelligence",
+    "aiModel": "AI Model",
+    "support": "Support",
+    "animatedSymbols": "Animated Symbols",
+    "courseExercises": "Course Exercises"
+  },
+  "bulkImport": {
+    "invalidTitle": "Invalid Count",
+    "invalidMessage": "Please enter a number between 1 and 20",
+    "successTitle": "Success",
+    "successMessage": "Successfully imported {{count}} journal entries!",
+    "errorTitle": "Error",
+    "errorMessage": "Failed to import journals: {{error}}"
+  },
+  "support": {
+    "title": "Support Chat",
+    "online": "Online",
+    "chatOptions": "Chat Options",
+    "clearHistory": "Clear History",
+    "noMailTitle": "No Mail App Found",
+    "noMailMessage": "Please email us at happy.journals.app@gmail.com",
+    "mailError": "Unable to open mail app. Please email us at happy.journals.app@gmail.com",
+    "userIdCopied": "User ID copied to clipboard"
+  },
+  "deleteData": { "error": "Failed to delete your data. Please try again or contact support." },
+  "signOutConfirmation": { "title": "Sign Out?", "message": "Are you sure you want to sign out? You'll need to sign in again to access your journals.", "cancel": "Cancel", "confirm": "Sign Out", "signingOut": "Signing Out..." },
+  "deleteConfirmation": { "title": "Delete all data?", "message": "This permanently deletes your private data from Happy.", "warning": "This cannot be undone.", "items": { "journal": "Journal entries and transcripts", "mood": "Mood history", "ai": "AI insights and analysis", "progress": "Streaks and progress", "account": "Account and profile data" }, "signedOut": "You'll be signed out.", "continue": "Continue", "cancel": "Cancel", "finalTitle": "Delete everything permanently?", "finalMessage": "All of your Happy history will be erased and you will be signed out.", "typeToConfirm": "Type DELETE to confirm.", "deleting": "Deleting...", "confirm": "Delete All Data" },
+  "share": { "message": "Check out Happy AI Journal! https://apps.apple.com/us/app/happy-ai-journal/id6755650433" },
+  "languageOk": "OK",
+  "device": "Device Language"
 }

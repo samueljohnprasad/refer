@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { TagsListProps } from "../types";
 import { TagItem } from "./TagItem";
+import { useTranslation } from "react-i18next";
 
 /**
  * Presentational component for tags list
@@ -10,6 +11,7 @@ import { TagItem } from "./TagItem";
  */
 export const TagsList = React.memo<TagsListProps>(
   ({ tags, isEditing, colorScheme, onRemove, onAdd }: TagsListProps) => {
+    const { t } = useTranslation("journal");
     if (tags.length === 0 && !isEditing) {
       return null;
     }
@@ -30,11 +32,11 @@ export const TagsList = React.memo<TagsListProps>(
           <TouchableOpacity
             onPress={onAdd}
             className="flex-row items-center py-2 px-4 rounded-full border-2 border-dashed border-gray-300 bg-white active:bg-gray-50"
-            accessibilityLabel="Add new tag"
+            accessibilityLabel={t("entryDetail.addTagA11y")}
             accessibilityRole="button"
           >
             <Text className="text-sm font-medium text-gray-600">
-              ＋ Add Tag
+              {t("entryDetail.addTag")}
             </Text>
           </TouchableOpacity>
         )}

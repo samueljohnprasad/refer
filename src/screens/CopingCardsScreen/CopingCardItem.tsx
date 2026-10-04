@@ -2,36 +2,28 @@ import React, { useState, useCallback } from "react";
 import { View, Pressable } from "react-native";
 import type { NativeSyntheticEvent, TextLayoutEventData } from "react-native";
 import { Text } from "@/src/components/ui/Text";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import {
-  BookmarkAdd01Icon,
-  BookmarkCheck01Icon,
-  Archive01Icon,
-} from "@hugeicons/core-free-icons";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 import type { CopingCard } from "@/src/types/exerciseFlow";
-import dayjs from "dayjs";
-import { getExerciseIcon } from "@/src/data/exerciseIconRegistry";
 import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
+import { useTranslation } from "react-i18next";
 
-const EXERCISE_LABEL: Record<string, string> = {
-  thought_catcher: "Thought Catcher",
-  thought_reframing: "Thought Reframing",
-  gratitude_reframe: "Gratitude Reframe",
-  abc_analysis: "ABC Analysis",
-  decatastrophizing: "Decatastrophizing",
-  worry_time: "Worry Time",
-  fear_ladder: "Fear Ladder",
-  worry_decision_tree: "Worry Decision Tree",
-  recognizing_rumination: "Recognizing Rumination",
-  detached_mindfulness: "Detached Mindfulness",
-  attention_training: "Attention Training",
-  box_breathing: "Box Breathing",
-  breathing_478: "4-7-8 Breathing",
-  grounding_54321: "5-4-3-2-1 Grounding",
-  body_scan_pmr: "Body Scan & PMR",
-  mindful_breathing_1min: "Mindful Breathing",
+const EXERCISE_LABEL_KEYS = {
+  thought_catcher: "copingCards.exerciseTypes.thought_catcher",
+  thought_reframing: "copingCards.exerciseTypes.thought_reframing",
+  gratitude_reframe: "copingCards.exerciseTypes.gratitude_reframe",
+  abc_analysis: "copingCards.exerciseTypes.abc_analysis",
+  decatastrophizing: "copingCards.exerciseTypes.decatastrophizing",
+  worry_time: "copingCards.exerciseTypes.worry_time",
+  fear_ladder: "copingCards.exerciseTypes.fear_ladder",
+  worry_decision_tree: "copingCards.exerciseTypes.worry_decision_tree",
+  recognizing_rumination: "copingCards.exerciseTypes.recognizing_rumination",
+  detached_mindfulness: "copingCards.exerciseTypes.detached_mindfulness",
+  attention_training: "copingCards.exerciseTypes.attention_training",
+  box_breathing: "copingCards.exerciseTypes.box_breathing",
+  breathing_478: "copingCards.exerciseTypes.breathing_478",
+  grounding_54321: "copingCards.exerciseTypes.grounding_54321",
+  body_scan_pmr: "copingCards.exerciseTypes.body_scan_pmr",
+  mindful_breathing_1min: "copingCards.exerciseTypes.mindful_breathing_1min",
 };
 
 const MAX_LINES_COLLAPSED = 5;
@@ -42,11 +34,19 @@ interface CopingCardItemProps {
 
 export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
   ({ card }) => {
+    const { i18n, t } = useTranslation("exercises");
     const [expanded, setExpanded] = useState(false);
     const [isTruncated, setIsTruncated] = useState(false);
-    const exerciseLabel =
-      EXERCISE_LABEL[card.exercise_type] ?? card.exercise_type;
-    const dateLabel = dayjs(card.created_at).format("MMM D");
+    const exerciseLabelKey =
+      EXERCISE_LABEL_KEYS[card.exercise_type as keyof typeof EXERCISE_LABEL_KEYS];
+    const exerciseLabel = t(
+      exerciseLabelKey ?? "copingCards.exerciseTypes.unknown",
+      { defaultValue: card.exercise_type },
+    );
+    const dateLabel = new Intl.DateTimeFormat(i18n.language, {
+      month: "short",
+      day: "numeric",
+    }).format(new Date(card.created_at));
 
     const handleToggleExpand = useCallback(() => setExpanded((p) => !p), []);
 
@@ -100,12 +100,12 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
           </Text>
           {!expanded && isTruncated && (
             <Text className="text-[13px] font-semibold text-sage-600 mt-2.5">
-              Read more
+              {t("copingCards.readMore")}
             </Text>
           )}
           {expanded && isTruncated && (
             <Text className="text-[13px] font-semibold text-sage-600 mt-2.5">
-              Show less
+              {t("copingCards.showLess")}
             </Text>
           )}
         </Pressable>

@@ -7,6 +7,7 @@
  */
 
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { SafeAreaView } from "@/src/components/tw";
 import { Text } from "@/src/components/ui/Text";
@@ -55,6 +56,7 @@ function StatBadge({ icon, value, label }: StatBadgeProps): React.JSX.Element {
 // ---------------------------------------------------------------------------
 
 function JourneyHeader({ unit, stats }: JourneyHeaderProps): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   const theme = DEFAULT_JOURNEY_CONFIG.colorThemes[unit.colorScheme] ?? DEFAULT_JOURNEY_CONFIG.colorThemes.green;
   const gradientColors = theme.headerGradient;
 
@@ -72,9 +74,9 @@ function JourneyHeader({ unit, stats }: JourneyHeaderProps): React.JSX.Element {
           <View
             className="flex-row items-center gap-4"
             accessibilityRole="summary"
-            accessibilityLabel={`Stats: ${stats.streakDays} day streak`}
+            accessibilityLabel={t("streakHeaderA11y", { count: stats.streakDays })}
           >
-            <StatBadge icon="🔥" value={stats.streakDays} label="Day streak" />
+            <StatBadge icon="🔥" value={stats.streakDays} label={t("dayStreak")} />
           </View>
         </View>
 
@@ -96,7 +98,7 @@ function JourneyHeader({ unit, stats }: JourneyHeaderProps): React.JSX.Element {
             className="h-10 w-10 rounded-lg items-center justify-center ml-3"
             style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
             accessibilityRole="button"
-            accessibilityLabel="Unit guidebook"
+            accessibilityLabel={t("unitGuidebook")}
           >
             <Text className="text-lg" importantForAccessibility="no">
               📋

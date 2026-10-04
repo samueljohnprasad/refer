@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 import {
   COURSE_EXERCISE_FONTS,
@@ -26,6 +27,7 @@ export function CourseExerciseFeedbackPanel({
   successTitle,
   successTakeaway,
 }: CourseExerciseFeedbackPanelProps) {
+  const { t } = useTranslation("exercises");
   if (!feedbackText && !explanationText) {
     return null;
   }
@@ -45,14 +47,14 @@ export function CourseExerciseFeedbackPanel({
           ) : null}
           <View style={styles.feedbackCopy}>
             <Text style={styles.title}>
-              {isSuccess ? (successTitle ?? "Nice.") : "Try another way."}
+              {isSuccess ? (successTitle ?? t("runtime.nice")) : t("runtime.tryAnotherWay")}
             </Text>
             {feedbackText ? (
               <Text style={styles.body}>{feedbackText}</Text>
             ) : null}
             {isSuccess && successTakeaway ? (
               <Text style={styles.takeaway}>
-                <Text style={styles.takeawayLabel}>New capability: </Text>
+                <Text style={styles.takeawayLabel}>{t("runtime.newCapability")} </Text>
                 {successTakeaway}
               </Text>
             ) : null}
@@ -61,7 +63,7 @@ export function CourseExerciseFeedbackPanel({
       </View>
       {helperText ? (
         <View style={[styles.panel, styles.review]}>
-          <Text style={styles.kicker}>REVIEW THIS</Text>
+          <Text style={styles.kicker}>{t("runtime.reviewThis")}</Text>
           <Text style={styles.body}>{helperText}</Text>
         </View>
       ) : null}

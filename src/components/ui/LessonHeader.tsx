@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, TouchableOpacity, Text as RNText, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { AnimatedProgressBar } from "@/src/components/progress";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
@@ -41,13 +42,14 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
   backButtonVariant = "close-icon",
   style,
 }) => {
+  const { t } = useTranslation("journeys");
   return (
     <View style={[styles.container, style]} className="flex-row items-center gap-4 px-6 pt-2 pb-6">
       <TouchableOpacity
         onPress={onClose}
         activeOpacity={0.7}
         className="h-10 w-10 items-center justify-center rounded-full bg-black/[0.04] active:bg-black/[0.08]"
-        accessibilityLabel={backButtonVariant === "arrow" ? "Go back" : "Close"}
+        accessibilityLabel={backButtonVariant === "arrow" ? t("goBack") : t("closePractice")}
         accessibilityRole="button"
         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         disabled={!onClose}

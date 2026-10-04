@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -22,6 +23,7 @@ function EffectivenessRow({
   score: EffectivenessScore;
   rank: number;
 }) {
+  const { t } = useTranslation("common");
   const router = useRouter();
 
   return (
@@ -45,20 +47,21 @@ function EffectivenessRow({
           {score.exerciseLabel}
         </Text>
         <Text className="text-[12px] text-ink-muted mt-0.5">
-          {score.sampleSize} sessions
+          {t("insights.overview.sessions", { count: score.sampleSize })}
         </Text>
       </View>
       <View className="flex-row items-center">
         <Text className="text-[15px] font-extrabold text-sage-600 mr-1">
           −{score.avgDrop}
         </Text>
-        <Text className="text-[11px] text-ink-muted">per session</Text>
+        <Text className="text-[11px] text-ink-muted">{t("insights.ui.perSession")}</Text>
       </View>
     </Pressable>
   );
 }
 
 export function PersonalEffectivenessCard() {
+  const { t } = useTranslation("common");
   const { data, isLoading } = usePersonalEffectiveness();
 
   if (isLoading || !data || data.ranked.length === 0) return null;
@@ -71,10 +74,10 @@ export function PersonalEffectivenessCard() {
       style={{ backgroundColor: "#FFFFFF" }}
     >
       <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3">
-        Best Tools for You
+        {t("insights.ui.bestTools")}
       </Text>
       <Text className="text-[12px] text-ink-muted mb-3">
-        Ranked by how much they reduce intensity
+        {t("insights.ui.rankedByReduction")}
       </Text>
 
       {top3.map((score, i) => (

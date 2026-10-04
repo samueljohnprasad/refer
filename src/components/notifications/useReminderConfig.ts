@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, Linking } from "react-native";
 import { useAtom } from "jotai";
 import type { RemindersConfig } from "@/src/components/lib/notification-reminders";
@@ -34,8 +35,20 @@ export const useReminderConfig = (
   defaultItems: ReminderItem[],
   options?: UseReminderConfigOptions
 ): UseReminderConfigReturn => {
+  const { t } = useTranslation("settings");
   const requestPermissionsOnToggle = options?.requestPermissionsOnToggle ?? true;
-  const [items, setItems] = useState<ReminderItem[]>(defaultItems);
+  const localizedItems = useMemo(
+    () =>
+      defaultItems.map((item) => ({
+        ...item,
+        title: t(`reminders.slots.${item.id}.title`, { defaultValue: item.title }),
+        notificationBody: t(`reminders.slots.${item.id}.body`, {
+          defaultValue: item.notificationBody,
+        }),
+      })),
+    [defaultItems, t],
+  );
+  const [items, setItems] = useState<ReminderItem[]>(localizedItems);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [cfg, setCfg] = useAtom(cfgAtom);
 
@@ -51,7 +64,7 @@ export const useReminderConfig = (
 
       // ponytail: default all reminders to enabled locally
       if (Object.keys(stored).length === 0) {
-        defaultItems.forEach((it) => {
+        localizedItems.forEach((it) => {
           initialCfg[it.id] = {
             hour: it.hour,
             minute: it.minute,
@@ -78,7 +91,7 @@ export const useReminderConfig = (
     return () => {
       active = false;
     };
-  }, []);
+  }, [localizedItems, setCfg]);
 
   const currentEditingItem = useMemo(
     () => items.find((x) => x.id === editingId) ?? null,
@@ -176,14 +189,14 @@ export const useReminderConfig = (
       const granted = await ensureNotificationPermissions();
       if (!granted) {
         Alert.alert(
-          "Notification Permission Needed",
-          "Please enable notification access in Settings to receive reminders.",
+          t("reminders.permissionTitle"),
+          t("reminders.permissionMessage"),
           [
             {
-              text: "Open Settings",
+              text: t("reminders.openSettings"),
               onPress: () => Linking.openURL("app-settings:"),
             },
-            { text: "Cancel", style: "cancel" },
+            { text: t("reminders.cancel"), style: "cancel" },
           ]
         );
         return;

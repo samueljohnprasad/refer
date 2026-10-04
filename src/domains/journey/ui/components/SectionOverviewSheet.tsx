@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { LockIcon } from "@hugeicons/core-free-icons";
@@ -21,15 +22,16 @@ function SectionCard({
   section,
   onPress,
 }: SectionCardProps): React.JSX.Element {
-  const unitRangeLabel = `Section ${section.sectionNumber}`;
+  const { t } = useTranslation("journeys");
+  const unitRangeLabel = t("sectionNumber", { number: section.sectionNumber });
   const isComplete = section.progressPercent >= 100;
 
   const cardVariant = "answer";
   const lockStatusStr = !section.isUnlocked
-    ? "Locked (Preview available)"
+    ? t("lockedPreview")
     : isComplete
-    ? "Completed"
-    : "Available";
+    ? t("completed")
+    : t("available");
 
   return (
     // ponytail: enable section preview for all sections including locked
@@ -37,7 +39,7 @@ function SectionCard({
       variant={cardVariant}
       radius="xl"
       onPress={() => onPress(section.id)}
-      accessibilityLabel={`${section.title}, ${unitRangeLabel}. Status: ${lockStatusStr}. Tap to preview section.`}
+      accessibilityLabel={`${section.title}, ${unitRangeLabel}. ${lockStatusStr}. ${t("previewArrow")}`}
       className={`mb-4 ${section.isUnlocked ? "opacity-100" : "opacity-90"}`}
       contentClassName="gap-4 p-5"
     >
@@ -67,7 +69,7 @@ function SectionCard({
               color="surface"
               className="text-xs uppercase tracking-widest"
             >
-              Current
+              {t("current")}
             </Text>
           </View>
         ) : null}
@@ -102,10 +104,10 @@ function SectionCard({
                 className="text-xs uppercase tracking-widest"
               >
                 {!section.isUnlocked
-                  ? "Preview →"
+                  ? t("previewArrow")
                   : isComplete
-                  ? "Review →"
-                  : "Enter →"}
+                  ? t("reviewArrow")
+                  : t("enterArrow")}
               </Text>
             </View>
           ) : null}
@@ -130,11 +132,12 @@ export const SectionOverviewSheetView = React.memo(
     onClose: _onClose,
     journeyTitle,
   }: SectionOverviewSheetViewProps): React.JSX.Element {
+    const { t } = useTranslation("journeys");
     return (
       <View className="flex-1 happy-brand-screen">
         <View className="flex-row items-start justify-between happy-brand-screen border-b border-sage-100 px-6 pt-5 pb-5">
           <View className="flex-1 pr-4">
-            <Text variant="eyebrow">Journey Map</Text>
+            <Text variant="eyebrow">{t("journeyMap")}</Text>
             <Text
               variant="display"
               className="text-3xl leading-snug text-ink"
@@ -155,7 +158,7 @@ export const SectionOverviewSheetView = React.memo(
           {sections.length === 0 ? (
             <View className="items-center justify-center px-6 py-12">
               <Text variant="body" color="muted" className="text-center">
-                No sections available. Check your connection and try again.
+                {t("noSections")}
               </Text>
             </View>
           ) : (

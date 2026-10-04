@@ -16,10 +16,12 @@ import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 
 import { Card } from "@/src/components/ui/Card";
+import { useTranslation } from "react-i18next";
 
 type TabType = "daily" | "weekly";
 
 export const ChallengesScreen: React.FC = () => {
+  const { t } = useTranslation("common");
   const { dailyChallenges, weeklyChallenges, isLoading } = useChallenges();
   const [activeTab, setActiveTab] = useState<TabType>("daily");
 
@@ -58,7 +60,7 @@ export const ChallengesScreen: React.FC = () => {
             <HugeiconsIcon icon={ArrowLeft02Icon} size={24} color={SEMANTIC_COLORS.brand.onSoft} />
           </TouchableOpacity>
           <Text className="happy-font-heading-bold text-[34px] text-ink">
-            Challenges
+            {t("challenges.title")}
           </Text>
         </View>
 
@@ -81,7 +83,7 @@ export const ChallengesScreen: React.FC = () => {
               {totalXP}
             </Text>
             <Text className="happy-brand-eyebrow mt-1">
-              XP Available
+              {t("challenges.xpAvailable")}
             </Text>
           </Card>
         </View>
@@ -101,7 +103,7 @@ export const ChallengesScreen: React.FC = () => {
                 activeTab === "daily" ? "text-ink" : "text-ink-muted"
               }`}
             >
-              Daily
+              {t("challenges.daily")}
             </Text>
             <Text
               className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
@@ -126,7 +128,7 @@ export const ChallengesScreen: React.FC = () => {
                 activeTab === "weekly" ? "text-ink" : "text-ink-muted"
               }`}
             >
-              Weekly
+              {t("challenges.weekly")}
             </Text>
             <Text
               className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
@@ -145,8 +147,8 @@ export const ChallengesScreen: React.FC = () => {
       <View className="mx-4 mb-3 items-center">
         <Text className="happy-brand-eyebrow">
           {activeTab === "daily"
-            ? "↻ Resets at midnight"
-            : "↻ Resets every Monday"}
+            ? t("challenges.resetDaily")
+            : t("challenges.resetWeekly")}
         </Text>
       </View>
 
@@ -162,11 +164,12 @@ export const ChallengesScreen: React.FC = () => {
                 <Text className="text-4xl">🎯</Text>
               </View>
               <Text className="happy-font-body-bold text-lg text-ink text-center mb-2">
-                You're all caught up!
+                {t("challenges.allCaughtUp")}
               </Text>
               <Text className="happy-font-body-medium text-ink-muted text-sm text-center leading-5">
-                No more {activeTab} challenges available right now. Check back{" "}
-                {activeTab === "daily" ? "tomorrow" : "next week"} for new goals.
+                {activeTab === "daily"
+                  ? t("challenges.noMoreDaily")
+                  : t("challenges.noMoreWeekly")}
               </Text>
             </View>
           ) : (

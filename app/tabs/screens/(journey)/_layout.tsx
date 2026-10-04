@@ -1,8 +1,10 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Stack } from "expo-router";
 import { useCSSVariable } from "uniwind";
 
 export default function JourneyGroupLayout() {
+  const { t } = useTranslation("journeys");
   const appBackground = useCSSVariable("--app-background") as string;
 
   return (
@@ -17,7 +19,7 @@ export default function JourneyGroupLayout() {
         name="journey/[slug]"
         options={{
           headerShown: false,
-          title: "Journey",
+          title: t("yourJourney"),
           freezeOnBlur: true,
           animation: "slide_from_right",
         }}
@@ -27,7 +29,7 @@ export default function JourneyGroupLayout() {
         options={{
           headerShown: false,
           presentation: "fullScreenModal",
-          title: "Journey Flow",
+          title: t("journeyFlow"),
           freezeOnBlur: true,
           animation: "fade",
         }}
@@ -36,7 +38,7 @@ export default function JourneyGroupLayout() {
         name="journey-map"
         options={{
           headerShown: false,
-          title: "Journey Map",
+          title: t("journeyMap"),
         }}
       />
       <Stack.Screen
@@ -45,14 +47,14 @@ export default function JourneyGroupLayout() {
           headerShown: false,
           presentation: "fullScreenModal",
           animation: "fade",
-          title: "Course Finale",
+          title: t("courseFinale"),
         }}
       />
       <Stack.Screen
         name="reveal-destination"
         options={{
           headerShown: false,
-          title: "Reveal Destination",
+          title: t("revealDestination"),
           presentation: "fullScreenModal",
           animation: "fade",
         }}

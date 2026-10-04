@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
@@ -8,11 +9,12 @@ import { Skeleton } from "@/src/components/ui/Skeleton";
 import { V1CheckStatusEnum, type V1CheckStatus } from "@/src/types/journeyLearning";
 
 export function LoadingPracticeScreen({ onClose }: { onClose?: () => void }) {
+  const { t } = useTranslation("journeys");
   return (
     <LessonScreen
       progress={0}
       onClose={onClose}
-      primaryLabel="Check"
+      primaryLabel={t("check")}
       primaryDisabled
       onPrimaryPress={() => undefined}
     >
@@ -45,19 +47,20 @@ export function PracticeDataErrorScreen({
   onClose?: () => void;
   onSkip?: () => void;
 }) {
+  const { t } = useTranslation("journeys");
   // ponytail: ensure user is never trapped when exercise data is invalid
   return (
     <LessonScreen
       progress={0}
       onClose={onClose}
-      primaryLabel={onSkip ? "Skip exercise" : "Close"}
+      primaryLabel={onSkip ? t("skipExercise") : t("closePractice")}
       onPrimaryPress={onSkip ?? onClose ?? (() => undefined)}
-      secondaryLabel={onSkip && onClose ? "Close" : undefined}
+      secondaryLabel={onSkip && onClose ? t("closePractice") : undefined}
       onSecondaryPress={onClose}
     >
       <View className="flex-1 justify-center px-8">
         <Text variant="h2" color="ink" className="mb-3">
-          Practice data is unavailable.
+          {t("practiceUnavailable")}
         </Text>
         <Text variant="body" color="soft">
           {message}
@@ -78,6 +81,7 @@ export function FeedbackPanel({
   explanationText: string | null;
   feedbackText: string | null;
 }) {
+  const { t } = useTranslation("journeys");
   if (!feedbackText && !explanationText) {
     return null;
   }
@@ -98,7 +102,7 @@ export function FeedbackPanel({
         }}
       >
         <Text variant="label-bold" color={isSuccess ? "sage" : "soft"}>
-          {isSuccess ? "Nice." : "Not quite."}
+          {isSuccess ? t("nice") : t("notQuite")}
         </Text>
         <Text variant="body" color="ink" className="mt-2">
           {feedbackText}
@@ -110,7 +114,7 @@ export function FeedbackPanel({
           style={{ backgroundColor: SEMANTIC_COLORS.selection.surface, borderColor: SEMANTIC_COLORS.selection.foreground }}
         >
           <Text variant="caption" color="sage" className="mb-1">
-            Review this
+            {t("reviewThis")}
           </Text>
           <Text variant="body" color="ink">
             {helperText}

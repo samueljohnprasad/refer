@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, Text, Pressable } from "react-native";
 import * as Haptics from "expo-haptics";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -6,18 +7,12 @@ import { Target02Icon } from "@hugeicons/core-free-icons";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { DAILY_XP_GOAL_OPTIONS, useDailyXPGoal } from "@/src/store/dailyGoalStore";
 
-const GOAL_LABELS: Record<(typeof DAILY_XP_GOAL_OPTIONS)[number], string> = {
-  10: "Easy",
-  20: "Steady",
-  30: "Serious",
-  50: "Intense",
-};
-
 /**
  * Inline daily XP goal picker for the Settings "Preferences" section.
  * Mirrors the SettingsItem row layout, with a chip group instead of a chevron.
  */
 export const DailyGoalPicker: React.FC<{ isLast?: boolean }> = ({ isLast = false }) => {
+  const { t } = useTranslation("settings");
   const { goal, setGoal } = useDailyXPGoal();
   const iconColor = String(SEMANTIC_COLORS.text.primary ?? "#243323");
 
@@ -31,10 +26,12 @@ export const DailyGoalPicker: React.FC<{ isLast?: boolean }> = ({ isLast = false
           !isLast ? "border-b border-black/[0.04] dark:border-white/[0.06]" : ""
         }`}
       >
-        <Text className="text-[16px] font-semibold text-ink">Daily XP goal</Text>
+        <Text className="text-[16px] font-semibold text-ink">{t("dailyGoal.title")}</Text>
         <Text className="text-[14px] text-ink-muted mt-0.5 leading-snug">
-          {goal} XP a day · about {Math.max(1, Math.round(goal / 10))}{" "}
-          {Math.round(goal / 10) === 1 ? "lesson" : "lessons"}
+          {t("dailyGoal.summary", {
+            goal,
+            count: Math.max(1, Math.round(goal / 10)),
+          })}
         </Text>
         <View className="flex-row gap-2 mt-3">
           {DAILY_XP_GOAL_OPTIONS.map((option) => {
@@ -45,7 +42,10 @@ export const DailyGoalPicker: React.FC<{ isLast?: boolean }> = ({ isLast = false
                 testID={`daily-goal-option-${option}`}
                 accessibilityRole="button"
                 accessibilityState={{ selected }}
-                accessibilityLabel={`${option} XP, ${GOAL_LABELS[option]}`}
+                accessibilityLabel={t("dailyGoal.option", {
+                  option,
+                  label: t(`dailyGoal.labels.${option}`),
+                })}
                 onPress={() => {
                   if (selected) return;
                   Haptics.selectionAsync();
@@ -69,7 +69,7 @@ export const DailyGoalPicker: React.FC<{ isLast?: boolean }> = ({ isLast = false
                     selected ? "text-amber-700 dark:text-amber-300" : "text-ink-muted"
                   }`}
                 >
-                  {GOAL_LABELS[option]}
+                  {t(`dailyGoal.labels.${option}`)}
                 </Text>
               </Pressable>
             );

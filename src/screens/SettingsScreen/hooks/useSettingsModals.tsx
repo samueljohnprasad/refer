@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, Linking } from "react-native";
 import * as Haptics from "expo-haptics";
 import * as WebBrowser from "expo-web-browser";
@@ -10,6 +11,7 @@ import { useToast } from "heroui-native";
 import { openAppStoreReview } from "@/src/utils/appStoreReview";
 
 export const useSettingsModals = () => {
+  const { t } = useTranslation("settings");
   const [isSignoutOPen, setIsSignoutOPen] = useState(false);
   const { signOut, isSigningOut, user, isAnonymous } = useAuth();
   const queryClient = useQueryClient();
@@ -43,14 +45,14 @@ export const useSettingsModals = () => {
         await Linking.openURL(url);
       } else {
         Alert.alert(
-          "No Mail App Found",
-          "Please email us at happy.journals.app@gmail.com"
+          t("support.noMailTitle"),
+          t("support.noMailMessage")
         );
       }
-    } catch (error) {
+    } catch {
       Alert.alert(
-        "Error",
-        "Unable to open mail app. Please email us at happy.journals.app@gmail.com"
+        t("name.errorTitle"),
+        t("support.mailError")
       );
     }
   };
@@ -74,7 +76,7 @@ export const useSettingsModals = () => {
       toast.show({
         placement: "top",
         variant: "success",
-        label: "User ID copied to clipboard",
+        label: t("support.userIdCopied"),
       });
     }
   };
@@ -87,10 +89,10 @@ export const useSettingsModals = () => {
       queryClient.clear();
 
       await signOut();
-    } catch (error) {
+    } catch {
       Alert.alert(
-        "Error",
-        "Failed to delete your data. Please try again or contact support."
+        t("name.errorTitle"),
+        t("deleteData.error")
       );
     }
   };

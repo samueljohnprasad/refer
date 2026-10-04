@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { PracticeDataErrorScreen } from "@/src/components/node/NodeEngineRouterPanels";
 
 export function NodeExerciseDataError({
@@ -10,12 +11,13 @@ export function NodeExerciseDataError({
   onClose?: () => void;
   onSkip?: () => void;
 }) {
+  const { t } = useTranslation("journeys");
   return (
     <PracticeDataErrorScreen
       message={
         invalidContent
-          ? "This exercise contains invalid course data."
-          : "This lesson uses an unsupported exercise category."
+          ? t("invalidExerciseCourseData")
+          : t("unsupportedExerciseCategory")
       }
       onClose={onClose}
       onSkip={onSkip}

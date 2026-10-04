@@ -8,6 +8,8 @@ import { StepLayout } from "./StepLayout";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { useTranslation } from "react-i18next";
 
 interface SliderStepProps extends StepProps {
   title: string;
@@ -75,9 +77,9 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
     min = 0,
     max = 10,
     step = 1,
-    minLabel = "Low",
+    minLabel,
     midLabel,
-    maxLabel = "High",
+    maxLabel,
     unit = "",
     showValue = true,
     helperText,
@@ -89,6 +91,8 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
     anchorLabel,
     showStepCount = true,
   }) => {
+    const translateCopy = useExerciseCopy();
+    const { t } = useTranslation("exercises");
     const savedValue = (response as Record<string, unknown>)[fieldKey];
     let value: number =
       typeof savedValue === "number" ? savedValue : Math.floor((min + max) / 2);
@@ -99,14 +103,18 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
     }
     // Final safety clamp
     value = Math.min(Math.max(value, min), max);
+    const resolvedMinLabel = minLabel ? translateCopy(minLabel) : t("flow.ui.low");
+    const resolvedMaxLabel = maxLabel ? translateCopy(maxLabel) : t("flow.ui.high");
+    const resolvedMidLabel = midLabel ? translateCopy(midLabel) : undefined;
+    const resolvedAnchorLabel = anchorLabel ? translateCopy(anchorLabel) : undefined;
     const spokenValue = formatValueForSpeech(value, unit, max);
     const activeLabel = getActiveLabel(
       value,
       min,
       max,
-      minLabel,
-      midLabel,
-      maxLabel,
+      resolvedMinLabel,
+      resolvedMidLabel,
+      resolvedMaxLabel,
     );
 
     return (
@@ -181,7 +189,7 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
                 {typeof anchorValue === "number" && (
                   <View className="mt-2.5 px-3.5 py-1.5 rounded-full bg-sage-100/80 border border-sage-200">
                     <Text className="text-xs font-semibold text-sage-800">
-                      {anchorLabel ?? "Before"}: {anchorValue}{unit}
+                      {resolvedAnchorLabel ?? t("flow.ui.before")}: {anchorValue}{unit}
                       {value < anchorValue
                         ? `  (↓ ${anchorValue - value}${unit})`
                         : ""}
@@ -202,18 +210,18 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
                 onValueChange={(v: number) =>
                   onUpdate({ [fieldKey]: v } as Partial<typeof response>)
                 }
-                minimumTrackTintColor={SEMANTIC_COLORS.brand.primary}
-                maximumTrackTintColor={SEMANTIC_COLORS.surface.secondary}
-                thumbTintColor={SEMANTIC_COLORS.brand.primary}
+                minimumTrackTintColor={SEMANTIC_COLORS.brand.primary as string}
+                maximumTrackTintColor={SEMANTIC_COLORS.surface.secondary as string}
+                thumbTintColor={SEMANTIC_COLORS.brand.primary as string}
                 accessibilityLabel={title}
-                accessibilityHint={`Adjust from ${minLabel} to ${maxLabel}`}
+                accessibilityHint={`Adjust from ${resolvedMinLabel} to ${resolvedMaxLabel}`}
                 accessibilityValue={{
                   min,
                   max,
                   now: value,
                   text: `${spokenValue}. ${
                     activeLabel ? `${activeLabel}. ` : ""
-                  }${minLabel} to ${maxLabel}.`,
+                  }${resolvedMinLabel} to ${resolvedMaxLabel}.`,
                 }}
                 style={{ height: 56 }}
               />
@@ -226,30 +234,30 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
                   className="flex-1 text-left text-ink-soft"
                   style={{ color: SEMANTIC_COLORS.text.primary }}
                 >
-                  {minLabel}
+                  {resolvedMinLabel}
                 </Text>
                 <Text
                   variant="caption"
                   className="flex-1 text-center text-ink-soft"
                   style={{ color: SEMANTIC_COLORS.text.primary }}
                 >
-                  {midLabel}
+                  {resolvedMidLabel}
                 </Text>
                 <Text
                   variant="caption"
                   className="flex-1 text-right text-ink-soft"
                   style={{ color: SEMANTIC_COLORS.text.primary }}
                 >
-                  {maxLabel}
+                  {resolvedMaxLabel}
                 </Text>
               </View>
             ) : (
               <View className="flex-row justify-between mt-3 px-1">
                 <Text variant="caption" className="text-ink-soft">
-                  {minLabel}
+                  {resolvedMinLabel}
                 </Text>
                 <Text variant="caption" className="text-ink-soft">
-                  {maxLabel}
+                  {resolvedMaxLabel}
                 </Text>
               </View>
             )}

@@ -35,6 +35,7 @@ import type {
   Achievement,
   AchievementConditionType,
 } from "@/src/types/achievements";
+import { useTranslation } from "react-i18next";
 
 export interface AchievementProgressItem {
   achievement: Achievement;
@@ -63,13 +64,13 @@ const getProgressText = (item: AchievementProgressItem): string => {
   return `${progress}/${target}`;
 };
 
-const getUnlockDateText = (unlockedAt?: string): string | null => {
+const getUnlockDateText = (unlockedAt?: string, locale = "en"): string | null => {
   if (!unlockedAt) return null;
 
   const date = new Date(unlockedAt);
   if (Number.isNaN(date.getTime())) return null;
 
-  return date.toLocaleDateString(undefined, {
+  return date.toLocaleDateString(locale, {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -110,12 +111,10 @@ const BadgeArtwork: React.FC<{ item: AchievementProgressItem }> = ({
     </View>
   );
 };
-
-
-
 export const AchievementBadgeDetailSheet: React.FC<
   AchievementBadgeDetailSheetProps
 > = ({ item, isPresented, onIsPresentedChange }) => {
+  const { i18n, t } = useTranslation("common");
   const insets = useSafeAreaInsets();
   const [selectedDetent, setSelectedDetent] =
     useState<PresentationDetent>(DEFAULT_DETENT);
@@ -130,7 +129,9 @@ export const AchievementBadgeDetailSheet: React.FC<
 
   const { achievement, isUnlocked, progressPercent } = item;
   const progress = Math.min(Math.max(progressPercent, 0), 100);
-  const unlockDate = getUnlockDateText(item.unlockedAt);
+  const unlockDate = getUnlockDateText(item.unlockedAt, i18n.language);
+  const localizedName = t(`achievements.items.${achievement.id}.name`, { defaultValue: achievement.name });
+  const localizedDescription = t(`achievements.items.${achievement.id}.description`, { defaultValue: achievement.description });
 
   return (
     <Host colorScheme="light" style={StyleSheet.absoluteFill}>
@@ -153,12 +154,12 @@ export const AchievementBadgeDetailSheet: React.FC<
               <View className="border-b border-sage-100 bg-white px-5 pb-3 pt-5">
                 <View className="flex-row items-center justify-between">
                   <View className="min-w-0 flex-1">
-                    <Text className="happy-brand-eyebrow">Badge Details</Text>
+                    <Text className="happy-brand-eyebrow">{t("achievements.badgeDetails")}</Text>
                     <Text
                       className="happy-font-heading-bold mt-1 text-[22px] leading-tight text-ink"
                       numberOfLines={1}
                     >
-                      {achievement.name}
+                      {localizedName}
                     </Text>
                   </View>
                 </View>
@@ -193,7 +194,7 @@ export const AchievementBadgeDetailSheet: React.FC<
                         className="happy-font-body-bold text-sm"
                         style={{ color: isUnlocked ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.warning.foreground }}
                       >
-                        {isUnlocked ? "Unlocked" : "In progress"}
+                        {isUnlocked ? t("achievements.unlocked") : t("achievements.inProgress")}
                       </Text>
                     </View>
                   </View>
@@ -201,14 +202,14 @@ export const AchievementBadgeDetailSheet: React.FC<
 
                 <View className="mt-6 px-4">
                   <Text className="happy-font-body-medium text-[16px] leading-6 text-ink text-center">
-                    {achievement.description}
+                    {localizedDescription}
                   </Text>
 
                   {isUnlocked ? (
                     unlockDate ? (
                       <View className="mt-2">
                         <Text className="happy-font-body-medium text-[13px] text-ink-muted text-center">
-                          Unlocked on {unlockDate}
+                          {t("achievements.unlockedOn", { date: unlockDate })}
                         </Text>
                       </View>
                     ) : null
@@ -216,7 +217,7 @@ export const AchievementBadgeDetailSheet: React.FC<
                     <View className="mt-6">
                       <View className="mb-2 flex-row items-center justify-between">
                         <Text className="happy-font-body-bold text-sm text-ink">
-                          Progress
+                          {t("achievements.progress")}
                         </Text>
                         <Text className="happy-font-body-bold text-sm text-ink">
                           {getProgressText(item)}
@@ -240,7 +241,7 @@ export const AchievementBadgeDetailSheet: React.FC<
                     <View className="mb-1.5 flex-row items-center gap-1.5">
                       <HugeiconsIcon icon={StarsIcon} size={14} color={SEMANTIC_COLORS.warning.foreground} strokeWidth={2.5} />
                       <Text className="happy-font-body-bold text-[11px] text-ink-muted uppercase tracking-wider">
-                        Reward
+                        {t("achievements.reward")}
                       </Text>
                     </View>
                     <Text className="happy-font-heading-bold text-[18px] text-ink">
@@ -252,11 +253,11 @@ export const AchievementBadgeDetailSheet: React.FC<
                     <View className="mb-1.5 flex-row items-center gap-1.5">
                       <HugeiconsIcon icon={BarChartIcon} size={14} color={achievement.color} strokeWidth={2.5} />
                       <Text className="happy-font-body-bold text-[11px] text-ink-muted uppercase tracking-wider">
-                        Tier
+                        {t("achievements.tier")}
                       </Text>
                     </View>
                     <Text className="happy-font-heading-bold text-[18px] text-ink">
-                      Tier {achievement.tier}
+                      {t("achievements.tier")} {achievement.tier}
                     </Text>
                   </View>
                 </View>

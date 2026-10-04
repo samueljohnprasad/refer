@@ -21,6 +21,7 @@ import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useJournalLimit } from "@/hooks/useJournalLimit";
 import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
+import { useTranslation } from "react-i18next";
 
 // Extended prompts list with more options with gorgeous, premium pastel tones
 export const ALL_PROMPTS: QuickJournalPrompt[] = [
@@ -123,6 +124,12 @@ interface PromptCardProps {
 
 const PromptCard: React.FC<PromptCardProps> = React.memo(
   ({ prompt, onPress }) => {
+    const { t } = useTranslation("common");
+    const { t: tHome } = useTranslation("home");
+    const title = t(`promptBrowser.items.${prompt.id}.title`, { defaultValue: prompt.title });
+    const description = tHome(`prompts.${prompt.id}`, { defaultValue: prompt.description });
+    const category = t(`promptBrowser.items.${prompt.id}.category`, { defaultValue: prompt.category });
+
     return (
       <TouchableOpacity
         onPress={() => onPress(prompt)}
@@ -140,6 +147,8 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
           shadowRadius: 6,
           elevation: 1,
         }}
+        accessibilityRole="button"
+        accessibilityLabel={`${title}. ${description}`}
       >
         <View className="flex-1">
           <Text
@@ -147,14 +156,14 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
             className="text-[16px] text-ink mb-1.5"
             numberOfLines={1}
           >
-            {prompt.title} <Text className="text-[15px]">{prompt.emoji}</Text>
+            {title} <Text className="text-[15px]">{prompt.emoji}</Text>
           </Text>
           <Text
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="text-[13px] leading-[1.45] text-ink-soft mb-3"
             numberOfLines={2}
           >
-            {prompt.description}
+            {description}
           </Text>
         </View>
 
@@ -164,7 +173,7 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
               style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
               className="text-[10px] text-ink-soft uppercase tracking-wider"
             >
-              Today
+              {t("promptBrowser.today")}
             </Text>
           </View>
           <View
@@ -181,7 +190,7 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
               style={{ fontFamily: APP_FONT_FAMILIES.bold, color: prompt.categoryColor }}
               className="text-[10px] uppercase tracking-wider"
             >
-              {prompt.category}
+              {category}
             </Text>
           </View>
         </View>

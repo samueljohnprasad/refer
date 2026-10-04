@@ -368,6 +368,13 @@
   },
   "xp_first_step": "Primeiro passo no seu percurso",
   "paywall": {
+    "appOfTheDay": "App do dia", "headlineStart": "Torna-te alguém que não foge do que", "headlineEnd": "sente.", "featureSummary": "{{journeys}} percursos · mais de {{exercises}} exercícios · análises de IA ilimitadas",
+    "lockedTitle_one": "A tua próxima lição (bloqueada sem Plus)", "lockedTitle_other": "As tuas próximas {{count}} lições (bloqueadas sem Plus)",
+    "lessons": { "day2": { "title": "A espiral de pensamentos", "meta": "Dia 2 · 5 min · Distorções cognitivas" }, "day3": { "title": "O corpo como bússola", "meta": "Dia 3 · 5 min · Consciência corporal" }, "day4": { "title": "Registo de pensamentos: a tua primeira ferramenta de TCC", "meta": "Dia 4 · 7 min · Exercício prático" } },
+    "restartNote": "Continua o teu percurso ou recomeça no dia 1.", "trialTerms": "7 dias de teste grátis · Sem cobrança até ao dia 8 · Cancela quando quiseres", "refundTerms": "💚 Reembolso total em 30 dias · Sem perguntas", "startTrial": "Começar o meu teste grátis de 7 dias", "continueFree": "Continuar gratuitamente",
+    "sleepRatio": "3 em 4", "sleepCaption": "dormem melhor até ao dia {{day}}", "rating": "★ {{value}}", "reviews": "{{count}} avaliações", "groveCaption": "na comunidade", "testimonialQuote": "«Tenho 47 anos e nunca pensei que fosse escrever um diário. As lições de TCC fizeram-me ficar: ensinam mesmo algo útil. Dia 89.»", "memberLabel": "Membro Happy Plus", "fiveStars": "5 de 5 estrelas",
+    "discount": { "wait": "Espera, mais uma coisa", "title": "Experimenta Happy Plus por {{price}}", "description": "O primeiro mês a um preço reduzido. Sem pressão nem surpresas.", "afterMonth": "Após o primeiro mês: {{price}}/mês · Cancela quando quiseres", "accept": "SIM, QUERO EXPERIMENTAR POR {{price}}", "decline": "Não, obrigado. Continuar gratuitamente" },
+    "plans": { "weekly": { "label": "Semanal", "detailLabel": "Cancela quando quiseres", "perUnit": "/semana" }, "annual": { "label": "Anual", "badge": "Melhor preço", "headline": "365 dias para estares presente para ti.", "savings": "Poupa 67%", "detailPrefix": "Apenas ", "detailEmphasis": "0,27 $ por dia", "detailSuffix": " · faturado anualmente" }, "monthly": { "label": "Mensal", "detailLabel": "Cancela quando quiseres", "perUnit": "/mês" } },
     "benefits": {
       "journeys": "Todas as 12 jornadas com aulas sequenciadas",
       "ai": "Insights ilimitados de IA e padrões semanais",
@@ -375,6 +382,7 @@
       "streak": "Reparação de raias e temas premium"
     }
   },
+  "progressGraph": { "title": "Vê o impacto do teu diário", "description": "Escrever regularmente pode ajudar-te a compreender as emoções e a reconhecer dias difíceis.", "primaryLabel": "O teu humor", "comparisonLabel": "Sem escrever um diário", "entriesLabel": "Entradas do diário", "chartA11y": "Gráfico de progresso projetado para {{days}} dias, comparando o progresso com Happy e sem escrever um diário" },
   "pact_text": "Eu me comprometo a aparecer por mim mesmo, mesmo nos dias em que não estou com vontade. Apenas {{minutes}} minutos. É tudo o que é preciso.",
   "future_letter": "Você conseguiu. Você realmente apareceu, não uma vez, mas todos os dias por 30 dias.\n\nLembra-se de como as coisas pareciam pesadas quando começou? O {{timing}} foi o mais difícil. Mas você continuava voltando. {{minutes}} minutos de cada vez.\n\nVocê não é a mesma pessoa que abriu este aplicativo há um mês. Você está mais calmo. Você percebe seus pensamentos antes que eles espiralem. Você tem ferramentas agora.\n\nEstou orgulhosa de ti."
 }

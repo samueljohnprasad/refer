@@ -6,6 +6,7 @@ import { RADIUS } from "@/src/theme/radius";
 import { Feather } from "@expo/vector-icons";
 import type { EmotionOption } from "../data/emotions";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 
 interface EmotionChipProps {
   emotion: EmotionOption;
@@ -27,6 +28,8 @@ export const EmotionChip: React.FC<EmotionChipProps> = React.memo(
     disabled = false,
     locked = false,
   }) => {
+    const translateCopy = useExerciseCopy();
+    const emotionLabel = translateCopy(emotion.label);
     const isDisabled = locked || (disabled && !isSelected);
 
     return (
@@ -39,7 +42,7 @@ export const EmotionChip: React.FC<EmotionChipProps> = React.memo(
         disabled={isDisabled}
         accessibilityRole="checkbox"
         accessibilityState={{ checked: isSelected, disabled: isDisabled }}
-        accessibilityLabel={`${emotion.label} emotion`}
+        accessibilityLabel={`${emotionLabel} ${translateCopy("emotion")}`}
         className={`w-full rounded-lg border px-3 flex-row items-center ${
           isDisabled ? "opacity-45" : ""
         }`}
@@ -56,7 +59,7 @@ export const EmotionChip: React.FC<EmotionChipProps> = React.memo(
           style={{ color: isSelected ? SEMANTIC_COLORS.brand.onSoft : SEMANTIC_COLORS.text.primary }}
           numberOfLines={1}
         >
-          {emotion.label}
+          {emotionLabel}
         </Text>
         {isSelected ? (
           <Feather name="check" size={16} color={SEMANTIC_COLORS.brand.onSoft} />

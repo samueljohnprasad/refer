@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import {
@@ -72,13 +73,14 @@ export const SideProgressRailView = React.memo(function SideProgressRailView({
   onHeartsPress,
   onStreakPress,
 }: SideProgressRailViewProps): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
     <View
       className="absolute left-2 z-20 items-center"
       style={{ top: 120 }}
       pointerEvents="box-none"
       accessibilityRole="summary"
-      accessibilityLabel="Progress stats"
+      accessibilityLabel={t("progressStatsA11y")}
     >
       <RailIcon
         icon="🏋️"

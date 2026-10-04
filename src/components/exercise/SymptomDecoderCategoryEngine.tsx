@@ -13,6 +13,8 @@ import {
   readString,
 } from "@/src/components/exercise/courseExerciseContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { translateStepCopyProps } from "@/src/lib/i18n/exerciseCopy";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
 // ponytail: personal discovery exercise reveals explanation directly under selected symptom
@@ -22,7 +24,8 @@ export function SymptomDecoderCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
-  const content = exercise.content ?? {};
+  const translateCopy = useExerciseCopy();
+  const content = translateStepCopyProps(exercise.content ?? {}, translateCopy);
   const options = readCourseExerciseOptions(content.options);
   const selectedOptionId = readString(
     readRecord(savedResponse)?.selectedOptionId,
@@ -47,10 +50,12 @@ export function SymptomDecoderCategoryEngine({
   return (
     <View style={styles.screenContent}>
       <CourseExerciseHeading
-        title={readString(content.title) ?? "Decoding body alarms"}
+        title={
+          readString(content.title) ?? translateCopy("Decoding body alarms")
+        }
         instruction={
           readString(content.instruction) ??
-          "Tap the symptom that feels most familiar."
+          translateCopy("Tap the symptom that feels most familiar.")
         }
       />
 
@@ -76,7 +81,8 @@ export function SymptomDecoderCategoryEngine({
               {isSelected ? (
                 <View style={styles.reveal}>
                   <Text style={styles.revealTitle}>
-                    {option.detail ?? "YOUR BODY’S ALARM RESPONSE"}
+                    {option.detail ??
+                      translateCopy("YOUR BODY’S ALARM RESPONSE")}
                   </Text>
                   {bodyParagraphs.map((paragraph, index) => (
                     <Text
@@ -99,7 +105,7 @@ export function SymptomDecoderCategoryEngine({
       <View style={styles.privateNote}>
         <Feather name="lock" size={13} color={SEMANTIC_COLORS.text.secondary} />
         <Text style={styles.privateNoteText}>
-          Your choice helps tailor what comes next.
+          {translateCopy("Your choice helps tailor what comes next.")}
         </Text>
       </View>
     </View>

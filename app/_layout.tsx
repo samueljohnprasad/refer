@@ -35,9 +35,8 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { requireOptionalNativeModule } from "expo-modules-core";
 import { router as expoRouter } from "expo-router";
-import { AppState, type AppStateStatus, StyleSheet, View, useColorScheme } from "react-native";
-import * as Localization from "expo-localization";
-import { initI18n, i18n } from "@/src/lib/i18n";
+import { Alert, AppState, type AppStateStatus, StyleSheet, View, useColorScheme } from "react-native";
+import { initI18n, i18n, refreshDeviceLanguage } from "@/src/lib/i18n";
 import { StatusBar } from "expo-status-bar";
 import { Presets } from "react-native-pulsar";
 import * as Notifications from "expo-notifications";
@@ -92,7 +91,18 @@ export default function RootLayout() {
   useEffect(() => {
     const sub = AppState.addEventListener("change", (state: AppStateStatus) => {
       if (state === "active") {
-        Localization.getLocales();
+        void refreshDeviceLanguage()
+          .then((needsRestart) => {
+            if (needsRestart) {
+              Alert.alert(
+                i18n.t("language.restartPromptTitle", { ns: "settings" }),
+                i18n.t("language.restartPromptMessage", { ns: "settings" }),
+              );
+            }
+          })
+          .catch((error) => {
+            console.warn("[i18n] Failed refreshing device language", error);
+          });
       }
     });
     return () => sub.remove();

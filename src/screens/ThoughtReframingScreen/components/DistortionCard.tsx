@@ -6,6 +6,7 @@ import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 import type { CognitiveDistortion } from "../types";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 
 interface DistortionCardProps {
   distortion: CognitiveDistortion;
@@ -23,6 +24,8 @@ export const DistortionCard: React.FC<DistortionCardProps> = React.memo(
     disabled = false,
     locked = false,
   }) => {
+    const translateCopy = useExerciseCopy();
+    const distortionLabel = translateCopy(distortion.label);
     const isDisabled = locked || (disabled && !isSelected);
 
     return (
@@ -34,7 +37,7 @@ export const DistortionCard: React.FC<DistortionCardProps> = React.memo(
         }}
         disabled={isDisabled}
         accessibilityRole="checkbox"
-        accessibilityLabel={`${distortion.label} thinking pattern`}
+        accessibilityLabel={`${distortionLabel} ${translateCopy("thinking pattern")}`}
         accessibilityState={{ checked: isSelected, disabled: isDisabled }}
         className={`border-b border-sage-100/70 px-1 py-3.5 ${
           isDisabled ? "opacity-50" : ""
@@ -57,7 +60,7 @@ export const DistortionCard: React.FC<DistortionCardProps> = React.memo(
               }`}
               numberOfLines={1}
             >
-              {distortion.label}
+              {distortionLabel}
             </Text>
             <Text
               variant="caption"
@@ -65,7 +68,7 @@ export const DistortionCard: React.FC<DistortionCardProps> = React.memo(
               className="mt-1 text-[13px] leading-[18px]"
               numberOfLines={2}
             >
-              {distortion.description}
+              {translateCopy(distortion.description)}
             </Text>
           </View>
           <View

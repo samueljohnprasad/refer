@@ -1,4 +1,5 @@
 import React, { type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Pressable,
@@ -42,13 +43,14 @@ export function CourseExerciseShell({
   onSkip,
 }: CourseExerciseShellProps) {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation("exercises");
 
   return (
     <View style={styles.screen}>
       <Stack.Screen options={{ headerShown: false }} />
       <View style={[styles.header, { paddingTop: insets.top + 4 }]}>
         <Pressable
-          accessibilityLabel="Save and exit to Journey"
+          accessibilityLabel={t("runtime.saveAndExitJourney")}
           accessibilityRole="button"
           disabled={!onClose}
           hitSlop={8}
@@ -105,7 +107,7 @@ export function CourseExerciseShell({
               pressed && styles.pressedIcon,
             ]}
           >
-            <Text style={styles.skipLabel}>Skip for now</Text>
+            <Text style={styles.skipLabel}>{t("runtime.skipForNow")}</Text>
           </Pressable>
         ) : null}
       </View>

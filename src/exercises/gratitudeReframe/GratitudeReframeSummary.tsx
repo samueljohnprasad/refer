@@ -17,6 +17,8 @@ import { Text } from "@/src/components/ui/Text";
 import { EXERCISE_LINKING_MAP } from "@/src/data/exerciseLinkingMap";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { ExerciseCopyText } from "@/src/components/exercise/ExerciseCopyText";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 import { getGratitudePromptLabel } from "./promptMetadata";
 import type {
   GratitudeReframeResponse,
@@ -47,19 +49,20 @@ function SaveCopingCardAction({
   onPress: () => void;
   error: string | null;
 }) {
+  const translateCopy = useExerciseCopy();
   return (
     <View>
       <Pressable
         onPress={onPress}
         disabled={cardSaved || isSavingCard}
         accessibilityRole="button"
-        accessibilityLabel={
+        accessibilityLabel={translateCopy(
           cardSaved
             ? "Saved to coping cards"
             : isSavingCard
               ? "Saving coping card"
               : "Save as coping card"
-        }
+        )}
         accessibilityState={{
           disabled: cardSaved || isSavingCard,
           busy: isSavingCard,
@@ -72,7 +75,7 @@ function SaveCopingCardAction({
           color={SEMANTIC_COLORS.brand.onSoft}
           strokeWidth={2}
         />
-        <Text
+        <ExerciseCopyText
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.onSoft }}
           className="ml-2 text-[14px] leading-[20px]"
         >
@@ -81,7 +84,7 @@ function SaveCopingCardAction({
             : isSavingCard
               ? "Saving..."
               : "Save for a difficult moment"}
-        </Text>
+        </ExerciseCopyText>
       </Pressable>
 
       {error ? (
@@ -131,14 +134,15 @@ export function GratitudeReframeSummary({
   readOnly,
   onNavigateDeeper,
 }: StepProps<GratitudeReframeResponse>): React.JSX.Element {
+  const translateCopy = useExerciseCopy();
   const { saveCard } = useCopingCards();
   const [cardSaved, setCardSaved] = useState(false);
   const [isSavingCard, setIsSavingCard] = useState(false);
   const [cardSaveError, setCardSaveError] = useState<string | null>(null);
 
-  const promptLabel = response.selectedPrompt
+  const promptLabel = translateCopy(response.selectedPrompt
     ? getGratitudePromptLabel(response.selectedPrompt)
-    : "Reflection";
+    : "Reflection");
   const sections = useMemo<readonly RecapSection[]>(
     () => [
       { label: "Gratitude direction", value: promptLabel, tone: "serif" },
@@ -170,25 +174,25 @@ export function GratitudeReframeSummary({
       await saveCard({
         exercise_type: "gratitude_reframe",
         reframe_text: response.gratitudeEntries.join("\n"),
-        reframe_label: "Gratitude reflection",
+        reframe_label: translateCopy("Gratitude reflection"),
       });
       setCardSaved(true);
       void Haptics.notificationAsync(
         Haptics.NotificationFeedbackType.Success,
       ).catch(() => undefined);
     } catch {
-      setCardSaveError("Could not save this coping card. Try again.");
+      setCardSaveError(translateCopy("Could not save this coping card. Try again."));
     } finally {
       setIsSavingCard(false);
     }
-  }, [cardSaved, isSavingCard, response.gratitudeEntries, saveCard]);
+  }, [cardSaved, isSavingCard, response.gratitudeEntries, saveCard, translateCopy]);
 
   const afterTimeline = useMemo(() => {
     const link = EXERCISE_LINKING_MAP.gratitude_reframe;
 
     return (
       <View>
-        <Text
+        <ExerciseCopyText
           style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
           className="text-[14px] leading-[20px]"
         >
@@ -196,7 +200,7 @@ export function GratitudeReframeSummary({
             response.moodIntensity,
             response.finalMoodIntensity,
           )}
-        </Text>
+        </ExerciseCopyText>
 
         {!readOnly ? (
           <SaveCopingCardAction
@@ -209,7 +213,7 @@ export function GratitudeReframeSummary({
 
         {link && !readOnly && onNavigateDeeper ? (
           <FollowupLink
-            label={`Go deeper: ${link.label}`}
+          label={`${translateCopy("Go deeper:")} ${translateCopy(link.label)}`}
             onPress={() => onNavigateDeeper(link.exerciseType)}
           />
         ) : null}
@@ -224,6 +228,7 @@ export function GratitudeReframeSummary({
     readOnly,
     response.finalMoodIntensity,
     response.moodIntensity,
+    translateCopy,
   ]);
 
   return (

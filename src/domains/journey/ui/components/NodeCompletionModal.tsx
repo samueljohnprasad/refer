@@ -1,4 +1,5 @@
 import React, { forwardRef } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import {
@@ -80,6 +81,7 @@ export const NodeCompletionModalView = React.memo(
     node,
     bottomSheetRef,
   }: NodeCompletionModalViewProps): React.JSX.Element {
+    const { t } = useTranslation("journeys");
     return (
       <BottomSheetModal
         ref={bottomSheetRef}
@@ -104,20 +106,23 @@ export const NodeCompletionModalView = React.memo(
                   <Text className="text-4xl">🎉</Text>
                 </View>
                 <Text className="text-2xl font-extrabold text-ink text-center">
-                  {node.type === "lesson" ? "Lesson Complete!" : 
-                   node.type === "checkpoint" ? "Checkpoint Reached!" : 
-                   node.type === "chest" ? "Reward Unlocked!" : 
-                   "Exercise Complete!"}
+                  {node.type === "lesson"
+                    ? t("lessonComplete")
+                    : node.type === "checkpoint"
+                      ? t("checkpointReached")
+                      : node.type === "chest"
+                        ? t("rewardUnlocked")
+                        : t("exerciseComplete")}
                 </Text>
                 <Text className="text-base text-ink-soft text-center mt-1">
-                  Great job finishing step {node.index + 1}
+                  {t("greatJobStep", { step: node.index + 1 })}
                 </Text>
               </View>
 
               {node.rewards.length > 0 && (
                 <View className="mb-6">
                   <Text className="text-sm font-extrabold text-ink-muted uppercase tracking-wider mb-3">
-                    Rewards Earned
+                    {t("rewardsEarned")}
                   </Text>
                   <View className="flex-row flex-wrap">
                     {node.rewards.map(
@@ -130,7 +135,7 @@ export const NodeCompletionModalView = React.memo(
               )}
 
               <CourseExercisePrimaryButton
-                label="CONTINUE"
+                label={t("continueUpper")}
                 onPress={() => void handleContinue()}
                 faceColor="#58CC02"
                 rimColor="#45A802"

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, View } from "react-native";
 import { Image } from "expo-image";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -62,10 +63,11 @@ export function CourseCatalogList({
 }
 
 function CourseCatalogHeading(): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
     <View className="mb-5 gap-1.5 px-1">
-      <Text variant="display">Explore Journeys</Text>
-      <Text variant="body">Choose a journey to explore.</Text>
+      <Text variant="display">{t("exploreTitle")}</Text>
+      <Text variant="body">{t("exploreDescription")}</Text>
     </View>
   );
 }
@@ -78,7 +80,8 @@ function CourseCatalogRow({
   course: CourseCatalogListItem;
   isEnrolled: boolean;
   onPress: (courseId: string) => void;
-  }): React.JSX.Element {
+}): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   const accentColor = resolveCourseAccentColor(course.colorHex);
   const imageSource = getCourseImageSource(course.iconUrl);
   const desc = course.description;
@@ -88,7 +91,7 @@ function CourseCatalogRow({
       onPress={() => onPress(course.id)}
       className="flex-row items-center gap-3.5 rounded-2xl px-2 py-3.5 active:bg-black/[0.03]"
       accessibilityRole="button"
-      accessibilityLabel={`View ${course.title} course details`}
+      accessibilityLabel={t("viewCourse", { title: course.title })}
     >
       {/* Artwork Column - Standardized Footprint */}
       <View
@@ -117,7 +120,7 @@ function CourseCatalogRow({
           </Text>
           {isEnrolled ? (
             <Text className="happy-font-body-medium text-[13px] leading-[18px] text-sage-600">
-              Enrolled
+              {t("enrolled")}
             </Text>
           ) : null}
         </View>
@@ -144,8 +147,9 @@ function CourseRowSeparator(): React.JSX.Element {
 }
 
 function CourseCatalogSkeleton(): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
-    <View className="gap-5 py-4" accessibilityLabel="Loading journeys">
+    <View className="gap-5 py-4" accessibilityLabel={t("loading")}>
       {Array.from({ length: 2 }).map((_, index) => (
         <View key={index} className="flex-row items-center gap-3.5 px-2 py-3.5">
           <Skeleton width={56} height={56} radius={16} />
@@ -160,10 +164,11 @@ function CourseCatalogSkeleton(): React.JSX.Element {
 }
 
 function CourseCatalogEmptyState(): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
     <View className="items-center justify-center py-12">
       <Text variant="body" className="text-center">
-        No published courses are available.
+        {t("emptyCatalog")}
       </Text>
     </View>
   );

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, TouchableOpacity, TextInput } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Text } from "@/src/components/ui/Text";
+import { useTranslation } from "react-i18next";
 
 interface FeelingsSectionProps {
   feelings: string[];
@@ -35,6 +36,7 @@ export const FeelingsSection = React.memo<FeelingsSectionProps>(({
 }: FeelingsSectionProps) => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [newFeeling, setNewFeeling] = useState<string>("");
+  const { t } = useTranslation("journal");
 
   const handleAdd = (): void => {
     if (newFeeling.trim()) {
@@ -63,7 +65,7 @@ export const FeelingsSection = React.memo<FeelingsSectionProps>(({
                 : "bg-white/60 border-white/80"
             }`}
             accessibilityRole="text"
-            accessibilityLabel={`Feeling: ${feeling}`}
+            accessibilityLabel={t("entryDetail.feeling", { feeling })}
           >
             <Text className="mr-1">{FEELING_EMOJIS[feeling.toLowerCase()] || "😊"}</Text>
             <Text variant="label-bold" className="text-ink">{feeling}</Text>
@@ -74,7 +76,7 @@ export const FeelingsSection = React.memo<FeelingsSectionProps>(({
                 hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
                 activeOpacity={0.7}
                 accessibilityRole="button"
-                accessibilityLabel={`Remove ${feeling}`}
+                accessibilityLabel={t("entryDetail.removeFeeling", { feeling })}
               >
                 <Feather name="x" size={11} color="#4A5568" />
               </TouchableOpacity>
@@ -88,9 +90,9 @@ export const FeelingsSection = React.memo<FeelingsSectionProps>(({
             className="flex-row items-center px-3.5 py-1.5 rounded-full bg-white/75 border border-sage-300/60"
             activeOpacity={0.7}
             accessibilityRole="button"
-            accessibilityLabel="Add feeling"
+            accessibilityLabel={t("entryDetail.addFeeling")}
           >
-            <Text variant="label-bold" className="text-sage-500">+ Add</Text>
+            <Text variant="label-bold" className="text-sage-500">{t("entryDetail.add")}</Text>
           </TouchableOpacity>
         )}
 
@@ -105,11 +107,11 @@ export const FeelingsSection = React.memo<FeelingsSectionProps>(({
                   setIsAdding(false);
                 }
               }}
-              placeholder="enter feeling"
+              placeholder={t("entryDetail.feelingPlaceholder")}
               placeholderTextColor="rgba(107, 107, 107, 0.5)"
               className="text-ink text-sm min-w-[104px]"
               autoFocus
-              accessibilityLabel="Type new feeling"
+              accessibilityLabel={t("entryDetail.typeFeeling")}
             />
           </View>
         )}

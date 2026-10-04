@@ -9,6 +9,8 @@ import { SuggestionCards, type SuggestionItem } from "@/src/components/exercise/
 import { ReflectionDisclosure } from "@/src/components/exercise/ReflectionStepSections";
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { ExerciseTextComposer } from "@/src/components/exercise/ExerciseTextComposer";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { useTranslation } from "react-i18next";
 interface MultiTextInputStepProps extends StepProps {
   title: string;
   subtitle: string;
@@ -77,6 +79,8 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     referenceQuote,
     suggestions,
   }) => {
+    const translateCopy = useExerciseCopy();
+    const { t } = useTranslation("exercises");
     const dispatch = useAppDispatch();
     const responseRecord = response as Record<string, unknown>;
     const responseItems = responseRecord[fieldKey];
@@ -145,7 +149,10 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     };
 
     const mappedSuggestions: SuggestionItem[] = [
-      ...(suggestions || []),
+      ...(suggestions || []).map((suggestion) => ({
+        ...suggestion,
+        label: translateCopy(suggestion.label),
+      })),
       ...(aiSuggestions || []).map((suggestion) => ({
         label: suggestion.text,
         emoji: suggestion.emoji,
@@ -169,10 +176,10 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
         scrollable
       >
         {psychoeducationText ? (
-          <PsychoeducationCard content={psychoeducationText} />
+          <PsychoeducationCard content={translateCopy(psychoeducationText)} />
         ) : null}
         {tipText ? (
-          <PsychoeducationCard content={tipText} />
+          <PsychoeducationCard content={translateCopy(tipText)} />
         ) : null}
 
         {(items.length > 0 || !readOnly) && (
@@ -182,7 +189,7 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
               items={items}
               onAdd={addItem}
               onRemove={removeItem}
-              placeholder={placeholder}
+              placeholder={translateCopy(placeholder)}
               maxItems={maxItems}
               maxLength={maxLength}
               readOnly={readOnly}
@@ -194,7 +201,12 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
 
         {maxItems > 1 && (
           <Text variant="caption" className="mt-2 text-ink-soft">
-            {items.length}/{maxItems} items{minItems > 0 ? ` (min ${minItems})` : ""}
+            {t("flow.ui.itemsCount", {
+              count: items.length,
+              max: maxItems,
+              minimum:
+                minItems > 0 ? t("flow.ui.minimumItems", { count: minItems }) : "",
+            })}
           </Text>
         )}
 
@@ -202,12 +214,14 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
           <ReflectionDisclosure
             expanded={showSuggestions}
             onToggle={() => setShowSuggestions((current) => !current)}
-            title={suggestionsTitle ?? "Need an example?"}
+            title={translateCopy(suggestionsTitle ?? "Need an example?")}
           >
             <SuggestionCards
               title=""
               helperText={
-                suggestionsHelperText ?? "Use only if it fits. Make the words yours."
+                translateCopy(
+                  suggestionsHelperText ?? "Use only if it fits. Make the words yours.",
+                )
               }
               suggestions={mappedSuggestions}
               currentValue={items}

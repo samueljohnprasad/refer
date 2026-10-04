@@ -9,6 +9,7 @@ import {
 } from "@/src/components/exercise/ReflectionTimeline";
 import type { StepProps, WorryDecisionTreeResponse } from "@/src/types/exerciseFlow";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 
 interface WorryTreeSummaryStepProps extends StepProps {
   title?: string;
@@ -29,6 +30,7 @@ export const WorryTreeSummaryStep: React.FC<WorryTreeSummaryStepProps> = React.m
     subtitle,
     isSaving,
   }) => {
+    const translateCopy = useExerciseCopy();
     const data = response as WorryDecisionTreeResponse;
 
     return (
@@ -47,42 +49,42 @@ export const WorryTreeSummaryStep: React.FC<WorryTreeSummaryStepProps> = React.m
       >
         <View className="px-4 py-6">
           <ReflectionTimeline>
-            <ReflectionTimelineItem label="The Worry">
+            <ReflectionTimelineItem label={translateCopy("The Worry")}>
               <Text style={{ color: SEMANTIC_COLORS.text.primary }} className="text-[17px] leading-[24px]">
                 {data.worry}
               </Text>
             </ReflectionTimelineItem>
 
-            <ReflectionTimelineItem label="The Decision">
+            <ReflectionTimelineItem label={translateCopy("The Decision")}>
               <Text style={{ color: SEMANTIC_COLORS.text.primary }} className="text-[17px] leading-[24px]">
-                {data.canAct === "yes" ? "In my control" : "Out of my hands"}
+                {translateCopy(data.canAct === "yes" ? "In my control" : "Out of my hands")}
               </Text>
             </ReflectionTimelineItem>
 
             {data.canAct === "yes" ? (
-              <ReflectionTimelineItem label="Action Plan">
+              <ReflectionTimelineItem label={translateCopy("Action Plan")}>
                 <Text style={{ color: SEMANTIC_COLORS.text.primary }} className="text-[17px] leading-[24px]">
                   {data.actionPlan}
                 </Text>
                 {data.scheduledAction && (
                   <Text style={{ color: SEMANTIC_COLORS.text.secondary }} className="text-[15px] leading-[22px] mt-1">
-                    Scheduled for: {data.scheduledAction}
+                    {translateCopy("Scheduled for:")} {data.scheduledAction}
                   </Text>
                 )}
               </ReflectionTimelineItem>
             ) : (
-              <ReflectionTimelineItem label="Acceptance">
+              <ReflectionTimelineItem label={translateCopy("Acceptance")}>
                 <Text style={{ color: SEMANTIC_COLORS.text.primary }} className="text-[17px] leading-[24px]">
                   {data.acceptanceExercise}
                 </Text>
               </ReflectionTimelineItem>
             )}
 
-            <ReflectionTimelineItem label="Anxiety Shift" isLast>
+            <ReflectionTimelineItem label={translateCopy("Anxiety Shift")} isLast>
               <ReflectionScoreShift 
                 before={data.preAnxietyRating}
                 after={data.postAnxietyRating}
-                label={data.preAnxietyRating > data.postAnxietyRating ? "Feeling better" : "Processed"}
+                label={translateCopy(data.preAnxietyRating > data.postAnxietyRating ? "Feeling better" : "Processed")}
               />
             </ReflectionTimelineItem>
           </ReflectionTimeline>

@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ConfigurableGlassMenu,
   GlassMenuConfig,
@@ -22,6 +23,7 @@ export function JournalTitleMenu({
   onDelete,
   onExport,
 }: JournalTitleMenuProps) {
+  const { t } = useTranslation("journal");
   const displaySubtitle = subtitle;
 
   const menuConfig: GlassMenuConfig = useMemo(() => {
@@ -31,7 +33,9 @@ export function JournalTitleMenu({
       actionItems.push({
         type: "button",
         id: "bookmark",
-        label: isBookmarked ? "Remove Bookmark" : "Bookmark Entry",
+        label: isBookmarked
+          ? t("titleMenu.removeBookmark")
+          : t("titleMenu.bookmarkEntry"),
         systemImage: isBookmarked ? "bookmark.fill" : "bookmark",
         onPress: onBookmark,
       });
@@ -41,7 +45,7 @@ export function JournalTitleMenu({
       actionItems.push({
         type: "button",
         id: "export",
-        label: "Share & Export Entry",
+        label: t("titleMenu.shareExport"),
         systemImage: "square.and.arrow.up",
         onPress: onExport,
       });
@@ -51,7 +55,7 @@ export function JournalTitleMenu({
       actionItems.push({
         type: "button",
         id: "delete",
-        label: "Delete Entry",
+        label: t("titleMenu.deleteEntry"),
         systemImage: "trash",
         role: "destructive",
         onPress: onDelete,
@@ -67,12 +71,12 @@ export function JournalTitleMenu({
       sections: [
         {
           id: "actions-section",
-          title: "CBT Journal Actions",
+          title: t("titleMenu.actions"),
           items: actionItems,
         },
       ],
     };
-  }, [title, displaySubtitle, isBookmarked, onBookmark, onExport, onDelete]);
+  }, [title, displaySubtitle, isBookmarked, onBookmark, onExport, onDelete, t]);
 
   return <ConfigurableGlassMenu config={menuConfig} />;
 }

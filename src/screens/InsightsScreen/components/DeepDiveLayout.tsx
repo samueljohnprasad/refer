@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Pressable } from "react-native";
+import { useTranslation } from "react-i18next";
 import { Text } from "@/components/ui/Text";
 import { SafeAreaView } from "@/src/components/tw";
 import { router } from "expo-router";
@@ -21,12 +22,14 @@ export function DeepDiveLayout({
   isLoading,
   children,
 }: DeepDiveLayoutProps) {
+  const { t } = useTranslation("common");
+
   if (isLoading) {
     return (
       <SafeAreaView className="flex-1 happy-brand-screen" edges={["top"]}>
         <View className="flex-1 items-center justify-center">
           <Text className="happy-font-body-medium text-sm text-ink-muted">
-            Loading...
+            {t("timelineAnalytics.loading")}
           </Text>
         </View>
       </SafeAreaView>

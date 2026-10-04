@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import Animated from "react-native-reanimated";
@@ -68,6 +69,7 @@ export const MascotBubbleView = React.memo(function MascotBubbleView({
   side,
   imageKey,
 }: MascotBubbleViewProps): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
     <Animated.View
       style={[
@@ -112,7 +114,7 @@ export const MascotBubbleView = React.memo(function MascotBubbleView({
           scale={0.9}
           hapticStyle="light"
           accessibilityRole="button"
-          accessibilityLabel="Tap for encouragement"
+          accessibilityLabel={t("tapForEncouragement")}
         >
           <Mascot
             state={(imageKey as any) ?? "panda-happy"}

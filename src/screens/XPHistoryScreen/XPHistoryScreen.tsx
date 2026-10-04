@@ -14,6 +14,7 @@ import { router, Stack } from "expo-router";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 import * as Haptics from "expo-haptics";
+import { useTranslation } from "react-i18next";
 
 import { XPHistorySummary } from "./components/XPHistorySummary";
 import { XPHistoryTimeline } from "./components/XPHistoryTimeline";
@@ -33,13 +34,14 @@ const styles = StyleSheet.create({
 });
 
 export const XPHistoryScreen: React.FC = () => {
+  const { i18n, t } = useTranslation("common");
   const { totalXP, todayXP, getXPHistory, history, isLoading } = useXP();
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
   const { data: chartData, weekLabels } = useMemo(() => {
-    return generateXPChartData(history, 4); // 4 weeks of history
-  }, [history]);
+    return generateXPChartData(history, 4, i18n.language); // 4 weeks of history
+  }, [history, i18n.language]);
 
   useEffect(() => {
     const loadInitial = async () => {
@@ -87,7 +89,7 @@ export const XPHistoryScreen: React.FC = () => {
       >
         <ActivityIndicator size="large" color={SEMANTIC_COLORS.brand.primary} />
         <Text className="happy-font-body-medium text-ink-muted mt-4">
-          Loading XP...
+          {t("xp.loading")}
         </Text>
       </SafeAreaView>
     );
@@ -97,7 +99,7 @@ export const XPHistoryScreen: React.FC = () => {
     <View style={styles.screen}>
       <Stack.Screen
         options={{
-          title: "Progression",
+          title: t("xp.progression"),
           headerStyle: { backgroundColor: "transparent" },
           headerTransparent: true,
           headerShadowVisible: false,
@@ -114,7 +116,7 @@ export const XPHistoryScreen: React.FC = () => {
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
           icon="rosette"
-          accessibilityLabel="Achievements"
+          accessibilityLabel={t("xp.achievements")}
           onPress={handleAchievementsPress}
         />
       </Stack.Toolbar>

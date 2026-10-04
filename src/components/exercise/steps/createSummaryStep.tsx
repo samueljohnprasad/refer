@@ -1,6 +1,7 @@
 import React from "react";
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { SummaryStep } from ".";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 
 interface FieldDef<T> {
   label: string;
@@ -20,17 +21,18 @@ export function createSummaryStep<T extends Record<string, any>>(
   },
 ): React.ComponentType<StepProps<any>> {
   const Wrapped: React.FC<StepProps<any>> = (stepProps) => {
+    const translate = useExerciseCopy();
     const fields = fieldDefs.map((fd) => ({
-      label: fd.label,
+      label: translate(fd.label),
       value: (stepProps.response as any)[fd.key],
     }));
 
     return (
       <SummaryStep
         {...(stepProps as any)}
-        title={opts?.title}
+        title={opts?.title ? translate(opts.title) : undefined}
         exerciseType={opts?.exerciseType}
-        saveLabel={opts?.saveLabel}
+        saveLabel={opts?.saveLabel ? translate(opts.saveLabel) : undefined}
         fields={fields}
         onSave={stepProps.onNext}
       />

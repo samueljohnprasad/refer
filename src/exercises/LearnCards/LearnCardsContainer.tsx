@@ -2,10 +2,21 @@ import React, { useEffect } from "react";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { LearnCardsView } from "@/src/exercises/LearnCards/LearnCardsView";
 import { readLearnCardsData, readLearnCardsResponse } from "@/src/exercises/LearnCards/data";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { translateStepCopyProps } from "@/src/lib/i18n/exerciseCopy";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
 export function LearnCardsContainer({ exercise, savedResponse, locked = false, onInteraction }: V1CategoryEngineProps) {
-  const data = readLearnCardsData(exercise);
+  const translateCopy = useExerciseCopy();
+  const localizedExercise = {
+    ...exercise,
+    content: translateStepCopyProps(exercise.content ?? {}, translateCopy),
+  };
+  const parsedData = readLearnCardsData(localizedExercise);
+  const data = {
+    ...parsedData,
+    title: translateCopy(parsedData.title),
+  };
   const response = readLearnCardsResponse(savedResponse);
 
   useEffect(() => {

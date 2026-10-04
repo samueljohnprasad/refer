@@ -1,23 +1,16 @@
-import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
-import React, { useMemo, useEffect, useCallback } from "react";
-import { View, ActivityIndicator, Platform, Pressable } from "react-native";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { ActivityIndicator, Platform, View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
-import { Card } from "@/src/components/ui/Card";
-import { HugeiconsIcon } from "@hugeicons/react-native";
 import { StepLayout } from "./StepLayout";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
-import { getContentIcon } from "@/src/data/contentIconRegistry";
-import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
-
-interface ChoiceOption {
-  value: string;
-  label: string;
-  iconKey?: string;
-  emoji?: string;
-  description?: string;
-}
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import {
+  ChoiceOptionCard,
+  type ChoiceLayoutVariant,
+  type ChoiceOption,
+} from "./ChoiceOptionCard";
 
 interface ChoiceStepProps extends StepProps {
   title: string;
@@ -27,7 +20,7 @@ interface ChoiceStepProps extends StepProps {
   autoAdvance?: boolean;
   psychoeducationText?: string;
   showStepCount?: boolean;
-  layoutVariant?: "default" | "cbt_reflection";
+  layoutVariant?: ChoiceLayoutVariant;
 }
 
 export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
@@ -53,41 +46,59 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
     showStepCount = true,
     layoutVariant = "default",
   }) => {
-    const selected = (response as Record<string, any>)[fieldKey];
-
-    const aiMappedOptions = useMemo(() => {
-      if (aiSuggestions && aiSuggestions.length > 0) {
-        return aiSuggestions.map((s: any) => ({
-          value: s.text || s.label || (typeof s === "string" ? s : JSON.stringify(s)),
-          label: s.text || s.label || (typeof s === "string" ? s : JSON.stringify(s)),
-          emoji: s.emoji || "✨",
-          description: s.category || s.description,
-        }));
-      }
-      return [];
-    }, [aiSuggestions]);
+    const translateCopy = useExerciseCopy();
+    const selected = (response as Record<string, unknown>)[fieldKey];
+    const resolvedOptions = useMemo(
+      () =>
+        options.map((option) => ({
+          ...option,
+          label: translateCopy(option.label),
+          description: option.description
+            ? translateCopy(option.description)
+            : undefined,
+        })),
+      [options, translateCopy],
+    );
+    const aiMappedOptions = useMemo(
+      () =>
+        (aiSuggestions ?? []).map((suggestion) => ({
+          value: suggestion.text,
+          label: suggestion.text,
+          emoji: suggestion.emoji || "✨",
+          description:
+            typeof suggestion.category === "string"
+              ? suggestion.category
+              : typeof suggestion.description === "string"
+                ? suggestion.description
+                : undefined,
+        })),
+      [aiSuggestions],
+    );
 
     const handleSelect = useCallback(
       (value: string) => {
-        onUpdate({ [fieldKey]: value } as any);
-        if (autoAdvance) {
-          setTimeout(onNext, 300);
-        }
+        onUpdate({ [fieldKey]: value } as Partial<typeof response>);
+        if (autoAdvance) setTimeout(onNext, 300);
       },
       [autoAdvance, fieldKey, onNext, onUpdate],
     );
 
     useEffect(() => {
       if (Platform.OS !== "web" || typeof window === "undefined") return;
-      const handleKeyDown = (e: KeyboardEvent) => {
-        const num = parseInt(e.key, 10);
-        if (!isNaN(num) && num >= 1 && num <= options.length) {
-          handleSelect(options[num - 1].value);
+      const handleKeyDown = (event: KeyboardEvent) => {
+        const number = parseInt(event.key, 10);
+        if (!isNaN(number) && number >= 1 && number <= resolvedOptions.length) {
+          handleSelect(resolvedOptions[number - 1].value);
         }
       };
       window.addEventListener("keydown", handleKeyDown);
       return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [handleSelect, options]);
+    }, [handleSelect, resolvedOptions]);
+
+    const selectOption = (value: string) => {
+      if (layoutVariant === "cbt_reflection") triggerSelectionHaptic();
+      handleSelect(value);
+    };
 
     return (
       <StepLayout
@@ -104,203 +115,49 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
         scrollable
         showStepCount={showStepCount}
       >
-        <PsychoeducationCard content={psychoeducationText ?? ""} />
-
+        <PsychoeducationCard content={translateCopy(psychoeducationText ?? "")} />
         <View className={isAiLoading ? "min-h-[36px] justify-center mb-4" : ""}>
-          {isAiLoading && (
+          {isAiLoading ? (
             <View className="flex-row items-center">
-              <ActivityIndicator size="small" color={SEMANTIC_COLORS.border.selected} />
+              <ActivityIndicator size="small" />
               <Text className="text-[11px] text-slate-400 ml-2 uppercase tracking-wider">
-                Finding personalized options…
+                {translateCopy("Finding personalized options…")}
               </Text>
             </View>
-          )}
+          ) : null}
         </View>
 
         <View className="gap-3 w-full">
-          {options.map((opt, i) => {
-            const isSelected = selected === opt.value;
-            const resolvedIcon = opt.iconKey
-              ? getContentIcon(opt.iconKey)
-              : null;
+          {resolvedOptions.map((option, index) => (
+            <ChoiceOptionCard
+              key={option.value}
+              option={option}
+              index={index}
+              selected={selected === option.value}
+              layoutVariant={layoutVariant}
+              onSelect={selectOption}
+            />
+          ))}
 
-            if (layoutVariant === "cbt_reflection") {
-              return (
-                <FadeInItem key={opt.value} index={i} delayPerItem={40}>
-                  <Pressable
-                    onPress={() => {
-                      triggerSelectionHaptic();
-                      handleSelect(opt.value);
-                    }}
-                    className="mb-1 min-h-[84px] flex-row items-center rounded-[24px] border px-5 py-4 active:opacity-80"
-                    style={{
-                      backgroundColor: isSelected ? SEMANTIC_COLORS.surface.elevated : "#FFFFFF",
-                      borderColor: isSelected ? SEMANTIC_COLORS.border.default : SEMANTIC_COLORS.border.default,
-                    }}
-                    accessibilityRole="radio"
-                    accessibilityState={{ selected: isSelected }}
-                    accessibilityLabel={opt.label}
-                  >
-                    {resolvedIcon ? (
-                      <View className="mr-4 h-11 w-11 items-center justify-center rounded-full bg-sage-50">
-                        <HugeiconsIcon
-                          icon={resolvedIcon}
-                          size={20}
-                          color={isSelected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.text.secondary}
-                          strokeWidth={2}
-                        />
-                      </View>
-                    ) : opt.emoji ? (
-                      <Text className="mr-4 text-2xl">{opt.emoji}</Text>
-                    ) : null}
-
-                    <Text
-                      variant="body-bold"
-                      className="flex-1 text-[17px] leading-[22px]"
-                      style={{ color: isSelected ? SEMANTIC_COLORS.text.primary : SEMANTIC_COLORS.text.secondary }}
-                    >
-                      {opt.label}
-                    </Text>
-
-                    <View
-                      className="ml-4 h-7 w-7 items-center justify-center rounded-full border"
-                      style={{
-                        backgroundColor: isSelected ? SEMANTIC_COLORS.brand.primary : "#FFFFFF",
-                        borderColor: isSelected ? SEMANTIC_COLORS.text.secondary : SEMANTIC_COLORS.border.default,
-                      }}
-                    >
-                      {isSelected ? (
-                        <Text
-                          variant="chip"
-                          color="surface"
-                          className="text-[11px] leading-none"
-                        >
-                          ✓
-                        </Text>
-                      ) : null}
-                    </View>
-                  </Pressable>
-                </FadeInItem>
-              );
-            }
-
-            return (
-              <FadeInItem key={opt.value} index={i} delayPerItem={40}>
-                <Card
-                  variant={isSelected ? "answer-selected" : "answer"}
-                  radius="xl"
-                  onPress={() => handleSelect(opt.value)}
-                  className="mb-1"
-                  contentClassName="flex-row items-center justify-between p-4.5 min-h-[52px]"
-                >
-                  {resolvedIcon ? (
-                    <View className="mr-3.5 h-10 w-10 items-center justify-center rounded-xl bg-sage-50">
-                      <HugeiconsIcon
-                        icon={resolvedIcon}
-                        size={22}
-                        color={isSelected ? SEMANTIC_COLORS.text.secondary : SEMANTIC_COLORS.text.secondary}
-                        strokeWidth={2}
-                      />
-                    </View>
-                  ) : opt.emoji ? (
-                    <Text className="text-2xl mr-3.5">{opt.emoji}</Text>
-                  ) : null}
-
-                  <View className="flex-1 mr-2">
-                    <Text
-                      variant="body-bold"
-                      color={isSelected ? "ink" : "soft"}
-                      className="text-[16px] leading-tight"
-                    >
-                      {opt.label}
-                    </Text>
-                    {opt.description && (
-                      <Text variant="caption-muted" className="mt-1">
-                        {opt.description}
-                      </Text>
-                    )}
-                  </View>
-
-                  <View className="ml-2">
-                    {isSelected ? (
-                      <View className="w-6 h-6 rounded-full items-center justify-center bg-sage-500 border border-sage-600">
-                        <Text
-                          variant="chip"
-                          color="surface"
-                          className="font-extrabold text-[11px] leading-none"
-                        >
-                          ✓
-                        </Text>
-                      </View>
-                    ) : (
-                      <View className="w-6 h-6 rounded-full border border-brand-border bg-brand-surface" />
-                    )}
-                  </View>
-                </Card>
-              </FadeInItem>
-            );
-          })}
-
-          {aiMappedOptions.length > 0 && (
+          {aiMappedOptions.length > 0 ? (
             <View className="mt-2">
               <Text className="text-xs font-extrabold text-ink-muted uppercase tracking-wider mb-3 ml-1">
-                AI Picks
+                {translateCopy("AI Picks")}
               </Text>
               <View className="gap-3 w-full">
-                {aiMappedOptions.map((opt, i) => {
-                  const isSelected = selected === opt.value;
-                  return (
-                    <FadeInItem key={`ai-${i}`} index={i} delayPerItem={40}>
-                      <Card
-                        variant={isSelected ? "answer-selected" : "answer"}
-                        radius="xl"
-                        onPress={() => handleSelect(opt.value)}
-                        className="mb-1"
-                        contentClassName="flex-row items-center justify-between p-4.5"
-                      >
-                        {opt.emoji ? (
-                          <View className="mr-3.5 h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
-                            <Text className="text-xl">{opt.emoji}</Text>
-                          </View>
-                        ) : null}
-
-                        <View className="flex-1 mr-2">
-                          <Text
-                            variant="body-bold"
-                            color={isSelected ? "ink" : "soft"}
-                            className="text-[16px] leading-tight"
-                          >
-                            {opt.label}
-                          </Text>
-                          {opt.description && (
-                            <Text variant="caption-muted" className="mt-1">
-                              {opt.description}
-                            </Text>
-                          )}
-                        </View>
-
-                        <View className="ml-2">
-                          {isSelected ? (
-                            <View className="w-6 h-6 rounded-full items-center justify-center bg-sage-500 border border-sage-600">
-                              <Text
-                                variant="chip"
-                                color="surface"
-                                className="font-extrabold text-[11px] leading-none"
-                              >
-                                ✓
-                              </Text>
-                            </View>
-                          ) : (
-                            <View className="w-6 h-6 rounded-full border border-brand-border bg-brand-surface" />
-                          )}
-                        </View>
-                      </Card>
-                    </FadeInItem>
-                  );
-                })}
+                {aiMappedOptions.map((option, index) => (
+                  <ChoiceOptionCard
+                    key={`ai-${index}`}
+                    option={option}
+                    index={index}
+                    selected={selected === option.value}
+                    layoutVariant="default"
+                    onSelect={handleSelect}
+                  />
+                ))}
               </View>
             </View>
-          )}
+          ) : null}
         </View>
       </StepLayout>
     );

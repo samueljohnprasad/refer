@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View, ScrollView } from "react-native";
 import { useDeepDive } from "@/src/hooks/insights/useDeepDive";
 import { DeepDiveLayout } from "./components/DeepDiveLayout";
@@ -7,18 +8,20 @@ import { StatPill } from "./components/StatPill";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import type { DeepDiveConfig } from "@/src/hooks/insights/config/types";
 import type { TimeRange } from "@/src/constants/insights";
+import { translateInsightCopy } from "@/src/hooks/insights/i18n";
 
 interface DeepDiveScreenProps {
   config: DeepDiveConfig;
 }
 
 export default function DeepDiveScreen({ config }: DeepDiveScreenProps) {
+  const { t } = useTranslation("common");
   const [timeRange, setTimeRange] = useState<TimeRange>("30d");
   const { data, isLoading } = useDeepDive(config, timeRange);
 
   return (
     <DeepDiveLayout
-      title={config.title}
+      title={translateInsightCopy(t, config.title)}
       timeRange={timeRange}
       onTimeRangeChange={setTimeRange}
       isLoading={isLoading || !data}
@@ -34,7 +37,7 @@ export default function DeepDiveScreen({ config }: DeepDiveScreenProps) {
                 const value = pill.getValue(data);
                 if (value === null) return null;
                 return (
-                  <StatPill key={pill.label} label={pill.label} value={value} />
+                  <StatPill key={pill.label} label={translateInsightCopy(t, pill.label)} value={value} />
                 );
               })}
             </View>
@@ -45,7 +48,7 @@ export default function DeepDiveScreen({ config }: DeepDiveScreenProps) {
             if (!content) return null;
             return (
               <FadeInItem key={section.key} index={index + 1}>
-                <Section title={section.title}>
+                <Section title={translateInsightCopy(t, section.title)}>
                   {content}
                 </Section>
               </FadeInItem>

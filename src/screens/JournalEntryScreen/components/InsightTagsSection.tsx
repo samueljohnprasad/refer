@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 import { Text } from "@/src/components/ui/Text";
 
 interface InsightTagsSectionProps {
@@ -18,7 +19,9 @@ interface InsightTagsSectionProps {
  * Used for achievements, worries, goals, triggers, etc.
  */
 export const InsightTagsSection: React.FC<InsightTagsSectionProps> = React.memo(
-  ({ title, icon, iconColor, bgColor, tagBgColor, tagTextColor, items }) => {
+  ({ title, icon, iconColor, tagBgColor, tagTextColor, items }) => {
+    const { t } = useTranslation("journal");
+
     if (!items || items.length === 0) return null;
 
     return (
@@ -30,7 +33,7 @@ export const InsightTagsSection: React.FC<InsightTagsSectionProps> = React.memo(
             <Feather name={icon} size={14} className={iconColor} />
           </View>
           <Text variant="label-bold" className="text-ink text-[14px]">
-            {title}
+            {t(title)}
           </Text>
         </View>
 
@@ -66,7 +69,7 @@ export const INSIGHT_TAG_CONFIGS: Record<
   Omit<InsightTagsSectionProps, "items">
 > = {
   achievements: {
-    title: "Achievements",
+    title: "insights.achievements",
     icon: "award",
     iconColor: "text-gold",
     bgColor: "bg-white/40 border border-sage-100/60 shadow-sm",
@@ -74,7 +77,7 @@ export const INSIGHT_TAG_CONFIGS: Record<
     tagTextColor: "text-ink",
   },
   worries: {
-    title: "Worries",
+    title: "insights.worries",
     icon: "cloud",
     iconColor: "text-macaw-purple",
     bgColor: "bg-white/40 border border-sage-100/60 shadow-sm",
@@ -82,7 +85,7 @@ export const INSIGHT_TAG_CONFIGS: Record<
     tagTextColor: "text-ink",
   },
   goals: {
-    title: "Goals",
+    title: "insights.goals",
     icon: "target",
     iconColor: "text-otter-blue",
     bgColor: "bg-white/40 border border-sage-100/60 shadow-sm",
@@ -90,7 +93,7 @@ export const INSIGHT_TAG_CONFIGS: Record<
     tagTextColor: "text-ink",
   },
   triggers: {
-    title: "Triggers",
+    title: "insights.triggers",
     icon: "alert-circle",
     iconColor: "text-cardinal-red",
     bgColor: "bg-white/40 border border-sage-100/60 shadow-sm",
@@ -98,7 +101,7 @@ export const INSIGHT_TAG_CONFIGS: Record<
     tagTextColor: "text-cardinal-red",
   },
   copingStrategies: {
-    title: "Coping Strategies",
+    title: "insights.copingStrategies",
     icon: "heart",
     iconColor: "text-sage-500",
     bgColor: "bg-white/40 border border-sage-100/60 shadow-sm",
@@ -106,7 +109,7 @@ export const INSIGHT_TAG_CONFIGS: Record<
     tagTextColor: "text-sage-700",
   },
   physicalSymptoms: {
-    title: "Physical Symptoms",
+    title: "insights.physicalSymptoms",
     icon: "activity",
     iconColor: "text-otter-blue",
     bgColor: "bg-white/40 border border-sage-100/60 shadow-sm",

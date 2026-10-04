@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Host, VStack, BottomSheet, Group, RNHostView, Text } from "@expo/ui/swift-ui";
 import {
@@ -30,6 +31,7 @@ function CheckpointActionSheetContent({
   onStart: () => void;
   onReview: () => void;
 }) {
+  const { t } = useTranslation("journeys");
   return (
     <VStack
       alignment="center"
@@ -38,17 +40,17 @@ function CheckpointActionSheetContent({
     >
       <VStack alignment="center" spacing={8}>
         <Text modifiers={[font({ size: 22, weight: "bold" }), multilineTextAlignment("center")]}>
-          {data.node.label || "Checkpoint"}
+          {data.node.label || t("checkpoint")}
         </Text>
         <Text modifiers={[font({ size: 16 }), foregroundStyle("secondary"), multilineTextAlignment("center")]}>
-          Checkpoint · {data.questionCount} questions · ~{data.durationMin} min
+          {t("checkpointSummary", { count: data.questionCount, minutes: data.durationMin })}
         </Text>
       </VStack>
 
       <RNHostView matchContents>
         <View style={{ width: 280 }}>
           <CourseExercisePrimaryButton
-            label={data.isCompleted ? "Review" : "Start"}
+            label={data.isCompleted ? t("review") : t("start")}
             onPress={data.isCompleted ? onReview : onStart}
           />
         </View>

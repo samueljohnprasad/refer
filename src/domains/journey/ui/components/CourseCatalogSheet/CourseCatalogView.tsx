@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import { FullWindowOverlay } from "react-native-screens";
 import Animated, {
@@ -22,6 +23,7 @@ export const CourseCatalogView = React.memo(function CourseCatalogView({
   } & React.ComponentProps<typeof CourseCatalogSheetContent>["model"];
   actions: React.ComponentProps<typeof CourseCatalogSheetContent>["actions"];
 }): React.JSX.Element | null {
+  const { t } = useTranslation("journeys");
   if (!model.shouldRender) return null;
 
   return (
@@ -38,7 +40,7 @@ export const CourseCatalogView = React.memo(function CourseCatalogView({
                 className="absolute inset-0 bg-black/40"
                 onPress={actions.onClose}
                 accessibilityRole="button"
-                accessibilityLabel="Close course catalog"
+                accessibilityLabel={t("closeCatalog")}
               />
             </Animated.View>
 

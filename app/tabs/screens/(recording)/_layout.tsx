@@ -2,8 +2,10 @@ import React from "react";
 import { Stack } from "expo-router";
 import { GlassView } from "expo-glass-effect";
 import { useCSSVariable } from "uniwind";
+import { useTranslation } from "react-i18next";
 
 export default function RecordingGroupLayout() {
+  const { t } = useTranslation("common");
   const appBackground = useCSSVariable("--app-background") as string;
 
   return (
@@ -18,7 +20,7 @@ export default function RecordingGroupLayout() {
         name="all-prompts"
         options={{
           headerShown: true,
-          title: "Journal Prompts",
+          title: t("promptBrowser.title"),
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
@@ -32,7 +34,7 @@ export default function RecordingGroupLayout() {
         name="journal-entry"
         options={{
           headerShown: true,
-          title: "Journal Entry",
+          title: t("recording.journalEntry"),
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "fade",
@@ -43,7 +45,7 @@ export default function RecordingGroupLayout() {
         options={{
           headerShown: false,
           presentation: "fullScreenModal",
-          title: "Voice Recorder",
+          title: t("recording.voiceRecorder"),
           animation: "fade",
         }}
       />
@@ -52,7 +54,7 @@ export default function RecordingGroupLayout() {
         options={{
           headerShown: false,
           presentation: "fullScreenModal",
-          title: "Keyboard Recorder",
+          title: t("recording.keyboardRecorder"),
           animation: "fade",
         }}
       />

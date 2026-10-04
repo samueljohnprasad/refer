@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, Text, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
 import {
@@ -28,6 +29,7 @@ export const SpotlightTooltipView = React.memo(function SpotlightTooltipView({
   target,
   onDismiss,
 }: SpotlightTooltipViewProps): React.JSX.Element | null {
+  const { t } = useTranslation("journeys");
   if (!visible) return null;
 
   return (
@@ -45,7 +47,7 @@ export const SpotlightTooltipView = React.memo(function SpotlightTooltipView({
       <Pressable
         onPress={onDismiss}
         style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
-        accessibilityLabel="Dismiss tooltip"
+        accessibilityLabel={t("dismissTooltip")}
         accessibilityRole="button"
       >
         <Animated.View
@@ -127,10 +129,10 @@ export const SpotlightTooltipView = React.memo(function SpotlightTooltipView({
           <Pressable
             onPress={onDismiss}
             className="bg-violet-600 py-2.5 px-6 rounded-xl self-center"
-            accessibilityLabel="Got it"
+            accessibilityLabel={t("gotIt")}
             accessibilityRole="button"
           >
-            <Text className="text-sm font-bold text-white">Got it</Text>
+            <Text className="text-sm font-bold text-white">{t("gotIt")}</Text>
           </Pressable>
         </View>
       </Animated.View>

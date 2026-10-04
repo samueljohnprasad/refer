@@ -2,6 +2,7 @@ import { useNotificationPreferences } from "@/src/hooks/data/useNotificationPref
 import { useAuth } from "@/src/context/AuthContext";
 import { registerPushToken } from "@/src/utils/pushTokenRegistration";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   View,
   Text,
@@ -10,11 +11,11 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 // ponytail: use native expo-symbols instead of lucide
 import { SymbolView, type SymbolViewProps } from "expo-symbols";
 
 export default function NotificationPreferencesScreen() {
+  const { t } = useTranslation("settings");
   const { user } = useAuth();
   const { settings, isLoading, updateSettings, isUpdating } =
     useNotificationPreferences();
@@ -43,14 +44,14 @@ export default function NotificationPreferencesScreen() {
       contentContainerClassName="pb-10"
     >
       <Text className="text-[30px] font-bold text-foreground px-5 mb-6 pt-4">
-        Notification Preferences
+        {t("notifications.title")}
       </Text>
 
       {/* Master toggle */}
       <SettingRow
         iconName="bell.fill"
-        title="Push Notifications"
-        description="Receive personalized reminders to journal, track mood, and maintain streaks"
+        title={t("notifications.push")}
+        description={t("notifications.pushDescription")}
         value={settings.push_enabled}
         onToggle={(v) => toggleSetting("push_enabled", v)}
         disabled={isUpdating}
@@ -60,12 +61,12 @@ export default function NotificationPreferencesScreen() {
         <>
           <View className="h-px bg-border mx-5 mt-4" />
           
-          <SectionHeader title="Notification Types" />
+          <SectionHeader title={t("notifications.types")} />
 
           <SettingRow
             iconName="flame.fill"
-            title="Streak Reminders"
-            description="Get notified when your journal streak is at risk"
+            title={t("notifications.streaks")}
+            description={t("notifications.streaksDescription")}
             value={settings.streak_reminders}
             onToggle={(v) => toggleSetting("streak_reminders", v)}
             disabled={isUpdating}
@@ -73,8 +74,8 @@ export default function NotificationPreferencesScreen() {
 
           <SettingRow
             iconName="face.smiling"
-            title="Mood Check-ins"
-            description="Daily reminders to log your mood"
+            title={t("notifications.mood")}
+            description={t("notifications.moodDescription")}
             value={settings.mood_reminders}
             onToggle={(v) => toggleSetting("mood_reminders", v)}
             disabled={isUpdating}
@@ -82,8 +83,8 @@ export default function NotificationPreferencesScreen() {
 
           <SettingRow
             iconName="checkmark.circle.fill"
-            title="Habit Reminders"
-            description="Reminders for your active habits"
+            title={t("notifications.habits")}
+            description={t("notifications.habitsDescription")}
             value={settings.habit_reminders}
             onToggle={(v) => toggleSetting("habit_reminders", v)}
             disabled={isUpdating}
@@ -91,8 +92,8 @@ export default function NotificationPreferencesScreen() {
 
           <SettingRow
             iconName="trophy.fill"
-            title="Achievement Nudges"
-            description="Get notified when you're close to unlocking an achievement"
+            title={t("notifications.achievements")}
+            description={t("notifications.achievementsDescription")}
             value={settings.achievement_reminders}
             onToggle={(v) => toggleSetting("achievement_reminders", v)}
             disabled={isUpdating}
@@ -101,13 +102,13 @@ export default function NotificationPreferencesScreen() {
           <View className="h-px bg-border mx-5 mt-6 mb-4" />
           
           <Text className="text-[14px] text-foreground px-5 mb-1 font-medium">
-            Quiet hours: {settings.quiet_hours_start}:00 -{" "}
-            {settings.quiet_hours_end}:00
+            {t("notifications.quietHours", {
+              start: settings.quiet_hours_start,
+              end: settings.quiet_hours_end,
+            })}
           </Text>
           <Text className="text-[13px] text-muted-foreground px-5 leading-snug">
-            Max {settings.max_per_day} notification per day. We use AI to find
-            the best time to send you notifications based on your usage
-            patterns.
+            {t("notifications.limit", { count: settings.max_per_day })}
           </Text>
         </>
       )}

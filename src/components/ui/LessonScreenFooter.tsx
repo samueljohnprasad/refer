@@ -1,4 +1,5 @@
 import React, { type ReactElement } from "react";
+import { useTranslation } from "react-i18next";
 import { Text, View, type StyleProp, type ViewStyle } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Button } from "@/src/components/ui/Button";
@@ -52,6 +53,7 @@ export function LessonScreenFooter({
   status = "default",
   statusMessage,
 }: LessonScreenFooterProps) {
+  const { t } = useTranslation("journeys");
   const isSuccess = status === "success";
   const isError = status === "error";
 
@@ -75,7 +77,7 @@ export function LessonScreenFooter({
             <View className="mr-4 h-8 w-8 items-center justify-center rounded-full bg-sage-500">
               <Feather name="check" size={20} color="white" />
             </View>
-            <Text className="text-xl font-bold text-sage-700">Awesome!</Text>
+          <Text className="text-xl font-bold text-sage-700">{t("awesome")}</Text>
           </View>
         ) : null}
         {isError ? (
@@ -85,7 +87,7 @@ export function LessonScreenFooter({
             </View>
             <View className="flex-1">
               <Text className="text-[17px] font-bold leading-[22px] text-red-500">
-                Try another way
+                {t("tryAnotherWay")}
               </Text>
               {statusMessage ? (
                 <Text className="mt-1 text-[13px] leading-[18px] text-red-700">

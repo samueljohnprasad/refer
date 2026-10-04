@@ -5,6 +5,7 @@ import { Button } from "@/src/components/ui/Button";
 import { StepLayout } from "./StepLayout";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 
 interface AcknowledgeStepProps extends StepProps {
   title: string;
@@ -34,6 +35,8 @@ export const AcknowledgeStep: React.FC<AcknowledgeStepProps> = React.memo(
     isSaving,
     psychoeducationText,
   }) => {
+    const translateCopy = useExerciseCopy();
+    const resolvedButtonLabel = translateCopy(buttonLabel);
     const acknowledged = (response as Record<string, any>)[fieldKey] === true;
 
     return (
@@ -61,7 +64,7 @@ export const AcknowledgeStep: React.FC<AcknowledgeStepProps> = React.memo(
           </View>
 
           <Button
-            label={acknowledged ? `✓  ${buttonLabel}` : buttonLabel}
+            label={acknowledged ? `✓  ${resolvedButtonLabel}` : resolvedButtonLabel}
             onPress={() => {
               onUpdate({ [fieldKey]: true } as any);
               setTimeout(onNext, 400);

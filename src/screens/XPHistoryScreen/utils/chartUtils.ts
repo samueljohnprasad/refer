@@ -1,4 +1,4 @@
-import { format, startOfWeek, differenceInCalendarDays, subWeeks, addDays, isToday as isDateToday } from 'date-fns';
+import { startOfWeek, differenceInCalendarDays, subWeeks, addDays, isToday as isDateToday } from 'date-fns';
 import { XPHistoryEntry } from '@/src/types/xp';
 
 export interface ChartDayData {
@@ -13,18 +13,11 @@ export interface ChartDayData {
   isFuture: boolean;
 }
 
-const dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-const fullDayLabels = [
-  'Sunday',
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-];
-
-export const generateXPChartData = (history: XPHistoryEntry[], numWeeks = 4) => {
+export const generateXPChartData = (
+  history: XPHistoryEntry[],
+  numWeeks = 4,
+  locale = "en",
+) => {
   // 1. Find the start of the week for numWeeks ago (Sunday start)
   // e.g., if numWeeks = 4, we want data for the past 4 weeks including current week
   // The first week (weekIndex 0) should be 3 weeks ago, last week (weekIndex 3) is current week
@@ -39,13 +32,14 @@ export const generateXPChartData = (history: XPHistoryEntry[], numWeeks = 4) => 
       const dayDate = addDays(startDate, weekIndex * 7 + dayIndex);
       const isToday = isDateToday(dayDate);
       const isFuture = dayDate.getTime() > today.getTime() && !isToday;
+      const weekday = new Intl.DateTimeFormat(locale, { weekday: "narrow" }).format(dayDate);
       return {
-        day: dayLabels[dayIndex],
-        fullDayName: fullDayLabels[dayIndex],
+        day: weekday,
+        fullDayName: new Intl.DateTimeFormat(locale, { weekday: "long" }).format(dayDate),
         weekIndex,
         dayIndex,
         value: 0,
-        dateString: format(dayDate, 'd MMMM'),
+        dateString: new Intl.DateTimeFormat(locale, { day: "numeric", month: "long" }).format(dayDate),
         totalXP: 0,
         isToday,
         isFuture,
@@ -86,9 +80,7 @@ export const generateXPChartData = (history: XPHistoryEntry[], numWeeks = 4) => 
   });
   
   // 5. Generate week labels
-  const weekLabels = grid.map(week => {
-    return `Week of ${week[0].dateString}`;
-  });
+  const weekLabels = grid.map((week) => week[0].dateString);
   
   return {
     data: grid,

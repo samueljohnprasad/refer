@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, Text, Modal } from "react-native";
 import { SafeAreaView } from "@/src/components/tw";
 import Animated from "react-native-reanimated";
@@ -121,6 +122,7 @@ export const StreakMilestoneModalView = React.memo(
     milestoneDays,
     onDismiss,
   }: StreakMilestoneModalViewProps): React.JSX.Element {
+    const { t } = useTranslation("journeys");
     return (
       <Modal
         visible={visible}
@@ -147,7 +149,7 @@ export const StreakMilestoneModalView = React.memo(
 
           <View className="px-5 pb-4 pt-2">
             <CourseExercisePrimaryButton
-              label="Keep it going! 🔥"
+              label={t("keepStreakGoing")}
               onPress={() => void handlePressKeepGoing()}
               faceColor="#EA580C"
               rimColor="#C2410C"

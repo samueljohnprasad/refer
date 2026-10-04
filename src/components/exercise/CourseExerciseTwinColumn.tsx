@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import {
   COURSE_EXERCISE_FONTS,
   SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 
 export interface TwinCasePair {
   id: string;
@@ -37,6 +38,7 @@ export function CourseExerciseTwinColumn({
   disabledIds = [],
   pairIdentifiers = {},
 }: CourseExerciseTwinColumnProps) {
+  const translateCopy = useExerciseCopy();
   return (
     <View style={styles.column}>
       <View style={styles.header}>
@@ -64,10 +66,11 @@ export function CourseExerciseTwinColumn({
             <Pressable
               accessibilityRole="button"
               accessibilityState={{ selected: isSelected, disabled: effectiveDisabled }}
-              accessibilityLabel={[
-                badge === "✓" ? "Verified correct:" : badge === "!" ? "Incorrect match:" : badge ? `Paired as pair ${badge}:` : "Unpaired:",
+              accessibilityLabel={getPairAccessibilityLabel(
+                translateCopy,
+                badge,
                 side === "left" ? pair.left : pair.right,
-              ].join(" ")}
+              )}
               disabled={effectiveDisabled}
               onPress={() => onSelect(pair.id)}
               style={({ pressed }) => [
@@ -89,6 +92,23 @@ export function CourseExerciseTwinColumn({
       })}
     </View>
   );
+}
+
+function getPairAccessibilityLabel(
+  translateCopy: ReturnType<typeof useExerciseCopy>,
+  badge: string | undefined,
+  label: string,
+) {
+  if (badge === "✓") {
+    return translateCopy("Verified correct: {{label}}", { label });
+  }
+  if (badge === "!") {
+    return translateCopy("Incorrect match: {{label}}", { label });
+  }
+  if (badge) {
+    return translateCopy("Paired as {{badge}}: {{label}}", { badge, label });
+  }
+  return translateCopy("Unpaired: {{label}}", { label });
 }
 
 const styles = StyleSheet.create({

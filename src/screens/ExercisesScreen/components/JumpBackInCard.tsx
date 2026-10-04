@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, Platform } from "react-native";
 import { SymbolView } from "expo-symbols";
 import { Feather } from "@expo/vector-icons";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { PlayIcon, ZapIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import { useTranslation } from "react-i18next";
 
 import { CircularRevealWrapper } from "@/src/components/CircularRevealWrapper";
 import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
@@ -53,6 +53,7 @@ export const JumpBackInCard = memo(function JumpBackInCard({
   width,
   onPress,
 }: JumpBackInCardProps) {
+  const { t } = useTranslation("exercises");
   const theme = CATEGORY_THEME[exercise.category] ?? CATEGORY_THEME.cbt_core;
 
   const handlePress = () => {
@@ -76,7 +77,7 @@ export const JumpBackInCard = memo(function JumpBackInCard({
           height: "100%",
         }}
         contentClassName="p-3.5 justify-between flex-1"
-        accessibilityLabel={`Start ${exercise.title}`}
+        accessibilityLabel={`${t("library.start")} ${exercise.title}`}
       >
         <View style={styles.topRow}>
           <View style={[styles.iconWell, { backgroundColor: theme.iconBg }]}>
@@ -120,7 +121,7 @@ export const JumpBackInCard = memo(function JumpBackInCard({
               style={{ fontFamily: APP_FONT_FAMILIES.bold }}
               className="text-[11px] text-white"
             >
-              Start
+              {t("library.start")}
             </Text>
           </View>
         </View>

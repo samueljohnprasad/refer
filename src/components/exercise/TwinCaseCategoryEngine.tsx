@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { CourseExerciseHeading } from "@/src/components/exercise/CourseExerciseHeading";
 import {
@@ -7,15 +7,15 @@ import {
   type TwinCasePair,
 } from "@/src/components/exercise/CourseExerciseTwinColumn";
 import { CourseExerciseSequentialMatcher } from "@/src/components/exercise/CourseExerciseSequentialMatcher";
-import {
-  COURSE_EXERCISE_FONTS,
-  SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
+import { twinCaseStyles } from "@/src/components/exercise/twinCaseStyles";
 import {
   readRecord,
   readString,
   readStringArray,
 } from "@/src/components/exercise/courseExerciseContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { translateStepCopyProps } from "@/src/lib/i18n/exerciseCopy";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
 const NUMBER_BADGES = ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"];
@@ -26,7 +26,8 @@ export function TwinCaseCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
-  const content = exercise.content ?? {};
+  const translateCopy = useExerciseCopy();
+  const content = translateStepCopyProps(exercise.content ?? {}, translateCopy);
   const saved = readRecord(savedResponse);
   const pairs = readPairs(content.pairs);
   
@@ -142,18 +143,20 @@ export function TwinCaseCategoryEngine({
   const retryCount = pairs.length - lockedPairIds.length;
 
   return (
-    <View style={styles.screenContent}>
+    <View style={twinCaseStyles.screenContent}>
       <CourseExerciseHeading
-        title={readString(content.title) ?? "Match the two sides"}
+        title={
+          readString(content.title) ?? translateCopy("Match the two sides")
+        }
         instruction={
           readString(content.instruction) ??
-          "Tap an observation, then its useful reading."
+          translateCopy("Tap an observation, then its useful reading.")
         }
       />
 
-      <View style={styles.columns}>
+      <View style={twinCaseStyles.columns}>
         <CourseExerciseTwinColumn
-          title={readString(content.leftTitle) ?? "Observation"}
+          title={readString(content.leftTitle) ?? translateCopy("Observation")}
           pairs={pairs}
           side="left"
           matchedPairIds={leftMatchedIds}
@@ -166,7 +169,7 @@ export function TwinCaseCategoryEngine({
           onSelect={selectLeft}
         />
         <CourseExerciseTwinColumn
-          title={readString(content.rightTitle) ?? "Useful reading"}
+          title={readString(content.rightTitle) ?? translateCopy("Useful reading")}
           pairs={rightPairs}
           side="right"
           matchedPairIds={rightMatchedIds}
@@ -181,21 +184,34 @@ export function TwinCaseCategoryEngine({
       </View>
 
       {showReveal ? (
-        <View style={styles.reveal}>
-          <Text style={styles.revealTitle}>{readString(content.rule)}</Text>
-          <Text style={styles.revealBody}>{readString(content.body)}</Text>
-          <Text style={styles.next}>{readString(content.next)}</Text>
+        <View style={twinCaseStyles.reveal}>
+          <Text style={twinCaseStyles.revealTitle}>{readString(content.rule)}</Text>
+          <Text style={twinCaseStyles.revealBody}>{readString(content.body)}</Text>
+          <Text style={twinCaseStyles.next}>{readString(content.next)}</Text>
         </View>
       ) : null}
 
-      <Text style={[styles.status, showTryAgain && styles.statusError]}>
+      <Text style={[twinCaseStyles.status, showTryAgain && twinCaseStyles.statusError]}>
         {showReveal
-          ? "All four matched."
+          ? translateCopy("All four matched.")
           : showTryAgain
-            ? `${retryCount} pair${retryCount !== 1 ? 's' : ''} need another look.`
+            ? translateCopy(
+                retryCount === 1
+                  ? "{{count}} pair needs another look."
+                  : "{{count}} pairs need another look.",
+                { count: retryCount },
+              )
             : isRetrying && numMatched < pairs.length
-              ? `${retryCount} pair${retryCount !== 1 ? 's' : ''} left to match`
-              : `${numMatched} of ${pairs.length} matched`}
+              ? translateCopy(
+                  retryCount === 1
+                    ? "{{count}} pair left to match"
+                    : "{{count}} pairs left to match",
+                  { count: retryCount },
+                )
+              : translateCopy("{{count}} of {{total}} matched", {
+                  count: numMatched,
+                  total: pairs.length,
+                })}
       </Text>
     </View>
   );
@@ -263,54 +279,3 @@ function orderRightPairs(
     .map((pairId) => pairs.find((pair) => pair.id === pairId))
     .filter((pair): pair is TwinCasePair => Boolean(pair));
 }
-
-const styles = StyleSheet.create({
-  screenContent: {
-    flex: 1,
-    paddingHorizontal: 8,
-    paddingTop: 6,
-    paddingBottom: 12,
-  },
-  columns: { flexDirection: "row", gap: 10 },
-  status: {
-    marginTop: 12,
-    color: SEMANTIC_COLORS.text.secondary,
-    fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 13,
-    textAlign: "center",
-  },
-  statusError: {
-    color: SEMANTIC_COLORS.error.foreground,
-  },
-  reveal: {
-    marginTop: 14,
-    paddingHorizontal: 22,
-    paddingVertical: 20,
-    borderRadius: 28,
-    backgroundColor: SEMANTIC_COLORS.surface.primary,
-    shadowColor: SEMANTIC_COLORS.shadow,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.14,
-    shadowRadius: 8,
-  },
-  revealTitle: {
-    color: SEMANTIC_COLORS.brand.pressed,
-    fontFamily: COURSE_EXERCISE_FONTS.heading,
-    fontSize: 19,
-    lineHeight: 24,
-  },
-  revealBody: {
-    marginTop: 7,
-    color: SEMANTIC_COLORS.text.primary,
-    fontFamily: COURSE_EXERCISE_FONTS.body,
-    fontSize: 13.5,
-    lineHeight: 20,
-  },
-  next: {
-    marginTop: 10,
-    color: SEMANTIC_COLORS.brand.primary,
-    fontFamily: COURSE_EXERCISE_FONTS.bodyBold,
-    fontSize: 13,
-    lineHeight: 18,
-  },
-});

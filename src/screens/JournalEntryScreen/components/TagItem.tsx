@@ -4,6 +4,7 @@ import Animated, { FadeIn, FadeOut, Layout } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import { TagItemProps } from "../types";
+import { useTranslation } from "react-i18next";
 
 /**
  * Presentational component for displaying a single tag
@@ -11,6 +12,7 @@ import { TagItemProps } from "../types";
  */
 export const TagItem = React.memo<TagItemProps>(
   ({ tag, index, isEditing, colorScheme, onRemove }: TagItemProps) => {
+    const { t } = useTranslation("journal");
     const handleRemove = useCallback((): void => {
       onRemove(index);
     }, [index, onRemove]);
@@ -31,7 +33,7 @@ export const TagItem = React.memo<TagItemProps>(
           {tag.emoji} {tag.name}
         </Text>
         {isEditing && (
-          <TouchableOpacity onPress={handleRemove} className="ml-2" accessibilityRole="button" accessibilityLabel={`Remove ${tag.name}`}>
+          <TouchableOpacity onPress={handleRemove} className="ml-2" accessibilityRole="button" accessibilityLabel={t("entryDetail.removeTag", { tag: tag.name })}>
             <Feather
               name="x-circle"
               size={16}

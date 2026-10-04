@@ -18,6 +18,7 @@ import { useChallenges } from "@/hooks/data/useChallenges";
 import { ChallengeCard } from "./ChallengeCard";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
+import { useTranslation } from "react-i18next";
 
 interface ChallengesSectionProps {
   maxItems?: number;
@@ -31,6 +32,7 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
   maxItems = 3,
   showDepth = true,
 }) => {
+  const { t } = useTranslation("common");
   const { dailyChallenges, weeklyChallenges, isLoading } = useChallenges();
   const [expanded, setExpanded] = useState<boolean>(true);
 
@@ -70,11 +72,11 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
           hapticStyle="light"
           accessibilityRole="button"
           accessibilityState={{ expanded }}
-          accessibilityLabel="Toggle challenges list"
+          accessibilityLabel={t("challenges.toggleList")}
         >
           <View className="flex-row items-center gap-2">
             <Text className="happy-font-body-bold text-[15px] text-ink-muted">
-              Daily challenges
+              {t("challenges.daily")} {t("challenges.title").toLowerCase()}
             </Text>
             <Text className="happy-font-body-medium text-[13px] text-ink-muted">
               {completedCount} of {totalCount}
@@ -88,10 +90,10 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
           hapticStyle="light"
           className="min-h-[44px] items-center justify-center px-2"
           accessibilityRole="button"
-          accessibilityHint="Opens the full challenges screen"
+          accessibilityHint={t("challenges.fullScreenHint")}
         >
           <Text className="happy-font-body-bold text-[13px] text-ink-muted">
-            See all
+            {t("challenges.seeAll")}
           </Text>
         </PressableScale>
       </View>

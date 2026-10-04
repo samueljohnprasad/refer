@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -47,6 +48,7 @@ function BeliefDotChart({ dataPoints }: { dataPoints: BeliefDataPoint[] }) {
 // ─── Belief row ──────────────────────────────────────────────────────────────
 
 function BeliefRow({ cluster }: { cluster: BeliefCluster }) {
+  const { t } = useTranslation("common");
   const badgeColor =
     cluster.trend === "weakening"
       ? { bg: "#E8FBF0", text: "#166534", border: "#A7F3D0" }
@@ -56,10 +58,10 @@ function BeliefRow({ cluster }: { cluster: BeliefCluster }) {
 
   const badgeText =
     cluster.trend === "weakening"
-      ? `↓ Lost ${cluster.decayPercentage}% of its grip`
+      ? t("insights.ui.lostGrip", { value: cluster.decayPercentage })
       : cluster.trend === "stuck"
-        ? "Persistent · try a new angle"
-        : "Steady";
+        ? t("insights.ui.persistent")
+        : t("insights.ui.steady");
 
   return (
     <View className="py-3">
@@ -87,6 +89,7 @@ function BeliefRow({ cluster }: { cluster: BeliefCluster }) {
 // ─── Locked state ────────────────────────────────────────────────────────────
 
 function LockedBeliefCard({ onUnlock }: { onUnlock: () => void }) {
+  const { t } = useTranslation("common");
   return (
     <Pressable
       onPress={onUnlock}
@@ -96,15 +99,14 @@ function LockedBeliefCard({ onUnlock }: { onUnlock: () => void }) {
       <View className="flex-row items-center gap-2 mb-2">
         <HugeiconsIcon icon={LockIcon} size={16} color={SEMANTIC_COLORS.text.tertiary} />
         <Text className="happy-font-body-bold text-[14px] text-ink">
-          Belief Tracker
+          {t("insights.ui.beliefTracker")}
         </Text>
         <View className="flex-row items-center gap-1 px-2 py-1 rounded-[10px] border" style={[{ backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
           <Text className="text-[11px] font-semibold" style={[{ color: "#7E22CE" }]}>PRO</Text>
         </View>
       </View>
       <Text className="text-[12px] text-ink-muted leading-relaxed">
-        See which thoughts are losing power over time. Unlock to track your core
-        beliefs weakening.
+        {t("insights.ui.beliefTrackerDescription")}
       </Text>
     </Pressable>
   );

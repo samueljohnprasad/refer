@@ -10,6 +10,7 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, Pressable } from 'react-native';
 import { SafeAreaView } from '@/components/ui/safe-area-view';
 import { HugeiconsIcon } from '@hugeicons/react-native';
@@ -68,6 +69,7 @@ function JourneyMapHeaderInner({
     onXPPress,
     onGainDismissed,
 }: JourneyMapHeaderProps): React.JSX.Element {
+    const { t } = useTranslation('journeys');
     const progressFraction: number = totalNodes > 0 ? completedNodes / totalNodes : 0;
     const progressPercent: number = Math.round(progressFraction * 100);
 
@@ -79,7 +81,7 @@ function JourneyMapHeaderInner({
                 <Pressable
                     onPress={onBack}
                     className="w-9 h-9 rounded-full bg-slate-50 items-center justify-center"
-                    accessibilityLabel="Go back"
+                    accessibilityLabel={t('goBack')}
                     accessibilityRole="button"
                 >
                     <HugeiconsIcon icon={ArrowLeft01Icon} size={18} color="#64748B" />
@@ -91,7 +93,7 @@ function JourneyMapHeaderInner({
                         {title}
                     </Text>
                     <Text className="text-xs text-ink-muted">
-                        {completedNodes}/{totalNodes} completed
+                        {t('journeyProgress', { completed: completedNodes, total: totalNodes })}
                     </Text>
                 </View>
 

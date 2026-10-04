@@ -47,22 +47,22 @@ export const MOOD_GRADIENTS: Record<string, [string, string]> = {
   great: ["#F1F5FA", "#E8EFF7"],
 };
 
-export const getRelativeDayTitle = (dateStr?: string | null): string => {
-  if (!dateStr) return "Today";
+export const getRelativeDayTitle = (dateStr: string | null | undefined, locale: string, translate: (key: string) => string): string => {
+  if (!dateStr) return translate("entryDetail.today");
   const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return "Today";
+  if (isNaN(d.getTime())) return translate("entryDetail.today");
   const now = new Date();
   const isSameDay = d.toDateString() === now.toDateString();
-  if (isSameDay) return "Today";
+  if (isSameDay) return translate("entryDetail.today");
   const yesterday = new Date(now);
   yesterday.setDate(yesterday.getDate() - 1);
-  if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
-  return d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+  if (d.toDateString() === yesterday.toDateString()) return translate("entryDetail.yesterday");
+  return d.toLocaleDateString(locale, { weekday: "long", month: "short", day: "numeric" });
 };
 
-export const getFormattedTime = (dateStr?: string | null): string => {
-  if (!dateStr) return "Reflection";
+export const getFormattedTime = (dateStr: string | null | undefined, locale: string, translate: (key: string) => string): string => {
+  if (!dateStr) return translate("entryDetail.reflection");
   const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return "Reflection";
-  return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  if (isNaN(d.getTime())) return translate("entryDetail.reflection");
+  return d.toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" });
 };

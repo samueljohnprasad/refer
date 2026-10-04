@@ -1,8 +1,9 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useExerciseStats } from "./useExerciseStats";
 import type { ExerciseCategory } from "@/src/types/exerciseFlow";
-import { DISTORTION_LABELS, CATEGORY_LABELS } from "@/src/constants/insights";
 import { countBy } from "@/src/utils/insights";
+import { categoryLabel, distortionLabel } from "./i18n";
 
 export interface InsightNudge {
   message: string;
@@ -24,6 +25,7 @@ function getTopDistortion(
 }
 
 export function useInsightNudge(): InsightNudge | null {
+  const { t } = useTranslation("common");
   const { data: stats, isLoading } = useExerciseStats();
 
   return useMemo(() => {
@@ -37,10 +39,10 @@ export function useInsightNudge(): InsightNudge | null {
     for (const m of milestones) {
       if (totalCompleted === m) {
         return {
-          message: `You just completed your ${m}th exercise!`,
-          detail: "That's real dedication to your mental health.",
+          message: t("insights.nudges.completed", { count: m }),
+          detail: t("insights.nudges.completedDetail"),
           tone: "celebrating" as const,
-          ctaLabel: "See your patterns",
+          ctaLabel: t("insights.nudges.seePatterns"),
         };
       }
     }
@@ -53,10 +55,10 @@ export function useInsightNudge(): InsightNudge | null {
       const top = getTopDistortion(reframingEntries);
       if (top && top.count >= 3) {
         return {
-          message: `${DISTORTION_LABELS[top.key] || capitalize(top.key)} is your #1 thinking trap (${top.count}x).`,
-          detail: "Naming it is the first step to taming it.",
+          message: t("insights.nudges.topTrap", { label: distortionLabel(t, top.key), count: top.count }),
+          detail: t("insights.nudges.nameTrap"),
           tone: "curious" as const,
-          ctaLabel: "See your patterns",
+          ctaLabel: t("insights.nudges.seePatterns"),
         };
       }
     }
@@ -64,10 +66,10 @@ export function useInsightNudge(): InsightNudge | null {
     // Priority 3: Streak celebration
     if (currentStreak >= 7) {
       return {
-        message: `${currentStreak}-day streak! You're building a real habit.`,
-        detail: "Consistency is the #1 predictor of progress.",
+        message: t("insights.nudges.streak", { count: currentStreak }),
+        detail: t("insights.nudges.consistency"),
         tone: "celebrating" as const,
-        ctaLabel: "See your progress",
+        ctaLabel: t("insights.nudges.seeProgress"),
       };
     }
 
@@ -81,10 +83,10 @@ export function useInsightNudge(): InsightNudge | null {
         );
         if (daysSince >= 3) {
           return {
-            message: "It's been a few days · ready to pick back up?",
-            detail: "Even one exercise keeps the momentum going.",
+            message: t("insights.nudges.pickBackUp"),
+            detail: t("insights.nudges.keepMomentum"),
             tone: "encouraging" as const,
-            ctaLabel: "Start an exercise",
+            ctaLabel: t("insights.ui.startExercise"),
           };
         }
       }
@@ -99,12 +101,12 @@ export function useInsightNudge(): InsightNudge | null {
     ];
     const emptyCategories = categories.filter((c) => categoryCount[c] === 0);
     if (emptyCategories.length > 0 && totalCompleted >= 5) {
-      const suggestion = CATEGORY_LABELS[emptyCategories[0]].toLowerCase();
+      const suggestion = categoryLabel(t, emptyCategories[0]).toLowerCase();
       return {
-        message: `You haven't tried ${suggestion} yet.`,
-        detail: "Trying different approaches helps you find what works best.",
+        message: t("insights.nudges.notTried", { label: suggestion }),
+        detail: t("insights.nudges.tryDifferent"),
         tone: "curious" as const,
-        ctaLabel: "Explore exercises",
+        ctaLabel: t("insights.nudges.explore"),
       };
     }
 
@@ -112,10 +114,10 @@ export function useInsightNudge(): InsightNudge | null {
     const weekCount = stats.completedThisWeek;
     if (weekCount >= 3) {
       return {
-        message: `${weekCount} exercises this week · you're on a roll.`,
-        detail: "Each one strengthens your mental toolkit.",
+        message: t("insights.nudges.weekCount", { count: weekCount }),
+        detail: t("insights.nudges.toolkit"),
         tone: "encouraging" as const,
-        ctaLabel: "See your patterns",
+        ctaLabel: t("insights.nudges.seePatterns"),
       };
     }
 

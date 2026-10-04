@@ -1,6 +1,6 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
-import { Image } from "expo-image";
 import Svg, {
   Path,
   Defs,
@@ -14,12 +14,7 @@ import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Card } from "@/src/components/ui/Card";
 import StageProgressBar from "@/src/components/ui/StageProgressBar";
-import type { EnrolledCourseListItem } from "@/src/types/journeyV5";
-import {
-  getCourseImageSource,
-  getCourseMonogram,
-  resolveCourseAccentColor,
-} from "@/src/domains/journey/model/courseVisuals";
+import { CourseAvatar } from "./CourseAvatar";
 import {
   useHeaderOverlayContentViewModel,
   PALETTE,
@@ -30,66 +25,6 @@ import {
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
-
-// ponytail: course card system parity & recede panda illustration
-function CourseAvatar({
-  course,
-  isActive,
-}: {
-  course: EnrolledCourseListItem;
-  isActive: boolean;
-}): React.JSX.Element {
-  const courseAccentColor = resolveCourseAccentColor(course.colorHex);
-  const courseImageSource = getCourseImageSource(
-    course.iconUrl,
-  );
-
-  return (
-    <Card
-      variant="tile"
-      radius="xl"
-      showDepth={false}
-      className="h-[78px] w-[92px]"
-      contentClassName="items-center justify-center h-full w-full"
-      faceStyle={{
-        borderWidth: isActive ? 2 : 1,
-        borderColor: isActive ? PALETTE.sage500 : PALETTE.sage100,
-        backgroundColor: isActive
-          ? `${courseAccentColor}12`
-          : PALETTE.warmWhite,
-      }}
-    >
-      <View
-        className="h-[52px] w-[52px] items-center justify-center rounded-[16px]"
-        style={
-          courseImageSource
-            ? undefined
-            : { backgroundColor: `${courseAccentColor}1A` }
-        }
-      >
-        {courseImageSource ? (
-          <Image
-            source={courseImageSource}
-            style={{ width: 46, height: 46, borderRadius: 14 }}
-            cachePolicy="memory-disk"
-            contentFit="contain"
-            transition={150}
-          />
-        ) : (
-          <Text
-            style={{
-              color: courseAccentColor,
-              fontFamily: FONTS.heading,
-              fontSize: 26,
-            }}
-          >
-            {getCourseMonogram(course.title)}
-          </Text>
-        )}
-      </View>
-    </Card>
-  );
-}
 
 export interface HeaderOverlayContentViewProps extends ReturnType<
   typeof useHeaderOverlayContentViewModel
@@ -117,6 +52,7 @@ export const HeaderOverlayContentView = React.memo(
     onCourseSelect,
     activeCourseSummaryTitle,
   }: HeaderOverlayContentViewProps): React.JSX.Element {
+    const { t } = useTranslation("journeys");
     return (
       <Animated.View
         className="w-full happy-brand-screen pb-4 rounded-b-[32px] shadow-xl"
@@ -207,7 +143,7 @@ export const HeaderOverlayContentView = React.memo(
                   className="text-base text-ink-muted"
                   style={{ fontFamily: FONTS.body }}
                 >
-                  No enrolled courses yet.
+                  {t("emptyEnrolledCourses")}
                 </Text>
               </View>
             ) : null}
@@ -242,7 +178,7 @@ export const HeaderOverlayContentView = React.memo(
                 style={{ fontFamily: FONTS.bodyBold }}
                 numberOfLines={1}
               >
-                Add course
+                {t("addCourse")}
               </Text>
             </Pressable>
           </ScrollView>
@@ -256,7 +192,7 @@ export const HeaderOverlayContentView = React.memo(
                   style={{ fontFamily: FONTS.heading }}
                   numberOfLines={2}
                 >
-                  {activeCourseSummaryTitle ?? "Course"}
+                  {activeCourseSummaryTitle ?? t("course")}
                 </Text>
               </View>
             </View>
@@ -267,7 +203,7 @@ export const HeaderOverlayContentView = React.memo(
                   className="text-sm text-ink"
                   style={{ fontFamily: FONTS.bodyMedium }}
                 >
-                  {completedNodes} of {totalNodes} sessions completed
+                  {t("sessionsCompleted", { completed: completedNodes, total: totalNodes })}
                 </Text>
               </View>
 
@@ -288,13 +224,7 @@ export const HeaderOverlayContentView = React.memo(
                 className="text-sm text-ink opacity-70"
                 style={{ fontFamily: FONTS.bodyMedium }}
               >
-                Section{" "}
-                <Text
-                  className="text-ink opacity-100"
-                  style={{ fontFamily: FONTS.bodyBold }}
-                >
-                  {sectionNumber} of {sectionCount}
-                </Text>
+                {t("sectionPosition", { current: sectionNumber, total: sectionCount })}
               </Text>
             </View>
           </View>

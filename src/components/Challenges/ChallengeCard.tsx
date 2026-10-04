@@ -30,6 +30,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
+import { useTranslation } from "react-i18next";
 
 interface ChallengeCardProps {
   challenge: ActiveChallenge;
@@ -89,6 +90,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
   challenge,
   compact = false,
 }) => {
+  const { t } = useTranslation("common");
   const scale = useSharedValue(1);
 
   const progressPercent = Math.min(
@@ -109,6 +111,11 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
   }));
 
   const isComplete = challenge.completed;
+  const title = t(`challenges.items.${challenge.id}.title`, { defaultValue: challenge.title });
+  const description = t(`challenges.items.${challenge.id}.description`, { defaultValue: challenge.description });
+  const accessibilityLabel = isComplete
+    ? `${t("challenges.done")}: ${title}`
+    : `${title}. ${progressPercent}%`;
 
   if (compact) {
     return (
@@ -118,10 +125,10 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
         accessibilityRole="button"
         accessibilityLabel={
           isComplete
-            ? `Challenge completed: ${challenge.title}`
-            : `Challenge: ${challenge.title}. ${challenge.progress} of ${challenge.condition.target} completed.`
+            ? accessibilityLabel
+            : accessibilityLabel
         }
-        accessibilityHint="Opens challenge details"
+        accessibilityHint={t("challenges.opensDetails")}
       >
         <Animated.View
           style={animatedStyle}
@@ -137,7 +144,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
                   className="flex-1 pr-3 text-[15px] leading-5"
                   numberOfLines={1}
                 >
-                  {challenge.title}
+                  {title}
                 </Text>
                 {isComplete ? (
                   <View className="flex-row items-center gap-1 rounded-full bg-sage-pill px-2 py-0.5">
@@ -147,7 +154,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
                       color={SEMANTIC_COLORS.brand.pressed}
                       strokeWidth={2.5}
                     />
-                    <Text variant="eyebrow" className="text-[10px]">Done</Text>
+                    <Text variant="eyebrow" className="text-[10px]">{t("challenges.done")}</Text>
                   </View>
                 ) : (
                   <Text variant="chip" color="muted">
@@ -180,10 +187,10 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
       contentClassName="p-4"
       accessibilityLabel={
         isComplete
-          ? `Challenge completed: ${challenge.title}`
-          : `Challenge: ${challenge.title}. ${challenge.description}. ${challenge.progress} of ${challenge.condition.target} completed. Reward: ${challenge.reward.xp} XP and ${challenge.reward.coins} coins.`
+          ? accessibilityLabel
+          : accessibilityLabel
       }
-      accessibilityHint="Opens challenge details"
+      accessibilityHint={t("challenges.opensDetails")}
     >
       {/* Header */}
       <View className="flex-row items-start">
@@ -192,9 +199,9 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
         <View className="ml-4 flex-1">
           <View className="flex-row items-start justify-between">
             <View className="flex-1">
-              <Text variant="h3">{challenge.title}</Text>
+              <Text variant="h3">{title}</Text>
               <Text variant="caption-muted" className="mt-0.5" numberOfLines={2}>
-                {challenge.description}
+                {description}
               </Text>
             </View>
 
@@ -206,7 +213,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
                   color={SEMANTIC_COLORS.brand.pressed}
                   strokeWidth={2.5}
                 />
-                <Text variant="chip" color="sage">Done</Text>
+                <Text variant="chip" color="sage">{t("challenges.done")}</Text>
               </View>
             )}
           </View>
@@ -234,7 +241,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
       {/* Rewards */}
       {!isComplete && (
         <View className="flex-row items-center mt-3 gap-3">
-          <Text variant="eyebrow" className="text-[10px]">Reward</Text>
+          <Text variant="eyebrow" className="text-[10px]">{t("challenges.reward")}</Text>
           <View className="flex-row items-center gap-1 rounded-lg bg-gold/15 px-2 py-0.5">
             <HugeiconsIcon
               icon={StarsIcon}

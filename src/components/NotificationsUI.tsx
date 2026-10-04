@@ -6,9 +6,9 @@
  */
 
 import React from "react";
+import { useTranslation } from "react-i18next";
 // FIX #2: Removed justify-center items-center from View — incompatible with scrollable content
 import { View, ScrollView } from "react-native";
-import TimePickerModal from "./TimePickerModal";
 import {
   DEFAULT_REMINDERS,
   ReminderCard,
@@ -18,17 +18,18 @@ import {
 
 // FIX #1: Empty interface replaced with explicit empty type (no-arg)
 const NotificationsUI: React.FC = () => {
+  const { t } = useTranslation("settings");
+  const localizedReminders = DEFAULT_REMINDERS.map((item) => ({
+    ...item,
+    title: t(`reminders.slots.${item.id}.title`),
+    notificationBody: t(`reminders.slots.${item.id}.body`),
+  }));
   const {
     items,
     cfg,
-    editingId,
-    currentEditingItem,
-    openEdit,
-    closeEdit,
-    handleConfirm,
     handleTimeChange,
     toggleSelected,
-  } = useReminderConfig(DEFAULT_REMINDERS);
+  } = useReminderConfig(localizedReminders);
 
   return (
     // FIX #1: bg-offwhite instead of hard-coded #DCF2FF

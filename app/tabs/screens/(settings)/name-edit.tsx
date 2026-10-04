@@ -1,23 +1,17 @@
 import { useEffect, useCallback, useState } from "react";
 import { Stack, useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
 import { useUpdateDisplayName } from "@/hooks/post/useUpdateDisplayName";
 import { Alert, Pressable, ScrollView, Text, TextInput, View } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import { useCSSVariable } from "uniwind";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
-
-const GLASS = isLiquidGlassAvailable();
 
 export default function NameEditScreen() {
+  const { t } = useTranslation("settings");
   const router = useRouter();
   const { data: userProfile } = useUserProfile();
   const { mutate: updateDisplayName, isPending: isUpdating } = useUpdateDisplayName();
   
   const [fullName, setFullName] = useState(userProfile?.displayName || "");
-
-  const appForeground = useCSSVariable("--app-foreground") as string;
-  const appBackground = useCSSVariable("--app-background") as string;
 
   useEffect(() => {
     if (userProfile?.displayName && !fullName) {
@@ -27,7 +21,7 @@ export default function NameEditScreen() {
 
   const handleSave = useCallback(() => {
     if (!fullName.trim()) {
-      Alert.alert("Error", "Name cannot be empty");
+      Alert.alert(t("name.errorTitle"), t("name.emptyError"));
       return;
     }
     updateDisplayName(fullName.trim(), {
@@ -35,7 +29,7 @@ export default function NameEditScreen() {
         router.back();
       },
       onError: () => {
-        Alert.alert("Error", "Failed to update name. Please try again.");
+        Alert.alert(t("name.errorTitle"), t("name.updateError"));
       },
     });
   }, [fullName, updateDisplayName, router]);
@@ -59,7 +53,7 @@ export default function NameEditScreen() {
       >
         {/* Full Name */}
         <Text className="text-[13px] font-medium text-muted-foreground mt-6 mb-2">
-          Full Name
+          {t("name.label")}
         </Text>
         <TextInput
           value={fullName}
@@ -76,7 +70,7 @@ export default function NameEditScreen() {
           className="bg-foreground rounded-xl mt-6 py-3.5 items-center active:opacity-80 border-continuous"
         >
           <Text className="text-[17px] font-semibold text-background">
-            {isUpdating ? "Saving..." : "Update Profile"}
+            {isUpdating ? t("name.saving") : t("name.save")}
           </Text>
         </Pressable>
 
@@ -84,7 +78,7 @@ export default function NameEditScreen() {
         <View className="h-px bg-border my-6" />
 
         <Text className="text-[13px] text-muted-foreground leading-relaxed">
-          This is your public display name. It can be changed at any time.
+          {t("name.description")}
         </Text>
       </ScrollView>
     </>

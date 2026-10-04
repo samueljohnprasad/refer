@@ -9,12 +9,14 @@ import ProgressGraphVictoryChart from "./progress-graph-victory/ProgressGraphVic
 import { progressGraphVictoryStyles as styles } from "./progress-graph-victory/styles";
 import type { ProgressGraphVictoryStepProps } from "./progress-graph-victory/types";
 import { useProgressGraphVictoryAnimation } from "./progress-graph-victory/useProgressGraphVictoryAnimation";
+import { useTranslation } from "react-i18next";
 
 const ProgressGraphVictoryStep: React.FC<ProgressGraphVictoryStepProps> = ({
-    primaryLabel = "Your mood",
-    comparisonLabel = "Without journaling",
+    primaryLabel,
+    comparisonLabel,
     productLabel = "Happy",
 }) => {
+    const { t } = useTranslation("onboarding");
     const { width: screenWidth, height: screenHeight } = useWindowDimensions();
     const isCompactScreen = screenWidth < 390 || screenHeight < 880;
     const horizontalPadding = isCompactScreen ? 12 : 16;
@@ -41,10 +43,9 @@ const ProgressGraphVictoryStep: React.FC<ProgressGraphVictoryStepProps> = ({
                 entering={FadeIn.duration(180).delay(80)}
                 style={[styles.header, layout.headerStyle]}
             >
-                <Text style={[styles.title, layout.titleStyle]}>See your journaling impact</Text>
+                <Text style={[styles.title, layout.titleStyle]}>{t("progressGraph.title")}</Text>
                 <Text style={[styles.subtitle, layout.subtitleStyle]}>
-                    Watch how consistent journaling can steady your emotions over
-                    time, instead of letting tough days pile up unnoticed.
+                    {t("progressGraph.description")}
                 </Text>
             </Animated.View>
 
@@ -78,11 +79,11 @@ const ProgressGraphVictoryStep: React.FC<ProgressGraphVictoryStepProps> = ({
 
                     <View style={[styles.card, layout.cardStyle]}>
                         <Text style={[styles.primaryLabel, layout.primaryLabelStyle]}>
-                            {primaryLabel}
+                            {primaryLabel ?? t("progressGraph.primaryLabel")}
                         </Text>
 
                         <Text style={[styles.comparisonLabel, layout.comparisonLabelStyle]}>
-                            {comparisonLabel}
+                            {comparisonLabel ?? t("progressGraph.comparisonLabel")}
                         </Text>
 
                         <ProgressGraphVictoryChart
@@ -95,7 +96,7 @@ const ProgressGraphVictoryStep: React.FC<ProgressGraphVictoryStepProps> = ({
                             startDotOpacity={animationState.startDotOpacity}
                         />
 
-                        <Text style={[styles.timeLabel, layout.timeLabelStyle]}>Journal entries</Text>
+                        <Text style={[styles.timeLabel, layout.timeLabelStyle]}>{t("progressGraph.entriesLabel")}</Text>
 
                         <ProgressGraphVictoryBadge
                             animatedStyle={animationState.labelAnimatedStyle}

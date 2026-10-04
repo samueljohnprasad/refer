@@ -15,15 +15,11 @@ import JourneyLoadingSkeleton from "./components/JourneyLoadingSkeleton";
 import JourneyUnavailableState from "./components/JourneyUnavailableState";
 import { ChestRewardModal } from "./components";
 import { CelebrationOverlay } from "@/src/components/celebration/CelebrationOverlay";
-import { LessonCompleteCelebration } from "@/src/components/celebration/LessonCompleteCelebration";
 import { DailyGoalToast, useDailyGoalToast } from "@/src/components/celebration/DailyGoalToast";
-import {
-  LESSON_BASE_XP,
-  PERFECT_LESSON_BONUS_XP,
-} from "@/src/domains/journey/rewards/lessonStats";
 import { CheckpointActionSheet } from "./components/CheckpointActionSheet";
 import { CelebrationLevel } from "@/src/types/journeyV5";
 import { NodeType } from "@/src/types/journey";
+import { JourneyLessonCelebration } from "./components/JourneyLessonCelebration";
 import * as Haptics from "expo-haptics";
 import type {
   JourneyMapViewModel,
@@ -241,23 +237,10 @@ export const JourneyMapView = React.memo(function JourneyMapView({
         />
       ) : null}
 
-      {/* T012: Lesson Celebration — Duolingo-style XP + mascot screen */}
-      {controller.pendingCelebration?.level === CelebrationLevel.LESSON && (
-        <LessonCompleteCelebration
-          isVisible={true}
-          xpEarned={LESSON_BASE_XP}
-          bonusXP={PERFECT_LESSON_BONUS_XP}
-          isPerfect={controller.pendingCelebration.stats?.isPerfect ?? false}
-          durationMs={controller.pendingCelebration.stats?.durationMs}
-          lessonTitle={controller.pendingCelebration.content.title}
-          title="Lesson complete!"
-          message={controller.pendingCelebration.content.takeaway}
-          continueLabel={
-            controller.pendingCelebration.content.primaryActionLabel || "Continue"
-          }
-          onContinue={controller.dismissCelebration}
-        />
-      )}
+      <JourneyLessonCelebration
+        celebration={controller.pendingCelebration}
+        onContinue={controller.dismissCelebration}
+      />
 
       {/* T020: Unit Celebration */}
       {controller.pendingCelebration?.level === CelebrationLevel.UNIT && (

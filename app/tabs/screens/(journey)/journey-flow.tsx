@@ -1,4 +1,5 @@
 import React, { useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { SafeAreaView } from "@/src/components/tw";
 import { Stack, router, useLocalSearchParams } from "expo-router";
@@ -30,6 +31,7 @@ import { CelebrationLevel, type RewardCelebration } from "@/src/types/journeyV5"
 const log = createLogger("JourneyFlow");
 
 export default function JourneyFlowRoute() {
+  const { t } = useTranslation("journeys");
   const { courseId, nodeId } = useLocalSearchParams<{
     courseId: string;
     nodeId: string;
@@ -92,9 +94,9 @@ export default function JourneyFlowRoute() {
           level: CelebrationLevel.LESSON,
           nodeId: nodeId || "",
           content: {
-            title: node?.title || "Lesson complete!",
+            title: node?.title || t("lessonComplete"),
             takeaway: "You showed up for yourself today.",
-            primaryActionLabel: "Continue",
+            primaryActionLabel: t("continue"),
           },
         };
 
@@ -103,8 +105,8 @@ export default function JourneyFlowRoute() {
             ? LESSON_BASE_XP + PERFECT_LESSON_BONUS_XP
             : LESSON_BASE_XP,
           customDescription: isPerfect
-            ? `Perfect lesson: ${node?.title || "Lesson"}`
-            : node?.title || "Lesson completed",
+            ? t("perfectLessonPrefix", { title: node?.title || t("lessonCompleted") })
+            : node?.title || t("lessonCompleted"),
         });
 
         // ponytail: dispatch celebration state for journey map overlay
@@ -140,6 +142,7 @@ export default function JourneyFlowRoute() {
       queryClient,
       node?.title,
       xp,
+      t,
     ],
   );
 
@@ -187,15 +190,15 @@ export default function JourneyFlowRoute() {
         <LessonScreen
           progress={0}
           onClose={handleDismiss}
-          primaryLabel="Close"
+          primaryLabel={t("closePractice")}
           onPrimaryPress={handleDismiss}
         >
           <View className="flex-1 justify-center px-8">
             <Text variant="h2" color="ink" className="mb-3">
-              Practice data needs v1 content.
+              {t("practiceNeedsV1")}
             </Text>
             <Text variant="body" color="soft">
-              This node must be migrated before it can run.
+              {t("nodeNeedsMigration")}
             </Text>
           </View>
         </LessonScreen>

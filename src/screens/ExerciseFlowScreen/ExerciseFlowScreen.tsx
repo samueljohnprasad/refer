@@ -1,85 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import * as Haptics from "expo-haptics";
-import {
-  View,
-  SafeAreaView,
-  Pressable,
-  Alert,
-  BackHandler,
-} from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  Easing,
-} from "react-native-reanimated";
-import { Text } from "@/src/components/ui/Text";
+import React from "react";
+import { Pressable, SafeAreaView } from "react-native";
 import { useRouter } from "expo-router";
-import { useNavigation, usePreventRemove } from "expo-router/react-navigation";
-import { useExerciseFlow } from "@/src/hooks/useExerciseFlow";
-import { useExerciseMutation } from "@/src/hooks/useExerciseMutation";
-import { useExerciseAI } from "@/src/hooks/useExerciseAI";
-import type {
-  ExerciseType,
-  ExerciseConfig,
-  StepProps,
-} from "@/src/types/exerciseFlow";
-import { useSingleExerciseEntry } from "@/src/hooks/useSingleExerciseEntry";
+import { useTranslation } from "react-i18next";
+import { Text } from "@/src/components/ui/Text";
 import { getExerciseConfig } from "@/src/data/exerciseRegistry";
-import { createLogger } from "@/src/lib/logger";
-import { usePostHog } from "posthog-react-native";
-import { requestReviewForMilestone } from "@/src/hooks/useReviewPrompt";
-
-const logger = createLogger("exercise-flow-screen");
-
-
-// ─── Animated step transition wrapper ────────────────────────────────────────
-
-function AnimatedStepContainer({
-  stepIndex,
-  className,
-  children,
-}: {
-  stepIndex: number;
-  className: string;
-  children: React.ReactNode;
-}) {
-  const opacity = useSharedValue(1);
-  const translateX = useSharedValue(0);
-  const prevStepRef = useRef(stepIndex);
-
-  useEffect(() => {
-    if (prevStepRef.current === stepIndex) return;
-    const isForward = stepIndex > prevStepRef.current;
-    prevStepRef.current = stepIndex;
-
-    // Enter: slide and fade smoothly (matching OnboardingScreen exactly)
-    opacity.value = 0;
-    translateX.value = isForward ? 18 : -18;
-
-    translateX.value = withTiming(0, {
-      duration: 200,
-      easing: Easing.out(Easing.cubic),
-    });
-    opacity.value = withTiming(1, {
-      duration: 200,
-      easing: Easing.out(Easing.cubic),
-    });
-  }, [stepIndex]);
-
-  const animStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [{ translateX: translateX.value }],
-  }));
-
-  return (
-    <Animated.View className={className} style={animStyle}>
-      {children}
-    </Animated.View>
-  );
-}
-
-// ─── Types ───────────────────────────────────────────────────────────────────
+import { useSingleExerciseEntry } from "@/src/hooks/useSingleExerciseEntry";
+import type { ExerciseType } from "@/src/types/exerciseFlow";
+import { ExerciseFlowRunner } from "./ExerciseFlowRunner";
 
 interface ExerciseFlowScreenProps {
   exerciseType: ExerciseType;
@@ -92,376 +19,44 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
   entryId,
   readOnly = false,
 }) => {
+  const { t } = useTranslation("exercises");
   const router = useRouter();
   const config = getExerciseConfig(exerciseType);
 
   if (!config) {
     return (
       <SafeAreaView className="flex-1 justify-center items-center bg-white">
-        <Text className="text-lg text-slate-500">Exercise not found</Text>
+        <Text className="text-lg text-slate-500">
+          {t("flow.ui.exerciseNotFound")}
+        </Text>
         <Pressable onPress={() => router.back()} className="mt-4">
-          <Text className="text-base font-bold text-blue-500">Go back</Text>
+          <Text className="text-base font-bold text-blue-500">
+            {t("flow.ui.goBack")}
+          </Text>
         </Pressable>
       </SafeAreaView>
     );
   }
 
-  const { entry: existingEntry, isLoading: isLoadingEntry } =
-    useSingleExerciseEntry(entryId ?? null);
+  const { entry, isLoading } = useSingleExerciseEntry(entryId ?? null);
 
-  if (isLoadingEntry && entryId) {
+  if (isLoading && entryId) {
     return (
       <SafeAreaView className="flex-1 justify-center items-center bg-white">
-        <Text className="text-base text-slate-400">Loading...</Text>
+        <Text className="text-base text-slate-400">
+          {t("flow.ui.loading")}
+        </Text>
       </SafeAreaView>
     );
   }
 
   return (
-    <ResolvedExerciseFlowScreen
+    <ExerciseFlowRunner
       config={config}
-      existingEntry={existingEntry}
+      existingEntry={entry}
       readOnly={readOnly}
     />
   );
 };
 
-import { LessonScreen } from "@/src/components/ui/LessonScreen";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
-import { useXPOptional } from "@/src/context/XPContext";
-import { XPActionType, XP_REWARDS } from "@/src/types/xp";
-import {
-  LessonCompleteCelebration,
-  pickEncouragement,
-} from "@/src/components/celebration/LessonCompleteCelebration";
-
-interface ResolvedExerciseFlowScreenProps {
-  config: ExerciseConfig<any>;
-  existingEntry?: any;
-  readOnly: boolean;
-}
-
-const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
-  config,
-  existingEntry,
-  readOnly,
-}) => {
-  const router = useRouter();
-  const exerciseType = config.type;
-  const navigation = useNavigation();
-  const isConfirmedExitRef = useRef(false);
-  const [isConfirmedExit, setIsConfirmedExit] = React.useState(false);
-  const pendingExitActionRef = useRef<Parameters<typeof navigation.dispatch>[0] | null>(null);
-  // ─── Flow state ───────────────────────────────────────────────────
-  const flow = useExerciseFlow(config as ExerciseConfig<any>, existingEntry, readOnly);
-
-  const [primaryOverrideState, setPrimaryOverrideState] = React.useState<{
-    stepIndex: number;
-    override: { label: string; action: () => void; disabled: boolean } | null;
-  } | null>(null);
-
-  // ─── Lesson-complete celebration ──────────────────────────────────
-  const [celebration, setCelebration] = React.useState<{
-    xp: number;
-    durationMs: number;
-  } | null>(null);
-  const exerciseStartedAtRef = useRef(Date.now());
-
-  // ponytail: trigger Day-1 App Store review prompt 2.0s after celebration modal renders
-  useEffect(() => {
-    if (!celebration) return;
-    const timer = setTimeout(() => {
-      void requestReviewForMilestone("first_exercise_completed");
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, [celebration]);
-
-  const setPrimaryOverride = React.useCallback(
-    (override: { label: string; action: () => void; disabled: boolean } | null) => {
-      setPrimaryOverrideState({ stepIndex: flow.currentStepIndex, override });
-    },
-    [flow.currentStepIndex]
-  );
-
-  const primaryOverride =
-    primaryOverrideState?.stepIndex === flow.currentStepIndex
-      ? primaryOverrideState.override
-      : null;
-
-  // ─── Mutation ─────────────────────────────────────────────────────
-  const { save, isSaving } = useExerciseMutation();
-  const xp = useXPOptional();
-  const posthog = usePostHog();
-
-  // ─── AI ───────────────────────────────────────────────────────────
-  const currentStep = config?.steps[flow.currentStepIndex];
-  const ai = useExerciseAI({
-    steps: config.steps,
-    currentStepIndex: flow.currentStepIndex,
-    response: flow.response,
-    readOnly,
-  });
-  const isFinalStep = flow.currentStepIndex === flow.totalSteps - 1;
-
-  const exitScreen = useCallback(() => {
-    isConfirmedExitRef.current = true;
-    setIsConfirmedExit(true);
-    router.back();
-  }, [router]);
-
-  useEffect(() => {
-    const action = pendingExitActionRef.current;
-    if (!isConfirmedExit || !action) return;
-
-    pendingExitActionRef.current = null;
-    navigation.dispatch(action);
-  }, [isConfirmedExit, navigation]);
-
-  // Trigger AI when entering a step with AI config (now handled internally by useExerciseAI)
-
-  // ─── Handlers ─────────────────────────────────────────────────────
-  const handleClose = useCallback(() => {
-    if (readOnly || flow.currentStepIndex === 0) {
-      exitScreen();
-      return;
-    }
-
-    Alert.alert("Exit exercise?", "Your progress will be saved as a draft.", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Save & Exit",
-        onPress: async () => {
-          try {
-            const payload = flow.getSavePayload("in_progress");
-            await save(payload, existingEntry?.id);
-            exitScreen();
-          } catch (err) {
-            Alert.alert("Save failed", "Please try again.");
-          }
-        },
-      },
-      {
-        text: "Discard",
-        style: "destructive",
-        onPress: () => {
-          setTimeout(() => {
-            exitScreen();
-          }, 100);
-        },
-      },
-    ]);
-  }, [readOnly, flow, existingEntry, save, exitScreen]);
-
-  const handleSave = useCallback(async () => {
-    try {
-      const payload = flow.getSavePayload("completed");
-      await save(payload, existingEntry?.id);
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-
-      const isFreshCompletion =
-        !existingEntry || existingEntry.status !== "completed";
-
-      if (isFreshCompletion) {
-        posthog?.capture("exercise_completed", {
-          exercise_type: exerciseType,
-          step_count: flow.totalSteps,
-        });
-        xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
-          customDescription: config.title || "Exercise completed",
-        });
-        // ponytail: diagnostic logger for standalone exercise celebration trigger
-        logger.info("Fresh completion! Setting celebration state:", {
-          xp: XP_REWARDS[XPActionType.EXERCISE_COMPLETE],
-          durationMs: Date.now() - exerciseStartedAtRef.current,
-          title: config.title,
-        });
-        // Show the celebration screen instead of exiting immediately.
-        setCelebration({
-          xp: XP_REWARDS[XPActionType.EXERCISE_COMPLETE],
-          durationMs: Date.now() - exerciseStartedAtRef.current,
-        });
-        return;
-      }
-
-      exitScreen();
-    } catch (err) {
-      Alert.alert("Save failed", "Please try again.");
-    }
-  }, [flow, existingEntry, save, config.title, xp, exitScreen, posthog, exerciseType]);
-
-  const handleNavigateDeeper = useCallback(async (type: ExerciseType) => {
-      try {
-        // 1. Save the current exercise
-        const payload = flow.getSavePayload("completed");
-        await save(payload, existingEntry?.id);
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-
-        if (!existingEntry || existingEntry.status !== "completed") {
-          posthog?.capture("exercise_completed", {
-            exercise_type: exerciseType,
-            step_count: flow.totalSteps,
-          });
-          xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
-            customDescription: config.title || "Exercise completed",
-          });
-        }
-
-        // 2. Set exit flag so beforeRemove doesn't intercept if needed,
-        // though router.replace will trigger beforeRemove.
-        isConfirmedExitRef.current = true;
-
-        // 3. Navigate to the next exercise
-      router.replace({ pathname: "/tabs/screens/exercise-flow", params: { type } });
-      } catch (err) {
-        Alert.alert("Save failed", "Please try again.");
-      }
-  }, [flow, existingEntry, save, config.title, xp, router, posthog, exerciseType]);
-
-  // ─── Android hardware back button ─────────────────────────────────
-  React.useEffect(() => {
-    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
-      handleClose();
-      return true;
-    });
-    return () => sub.remove();
-  }, [handleClose]);
-
-  // ─── iOS swipe-back gesture prevention ────────────────────────────
-  usePreventRemove(
-    !readOnly && flow.currentStepIndex > 0 && !isConfirmedExit,
-    ({ data: { action } }) => {
-      if (isConfirmedExitRef.current) {
-        pendingExitActionRef.current = action;
-        return;
-      }
-
-      handleClose();
-    },
-  );
-
-  // ─── Step rendering ───────────────────────────────────────────────
-  const StepComponent = currentStep?.component;
-  const countableStepMeta = useMemo(() => {
-    const countableSteps = config.steps.filter((step) => !step.excludeFromProgress);
-    const countableStepIndex = countableSteps.findIndex(
-      (step) => step.id === currentStep?.id,
-    );
-
-    if (countableStepIndex < 0 || countableSteps.length === 0) {
-      return null;
-    }
-
-    return {
-      stepIndex: countableStepIndex,
-      totalSteps: countableSteps.length,
-    };
-  }, [config.steps, currentStep?.id]);
-
-  const stepProps: StepProps<any> = useMemo(
-    () => ({
-      response: flow.response,
-      onUpdate: flow.updateResponse,
-      onNext: readOnly ? handleClose : isFinalStep ? handleSave : flow.goNext,
-      onBack: flow.goBack,
-      onClose: handleClose,
-      onNavigateDeeper: handleNavigateDeeper,
-      canGoBack: flow.canGoBack,
-      isValid: flow.isCurrentStepValid,
-      progress: flow.progress,
-      stepIndex: countableStepMeta?.stepIndex ?? flow.currentStepIndex,
-      totalSteps: countableStepMeta?.totalSteps ?? flow.totalSteps,
-      aiSuggestions: ai.suggestions,
-      isAiLoading: ai.isLoading,
-      aiLoadingMessage: ai.loadingMessage,
-      aiError: ai.error,
-      isSaving,
-      readOnly,
-      autoFocus: currentStep?.autoFocus ?? !readOnly,
-      setPrimaryOverride,
-    }),
-    [
-      flow,
-      ai.suggestions,
-      ai.isLoading,
-      ai.loadingMessage,
-      ai.error,
-      isSaving,
-      readOnly,
-      handleClose,
-      handleSave,
-      handleNavigateDeeper,
-      isFinalStep,
-      countableStepMeta,
-      currentStep?.autoFocus,
-    ],
-  );
-
-  // ─── Guards ───────────────────────────────────────────────────────
-  // (Loading is now handled by the parent component)
-
-  const pct = Math.round(flow.progress * 100);
-  const primaryLabel = currentStep?.nextLabel || (isFinalStep ? "Finish" : "Continue");
-
-  // In readOnly mode, the primary button is always "Done" and just closes the screen
-  const defaultPrimaryPress = readOnly ? handleClose : isFinalStep ? handleSave : flow.goNext;
-  
-  const finalPrimaryLabel = primaryOverride ? primaryOverride.label : (readOnly ? "Done" : primaryLabel);
-  const finalPrimaryPress = primaryOverride ? primaryOverride.action : defaultPrimaryPress;
-  const finalPrimaryDisabled = primaryOverride ? primaryOverride.disabled : (!flow.isCurrentStepValid || isSaving);
-
-  return (
-    <>
-      <LessonScreen
-        className="flex-1"
-        style={{ backgroundColor: config.backgroundColor ?? "#FFFFFF" }}
-        hideHeader={currentStep?.hideHeader || readOnly}
-        hideFooter={currentStep?.hideFooter}
-        progress={flow.progress}
-        onClose={handleClose}
-        backButtonVariant="close-icon"
-        primaryLabel={finalPrimaryLabel}
-        onPrimaryPress={finalPrimaryPress}
-        primaryDisabled={finalPrimaryDisabled}
-        primaryLoading={isSaving}
-        primaryRightIcon={
-          isFinalStep && !isSaving ? (
-            <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} color={SEMANTIC_COLORS.surface.primary} strokeWidth={2} />
-          ) : undefined
-        }
-        secondaryLabel={readOnly ? undefined : isFinalStep ? (currentStep?.secondaryLabel || "Edit answers") : (flow.canGoBack ? "Back" : undefined)}
-        onSecondaryPress={flow.canGoBack ? flow.goBack : undefined}
-      >
-        <AnimatedStepContainer
-          stepIndex={flow.currentStepIndex}
-          className="pb-4"
-        >
-          {StepComponent ? (
-            <StepComponent {...stepProps} />
-          ) : (
-            <View className="flex-1 justify-center items-center">
-              <Text className="text-slate-400">Unknown step</Text>
-            </View>
-          )}
-        </AnimatedStepContainer>
-      </LessonScreen>
-
-      {celebration && (
-        <LessonCompleteCelebration
-          isVisible={!!celebration}
-          xpEarned={celebration.xp}
-          durationMs={celebration.durationMs}
-          lessonTitle={config.title}
-          title="Exercise complete!"
-          message={pickEncouragement(config.title)}
-          onContinue={exitScreen}
-        />
-      )}
-    </>
-  );
-};
-
 ExerciseFlowScreen.displayName = "ExerciseFlowScreen";
-ResolvedExerciseFlowScreen.displayName = "ResolvedExerciseFlowScreen";

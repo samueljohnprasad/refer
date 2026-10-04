@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Pressable } from "react-native";
 import { SafeAreaView } from "@/src/components/tw";
 import { Stack, useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import {
   Host,
   Picker,
@@ -29,6 +30,7 @@ import { MonthsTimelineTab } from "@/src/domains/timeline/ui/tabs/MonthsTimeline
 
 export default function TimelinesScreen() {
   const router = useRouter();
+  const { t } = useTranslation("common");
   const [activeTab, setActiveTab] = useState<"days" | "weeks" | "months">(
     "days",
   );
@@ -36,14 +38,11 @@ export default function TimelinesScreen() {
 
   const handleSelectionChange = (selection: unknown) => {
     if (typeof selection === "string") {
-      if (selection === "Days") setActiveTab("days");
-      if (selection === "Weeks") setActiveTab("weeks");
-      if (selection === "Months") setActiveTab("months");
+      if (selection === "days") setActiveTab("days");
+      if (selection === "weeks") setActiveTab("weeks");
+      if (selection === "months") setActiveTab("months");
     }
   };
-
-  const selectedLabel =
-    activeTab === "days" ? "Days" : activeTab === "weeks" ? "Weeks" : "Months";
 
   const handleOpenModal = () => {
     setIsStackModalOpen(true);
@@ -63,12 +62,12 @@ export default function TimelinesScreen() {
               <Host style={{ width: 200, height: 32 }}>
                 <Picker
                   modifiers={[pickerStyle("segmented"), tint(SEMANTIC_COLORS.brand.pressed)]}
-                  selection={selectedLabel}
+                  selection={activeTab}
                   onSelectionChange={handleSelectionChange}
                 >
-                  <SwiftUIText modifiers={[tag("Days")]}>Days</SwiftUIText>
-                  <SwiftUIText modifiers={[tag("Weeks")]}>Weeks</SwiftUIText>
-                  <SwiftUIText modifiers={[tag("Months")]}>Months</SwiftUIText>
+                  <SwiftUIText modifiers={[tag("days")]}>{t("timeline.days")}</SwiftUIText>
+                  <SwiftUIText modifiers={[tag("weeks")]}>{t("timeline.weeks")}</SwiftUIText>
+                  <SwiftUIText modifiers={[tag("months")]}>{t("timeline.months")}</SwiftUIText>
                 </Picker>
               </Host>
             </View>

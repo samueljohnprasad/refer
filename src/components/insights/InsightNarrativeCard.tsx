@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { useInsightNarrative } from "@/src/hooks/insights/useInsightNarrative";
@@ -7,6 +8,7 @@ import { RADIUS } from "@/src/theme/radius";
 import dayjs from "dayjs";
 
 export function InsightNarrativeCard() {
+  const { t } = useTranslation("common");
   const { data, isLoading } = useInsightNarrative();
 
   if (isLoading || !data) return null;
@@ -18,7 +20,7 @@ export function InsightNarrativeCard() {
       <View className="flex-row items-center gap-1.5 mb-2">
         <Text className="text-[14px]">✨</Text>
         <Text className="text-[12px] font-bold text-sage-700 uppercase tracking-wider">
-          AI INSIGHT
+          {t("insights.ui.aiInsight")}
         </Text>
       </View>
 

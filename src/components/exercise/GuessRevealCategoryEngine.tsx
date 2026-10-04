@@ -11,6 +11,8 @@ import {
   readString,
 } from "@/src/components/exercise/courseExerciseContent";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { translateStepCopyProps } from "@/src/lib/i18n/exerciseCopy";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
 const SCALE_STEPS = 10;
@@ -21,10 +23,12 @@ export function GuessRevealCategoryEngine({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
-  const content = exercise.content ?? {};
+  const translateCopy = useExerciseCopy();
+  const content = translateStepCopyProps(exercise.content ?? {}, translateCopy);
   const savedGuess = readNumber(readRecord(savedResponse)?.guess);
   const actual = readNumber(content.actual) ?? 7;
   const [guess, setGuess] = useState(savedGuess ?? 5);
+  const displayedValue = locked ? actual : guess;
 
   useEffect(() => {
     if (savedGuess === null) {
@@ -40,14 +44,16 @@ export function GuessRevealCategoryEngine({
   return (
     <View style={styles.screenContent}>
       <CourseExerciseHeading
-        title={readString(content.title) ?? "Take a guess"}
-        instruction={readString(content.instruction) ?? "Go with your gut."}
+        title={readString(content.title) ?? translateCopy("Take a guess")}
+        instruction={
+          readString(content.instruction) ?? translateCopy("Go with your gut.")
+        }
         prompt={readString(content.prompt)}
       />
 
       <View style={styles.card}>
         <Text style={styles.counter} accessibilityLiveRegion="polite">
-          {locked ? actual : guess} in 10
+          {translateCopy("{{value}} in 10", { value: displayedValue })}
         </Text>
         <View style={styles.dots} accessibilityElementsHidden>
           {Array.from({ length: SCALE_STEPS }, (_, index) => (
@@ -73,21 +79,25 @@ export function GuessRevealCategoryEngine({
           minimumTrackTintColor={SEMANTIC_COLORS.brand.primary}
           maximumTrackTintColor={SEMANTIC_COLORS.border.default}
           thumbTintColor={SEMANTIC_COLORS.brand.primary}
-          accessibilityLabel="Your guess, from 0 to 10 adults"
+          accessibilityLabel={
+            translateCopy("Your guess, from 0 to 10 adults")
+          }
           accessibilityValue={{ min: 0, max: 10, now: guess }}
           onValueChange={setGuess}
           onSlidingComplete={saveGuess}
         />
         <View style={styles.scaleLabels}>
-          <Text style={styles.scaleLabel}>none</Text>
-          <Text style={styles.scaleLabel}>everyone</Text>
+          <Text style={styles.scaleLabel}>{translateCopy("none")}</Text>
+          <Text style={styles.scaleLabel}>{translateCopy("everyone")}</Text>
         </View>
       </View>
 
       <Text style={styles.note}>
         {locked
-          ? "Your guess is outlined. The filled dots are the real number."
-          : "Drag to guess, then check."}
+          ? translateCopy(
+              "Your guess is outlined. The filled dots are the real number.",
+            )
+          : translateCopy("Drag to guess, then check.")}
       </Text>
     </View>
   );

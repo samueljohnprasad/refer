@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 import { useUserLevel } from "@/hooks/data/useUserLevel";
 import StageProgressBar from "@/src/components/ui/StageProgressBar";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
+import { useTranslation } from "react-i18next";
 
 interface XPHistorySummaryProps {
   totalXP: number;
@@ -12,6 +13,7 @@ interface XPHistorySummaryProps {
 // ponytail: progression hero with typographic hierarchy and standardized secondary tokens per visual audit
 export const XPHistorySummary: React.FC<XPHistorySummaryProps> = React.memo(
   ({ totalXP }) => {
+    const { t } = useTranslation("common");
     const {
       currentLevel,
       nextLevel,
@@ -34,7 +36,7 @@ export const XPHistorySummary: React.FC<XPHistorySummaryProps> = React.memo(
             marginBottom: 8,
           }}
         >
-          Current Level
+          {t("xp.currentLevel")}
         </Text>
 
         {/* 2. Brand Rank Display: muted sage-green status identity */}
@@ -60,7 +62,7 @@ export const XPHistorySummary: React.FC<XPHistorySummaryProps> = React.memo(
                 color: "#1C1C1E",
               }}
             >
-              Max level reached
+              {t("xp.maxLevelReached")}
             </Text>
           ) : (
             <>
@@ -78,7 +80,7 @@ export const XPHistorySummary: React.FC<XPHistorySummaryProps> = React.memo(
                   color: "#3A3A3C",
                 }}
               >
-                {` Insights to ${nextLevel?.name || "Next Level"}`}
+                {` ${t("xp.insightsToNextLevel", { level: nextLevel?.name || t("xp.nextLevel") })}`}
               </Text>
             </>
           )}
@@ -102,7 +104,7 @@ export const XPHistorySummary: React.FC<XPHistorySummaryProps> = React.memo(
             fontSize: 12,
           }}
         >
-          {totalXP} lifetime Insights
+          {t("xp.lifetimeInsights", { count: totalXP })}
         </Text>
       </View>
     );
@@ -110,4 +112,3 @@ export const XPHistorySummary: React.FC<XPHistorySummaryProps> = React.memo(
 );
 
 XPHistorySummary.displayName = "XPHistorySummary";
-

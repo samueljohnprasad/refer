@@ -14,6 +14,8 @@ import { Text } from "@/src/components/ui/Text";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
 import { EXERCISE_LINKING_MAP } from "@/src/data/exerciseLinkingMap";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { ExerciseCopyText } from "@/src/components/exercise/ExerciseCopyText";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 import type {
   ExerciseType,
   StepProps,
@@ -86,19 +88,20 @@ function SaveCopingCardAction({
   onPress: () => void;
   error: string | null;
 }) {
+  const translateCopy = useExerciseCopy();
   return (
     <View>
       <Pressable
         onPress={onPress}
         disabled={cardSaved || isSavingCard}
         accessibilityRole="button"
-        accessibilityLabel={
+        accessibilityLabel={translateCopy(
           cardSaved
             ? "Saved to coping cards"
             : isSavingCard
               ? "Saving coping card"
               : "Save as coping card"
-        }
+        )}
         accessibilityState={{
           disabled: cardSaved || isSavingCard,
           busy: isSavingCard,
@@ -111,7 +114,7 @@ function SaveCopingCardAction({
           color={SEMANTIC_COLORS.brand.onSoft}
           strokeWidth={2}
         />
-        <Text
+        <ExerciseCopyText
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.onSoft }}
           className="ml-2 text-[14px] leading-[20px]"
         >
@@ -120,7 +123,7 @@ function SaveCopingCardAction({
             : isSavingCard
               ? "Saving..."
               : "Save for a difficult moment"}
-        </Text>
+        </ExerciseCopyText>
       </Pressable>
 
       {error ? (
@@ -154,13 +157,14 @@ export const ThoughtCatcherCheckpointSummary: React.FC<
 export const ThoughtCatcherSummary: React.FC<
   StepProps<ThoughtCatcherResponse>
 > = ({ response, readOnly, onNavigateDeeper }) => {
+  const translateCopy = useExerciseCopy();
   const { saveCard } = useCopingCards();
   const [cardSaved, setCardSaved] = useState(false);
   const [isSavingCard, setIsSavingCard] = useState(false);
   const [cardSaveError, setCardSaveError] = useState<string | null>(null);
 
   const link = EXERCISE_LINKING_MAP["thought_catcher"];
-  const realityCheckLabel = response.isTrue ? REALITY_LABELS[response.isTrue] : undefined;
+  const realityCheckLabel = response.isTrue ? translateCopy(REALITY_LABELS[response.isTrue]) : undefined;
   const scoreDetail =
     typeof response.postIntensity === "number"
       ? getShiftCopy(response.intensity, response.postIntensity)
@@ -176,16 +180,16 @@ export const ThoughtCatcherSummary: React.FC<
       await saveCard({
         exercise_type: "thought_catcher",
         reframe_text: response.balancedThought,
-        reframe_label: "Balanced thought",
+        reframe_label: translateCopy("Balanced thought"),
       });
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setCardSaved(true);
     } catch {
-      setCardSaveError("Could not save this coping card. Try again.");
+      setCardSaveError(translateCopy("Could not save this coping card. Try again."));
     } finally {
       setIsSavingCard(false);
     }
-  }, [cardSaved, isSavingCard, response.balancedThought, saveCard]);
+  }, [cardSaved, isSavingCard, response.balancedThought, saveCard, translateCopy]);
 
   const handleNavigateDeeper = useCallback(
     (type: ExerciseType) => {
@@ -219,11 +223,11 @@ export const ThoughtCatcherSummary: React.FC<
 
     return (
       <FollowupLink
-        label={`Go deeper: ${link.label}`}
+        label={`${translateCopy("Go deeper:")} ${translateCopy(link.label)}`}
         onPress={() => handleNavigateDeeper(link.exerciseType)}
       />
     );
-  }, [handleNavigateDeeper, link, onNavigateDeeper, readOnly]);
+  }, [handleNavigateDeeper, link, onNavigateDeeper, readOnly, translateCopy]);
 
   return (
     <ThoughtRecordRecap

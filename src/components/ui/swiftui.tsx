@@ -29,6 +29,7 @@ import { Button } from "@/src/components/ui/Button";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Mic01Icon } from "@hugeicons/core-free-icons";
 import { SoundWaveIcon } from "@/src/components/ui/SoundWaveIcon";
+import { useTranslation } from "react-i18next";
 
 // ─── Speak Button ───────────────────────────────────────────────────────────
 
@@ -45,11 +46,13 @@ const SpeakButton = ({
   isLoading,
   onPress,
 }: SpeakButtonProps): React.JSX.Element => {
+  const { t } = useTranslation("common");
+
   const getButtonText = (): string => {
-    if (isLoading && isActive) return "Stopping...";
-    if (isLoading && !isActive) return "Starting...";
-    if (isActive) return "Listening...";
-    return "Speak";
+    if (isLoading && isActive) return t("voice.stopping");
+    if (isLoading && !isActive) return t("voice.starting");
+    if (isActive) return t("voice.listening");
+    return t("voice.speak");
   };
 
   // ponytail: outlined/light secondary button per audit; never filled green
@@ -61,7 +64,9 @@ const SpeakButton = ({
       size="sm"
       fullWidth={false}
       width={isActive ? 120 : 106}
-      accessibilityLabel={isActive ? "Stop speaking" : "Speak to transcribe"}
+      accessibilityLabel={
+        isActive ? t("voice.stopSpeaking") : t("voice.speakToTranscribe")
+      }
       leftIcon={
         isLoading ? (
           <ActivityIndicator
@@ -100,6 +105,7 @@ export default function WhisperUI({
   setIsRealtimeActive,
   isRealtimeActive,
 }: WhisperUIProps) {
+  const { t } = useTranslation("common");
   const [realtimeTranscriber, setRealtimeTranscriber] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
@@ -130,18 +136,18 @@ export default function WhisperUI({
   const ensureMicrophonePermission = async (): Promise<boolean> => {
     if (Platform.OS === "web") {
       Alert.alert(
-        "Unsupported Platform",
-        "Real-time transcription is not available on the web."
+        t("voice.unsupportedPlatform"),
+        t("voice.webUnavailable")
       );
       return false;
     }
 
     const getPermissionText = (blocked: boolean) =>
       blocked
-        ? Platform.OS === "android"
-          ? "Please enable microphone access in Android Settings to use real-time transcription."
-          : "Please enable microphone access in iOS Settings to use real-time transcription."
-        : "Microphone permission is required for real-time transcription.";
+          ? Platform.OS === "android"
+            ? t("voice.androidPermission")
+            : t("voice.iosPermission")
+          : t("voice.permissionRequired");
 
     try {
       let permissionStatus = await getRecordingPermissionsAsync();
@@ -151,7 +157,7 @@ export default function WhisperUI({
       }
 
       if (!permissionStatus.canAskAgain) {
-        Alert.alert("Microphone Permission", getPermissionText(true));
+        Alert.alert(t("voice.permissionTitle"), getPermissionText(true));
         console.warn("Microphone permission permanently denied.");
         return false;
       }
@@ -163,14 +169,14 @@ export default function WhisperUI({
       }
 
       const blocked = !permissionStatus.canAskAgain;
-      Alert.alert("Microphone Permission", getPermissionText(blocked));
+      Alert.alert(t("voice.permissionTitle"), getPermissionText(blocked));
       console.warn("Microphone permission not granted:", permissionStatus);
       return false;
     } catch (err) {
       console.error("Failed to verify microphone permission:", err);
       Alert.alert(
-        "Microphone Permission",
-        "Unable to verify microphone permission. Please try again."
+        t("voice.permissionTitle"),
+        t("voice.permissionVerifyError")
       );
       return false;
     }
@@ -178,7 +184,7 @@ export default function WhisperUI({
 
   const startRealtimeTranscription = async () => {
     if (!whisperContext) {
-      Alert.alert("Error", "Whisper not initialized");
+      Alert.alert(t("voice.errorTitle"), t("voice.whisperNotInitialized"));
       return;
     }
 
@@ -186,7 +192,7 @@ export default function WhisperUI({
     try {
       const hasMicPermission = await ensureMicrophonePermission();
       if (!hasMicPermission) {
-        setError("Real-time transcription requires microphone access.");
+        setError(t("voice.permissionError"));
         setIsLoading(false);
         return;
       }
@@ -226,10 +232,10 @@ export default function WhisperUI({
       setRealtimeTranscriber({ stop });
       setIsRealtimeActive(true);
     } catch (err) {
-      const errorMessage = `Real-time transcription failed: ${err}`;
+      const errorMessage = t("voice.transcriptionError", { error: String(err) });
       console.error(errorMessage);
       setError(errorMessage);
-      Alert.alert("Real-time Error", errorMessage);
+      Alert.alert(t("voice.transcriptionErrorTitle"), errorMessage);
       setIsRealtimeActive(false);
     } finally {
       setIsLoading(false);
@@ -262,7 +268,7 @@ export default function WhisperUI({
     }
   };
 
-  const activeModelLabel = getCurrentModel()?.label || "Model";
+  const activeModelLabel = getCurrentModel()?.label || t("voice.model");
   const downloadPercentage = getDownloadProgress(currentModelId || "base") ?? 0;
 
   const statusText = isDownloading

@@ -265,6 +265,13 @@
   },
   "xp_first_step": "First step on your journey",
   "paywall": {
+    "appOfTheDay": "App of the Day", "headlineStart": "Become someone who doesn't run from", "headlineEnd": "how they feel.", "featureSummary": "{{journeys}} journeys · {{exercises}}+ exercises · Unlimited AI insights",
+    "lockedTitle_one": "Your next lesson (locked without Plus)", "lockedTitle_other": "Your next {{count}} lessons (locked without Plus)",
+    "lessons": { "day2": { "title": "The Thought Spiral", "meta": "Day 2 · 5 min · Cognitive distortions" }, "day3": { "title": "Body as Compass", "meta": "Day 3 · 5 min · Somatic awareness" }, "day4": { "title": "Thought Records: Your First CBT Tool", "meta": "Day 4 · 7 min · Hands-on exercise" } },
+    "restartNote": "Continue your journey or restart from Day 1.", "trialTerms": "7-day free trial · No charge until day 8 · Cancel anytime", "refundTerms": "💚 30-day full refund · No questions asked", "startTrial": "Start my 7-day free trial", "continueFree": "Continue with free",
+    "sleepRatio": "3 in 4", "sleepCaption": "sleep better by Day {{day}}", "rating": "★ {{value}}", "reviews": "{{count}} reviews", "groveCaption": "in the Grove", "testimonialQuote": "\"I'm a 47-year-old guy. Never thought I'd journal. The CBT lessons are why I stayed, they actually teach you something. Day 89.\"", "memberLabel": "Happy Plus member", "fiveStars": "5 out of 5 stars",
+    "discount": { "wait": "Wait, one more thing", "title": "Try Happy Plus for {{price}}", "description": "A first month, on us, almost. No pressure. No catch.", "afterMonth": "After month 1: continues at {{price}}/mo · Cancel anytime", "accept": "YES, I'LL TRY IT FOR {{price}}", "decline": "No thanks, continue with free" },
+    "plans": { "weekly": { "label": "Weekly", "detailLabel": "Cancel anytime", "perUnit": "/week" }, "annual": { "label": "Annual", "badge": "Best value", "headline": "365 days of showing up for yourself.", "savings": "Save 67%", "detailPrefix": "Just ", "detailEmphasis": "$0.27 per day", "detailSuffix": " · billed yearly" }, "monthly": { "label": "Monthly", "detailLabel": "Cancel anytime", "perUnit": "/month" } },
     "benefits": {
       "journeys": "All 12 journeys with sequenced lessons",
       "ai": "Unlimited AI insights & weekly patterns",
@@ -272,6 +279,7 @@
       "streak": "Streak repair & premium themes"
     }
   },
+  "progressGraph": { "title": "See your journaling impact", "description": "Watch how consistent journaling can steady your emotions over time, instead of letting tough days pile up unnoticed.", "primaryLabel": "Your mood", "comparisonLabel": "Without journaling", "entriesLabel": "Journal entries", "chartA11y": "Projected {{days}}-day clarity growth chart comparing progress with Happy versus without journaling" },
   "pact_text": "I commit to showing up for myself, even on the days I don't feel like it. Just {{minutes}} minutes. That's all it takes.",
   "future_letter": "You did it. You actually showed up, not once, but every single day for 30 days.\n\nRemember how heavy things felt when you started? The {{timing}} were the hardest. But you kept coming back. {{minutes}} minutes at a time.\n\nYou're not the same person who opened this app a month ago. You're calmer. You notice your thoughts before they spiral. You have tools now.\n\nI'm proud of you."
 }

@@ -207,6 +207,13 @@
   },
   "xp_first_step": "Premier pas sur ton parcours",
   "paywall": {
+    "appOfTheDay": "Appli du jour", "headlineStart": "Devenez une personne qui n'évite plus", "headlineEnd": "ses émotions.", "featureSummary": "{{journeys}} parcours · plus de {{exercises}} exercices · analyses IA illimitées",
+    "lockedTitle_one": "Votre prochaine leçon (verrouillée sans Plus)", "lockedTitle_other": "Vos {{count}} prochaines leçons (verrouillées sans Plus)",
+    "lessons": { "day2": { "title": "La spirale des pensées", "meta": "Jour 2 · 5 min · Distorsions cognitives" }, "day3": { "title": "Le corps comme boussole", "meta": "Jour 3 · 5 min · Conscience corporelle" }, "day4": { "title": "Relevé de pensées : votre premier outil TCC", "meta": "Jour 4 · 7 min · Exercice pratique" } },
+    "restartNote": "Poursuivez votre parcours ou reprenez au jour 1.", "trialTerms": "7 jours d'essai gratuit · Aucun débit avant le 8e jour · Annulation possible à tout moment", "refundTerms": "💚 Remboursement intégral sous 30 jours · Sans justification", "startTrial": "Commencer mes 7 jours d'essai gratuit", "continueFree": "Continuer gratuitement",
+    "sleepRatio": "3 sur 4", "sleepCaption": "dorment mieux dès le jour {{day}}", "rating": "★ {{value}}", "reviews": "{{count}} avis", "groveCaption": "dans le Jardin", "testimonialQuote": "« J'ai 47 ans. Je ne pensais jamais tenir un journal. Les leçons de TCC m'ont donné envie de continuer : elles m'apprennent vraiment quelque chose. Jour 89. »", "memberLabel": "Membre Happy Plus", "fiveStars": "5 étoiles sur 5",
+    "discount": { "wait": "Attendez, encore une chose", "title": "Essayez Happy Plus pour {{price}}", "description": "Un premier mois à prix réduit. Sans pression ni piège.", "afterMonth": "Après le 1er mois : {{price}}/mois · Annulation possible à tout moment", "accept": "OUI, J'ESSAIE POUR {{price}}", "decline": "Non merci, continuer gratuitement" },
+    "plans": { "weekly": { "label": "Hebdomadaire", "detailLabel": "Annulation possible à tout moment", "perUnit": "/semaine" }, "annual": { "label": "Annuel", "badge": "Meilleure offre", "headline": "365 jours pour prendre soin de vous.", "savings": "Économisez 67 %", "detailPrefix": "Seulement ", "detailEmphasis": "0,27 $ par jour", "detailSuffix": " · facturé à l'année" }, "monthly": { "label": "Mensuel", "detailLabel": "Annulation possible à tout moment", "perUnit": "/mois" } },
     "benefits": {
       "journeys": "Les 12 parcours avec leçons progressives",
       "ai": "Insights IA illimités & tendances hebdomadaires",
@@ -214,6 +221,7 @@
       "streak": "Réparation de série & thèmes premium"
     }
   },
+  "progressGraph": { "title": "Voyez l'effet de votre journal", "description": "Écrire régulièrement peut aider à apaiser vos émotions et à mieux remarquer les jours difficiles.", "primaryLabel": "Votre humeur", "comparisonLabel": "Sans journal", "entriesLabel": "Notes de journal", "chartA11y": "Graphique de progression projetée sur {{days}} jours comparant Happy à l'absence de journal" },
   "pact_text": "Je m'engage à être là pour moi, même les jours où je n'en ai pas envie. Juste {{minutes}} minutes. C'est tout ce qu'il faut.",
   "future_letter": "Tu l'as fait. Tu t'es vraiment montré·e, pas une seule fois, mais chaque jour pendant 30 jours.\n\nTu te souviens à quel point les choses semblaient lourdes quand tu as commencé ? {{timing}} était la partie la plus difficile. Mais tu as continué à revenir. {{minutes}} minutes à la fois.\n\nTu n'es plus la même personne qui a ouvert cette appli il y a un mois. Tu es plus calme. Tu remarques tes pensées avant qu'elles ne s'emballent. Tu as des outils maintenant.\n\nJe suis fier·fière de toi."
 }

@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from "react";
 import { Keyboard, Pressable, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { StepHeader } from "@/src/screens/ThoughtReframingScreen/components/StepHeader";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 
 
 const DEBOUNCE_MS = 400;
@@ -44,6 +45,7 @@ export const StepLayout: React.FC<StepLayoutProps> = React.memo(
     showStepCount = true,
   }) => {
     const lastTapRef = useRef(0);
+    const translateCopy = useExerciseCopy();
 
     const guardedNext = useCallback(() => {
       const now = Date.now();
@@ -69,8 +71,8 @@ export const StepLayout: React.FC<StepLayoutProps> = React.memo(
         accessible={false}
       >
         <StepHeader
-          title={title}
-          subtitle={subtitle}
+          title={translateCopy(title)}
+          subtitle={translateCopy(subtitle)}
           progress={progress}
           stepNumber={stepIndex + 1}
           totalSteps={totalSteps}

@@ -5,6 +5,7 @@ import { DynamicSummary } from "@/src/components/exercise/DynamicSummary";
 import { EXERCISE_LINKING_MAP } from "@/src/data/exerciseLinkingMap";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
 import type { ExerciseType, StepProps } from "@/src/types/exerciseFlow";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 
 interface DynamicSummaryStepOpts {
   title: string;
@@ -36,6 +37,7 @@ export function createDynamicSummaryStep(
     onNavigateDeeper,
   }) => {
     const router = useRouter();
+    const translate = useExerciseCopy();
     const { saveCard } = useCopingCards();
     const [cardSaved, setCardSaved] = useState(false);
 
@@ -75,7 +77,7 @@ export function createDynamicSummaryStep(
       await saveCard({
         exercise_type: opts.exerciseType,
         reframe_text: keyTakeaway,
-        reframe_label: opts.keyTakeawayLabel ?? "Your reframe",
+        reframe_label: translate(opts.keyTakeawayLabel ?? "Your reframe"),
       });
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setCardSaved(true);
@@ -87,16 +89,16 @@ export function createDynamicSummaryStep(
 
     return (
       <DynamicSummary
-        title={opts.title}
+        title={translate(opts.title)}
         celebrationEmoji={opts.celebrationEmoji}
         preScore={preScore}
         postScore={postScore}
-        scoreLabel={opts.scoreLabel ?? "Intensity"}
+        scoreLabel={translate(opts.scoreLabel ?? "Intensity")}
         scoreMax={opts.scoreMax ?? 10}
         keyTakeaway={keyTakeaway}
-        keyTakeawayLabel={opts.keyTakeawayLabel}
+        keyTakeawayLabel={opts.keyTakeawayLabel ? translate(opts.keyTakeawayLabel) : undefined}
         nextExerciseType={link?.exerciseType}
-        nextExerciseLabel={link?.label}
+        nextExerciseLabel={link?.label ? translate(link.label) : undefined}
         onNavigateToExercise={handleNavigateToExercise}
         onSaveCopingCard={showSaveButton ? handleSaveCopingCard : undefined}
         cardSaved={cardSaved}

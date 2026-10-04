@@ -4,19 +4,20 @@ import React from "react";
 import { View } from "react-native";
 
 import {
-  ReflectionBulletList,
   ReflectionScoreShift,
   ReflectionTimeline,
   ReflectionTimelineItem,
 } from "@/src/components/exercise/ReflectionTimeline";
 import { Mascot, type MascotState } from "@/src/components/ui/Mascot";
 import { Text } from "@/src/components/ui/Text";
-
-export type RecapSection = {
-  label: string;
-  value: string | string[];
-  tone?: "default" | "serif" | "muted";
-};
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import {
+  RealityPill,
+  RecapSectionContent,
+  ScoreSnapshot,
+  type RecapSection,
+} from "./ThoughtRecordRecapParts";
+export type { RecapSection } from "./ThoughtRecordRecapParts";
 
 interface ThoughtRecordRecapProps {
   title: string;
@@ -36,87 +37,6 @@ interface ThoughtRecordRecapProps {
   balancedThought?: string;
   sections?: readonly RecapSection[];
   afterTimeline?: React.ReactNode;
-}
-
-function ScoreSnapshot({
-  score,
-}: {
-  score: number;
-}) {
-  return (
-    <View className="flex-row items-end">
-      <Text
-        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
-        className="text-[34px] leading-[34px]"
-      >
-        {score}
-      </Text>
-      <Text
-        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.secondary }}
-        className="ml-2 text-[12px] leading-[18px]"
-      >
-        /10
-      </Text>
-    </View>
-  );
-}
-
-function RealityPill({
-  label,
-}: {
-  label: string;
-}) {
-  return (
-    <View
-      className="self-start rounded-full px-3.5 py-2"
-      style={{ backgroundColor: SEMANTIC_COLORS.surface.elevated }}
-    >
-      <Text
-        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.pressed }}
-        className="text-[13px] leading-[18px]"
-      >
-        {label}
-      </Text>
-    </View>
-  );
-}
-
-function RecapSectionContent({
-  section,
-}: {
-  section: RecapSection;
-}) {
-  const items = Array.isArray(section.value)
-    ? section.value.filter((item) => item.trim())
-    : [];
-
-  if (items.length > 0) {
-    return (
-      <ReflectionBulletList
-        items={items}
-        textColor={section.tone === "muted" ? SEMANTIC_COLORS.text.secondary : SEMANTIC_COLORS.text.primary}
-      />
-    );
-  }
-
-  if (typeof section.value !== "string" || !section.value.trim()) {
-    return null;
-  }
-
-  const style =
-    section.tone === "serif"
-      ? { fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }
-      : { fontFamily: APP_FONT_FAMILIES.regular, color: section.tone === "muted" ? SEMANTIC_COLORS.text.secondary : SEMANTIC_COLORS.text.primary };
-  const className =
-    section.tone === "serif"
-      ? "text-[22px] leading-[30px]"
-      : "text-[16px] leading-[24px]";
-
-  return (
-    <Text style={style} className={className}>
-      {section.value.trim()}
-    </Text>
-  );
 }
 
 export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
@@ -139,6 +59,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
     sections,
     afterTimeline,
   }) => {
+    const translateCopy = useExerciseCopy();
     const hasSituation = Boolean(situation?.trim());
     const hasAutomaticThought = Boolean(automaticThought?.trim());
     const hasScore = typeof preScore === "number";
@@ -167,13 +88,13 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
             className={`${showMascot ? "mt-3" : ""} text-center text-[34px] leading-[37px] tracking-[-0.01em]`}
           >
-            {title}
+            {translateCopy(title)}
           </Text>
           <Text
             style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
             className="mt-2 text-center text-[15px] leading-[22px]"
           >
-            {subtitle}
+            {translateCopy(subtitle)}
           </Text>
         </View>
 
@@ -191,7 +112,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
                 style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.secondary }}
                 className="text-[13px] leading-[18px]"
               >
-                {highlightLabel}
+                {translateCopy(highlightLabel)}
               </Text>
             ) : null}
             <Text
@@ -210,7 +131,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
               {recordSections.map((section, index) => (
                 <ReflectionTimelineItem
                   key={section.label}
-                  label={section.label}
+                  label={translateCopy(section.label)}
                   isLast={
                     index === recordSections.length - 1 && !hasScore
                   }
@@ -220,13 +141,13 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
               ))}
 
               {recordSections.length > 0 && hasScore ? (
-                <ReflectionTimelineItem label={scoreLabel} isLast>
+                <ReflectionTimelineItem label={translateCopy(scoreLabel)} isLast>
                   {hasShift ? (
                     <ReflectionScoreShift
                       before={preScore!}
                       after={postScore!}
-                      label="Checked again"
-                      detail={scoreDetail}
+                      label={translateCopy("Checked again")}
+                      detail={scoreDetail ? translateCopy(scoreDetail) : undefined}
                     />
                   ) : (
                     <ScoreSnapshot score={preScore!} />
@@ -236,7 +157,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
 
               {hasThoughtRecordTimeline && hasSituation ? (
                 <ReflectionTimelineItem
-                  label="What happened"
+                  label={translateCopy("What happened")}
                   isLast={
                     !hasAutomaticThought &&
                     !hasScore &&
@@ -255,7 +176,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
 
               {hasThoughtRecordTimeline && hasAutomaticThought ? (
                 <ReflectionTimelineItem
-                  label="Automatic thought"
+                  label={translateCopy("Automatic thought")}
                   isLast={!hasScore && !hasReality && !hasBalancedThought}
                 >
                   <Text
@@ -269,14 +190,14 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
 
               {hasThoughtRecordTimeline && hasScore ? (
                 <ReflectionTimelineItem
-                  label={scoreLabel}
+                  label={translateCopy(scoreLabel)}
                   isLast={!hasReality && !hasBalancedThought}
                 >
                   {hasShift ? (
                     <ReflectionScoreShift
                       before={preScore!}
                       after={postScore!}
-                      label="Checked again"
+                      label={translateCopy("Checked again")}
                       detail={scoreDetail}
                     />
                   ) : (
@@ -287,7 +208,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
 
               {hasThoughtRecordTimeline && hasReality ? (
                 <ReflectionTimelineItem
-                  label="Reality check"
+                  label={translateCopy("Reality check")}
                   isLast={!hasBalancedThought}
                 >
                   <RealityPill label={realityCheckLabel!} />
@@ -295,7 +216,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
               ) : null}
 
               {hasThoughtRecordTimeline && hasBalancedThought ? (
-                <ReflectionTimelineItem label="Balanced thought" isLast>
+                <ReflectionTimelineItem label={translateCopy("Balanced thought")} isLast>
                   <Text
                     style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.primary }}
                     className="text-[16px] leading-[24px]"

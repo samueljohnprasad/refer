@@ -1,37 +1,33 @@
 import React, { useState, useCallback } from "react";
-import { View, FlatList, Pressable, ActivityIndicator } from "react-native";
+import { View, Pressable } from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { useRouter, Stack } from "expo-router";
 import * as Haptics from "expo-haptics";
-import { Skeleton } from "@/src/components/ui/Skeleton";
 import { Text } from "@/src/components/ui/Text";
 import { CopingCardShimmer } from "./CopingCardShimmer";
-import { Host, BottomSheet, Group, RNHostView, Picker, Text as SwiftUIText, List, Section, SwipeActions, Button, HStack, Spacer } from "@expo/ui/swift-ui";
+import { Host, RNHostView, Picker, Text as SwiftUIText, List, SwipeActions, Button } from "@expo/ui/swift-ui";
 import {
-  presentationDetents,
-  presentationDragIndicator,
   pickerStyle,
   tag,
   tint,
   listStyle,
-  frame,
   listRowBackground,
   listRowSeparator,
 } from "@expo/ui/swift-ui/modifiers";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { BookmarkAdd01Icon } from "@hugeicons/core-free-icons";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 import { CopingCardItem } from "./CopingCardItem";
 import { useHeaderHeight } from "expo-router/react-navigation";
+import { useTranslation } from "react-i18next";
+import { CopingCardsEmptyState } from "./CopingCardsEmptyState";
 
 import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 
 export const CopingCardsScreen: React.FC = () => {
+  const { t } = useTranslation("exercises");
   const router = useRouter();
   const [viewMode, setViewMode] = useState<"active" | "archived">("active");
   const [toastConfig, setToastConfig] = useState<{
@@ -107,7 +103,7 @@ export const CopingCardsScreen: React.FC = () => {
     >
       <Stack.Screen
         options={{
-          title: "My Coping Cards",
+          title: t("copingCards.title"),
           headerShown: true,
           headerBackButtonDisplayMode: "minimal",
           headerTransparent: true,
@@ -124,14 +120,15 @@ export const CopingCardsScreen: React.FC = () => {
             <Host style={{ height: 32, width: 220 }}>
               <Picker
                 modifiers={[pickerStyle("segmented"), tint(SEMANTIC_COLORS.brand.pressed)]}
-                selection={viewMode === "active" ? "Active" : "Archived"}
+                selection={viewMode}
                 onSelectionChange={(selection) => {
-                  if (selection === "Active") setViewMode("active");
-                  if (selection === "Archived") setViewMode("archived");
+                  if (selection === "active" || selection === "archived") {
+                    setViewMode(selection);
+                  }
                 }}
               >
-                <SwiftUIText modifiers={[tag("Active")]}>Active</SwiftUIText>
-                <SwiftUIText modifiers={[tag("Archived")]}>Archived</SwiftUIText>
+                <SwiftUIText modifiers={[tag("active")]}>{t("copingCards.active")}</SwiftUIText>
+                <SwiftUIText modifiers={[tag("archived")]}>{t("copingCards.archived")}</SwiftUIText>
               </Picker>
             </Host>
           </View>
@@ -160,26 +157,26 @@ export const CopingCardsScreen: React.FC = () => {
                   variant="h3"
                   className="text-center text-ink font-semibold mb-2"
                 >
-                  Failed to load your coping cards
+                  {t("copingCards.loadError")}
                 </Text>
                 <Pressable
                   onPress={refetch}
                   hitSlop={12}
                   className="px-6 py-3 bg-sage-100 rounded-full mt-2 active:opacity-80"
                 >
-                  <Text className="text-sage-700 font-bold">Try again</Text>
+                  <Text className="text-sage-700 font-bold">{t("copingCards.tryAgain")}</Text>
                 </Pressable>
               </View>
             </RNHostView>
           ) : activeCards.length === 0 && archivedCards.length === 0 ? (
             <RNHostView matchContents>
-              <EmptyState />
+              <CopingCardsEmptyState />
             </RNHostView>
           ) : viewMode === "archived" && archivedCards.length === 0 ? (
             <RNHostView matchContents>
               <View className="flex-1 items-center justify-center pt-20 px-5">
                 <Text className="text-center text-ink-muted text-[15px]">
-                  No archived cards
+                  {t("copingCards.noArchivedCards")}
                 </Text>
               </View>
             </RNHostView>
@@ -208,7 +205,7 @@ export const CopingCardsScreen: React.FC = () => {
                     role="destructive"
                     onPress={() => handleDelete(item.id)}
                     systemImage="trash.fill"
-                    label="Delete"
+                    label={t("copingCards.delete")}
                   />
                   <Button
                     onPress={() =>
@@ -218,7 +215,7 @@ export const CopingCardsScreen: React.FC = () => {
                     }
                     modifiers={[tint(item.archived ? SEMANTIC_COLORS.brand.pressed : "#F87171")]}
                     systemImage={item.archived ? "tray.and.arrow.up.fill" : "archivebox.fill"}
-                    label={item.archived ? "Restore" : "Archive"}
+                    label={item.archived ? t("copingCards.restore") : t("copingCards.archive")}
                   />
                 </SwipeActions.Actions>
                 <SwipeActions.Actions edge="leading" allowsFullSwipe={true}>
@@ -226,7 +223,7 @@ export const CopingCardsScreen: React.FC = () => {
                   onPress={() => handleToggleStar(item.id)}
                   modifiers={[tint(SEMANTIC_COLORS.brand.primary)]}
                   systemImage={item.starred ? "star.slash.fill" : "star.fill"}
-                  label={item.starred ? "Unstar" : "Star"}
+                  label={item.starred ? t("copingCards.unstar") : t("copingCards.star")}
                 />
               </SwipeActions.Actions>
 
@@ -257,14 +254,14 @@ export const CopingCardsScreen: React.FC = () => {
             shadowOffset: { width: 0, height: 4 },
           }}
         >
-          <Text className="text-white font-semibold">Card archived</Text>
+          <Text className="text-white font-semibold">{t("copingCards.archivedToast")}</Text>
           <Pressable
             onPress={handleUndoArchive}
             hitSlop={12}
             className="active:opacity-60"
           >
             <Text className="text-sage-300 font-bold uppercase tracking-wider text-[13px]">
-              Undo
+              {t("copingCards.undo")}
             </Text>
           </Pressable>
         </Animated.View>
@@ -272,35 +269,5 @@ export const CopingCardsScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-function EmptyState() {
-  return (
-    <View className="items-center justify-center pt-10 pb-20 px-6 mt-20">
-      <View className="h-20 w-20 rounded-full bg-sage-50 items-center justify-center mb-5">
-        <HugeiconsIcon
-          icon={BookmarkAdd01Icon}
-          size={36}
-          color={SEMANTIC_COLORS.brand.primary}
-          strokeWidth={1.5}
-        />
-      </View>
-      <Text
-        variant="h2"
-        className="text-[20px] font-extrabold text-ink text-center mb-2"
-      >
-        No coping cards yet
-      </Text>
-      <Text
-        variant="body"
-        color="soft"
-        className="text-[15px] text-center leading-relaxed"
-      >
-        Complete an exercise and tap{" "}
-        <Text className="font-bold text-sage-700">"Save as coping card"</Text>{" "}
-        on the summary screen to collect your insights here.
-      </Text>
-    </View>
-  );
-}
 
 CopingCardsScreen.displayName = "CopingCardsScreen";

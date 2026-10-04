@@ -1,4 +1,6 @@
 import React from "react";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { translateStepCopyProps } from "@/src/lib/i18n/exerciseCopy";
 import type { StepProps } from "@/src/types/exerciseFlow";
 
 /**
@@ -17,13 +19,15 @@ export function createStep<Extra extends Record<string, any>>(
   extraProps: Extra | ((props: StepProps<any>) => Extra),
 ): React.ComponentType<StepProps<any>> {
   const Wrapped: React.FC<StepProps<any>> = (stepProps) => {
+    const translate = useExerciseCopy();
     const resolvedProps =
       typeof extraProps === "function" ? extraProps(stepProps) : extraProps;
+    const localizedProps = translateStepCopyProps(resolvedProps, translate);
     return (
       <Component
         autoFocus={stepProps.autoFocus ?? true}
         {...(stepProps as any)}
-        {...resolvedProps}
+        {...localizedProps}
       />
     );
   };

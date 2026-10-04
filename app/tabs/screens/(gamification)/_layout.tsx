@@ -1,9 +1,11 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { Stack } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { useCSSVariable } from "uniwind";
 
 export default function GamificationGroupLayout() {
+  const { t } = useTranslation("common");
   const appBackground = useCSSVariable("--app-background") as string;
 
   return (
@@ -18,7 +20,7 @@ export default function GamificationGroupLayout() {
         name="achievements"
         options={{
           headerShown: true,
-          title: "Achievements",
+          title: t("achievements.title"),
           headerStyle: { backgroundColor: "#FDFDF9" },
           headerShadowVisible: false,
           freezeOnBlur: true,
@@ -34,7 +36,7 @@ export default function GamificationGroupLayout() {
         name="rewards-shop"
         options={{
           headerShown: false,
-          title: "Rewards Shop",
+          title: t("rewards.title"),
           freezeOnBlur: true,
           animation: "slide_from_right",
         }}
@@ -43,7 +45,7 @@ export default function GamificationGroupLayout() {
         name="xp-history"
         options={{
           headerShown: true,
-          title: "Progression",
+          title: t("xp.progression"),
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
@@ -59,7 +61,7 @@ export default function GamificationGroupLayout() {
         name="challenges"
         options={{
           headerShown: true,
-          title: "Challenges",
+          title: t("challenges.title"),
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_bottom",

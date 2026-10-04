@@ -13,13 +13,17 @@ import {
 import { Text } from "@/src/components/ui/Text";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
+import { ExerciseCopyText } from "@/src/components/exercise/ExerciseCopyText";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { useTranslation } from "react-i18next";
 import type { DecatastrophizingResponse, StepProps } from "@/src/types/exerciseFlow";
 
-function getShiftCopy(pre: number, post: number): { label: string; detail: string; color: string; } {
+function getShiftCopy(pre: number, post: number): { label?: string; labelKey?: "flow.ui.scoreShiftStronger" | "flow.ui.scoreShiftLighter"; labelCount?: number; detail: string; color: string; } {
   const change = pre - post;
   if (change < 0) {
     return {
-      label: `${Math.abs(change)} point${Math.abs(change) === 1 ? "" : "s"} stronger`,
+      labelKey: "flow.ui.scoreShiftStronger",
+      labelCount: Math.abs(change),
       detail: "Anxiety can sometimes temporarily increase when we focus closely on it.",
       color: SEMANTIC_COLORS.text.primary,
     };
@@ -32,7 +36,8 @@ function getShiftCopy(pre: number, post: number): { label: string; detail: strin
     };
   }
   return {
-    label: `${change} point${change === 1 ? "" : "s"} lighter`,
+    labelKey: "flow.ui.scoreShiftLighter",
+    labelCount: change,
     detail: "The feared catastrophe became less overwhelming after exploring it objectively.",
     color: SEMANTIC_COLORS.brand.onSoft,
   };
@@ -42,6 +47,9 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
   response,
   readOnly,
 }) => {
+  const translateCopy = useExerciseCopy();
+  const { t: rawTranslateUi } = useTranslation("exercises");
+  const translateUi = rawTranslateUi as unknown as (key: string, options: { count: number }) => string;
   const { saveCard } = useCopingCards();
   const [cardSaved, setCardSaved] = useState(false);
   const [isSavingCard, setIsSavingCard] = useState(false);
@@ -50,7 +58,16 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
   const preScore = response.anxietyBefore ?? 5;
   const postScore = response.anxietyAfter;
   const hasScores = postScore !== null && postScore !== undefined;
-  const shift = hasScores ? getShiftCopy(preScore, postScore) : null;
+  const rawShift = hasScores ? getShiftCopy(preScore, postScore) : null;
+  const shift = rawShift
+    ? {
+        ...rawShift,
+        label: rawShift.labelKey
+          ? translateUi(rawShift.labelKey, { count: rawShift.labelCount ?? 0 })
+          : translateCopy(rawShift.label ?? ""),
+        detail: translateCopy(rawShift.detail),
+      }
+    : null;
 
   const hasCatastrophe = Boolean(response.fearedCatastrophe?.trim());
   const hasProbability = typeof response.probability === "number";
@@ -78,35 +95,35 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
       await saveCard({
         exercise_type: "decatastrophizing",
         reframe_text: response.copingPlan,
-        reframe_label: "Your coping plan",
+        reframe_label: translateCopy("Your coping plan"),
       });
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setCardSaved(true);
     } catch (error) {
       const message = error instanceof Error ? error.message : "The coping card could not be saved.";
-      setCardSaveError("Could not save this coping card. Try again.");
-      Alert.alert("Save failed", message);
+      setCardSaveError(translateCopy("Could not save this coping card. Try again."));
+      Alert.alert(translateCopy("Save failed"), message);
     } finally {
       setIsSavingCard(false);
     }
-  }, [cardSaved, isSavingCard, response.copingPlan, saveCard]);
+  }, [cardSaved, isSavingCard, response.copingPlan, saveCard, translateCopy]);
 
   return (
     <View className="px-3" style={{ paddingBottom: 40 }}>
       <View className="pb-6 pt-2">
-        <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[34px] leading-[37px] tracking-[-0.01em]">
+        <ExerciseCopyText style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[34px] leading-[37px] tracking-[-0.01em]">
           Fear put in perspective!
-        </Text>
-        <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }} className="mt-2 max-w-[330px] text-[15px] leading-[22px]">
+        </ExerciseCopyText>
+        <ExerciseCopyText style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }} className="mt-2 max-w-[330px] text-[15px] leading-[22px]">
           You carefully examined your worry and built a plan for it.
-        </Text>
+        </ExerciseCopyText>
       </View>
 
       {response.copingPlan?.trim() ? (
         <View className="py-8" style={{ marginHorizontal: -28, paddingHorizontal: 28, backgroundColor: SEMANTIC_COLORS.selection.surface }}>
-          <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.pressed }} className="text-[13px] leading-[18px]">
+          <ExerciseCopyText style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.pressed }} className="text-[13px] leading-[18px]">
             Your coping plan
-          </Text>
+          </ExerciseCopyText>
           <Text accessibilityRole="summary" style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="mt-1.5 text-[25px] leading-[33px]">
             {response.copingPlan}
           </Text>
@@ -115,12 +132,13 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
               onPress={handleSaveCopingCard}
               disabled={cardSaved || isSavingCard}
               accessibilityRole="button"
+              accessibilityLabel={translateCopy(cardSaved ? "Saved to coping cards" : isSavingCard ? "Saving coping card" : "Save as coping card")}
               className="mt-5 min-h-11 flex-row items-center self-start py-2 active:opacity-60"
             >
               <HugeiconsIcon icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon} size={18} color={SEMANTIC_COLORS.brand.onSoft} strokeWidth={2} />
-              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.onSoft }} className="ml-2 text-[14px] leading-[20px]">
+              <ExerciseCopyText style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.onSoft }} className="ml-2 text-[14px] leading-[20px]">
                 {cardSaved ? "Saved to coping cards" : isSavingCard ? "Saving..." : "Save for a difficult moment"}
-              </Text>
+              </ExerciseCopyText>
             </Pressable>
           ) : null}
           {cardSaveError ? (
@@ -135,7 +153,7 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
         <View className="mt-7">
           <ReflectionTimeline>
             {hasCatastrophe ? (
-              <ReflectionTimelineItem label="Feared catastrophe">
+            <ReflectionTimelineItem label={translateCopy("Feared catastrophe")}>
                 <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBoldItalic, color: SEMANTIC_COLORS.text.primary }} className="text-[21px] leading-[28px]">
                   {response.fearedCatastrophe}
                 </Text>
@@ -143,15 +161,15 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
             ) : null}
 
             {hasProbability ? (
-              <ReflectionTimelineItem label="Probability">
+              <ReflectionTimelineItem label={translateCopy("Probability")}>
                 <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[16px] leading-[24px]">
-                  {response.probability}% chance of happening
+                  {response.probability}% {translateCopy("chance of happening")}
                 </Text>
               </ReflectionTimelineItem>
             ) : null}
 
             {hasMostLikely ? (
-              <ReflectionTimelineItem label="Most likely outcome">
+              <ReflectionTimelineItem label={translateCopy("Most likely outcome")}>
                 <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.primary }} className="text-[16px] leading-[24px]">
                   {response.mostLikelyOutcome}
                 </Text>
@@ -159,23 +177,23 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
             ) : null}
             
             {has1Week || has1Month || has1Year ? (
-              <ReflectionTimelineItem label="Time perspective">
+              <ReflectionTimelineItem label={translateCopy("Time perspective")}>
                 <View className="gap-3">
                   {has1Week && (
                     <View>
-                      <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[14px]">In 1 week</Text>
+                      <ExerciseCopyText style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[14px]">In 1 week</ExerciseCopyText>
                       <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }} className="text-[14px]">{response.perspective1Week}</Text>
                     </View>
                   )}
                   {has1Month && (
                     <View>
-                      <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[14px]">In 1 month</Text>
+                      <ExerciseCopyText style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[14px]">In 1 month</ExerciseCopyText>
                       <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }} className="text-[14px]">{response.perspective1Month}</Text>
                     </View>
                   )}
                   {has1Year && (
                     <View>
-                      <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[14px]">In 1 year</Text>
+                      <ExerciseCopyText style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[14px]">In 1 year</ExerciseCopyText>
                       <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }} className="text-[14px]">{response.perspective1Year}</Text>
                     </View>
                   )}
@@ -184,7 +202,7 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
             ) : null}
 
             {hasScores && shift ? (
-              <ReflectionTimelineItem label="How anxious you felt" isLast>
+              <ReflectionTimelineItem label={translateCopy("How anxious you felt")} isLast>
                 <ReflectionScoreShift
                   before={preScore}
                   after={postScore}
@@ -198,9 +216,9 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
         </View>
       ) : null}
 
-      <Text style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }} className="mb-2 mt-10 px-5 text-center text-[13px] leading-[20px]">
+      <ExerciseCopyText style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }} className="mb-2 mt-10 px-5 text-center text-[13px] leading-[20px]">
         Completing saves this reflection to your exercise history.
-      </Text>
+      </ExerciseCopyText>
     </View>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, Pressable, ScrollView, View } from "react-native";
 import { Image } from "expo-image";
 import { Button } from "@/src/components/ui/Button";
@@ -55,6 +56,7 @@ export function CourseOverviewScreen({
   onPrimaryActionPress,
   onUnenrollPress,
 }: CourseOverviewScreenProps): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   const isBlockedByCapacity = !isEnrolled && Boolean(isAtCapacityLimit);
   const canStartCourse =
     Boolean(overview && overview.lessonCount > 0) &&
@@ -62,28 +64,28 @@ export function CourseOverviewScreen({
     !isBlockedByCapacity;
 
   const primaryLabel = isCompleted
-    ? "Open Journey"
+    ? t("openJourney")
     : isEnrolled
-      ? "Continue journey"
+      ? t("continueJourney")
       : isBlockedByCapacity
-        ? `Limit reached (${currentInProgressCount}/${maxCapacityLimit})`
-        : "Start journey";
+        ? t("limitReached", { current: currentInProgressCount, max: maxCapacityLimit })
+        : t("startJourney");
 
   // ponytail: native alert confirmation for drop course
   const handleConfirmUnenroll = useCallback(() => {
     Alert.alert(
-      `Unenroll from ${course.title}?`,
-      "Your progress in this journey will be reset so you can free up an active journey slot.",
+      t("unenrollTitle", { title: course.title }),
+      t("unenrollMessage"),
       [
-        { text: "Keep journey", style: "cancel" },
+        { text: t("keepJourney"), style: "cancel" },
         {
-          text: "Unenroll",
+          text: t("unenroll"),
           style: "destructive",
           onPress: () => onUnenrollPress?.(course.id),
         },
       ],
     );
-  }, [course.id, course.title, onUnenrollPress]);
+  }, [course.id, course.title, onUnenrollPress, t]);
 
   return (
     <View className="flex-1 bg-white" style={{ paddingTop: Math.max(insets.top, 12) }}>
@@ -120,7 +122,7 @@ export function CourseOverviewScreen({
             className="mb-3 text-center text-amber-700 font-nunito-semibold"
             accessibilityRole="alert"
           >
-            You’ve reached the limit of {maxCapacityLimit} active journeys. Complete or unenroll from an active journey to start another.
+            {t("capacityMessage", { max: maxCapacityLimit })}
           </Text>
         ) : null}
         <Button
@@ -135,10 +137,10 @@ export function CourseOverviewScreen({
             disabled={isUnenrolling}
             className="mt-2 min-h-11 items-center justify-center py-2"
             accessibilityRole="button"
-            accessibilityLabel={`Unenroll from ${course.title}`}
+            accessibilityLabel={`${t("unenrollFromJourney")} ${course.title}`}
           >
             <Text variant="label" className="text-rose-600 font-nunito-semibold">
-              {isUnenrolling ? "Unenrolling..." : "Unenroll from journey"}
+              {isUnenrolling ? t("unenrolling") : t("unenrollFromJourney")}
             </Text>
           </Pressable>
         ) : null}
@@ -154,6 +156,7 @@ function CourseOverviewContent({
   course: CourseCatalogListItem;
   overview: CourseOverview;
 }): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   const accentColor = resolveCourseAccentColor(course.colorHex);
   const iconUrl = overview.iconUrl ?? course.iconUrl;
   const imageSource = getCourseImageSource(iconUrl);
@@ -190,22 +193,22 @@ function CourseOverviewContent({
       ) : null}
 
       <Text variant="label" className="mt-4 text-ink-soft">
-        {formatCount(overview.sectionCount, "section")}
+        {t("countSection", { count: overview.sectionCount })}
         {" · "}
-        {formatCount(overview.unitCount, "unit")}
+        {t("countUnit", { count: overview.unitCount })}
         {" · "}
-        {formatCount(overview.lessonCount, "lesson")}
+        {t("countLesson", { count: overview.lessonCount })}
       </Text>
       <CourseSchedule overview={overview} />
 
       <Text variant="h2" className="mb-2 mt-8">
-        Course outline
+        {t("courseOutline")}
       </Text>
       {overview.lessonCount > 0 ? (
         <CourseOutline sections={overview.sections} />
       ) : (
         <Text variant="body" className="py-6">
-          No published lessons are available.
+          {t("noLessons")}
         </Text>
       )}
     </View>
@@ -217,12 +220,13 @@ function CourseSchedule({
 }: {
   overview: CourseOverview;
 }): React.JSX.Element | null {
+  const { t } = useTranslation("journeys");
   const scheduleParts = [
     overview.totalDurationWeeks
-      ? formatCount(overview.totalDurationWeeks, "week")
+      ? t("countWeek", { count: overview.totalDurationWeeks })
       : null,
     overview.sessionsPerWeek
-      ? `${overview.sessionsPerWeek} sessions per week`
+      ? t("scheduleSessions", { count: overview.sessionsPerWeek })
       : null,
   ].filter(Boolean);
 
@@ -235,8 +239,9 @@ function CourseSchedule({
 }
 
 function CourseOverviewSkeleton(): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
-    <View className="gap-6" accessibilityLabel="Loading course details">
+    <View className="gap-6" accessibilityLabel={t("loadingDetails")}>
       <View className="flex-row items-center gap-4">
         <Skeleton width={56} height={56} radius={12} />
         <Skeleton width="58%" height={28} radius={8} />
@@ -257,10 +262,11 @@ function CourseOverviewSkeleton(): React.JSX.Element {
 }
 
 function CourseOverviewError({ onRetry }: { onRetry: () => void }): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
     <View className="items-center py-16">
       <Text variant="h2" className="text-center">
-        Couldn’t load this course
+        {t("couldNotLoadCourse")}
       </Text>
       <Pressable
         onPress={onRetry}
@@ -268,13 +274,9 @@ function CourseOverviewError({ onRetry }: { onRetry: () => void }): React.JSX.El
         accessibilityRole="button"
       >
         <Text variant="label-bold" color="sage">
-          Try again
+          {t("retry")}
         </Text>
       </Pressable>
     </View>
   );
-}
-
-function formatCount(value: number, singular: string): string {
-  return `${value} ${value === 1 ? singular : `${singular}s`}`;
 }

@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
 import { JournalHeaderProps } from "../types";
 
@@ -24,6 +25,7 @@ export const JournalHeader = React.memo<JournalHeaderProps>(
     backIconStyle,
     closeIconStyle,
   }: JournalHeaderProps) => {
+    const { t } = useTranslation("journal");
     const insets = useSafeAreaInsets();
     const headerHeight: number = insets.top + 64;
 
@@ -46,7 +48,7 @@ export const JournalHeader = React.memo<JournalHeaderProps>(
           activeOpacity={0.7}
           onPress={onClose}
           accessibilityRole="button"
-          accessibilityLabel="Close journal entry"
+          accessibilityLabel={t("header.closeEntry")}
         >
           <Animated.View
             style={[
@@ -93,7 +95,9 @@ export const JournalHeader = React.memo<JournalHeaderProps>(
           activeOpacity={0.7}
           onPress={isEditing ? onDone : onEdit}
           accessibilityRole="button"
-          accessibilityLabel={isEditing ? "Done editing" : "Edit journal"}
+          accessibilityLabel={
+            isEditing ? t("header.doneEditing") : t("header.editJournal")
+          }
         >
           <Animated.View
             style={[

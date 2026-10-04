@@ -1,7 +1,9 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import type { ExerciseType, ExerciseCategory } from "@/src/types/exerciseFlow";
 import { useExerciseStatsByType } from "./useExerciseStats";
-import { PRE_POST_FIELDS, CATEGORY_LABELS } from "@/src/constants/insights";
+import { PRE_POST_FIELDS } from "@/src/constants/insights";
+import { categoryLabel } from "./i18n";
 import { average } from "@/src/utils/insights";
 
 export interface PostExerciseInsight {
@@ -34,6 +36,7 @@ export function usePostExerciseInsight(
   exerciseType: ExerciseType,
   currentResponse: Record<string, any>,
 ): PostExerciseInsight | null {
+  const { t } = useTranslation("common");
   const typeStats = useExerciseStatsByType(exerciseType);
 
   return useMemo(() => {
@@ -47,8 +50,8 @@ export function usePostExerciseInsight(
     for (const m of milestones) {
       if (totalForType + 1 === m) {
         return {
-          message: `That's your ${m}th ${CATEGORY_LABELS[category].toLowerCase()} exercise!`,
-          detail: "Consistency is the #1 predictor of progress.",
+          message: t("insights.postExercise.milestone", { count: m, category: categoryLabel(t, category).toLowerCase() }),
+          detail: t("insights.nudges.consistency"),
           tone: "celebrating" as const,
         };
       }
@@ -59,11 +62,11 @@ export function usePostExerciseInsight(
       const avgShift = computeAvgShift(entries, exerciseType);
       const detail =
         avgShift !== null
-          ? `Your average shift is ${avgShift.toFixed(1)} points · ${shift > avgShift ? "this session was above average!" : "building the habit matters most."}`
+          ? t("insights.postExercise.averageShift", { value: avgShift.toFixed(1), note: shift > avgShift ? t("insights.postExercise.aboveAverage") : t("insights.postExercise.buildingHabit") })
           : null;
 
       return {
-        message: `You feel ${shift} point${shift > 1 ? "s" : ""} ${SHIFT_VERBS[category] || "better"} than when you started.`,
+        message: t("insights.postExercise.feelBetter", { shift, plural: shift > 1 ? "s" : "", verb: t(`insights.postExercise.verbs.${category}`, { defaultValue: SHIFT_VERBS[category] || "better" }) }),
         detail,
         tone: shift >= 3 ? ("celebrating" as const) : ("encouraging" as const),
       };
@@ -72,9 +75,9 @@ export function usePostExerciseInsight(
     // Weekly count
     if (thisWeekForType > 1) {
       return {
-        message: `That's your ${thisWeekForType + 1}${getOrdinalSuffix(thisWeekForType + 1)} session this week.`,
+        message: t("insights.postExercise.weekSession", { count: thisWeekForType + 1, ordinal: getOrdinalSuffix(thisWeekForType + 1) }),
         detail:
-          totalForType > 5 ? `${totalForType + 1} total and counting.` : null,
+          totalForType > 5 ? t("insights.postExercise.totalAndCounting", { count: totalForType + 1 }) : null,
         tone: "encouraging" as const,
       };
     }
@@ -82,15 +85,15 @@ export function usePostExerciseInsight(
     // Generic encouraging
     if (totalForType >= 1) {
       return {
-        message: `${totalForType + 1} ${CATEGORY_LABELS[category].toLowerCase()} sessions completed.`,
-        detail: "Every practice session strengthens your skills.",
+        message: t("insights.postExercise.completed", { count: totalForType + 1, category: categoryLabel(t, category).toLowerCase() }),
+        detail: t("insights.postExercise.strengthensSkills"),
         tone: "encouraging" as const,
       };
     }
 
     return {
-      message: "First one done · that's the hardest part.",
-      detail: "You've taken the most important step: starting.",
+      message: t("insights.postExercise.firstDone"),
+      detail: t("insights.postExercise.starting"),
       tone: "celebrating" as const,
     };
   }, [typeStats, currentResponse, exerciseType]);

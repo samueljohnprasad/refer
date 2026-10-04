@@ -9,6 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import { PricingPlanConfig } from "../types";
+import { useTranslation } from "react-i18next";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -23,6 +24,7 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
   isSelected,
   onSelect,
 }) => {
+  const { t } = useTranslation("onboarding");
   const scale = useSharedValue(1);
   const selectionProgress = useSharedValue(0);
 
@@ -79,7 +81,7 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="text-[11.5px] tracking-[0.01em] text-sage-900"
           >
-            {plan.badge}
+            {t(`paywall.plans.${plan.tier}.badge`)}
           </Text>
         </View>
       )}
@@ -88,7 +90,7 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
           <Text
             className="happy-font-heading-italic mb-1 text-[14px] leading-[1.3] text-sage-600"
           >
-            {plan.headline}
+            {t(`paywall.plans.${plan.tier}.headline`)}
           </Text>
 
           <View className="flex-row items-start justify-between gap-4">
@@ -97,7 +99,7 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
                 <Text
                   className="happy-font-body-semibold text-[14px] text-ink"
                 >
-                  {plan.label}
+                  {t(`paywall.plans.${plan.tier}.label`)}
                 </Text>
                 {plan.savings ? (
                   <View className="rounded bg-terracotta px-1.5 py-0.5">
@@ -105,7 +107,7 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
                       style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
                       className="text-[10.5px] tracking-[0.01em] text-white"
                     >
-                      {plan.savings}
+                      {t(`paywall.plans.${plan.tier}.savings`)}
                     </Text>
                   </View>
                 ) : null}
@@ -114,13 +116,13 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
               <Text
                 className="happy-font-body mt-1 text-[11px] leading-[1.35] text-ink-muted"
               >
-                {plan.detailPrefix}
+                {t(`paywall.plans.${plan.tier}.detailPrefix`)}
                 <Text
                   className="happy-font-body-semibold text-sage-700"
                 >
-                  {plan.detailEmphasis}
+                  {t(`paywall.plans.${plan.tier}.detailEmphasis`)}
                 </Text>
-                {plan.detailSuffix}
+                {t(`paywall.plans.${plan.tier}.detailSuffix`)}
               </Text>
             </View>
 
@@ -146,12 +148,12 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
             <Text
               className={`happy-font-body-semibold text-sm ${plan.isDecoy ? "text-ink-soft" : "text-ink"}`}
             >
-              {plan.label}
+              {t(`paywall.plans.${plan.tier}.label`)}
             </Text>
             <Text
               className="happy-font-body mt-0.5 text-[11px] text-ink-muted"
             >
-              {plan.detailLabel}
+              {t(`paywall.plans.${plan.tier}.detailLabel`)}
             </Text>
           </View>
 
@@ -164,7 +166,7 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
             <Text
               className="happy-font-body mt-0.5 text-[11px] text-ink-muted"
             >
-              {plan.perUnit}
+                {t(`paywall.plans.${plan.tier}.perUnit`)}
             </Text>
           </View>
         </View>

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
@@ -18,11 +19,12 @@ export function CourseExerciseFooter({
   primaryDisabled,
   primaryLoading,
   primaryLabel,
-  skipLabel = "Skip for now",
+  skipLabel,
   onPrimaryPress,
   onSkip,
 }: CourseExerciseFooterProps) {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation("exercises");
 
   return (
     <View
@@ -48,7 +50,7 @@ export function CourseExerciseFooter({
           className={`min-h-12 items-center justify-center active:opacity-55 ${primaryLoading ? "opacity-45" : ""}`}
         >
           <Text className="happy-font-body-medium text-[13px] text-ink-soft">
-            {skipLabel}
+            {skipLabel ?? t("runtime.skipForNow")}
           </Text>
         </Pressable>
       ) : null}

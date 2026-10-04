@@ -7,6 +7,7 @@ import type { ReminderItem } from "./types";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import * as Haptics from "expo-haptics";
+import { useTranslation } from "react-i18next";
 
 type ReminderCardProps = {
   item: ReminderItem;
@@ -35,7 +36,11 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
     onPressItem,
     isLast = false,
   }) => {
+    const { t } = useTranslation("settings");
     const icon = iconMap[item.id] || "clock.fill";
+    const title = t(`reminders.slots.${item.id}.title`, {
+      defaultValue: item.title,
+    });
 
     const handlePress = () => {
       Haptics.selectionAsync();
@@ -57,7 +62,7 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
           hitSlop={6}
           accessibilityRole="checkbox"
           accessibilityState={{ checked: isSelected }}
-          accessibilityLabel={`${item.title} icon`}
+          accessibilityLabel={`${title} icon`}
         >
           <View
             className={`w-9 h-9 rounded-xl items-center justify-center mr-3 ${
@@ -89,7 +94,7 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
               style={{ fontFamily: APP_FONT_FAMILIES.bold }}
               className="text-[16px] text-ink leading-tight"
             >
-              {item.title}
+              {title}
             </Text>
           </Pressable>
 
@@ -129,7 +134,7 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
             ios_backgroundColor="#E5E5EA"
             accessibilityRole="switch"
             accessibilityState={{ checked: isSelected }}
-            accessibilityLabel={`${item.title} reminder`}
+            accessibilityLabel={`${title} reminder`}
           />
         </View>
       </View>

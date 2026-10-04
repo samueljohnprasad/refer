@@ -1,8 +1,10 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useExerciseStats } from "./useExerciseStats";
 import type { ExerciseCategory } from "@/src/types/exerciseFlow";
 import { EXERCISE_CATEGORY_MAP } from "@/src/data/exerciseCategoryMap";
-import { DISTORTION_LABELS, CATEGORY_LABELS } from "@/src/constants/insights";
+import type { TFunction } from "i18next";
+import { categoryLabel, distortionLabel } from "./i18n";
 import { getTimeRangeCutoff, average, countBy } from "@/src/utils/insights";
 import type { TimeRange } from "@/src/constants/insights";
 
@@ -34,6 +36,7 @@ export function useInsightsOverview(timeRange: TimeRange): {
   data: InsightsOverview | null;
   isLoading: boolean;
 } {
+  const { t } = useTranslation("common");
   const { data: stats, isLoading } = useExerciseStats();
 
   const data = useMemo((): InsightsOverview | null => {
@@ -45,10 +48,10 @@ export function useInsightsOverview(timeRange: TimeRange): {
       : stats.entries;
 
     const heatmap = buildHeatmap(stats.entries);
-    const topDistortion = getTopDistortion(filtered);
+    const topDistortion = getTopDistortion(filtered, t);
     const avgEmotionShift = getAvgEmotionShift(filtered);
     const reframeSuccessRate = getReframeSuccessRate(filtered);
-    const categories = buildCategorySummaries(filtered, topDistortion);
+    const categories = buildCategorySummaries(filtered, topDistortion, t);
 
     return {
       totalExercises: filtered.length,
@@ -59,7 +62,7 @@ export function useInsightsOverview(timeRange: TimeRange): {
       heatmap,
       categories,
     };
-  }, [stats, timeRange]);
+  }, [stats, timeRange, t]);
 
   return { data, isLoading };
 }
@@ -75,6 +78,7 @@ function buildHeatmap(entries: { completed_at: string }[]): HeatmapDay[] {
 
 function getTopDistortion(
   entries: { response: Record<string, any> }[],
+  t: TFunction,
 ): { label: string; count: number } | null {
   const counts = countBy(
     entries.flatMap((e) => (e.response?.selectedDistortions as string[]) ?? []),
@@ -83,7 +87,7 @@ function getTopDistortion(
   const sorted = Object.entries(counts).sort(([, a], [, b]) => b - a);
   if (sorted.length === 0) return null;
   return {
-    label: DISTORTION_LABELS[sorted[0][0]] || sorted[0][0],
+    label: distortionLabel(t, sorted[0][0]),
     count: sorted[0][1],
   };
 }
@@ -131,6 +135,7 @@ function getReframeSuccessRate(
 function buildCategorySummaries(
   entries: { exercise_type: string; response: Record<string, any> }[],
   topDistortion: { label: string; count: number } | null,
+  t: TFunction,
 ): CategorySummary[] {
   const catCounts: Record<ExerciseCategory, number> = {
     cbt_core: 0,
@@ -149,35 +154,36 @@ function buildCategorySummaries(
   return [
     {
       category: "cbt_core",
-      label: "CBT Core",
+      label: categoryLabel(t, "cbt_core"),
       count: catCounts.cbt_core,
       topStat: topDistortion
-        ? `Top: ${topDistortion.label}`
-        : `${catCounts.cbt_core} sessions`,
+        ? t("insights.overview.top", { label: topDistortion.label })
+        : t("insights.overview.sessions", { count: catCounts.cbt_core }),
     },
     {
       category: "anxiety",
-      label: "Anxiety",
+      label: categoryLabel(t, "anxiety"),
       count: catCounts.anxiety,
-      topStat: getAnxietyStat(entries),
+      topStat: getAnxietyStat(entries, t),
     },
     {
       category: "mindfulness",
-      label: "Mindfulness",
+      label: categoryLabel(t, "mindfulness"),
       count: catCounts.mindfulness,
-      topStat: `${catCounts.mindfulness} sessions`,
+      topStat: t("insights.overview.sessions", { count: catCounts.mindfulness }),
     },
     {
       category: "overthinking",
-      label: "Overthinking",
+      label: categoryLabel(t, "overthinking"),
       count: catCounts.overthinking,
-      topStat: `${catCounts.overthinking} sessions`,
+      topStat: t("insights.overview.sessions", { count: catCounts.overthinking }),
     },
   ];
 }
 
 function getAnxietyStat(
   entries: { exercise_type: string; response: Record<string, any> }[],
+  t: TFunction,
 ): string {
   const anxietyEntries = entries.filter(
     (e) =>
@@ -185,7 +191,7 @@ function getAnxietyStat(
         e.exercise_type as keyof typeof EXERCISE_CATEGORY_MAP
       ] === "anxiety",
   );
-  if (anxietyEntries.length === 0) return "Not started yet";
+  if (anxietyEntries.length === 0) return t("insights.ui.notStarted");
 
   const shifts: number[] = [];
   for (const e of anxietyEntries) {
@@ -196,6 +202,6 @@ function getAnxietyStat(
     }
   }
   const avg = average(shifts);
-  if (avg === null) return `${anxietyEntries.length} sessions`;
-  return `↓${avg.toFixed(1)} avg`;
+  if (avg === null) return t("insights.overview.sessions", { count: anxietyEntries.length });
+  return t("insights.overview.average", { value: avg.toFixed(1) });
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import {
@@ -24,6 +25,7 @@ export function MicrolearningMedia({
 }: {
   media?: MicrolearningMediaSource | null;
 }) {
+  const { t } = useTranslation("exercises");
   const [imageFailed, setImageFailed] = useState(false);
   const audioSource = media?.kind === "audio" ? { uri: media.uri } : null;
   const player = useAudioPlayer(audioSource);
@@ -62,13 +64,13 @@ export function MicrolearningMedia({
       {!status.error ? (
         <View style={styles.controls}>
           <AudioButton
-            label={status.playing ? "Pause audio" : "Play audio"}
+            label={status.playing ? t("runtime.pauseAudio") : t("runtime.playAudio")}
             onPress={() => (status.playing ? player.pause() : player.play())}
           />
-          <AudioButton label="Replay audio" onPress={() => void replay()} />
+          <AudioButton label={t("runtime.replayAudio")} onPress={() => void replay()} />
         </View>
       ) : null}
-      <Text style={styles.caption}>{media.label ?? "Transcript"}</Text>
+      <Text style={styles.caption}>{media.label ?? t("runtime.transcript")}</Text>
       <Text style={styles.equivalent}>{media.transcript}</Text>
     </View>
   );

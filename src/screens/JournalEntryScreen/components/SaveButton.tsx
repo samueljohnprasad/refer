@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
 import { SaveButtonProps } from "../types";
+import { useTranslation } from "react-i18next";
 
 /**
  * // ponytail: presentational sticky footer save button with tactile 3D styling
@@ -14,6 +15,7 @@ export const SaveButton = React.memo<SaveButtonProps>(
     onSave,
     onLayout,
   }: SaveButtonProps) => {
+    const { t } = useTranslation("journal");
     return (
       <View
         style={[{ bottom: keyboardHeight, paddingBottom: 16 + bottomInset }]}
@@ -23,7 +25,7 @@ export const SaveButton = React.memo<SaveButtonProps>(
         }
       >
         <CourseExercisePrimaryButton
-          label={saving ? "Saving…" : "Continue"}
+          label={t(saving ? "entryDetail.saving" : "entryDetail.continue")}
           disabled={saving}
           loading={saving}
           onPress={onSave}

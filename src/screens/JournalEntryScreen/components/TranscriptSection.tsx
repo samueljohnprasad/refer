@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TextInput } from "react-native";
 import { Text } from "@/src/components/ui/Text";
+import { useTranslation } from "react-i18next";
 
 interface TranscriptSectionProps {
   text: string;
@@ -17,6 +18,7 @@ export const TranscriptSection = React.memo<TranscriptSectionProps>(({
   isEditing,
   onTextChange,
 }: TranscriptSectionProps) => {
+  const { t } = useTranslation("journal");
   const wordCount = text.trim().split(/\s+/).filter(word => word.length > 0).length;
 
   return (
@@ -28,15 +30,15 @@ export const TranscriptSection = React.memo<TranscriptSectionProps>(({
             onChangeText={onTextChange}
             multiline
             numberOfLines={6}
-            placeholder="Write your thoughts..."
+            placeholder={t("entryDetail.writePlaceholder")}
             placeholderTextColor="rgba(107, 107, 107, 0.5)"
             className="text-ink text-base leading-6 bg-white/95 border border-sage-200/70 rounded-2xl p-4 min-h-[160px]"
             textAlignVertical="top"
-            accessibilityLabel="Journal transcript editor"
+            accessibilityLabel={t("entryDetail.transcriptEditor")}
           />
           <View className="flex-row justify-end mt-1.5 px-1">
             <Text variant="caption" className="text-ink-muted">
-              {wordCount} {wordCount === 1 ? "word" : "words"}
+              {t("entry.words", { count: wordCount })}
             </Text>
           </View>
         </View>
@@ -47,7 +49,7 @@ export const TranscriptSection = React.memo<TranscriptSectionProps>(({
             color="ink"
             className="happy-font-body text-ink text-[17px] leading-[27px]"
             accessibilityRole="text"
-            accessibilityLabel={`Journal entry: ${text}`}
+            accessibilityLabel={t("entryDetail.entryText", { text })}
           >
             {text}
           </Text>

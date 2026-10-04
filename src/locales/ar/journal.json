@@ -16,6 +16,7 @@
     "shufflePrompt": "سؤال آخر",
     "selectDate": "اختر التاريخ",
     "scanJournal": "مسح صفحات اليوميات ضوئيًا",
+    "actions": { "photo": "صورة", "voice": "صوت", "text": "نص" },
     "freeWrite": "كتابة حرة", "freeWriteHint": "اكتب دون سؤال موجّه", "dailyReflectionXP": "تأمل يومي • +10 XP",
     "menu": { "journal": "اليوميات · {{date}}", "today": "انتقل إلى اليوم", "browse": "عرض كل الأسئلة" },
     "options": { "title": "خيارات اليوميات", "import": "استيراد تدوينة مكتوبة بخط اليد", "scanHint": "امسح صفحة ورقية ضوئيًا", "tryAnother": "جرّب سؤالًا آخر", "selected": "{{prompt}}. محدد." },
@@ -25,11 +26,22 @@
     "analysis": { "phaseTranscribing": "جارٍ تحويل الصوت إلى نص", "phaseUnderstanding": "جارٍ فهم المشاعر", "phaseInsights": "جارٍ إعداد تأملات العلاج المعرفي السلوكي", "phasePreparing": "جارٍ تجهيز التأمل", "step": "الخطوة {{step}} من 4 · {{label}}", "reassurance": "لنأخذ لحظة للتأمل في تدوينتك…", "cancel": "إلغاء التحليل", "mascot": "باندا تتأمل" },
     "prompts": { "smile": "ما الذي جعلك تبتسم اليوم؟", "challenge": "ما التحدي الذي واجهته اليوم، وكيف استجبت له؟", "gratitude": "ما الشيء الذي تشعر بالامتنان له الآن؟", "selfLearning": "ماذا تعلمت عن نفسك اليوم؟", "selfCare": "كيف يمكنك الاعتناء بنفسك أكثر غدًا؟", "smallWin": "ما الإنجاز الصغير الذي حققته اليوم؟", "peace": "صِف لحظة شعرت فيها بالسلام.", "appreciation": "من الشخص الذي تقدّره، ولماذا؟", "letGo": "ما الشيء الذي تريد التخلي عنه؟", "changeOneThing": "لو استطعت تغيير شيء واحد في يومك، فما هو؟", "lookingForward": "ما الذي تتطلع إليه هذا الأسبوع؟", "selfCareToday": "كيف اعتنيت بنفسك اليوم؟", "fear": "ما الخوف الذي واجهته أو تريد مواجهته؟", "accomplishment": "اكتب عن إنجاز حديث.", "idealDay": "كيف يبدو يومك المثالي؟", "tomorrowEnergy": "ما الطاقة التي تريد أن تبدأ بها يوم غد؟", "moodThreeWords": "صِف مزاجك بثلاث كلمات.", "habit": "ما العادة التي تريد بناءها؟", "positiveImpact": "من ترك أثرًا إيجابيًا في يومك؟", "beautifulThing": "ما الشيء الجميل الذي رأيته اليوم؟" }
   },
+  "insights": { "achievements": "الإنجازات", "worries": "المخاوف", "goals": "الأهداف", "triggers": "المحفزات", "copingStrategies": "استراتيجيات التأقلم", "physicalSymptoms": "الأعراض الجسدية" },
+  "titleMenu": { "actions": "إجراءات يوميات العلاج المعرفي السلوكي", "removeBookmark": "إزالة الإشارة المرجعية", "bookmarkEntry": "إضافة التدوينة إلى الإشارات المرجعية", "shareExport": "مشاركة وتصدير التدوينة", "deleteEntry": "حذف التدوينة" },
   "tab": { "journal": "اليوميات", "habits": "العادات" },
   "calendar": { "today": "اليوم", "todayHint": "العودة إلى اليوم الحالي", "expand": "توسيع التقويم", "collapse": "طيّ التقويم", "expandHint": "التبديل بين عرض الأسبوع والشهر", "moreOptions": "مزيد من الخيارات", "timeline": "السجل والرؤى", "bookmarks": "المحفوظات", "dragHandle": "مقبض التقويم", "previousMonth": "الشهر السابق", "previousMonthHint": "الانتقال إلى الشهر السابق", "nextMonth": "الشهر التالي", "nextMonthHint": "الانتقال إلى الشهر التالي", "jumpToday": "العودة إلى اليوم", "dayA11y": "{{day}}{{today}}" },
   "empty": { "titles": ["سجّل فكرة سريعة", "ما الذي يشغل بالك؟", "تأمل في يومك"], "description": "ملاحظاتك خاصة بك. ابدأ من حيث أنت.", "recordVoice": "سجّل صوتًا", "writeText": "اكتب نصًا" },
   "error": { "title": "استراحة قصيرة غير متوقعة", "description": "تعذّر تحميل ملاحظاتك الآن. ملاحظاتك محفوظة بأمان على جهازك.", "reconnect": "أعد الاتصال", "reconnectA11y": "أعد الاتصال لتحميل ملاحظاتك" },
   "entry": { "untitled": "ملاحظة بلا عنوان", "words_one": "{{count}} كلمة", "words_other": "{{count}} كلمات", "createdAt": "ملاحظة يومية: {{title}}، أُنشئت الساعة {{time}}", "openHint": "انقر مرتين لفتح تفاصيل الملاحظة", "noDate": "بلا تاريخ" },
   "delete": { "title": "هل تريد حذف الملاحظة؟", "message": "سيتم حذف هذه الملاحظة نهائيًا. لا يمكن التراجع عن هذا الإجراء.", "confirm": "حذف", "cancel": "إلغاء" },
-  "bookmarks": { "title": "ملاحظات مثبتة", "count_one": "ملاحظة مثبتة واحدة", "count_other": "{{count}} ملاحظات مثبتة", "emptyTitle": "لا توجد ملاحظات مثبتة", "emptyDescription": "اضغط على علامة الحفظ في أي ملاحظة لتجدها هنا بسهولة." }
+  "bookmarks": { "title": "ملاحظات مثبتة", "count_one": "{{count}} ملاحظة مثبتة", "count_other": "{{count}} ملاحظات مثبتة", "emptyTitle": "لا توجد ملاحظات مثبتة", "emptyDescription": "اضغط على علامة الحفظ في أي ملاحظة لتجدها هنا بسهولة." },
+  "entryDetail": {
+    "header": { "today": "اليوم", "yesterday": "أمس", "reflection": "تأمل", "close": "إغلاق", "closeHint": "إغلاق هذه التدوينة", "deleteEntry": "حذف التدوينة", "saveEntry": "حفظ التدوينة", "editJournal": "تعديل التدوينة", "saving": "جارٍ الحفظ…", "save": "حفظ", "edit": "تعديل" },
+    "dailyReflections": "تأملات يومية", "dateAtTime": "{{day}} الساعة {{time}}", "editEntry": "تعديل الملاحظة", "noTranscript": "لا يوجد نص مفرغ", "today": "اليوم", "yesterday": "أمس", "reflection": "تأمل",
+    "deleteTitle": "حذف التأمل", "deleteMessage": "هل تريد حذف هذه الملاحظة؟ لا يمكن التراجع عن ذلك.", "deleted": "حُذفت الملاحظة", "emptyTextError": "اكتب نصًا قبل الحفظ", "saved": "حُفظت الملاحظة", "saveError": "تعذر حفظ الملاحظة", "bookmarked": "أُضيفت الملاحظة للمحفوظات", "bookmarkRemoved": "أُزيلت الملاحظة من المحفوظات",
+    "moods": { "terrible": "سيئ جدًا", "bad": "سيئ", "fine": "مقبول", "good": "جيد", "great": "رائع" }, "moodSummary": "الملاحظة: {{title}}. المزاج: {{mood}}.", "mood": "المزاج: {{mood}}", "selectMood": "اختر مزاج {{mood}}",
+    "feeling": "الشعور: {{feeling}}", "removeFeeling": "إزالة {{feeling}}", "addFeeling": "إضافة شعور", "add": "+ إضافة", "feelingPlaceholder": "اكتب شعورًا", "typeFeeling": "اكتب شعورًا جديدًا",
+    "content": "محتوى الملاحظة", "writePlaceholder": "اكتب أفكارك...", "noContent": "لا يوجد محتوى بعد", "transcriptEditor": "محرر النص المفرغ", "entryText": "نص الملاحظة: {{text}}",
+    "addTagA11y": "إضافة وسم جديد", "addTag": "＋ إضافة وسم", "removeTag": "إزالة {{tag}}", "addBookmark": "إضافة للمحفوظات", "removeBookmark": "إزالة من المحفوظات", "photos": "صور للذكرى", "addPhoto": "إضافة صورة", "saving": "جارٍ الحفظ…", "continue": "متابعة"
+  }
 }

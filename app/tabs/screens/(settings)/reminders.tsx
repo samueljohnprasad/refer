@@ -1,15 +1,11 @@
-import React, { useEffect, useCallback, lazy } from "react";
-import { View, TouchableOpacity } from "react-native";
+import React, { useEffect, useCallback } from "react";
+import { View } from "react-native";
 import { Stack, useRouter, useNavigation } from "expo-router";
-import { BlurView } from "expo-blur";
-import { Ionicons } from "@expo/vector-icons";
-import { Text } from "@/components/ui/Text";
+import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "@/src/components/tw";
 import * as Haptics from "expo-haptics";
 import useNotifications from "@/hooks/data/useNotifications";
 
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 import { GlassView } from "expo-glass-effect";
 
 import NotificationsUI from "@/src/components/NotificationsUI";
@@ -19,6 +15,7 @@ import NotificationsUI from "@/src/components/NotificationsUI";
  * Saves notifications on ALL navigation methods: back button, swipe, device back
  */
 const RemindersScreen = () => {
+  const { t } = useTranslation("settings");
   const router = useRouter();
   const navigation = useNavigation();
   const { addNotifications } = useNotifications();
@@ -26,12 +23,12 @@ const RemindersScreen = () => {
   const saveNotifications = useCallback(async () => {
     try {
       await addNotifications();
-    } catch (error) {}
+    } catch {}
   }, [addNotifications]);
 
   // Intercept ALL navigation attempts (back button, swipe, device back)
   useEffect(() => {
-    const unsubscribe = navigation.addListener("beforeRemove", async (e) => {
+    const unsubscribe = navigation.addListener("beforeRemove", async () => {
       // Save notifications before allowing navigation
       await saveNotifications();
     });
@@ -51,7 +48,7 @@ const RemindersScreen = () => {
         <Stack.Screen
           options={{
             headerShown: true,
-            headerTitle: "Daily Reminders",
+            headerTitle: t("reminders.title"),
             headerTransparent: true,
             headerBackButtonDisplayMode: "minimal",
             headerLeft: () => null,

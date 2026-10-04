@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 
 interface PhotosSectionProps {
   photos: string[];
@@ -14,10 +15,11 @@ interface PhotosSectionProps {
  */
 export const PhotosSection = React.memo<PhotosSectionProps>(
   ({ photos, isEditing, onAddPhoto }: PhotosSectionProps) => {
+    const { t } = useTranslation("journal");
     return (
       <View className="mb-6">
         <Text className="text-theme-text-secondary text-xs uppercase font-semibold tracking-wider mb-2">
-          PHOTOS TO REMEMBER
+          {t("entryDetail.photos")}
         </Text>
 
         <View className="flex-row flex-wrap gap-4">
@@ -35,7 +37,7 @@ export const PhotosSection = React.memo<PhotosSectionProps>(
             className="w-20 h-20 rounded-lg bg-theme-background-secondary border border-theme-border/50 items-center justify-center"
             activeOpacity={0.7}
             accessibilityRole="button"
-            accessibilityLabel="Add photo"
+            accessibilityLabel={t("entryDetail.addPhoto")}
           >
             <Feather name="plus" size={32} className="text-theme-text-secondary" />
           </TouchableOpacity>

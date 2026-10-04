@@ -1,12 +1,13 @@
 import { Stack, useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import SupportChatScreen from "@/src/screens/SupportChatScreen/SupportChatScreen";
-import { GlassView } from "expo-glass-effect";
 import { Host, Menu, Section, Button as SUIButton, Text as SUIText, VStack, HStack, Image as SUIImage } from "@expo/ui/swift-ui";
 import { controlSize, font, foregroundStyle } from "@expo/ui/swift-ui/modifiers";
 import { useColorScheme } from "react-native";
 import { useSupportMessages } from "@/hooks/data/useSupportMessages";
 
 function SupportHeaderTitleMenu() {
+  const { t } = useTranslation("settings");
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const headerFg = isDark ? "#fff" : "#000";
@@ -31,23 +32,23 @@ function SupportHeaderTitleMenu() {
                   font({ weight: "semibold", size: 17 }),
                 ]}
               >
-                Support Chat
+                {t("support.title")}
               </SUIText>
               <SUIImage systemName="chevron.down" size={10} color={headerFg} />
             </HStack>
             <SUIText
               modifiers={[foregroundStyle(headerFgMuted), font({ size: 12 })]}
             >
-              Online
+              {t("support.online")}
             </SUIText>
           </VStack>
         }
         modifiers={[controlSize("regular")]}
       >
-        <Section title="Chat Options">
+        <Section title={t("support.chatOptions")}>
           <SUIButton
             systemImage="trash"
-            label="Clear History"
+            label={t("support.clearHistory")}
             role="destructive"
             onPress={async () => {
               try {

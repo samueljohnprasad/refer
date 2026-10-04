@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Stack, Link } from "expo-router";
 import { useHeaderHeight } from "expo-router/react-navigation";
+import { useTranslation } from "react-i18next";
 
 import { useAppDispatch } from "@/src/store/hooks";
 import { setVisible } from "@/src/store/slices/happyAssistantSlice";
@@ -31,6 +32,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   const dispatch = useAppDispatch();
   const { bottom } = useSafeAreaInsets();
   const headerHeight = useHeaderHeight();
+  const { t, i18n } = useTranslation("journal");
 
   // Handle potential array response from API
   const entry = Array.isArray(insights) ? insights[0] : insights;
@@ -100,7 +102,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
       {/* Apple Native Title & Navigation Bar */}
       <Stack.Title style={{ color: SEMANTIC_COLORS.text.primary }}>
         {entry?.selected_date
-          ? `${getRelativeDayTitle(entry.selected_date)} at ${getFormattedTime(entry.selected_date)}`
+          ? t("entryDetail.dateAtTime", { day: getRelativeDayTitle(entry.selected_date, i18n.language, t), time: getFormattedTime(entry.selected_date, i18n.language, t) })
           : ""}
       </Stack.Title>
       <Stack.Header
@@ -141,14 +143,14 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
           />
           <Stack.Toolbar.Menu icon="ellipsis.circle" tintColor={SEMANTIC_COLORS.text.primary}>
             <Stack.Toolbar.MenuAction icon="pencil" onPress={handleEdit}>
-              Edit Entry
+              {t("entryDetail.editEntry")}
             </Stack.Toolbar.MenuAction>
             <Stack.Toolbar.MenuAction
               icon="trash"
               destructive
               onPress={handleDeleteEntry}
             >
-              Delete Entry
+              {t("titleMenu.deleteEntry")}
             </Stack.Toolbar.MenuAction>
           </Stack.Toolbar.Menu>
         </Stack.Toolbar>
@@ -185,7 +187,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
                   selectedMood={selectedMood}
                   onSelectMood={setSelectedMood}
                   viewOnly={true}
-                  title={entry?.title || "Daily Reflections"}
+                  title={entry?.title || t("entryDetail.dailyReflections")}
                   date={entry?.selected_date || (entry as any)?.created_at}
                 />
               )}
@@ -200,7 +202,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
               />
 
               <TranscriptSection
-                text={journalText || "no transcript available"}
+                text={journalText || (isEditing ? "" : t("entryDetail.noTranscript"))}
                 isEditing={isEditing}
                 onTextChange={setJournalText}
               />

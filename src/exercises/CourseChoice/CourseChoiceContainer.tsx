@@ -6,6 +6,8 @@ import {
   readSelectedCourseChoiceId,
 } from "@/src/exercises/CourseChoice/data";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { translateStepCopyProps } from "@/src/lib/i18n/exerciseCopy";
 import { CourseExerciseCategoryEnum } from "@/src/types/courseExercises";
 
 export function CourseChoiceContainer({
@@ -14,7 +16,16 @@ export function CourseChoiceContainer({
   locked = false,
   onInteraction,
 }: V1CategoryEngineProps) {
-  const data = readCourseChoiceData(exercise);
+  const translateCopy = useExerciseCopy();
+  const localizedExercise = {
+    ...exercise,
+    content: translateStepCopyProps(exercise.content ?? {}, translateCopy),
+  };
+  const parsedData = readCourseChoiceData(localizedExercise);
+  const data = {
+    ...parsedData,
+    title: translateCopy(parsedData.title),
+  };
   const selectedOptionId = readSelectedCourseChoiceId(savedResponse);
 
   const selectOption = (optionId: string) => {

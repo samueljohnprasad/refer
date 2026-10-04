@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 import {
   COURSE_EXERCISE_FONTS,
@@ -11,9 +12,12 @@ interface StageProgressProps {
 }
 
 export function StageProgress({ stageIndex, stageCount, label }: StageProgressProps) {
+  const { t } = useTranslation("exercises");
   const count = Math.max(stageCount, 1);
   const current = Math.max(0, Math.min(stageIndex, count - 1)) + 1;
-  const text = `${label ?? "Step"} ${current} of ${count}`;
+  const text = label
+    ? t("runtime.labeledStepOf", { label, current, count })
+    : t("runtime.stepOf", { current, count });
   return (
     <View accessible accessibilityLabel={text} style={styles.container}>
       <Text style={styles.label}>{text}</Text>

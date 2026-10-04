@@ -9,6 +9,7 @@ import { Reward } from "@/src/types/rewards";
 import * as Haptics from "expo-haptics";
 import { Card } from "@/src/components/ui/Card";
 import { Button } from "@/src/components/ui/Button";
+import { useTranslation } from "react-i18next";
 
 interface RewardPurchaseModalProps {
   visible: boolean;
@@ -30,6 +31,7 @@ export const RewardPurchaseModal: React.FC<RewardPurchaseModalProps> = ({
   onCancel,
   isPurchasing = false,
 }) => {
+  const { t } = useTranslation("common");
   const scale = useSharedValue(0);
 
   React.useEffect(() => {
@@ -49,6 +51,8 @@ export const RewardPurchaseModal: React.FC<RewardPurchaseModalProps> = ({
 
   const canAfford = currentCoins >= reward.cost;
   const remainingCoins = currentCoins - reward.cost;
+  const name = t(`rewards.items.${reward.id}.name`, { defaultValue: reward.name });
+  const description = t(`rewards.items.${reward.id}.description`, { defaultValue: reward.description });
 
   return (
     <Modal transparent visible={visible} animationType="fade">
@@ -72,16 +76,16 @@ export const RewardPurchaseModal: React.FC<RewardPurchaseModalProps> = ({
           </View>
 
           <Text className="happy-font-heading-bold mb-1 text-xl text-ink">
-            {reward.name}
+            {name}
           </Text>
           <Text className="happy-font-body-medium mb-4 text-center text-sm leading-5 text-ink-muted">
-            {reward.description}
+            {description}
           </Text>
 
           <View className="happy-brand-surface-soft mb-4 w-full rounded-[22px] p-4">
             <View className="flex-row justify-between mb-2">
               <Text className="happy-font-body-medium text-ink-muted">
-                Your Balance
+                {t("rewards.balance")}
               </Text>
               <Text className="happy-font-body-bold text-ink-soft">
                 🪙 {currentCoins.toLocaleString()}
@@ -89,7 +93,7 @@ export const RewardPurchaseModal: React.FC<RewardPurchaseModalProps> = ({
             </View>
             <View className="flex-row justify-between mb-2">
               <Text className="happy-font-body-medium text-ink-muted">
-                Cost
+                {t("rewards.cost")}
               </Text>
               <Text className="happy-font-body-bold text-terracotta">
                 - 🪙 {reward.cost.toLocaleString()}
@@ -98,7 +102,7 @@ export const RewardPurchaseModal: React.FC<RewardPurchaseModalProps> = ({
             <View className="my-2 h-0.5 rounded-full bg-sage-100" />
             <View className="flex-row justify-between">
               <Text className="happy-font-body-bold text-ink">
-                After Purchase
+                {t("rewards.afterPurchase")}
               </Text>
               <Text
                 className={`happy-font-body-bold ${
@@ -112,7 +116,7 @@ export const RewardPurchaseModal: React.FC<RewardPurchaseModalProps> = ({
 
           <View className="flex-row w-full gap-3 mt-2">
             <Button
-              label="Cancel"
+              label={t("rewards.cancel")}
               variant="secondary"
               size="md"
               className="flex-1"
@@ -121,7 +125,7 @@ export const RewardPurchaseModal: React.FC<RewardPurchaseModalProps> = ({
             />
 
             <Button
-              label={isPurchasing ? "Buying..." : canAfford ? "Buy Now" : "Not Enough"}
+              label={isPurchasing ? t("rewards.buying") : canAfford ? t("rewards.buyNow") : t("rewards.notEnough")}
               variant="primary"
               size="md"
               className="flex-1"

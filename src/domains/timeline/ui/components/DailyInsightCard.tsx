@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
-import type { AiInsight } from '../../model/timeline.types';
 
 interface DailyInsightCardProps {
   insight: {
@@ -12,6 +12,7 @@ interface DailyInsightCardProps {
 }
 
 export const DailyInsightCard = ({ insight, onPress }: DailyInsightCardProps) => {
+  const { t } = useTranslation('common');
   // Use timelineSummary if available, else fallback to extracting the first sentence (Point 13)
   const firstSentence = insight.timelineSummary || insight.summary.split(/(?<=[.!?])\s+/)[0] || insight.summary;
 
@@ -32,7 +33,7 @@ export const DailyInsightCard = ({ insight, onPress }: DailyInsightCardProps) =>
           className="text-[14px]" 
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#5F7F58" }}
         >
-          View insight
+          {t('timeline.viewInsight')}
         </Text>
       </View>
     </Pressable>

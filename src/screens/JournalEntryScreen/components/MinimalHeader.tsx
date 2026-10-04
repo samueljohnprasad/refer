@@ -1,10 +1,11 @@
 import React from "react";
 import { View, TouchableOpacity, Platform } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { isToday, isYesterday, format } from "date-fns";
+import { isToday, isYesterday } from "date-fns";
+import { useTranslation } from "react-i18next";
 import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Bookmark02Icon, BookmarkCheck01Icon, BookmarkAdd01Icon } from "@hugeicons/core-free-icons";
+import { BookmarkCheck01Icon, BookmarkAdd01Icon } from "@hugeicons/core-free-icons";
 import { JournalTitleMenu } from "./JournalTitleMenu";
 
 interface MinimalHeaderProps {
@@ -21,20 +22,28 @@ interface MinimalHeaderProps {
   bookmarking?: boolean;
 }
 
-const getRelativeDayTitle = (dateStr?: string | null): string => {
-  if (!dateStr) return "Today";
+const getRelativeDayTitle = (
+  dateStr: string | null | undefined,
+  translate: (key: string) => string,
+  locale: string
+): string => {
+  if (!dateStr) return translate("entryDetail.header.today");
   const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return "Today";
-  if (isToday(d)) return "Today";
-  if (isYesterday(d)) return "Yesterday";
-  return format(d, "EEEE, MMM d");
+  if (isNaN(d.getTime())) return translate("entryDetail.header.today");
+  if (isToday(d)) return translate("entryDetail.header.today");
+  if (isYesterday(d)) return translate("entryDetail.header.yesterday");
+  return d.toLocaleDateString(locale, { weekday: "long", month: "short", day: "numeric" });
 };
 
-const getFormattedTime = (dateStr?: string | null): string => {
-  if (!dateStr) return "Reflection";
+const getFormattedTime = (
+  dateStr: string | null | undefined,
+  translate: (key: string) => string,
+  locale: string
+): string => {
+  if (!dateStr) return translate("entryDetail.header.reflection");
   const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return "Reflection";
-  return format(d, "h:mm a");
+  if (isNaN(d.getTime())) return translate("entryDetail.header.reflection");
+  return d.toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" });
 };
 
 /**
@@ -55,6 +64,10 @@ export const MinimalHeader = React.memo<MinimalHeaderProps>(
     onBookmark,
     bookmarking = false,
   }: MinimalHeaderProps) => {
+    const { t, i18n } = useTranslation("journal");
+    const dayTitle = getRelativeDayTitle(date, t, i18n.language);
+    const formattedTime = getFormattedTime(date, t, i18n.language);
+
     return (
       <View className="flex-row items-center justify-between px-4 py-4 mb-4">
         {/* Close button */}
@@ -63,8 +76,8 @@ export const MinimalHeader = React.memo<MinimalHeaderProps>(
           className="w-10 h-10 items-center justify-center -ml-2"
           activeOpacity={0.7}
           accessibilityRole="button"
-          accessibilityLabel="Close"
-          accessibilityHint="Closes the journal entry"
+          accessibilityLabel={t("entryDetail.header.close")}
+          accessibilityHint={t("entryDetail.header.closeHint")}
         >
           <Feather name="x" size={24} className="text-ink" />
         </TouchableOpacity>
@@ -73,17 +86,17 @@ export const MinimalHeader = React.memo<MinimalHeaderProps>(
         <View className="flex-1 items-center">
           {Platform.OS === "ios" ? (
             <JournalTitleMenu
-              title={getRelativeDayTitle(date)}
-              subtitle={getFormattedTime(date)}
+              title={dayTitle}
+              subtitle={formattedTime}
               isBookmarked={isBookmarked}
               onBookmark={onBookmark}
               onDelete={onDelete}
             />
           ) : (
             <>
-              <Text variant="body-bold">{getRelativeDayTitle(date)}</Text>
+              <Text variant="body-bold">{dayTitle}</Text>
               <Text variant="caption" className="mt-0.5 text-ink-muted">
-                {getFormattedTime(date)}
+                {formattedTime}
               </Text>
             </>
           )}
@@ -97,7 +110,7 @@ export const MinimalHeader = React.memo<MinimalHeaderProps>(
               className="w-9 h-9 items-center justify-center rounded-full bg-red-50"
               activeOpacity={0.7}
               accessibilityRole="button"
-              accessibilityLabel="Delete entry"
+              accessibilityLabel={t("entryDetail.header.deleteEntry")}
             >
               <Feather name="trash-2" size={16} color="#EF4444" />
             </TouchableOpacity>
@@ -110,7 +123,7 @@ export const MinimalHeader = React.memo<MinimalHeaderProps>(
               className="w-10 h-10 items-center justify-center rounded-full"
               activeOpacity={0.7}
               accessibilityRole="button"
-              accessibilityLabel={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+              accessibilityLabel={t(isBookmarked ? "entryDetail.removeBookmark" : "entryDetail.addBookmark")}
             >
               <HugeiconsIcon
                 icon={isBookmarked ? BookmarkCheck01Icon : BookmarkAdd01Icon}
@@ -131,13 +144,19 @@ export const MinimalHeader = React.memo<MinimalHeaderProps>(
             }
             activeOpacity={0.7}
             accessibilityRole="button"
-            accessibilityLabel={isEditing ? "Save journal entry" : "Edit journal"}
+            accessibilityLabel={
+              isEditing ? t("entryDetail.header.saveEntry") : t("entryDetail.header.editJournal")
+            }
           >
             <Text
               variant="body-bold"
               className={isEditing ? "text-white text-[14px]" : "text-sage-700"}
             >
-              {isEditing ? (saving ? "Saving..." : "Save") : "Edit"}
+              {isEditing
+                ? saving
+                  ? t("entryDetail.header.saving")
+                  : t("entryDetail.header.save")
+                : t("entryDetail.header.edit")}
             </Text>
           </TouchableOpacity>
         </View>

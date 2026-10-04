@@ -9,6 +9,7 @@ import { Enums } from "@/database.types";
 import { createLogger } from "@/src/lib/logger";
 import { usePostHog } from "posthog-react-native";
 import { requestReviewForMilestone } from "@/src/hooks/useReviewPrompt";
+import { useTranslation } from "react-i18next";
 
 const log = createLogger("useJournalOperationsHandler");
 
@@ -28,6 +29,7 @@ export const useJournalOperationsHandler = ({
   onClose,
 }: UseJournalOperationsHandlerProps) => {
   const { toast } = useToast();
+  const { t } = useTranslation("journal");
   const { saveJournal } = useSaveJournal();
   const { deleteJournal, toggleBookmark } = useJournalOperations();
   const posthog = usePostHog();
@@ -36,12 +38,12 @@ export const useJournalOperationsHandler = ({
   const handleDeleteEntry = useCallback((): void => {
     if (!entry?.id) return;
     Alert.alert(
-      "Delete Reflection",
-      "Are you sure you want to delete this journal entry? This action cannot be undone.",
+      t("entryDetail.deleteTitle"),
+      t("entryDetail.deleteMessage"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("delete.cancel"), style: "cancel" },
         {
-          text: "Delete",
+          text: t("delete.confirm"),
           style: "destructive",
           onPress: async (): Promise<void> => {
             try {
@@ -53,7 +55,7 @@ export const useJournalOperationsHandler = ({
               toast.show({
                 placement: "top",
                 variant: "success",
-                label: "Entry deleted",
+                label: t("entryDetail.deleted"),
               });
               onClose?.();
             } catch (error) {
@@ -63,7 +65,7 @@ export const useJournalOperationsHandler = ({
         },
       ]
     );
-  }, [entry, deleteJournal, toast, onClose, posthog]);
+  }, [entry, deleteJournal, toast, onClose, posthog, t]);
 
   const handleContinue = useCallback(async (): Promise<void> => {
     try {
@@ -85,7 +87,7 @@ export const useJournalOperationsHandler = ({
         toast.show({
           placement: "top",
           variant: "warning",
-          label: "Please enter journal text before saving",
+          label: t("entryDetail.emptyTextError"),
         });
         return;
       }
@@ -95,7 +97,7 @@ export const useJournalOperationsHandler = ({
       toast.show({
         placement: "top",
         variant: "success",
-        label: "Journal saved successfully",
+        label: t("entryDetail.saved"),
       });
       // ponytail: trigger Day-1 App Store review prompt 2.0s after first journal save
       setTimeout(() => {
@@ -107,10 +109,10 @@ export const useJournalOperationsHandler = ({
       toast.show({
         placement: "bottom",
         variant: "danger",
-        label: "Failed to save journal",
+        label: t("entryDetail.saveError"),
       });
     }
-  }, [saveJournal, insights, journalText, selectedMood, toast, onClose, entry, posthog]);
+  }, [saveJournal, insights, journalText, selectedMood, toast, onClose, entry, posthog, t]);
 
   const handleToggleBookmark = useCallback(async (): Promise<void> => {
     if (!entry?.id) return;
@@ -120,7 +122,7 @@ export const useJournalOperationsHandler = ({
     toast.show({
       placement: "top",
       variant: "success",
-      label: newStatus ? "Entry bookmarked" : "Bookmark removed",
+      label: t(newStatus ? "entryDetail.bookmarked" : "entryDetail.bookmarkRemoved"),
     });
 
     try {
@@ -135,7 +137,7 @@ export const useJournalOperationsHandler = ({
     } catch {
       setIsBookmarked(!newStatus);
     }
-  }, [entry, isBookmarked, toast, toggleBookmark, posthog]);
+  }, [entry, isBookmarked, toast, toggleBookmark, posthog, t]);
 
   return {
     isBookmarked,

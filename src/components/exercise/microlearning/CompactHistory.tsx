@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import {
   COURSE_EXERCISE_FONTS,
@@ -16,9 +17,10 @@ interface CompactHistoryProps {
 }
 
 export function CompactHistory({ items, onEdit }: CompactHistoryProps) {
+  const { t } = useTranslation("exercises");
   if (items.length === 0) return null;
   return (
-    <View accessibilityLabel="Completed steps" style={styles.container}>
+    <View accessibilityLabel={t("runtime.completedSteps")} style={styles.container}>
       {items.map((item) => (
         <View key={item.id} style={styles.row}>
           <View style={styles.copy}>
@@ -29,12 +31,12 @@ export function CompactHistory({ items, onEdit }: CompactHistoryProps) {
           </View>
           {onEdit ? (
             <Pressable
-              accessibilityLabel={`Edit ${item.label}`}
+              accessibilityLabel={item.label ? t("runtime.editItem", { label: item.label }) : t("runtime.edit")}
               accessibilityRole="button"
               onPress={() => onEdit(item.id)}
               style={({ pressed }) => [styles.edit, pressed && styles.pressed]}
             >
-              <Text style={styles.editLabel}>Edit</Text>
+              <Text style={styles.editLabel}>{t("runtime.edit")}</Text>
             </Pressable>
           ) : null}
         </View>

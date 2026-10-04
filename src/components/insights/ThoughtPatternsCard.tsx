@@ -1,10 +1,12 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useThoughtPatterns } from "@/src/hooks/insights/useThoughtPatterns";
 
 export function ThoughtPatternsCard() {
+  const { t } = useTranslation("common");
   const { hasPro, presentPaywall } = useRevenueCat();
   const { data, isLoading } = useThoughtPatterns();
 
@@ -15,7 +17,7 @@ export function ThoughtPatternsCard() {
   if (isLoading) {
     return (
       <View className="happy-brand-card rounded-[24px] p-5" style={{ backgroundColor: "#FFFFFF" }}>
-        <Text className="happy-brand-eyebrow">Analyzing patterns...</Text>
+        <Text className="happy-brand-eyebrow">{t("insights.ui.analyzingPatterns")}</Text>
       </View>
     );
   }
@@ -25,7 +27,7 @@ export function ThoughtPatternsCard() {
   return (
     <View className="happy-brand-card rounded-[24px] p-5" style={{ backgroundColor: "#FFFFFF" }}>
       <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3">
-        Your Thought Patterns
+        {t("insights.ui.yourThoughtPatterns")}
       </Text>
       <View className="flex-row flex-wrap gap-2 mb-3 mt-1">
         {data.themes.map((t) => (
@@ -65,11 +67,11 @@ function LockedCard({ onUnlock }: { onUnlock: () => void }) {
       <View className="flex-row items-center gap-2 mb-1">
         <Text className="text-[14px]">🔒</Text>
         <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-0">
-          Thought Patterns
+          {t("insights.ui.yourThoughtPatterns")}
         </Text>
       </View>
       <Text className="happy-font-body text-[12px] text-ink-muted">
-        Unlock AI-detected themes in your thinking
+        {t("insights.ui.unlockThemes")}
       </Text>
     </Pressable>
   );

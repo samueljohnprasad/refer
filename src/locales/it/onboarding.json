@@ -368,6 +368,13 @@
   },
   "xp_first_step": "Primo passo nel tuo percorso",
   "paywall": {
+    "appOfTheDay": "App del giorno", "headlineStart": "Diventa una persona che non fugge più da", "headlineEnd": "ciò che prova.", "featureSummary": "{{journeys}} percorsi · oltre {{exercises}} esercizi · approfondimenti IA illimitati",
+    "lockedTitle_one": "La tua prossima lezione (bloccata senza Plus)", "lockedTitle_other": "Le tue prossime {{count}} lezioni (bloccate senza Plus)",
+    "lessons": { "day2": { "title": "La spirale dei pensieri", "meta": "Giorno 2 · 5 min · Distorsioni cognitive" }, "day3": { "title": "Il corpo come bussola", "meta": "Giorno 3 · 5 min · Consapevolezza corporea" }, "day4": { "title": "Registro dei pensieri: il tuo primo strumento CBT", "meta": "Giorno 4 · 7 min · Esercizio pratico" } },
+    "restartNote": "Continua il tuo percorso oppure ricomincia dal giorno 1.", "trialTerms": "7 giorni di prova gratuita · Nessun addebito fino al giorno 8 · Annulla quando vuoi", "refundTerms": "💚 Rimborso completo entro 30 giorni · Senza domande", "startTrial": "Inizia la mia prova gratuita di 7 giorni", "continueFree": "Continua gratis",
+    "sleepRatio": "3 su 4", "sleepCaption": "dormono meglio entro il giorno {{day}}", "rating": "★ {{value}}", "reviews": "{{count}} recensioni", "groveCaption": "nella comunità", "testimonialQuote": "«Ho 47 anni e non avrei mai pensato di tenere un diario. Sono rimasto per le lezioni di CBT: insegnano davvero qualcosa. Giorno 89.»", "memberLabel": "Membro Happy Plus", "fiveStars": "5 stelle su 5",
+    "discount": { "wait": "Aspetta, ancora una cosa", "title": "Prova Happy Plus a {{price}}", "description": "Il primo mese a prezzo ridotto. Senza pressioni né sorprese.", "afterMonth": "Dopo il primo mese: {{price}}/mese · Annulla quando vuoi", "accept": "SÌ, LO PROVO A {{price}}", "decline": "No, grazie. Continua gratis" },
+    "plans": { "weekly": { "label": "Settimanale", "detailLabel": "Annulla quando vuoi", "perUnit": "/settimana" }, "annual": { "label": "Annuale", "badge": "Miglior prezzo", "headline": "365 giorni per esserci per te.", "savings": "Risparmia il 67%", "detailPrefix": "Solo ", "detailEmphasis": "0,27 $ al giorno", "detailSuffix": " · fatturazione annuale" }, "monthly": { "label": "Mensile", "detailLabel": "Annulla quando vuoi", "perUnit": "/mese" } },
     "benefits": {
       "journeys": "Tutti i 12 viaggi con lezioni in sequenza",
       "ai": "Approfondimenti AI illimitati e modelli settimanali",
@@ -375,6 +382,7 @@
       "streak": "Riparazione di strisce e temi premium"
     }
   },
+  "progressGraph": { "title": "Scopri l'effetto del tuo diario", "description": "Scrivere con regolarità può aiutarti a comprendere le tue emozioni e a riconoscere le giornate difficili.", "primaryLabel": "Il tuo umore", "comparisonLabel": "Senza diario", "entriesLabel": "Pagine di diario", "chartA11y": "Grafico dei progressi previsti per {{days}} giorni: confronto tra l'uso di Happy e l'assenza di un diario" },
   "pact_text": "Mi impegno a presentarmi, anche nei giorni in cui non ne ho voglia. Bastano {{minutes}} minuti. È tutto ciò che serve.",
   "future_letter": "Ce l'hai fatta. In realtà ti sei presentato, non una volta, ma ogni singolo giorno per 30 giorni.\n\nRicordi quanto ti sentivi pesante quando hai iniziato? I {{timing}} sono stati i più difficili. Ma continuavi a tornare. {{minutes}} minuti alla volta.\n\nNon sei la stessa persona che ha aperto questa app un mese fa. Sei più calma. Noti i tuoi pensieri prima che esplodano. Ora hai gli attrezzi.\n\nSono fiero di te."
 }

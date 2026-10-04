@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, Modal } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -15,7 +16,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 import { Button } from "@/src/components/ui/Button";
 import { Text } from "@/src/components/ui/Text";
 
@@ -29,6 +29,7 @@ interface SignOutConfirmationModalProps {
 export const SignOutConfirmationModal: React.FC<
   SignOutConfirmationModalProps
 > = ({ onConfirm, isLoading = false, isSignoutOPen = false, handleClose }) => {
+  const { t } = useTranslation("settings");
 
   const insets = useSafeAreaInsets();
 
@@ -81,19 +82,18 @@ export const SignOutConfirmationModal: React.FC<
                 </View>
 
                 <Text variant="h1" className="text-center text-3xl text-ink mb-2 leading-9 font-bold">
-                  Sign Out?
+                  {t("signOutConfirmation.title")}
                 </Text>
 
                 <Text variant="body" className="text-ink-soft text-center text-base px-1 leading-6">
-                  Are you sure you want to sign out? You'll need to sign in again to
-                  access your journals.
+                  {t("signOutConfirmation.message")}
                 </Text>
               </View>
 
               {/* Buttons */}
               <View className="flex-row gap-3 w-full mt-4">
                 <Button
-                  label="Cancel"
+                  label={t("signOutConfirmation.cancel")}
                   variant="secondary"
                   size="md"
                   onPress={handleCloseCancel}
@@ -102,7 +102,7 @@ export const SignOutConfirmationModal: React.FC<
                   rightIcon={<HugeiconsIcon icon={Cancel01Icon} size={16} color={SEMANTIC_COLORS.text.primary} />}
                 />
                 <Button
-                  label={isLoading ? "Signing Out..." : "Sign Out"}
+                  label={isLoading ? t("signOutConfirmation.signingOut") : t("signOutConfirmation.confirm")}
                   variant="primary"
                   size="md"
                   onPress={handleConfirm}

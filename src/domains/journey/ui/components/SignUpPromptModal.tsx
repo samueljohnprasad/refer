@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, Text, Modal, Pressable } from "react-native";
 import { SafeAreaView } from "@/src/components/tw";
 import Animated from "react-native-reanimated";
@@ -25,6 +26,7 @@ export const SignUpPromptModalView = React.memo(
     onSignUp,
     onDismiss,
   }: SignUpPromptModalViewProps): React.JSX.Element {
+    const { t } = useTranslation("journeys");
     return (
       <Modal
         visible={visible}
@@ -41,7 +43,7 @@ export const SignUpPromptModalView = React.memo(
           <Pressable
             onPress={onDismiss}
             style={{ flex: 1 }}
-            accessibilityLabel="Dismiss sign up prompt"
+            accessibilityLabel={t("dismissSignUp")}
             accessibilityRole="button"
           />
         </Animated.View>
@@ -70,11 +72,11 @@ export const SignUpPromptModalView = React.memo(
             </View>
 
             <Text className="text-2xl font-bold text-ink text-center mb-2">
-              You're doing great!
+              {t("signUpTitle")}
             </Text>
 
             <Text className="text-base text-ink-soft text-center leading-6 mb-5 px-2">
-              Sign up to save your progress and continue your journey.
+              {t("signUpPrompt")}
             </Text>
 
             <View className="flex-row justify-center gap-6 mb-6">
@@ -83,25 +85,25 @@ export const SignUpPromptModalView = React.memo(
                   {completedNodes}
                 </Text>
                 <Text className="text-xs text-ink-muted">
-                  {completedNodes === 1 ? "node done" : "nodes done"}
+                  {completedNodes === 1 ? t("nodeDone") : t("nodesDone")}
                 </Text>
               </View>
               <View className="w-px bg-slate-200" />
               <View className="items-center">
                 <Text className="text-2xl font-bold text-ink">{guestXP}</Text>
-                <Text className="text-xs text-ink-muted">IP earned</Text>
+                <Text className="text-xs text-ink-muted">{t("ipEarned")}</Text>
               </View>
             </View>
 
             <View className="bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 mb-6">
               <Text className="text-sm text-amber-700 text-center leading-5">
-                ⚠️ Your progress will be lost if you leave without signing up
+                ⚠️ {t("progressLostWarning")}
               </Text>
             </View>
 
             <View className="mb-3">
               <CourseExercisePrimaryButton
-                label="Sign Up & Save Progress"
+                label={t("signUpSaveProgress")}
                 onPress={onSignUp}
                 height={58}
                 fontSize={16}
@@ -111,10 +113,10 @@ export const SignUpPromptModalView = React.memo(
             <Pressable
               onPress={onDismiss}
               className="py-3 items-center"
-              accessibilityLabel="Maybe later"
+              accessibilityLabel={t("maybeLater")}
               accessibilityRole="button"
             >
-              <Text className="text-sm text-ink-muted">Maybe later</Text>
+              <Text className="text-sm text-ink-muted">{t("maybeLater")}</Text>
             </Pressable>
           </SafeAreaView>
         </Animated.View>

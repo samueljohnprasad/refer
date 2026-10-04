@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Feather } from "@expo/vector-icons";
@@ -34,6 +35,7 @@ export const JourneyRowView = React.memo(function JourneyRowView({
   archiveRevealStyle,
   item,
 }: JourneyRowViewProps): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
     <View className="relative mb-3">
       <Animated.View
@@ -41,7 +43,7 @@ export const JourneyRowView = React.memo(function JourneyRowView({
         style={archiveRevealStyle}
       >
         <Feather name="archive" size={20} color="white" />
-        <Text className="text-xs font-semibold text-white mt-1">Hide</Text>
+        <Text className="text-xs font-semibold text-white mt-1">{t("hide")}</Text>
       </Animated.View>
 
       <GestureDetector gesture={panGesture}>
@@ -54,10 +56,10 @@ export const JourneyRowView = React.memo(function JourneyRowView({
             style={item.isActive ? { borderColor: accentColor } : undefined}
             accessibilityRole="button"
             accessibilityLabel={`${item.title}. ${
-              item.progressPercent
-            }% complete${
-              item.isActive ? ". Currently active" : ""
-            }. Swipe left to hide.`}
+              t("percentComplete", { percent: item.progressPercent })
+            }${
+              item.isActive ? `. ${t("currentlyActive")}` : ""
+            }. ${t("swipeToHide")}`}
           >
             <View
               className="w-10 h-10 rounded-full items-center justify-center mr-3"
@@ -92,7 +94,7 @@ export const JourneyRowView = React.memo(function JourneyRowView({
                       className="text-xs font-semibold"
                       style={{ color: accentColor }}
                     >
-                      Active
+                      {t("active")}
                     </Text>
                   </View>
                 )}
@@ -103,8 +105,9 @@ export const JourneyRowView = React.memo(function JourneyRowView({
                 numberOfLines={1}
               >
                 {isCompleted
-                  ? "Completed"
-                  : item.currentUnitTitle ?? `${item.progressPercent}% complete`}
+                  ? t("completed")
+                  : item.currentUnitTitle ??
+                    t("percentComplete", { percent: item.progressPercent })}
               </Text>
 
               {!isCompleted && (
@@ -169,6 +172,7 @@ export const JourneySwitcherSheetView = React.memo(
     onDiscoverPress,
     onArchive,
   }: JourneySwitcherSheetViewProps): React.JSX.Element {
+    const { t } = useTranslation("journeys");
     return (
       <BottomSheetModal
         ref={bottomSheetRef}
@@ -186,10 +190,9 @@ export const JourneySwitcherSheetView = React.memo(
               <Text className="text-lg">🏳️</Text>
             </View>
             <View>
-              <Text className="text-2xl font-bold text-ink">My Journeys</Text>
+              <Text className="text-2xl font-bold text-ink">{t("myJourneys")}</Text>
               <Text className="text-sm text-ink-soft">
-                {items.length} {items.length === 1 ? "journey" : "journeys"}{" "}
-                enrolled
+                {t("journeysEnrolled", { count: items.length })}
               </Text>
             </View>
           </View>
@@ -203,7 +206,7 @@ export const JourneySwitcherSheetView = React.memo(
           {activeItems.length > 0 && (
             <View className="pt-5">
               <Text className="text-xs font-bold uppercase tracking-widest text-ink-muted mb-3 px-1">
-                In Progress
+                {t("inProgress")}
               </Text>
               {activeItems.map((item: JourneySwitcherItem) => (
                 <JourneyRow
@@ -219,7 +222,7 @@ export const JourneySwitcherSheetView = React.memo(
           {completedItems.length > 0 && (
             <View className="pt-4">
               <Text className="text-xs font-bold uppercase tracking-widest text-ink-muted mb-3 px-1">
-                Completed
+                {t("completed")}
               </Text>
               {completedItems.map((item: JourneySwitcherItem) => (
                 <JourneyRow
@@ -238,10 +241,10 @@ export const JourneySwitcherSheetView = React.memo(
                 <Feather name="map" size={40} color="#9CA3AF" />
               </View>
               <Text className="text-lg font-semibold text-ink mb-2">
-                No Journeys Yet
+                {t("emptyTitle")}
               </Text>
               <Text className="text-sm text-ink-soft text-center px-8">
-                Start your first journey to begin tracking your progress
+                {t("emptyDescription")}
               </Text>
             </View>
           )}
@@ -250,11 +253,11 @@ export const JourneySwitcherSheetView = React.memo(
             onPress={onDiscoverPress}
             className="mt-6 mb-4 bg-purple-600 rounded-2xl py-4 px-6 flex-row items-center justify-center gap-2"
             accessibilityRole="button"
-            accessibilityLabel="Discover new journeys"
+            accessibilityLabel={t("discoverA11y")}
           >
             <Feather name="compass" size={18} color="white" />
             <Text className="text-base font-bold text-white">
-              Discover New Journeys
+              {t("discover")}
             </Text>
           </Pressable>
         </BottomSheetScrollView>

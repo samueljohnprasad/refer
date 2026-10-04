@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, Text, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
 import { AnimatedFireIcon, GrayFireIcon } from "@/src/components/ui/AnimatedStatIcon";
@@ -60,12 +61,13 @@ export const StreakBannerView = React.memo(function StreakBannerView({
   compact,
   onPress,
 }: StreakBannerViewProps): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   if (compact) {
     return (
       <Pressable
         onPress={onPress}
         className="flex-row items-center gap-1"
-        accessibilityLabel={`${currentStreak} day streak`}
+        accessibilityLabel={t("streakA11y", { count: currentStreak })}
         accessibilityRole="button"
       >
         <AnimatedFlame animate={isHighStreak} size={16} />
@@ -92,8 +94,8 @@ export const StreakBannerView = React.memo(function StreakBannerView({
       }`}
       accessibilityLabel={
         hasStreak
-          ? `${currentStreak} day streak. Tap for details.`
-          : "Start your streak! Tap for details."
+          ? t("streakA11y", { count: currentStreak })
+          : t("streakPromptA11y")
       }
       accessibilityRole="button"
     >
@@ -110,12 +112,12 @@ export const StreakBannerView = React.memo(function StreakBannerView({
               {currentStreak}
             </Text>
             <Text className="text-xs text-ink-soft">
-              {currentStreak === 1 ? "day" : "day streak"}
+              {currentStreak === 1 ? t("day") : t("dayStreak")}
             </Text>
           </View>
         ) : (
           <Text className="text-xs font-semibold text-ink-soft">
-            Start your streak!
+            {t("startYourStreak")}
           </Text>
         )}
       </View>

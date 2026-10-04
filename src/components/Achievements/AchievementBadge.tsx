@@ -5,6 +5,7 @@ import type { Achievement } from "@/src/types/achievements";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import { useTranslation } from "react-i18next";
 
 // Helper to tint achievement colors for badge backgrounds
 const hexToRgba = (hex: string, alpha: number): string => {
@@ -237,6 +238,7 @@ const defaultBadgeConfig = {
 };
 
 export const AchievementBadge: React.FC<AchievementBadgeProps> = (props) => {
+  const { t } = useTranslation("common");
   const config = { ...defaultBadgeConfig, ...props } as any;
 
   const sizeStyles: Record<string, any> = {
@@ -250,21 +252,23 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = (props) => {
   const progress = Math.max(0, Math.min(config.currentProgress, target));
   const progressPercent = getProgressPercent(target, progress);
   const displayedProgress = getDisplayedProgress(config.isUnlocked, target, progress);
+  const localizedName = t(`achievements.items.${config.achievement.id}.name`, { defaultValue: config.achievement.name });
+  const localizedDescription = t(`achievements.items.${config.achievement.id}.description`, { defaultValue: config.achievement.description });
 
   return (
     <Pressable
       onPress={config.onPress}
       accessibilityRole={getRole(config.onPress)}
-      accessibilityLabel={getAriaLabel(config.isUnlocked, config.achievement.name, config.achievement.xpBonus, progress, target)}
+      accessibilityLabel={getAriaLabel(config.isUnlocked, localizedName, config.achievement.xpBonus, progress, target)}
       accessibilityState={{ selected: config.isUnlocked }}
       className="items-center mb-1.5 w-full"
       style={({ pressed }) => [getWidth(styles.tileWidth, pressed, config.onPress)]}
     >
       <BadgeImage achievement={config.achievement} sizeStyles={styles} isUnlocked={config.isUnlocked} progress={progress} />
       <Text className={`${styles.nameSize} happy-font-body-semibold text-center mt-1 leading-[15px] min-h-[30px] px-0.5 ${getTextColor(config.isUnlocked)}`} numberOfLines={2}>
-        {config.achievement.name}
+        {localizedName}
       </Text>
-      <BadgeDescription achievement={config.achievement} showDescription={config.showDescription} />
+      <BadgeDescription achievement={{ ...config.achievement, description: localizedDescription }} showDescription={config.showDescription} />
       <BadgeProgress config={config} progressPercent={progressPercent} displayedProgress={displayedProgress} target={target} progress={progress} />
     </Pressable>
   );

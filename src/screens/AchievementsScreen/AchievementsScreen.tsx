@@ -12,6 +12,7 @@ import { AchievementBadgeDetailSheet, type AchievementProgressItem } from "./com
 import { AchievementsSkeleton } from "./components/AchievementsSkeleton";
 import { AchievementCategorySection } from "./components/AchievementCategorySection";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { useTranslation } from "react-i18next";
 
 const CATEGORIES: readonly AchievementCategory[] = [
   "journaling",
@@ -23,6 +24,7 @@ const CATEGORIES: readonly AchievementCategory[] = [
 
 // ponytail: compact, focused achievements screen with badges above the fold
 export const AchievementsScreen: React.FC = () => {
+  const { t } = useTranslation("common");
   const { achievements, isLoading, unlockedAchievements } = useAchievements();
   const scrollViewRef = useRef<ScrollView>(null);
   const [selectedAchievement, setSelectedAchievement] =
@@ -57,7 +59,7 @@ export const AchievementsScreen: React.FC = () => {
       <Stack.Screen
         options={{
           headerShown: true,
-          title: "Achievements",
+          title: t("achievements.title"),
           headerTransparent: false,
           headerShadowVisible: false,
           headerStyle: { backgroundColor: "#FDFDF9" },
@@ -107,12 +109,12 @@ export const AchievementsScreen: React.FC = () => {
           className="flex-1"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 48 }}
-          accessibilityLabel="Achievements list"
+          accessibilityLabel={t("achievements.listA11y")}
         >
           {/* Compact Top Summary */}
           <View className="items-center pt-1.5 pb-2.5">
             <Text className="happy-font-body-bold text-[20px] text-ink">
-              {unlockedCount} of {totalCount} unlocked
+              {t("achievements.unlockedCount", { unlocked: unlockedCount, total: totalCount })}
             </Text>
           </View>
 
@@ -142,18 +144,22 @@ export const AchievementsScreen: React.FC = () => {
   );
 };
 
-const EmptyState: React.FC = () => (
-  <View className="items-center justify-center px-8 py-12">
-    <View className="happy-mascot-stage mb-4 h-20 w-20 items-center justify-center rounded-[28px]">
-      <Mascot state="panda-yet-sleep-pillow" size={52} />
+const EmptyState: React.FC = () => {
+  const { t } = useTranslation("common");
+
+  return (
+    <View className="items-center justify-center px-8 py-12">
+      <View className="happy-mascot-stage mb-4 h-20 w-20 items-center justify-center rounded-[28px]">
+        <Mascot state="panda-yet-sleep-pillow" size={52} />
+      </View>
+      <Text className="happy-font-heading-bold mb-1 text-center text-lg text-ink">
+        {t("achievements.noBadges")}
+      </Text>
+      <Text className="happy-font-body-medium text-center text-sm leading-5 text-ink-muted">
+        {t("achievements.noBadgesDescription")}
+      </Text>
     </View>
-    <Text className="happy-font-heading-bold mb-1 text-center text-lg text-ink">
-      No badges yet
-    </Text>
-    <Text className="happy-font-body-medium text-center text-sm leading-5 text-ink-muted">
-      Start journaling to earn your first badge
-    </Text>
-  </View>
-);
+  );
+};
 
 export default AchievementsScreen;

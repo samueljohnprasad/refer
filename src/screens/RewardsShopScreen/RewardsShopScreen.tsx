@@ -28,6 +28,7 @@ import * as Haptics from "expo-haptics";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 import { Card } from "@/src/components/ui/Card";
+import { useTranslation } from "react-i18next";
 
 const CATEGORY_TABS: { key: RewardCategory; label: string; emoji: string }[] = [
   { key: "themes", label: "Themes", emoji: "🎨" },
@@ -55,6 +56,7 @@ const styles = StyleSheet.create({
 });
 
 export const RewardsShopScreen: React.FC = () => {
+  const { t } = useTranslation("common");
   const {
     wallet,
     isLoading,
@@ -92,13 +94,14 @@ export const RewardsShopScreen: React.FC = () => {
 
     if (result.success) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      Alert.alert("🎉 Purchased!", `You now own ${selectedReward.name}!`, [
-        { text: "Awesome!", style: "default" },
+      const rewardName = t(`rewards.items.${selectedReward.id}.name`, { defaultValue: selectedReward.name });
+      Alert.alert(t("rewards.purchased"), t("rewards.purchasedMessage", { name: rewardName }), [
+        { text: t("rewards.awesome"), style: "default" },
       ]);
     } else {
-      Alert.alert("Purchase Failed", result.error || "Something went wrong");
+      Alert.alert(t("errors.generic"), result.error || t("errors.generic"));
     }
-  }, [selectedReward, purchaseReward]);
+  }, [selectedReward, purchaseReward, t]);
 
   if (isLoading) {
     return (
@@ -108,7 +111,7 @@ export const RewardsShopScreen: React.FC = () => {
       >
         <ActivityIndicator size="large" color={SEMANTIC_COLORS.brand.primary} />
         <Text className="happy-font-body-medium mt-4 text-ink-muted">
-          Loading shop...
+          {t("rewards.loading")}
         </Text>
       </SafeAreaView>
     );
@@ -124,7 +127,7 @@ export const RewardsShopScreen: React.FC = () => {
           onPress={handleBackPress}
           className="happy-brand-soft-chip mr-3 h-11 w-11 items-center justify-center active:opacity-80"
           accessibilityRole="button"
-          accessibilityLabel="Go back"
+          accessibilityLabel={t("rewards.back")}
         >
           <HugeiconsIcon
             icon={ArrowLeft02Icon}
@@ -138,13 +141,13 @@ export const RewardsShopScreen: React.FC = () => {
             className="happy-font-heading-bold text-[24px] leading-tight text-ink"
             numberOfLines={1}
           >
-            Rewards Shop
+            {t("rewards.title")}
           </Text>
           <Text
             className="happy-font-body-medium text-[13px] text-ink-muted"
             numberOfLines={1}
           >
-            Spend coins on tiny feel-good upgrades
+            {t("rewards.subtitle")}
           </Text>
         </View>
         <CoinsBadge coins={wallet.coins} size="md" />
@@ -160,7 +163,7 @@ export const RewardsShopScreen: React.FC = () => {
           <View className="flex-row items-center justify-between">
             <View>
               <Text className="happy-font-body-medium text-sm text-ink-muted">
-                Your Balance
+                {t("rewards.balance")}
               </Text>
               <View className="mt-2 flex-row items-center">
                 <View className="happy-brand-status-chip h-11 w-11 items-center justify-center">
@@ -178,7 +181,7 @@ export const RewardsShopScreen: React.FC = () => {
             </View>
             <View className="items-end">
               <Text className="happy-font-body-medium text-sm text-ink-muted">
-                Items Owned
+                {t("rewards.itemsOwned")}
               </Text>
               <Text className="happy-font-heading-bold mt-2 text-[30px] leading-tight text-sage-600">
                 {unlockedRewards.length}/{REWARDS.length}
@@ -210,7 +213,7 @@ export const RewardsShopScreen: React.FC = () => {
                 activeCategory === tab.key ? "text-ink" : "text-ink-muted"
               }`}
             >
-              {tab.label}
+              {t(`rewards.categories.${tab.key}.label`, { defaultValue: tab.label })}
             </Text>
           </Pressable>
         ))}
@@ -240,7 +243,7 @@ export const RewardsShopScreen: React.FC = () => {
           <View className="items-center py-12">
             <Text className="text-4xl mb-2">🎁</Text>
             <Text className="happy-font-body-medium text-ink-muted">
-              No rewards in this category
+              {t("rewards.empty")}
             </Text>
           </View>
         )}

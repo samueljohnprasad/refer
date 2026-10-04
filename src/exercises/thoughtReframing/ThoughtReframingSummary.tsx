@@ -15,6 +15,9 @@ import {
   ReflectionTimelineItem,
 } from "@/src/components/exercise/ReflectionTimeline";
 import { Text } from "@/src/components/ui/Text";
+import { ExerciseCopyText } from "@/src/components/exercise/ExerciseCopyText";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { useTranslation } from "react-i18next";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import {
   EMOTION_OPTIONS,
@@ -22,6 +25,7 @@ import {
 } from "@/src/screens/ThoughtReframingScreen/data/emotions";
 import { COGNITIVE_DISTORTIONS } from "@/src/screens/ThoughtReframingScreen/data/cognitiveDistortions";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
+import { ThoughtReframingTimeline } from "./ThoughtReframingTimeline";
 import type {
   ThoughtReframingResponse,
   StepProps,
@@ -33,7 +37,9 @@ import type {
 } from "@/src/screens/ThoughtReframingScreen/types";
 
 function getShiftCopy(pre: number, post: number): {
-  label: string;
+  label?: string;
+  labelKey?: "flow.ui.scoreShiftStronger" | "flow.ui.scoreShiftLighter";
+  labelCount?: number;
   detail: string;
   color: string;
 } {
@@ -41,7 +47,8 @@ function getShiftCopy(pre: number, post: number): {
 
   if (change < 0) {
     return {
-      label: `${Math.abs(change)} point${Math.abs(change) === 1 ? "" : "s"} stronger`,
+      labelKey: "flow.ui.scoreShiftStronger",
+      labelCount: Math.abs(change),
       detail:
         "The thought feels more believable right now. Looking closely can sometimes make a difficult thought feel sharper before it settles.",
       color: SEMANTIC_COLORS.text.primary,
@@ -58,7 +65,8 @@ function getShiftCopy(pre: number, post: number): {
   }
 
   return {
-    label: `${change} point${change === 1 ? "" : "s"} lighter`,
+      labelKey: "flow.ui.scoreShiftLighter",
+      labelCount: change,
     detail:
       change >= 4
         ? "The thought became meaningfully less believable after you reviewed the evidence."
@@ -71,6 +79,12 @@ export const ThoughtReframingSummary: React.FC<
   StepProps<ThoughtReframingResponse>
 > = ({ response, readOnly }) => {
   const { saveCard } = useCopingCards();
+  const translateCopy = useExerciseCopy();
+  const { t: rawTranslateUi } = useTranslation("exercises");
+  const translateUi = rawTranslateUi as unknown as (
+    key: string,
+    options: { count: number },
+  ) => string;
   const [cardSaved, setCardSaved] = useState(false);
   const [isSavingCard, setIsSavingCard] = useState(false);
   const [cardSaveError, setCardSaveError] = useState<string | null>(null);
@@ -102,7 +116,16 @@ export const ThoughtReframingSummary: React.FC<
   const preScore = response.intensity ?? 5;
   const postScore = response.postIntensity;
   const hasScores = postScore !== null && postScore !== undefined;
-  const shift = hasScores ? getShiftCopy(preScore, postScore) : null;
+  const rawShift = hasScores ? getShiftCopy(preScore, postScore) : null;
+  const shift = rawShift
+    ? {
+        ...rawShift,
+        label: rawShift.labelKey
+          ? translateUi(rawShift.labelKey, { count: rawShift.labelCount ?? 0 })
+          : translateCopy(rawShift.label ?? ""),
+        detail: translateCopy(rawShift.detail),
+      }
+    : null;
   const evidenceFor = response.evidenceFor ?? [];
   const evidenceAgainst = response.evidenceAgainst ?? [];
 
@@ -131,7 +154,7 @@ export const ThoughtReframingSummary: React.FC<
       await saveCard({
         exercise_type: "thought_reframing",
         reframe_text: response.balancedThought,
-        reframe_label: "Balanced thought",
+        reframe_label: translateCopy("Balanced thought"),
       });
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setCardSaved(true);
@@ -139,29 +162,29 @@ export const ThoughtReframingSummary: React.FC<
       const message =
         error instanceof Error
           ? error.message
-          : "The coping card could not be saved.";
-      setCardSaveError("Could not save this coping card. Try again.");
-      Alert.alert("Save failed", message);
+          : translateCopy("The coping card could not be saved.");
+      setCardSaveError(translateCopy("Could not save this coping card. Try again."));
+      Alert.alert(translateCopy("Save failed"), message);
     } finally {
       setIsSavingCard(false);
     }
-  }, [cardSaved, isSavingCard, response.balancedThought, saveCard]);
+  }, [cardSaved, isSavingCard, response.balancedThought, saveCard, translateCopy]);
 
   return (
     <View className="px-3" style={{ paddingBottom: 40 }}>
       <View className="pb-6 pt-2">
-        <Text
+        <ExerciseCopyText
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
           className="text-[34px] leading-[37px] tracking-[-0.01em]"
         >
           Thought reframed
-        </Text>
-        <Text
+        </ExerciseCopyText>
+        <ExerciseCopyText
           style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
           className="mt-2 max-w-[330px] text-[15px] leading-[22px]"
         >
           You separated what happened from what the thought predicted.
-        </Text>
+        </ExerciseCopyText>
       </View>
 
       {response.balancedThought?.trim() ? (
@@ -173,12 +196,12 @@ export const ThoughtReframingSummary: React.FC<
             backgroundColor: SEMANTIC_COLORS.selection.surface,
           }}
         >
-          <Text
+          <ExerciseCopyText
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.pressed }}
             className="text-[13px] leading-[18px]"
           >
             The reframe you are carrying forward
-          </Text>
+          </ExerciseCopyText>
           <Text
             accessibilityRole="summary"
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
@@ -192,13 +215,13 @@ export const ThoughtReframingSummary: React.FC<
               onPress={handleSaveCopingCard}
               disabled={cardSaved || isSavingCard}
               accessibilityRole="button"
-              accessibilityLabel={
+              accessibilityLabel={translateCopy(
                 cardSaved
                   ? "Saved to coping cards"
                   : isSavingCard
                     ? "Saving coping card"
                     : "Save as coping card"
-              }
+              )}
               accessibilityState={{
                 disabled: cardSaved || isSavingCard,
                 busy: isSavingCard,
@@ -211,7 +234,7 @@ export const ThoughtReframingSummary: React.FC<
                 color={SEMANTIC_COLORS.brand.onSoft}
                 strokeWidth={2}
               />
-              <Text
+              <ExerciseCopyText
                 style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.onSoft }}
                 className="ml-2 text-[14px] leading-[20px]"
               >
@@ -220,7 +243,7 @@ export const ThoughtReframingSummary: React.FC<
                   : isSavingCard
                     ? "Saving..."
                     : "Save for a difficult moment"}
-              </Text>
+              </ExerciseCopyText>
             </Pressable>
           ) : null}
 
@@ -235,142 +258,31 @@ export const ThoughtReframingSummary: React.FC<
         </View>
       ) : null}
 
-      {hasTimeline ? (
-        <View className="mt-7">
-          <ReflectionTimeline>
-            {hasSituation ? (
-              <ReflectionTimelineItem
-                label="What happened"
-                isLast={
-                  !hasAutomaticThought &&
-                  !hasEmotions &&
-                  !hasDistortions &&
-                  !hasScores &&
-                  !hasEvidence
-                }
-              >
-                <Text
-                  style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.primary }}
-                  className="text-[16px] leading-[24px]"
-                >
-                  {response.situation}
-                </Text>
-              </ReflectionTimelineItem>
-            ) : null}
-
-            {hasAutomaticThought ? (
-              <ReflectionTimelineItem
-                label="The first thought"
-                isLast={
-                  !hasEmotions &&
-                  !hasDistortions &&
-                  !hasScores &&
-                  !hasEvidence
-                }
-              >
-                <Text
-                  style={{ fontFamily: APP_FONT_FAMILIES.semiBoldItalic, color: SEMANTIC_COLORS.text.primary }}
-                  className="text-[21px] leading-[28px]"
-                >
-                  {response.automaticThought}
-                </Text>
-              </ReflectionTimelineItem>
-            ) : null}
-
-            {hasEmotions ? (
-              <ReflectionTimelineItem
-                label="What you felt"
-                isLast={!hasDistortions && !hasScores && !hasEvidence}
-              >
-                <View className="flex-row flex-wrap gap-x-4 gap-y-1.5">
-                  {emotions.map((emotion) => (
-                    <View key={emotion.name} className="flex-row items-center">
-                      <Text className="mr-1.5 text-[17px]">
-                        {emotion.emoji}
-                      </Text>
-                      <Text
-                        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
-                        className="text-[14px] leading-[20px]"
-                      >
-                        {emotion.label}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              </ReflectionTimelineItem>
-            ) : null}
-
-            {hasDistortions ? (
-              <ReflectionTimelineItem
-                label="Patterns you noticed"
-                isLast={!hasScores && !hasEvidence}
-              >
-                <View className="gap-4">
-                  {distortions.map((distortion) => (
-                    <View key={distortion.key}>
-                      <Text
-                        style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
-                        className="text-[15px] leading-[21px]"
-                      >
-                        {distortion.label}
-                      </Text>
-                      <Text
-                        style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
-                        className="mt-0.5 text-[13px] leading-[19px]"
-                      >
-                        {distortion.description}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              </ReflectionTimelineItem>
-            ) : null}
-
-            {hasScores && shift ? (
-              <ReflectionTimelineItem
-                label="How believable it felt"
-                isLast={!hasEvidence}
-              >
-                <ReflectionScoreShift
-                  before={preScore}
-                  after={postScore}
-                  label={shift.label}
-                  detail={shift.detail}
-                  accentColor={shift.color}
-                />
-              </ReflectionTimelineItem>
-            ) : null}
-
-            {hasEvidenceFor ? (
-              <ReflectionTimelineItem
-                label="Evidence that supported it"
-                isLast={!hasEvidenceAgainst}
-              >
-                <ReflectionBulletList
-                  items={evidenceFor}
-                  accentColor="#8A948A"
-                />
-              </ReflectionTimelineItem>
-            ) : null}
-
-            {hasEvidenceAgainst ? (
-              <ReflectionTimelineItem
-                label="Evidence that challenged it"
-                isLast
-              >
-                <ReflectionBulletList items={evidenceAgainst} />
-              </ReflectionTimelineItem>
-            ) : null}
-          </ReflectionTimeline>
-        </View>
-      ) : null}
-
-      <Text
+      <ThoughtReframingTimeline
+        response={response}
+        emotions={emotions}
+        distortions={distortions}
+        preScore={preScore}
+        postScore={postScore ?? preScore}
+        hasTimeline={hasTimeline}
+        hasSituation={hasSituation}
+        hasAutomaticThought={hasAutomaticThought}
+        hasEmotions={hasEmotions}
+        hasDistortions={hasDistortions}
+        hasScores={hasScores}
+        hasEvidence={hasEvidence}
+        hasEvidenceFor={hasEvidenceFor}
+        hasEvidenceAgainst={hasEvidenceAgainst}
+        evidenceFor={evidenceFor}
+        evidenceAgainst={evidenceAgainst}
+        shift={shift}
+      />
+      <ExerciseCopyText
         style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
         className="mb-2 mt-10 px-5 text-center text-[13px] leading-[20px]"
       >
         Completing saves this reflection to your exercise history.
-      </Text>
+      </ExerciseCopyText>
     </View>
   );
 };

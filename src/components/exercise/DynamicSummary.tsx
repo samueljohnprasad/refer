@@ -15,6 +15,8 @@ import {
   ReflectionScoreShift,
 } from "@/src/components/exercise/ReflectionTimeline";
 import type { ExerciseType } from "@/src/types/exerciseFlow";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { useTranslation } from "react-i18next";
 
 interface DynamicSummaryProps {
   title: string;
@@ -38,7 +40,9 @@ interface DynamicSummaryProps {
 }
 
 function getShiftCopy(pre: number, post: number): {
-  label: string;
+  label?: string;
+  labelKey?: "flow.ui.scoreShiftStronger" | "flow.ui.scoreShiftLighter";
+  labelCount?: number;
   detail: string;
   color: string;
 } {
@@ -46,7 +50,8 @@ function getShiftCopy(pre: number, post: number): {
 
   if (change < 0) {
     return {
-      label: `${Math.abs(change)} point${Math.abs(change) === 1 ? "" : "s"} stronger`,
+      labelKey: "flow.ui.scoreShiftStronger",
+      labelCount: Math.abs(change),
       detail:
         "Looking closely can sometimes make a difficult feeling sharper before it settles.",
       color: SEMANTIC_COLORS.text.primary,
@@ -63,7 +68,8 @@ function getShiftCopy(pre: number, post: number): {
   }
 
   return {
-    label: `${change} point${change === 1 ? "" : "s"} lighter`,
+    labelKey: "flow.ui.scoreShiftLighter",
+    labelCount: change,
     detail:
       change >= 4
         ? "The feeling became meaningfully less intense after you practiced."
@@ -78,7 +84,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
   postScore,
   scoreLabel = "Intensity",
   keyTakeaway,
-  keyTakeawayLabel = "Your takeaway",
+  keyTakeawayLabel,
   nextExerciseType,
   nextExerciseLabel,
   onSaveCopingCard,
@@ -87,13 +93,28 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
   readOnly,
   children,
 }) => {
+  const translateCopy = useExerciseCopy();
+  const { t: rawTranslateUi } = useTranslation("exercises");
+  const translateUi = rawTranslateUi as unknown as (
+    key: string,
+    options: { count?: number; label?: string },
+  ) => string;
   const hasScores =
     preScore !== undefined &&
     postScore !== undefined &&
     preScore !== null &&
     postScore !== null;
 
-  const shift = hasScores ? getShiftCopy(preScore!, postScore!) : null;
+  const rawShift = hasScores ? getShiftCopy(preScore!, postScore!) : null;
+  const shift = rawShift
+    ? {
+        ...rawShift,
+        label: rawShift.labelKey
+          ? translateUi(rawShift.labelKey, { count: rawShift.labelCount ?? 0 })
+          : translateCopy(rawShift.label ?? ""),
+        detail: translateCopy(rawShift.detail),
+      }
+    : null;
 
   return (
     <View className="px-3" style={{ paddingBottom: 40 }}>
@@ -108,7 +129,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
           style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
           className="mt-2 max-w-[330px] text-[15px] leading-[22px]"
         >
-          You took a moment to check in with yourself.
+          {translateCopy("You took a moment to check in with yourself.")}
         </Text>
       </View>
 
@@ -125,7 +146,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.secondary }}
             className="text-[13px] leading-[18px]"
           >
-            {keyTakeawayLabel}
+            {translateCopy(keyTakeawayLabel ?? "Your takeaway")}
           </Text>
           <Text
             accessibilityRole="summary"
@@ -141,7 +162,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
               disabled={cardSaved}
               accessibilityRole="button"
               accessibilityLabel={
-                cardSaved ? "Saved to coping cards" : "Save as coping card"
+                translateCopy(cardSaved ? "Saved to coping cards" : "Save as coping card")
               }
               accessibilityState={{
                 disabled: cardSaved,
@@ -159,8 +180,8 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
                 className="ml-2 text-[14px] leading-[20px]"
               >
                 {cardSaved
-                  ? "Saved to coping cards"
-                  : "Save for a difficult moment"}
+                  ? translateCopy("Saved to coping cards")
+                  : translateCopy("Save for a difficult moment")}
               </Text>
             </Pressable>
           ) : null}
@@ -187,7 +208,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
             
             {children ? (
               <ReflectionTimelineItem
-                label="Insights"
+                label={translateCopy("Insights")}
                 isLast={!nextExerciseType}
               >
                 {children}
@@ -196,13 +217,13 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
 
             {nextExerciseType && nextExerciseLabel && onNavigateToExercise && !readOnly ? (
               <ReflectionTimelineItem
-                label="Want to go deeper?"
+                label={translateCopy("Want to go deeper?")}
                 isLast={true}
               >
                 <Pressable
                   onPress={() => onNavigateToExercise(nextExerciseType)}
                   accessibilityRole="button"
-                  accessibilityLabel={nextExerciseLabel}
+                    accessibilityLabel={nextExerciseLabel}
                   className="flex-row items-center justify-between rounded-xl px-4 py-3.5 mt-1 active:opacity-70 border border-sage-200/50"
                   style={{ backgroundColor: SEMANTIC_COLORS.surface.elevated }}
                 >
@@ -210,7 +231,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
                     style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.pressed }}
                     className="text-[14px] leading-[20px]"
                   >
-                    Apply it → {nextExerciseLabel}
+                    {translateUi("flow.ui.applyIt", { label: nextExerciseLabel })}
                   </Text>
                   <HugeiconsIcon
                     icon={ArrowRight01Icon}
@@ -229,7 +250,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
         style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
         className="mb-2 mt-10 px-5 text-center text-[13px] leading-[20px]"
       >
-        Completing saves this to your history.
+        {translateCopy("Completing saves this to your history.")}
       </Text>
     </View>
   );

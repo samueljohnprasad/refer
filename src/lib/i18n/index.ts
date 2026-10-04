@@ -12,6 +12,7 @@ import journalEn from '../../locales/en/journal.json';
 import habitsEn from '../../locales/en/habits.json';
 import settingsEn from '../../locales/en/settings.json';
 import onboardingEn from '../../locales/en/onboarding.json';
+import journeysEn from '../../locales/en/journeys.json';
 
 import commonFr from '../../locales/fr/common.json';
 import homeFr from '../../locales/fr/home.json';
@@ -19,6 +20,8 @@ import journalFr from '../../locales/fr/journal.json';
 import settingsFr from '../../locales/fr/settings.json';
 import onboardingFr from '../../locales/fr/onboarding.json';
 import habitsFr from '../../locales/fr/habits.json';
+import journeysFr from '../../locales/fr/journeys.json';
+import exercisesFr from '../../locales/fr/exercises.json';
 
 import commonEs from '../../locales/es/common.json';
 import homeEs from '../../locales/es/home.json';
@@ -26,6 +29,8 @@ import journalEs from '../../locales/es/journal.json';
 import settingsEs from '../../locales/es/settings.json';
 import onboardingEs from '../../locales/es/onboarding.json';
 import habitsEs from '../../locales/es/habits.json';
+import journeysEs from '../../locales/es/journeys.json';
+import exercisesEs from '../../locales/es/exercises.json';
 
 import commonDe from '../../locales/de/common.json';
 import homeDe from '../../locales/de/home.json';
@@ -33,6 +38,8 @@ import journalDe from '../../locales/de/journal.json';
 import settingsDe from '../../locales/de/settings.json';
 import onboardingDe from '../../locales/de/onboarding.json';
 import habitsDe from '../../locales/de/habits.json';
+import journeysDe from '../../locales/de/journeys.json';
+import exercisesDe from '../../locales/de/exercises.json';
 
 import commonAr from '../../locales/ar/common.json';
 import homeAr from '../../locales/ar/home.json';
@@ -40,6 +47,8 @@ import journalAr from '../../locales/ar/journal.json';
 import settingsAr from '../../locales/ar/settings.json';
 import onboardingAr from '../../locales/ar/onboarding.json';
 import habitsAr from '../../locales/ar/habits.json';
+import journeysAr from '../../locales/ar/journeys.json';
+import exercisesAr from '../../locales/ar/exercises.json';
 
 import commonPt from '../../locales/pt/common.json';
 import homePt from '../../locales/pt/home.json';
@@ -47,6 +56,8 @@ import journalPt from '../../locales/pt/journal.json';
 import settingsPt from '../../locales/pt/settings.json';
 import onboardingPt from '../../locales/pt/onboarding.json';
 import habitsPt from '../../locales/pt/habits.json';
+import journeysPt from '../../locales/pt/journeys.json';
+import exercisesPt from '../../locales/pt/exercises.json';
 
 import commonIt from '../../locales/it/common.json';
 import homeIt from '../../locales/it/home.json';
@@ -54,6 +65,8 @@ import journalIt from '../../locales/it/journal.json';
 import settingsIt from '../../locales/it/settings.json';
 import onboardingIt from '../../locales/it/onboarding.json';
 import habitsIt from '../../locales/it/habits.json';
+import journeysIt from '../../locales/it/journeys.json';
+import exercisesIt from '../../locales/it/exercises.json';
 
 import commonZh from '../../locales/zh/common.json';
 import homeZh from '../../locales/zh/home.json';
@@ -61,6 +74,8 @@ import journalZh from '../../locales/zh/journal.json';
 import settingsZh from '../../locales/zh/settings.json';
 import onboardingZh from '../../locales/zh/onboarding.json';
 import habitsZh from '../../locales/zh/habits.json';
+import journeysZh from '../../locales/zh/journeys.json';
+import exercisesZh from '../../locales/zh/exercises.json';
 
 export const LANGUAGE_STORAGE_KEY = '@happy/language';
 export const CDN_BASE = 'https://cdn.happy.app/locales';
@@ -69,6 +84,27 @@ export const SUPPORTED_LANGUAGES = ['en', 'fr', 'de', 'es', 'ar', 'pt', 'it', 'z
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
 export const RTL_LANGUAGES: readonly SupportedLanguage[] = ['ar'] as const;
+let languageActionVersion = 0;
+let languageChangeQueue: Promise<void> = Promise.resolve();
+
+function queueLanguageChange(lang: SupportedLanguage, expectedVersion?: number): Promise<boolean> {
+  const change = languageChangeQueue.then(async () => {
+    if (expectedVersion !== undefined && expectedVersion !== languageActionVersion) return false;
+    const needsRestart = I18nManager.isRTL !== RTL_LANGUAGES.includes(lang);
+    applyRTL(lang);
+    await i18n.changeLanguage(lang);
+    return needsRestart;
+  });
+  languageChangeQueue = change.then(() => {}, () => {});
+  return change;
+}
+
+export async function getStoredLanguagePreference(): Promise<SupportedLanguage | null> {
+  const stored = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
+  return stored && (SUPPORTED_LANGUAGES as readonly string[]).includes(stored)
+    ? (stored as SupportedLanguage)
+    : null;
+}
 
 export function getDeviceLanguage(): SupportedLanguage {
   const locales = Localization.getLocales();
@@ -92,10 +128,7 @@ export async function initI18n(): Promise<void> {
 
   let savedLang: SupportedLanguage | null = null;
   try {
-    const stored = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
-    if (stored && (SUPPORTED_LANGUAGES as readonly string[]).includes(stored)) {
-      savedLang = stored as SupportedLanguage;
-    }
+    savedLang = await getStoredLanguagePreference();
   } catch (error) {
     console.warn('[i18n] Failed reading saved language from storage', error);
   }
@@ -109,7 +142,7 @@ export async function initI18n(): Promise<void> {
       lng,
       fallbackLng: 'en',
       supportedLngs: [...SUPPORTED_LANGUAGES],
-      ns: ['common', 'home', 'exercises', 'journal', 'habits', 'settings', 'onboarding'],
+      ns: ['common', 'home', 'exercises', 'journal', 'habits', 'settings', 'onboarding', 'journeys'],
       defaultNS: 'common',
       compatibilityJSON: 'v4',
       resources: {
@@ -121,14 +154,15 @@ export async function initI18n(): Promise<void> {
           habits: habitsEn,
           settings: settingsEn,
           onboarding: onboardingEn,
+          journeys: journeysEn,
         },
-        fr: { common: commonFr, home: homeFr, settings: settingsFr, onboarding: onboardingFr, exercises: {}, journal: journalFr, habits: habitsFr },
-        es: { common: commonEs, home: homeEs, settings: settingsEs, onboarding: onboardingEs, exercises: {}, journal: journalEs, habits: habitsEs },
-        de: { common: commonDe, home: homeDe, settings: settingsDe, onboarding: onboardingDe, exercises: {}, journal: journalDe, habits: habitsDe },
-        ar: { common: commonAr, home: homeAr, settings: settingsAr, onboarding: onboardingAr, exercises: {}, journal: journalAr, habits: habitsAr },
-        pt: { common: commonPt, home: homePt, settings: settingsPt, onboarding: onboardingPt, exercises: {}, journal: journalPt, habits: habitsPt },
-        it: { common: commonIt, home: homeIt, settings: settingsIt, onboarding: onboardingIt, exercises: {}, journal: journalIt, habits: habitsIt },
-        zh: { common: commonZh, home: homeZh, settings: settingsZh, onboarding: onboardingZh, exercises: {}, journal: journalZh, habits: habitsZh },
+        fr: { common: commonFr, home: homeFr, settings: settingsFr, onboarding: onboardingFr, exercises: exercisesFr, journal: journalFr, habits: habitsFr, journeys: journeysFr },
+        es: { common: commonEs, home: homeEs, settings: settingsEs, onboarding: onboardingEs, exercises: exercisesEs, journal: journalEs, habits: habitsEs, journeys: journeysEs },
+        de: { common: commonDe, home: homeDe, settings: settingsDe, onboarding: onboardingDe, exercises: exercisesDe, journal: journalDe, habits: habitsDe, journeys: journeysDe },
+        ar: { common: commonAr, home: homeAr, settings: settingsAr, onboarding: onboardingAr, exercises: exercisesAr, journal: journalAr, habits: habitsAr, journeys: journeysAr },
+        pt: { common: commonPt, home: homePt, settings: settingsPt, onboarding: onboardingPt, exercises: exercisesPt, journal: journalPt, habits: habitsPt, journeys: journeysPt },
+        it: { common: commonIt, home: homeIt, settings: settingsIt, onboarding: onboardingIt, exercises: exercisesIt, journal: journalIt, habits: habitsIt, journeys: journeysIt },
+        zh: { common: commonZh, home: homeZh, settings: settingsZh, onboarding: onboardingZh, exercises: exercisesZh, journal: journalZh, habits: habitsZh, journeys: journeysZh },
       },
       partialBundledLanguages: true,
       interpolation: {
@@ -140,29 +174,39 @@ export async function initI18n(): Promise<void> {
       saveMissing: __DEV__,
       missingKeyHandler: (lngs: readonly string[], ns: string, key: string): void => {
         if (__DEV__) {
-          console.warn(`[i18n] Missing key: ${ns}:${key} [${lngs.join(',')}]`);
+          console.warn(`[i18n] Missing ${ns}:${key} for ${lngs.join(',')}. Add it to src/locales/<language>/${ns}.json (including en for fallback).`);
         }
       },
     });
 }
 
 export async function changeLanguage(lang: SupportedLanguage): Promise<void> {
-  try {
-    await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
-  } catch (error) {
-    console.warn('[i18n] Failed to persist language', error);
-  }
-  applyRTL(lang);
-  await i18n.changeLanguage(lang);
+  languageActionVersion += 1;
+  await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+  await queueLanguageChange(lang);
 }
 
 export async function clearLanguagePreference(): Promise<void> {
+  languageActionVersion += 1;
+  await AsyncStorage.removeItem(LANGUAGE_STORAGE_KEY);
+  await queueLanguageChange(getDeviceLanguage());
+}
+
+export async function refreshDeviceLanguage(): Promise<boolean> {
+  if (!i18n.isInitialized) return false;
+  const refreshVersion = languageActionVersion;
+
   try {
-    await AsyncStorage.removeItem(LANGUAGE_STORAGE_KEY);
+    if (await getStoredLanguagePreference()) return false;
   } catch (error) {
-    console.warn('[i18n] Failed to clear language preference', error);
+    console.warn('[i18n] Failed reading language preference on foreground', error);
+    return false;
   }
-  await changeLanguage(getDeviceLanguage());
+  if (refreshVersion !== languageActionVersion) return false;
+
+  const deviceLanguage = getDeviceLanguage();
+  if (i18n.language === deviceLanguage) return false;
+  return queueLanguageChange(deviceLanguage, refreshVersion);
 }
 
 export { i18n };

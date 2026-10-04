@@ -207,6 +207,13 @@
   },
   "xp_first_step": "Dein erster Schritt",
   "paywall": {
+    "appOfTheDay": "App des Tages", "headlineStart": "Werde jemand, der nicht mehr vor", "headlineEnd": "Gefühlen davonläuft.", "featureSummary": "{{journeys}} Wege · über {{exercises}} Übungen · unbegrenzte KI-Einblicke",
+    "lockedTitle_one": "Deine nächste Lektion (ohne Plus gesperrt)", "lockedTitle_other": "Deine nächsten {{count}} Lektionen (ohne Plus gesperrt)",
+    "lessons": { "day2": { "title": "Die Gedankenspirale", "meta": "Tag 2 · 5 Min. · Kognitive Verzerrungen" }, "day3": { "title": "Der Körper als Kompass", "meta": "Tag 3 · 5 Min. · Körperwahrnehmung" }, "day4": { "title": "Gedankenprotokolle: Dein erstes KVT-Werkzeug", "meta": "Tag 4 · 7 Min. · Praktische Übung" } },
+    "restartNote": "Setze deinen Weg fort oder beginne wieder bei Tag 1.", "trialTerms": "7 Tage kostenlos · Keine Kosten bis Tag 8 · Jederzeit kündbar", "refundTerms": "💚 30 Tage volle Rückerstattung · Ohne Nachfragen", "startTrial": "7 Tage kostenlos testen", "continueFree": "Kostenlos weitermachen",
+    "sleepRatio": "3 von 4", "sleepCaption": "schlafen bis Tag {{day}} besser", "rating": "★ {{value}}", "reviews": "{{count}} Bewertungen", "groveCaption": "in der Gemeinschaft", "testimonialQuote": "„Ich bin 47 und hätte nie gedacht, dass ich Tagebuch schreibe. Die KVT-Lektionen haben mich überzeugt: Man lernt wirklich etwas. Tag 89.“", "memberLabel": "Happy Plus-Mitglied", "fiveStars": "5 von 5 Sternen",
+    "discount": { "wait": "Warte, noch etwas", "title": "Happy Plus für {{price}} testen", "description": "Der erste Monat ist fast geschenkt. Kein Druck, kein Haken.", "afterMonth": "Nach Monat 1: {{price}}/Monat · Jederzeit kündbar", "accept": "JA, FÜR {{price}} TESTEN", "decline": "Nein danke, kostenlos weitermachen" },
+    "plans": { "weekly": { "label": "Wöchentlich", "detailLabel": "Jederzeit kündbar", "perUnit": "/Woche" }, "annual": { "label": "Jährlich", "badge": "Bestes Angebot", "headline": "365 Tage für dich selbst da sein.", "savings": "67 % sparen", "detailPrefix": "Nur ", "detailEmphasis": "0,27 $ pro Tag", "detailSuffix": " · jährlich abgerechnet" }, "monthly": { "label": "Monatlich", "detailLabel": "Jederzeit kündbar", "perUnit": "/Monat" } },
     "benefits": {
       "journeys": "Alle 12 Reisen mit aufbauenden Lektionen",
       "ai": "Unbegrenzte KI-Einblicke & wöchentliche Muster",
@@ -214,6 +221,7 @@
       "streak": "Serienreparatur & Premium-Designs"
     }
   },
+  "progressGraph": { "title": "Sieh, was dein Tagebuch bewirkt", "description": "Regelmäßiges Schreiben kann dir helfen, deine Gefühle zu ordnen und schwierige Tage besser zu erkennen.", "primaryLabel": "Deine Stimmung", "comparisonLabel": "Ohne Tagebuch", "entriesLabel": "Tagebucheinträge", "chartA11y": "Prognose für {{days}} Tage: Vergleich des Fortschritts mit Happy und ohne Tagebuch" },
   "pact_text": "Ich verpflichte mich, für mich da zu sein – auch an den Tagen, an denen ich keine Lust habe. Nur {{minutes}} Minuten. Das ist alles, was es braucht.",
   "future_letter": "Du hast es geschafft. Du bist wirklich aufgetaucht – nicht nur einmal, sondern jeden einzelnen Tag 30 Tage lang.\n\nErinnerst du dich noch, wie schwer sich alles angefühlt hat, als du angefangen hast? {{timing}} war am schwersten. Aber du bist immer wieder zurückgekommen. {{minutes}} Minuten nach dem anderen.\n\nDu bist nicht mehr dieselbe Person, die diese App vor einem Monat geöffnet hat. Du bist ruhiger. Du bemerkst deine Gedanken, bevor sie sich hochschaukeln. Du hast jetzt Werkzeuge.\n\nIch bin stolz auf dich."
 }

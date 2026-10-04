@@ -1,4 +1,3 @@
-import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 /**
  * ExerciseTimelineCard
  *
@@ -21,27 +20,41 @@ import {
   View,
   Text,
   Pressable,
-  StyleSheet,
-  Platform,
-  LayoutAnimation,
 } from "react-native";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
   withTiming,
   LinearTransition,
   Easing,
 } from "react-native-reanimated";
 import { format } from "date-fns";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 import { ShiftBadge } from "./ShiftBadge";
 import type { ExerciseTimelineItem } from "./types";
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import { styles } from "./ExerciseTimelineCard.styles";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+function translateLogFieldLabel(
+  t: TFunction<"exercises">,
+  label: string | undefined,
+): string {
+  switch (label) {
+    case "Automatic Thought": return t("log.automaticThought");
+    case "Balanced Reframe": return t("log.balancedReframe");
+    case "Initial Thought": return t("log.initialThought");
+    case "Cognitive Reframe": return t("log.cognitiveReframe");
+    case "Activating Event (A)": return t("log.activatingEvent");
+    case "Alternative Belief & Outcome": return t("log.alternativeBeliefOutcome");
+    case "Gratitude Entries": return t("log.gratitudeEntries");
+    case "Reframed Perspective": return t("log.reframedPerspective");
+    default: return label ?? t("log.initialThought");
+  }
+}
 
 const AnimatedEmotionBar: React.FC<{
   emotion: string;
@@ -77,6 +90,10 @@ interface ExerciseTimelineCardProps {
 
 const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
   ({ item }) => {
+    const { t } = useTranslation("exercises");
+    const previewText = item.previewText === "I am grateful for..."
+      ? t("log.gratitudePrompt")
+      : item.previewText;
     const scale = useSharedValue(1);
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -155,9 +172,9 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
           </View>
 
           {/* Preview Text */}
-          {item.previewText && !isExpanded && (
+          {previewText && !isExpanded && (
             <Text style={styles.previewText} numberOfLines={2}>
-              "{item.previewText}"
+              "{previewText}"
             </Text>
           )}
 
@@ -167,13 +184,13 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
               style={styles.expandedContent}
               layout={LinearTransition.duration(300).easing(Easing.bezier(0.25, 0.1, 0.25, 1))}
             >
-              {item.previewText && (!item.gratitudeEntries || item.gratitudeEntries.length === 0) && (
+              {previewText && (!item.gratitudeEntries || item.gratitudeEntries.length === 0) && (
                 <View style={styles.previewContainer}>
                   <Text style={styles.sectionLabel}>
-                    {item.previewLabel ?? "Initial Thought"}
+                    {translateLogFieldLabel(t, item.previewLabel)}
                   </Text>
                   <Text style={styles.previewTextExpanded}>
-                    "{item.previewText}"
+                    "{previewText}"
                   </Text>
                 </View>
               )}
@@ -181,7 +198,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
               {/* Emotions with Smooth Reveal Animation */}
               {item.emotions && item.emotions.length > 0 && (
                 <View style={styles.emotionsContainer}>
-                  <Text style={styles.sectionLabel}>Emotions</Text>
+                  <Text style={styles.sectionLabel}>{t("log.emotions")}</Text>
                   {item.emotions.map((e: { emotion: string; intensity: number }, idx: number) => (
                     <AnimatedEmotionBar
                       key={idx}
@@ -195,7 +212,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
               {/* Cognitive Distortions */}
               {item.tags && item.tags.length > 0 && (
                 <View style={styles.tagsSection}>
-                  <Text style={styles.sectionLabel}>Distortions</Text>
+                    <Text style={styles.sectionLabel}>{t("log.distortions")}</Text>
                   <View style={styles.tagsContainer}>
                     {item.tags.map((tag: string, idx: number) => (
                       <View key={idx} style={styles.tag}>
@@ -231,7 +248,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
                   <View style={styles.reframeHeader}>
                     <Feather name="check-circle" size={13} color={SEMANTIC_COLORS.brand.onSoft} />
                     <Text style={styles.reframeLabel}>
-                      {item.expandedLabel ?? "Balanced Reframe"}
+                      {translateLogFieldLabel(t, item.expandedLabel)}
                     </Text>
                   </View>
                   <Text style={styles.expandedText}>{item.expandedText}</Text>
@@ -242,10 +259,13 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
                 style={styles.viewDetailsButton}
                 onPress={item.onPress}
                 accessibilityRole="button"
-                accessibilityLabel={`Open full details for ${item.title} logged on ${format(new Date(item.date), "MMM d")}`}
+                accessibilityLabel={t("log.openFullDetails", {
+                  title: item.title,
+                  date: format(new Date(item.date), "MMM d"),
+                })}
               >
                 <Text style={styles.viewDetailsText}>
-                  Open entry →
+                  {t("log.openEntry")} →
                 </Text>
               </Pressable>
             </Animated.View>
@@ -275,216 +295,3 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
 
 ExerciseTimelineCard.displayName = "ExerciseTimelineCard";
 export { ExerciseTimelineCard };
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderWidth: 1,
-    borderColor: SEMANTIC_COLORS.border.default,
-  },
-  title: {
-    fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 15,
-    color: SEMANTIC_COLORS.text.primary,
-    lineHeight: 20,
-  },
-  categoryPill: {
-    backgroundColor: SEMANTIC_COLORS.selection.surface,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
-    alignSelf: "flex-start",
-    marginTop: 4,
-  },
-  category: {
-    fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 11,
-    color: SEMANTIC_COLORS.brand.onSoft,
-    lineHeight: 15,
-  },
-  cardFooter: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 12,
-  },
-  badgeRow: {
-    marginTop: 8,
-  },
-  timestamp: {
-    fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 11,
-    color: SEMANTIC_COLORS.text.secondary,
-    letterSpacing: 0.2,
-  },
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-  },
-  headerTextContainer: {
-    flex: 1,
-    paddingRight: 8,
-  },
-  chevron: {
-    marginTop: 4,
-  },
-  previewText: {
-    fontFamily: APP_FONT_FAMILIES.regular,
-    fontStyle: "italic",
-    fontSize: 13,
-    color: SEMANTIC_COLORS.text.secondary,
-    marginTop: 8,
-    lineHeight: 18,
-  },
-  expandedContent: {
-    marginTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: SEMANTIC_COLORS.border.default,
-    paddingTop: 12,
-  },
-  previewTextExpanded: {
-    fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 14,
-    color: SEMANTIC_COLORS.text.primary,
-    marginBottom: 0,
-    lineHeight: 20,
-  },
-  expandedText: {
-    fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 14,
-    color: SEMANTIC_COLORS.text.primary,
-    lineHeight: 20,
-  },
-  tagsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 6,
-    marginBottom: 4,
-  },
-  tag: {
-    backgroundColor: SEMANTIC_COLORS.brand.soft,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  tagText: {
-    fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 11,
-    color: SEMANTIC_COLORS.brand.onSoft,
-  },
-  viewDetailsButton: {
-    marginTop: 8,
-    paddingVertical: 4,
-    alignItems: "flex-start",
-  },
-  viewDetailsText: {
-    fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 13,
-    color: SEMANTIC_COLORS.brand.onSoft,
-  },
-  inlineTagsText: {
-    fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 13,
-    color: SEMANTIC_COLORS.text.secondary,
-  },
-
-  // New Rich Section Styles
-  previewContainer: {
-    marginBottom: 14,
-  },
-  sectionLabel: {
-    fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 13,
-    color: SEMANTIC_COLORS.text.secondary,
-    marginBottom: 6,
-  },
-  previewLabel: {
-    fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 14,
-    color: SEMANTIC_COLORS.text.primary,
-    marginBottom: 4,
-  },
-  emotionsContainer: {
-    marginBottom: 14,
-  },
-  emotionBarRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 6,
-  },
-  emotionText: {
-    fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 12,
-    color: SEMANTIC_COLORS.text.primary,
-    width: 60,
-  },
-  emotionBarBg: {
-    flex: 1,
-    height: 6,
-    backgroundColor: SEMANTIC_COLORS.brand.soft,
-    borderRadius: 3,
-    marginHorizontal: 8,
-    overflow: "hidden",
-  },
-  emotionBarFill: {
-    height: "100%",
-    backgroundColor: SEMANTIC_COLORS.brand.primary,
-    borderRadius: 3,
-  },
-  emotionIntensity: {
-    fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 11,
-    color: SEMANTIC_COLORS.text.tertiary,
-    width: 24,
-    textAlign: "right",
-  },
-  tagsSection: {
-    marginTop: 4,
-    marginBottom: 14,
-  },
-  gratitudeContainer: {
-    marginBottom: 14,
-    gap: 8,
-  },
-  gratitudeRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
-  gratitudeIcon: {
-    marginTop: 2,
-    marginRight: 8,
-  },
-  gratitudeText: {
-    flex: 1,
-    fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 13,
-    color: SEMANTIC_COLORS.text.primary,
-    lineHeight: 18,
-  },
-  balancedThoughtContainer: {
-    marginBottom: 2,
-  },
-  reframeCard: {
-    backgroundColor: SEMANTIC_COLORS.selection.surface,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginTop: 4,
-    marginBottom: 10,
-  },
-  reframeHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: 6,
-  },
-  reframeLabel: {
-    fontFamily: APP_FONT_FAMILIES.semiBold,
-    fontSize: 12,
-    color: SEMANTIC_COLORS.brand.onSoft,
-  },
-});

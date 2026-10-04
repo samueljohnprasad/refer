@@ -1,8 +1,10 @@
 import React from "react";
 import { Stack, useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import NotificationPreferencesScreen from "@/src/components/notifications/NotificationPreferencesScreen";
 
 const NotificationPreferences = () => {
+  const { t } = useTranslation("settings");
   const router = useRouter();
   return (
     <>
@@ -11,7 +13,7 @@ const NotificationPreferences = () => {
           headerShown: true,
           title: "",
           headerTransparent: true,
-          headerBackTitle: "Settings",
+          headerBackTitle: t("title"),
           headerLeft: () => null,
         }}
       />

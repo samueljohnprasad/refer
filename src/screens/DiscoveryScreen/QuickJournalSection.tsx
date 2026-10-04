@@ -10,6 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { SPRING_DEFAULT, STAGGER } from "@/src/utils/motionTokens";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
+import { useTranslation } from "react-i18next";
 
 interface QuickJournalPrompt {
   id: string;
@@ -75,6 +76,8 @@ interface QuickJournalCardProps {
 
 const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
   ({ prompt, index, onPress }) => {
+    const { t } = useTranslation("common");
+    const { t: tHome } = useTranslation("home");
     const reducedMotion = useReducedMotion();
     const scale = useSharedValue<number>(reducedMotion ? 1 : 0.82);
     const opacity = useSharedValue<number>(reducedMotion ? 1 : 0);
@@ -91,6 +94,9 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
       transform: [{ scale: scale.value }],
       opacity: opacity.value,
     }));
+    const title = t(`promptBrowser.items.${prompt.id}.title`, { defaultValue: prompt.title });
+    const description = tHome(`prompts.${prompt.id}`, { defaultValue: prompt.description });
+    const category = t(`promptBrowser.items.${prompt.id}.category`, { defaultValue: prompt.category });
 
     return (
       <Animated.View style={entranceStyle} className="mr-3">
@@ -101,8 +107,8 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
           haptic="light"
           className="w-44"
           contentClassName="p-4"
-          accessibilityLabel={`${prompt.title}. ${prompt.description}. ${prompt.category} prompt`}
-          accessibilityHint="Starts a journaling session with this prompt"
+          accessibilityLabel={`${title}. ${description}. ${category}`}
+          accessibilityHint={t("promptBrowser.quickHint")}
         >
           <View className="mb-4">
             <View className="h-11 w-11 items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50">
@@ -115,7 +121,7 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
               className="happy-font-body-bold flex-1 text-[16px] leading-5 text-ink"
               numberOfLines={1}
             >
-              {prompt.title}
+              {title}
             </Text>
           </View>
           <Text
@@ -123,7 +129,7 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
             numberOfLines={2}
             ellipsizeMode="tail"
           >
-            {prompt.description}
+            {description}
           </Text>
           <View
             className={`mt-auto self-start rounded-full px-2.5 py-1 ${
@@ -135,7 +141,7 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
                 prompt.categoryTextColorClass || "text-sage-600"
               }`}
             >
-              {prompt.category}
+              {category}
             </Text>
           </View>
         </Card>
@@ -153,13 +159,14 @@ interface QuickJournalSectionProps {
 
 export const QuickJournalSection: React.FC<QuickJournalSectionProps> =
   React.memo(({ onCardPress, onSeeAllPress }) => {
+    const { t } = useTranslation("common");
     return (
       <View className="mb-4 mt-8">
         {/* Header */}
         <View className="mb-3 min-h-[44px] flex-row items-center justify-between px-1">
           <View className="flex-row items-center gap-2">
             <Text className="happy-font-body-bold text-[15px] text-ink-muted">
-              Quick journal
+              {t("promptBrowser.quickTitle")}
             </Text>
           </View>
           <PressableScale
@@ -167,11 +174,11 @@ export const QuickJournalSection: React.FC<QuickJournalSectionProps> =
             scale={0.94}
             hapticStyle="light"
             accessibilityRole="button"
-            accessibilityLabel="See all quick journal prompts"
-            accessibilityHint="Navigates to the full list of journaling prompts"
+            accessibilityLabel={t("promptBrowser.quickA11y")}
+            accessibilityHint={t("promptBrowser.quickHint")}
             className="min-h-[44px] items-center justify-center px-2"
           >
-            <Text className="happy-font-body-bold text-[13px] text-ink-muted">See all</Text>
+            <Text className="happy-font-body-bold text-[13px] text-ink-muted">{t("promptBrowser.seeAll")}</Text>
           </PressableScale>
         </View>
 

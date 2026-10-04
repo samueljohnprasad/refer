@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -18,6 +19,7 @@ export function CourseSheetHeader({
   onBack,
   onClose,
 }: CourseSheetHeaderProps): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
     <View className="h-14 flex-row items-center justify-between px-5">
       {onBack ? (
@@ -25,11 +27,11 @@ export function CourseSheetHeader({
           onPress={onBack}
           className="min-h-11 flex-row items-center gap-1 pr-3"
           accessibilityRole="button"
-          accessibilityLabel="Back to journeys"
+          accessibilityLabel={t("backToJourneys")}
         >
           <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color={SEMANTIC_COLORS.brand.pressed} />
           <Text variant="label-bold" color="sage">
-            Journeys
+            {t("explore")}
           </Text>
         </Pressable>
       ) : (
@@ -41,7 +43,7 @@ export function CourseSheetHeader({
         className="h-11 w-11 items-center justify-center"
         hitSlop={8}
         accessibilityRole="button"
-        accessibilityLabel="Close course catalog"
+        accessibilityLabel={t("closeCatalog")}
       >
         <View className="h-8 w-8 items-center justify-center rounded-full bg-black/[0.04] active:bg-black/[0.08]">
           <HugeiconsIcon icon={Cancel01Icon} size={16} color={SEMANTIC_COLORS.text.secondary} />

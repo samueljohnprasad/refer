@@ -14,7 +14,7 @@ const Settings = () => {
     <>
       <Stack.Screen
         options={{
-          title: t("title") || "Settings",
+          title: t("title"),
           headerShown: true,
           headerTransparent: false,
           headerShadowVisible: false,

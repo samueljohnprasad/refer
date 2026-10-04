@@ -1,8 +1,10 @@
 import React from "react";
 import { Stack } from "expo-router";
 import { useCSSVariable } from "uniwind";
+import { useTranslation } from "react-i18next";
 
 export default function ExercisesGroupLayout() {
+  const { t } = useTranslation("common");
   const appBackground = useCSSVariable("--app-background") as string;
 
   return (
@@ -18,7 +20,7 @@ export default function ExercisesGroupLayout() {
         options={{
           headerShown: false,
           headerBackButtonMenuEnabled: false,
-          title: "Exercise",
+          title: t("navigation.exercise"),
           freezeOnBlur: true,
           animation: "fade",
           gestureEnabled: false,
@@ -28,7 +30,7 @@ export default function ExercisesGroupLayout() {
         name="coping-cards"
         options={{
           headerShown: false,
-          title: "My Coping Cards",
+          title: t("navigation.copingCards"),
           freezeOnBlur: true,
           animation: "slide_from_right",
         }}

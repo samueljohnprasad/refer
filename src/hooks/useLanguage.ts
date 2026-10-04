@@ -1,13 +1,12 @@
-// ponytail: clean language switcher hook with reactive isRTL state and reactive language state
-import { useState, useCallback, useEffect } from 'react';
+// ponytail: language preference and actual native layout direction
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { I18nManager } from 'react-native';
 import {
   changeLanguage,
   clearLanguagePreference,
+  getStoredLanguagePreference,
   type SupportedLanguage,
-  RTL_LANGUAGES,
-  LANGUAGE_STORAGE_KEY,
 } from '@/src/lib/i18n';
 
 export interface UseLanguageReturn {
@@ -22,21 +21,21 @@ export function useLanguage(): UseLanguageReturn {
   const { i18n } = useTranslation();
   const [currentLanguage, setCurrentLanguage] = useState<string>(() => i18n.language || 'en');
   const [isCustomLanguage, setIsCustomLanguage] = useState<boolean>(false);
-  const [isRTL, setIsRTL] = useState<boolean>(() =>
-    RTL_LANGUAGES.includes((i18n.language || 'en') as SupportedLanguage)
-  );
+  const preferenceReadVersion = useRef(0);
 
   useEffect(() => {
     let isMounted = true;
-    void AsyncStorage.getItem(LANGUAGE_STORAGE_KEY).then((stored) => {
-      if (isMounted) {
-        setIsCustomLanguage(Boolean(stored));
-      }
-    });
+    const readVersion = preferenceReadVersion.current;
+    void getStoredLanguagePreference()
+      .then((stored) => {
+        if (isMounted && readVersion === preferenceReadVersion.current) {
+          setIsCustomLanguage(Boolean(stored));
+        }
+      })
+      .catch((error) => console.warn('[i18n] Failed reading language preference', error));
 
     const handleLanguageChanged = (lng: string): void => {
       setCurrentLanguage(lng);
-      setIsRTL(RTL_LANGUAGES.includes(lng as SupportedLanguage));
     };
 
     i18n.on('languageChanged', handleLanguageChanged);
@@ -48,25 +47,25 @@ export function useLanguage(): UseLanguageReturn {
 
   const setLanguage = useCallback(
     async (lang: SupportedLanguage): Promise<void> => {
+      preferenceReadVersion.current += 1;
       await changeLanguage(lang);
       setCurrentLanguage(lang);
       setIsCustomLanguage(true);
-      setIsRTL(RTL_LANGUAGES.includes(lang));
     },
     []
   );
 
   const resetToDeviceLanguage = useCallback(async (): Promise<void> => {
+    preferenceReadVersion.current += 1;
     await clearLanguagePreference();
     setCurrentLanguage(i18n.language);
     setIsCustomLanguage(false);
-    setIsRTL(RTL_LANGUAGES.includes(i18n.language as SupportedLanguage));
   }, [i18n]);
 
   return {
     currentLanguage,
     isCustomLanguage,
-    isRTL,
+    isRTL: I18nManager.isRTL,
     setLanguage,
     resetToDeviceLanguage,
   };

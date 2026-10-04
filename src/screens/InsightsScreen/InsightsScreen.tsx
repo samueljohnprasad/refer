@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useMemo } from "react";
 import { View, ScrollView, Pressable } from "react-native";
+import { useTranslation } from "react-i18next";
 import { startOfWeek, endOfWeek } from "date-fns";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Text } from "@/components/ui/Text";
-import { SafeAreaView } from "@/src/components/tw";
 import { router, Stack } from "expo-router";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -46,6 +46,7 @@ const CATEGORY_ROUTES: Record<ExerciseCategory, string> = {
 };
 
 export default function InsightsScreen() {
+  const { t } = useTranslation("common");
   const [timeRange, setTimeRange] = useState<TimeRange>("30d");
   const { data, isLoading } = useInsightsOverview(timeRange);
 
@@ -60,7 +61,7 @@ export default function InsightsScreen() {
   const HeaderComponent = (
     <Stack.Screen
       options={{
-        title: "Your Practice",
+        title: t("timelineAnalytics.title"),
         headerShown: true,
         headerTransparent: true,
         headerLargeTitle: true,
@@ -79,7 +80,7 @@ export default function InsightsScreen() {
         {HeaderComponent}
         <View className="flex-1 happy-brand-screen items-center justify-center">
           <Text className="happy-font-body-medium text-sm text-ink-muted">
-            Loading insights...
+            {t("timelineAnalytics.loading")}
           </Text>
         </View>
       </>
@@ -117,12 +118,12 @@ export default function InsightsScreen() {
           <WeeklyMoodChart
             startDate={startOfWeekDate}
             endDate={endOfWeekDate}
-            title="Mood Trends"
+            title={t("timelineAnalytics.moodTrends")}
           />
         </Animated.View>
         <Animated.View entering={FadeInDown.duration(400).delay(800)} className="px-4 mt-8">
           <Text className="text-[12px] font-bold text-sage-700 uppercase tracking-wider mb-4 ml-2">
-            DEEP DIVES
+            {t("timelineAnalytics.deepDives")}
           </Text>
           <View className="gap-2">
             {data.categories.map((cat) => (
@@ -138,6 +139,7 @@ export default function InsightsScreen() {
 
 
 function CategoryListRow({ summary }: { summary: CategorySummary }) {
+  const { t } = useTranslation("common");
   const icon = CATEGORY_ICONS[summary.category];
   const bgColor = CATEGORY_COLORS[summary.category];
 
@@ -161,7 +163,7 @@ function CategoryListRow({ summary }: { summary: CategorySummary }) {
           {summary.label}
         </Text>
         <Text className="happy-font-body text-[14px] text-ink-muted">
-          {summary.count > 0 ? `${summary.count} sessions` : "Not started"}
+          {summary.count > 0 ? t("timelineAnalytics.sessions", { count: summary.count }) : t("timelineAnalytics.notStarted")}
           {summary.count > 0 && summary.topStat ? ` • ${summary.topStat}` : ""}
         </Text>
       </View>
@@ -172,6 +174,7 @@ function CategoryListRow({ summary }: { summary: CategorySummary }) {
 
 
 function EmptyState() {
+  const { t } = useTranslation("common");
   const handlePress = useCallback(() => {
     router.push("/tabs/(tabs)/exercises" as never);
   }, []);
@@ -180,22 +183,19 @@ function EmptyState() {
     <View className="flex-1 items-center justify-center px-8">
       <Text className="text-[48px] mb-4">🌿</Text>
       <Text className="happy-font-heading-bold text-xl text-ink text-center mb-2">
-        Your patterns will appear here
+        {t("timelineAnalytics.emptyTitle")}
       </Text>
       <Text className="happy-font-body-medium text-sm text-ink-muted text-center leading-relaxed mb-6">
-        Complete a few more exercises to unlock insights about your thinking
-        patterns and progress.
+        {t("timelineAnalytics.emptyDescription")}
       </Text>
       <Pressable
         onPress={handlePress}
         className="h-12 px-6 rounded-2xl items-center justify-center happy-brand-primary-cta active:opacity-90"
       >
         <Text className="happy-font-body-bold text-sm text-white">
-          Start an exercise
+          {t("timelineAnalytics.startExercise")}
         </Text>
       </Pressable>
     </View>
   );
 }
-
-

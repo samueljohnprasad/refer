@@ -1,9 +1,21 @@
 {
   "title": "设置",
-  "language": {
-    "title": "语言",
-    "useDevice": "使用系统语言",
-    "restartPromptTitle": "需要重启应用",
-    "restartPromptMessage": "请重启 Happy 以应用新的界面布局方向。"
-  }
+  "language": { "device": "设备语言", "deviceDescription": "遵循 iOS 系统设置", "title": "语言", "useDevice": "使用设备语言", "restartPromptTitle": "需要重启应用", "restartPromptMessage": "请重启 Happy 以应用新的界面方向。", "errorTitle": "语言未更改", "changeError": "无法保存语言选择，请重试。", "languages": { "en": "英语", "fr": "法语", "de": "德语", "es": "西班牙语", "ar": "阿拉伯语", "pt": "葡萄牙语", "it": "意大利语", "zh": "简体中文" } },
+  "sections": { "preferences": "偏好设置", "account": "账户", "communitySupport": "社区与支持", "legalApp": "法律与应用", "accountManagement": "账户管理" },
+  "items": { "reminders": { "subtitle": "安排提醒" }, "notifications": { "title": "通知", "subtitle": "提醒与免打扰时段" }, "editName": { "title": "编辑姓名" }, "copyUserId": { "title": "复制用户 ID" }, "support": { "title": "支持聊天", "subtitle": "与支持团队聊天" }, "share": { "title": "分享应用", "subtitle": "向朋友介绍 Happy" }, "rate": { "title": "在 App Store 为 Happy 评分", "subtitle": "通过评价支持我们的项目" }, "terms": "使用条款", "privacy": "隐私政策", "appInfo": { "title": "应用信息", "version": "版本 {{version}}" }, "signIn": { "title": "登录", "subtitle": "保存进度并使用 Premium" }, "signOut": { "title": "退出登录", "subtitle": "退出账户" }, "deleteData": { "title": "删除所有数据", "subtitle": "永久删除所有数据" } },
+  "name": { "title": "个人资料", "errorTitle": "错误", "label": "姓名", "save": "更新资料", "saving": "保存中…", "description": "这是你的公开显示名称，可以随时修改。", "emptyError": "姓名不能为空", "updateError": "无法更新姓名，请重试。" },
+  "notifications": { "title": "通知偏好", "push": "推送通知", "pushDescription": "接收写日记、记录心情和保持连续记录的个性化提醒", "types": "通知类型", "streaks": "连续记录提醒", "streaksDescription": "连续写日记可能中断时通知你", "mood": "心情记录", "moodDescription": "每天提醒你记录心情", "habits": "习惯提醒", "habitsDescription": "提醒你的活跃习惯", "achievements": "成就提示", "achievementsDescription": "接近解锁成就时通知你", "quietHours": "免打扰时段：{{start}}:00 - {{end}}:00", "limit": "每天最多 {{count}} 条通知。我们会根据你的使用习惯，使用 AI 选择最佳发送时间。" },
+  "reminders": { "title": "每日提醒", "description": "设置温和的提醒，帮助你养成稳定的写日记习惯", "permissionTitle": "需要通知权限", "permissionMessage": "请在设置中允许通知，以接收提醒。", "openSettings": "打开设置", "cancel": "取消" },
+  "dailyGoal": { "title": "每日 XP 目标", "summary": "每天 {{goal}} XP · 约 {{count}} 节课程", "option": "{{option}} XP，{{label}}", "labels": { "10": "轻松", "20": "稳定", "30": "认真", "50": "高强度" } },
+  "premium": { "unlockAccessibility": "解锁 Happy Premium。获取分析、总结等更多功能", "unlockTitle": "解锁 Happy Premium", "unlockSubtitle": "分析、总结等更多功能", "checking": "正在检查 Premium 状态", "active": "Premium 已激活", "lifetime": "永久 Premium 访问权限", "renews": "续订日期：{{date}}", "activeUntil": "有效期至 {{date}}", "activeTitle": "Premium 已激活", "status": "{{status}}。所有 Premium 功能均已解锁。" },
+  "developer": { "appleIntelligence": "Apple Intelligence", "aiModel": "AI 模型", "support": "支持", "animatedSymbols": "动态符号", "courseExercises": "课程练习" },
+  "bulkImport": { "invalidTitle": "数量无效", "invalidMessage": "请输入 1 到 20 之间的数字", "successTitle": "成功", "successMessage": "已导入 {{count}} 条日记！", "errorTitle": "错误", "errorMessage": "无法导入日记：{{error}}" },
+  "support": { "title": "支持聊天", "online": "在线", "chatOptions": "聊天选项", "clearHistory": "清除记录", "noMailTitle": "未找到邮件应用", "noMailMessage": "请发送邮件至 happy.journals.app@gmail.com", "mailError": "无法打开邮件应用，请发送邮件至 happy.journals.app@gmail.com", "userIdCopied": "用户 ID 已复制" },
+  "deleteData": { "error": "无法删除你的数据，请重试或联系支持团队。" },
+  "signOutConfirmation": { "title": "退出登录？", "message": "确定要退出登录吗？再次访问日记需要重新登录。", "cancel": "取消", "confirm": "退出登录", "signingOut": "正在退出…" },
+  "deleteConfirmation": { "title": "删除所有数据？", "message": "这将永久删除你在 Happy 中的私人数据。", "warning": "此操作无法撤销。", "items": { "journal": "日记条目和文字记录", "mood": "心情历史", "ai": "AI 分析与洞察", "progress": "连续记录和进度", "account": "账户和个人资料数据" }, "signedOut": "你将退出登录。", "continue": "继续", "cancel": "取消", "finalTitle": "永久删除全部内容？", "finalMessage": "你的所有 Happy 历史记录都会被删除，并且你将退出登录。", "typeToConfirm": "输入 DELETE 以确认。", "deleting": "正在删除…", "confirm": "删除所有数据" },
+  "reminders": { "title": "每日提醒", "description": "设置温和的提醒，帮助你养成稳定的写日记习惯", "permissionTitle": "需要通知权限", "permissionMessage": "请在设置中允许通知，以接收提醒。", "openSettings": "打开设置", "cancel": "取消", "slots": { "1": { "title": "晨间反思", "body": "带着清晰开始新的一天 ☀️ 花一点时间反思并设定目标。" }, "2": { "title": "午间记录", "body": "今天过得怎么样？🌿 停下来，记录此刻的想法。" }, "3": { "title": "晚间放松", "body": "该放松了 🌙 回顾今天，庆祝你的收获。" } } },
+  "share": { "message": "试试 Happy AI Journal！https://apps.apple.com/us/app/happy-ai-journal/id6755650433" },
+  "languageOk": "确定",
+  "device": "设备语言"
 }

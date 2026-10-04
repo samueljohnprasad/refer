@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Pressable, ScrollView, ActivityIndicator } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { SUPPORTED_LANGUAGES, type SupportedLanguage } from '@/src/lib/i18n';
@@ -7,17 +8,23 @@ import { SEMANTIC_COLORS } from '@/src/theme/colors';
 
 export const LANGUAGE_METADATA: Record<
   SupportedLanguage,
-  { name: string; nativeName: string }
+  { nativeName: string }
 > = {
-  en: { name: 'English', nativeName: 'English' },
-  fr: { name: 'French', nativeName: 'Français' },
-  de: { name: 'German', nativeName: 'Deutsch' },
-  es: { name: 'Spanish', nativeName: 'Español' },
-  ar: { name: 'Arabic', nativeName: 'العربية' },
-  pt: { name: 'Portuguese', nativeName: 'Português' },
-  it: { name: 'Italian', nativeName: 'Italiano' },
-  zh: { name: 'Chinese (Simplified)', nativeName: '中文' },
+  en: { nativeName: 'English' },
+  fr: { nativeName: 'Français' },
+  de: { nativeName: 'Deutsch' },
+  es: { nativeName: 'Español' },
+  ar: { nativeName: 'العربية' },
+  pt: { nativeName: 'Português' },
+  it: { nativeName: 'Italiano' },
+  zh: { nativeName: '中文' },
 };
+
+export function formatLanguageLabel(localizedName: string, nativeName: string) {
+  return localizedName === nativeName
+    ? localizedName
+    : `${localizedName} (${nativeName})`;
+}
 
 export interface LanguagePickerProps {
   currentLanguage: string;
@@ -34,6 +41,7 @@ export function LanguagePicker({
   onSelectLanguage,
   onReset,
 }: LanguagePickerProps) {
+  const { t } = useTranslation('settings');
   const activeColor = String(SEMANTIC_COLORS.brand.primary ?? '#5D7E57');
 
   return (
@@ -47,13 +55,14 @@ export function LanguagePicker({
           const isSelected = isCustomLanguage && currentLanguage === langCode;
           const isSwitchingThis = switchingLang === langCode;
           const meta = LANGUAGE_METADATA[langCode];
+          const localizedName = t(`language.languages.${langCode}`);
 
           return (
             <Pressable
               key={langCode}
               disabled={Boolean(switchingLang)}
               accessibilityRole="button"
-              accessibilityLabel={`${meta.nativeName} (${meta.name})`}
+              accessibilityLabel={formatLanguageLabel(localizedName, meta.nativeName)}
               onPress={() => {
                 void Haptics.selectionAsync();
                 onSelectLanguage(langCode);
@@ -70,9 +79,11 @@ export function LanguagePicker({
                     isSelected ? 'text-brand-primary' : 'text-ink'
                   }`}
                 >
-                  {meta.nativeName}
+                  {localizedName}
                 </Text>
-                <Text className="text-xs text-ink-muted">{meta.name}</Text>
+                {localizedName !== meta.nativeName && (
+                  <Text className="text-xs text-ink-muted">{meta.nativeName}</Text>
+                )}
               </View>
 
               {isSwitchingThis ? (
@@ -89,7 +100,7 @@ export function LanguagePicker({
         <Pressable
           disabled={Boolean(switchingLang)}
           accessibilityRole="button"
-          accessibilityLabel="Use Device Language"
+          accessibilityLabel={t('language.useDevice')}
           onPress={() => {
             void Haptics.selectionAsync();
             onReset();
@@ -106,10 +117,10 @@ export function LanguagePicker({
                 !isCustomLanguage ? 'text-brand-primary' : 'text-ink'
               }`}
             >
-              Use Device Language
+              {t('language.useDevice')}
             </Text>
             <Text className="text-xs text-ink-muted">
-              Follow iOS system setting
+              {t('language.deviceDescription')}
             </Text>
           </View>
           {switchingLang === 'device' ? (

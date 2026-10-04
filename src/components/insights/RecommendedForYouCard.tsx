@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -12,6 +13,7 @@ import { RADIUS } from "@/src/theme/radius";
 import { Card } from "@/src/components/ui/Card";
 
 export function RecommendedForYouCard() {
+  const { t } = useTranslation("common");
   const router = useRouter();
   const { data } = usePersonalEffectiveness();
 
@@ -35,7 +37,7 @@ export function RecommendedForYouCard() {
       accessibilityLabel={`Recommended: ${best.exerciseLabel}. Average drop ${best.avgDrop} per session.`}
     >
       <Text className="text-[11px] font-bold text-sage-600 uppercase tracking-wider mb-3">
-        Recommended for you
+        {t("insights.ui.recommended")}
       </Text>
 
         <View className="flex-row items-center">
@@ -51,7 +53,7 @@ export function RecommendedForYouCard() {
             {best.exerciseLabel}
           </Text>
           <Text className="text-[13px] text-sage-700 mt-1 leading-relaxed">
-            Works best for you (−{best.avgDrop} avg per session)
+            {t("insights.ui.worksBest", { value: best.avgDrop })}
           </Text>
         </View>
 

@@ -1,11 +1,12 @@
 import React, { useMemo } from "react";
 import { View, Text } from "react-native";
 import dayjs from "dayjs";
-import { Mascot } from "@/src/components/ui/Mascot";
-import { XP_ACTION_LABELS, XPActionType, XPHistoryEntry } from "@/src/types/xp";
+import { XP_ACTION_LABELS, XPHistoryEntry } from "@/src/types/xp";
 import { Timeline } from "@/src/components/ui/Timeline";
 import type { TimelineItemData, TimelineSection } from "@/src/components/ui/Timeline/types";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
+import { useTranslation } from "react-i18next";
+import XPHistoryTimelineEmptyState from "./XPHistoryTimelineEmptyState";
 
 interface XPHistoryTimelineProps {
   entries: XPHistoryEntry[];
@@ -22,24 +23,11 @@ interface XPItem extends TimelineItemData {
   dailyTotal?: number;
 }
 
-const XPHistoryTimelineEmptyState: React.FC = React.memo(() => (
-  <View className="items-center justify-center px-8 py-20">
-    <View className="happy-mascot-stage h-20 w-20 items-center justify-center rounded-[28px]">
-      <Mascot state="panda-notes" size={54} />
-    </View>
-    <Text className="happy-font-heading-bold mt-4 text-lg text-ink">
-      No Insights earned yet
-    </Text>
-    <Text className="happy-font-body-medium mt-1 text-center text-sm leading-5 text-ink-muted">
-      Complete a journal, exercise, or habit to start building momentum.
-    </Text>
-  </View>
-));
-
-XPHistoryTimelineEmptyState.displayName = "XPHistoryTimelineEmptyState";
-
 // ponytail: normalize event titles to category + detail per audit #9-#13
-function normalizeTimelineItem(entry: XPHistoryEntry): {
+function normalizeTimelineItem(
+  entry: XPHistoryEntry,
+  t: (key: "xp.challengeCompleted" | "xp.journeyStarted" | "xp.activityCompleted" | "xp.mood") => string,
+): {
   category: string;
   detail?: string;
   status: "completed" | "challenge" | "milestone";
@@ -54,7 +42,7 @@ function normalizeTimelineItem(entry: XPHistoryEntry): {
       .replace(/^Challenge:\s*/i, "")
       .trim();
     return {
-      category: "Challenge completed",
+      category: t("xp.challengeCompleted"),
       detail: cleanName,
       status: "challenge",
       isMultiLine: true,
@@ -64,7 +52,7 @@ function normalizeTimelineItem(entry: XPHistoryEntry): {
   // Journey milestone check (e.g. "First step on your journey")
   if (/journey/i.test(desc) || /first step/i.test(desc)) {
     return {
-      category: "Journey started",
+      category: t("xp.journeyStarted"),
       detail: "Sleep Reset",
       status: "milestone",
       isMultiLine: true,
@@ -75,7 +63,7 @@ function normalizeTimelineItem(entry: XPHistoryEntry): {
   if (/^Mood logged:\s*(.+)$/i.test(desc) || /^Mood:\s*(.+)$/i.test(desc)) {
     const moodName = desc.replace(/^Mood( logged)?:\s*/i, "").trim();
     return {
-      category: "Mood:",
+      category: t("xp.mood"),
       detail: moodName,
       status: "completed",
       isMultiLine: false,
@@ -86,7 +74,7 @@ function normalizeTimelineItem(entry: XPHistoryEntry): {
   if (/^Completed:\s*(.+)$/i.test(desc)) {
     const activityName = desc.replace(/^Completed:\s*/i, "").trim();
     return {
-      category: "Activity completed",
+      category: t("xp.activityCompleted"),
       detail: activityName,
       status: "completed",
       isMultiLine: true,
@@ -102,6 +90,7 @@ function normalizeTimelineItem(entry: XPHistoryEntry): {
 
 const transformHistoryToTimeline = (
   entries: XPHistoryEntry[],
+  t: (key: "xp.challengeCompleted" | "xp.journeyStarted" | "xp.activityCompleted" | "xp.mood") => string,
 ): TimelineSection<XPItem>[] => {
   const grouped = new Map<
     number,
@@ -117,7 +106,7 @@ const transformHistoryToTimeline = (
     const group = grouped.get(dayTimestamp)!;
     group.dailyTotal += entry.amount;
 
-    const { category, detail, status, isMultiLine } = normalizeTimelineItem(entry);
+    const { category, detail, status, isMultiLine } = normalizeTimelineItem(entry, t);
 
     group.items.push({
       id: entry.id,
@@ -140,13 +129,16 @@ const transformHistoryToTimeline = (
 };
 
 // ponytail: day-level reward header matching audit items 3, 4, 5
-const renderSectionHeader = (section: TimelineSection<XPItem>) => {
+const renderSectionHeader = (
+  section: TimelineSection<XPItem>,
+  t: (key: "xp.today" | "xp.yesterday" | "xp.insights") => string,
+) => {
   const isToday = dayjs(section.date).isSame(dayjs(), "day");
   const isYesterday = dayjs(section.date).isSame(dayjs().subtract(1, "day"), "day");
   const dayLabel = isToday
-    ? "Today"
+    ? t("xp.today")
     : isYesterday
-      ? "Yesterday"
+      ? t("xp.yesterday")
       : dayjs(section.date).format("D MMM");
 
   return (
@@ -170,7 +162,7 @@ const renderSectionHeader = (section: TimelineSection<XPItem>) => {
             fontSize: 11,
           }}
         >
-          {section.dailyTotal} Insights
+          {section.dailyTotal} {t("xp.insights")}
         </Text>
       )}
     </View>
@@ -266,16 +258,17 @@ const renderXPItem = (item: XPItem) => {
 export const XPHistoryTimeline: React.FC<XPHistoryTimelineProps> =
   React.memo(
     ({ entries, header, isLoadingMore, onEndReached, contentPaddingTop }) => {
+      const { t } = useTranslation("common");
       const timelineData = useMemo(
-        () => transformHistoryToTimeline(entries),
-        [entries],
+        () => transformHistoryToTimeline(entries, t),
+        [entries, t],
       );
 
       return (
         <Timeline
           sections={timelineData}
           renderItem={renderXPItem}
-          renderSectionHeader={renderSectionHeader}
+          renderSectionHeader={(section) => renderSectionHeader(section, t)}
           onEndReached={onEndReached}
           isLoadingMore={isLoadingMore}
           ListHeaderComponent={header}

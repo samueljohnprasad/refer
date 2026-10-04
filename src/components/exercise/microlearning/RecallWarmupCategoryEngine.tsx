@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View, Text, TouchableOpacity, AccessibilityInfo } from "react-native";
 import type { V1CategoryEngineProps } from "@/src/domains/journey/learning/v1LearningEngineTypes";
 import { RecallWarmupContent, RecallWarmupResponse } from "@/src/domains/journey/learning/v1LearningEngineTypes";
@@ -14,6 +15,7 @@ export function RecallWarmupCategoryEngine({
   savedResponse,
   onInteraction,
 }: V1CategoryEngineProps) {
+  const { t } = useTranslation("exercises");
   const content = exercise.content as unknown as RecallWarmupContent;
   const response = createRecallWarmupResponse(content, savedResponse as RecallWarmupResponse | undefined);
   
@@ -34,7 +36,7 @@ export function RecallWarmupCategoryEngine({
 
   const handleReveal = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    AccessibilityInfo.announceForAccessibility("Answer revealed.");
+    AccessibilityInfo.announceForAccessibility(t("runtime.answerRevealed"));
     onInteraction({ ...response, cardPhase: "answer" }, false);
   };
 
@@ -79,7 +81,7 @@ export function RecallWarmupCategoryEngine({
     return (
       <View className="flex-1 -mt-12 px-5 justify-center items-center">
         <Text className="happy-font-heading-bold text-[22px] leading-[30px] text-[#201E1D] text-center">
-          Nice, you tested what you could recall.
+          {t("runtime.recallComplete")}
         </Text>
       </View>
     );
@@ -92,10 +94,10 @@ export function RecallWarmupCategoryEngine({
       {/* Title & Subtitle */}
       <View className="mb-6">
         <Text className="happy-font-heading-bold text-[24px] leading-[30px] text-[#201E1D] tracking-tight">
-          {content.title ?? "Recall Warmup"}
+          {content.title ?? t("runtime.recallWarmup")}
         </Text>
         <Text className="happy-font-body text-[14.5px] leading-[20px] text-[#7A7265] mt-1">
-          {content.instruction ?? "Try to remember the answer, then reveal it."}
+          {content.instruction ?? t("runtime.recallInstruction")}
         </Text>
       </View>
 
@@ -107,7 +109,7 @@ export function RecallWarmupCategoryEngine({
       >
         {/* Concept Metadata Label */}
         <Text className="text-[11px] font-bold tracking-wider uppercase text-[#2D5A32] mb-3">
-          CONCEPT {currentCardIndex + 1} OF {cards.length}
+          {t("runtime.conceptOf", { current: currentCardIndex + 1, count: cards.length })}
         </Text>
         
         {/* Question Text */}
@@ -123,7 +125,7 @@ export function RecallWarmupCategoryEngine({
             accessibilityRole="button"
           >
             <Text className="happy-font-body-semibold text-[14.5px] text-[#201E1D]">
-              Reveal answer
+              {t("runtime.revealAnswer")}
             </Text>
           </TouchableOpacity>
         ) : (
@@ -148,9 +150,9 @@ export function RecallWarmupCategoryEngine({
           <Text className="happy-font-body-medium text-center text-[14.5px] text-[#7A7265] mb-3.5">
             {feedback
               ? feedback === "got_it"
-                ? "Got it."
-                : "We'll bring this one back."
-              : "How well did you remember it?"}
+                ? t("runtime.gotIt")
+                : t("runtime.bringBack")
+              : t("runtime.recallQuestion")}
           </Text>
 
           {/* Equal Unbiased Tactile Choice Buttons */}
@@ -168,7 +170,7 @@ export function RecallWarmupCategoryEngine({
                     : "bg-[#FAF7F2] border-[#D6DFD4] border-b-[3px] border-b-[#C6D2C4] active:translate-y-0.5"
               }`}
               accessibilityRole="button"
-              accessibilityLabel="Practice again"
+              accessibilityLabel={t("runtime.practiceAgain")}
             >
               <Text
                 className={`happy-font-body-bold text-[15px] text-center ${
@@ -177,7 +179,7 @@ export function RecallWarmupCategoryEngine({
                     : "text-[#201E1D]"
                 }`}
               >
-                Practice again
+                {t("runtime.practiceAgain")}
               </Text>
             </TouchableOpacity>
 
@@ -194,7 +196,7 @@ export function RecallWarmupCategoryEngine({
                     : "bg-[#FAF7F2] border-[#D6DFD4] border-b-[3px] border-b-[#C6D2C4] active:translate-y-0.5"
               }`}
               accessibilityRole="button"
-              accessibilityLabel="Remembered"
+              accessibilityLabel={t("runtime.remembered")}
             >
               <Text
                 className={`happy-font-body-bold text-[15px] text-center ${
@@ -203,7 +205,7 @@ export function RecallWarmupCategoryEngine({
                     : "text-[#201E1D]"
                 }`}
               >
-                Remembered
+                {t("runtime.remembered")}
               </Text>
             </TouchableOpacity>
           </View>

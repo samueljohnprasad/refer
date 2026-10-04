@@ -1,10 +1,12 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Text } from "@/src/components/ui/Text";
 import { router } from "expo-router";
 import { useInsightNudge } from "@/src/hooks/insights/useInsightNudge";
 import { Card } from "@/src/components/ui/Card";
 
 export const InsightNudgeCard: React.FC = React.memo(() => {
+  const { t } = useTranslation("common");
   const nudge = useInsightNudge();
 
   if (!nudge) {
@@ -15,15 +17,15 @@ export const InsightNudgeCard: React.FC = React.memo(() => {
         radius="xl"
         contentClassName="p-4"
       >
-        <Text className="happy-font-body-bold text-[13px] text-ink-muted mb-1.5">Your Practice</Text>
+        <Text className="happy-font-body-bold text-[13px] text-ink-muted mb-1.5">{t("insights.ui.yourPractice")}</Text>
         <Text className="happy-font-body-bold text-[15px] text-ink leading-snug">
-          Track your mental health journey
+          {t("insights.ui.trackJourney")}
         </Text>
         <Text className="happy-font-body text-[13px] text-ink-muted mt-1 leading-relaxed">
-          Complete exercises to unlock AI insights and view your personal progress.
+          {t("insights.ui.unlockDescription")}
         </Text>
         <Text className="happy-font-body-bold text-[13px] text-sage-600 mt-3">
-          View Insights →
+          {t("insights.ui.viewInsights")} →
         </Text>
       </Card>
     );
@@ -41,7 +43,7 @@ export const InsightNudgeCard: React.FC = React.memo(() => {
       contentClassName="p-4"
       accessibilityLabel={`${nudge.message} ${nudge.detail}`}
     >
-      <Text className="happy-font-body-bold text-[13px] text-ink-muted mb-1.5">Your pattern</Text>
+      <Text className="happy-font-body-bold text-[13px] text-ink-muted mb-1.5">{t("insights.ui.yourPattern")}</Text>
       <Text className="happy-font-body-bold text-[15px] text-ink leading-snug">
         {nudge.message}
       </Text>

@@ -368,6 +368,13 @@
   },
   "xp_first_step": "旅程的第一步",
   "paywall": {
+    "appOfTheDay": "今日推荐应用", "headlineStart": "学会面对", "headlineEnd": "自己的感受。", "featureSummary": "{{journeys}} 条成长路径 · {{exercises}} 多种练习 · 无限次 AI 洞察",
+    "lockedTitle_one": "下一节课程（需订阅 Plus）", "lockedTitle_other": "接下来的 {{count}} 节课程（需订阅 Plus）",
+    "lessons": { "day2": { "title": "思维螺旋", "meta": "第 2 天 · 5 分钟 · 认知偏差" }, "day3": { "title": "身体是指南针", "meta": "第 3 天 · 5 分钟 · 身体觉察" }, "day4": { "title": "思维记录：你的第一个 CBT 工具", "meta": "第 4 天 · 7 分钟 · 动手练习" } },
+    "restartNote": "继续你的成长路径，或从第 1 天重新开始。", "trialTerms": "免费试用 7 天 · 第 8 天前不收费 · 可随时取消", "refundTerms": "💚 30 天内全额退款 · 无需说明理由", "startTrial": "开始 7 天免费试用", "continueFree": "继续免费使用",
+    "sleepRatio": "每 4 人中有 3 人", "sleepCaption": "到第 {{day}} 天睡得更好", "rating": "★ {{value}}", "reviews": "{{count}} 条评价", "groveCaption": "在社区里", "testimonialQuote": "“我 47 岁，从没想过自己会写日记。CBT 课程让我坚持下来，因为真的能学到东西。今天是第 89 天。”", "memberLabel": "Happy Plus 会员", "fiveStars": "5 星满分",
+    "discount": { "wait": "等等，还有一件事", "title": "以 {{price}} 体验 Happy Plus", "description": "首月优惠。没有压力，也没有隐藏条件。", "afterMonth": "首月后：{{price}}/月 · 可随时取消", "accept": "好，以 {{price}} 体验", "decline": "不用了，继续免费使用" },
+    "plans": { "weekly": { "label": "按周", "detailLabel": "可随时取消", "perUnit": "/周" }, "annual": { "label": "按年", "badge": "最划算", "headline": "用 365 天好好陪伴自己。", "savings": "节省 67%", "detailPrefix": "每天仅需 ", "detailEmphasis": "0.27 美元", "detailSuffix": " · 按年付款" }, "monthly": { "label": "按月", "detailLabel": "可随时取消", "perUnit": "/月" } },
     "benefits": {
       "journeys": "解锁全部 12 条成长路径",
       "ai": "不限次数的 AI 见解与每周回顾",
@@ -375,6 +382,7 @@
       "streak": "连续记录修复与高级主题"
     }
   },
+  "progressGraph": { "title": "看看写日记带来的变化", "description": "坚持记录可能帮助你梳理情绪，也更容易察觉困难的日子。", "primaryLabel": "你的心情", "comparisonLabel": "不写日记", "entriesLabel": "日记记录", "chartA11y": "{{days}} 天的预估变化图，对比使用 Happy 写日记与不写日记的情况" },
   "pact_text": "我愿意每天为自己留一点时间，即使有些日子不太想做。只需 {{minutes}} 分钟。",
   "future_letter": "你做到了。30 天里，你一次次为自己留出时间。\n\n还记得刚开始时有多不容易吗？{{timing}} 尤其难熬。但你仍然回来，每次花 {{minutes}} 分钟。\n\n一个月后的你，可能更能察觉自己的想法，也有了照顾自己的方法。\n\n为你的坚持感到骄傲。"
 }

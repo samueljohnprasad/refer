@@ -13,6 +13,7 @@ import {
 } from "./constants";
 import { progressGraphVictoryStyles as styles } from "./styles";
 import type { AnimatedScalar, ChartPoint, ChartRenderProps, ScaledLayout } from "./types";
+import { useTranslation } from "react-i18next";
 
 const VictoryCartesianChart = CartesianChart as unknown as React.ComponentType<any>;
 const VictoryLine = Line as unknown as React.ComponentType<any>;
@@ -77,6 +78,7 @@ const ProgressGraphVictoryChart: React.FC<ProgressGraphVictoryChartProps> = ({
     layout,
     startDotOpacity,
 }) => {
+    const { t } = useTranslation("onboarding");
     const renderOutsideDots = ({ points }: ChartRenderProps): React.ReactNode => {
         const happyStart = points.happy[0];
         const happyEnd = points.happy[points.happy.length - 1];
@@ -152,7 +154,7 @@ const ProgressGraphVictoryChart: React.FC<ProgressGraphVictoryChartProps> = ({
         <View
             accessible={true}
             accessibilityRole="image"
-            accessibilityLabel="Projected 30-day clarity growth chart comparing progress with Happy versus without journaling"
+            accessibilityLabel={t("progressGraph.chartA11y", { days: 30 })}
             style={[styles.chartContainer, layout.chartContainerStyle]}
         >
             <View style={[styles.axisVertical, layout.axisVerticalStyle]} />

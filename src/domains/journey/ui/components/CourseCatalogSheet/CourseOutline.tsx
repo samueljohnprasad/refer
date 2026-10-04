@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -104,13 +105,18 @@ function SectionRow({
   isReducedMotion: boolean;
   onPress: (sectionId: string) => void;
 }): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
     <Pressable
       onPress={() => onPress(section.id)}
       className="min-h-16 flex-row items-center gap-3 py-3.5 active:opacity-70"
       accessibilityRole="button"
       accessibilityState={{ expanded: isExpanded }}
-      accessibilityLabel={`${section.title}, ${section.units.length} units, ${section.lessonCount} lessons`}
+      accessibilityLabel={t("sectionDetailsA11y", {
+        title: section.title,
+        units: t("countUnit", { count: section.units.length }),
+        lessons: t("countLesson", { count: section.lessonCount }),
+      })}
     >
       <Text
         variant="h3"
@@ -124,9 +130,9 @@ function SectionRow({
           {section.title}
         </Text>
         <Text variant="caption-muted">
-          {formatCount(section.units.length, "unit")}
+          {t("countUnit", { count: section.units.length })}
           {" · "}
-          {formatCount(section.lessonCount, "lesson")}
+          {t("countLesson", { count: section.lessonCount })}
         </Text>
         {isExpanded && section.description ? (
           <Text variant="caption" className="pr-3 pt-1">
@@ -153,6 +159,7 @@ function UnitDisclosure({
   isReducedMotion: boolean;
   onPress: (unitId: string) => void;
 }): React.JSX.Element {
+  const { t } = useTranslation("journeys");
   return (
     <Animated.View
       layout={
@@ -168,14 +175,17 @@ function UnitDisclosure({
         }`}
         accessibilityRole="button"
         accessibilityState={{ expanded: isExpanded }}
-        accessibilityLabel={`${unit.title}, ${formatCount(unit.lessons.length, "lesson")}`}
+        accessibilityLabel={t("unitDetailsA11y", {
+          title: unit.title,
+          count: t("countLesson", { count: unit.lessons.length }),
+        })}
       >
         <View className="flex-1 gap-0.5">
           <Text variant="label-bold" color={isExpanded ? "sage" : "ink"}>
             {unit.title}
           </Text>
           <Text variant="caption-muted">
-            {formatCount(unit.lessons.length, "lesson")}
+            {t("countLesson", { count: unit.lessons.length })}
           </Text>
         </View>
         <DisclosureChevron
@@ -228,7 +238,7 @@ function UnitDisclosure({
                 </View>
                 {lesson.estimatedMinutes > 0 ? (
                   <Text variant="caption-muted" className="text-[12.5px]">
-                    {lesson.estimatedMinutes} min
+                    {lesson.estimatedMinutes} {t("minuteAbbreviation")}
                   </Text>
                 ) : null}
               </View>
@@ -275,8 +285,4 @@ function DisclosureChevron({
       />
     </Animated.View>
   );
-}
-
-function formatCount(value: number, singular: string): string {
-  return `${value} ${value === 1 ? singular : `${singular}s`}`;
 }

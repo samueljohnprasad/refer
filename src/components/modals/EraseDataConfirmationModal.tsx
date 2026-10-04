@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { View, Modal, Pressable, TextInput, Keyboard } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -41,6 +42,7 @@ interface EraseDataConfirmationModalProps {
 export const EraseDataConfirmationModal: React.FC<
   EraseDataConfirmationModalProps
 > = ({ visible, onClose, onConfirm, isDeleting = false }) => {
+  const { t } = useTranslation("settings");
   const insets = useSafeAreaInsets();
   // ponytail: 2-step deliberate confirmation flow inside single sheet
   const [step, setStep] = useState<1 | 2>(1);
@@ -116,22 +118,22 @@ export const EraseDataConfirmationModal: React.FC<
                       </View>
 
                       <Text className="happy-font-heading mb-1.5 text-center text-[26px] leading-8 text-ink">
-                        Delete all data?
+                        {t("deleteConfirmation.title")}
                       </Text>
 
                       <Text className="mb-0.5 px-2 text-center text-[15px] leading-5 text-ink-soft">
-                        This permanently deletes your private data from Happy.
+                        {t("deleteConfirmation.message")}
                       </Text>
                       <Text className="mb-3.5 text-center text-[15px] leading-5 happy-font-body-bold text-ink">
-                        This cannot be undone.
+                        {t("deleteConfirmation.warning")}
                       </Text>
 
                       <View className="mb-3.5 w-full px-2 gap-2">
-                        <DataItem text="Journal entries and transcripts" />
-                        <DataItem text="Mood history" />
-                        <DataItem text="AI insights and analysis" />
-                        <DataItem text="Streaks and progress" />
-                        <DataItem text="Account and profile data" />
+                        <DataItem text={t("deleteConfirmation.items.journal")} />
+                        <DataItem text={t("deleteConfirmation.items.mood")} />
+                        <DataItem text={t("deleteConfirmation.items.ai")} />
+                        <DataItem text={t("deleteConfirmation.items.progress")} />
+                        <DataItem text={t("deleteConfirmation.items.account")} />
                       </View>
 
                       <View className="w-full flex-row items-center justify-center gap-1.5 mb-1">
@@ -141,14 +143,14 @@ export const EraseDataConfirmationModal: React.FC<
                           color={SEMANTIC_COLORS.text.secondary}
                         />
                         <Text className="text-[13px] leading-4 text-ink-soft happy-font-body-medium">
-                          You'll be signed out.
+                          {t("deleteConfirmation.signedOut")}
                         </Text>
                       </View>
                     </View>
 
                     <View className="flex-col gap-1.5 w-full">
                       <Button
-                        label="Continue"
+                        label={t("deleteConfirmation.continue")}
                         variant="secondary"
                         size="lg"
                         onPress={() => {
@@ -161,11 +163,11 @@ export const EraseDataConfirmationModal: React.FC<
                         onPress={handleClose}
                         disabled={isDeleting}
                         accessibilityRole="button"
-                        accessibilityLabel="Cancel"
+                        accessibilityLabel={t("deleteConfirmation.cancel")}
                         className="w-full py-2.5 items-center justify-center active:opacity-70"
                       >
                         <Text className="text-[16px] text-ink happy-font-body-bold">
-                          Cancel
+                          {t("deleteConfirmation.cancel")}
                         </Text>
                       </Pressable>
                     </View>
@@ -182,15 +184,15 @@ export const EraseDataConfirmationModal: React.FC<
                       </View>
 
                       <Text className="happy-font-heading mb-1.5 text-center text-[24px] leading-7 text-ink">
-                        Delete everything permanently?
+                        {t("deleteConfirmation.finalTitle")}
                       </Text>
 
                       <Text className="text-center text-[14px] leading-5 text-ink-soft px-3 mb-3">
-                        All of your Happy history will be erased and you will be signed out.
+                        {t("deleteConfirmation.finalMessage")}
                       </Text>
 
                       <Text className="text-center text-[13px] leading-4 text-ink happy-font-body-bold mb-2">
-                        Type DELETE to confirm.
+                        {t("deleteConfirmation.typeToConfirm")}
                       </Text>
 
                       <TextInput
@@ -209,7 +211,7 @@ export const EraseDataConfirmationModal: React.FC<
 
                     <View className="flex-col gap-1.5 w-full">
                       <Button
-                        label={isDeleting ? "Deleting..." : "Delete All Data"}
+                        label={isDeleting ? t("deleteConfirmation.deleting") : t("deleteConfirmation.confirm")}
                         variant="danger"
                         size="lg"
                         onPress={handleConfirm}
@@ -221,11 +223,11 @@ export const EraseDataConfirmationModal: React.FC<
                         onPress={handleClose}
                         disabled={isDeleting}
                         accessibilityRole="button"
-                        accessibilityLabel="Cancel"
+                        accessibilityLabel={t("deleteConfirmation.cancel")}
                         className="w-full py-2.5 items-center justify-center active:opacity-70"
                       >
                         <Text className="text-[16px] text-ink happy-font-body-bold">
-                          Cancel
+                          {t("deleteConfirmation.cancel")}
                         </Text>
                       </Pressable>
                     </View>

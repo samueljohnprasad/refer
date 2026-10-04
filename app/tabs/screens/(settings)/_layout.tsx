@@ -2,11 +2,13 @@ import React from "react";
 import { Stack } from "expo-router";
 import { isLiquidGlassAvailable, GlassView } from "expo-glass-effect";
 import { useCSSVariable } from "uniwind";
+import { useTranslation } from "react-i18next";
 
 const GLASS = isLiquidGlassAvailable();
 const IS_ANDROID = process.env.EXPO_OS === "android";
 
 export default function SettingsGroupLayout() {
+  const { t } = useTranslation("settings");
   const appForeground = useCSSVariable("--app-foreground") as string;
   const appBackground = useCSSVariable("--app-background") as string;
 
@@ -22,7 +24,7 @@ export default function SettingsGroupLayout() {
         name="settings"
         options={{
           headerShown: true,
-          title: "Settings",
+          title: t("title"),
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
@@ -32,7 +34,7 @@ export default function SettingsGroupLayout() {
         name="language"
         options={{
           headerShown: true,
-          title: "Language",
+          title: t("language.title"),
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
@@ -43,7 +45,7 @@ export default function SettingsGroupLayout() {
         options={{
           presentation: "modal",
           headerShown: true,
-          title: "Profile",
+          title: t("name.title"),
           headerTransparent: GLASS,
           headerLargeTitleShadowVisible: false,
           headerBackButtonDisplayMode: GLASS ? "minimal" : "default",
@@ -63,7 +65,7 @@ export default function SettingsGroupLayout() {
         name="apple-intelligence"
         options={{
           headerShown: true,
-          title: "Apple Intelligence",
+          title: t("developer.appleIntelligence"),
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
@@ -77,7 +79,7 @@ export default function SettingsGroupLayout() {
         name="active-model"
         options={{
           headerShown: true,
-          title: "AI Model",
+          title: t("developer.aiModel"),
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
@@ -87,7 +89,7 @@ export default function SettingsGroupLayout() {
         name="notification-preferences"
         options={{
           headerShown: true,
-          title: "Notifications",
+          title: t("notifications.title"),
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
@@ -97,7 +99,7 @@ export default function SettingsGroupLayout() {
         name="reminders"
         options={{
           headerShown: true,
-          title: "Reminders",
+          title: t("reminders.title"),
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
@@ -107,7 +109,7 @@ export default function SettingsGroupLayout() {
         name="support-chat"
         options={{
           headerShown: true,
-          title: "Support",
+          title: t("support.title"),
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
@@ -117,7 +119,7 @@ export default function SettingsGroupLayout() {
         name="animated-symbols"
         options={{
           headerShown: true,
-          title: "Animated Symbols",
+          title: t("developer.animatedSymbols"),
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
@@ -127,7 +129,7 @@ export default function SettingsGroupLayout() {
         name="course-exercises"
         options={{
           headerShown: true,
-          title: "Course Exercises",
+          title: t("developer.courseExercises"),
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",

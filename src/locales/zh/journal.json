@@ -16,6 +16,7 @@
     "shufflePrompt": "换个问题",
     "selectDate": "选择日期",
     "scanJournal": "扫描日记页面",
+    "actions": { "photo": "照片", "voice": "语音", "text": "文字" },
     "freeWrite": "自由书写", "freeWriteHint": "不依赖提示，自由写下想法", "dailyReflectionXP": "每日记录 • +10 XP",
     "menu": { "journal": "日记 · {{date}}", "today": "回到今天", "browse": "浏览全部提示" },
     "options": { "title": "日记选项", "import": "导入手写日记", "scanHint": "扫描纸质页面", "tryAnother": "换一个提示", "selected": "{{prompt}}。已选中。" },
@@ -25,11 +26,22 @@
     "analysis": { "phaseTranscribing": "正在转写音频", "phaseUnderstanding": "正在梳理情绪", "phaseInsights": "正在生成 CBT 分析", "phasePreparing": "正在准备记录", "step": "第 {{step}} 步，共 4 步 · {{label}}", "reassurance": "花一点时间，回顾一下这篇日记……", "cancel": "取消分析", "mascot": "正在思考的熊猫" },
     "prompts": { "smile": "今天有什么让你笑了？", "challenge": "今天遇到了什么挑战？你是怎么应对的？", "gratitude": "此刻你最感激的一件事是什么？", "selfLearning": "今天你对自己有了什么新认识？", "selfCare": "明天怎样能更好地照顾自己？", "smallWin": "今天有什么小小的进展？", "peace": "描述一个让你感到平静的时刻。", "appreciation": "你欣赏谁？为什么？", "letGo": "有什么事情是你想放下的？", "changeOneThing": "如果能改变今天的一件事，你会选什么？", "lookingForward": "这周有什么值得期待的事？", "selfCareToday": "今天你是怎样照顾自己的？", "fear": "你面对过或想面对什么恐惧？", "accomplishment": "写一写最近的一项成就。", "idealDay": "你理想中的一天是什么样的？", "tomorrowEnergy": "你希望带着怎样的状态迎接明天？", "moodThreeWords": "用三个词描述你的心情。", "habit": "你想养成什么习惯？", "positiveImpact": "谁给你今天带来了积极影响？", "beautifulThing": "今天你看到了什么美好的事物？" }
   },
+  "insights": { "achievements": "成就", "worries": "担忧", "goals": "目标", "triggers": "触发因素", "copingStrategies": "应对策略", "physicalSymptoms": "身体症状" },
+  "titleMenu": { "actions": "CBT 日记操作", "removeBookmark": "移除书签", "bookmarkEntry": "收藏日记", "shareExport": "分享并导出日记", "deleteEntry": "删除日记" },
   "tab": { "journal": "日记", "habits": "习惯" },
   "calendar": { "today": "今天", "todayHint": "返回今天", "expand": "展开日历", "collapse": "收起日历", "expandHint": "切换周视图和月视图", "moreOptions": "更多选项", "timeline": "时间线与洞察", "bookmarks": "收藏", "dragHandle": "日历拖动控件", "previousMonth": "上个月", "previousMonthHint": "切换到上个月", "nextMonth": "下个月", "nextMonthHint": "切换到下个月", "jumpToday": "回到今天", "dayA11y": "{{day}}{{today}}" },
   "empty": { "titles": ["记下此刻的想法", "你在想些什么？", "回顾今天"], "description": "日记默认仅自己可见。从此刻开始就好。", "recordVoice": "录制语音", "writeText": "写文字" },
   "error": { "title": "暂时无法连接", "description": "现在无法加载日记内容，但笔记已安全保存在你的设备上。", "reconnect": "重新连接", "reconnectA11y": "重新连接并加载日记内容" },
   "entry": { "untitled": "无标题笔记", "words_one": "{{count}} 个字", "words_other": "{{count}} 个字", "createdAt": "日记：{{title}}，记录于 {{time}}", "openHint": "轻点两次打开日记详情", "noDate": "无日期" },
   "delete": { "title": "删除这篇日记？", "message": "这篇日记将被永久删除，且无法撤销。", "confirm": "删除", "cancel": "取消" },
-  "bookmarks": { "title": "已收藏的笔记", "count_one": "{{count}} 篇收藏笔记", "count_other": "{{count}} 篇收藏笔记", "emptyTitle": "还没有收藏笔记", "emptyDescription": "点按日记上的书签图标，即可将它收藏在这里，方便之后查看。" }
+  "bookmarks": { "title": "已收藏的笔记", "count_one": "{{count}} 篇收藏笔记", "count_other": "{{count}} 篇收藏笔记", "emptyTitle": "还没有收藏笔记", "emptyDescription": "点按日记上的书签图标，即可将它收藏在这里，方便之后查看。" },
+  "entryDetail": {
+    "header": { "today": "今天", "yesterday": "昨天", "reflection": "回顾", "close": "关闭", "closeHint": "关闭这篇日记", "deleteEntry": "删除日记", "saveEntry": "保存日记", "editJournal": "编辑日记", "saving": "正在保存…", "save": "保存", "edit": "编辑" },
+    "dailyReflections": "每日回顾", "dateAtTime": "{{day}} {{time}}", "editEntry": "编辑日记", "noTranscript": "暂无转写内容", "today": "今天", "yesterday": "昨天", "reflection": "回顾",
+    "deleteTitle": "删除回顾", "deleteMessage": "确定删除这篇日记吗？此操作无法撤销。", "deleted": "已删除日记", "emptyTextError": "保存前请先输入内容", "saved": "日记已保存", "saveError": "保存日记失败", "bookmarked": "已收藏日记", "bookmarkRemoved": "已取消收藏",
+    "moods": { "terrible": "非常糟", "bad": "不好", "fine": "一般", "good": "不错", "great": "很好" }, "moodSummary": "日记：{{title}}。心情：{{mood}}。", "mood": "心情：{{mood}}", "selectMood": "选择{{mood}}心情",
+    "feeling": "感受：{{feeling}}", "removeFeeling": "移除{{feeling}}", "addFeeling": "添加感受", "add": "+ 添加", "feelingPlaceholder": "输入感受", "typeFeeling": "输入新的感受",
+    "content": "日记内容", "writePlaceholder": "写下你的想法...", "noContent": "暂无内容", "transcriptEditor": "转写文本编辑器", "entryText": "日记：{{text}}",
+    "addTagA11y": "添加新标签", "addTag": "＋ 添加标签", "removeTag": "移除{{tag}}", "addBookmark": "添加收藏", "removeBookmark": "取消收藏", "photos": "值得记住的照片", "addPhoto": "添加照片", "saving": "正在保存…", "continue": "继续"
+  }
 }
