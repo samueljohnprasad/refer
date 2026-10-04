@@ -1,4 +1,5 @@
 {
+  "progressionScreen": { "title": "التقدّم", "currentLevel": "المستوى الحالي", "thisWeek": "هذا الأسبوع", "weekOf": "أسبوع {{date}}", "insightsToNextLevel": "Insights للوصول إلى {{level}}", "lifetimeInsights": "إجمالي Insights: {{count}}", "today": "اليوم", "yesterday": "أمس", "insights": "Insights", "challengeCompleted": "اكتمل التحدي", "journeyStarted": "بدأت الرحلة", "activityCompleted": "اكتمل النشاط", "mood": "المزاج:" },
   "celebrations": { "shareWin": { "perfectBadge": "درس مثالي", "perfectTitle": "درس بلا أخطاء!", "completeTitle": "اكتمل الدرس!", "xpReward": "+{{totalXP}} XP", "streak": { "oneDay": "{{count}} يوم", "otherDays": "{{count}} أيام" }, "footer": "انضم إليّ في Happy — خطوات صغيرة نحو ذهن أكثر هدوءًا." } },
   "profile": { "nameEdit": { "title": "تعديل الاسم", "placeholder": "اسمك", "description": "يمكن للآخرين رؤية هذا الاسم، ويمكنك تغييره في أي وقت.", "nameRequired": "لا يمكن أن يكون الاسم فارغًا.", "updateFailed": "تعذّر تحديث اسمك. يُرجى المحاولة مرة أخرى." } },
   "navigation": {

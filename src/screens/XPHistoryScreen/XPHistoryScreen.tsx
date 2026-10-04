@@ -99,7 +99,7 @@ export const XPHistoryScreen: React.FC = () => {
     <View style={styles.screen}>
       <Stack.Screen
         options={{
-          title: t("xp.progression"),
+          title: t("progressionScreen.title"),
           headerStyle: { backgroundColor: "transparent" },
           headerTransparent: true,
           headerShadowVisible: false,

@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
+import { useTranslation } from "react-i18next";
 
 interface ReflectionSectionProps {
   rawReflection?: string | null;
@@ -20,13 +21,14 @@ const cleanReflectionText = (text: string): string => {
 export const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   rawReflection,
 }) => {
+  const { t } = useTranslation("journal");
   if (!rawReflection) return null;
 
   return (
     <View className="mt-1 mb-8">
       {/* Reflection heading: quiet section header, not hero heading */}
       <Text className="happy-font-heading-semibold text-[17px] leading-5 text-ink mb-2">
-        Reflection
+        {t("entryDetail.reflection")}
       </Text>
       {/* Reflection card: warm-neutral translucent surface, subtle border, reduced radius */}
       <View className="bg-white/75 p-4 rounded-xl border border-ink/8">

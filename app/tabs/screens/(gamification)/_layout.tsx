@@ -45,7 +45,7 @@ export default function GamificationGroupLayout() {
         name="xp-history"
         options={{
           headerShown: true,
-          title: t("xp.progression"),
+          title: t("progressionScreen.title"),
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",

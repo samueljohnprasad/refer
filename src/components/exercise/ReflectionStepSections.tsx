@@ -6,6 +6,7 @@ import { Feather } from "@expo/vector-icons";
 
 import { Text } from "@/src/components/ui/Text";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 
 export function ReflectionContextBlock({
   label,
@@ -63,6 +64,7 @@ export function ReflectionDisclosure({
   title?: string;
   children?: React.ReactNode;
 }) {
+  const translateCopy = useExerciseCopy();
   return (
     <View className="mt-3">
       <Pressable
@@ -71,12 +73,12 @@ export function ReflectionDisclosure({
           onToggle();
         }}
         accessibilityRole="button"
-        accessibilityLabel={expanded ? "Hide examples" : "Show optional examples"}
+        accessibilityLabel={translateCopy(expanded ? "Hide examples" : "Show optional examples")}
         accessibilityState={{ expanded }}
         className="mb-2 flex-row items-center justify-between border-t border-sage-100/70 py-3 active:opacity-70"
       >
         <Text variant="label-bold" className="text-[14px] text-sage-700">
-          {expanded ? "Hide examples" : title}
+          {translateCopy(expanded ? "Hide examples" : title)}
         </Text>
         <Feather
           name={expanded ? "chevron-up" : "chevron-down"}

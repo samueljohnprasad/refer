@@ -4,6 +4,7 @@ import { View } from "react-native";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 import { Host, Popover, Button, HStack, Text as SwiftUIText, Image as SwiftUIImage } from "@expo/ui/swift-ui";
 import { tint, buttonStyle, padding, frame, foregroundStyle, font } from "@expo/ui/swift-ui/modifiers";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 
 interface PsychoeducationCardProps {
   content: string;
@@ -14,6 +15,7 @@ export const PsychoeducationCard: React.FC<PsychoeducationCardProps> = ({
   content,
   className = "",
 }) => {
+  const translateCopy = useExerciseCopy();
   const [expanded, setExpanded] = useState(false);
 
   if (!content) return null;
@@ -47,7 +49,7 @@ export const PsychoeducationCard: React.FC<PsychoeducationCardProps> = ({
                     font({ weight: "semibold", size: 13 }),
                   ]}
                 >
-                  Why this helps
+                  {translateCopy("Why this helps")}
                 </SwiftUIText>
                 <SwiftUIImage
                   systemName={expanded ? "chevron.up" : "chevron.down"}
@@ -64,7 +66,7 @@ export const PsychoeducationCard: React.FC<PsychoeducationCardProps> = ({
               alignment="top"
               spacing={12}
               modifiers={[
-                padding(16),
+                padding({ all: 16 }),
                 frame({ width: 300 })
               ]}
             >

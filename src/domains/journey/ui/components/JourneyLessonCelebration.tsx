@@ -21,6 +21,11 @@ export function JourneyLessonCelebration({
 
   if (celebration?.level !== CelebrationLevel.LESSON) return null;
 
+  const takeaway = celebration.content.takeaway === "You showed up for yourself today."
+    ? t("defaultLessonTakeaway")
+    : celebration.content.takeaway;
+  const primaryActionLabel = celebration.content.primaryActionLabel;
+
   return (
     <LessonCompleteCelebration
       isVisible
@@ -30,8 +35,8 @@ export function JourneyLessonCelebration({
       durationMs={celebration.stats?.durationMs}
       lessonTitle={celebration.content.title}
       title={t("lessonComplete")}
-      message={celebration.content.takeaway}
-      continueLabel={celebration.content.primaryActionLabel || t("continue")}
+      message={takeaway}
+      continueLabel={primaryActionLabel && primaryActionLabel !== "Continue" ? primaryActionLabel : t("continue")}
       onContinue={onContinue}
     />
   );

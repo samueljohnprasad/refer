@@ -73,7 +73,7 @@ const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
                 variant="body-bold"
                 color={isTracked ? "ink" : "soft"}
               >
-                {t(`nutrientItems.${nutrient.id}.name`, { defaultValue: nutrient.name })}
+                {t(`nutrientItems.${nutrient.id}.name`)}
               </Text>
               <View className="ml-2 px-2.5 py-0.5 rounded-full happy-brand-status-chip">
                 <Text
@@ -84,9 +84,7 @@ const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
                       : "text-amber-600"
                   }
                 >
-                  {t(`micronutrients.categories.${nutrient.category}`, {
-                    defaultValue: nutrient.category,
-                  })}
+                  {t(`micronutrients.categories.${nutrient.category}`)}
                 </Text>
               </View>
             </View>
@@ -95,7 +93,7 @@ const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
               color="soft"
               className="text-[15px] leading-5 mb-1"
             >
-              {t(`nutrientItems.${nutrient.id}.description`, { defaultValue: nutrient.description })}
+              {t(`nutrientItems.${nutrient.id}.description`)}
             </Text>
             <Text variant="caption-muted">
               {t("micronutrients.dailyTarget")}: {new Intl.NumberFormat(i18n.language).format(nutrient.dailyValue)} {nutrient.unit}

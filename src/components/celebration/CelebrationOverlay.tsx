@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, Pressable, StyleSheet, Modal } from 'react-native';
 import Animated, { useAnimatedStyle, interpolate, Extrapolation } from 'react-native-reanimated';
 import { CelebrationContext } from '../../types/celebration';
@@ -25,6 +26,7 @@ export function CelebrationOverlay({
   onContinue,
   onInteractionAvailable
 }: CelebrationOverlayProps) {
+  const { t } = useTranslation("common");
   const [canInteract, setCanInteract] = useState(false);
 
   const timeline = useCelebrationTimeline(isVisible, context.type, () => {
@@ -124,7 +126,7 @@ export function CelebrationOverlay({
               <Animated.View style={buttonStyle} className="w-full">
                 {/* ponytail: standard 3D tactile button */}
                 <Button
-                  label="Continue"
+                  label={t("actions.continue")}
                   variant="primary"
                   size="lg"
                   fullWidth

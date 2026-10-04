@@ -1,4 +1,5 @@
 {
+  "progressionScreen": { "title": "进度", "currentLevel": "当前等级", "thisWeek": "本周", "weekOf": "{{date}}当周", "insightsToNextLevel": "晋级至{{level}}所需的 Insights", "lifetimeInsights": "累计获得 {{count}} 点 Insights", "today": "今天", "yesterday": "昨天", "insights": "Insights", "challengeCompleted": "挑战已完成", "journeyStarted": "旅程已开始", "activityCompleted": "活动已完成", "mood": "心情：" },
   "celebrations": { "shareWin": { "perfectBadge": "完美课程", "perfectTitle": "课程完成得很棒！", "completeTitle": "课程已完成！", "xpReward": "+{{totalXP}} XP", "streak": { "oneDay": "{{count}} 天", "otherDays": "{{count}} 天" }, "footer": "和我一起加入 Happy，迈出小小一步，让内心更平静." } },
   "profile": { "nameEdit": { "title": "编辑姓名", "placeholder": "你的姓名", "description": "其他人可以看到这个名称，你可以随时更改。", "nameRequired": "姓名不能为空。", "updateFailed": "无法更新姓名，请重试。" } },
   "navigation": {

@@ -187,7 +187,7 @@ export function TRAutomaticThoughtStep({
           className="mb-2 mt-1 flex-row items-center justify-between border-t border-sage-100/70 py-3 active:opacity-70"
         >
           <ExerciseCopyText variant="label-bold" className="text-[14px] text-sage-700">
-            {showThoughtSuggestions ? "Hide examples" : "Need an example?"}
+            {translateCopy(showThoughtSuggestions ? "Hide examples" : "Need an example?")}
           </ExerciseCopyText>
           <Feather
             name={showThoughtSuggestions ? "chevron-up" : "chevron-down"}

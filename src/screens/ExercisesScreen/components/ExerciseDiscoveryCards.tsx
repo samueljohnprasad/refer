@@ -67,7 +67,7 @@ export const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
           <ExerciseIcon type={exercise.type} size={26} color={badgeTheme.iconColor} />
           <View style={{ flex: 1 }} />
           {isGated ? <TextBadge label="PRO" /> : null}
-          <DurationBadge duration={exercise.duration} color={badgeTheme.iconColor} minutesShort={t("library.minutesShort")} />
+          <DurationBadge duration={exercise.duration} color={badgeTheme.iconColor} minutesShort={t("flow.ui.engine.minutesShort")} />
         </View>
         <Text style={[nutrieStyles.exerciseTitle, { fontSize: 18, marginBottom: 4 }]}>{title}</Text>
         <Text style={[nutrieStyles.exerciseSubtitle, { color: "rgba(0,0,0,0.65)", marginBottom: 10 }]} numberOfLines={2}>
@@ -105,7 +105,7 @@ export const ExerciseShelfCard = memo(function ExerciseShelfCard({ exercise, onP
         </View>
         <Text style={nutrieStyles.exerciseTitle} numberOfLines={2}>{translateCopy(exercise.title)}</Text>
         <Text style={[nutrieStyles.exerciseSubtitle, { fontSize: 13, lineHeight: 18 }]} numberOfLines={2}>{translateCopy(exercise.subtitle)}</Text>
-        <Text style={nutrieStyles.inlinePillText}>{localizeDuration(exercise.duration, t("library.minutesShort"))}</Text>
+        <Text style={nutrieStyles.inlinePillText}>{localizeDuration(exercise.duration, t("flow.ui.engine.minutesShort"))}</Text>
       </Card>
     </CircularRevealWrapper>
   );
@@ -133,7 +133,7 @@ export const CompactExerciseRow = memo(function CompactExerciseRow({ exercise, o
             <Text style={[nutrieStyles.exerciseTitle, { fontSize: 15, marginBottom: 2, flexShrink: 1 }]} numberOfLines={1}>{translateCopy(exercise.title)}</Text>
             {isGated ? <TextBadge label="PRO" /> : null}
           </View>
-          <Text style={[nutrieStyles.exerciseSubtitle, { fontSize: 13 }]} numberOfLines={1}>{localizeDuration(exercise.duration, t("library.minutesShort"))} • +{exercise.xp} XP</Text>
+          <Text style={[nutrieStyles.exerciseSubtitle, { fontSize: 13 }]} numberOfLines={1}>{localizeDuration(exercise.duration, t("flow.ui.engine.minutesShort"))} • +{exercise.xp} XP</Text>
         </View>
         <HugeiconsIcon icon={ArrowRight01Icon} size={16} color="#A1A1AA" />
       </Pressable>

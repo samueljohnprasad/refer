@@ -13,6 +13,8 @@ import { uniqueId } from 'lodash-es';
 import type { ExerciseStepDef, AISuggestionItem } from '@/src/types/exerciseFlow';
 import { useActiveModel } from '@/src/hooks/useActiveModel';
 import { createAIProvider } from '@/src/services/ai';
+import { useTranslation } from 'react-i18next';
+import { useExerciseCopy } from '@/src/hooks/useExerciseCopy';
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
 
@@ -39,12 +41,20 @@ export function useExerciseAI<T extends Record<string, any>>({
   response,
   readOnly,
 }: UseExerciseAIOptions<T>): UseExerciseAIReturn {
+  const { i18n } = useTranslation("exercises");
+  const translateCopy = useExerciseCopy();
   // Session isolation for caching. A new session ID is generated on mount.
   const sessionIdRef = useRef<string>(uniqueId('exercise-'));
   const sessionSeedRef = useRef<number>(Math.random());
 
   const currentStep = steps[currentStepIndex];
   const aiConfig = currentStep?.ai;
+  const locale = i18n.resolvedLanguage?.split("-")[0] ?? "en";
+  const languageNames: Record<string, string> = {
+    ar: "Arabic", de: "German", en: "English", es: "Spanish",
+    fr: "French", it: "Italian", pt: "Portuguese", zh: "Chinese",
+  };
+  const responseLanguage = languageNames[locale] ?? "English";
 
   const { getActiveModel, providerType, downloadProgress } = useActiveModel();
 
@@ -53,12 +63,13 @@ export function useExerciseAI<T extends Record<string, any>>({
   const prompt = useMemo(() => {
     if (!aiConfig || readOnly) return '';
     try {
-      return aiConfig.promptBuilder(response, { seed: sessionSeedRef.current });
+      const builtPrompt = aiConfig.promptBuilder(response, { seed: sessionSeedRef.current });
+      return `${builtPrompt}\n\nWrite all user-facing suggestion text in ${responseLanguage}. Keep the required structured response format.`;
     } catch (e) {
       console.warn("Exercise AI prompt builder failed:", e);
       return '';
     }
-  }, [aiConfig, response, readOnly]);
+  }, [aiConfig, response, readOnly, responseLanguage]);
 
   const queryKey = ['exercise-ai', sessionIdRef.current, currentStep?.id, prompt];
 
@@ -100,6 +111,6 @@ export function useExerciseAI<T extends Record<string, any>>({
     isLoading,
     error: error instanceof Error ? error.message : null,
     downloadProgress,
-    loadingMessage: aiConfig?.aiLoadingMessage || "Sage is thinking...",
+    loadingMessage: translateCopy(aiConfig?.aiLoadingMessage || "Sage is thinking..."),
   };
 }

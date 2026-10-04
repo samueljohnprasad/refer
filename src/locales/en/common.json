@@ -1,4 +1,5 @@
 {
+  "progressionScreen": { "title": "Progression", "currentLevel": "Current level", "thisWeek": "This week", "weekOf": "Week of {{date}}", "insightsToNextLevel": "Insights to {{level}}", "lifetimeInsights": "{{count}} lifetime Insights", "today": "Today", "yesterday": "Yesterday", "insights": "Insights", "challengeCompleted": "Challenge completed", "journeyStarted": "Journey started", "activityCompleted": "Activity completed", "mood": "Mood:" },
   "celebrations": { "shareWin": { "perfectBadge": "PERFECT LESSON", "perfectTitle": "Flawless lesson!", "completeTitle": "Lesson complete!", "xpReward": "+{{totalXP}} XP", "streak": { "oneDay": "{{count}} day", "otherDays": "{{count}} days" }, "footer": "Join me on Happy — small steps, calmer mind." } },
   "profile": { "nameEdit": { "title": "Edit Name", "placeholder": "Your name", "description": "Others can see this name. You can change it at any time.", "nameRequired": "Name cannot be empty.", "updateFailed": "Could not update your name. Please try again." } },
   "navigation": {

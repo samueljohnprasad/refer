@@ -5,6 +5,7 @@ import { Cancel01Icon, ChartHistogramIcon } from "@hugeicons/core-free-icons";
 import { Text } from "@/src/components/ui/Text";
 import { Button } from "@/src/components/ui/Button";
 import SuspensLoader from "@/src/components/SuspensLoader";
+import { useTranslation } from "react-i18next";
 
 // Static imports to avoid Metro bundler React.lazy chunk resolution crashes
 import WeekyScreenAIWrapper from "@/src/screens/DailyNotesScreen/components/WeekyScreenAIWrapper";
@@ -28,6 +29,7 @@ export const AIInsightsModalBottomSheet = forwardRef<
   AIInsightsModalRef,
   AIInsightsModalBottomSheetProps
 >(({ weekStart, weekEnd, onClose }, ref) => {
+  const { t } = useTranslation("insights");
   const [visible, setVisible] = useState(false);
 
   useImperativeHandle(ref, () => ({
@@ -58,9 +60,7 @@ export const AIInsightsModalBottomSheet = forwardRef<
                 <HugeiconsIcon icon={ChartHistogramIcon} size={20} color="#374151" className="text-brand-ink" />
               </View>
               <View className="flex-1">
-                <Text variant="h2">
-                  Weekly Insights
-                </Text>
+                <Text variant="h2">{t("weeklySummary.title")}</Text>
                 <Text variant="caption-muted" className="mt-0.5">
                   {weekStart} - {weekEnd}
                 </Text>

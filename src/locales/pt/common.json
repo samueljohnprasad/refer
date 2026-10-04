@@ -1,4 +1,5 @@
 {
+  "progressionScreen": { "title": "Progresso", "currentLevel": "Nível atual", "thisWeek": "Esta semana", "weekOf": "Semana de {{date}}", "insightsToNextLevel": "Insights para alcançar {{level}}", "lifetimeInsights": "{{count}} Insights no total", "today": "Hoje", "yesterday": "Ontem", "insights": "Insights", "challengeCompleted": "Desafio concluído", "journeyStarted": "Jornada iniciada", "activityCompleted": "Atividade concluída", "mood": "Humor:" },
   "celebrations": { "shareWin": { "perfectBadge": "LIÇÃO PERFEITA", "perfectTitle": "Lição impecável!", "completeTitle": "Lição concluída!", "xpReward": "+{{totalXP}} XP", "streak": { "oneDay": "{{count}} dia", "otherDays": "{{count}} dias" }, "footer": "Junta-te a mim no Happy — pequenos passos para uma mente mais tranquila." } },
   "profile": { "nameEdit": { "title": "Editar nome", "placeholder": "Seu nome", "description": "Outras pessoas podem ver este nome. Você pode alterá-lo quando quiser.", "nameRequired": "O nome não pode ficar vazio.", "updateFailed": "Não foi possível atualizar seu nome. Tente novamente." } },
   "navigation": {

@@ -129,8 +129,8 @@ export const XPWeeklyChart = ({ weeklyData, weekLabels }: { weeklyData: ChartDay
           getItemLayout={(_, index) => ({ length: windowWidth, offset: windowWidth * index, index })}
           renderItem={({ index }) => (
             <View style={[{ width: windowWidth }, styles.labelContainer]}>
-              <Text style={styles.eyebrow}>{t("xp.thisWeek")}</Text>
-              <Text style={styles.weekLabel}>{t("xp.weekOf", { date: weekLabels[index] })}</Text>
+              <Text style={styles.eyebrow}>{t("progressionScreen.thisWeek")}</Text>
+              <Text style={styles.weekLabel}>{t("progressionScreen.weekOf", { date: weekLabels[index] })}</Text>
             </View>
           )}
         />

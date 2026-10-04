@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   View,
   type StyleProp,
@@ -29,15 +30,6 @@ export type MoodBadgeProps = {
   hideEmptySlot?: boolean;
 };
 
-/** Human-readable label for each mood score (used in accessibilityLabel). */
-const MOOD_SCORE_LABELS: Record<number, string> = {
-  1: "Terrible",
-  2: "Bad",
-  3: "Okay",
-  4: "Good",
-  5: "Great",
-};
-
 const MOOD_SCORE_TO_KEY: Record<number, MoodKey> = {
   1: "terrible",
   2: "bad",
@@ -56,11 +48,16 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
     displayOnly = false,
     hideEmptySlot = false,
   }) => {
+    const { t } = useTranslation(["home", "common"]);
     const diameter = size;
     const radius = diameter / 2;
     const moodKey = moodscore ? MOOD_SCORE_TO_KEY[moodscore] : null;
 
-    const moodLabel = moodscore ? MOOD_SCORE_LABELS[moodscore] ?? String(moodscore) : "Not set";
+    const moodLabel = moodscore
+      ? moodKey
+        ? t(`moods.${moodKey}`)
+        : String(moodscore)
+      : "Not set";
 
     // --- Render core badge content (display-only, no press handling here) ---
     const badgeContent = (
@@ -113,7 +110,7 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
         style={{ width: diameter, height: diameter }}
         onPress={disabled ? undefined : onPress}
         accessibilityRole="button"
-        accessibilityLabel={`Mood: ${moodLabel}`}
+        accessibilityLabel={`${t("common:xp.mood")} ${moodLabel}`}
         accessibilityState={{ selected: active, disabled }}
       >
         {badgeContent}

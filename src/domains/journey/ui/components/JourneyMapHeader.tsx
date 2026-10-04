@@ -1,135 +1,79 @@
-/**
- * JourneyMapHeader (P1.5.4)
- *
- * Sticky header above the scrollable journey map.
- * Contains: back button, journey title, progress (X/N nodes),
- * StreakBanner (compact), XPCounter (compact).
- * Thin progress bar under the header, colored by journey theme.
- *
- * Pure presentational — all data via props.
- */
-
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { View, Text, Pressable } from 'react-native';
-import { SafeAreaView } from '@/components/ui/safe-area-view';
-import { HugeiconsIcon } from '@hugeicons/react-native';
-import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
-
-import { StreakBanner } from './StreakBanner';
-import { XPCounter } from './XPCounter';
-import type { XPGain } from './XPCounter';
-
-// ============================================================================
-// Types
-// ============================================================================
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { GlassView } from "expo-glass-effect";
+import { SafeAreaView } from "@/src/components/tw";
+import { HomeMainButton } from "./home-main-button";
+import { DuolingoHeader } from "./DuolingoHeader";
+import type { JourneyMapActions, JourneyMapViewModel } from "../hooks/useJourneyMapViewModel";
 
 export interface JourneyMapHeaderProps {
-    /** Journey title */
-    title: string;
-    /** Total nodes in the journey */
-    totalNodes: number;
-    /** Completed nodes */
-    completedNodes: number;
-    /** Current streak days */
-    streakDays: number;
-    /** Whether streak is at risk */
-    streakAtRisk: boolean;
-    /** Total Insight Points */
-    totalIP: number;
-    /** Recent IP gains for flyover animations */
-    recentGains: XPGain[];
-    /** Theme color for the progress bar (hex) */
-    themeColor: string;
-    /** Called when back button is pressed */
-    onBack: () => void;
-    /** Called when streak banner is tapped */
-    onStreakPress?: () => void;
-    /** Called when XP counter is tapped */
-    onXPPress?: () => void;
-    /** Called when a gain flyover completes */
-    onGainDismissed?: (id: string) => void;
+  model: JourneyMapViewModel;
+  actions: JourneyMapActions;
+  isOnboarding?: boolean;
 }
 
-// ============================================================================
-// Component
-// ============================================================================
-
-function JourneyMapHeaderInner({
-    title,
-    totalNodes,
-    completedNodes,
-    streakDays,
-    streakAtRisk,
-    totalIP,
-    recentGains,
-    themeColor,
-    onBack,
-    onStreakPress,
-    onXPPress,
-    onGainDismissed,
+export function JourneyMapHeader({
+  model,
+  actions,
+  isOnboarding,
 }: JourneyMapHeaderProps): React.JSX.Element {
-    const { t } = useTranslation('journeys');
-    const progressFraction: number = totalNodes > 0 ? completedNodes / totalNodes : 0;
-    const progressPercent: number = Math.round(progressFraction * 100);
+  const { t } = useTranslation("journeys");
+  const { headerState } = model.controller;
+  const unitLabel = resolveUnitLabel(headerState.label);
+  const unitTitle = headerState.title === "The Mechanism"
+    ? t("unitTitles.theMechanism")
+    : headerState.title === "Select a section"
+      ? t("selectSection")
+      : headerState.title;
 
-    return (
-        <SafeAreaView className="bg-brand-surface border-b border-slate-100" edges={['top']}>
-            {/* Main row */}
-            <View className="flex-row items-center px-4 py-2 gap-2">
-                {/* Back button */}
-                <Pressable
-                    onPress={onBack}
-                    className="w-9 h-9 rounded-full bg-slate-50 items-center justify-center"
-                    accessibilityLabel={t('goBack')}
-                    accessibilityRole="button"
-                >
-                    <HugeiconsIcon icon={ArrowLeft01Icon} size={18} color="#64748B" />
-                </Pressable>
+  function resolveUnitLabel(label: string): string {
+    if (label === "Journey") return t("journeyLabel");
+    if (label === "Select a section") return t("selectSection");
 
-                {/* Title + progress */}
-                <View className="flex-1 ml-1">
-                    <Text className="text-sm font-bold text-ink" numberOfLines={1}>
-                        {title}
-                    </Text>
-                    <Text className="text-xs text-ink-muted">
-                        {t('journeyProgress', { completed: completedNodes, total: totalNodes })}
-                    </Text>
-                </View>
+    const sectionUnit = label.match(/^Section (\d+) • Unit (\d+)$/);
+    if (sectionUnit) {
+      return t("sectionUnitLabel", { section: sectionUnit[1], unit: sectionUnit[2] });
+    }
 
-                {/* Streak (compact) */}
-                <StreakBanner
-                    currentStreak={streakDays}
-                    isAtRisk={streakAtRisk}
-                    compact
-                    onPress={onStreakPress}
-                />
+    const section = label.match(/^Section (\d+)$/);
+    return section ? t("sectionLabel", { section: section[1] }) : label;
+  }
 
-                {/* XP (compact) */}
-                <XPCounter
-                    totalIP={totalIP}
-                    recentGains={recentGains}
-                    onGainDismissed={onGainDismissed}
-                    onPress={onXPPress}
-                    compact
-                />
-            </View>
-
-            {/* Thin progress bar */}
-            <View className="h-1 bg-slate-100">
-                <View
-                    style={{
-                        width: `${progressPercent}%`,
-                        height: '100%',
-                        backgroundColor: themeColor,
-                        borderTopRightRadius: 2,
-                        borderBottomRightRadius: 2,
-                    }}
-                />
-            </View>
-        </SafeAreaView>
-    );
+  return (
+    <GlassView
+      glassEffectStyle="regular"
+      style={{
+        paddingBottom: 16,
+        borderBottomWidth: 0,
+        elevation: 0,
+        shadowOpacity: 0,
+        shadowRadius: 0,
+        shadowColor: "transparent",
+        overflow: "hidden",
+      }}
+    >
+      <SafeAreaView edges={["top"]}>
+        {!isOnboarding && (
+          <DuolingoHeader
+            stats={model.userStats}
+            enrolledCourses={model.enrolledCourses}
+            activeCourseId={model.courseId}
+            activeCourseSummary={model.activeCourseSummary}
+            onAddCoursePress={actions.onAddCoursePress}
+            onCourseSelect={actions.setActiveCourseId}
+          />
+        )}
+        <HomeMainButton
+          onPress={model.controller.handleOpenSections}
+          unitLabel={unitLabel}
+          unitTitle={unitTitle}
+          faceColor={headerState.faceColor}
+          rimColor={headerState.rimColor}
+          unitIconKey={headerState.iconKey}
+        />
+      </SafeAreaView>
+    </GlassView>
+  );
 }
 
-export const JourneyMapHeader = React.memo(JourneyMapHeaderInner);
 export default JourneyMapHeader;

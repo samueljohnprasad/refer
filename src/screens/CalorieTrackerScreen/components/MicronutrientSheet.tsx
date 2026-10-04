@@ -46,7 +46,7 @@ const MicronutrientRow: React.FC<MicronutrientRowProps> = ({ nutrient, index }) 
     <View key={`${nutrient.name}-${index}`} className="mb-4 pb-4 border-b border-gray-100">
       <View className="flex-row justify-between items-center mb-2">
         <Text className="text-gray-900 font-medium">
-          {t(`nutrientItems.${config.id}.name`, { defaultValue: config.name })}
+          {t(`nutrientItems.${config.id}.name`)}
         </Text>
         <Text className="text-gray-600">
           {new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 1 }).format(nutrient.amount)} {config.unit}

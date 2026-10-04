@@ -1,4 +1,5 @@
 {
+  "progressionScreen": { "title": "Progression", "currentLevel": "Niveau actuel", "thisWeek": "Cette semaine", "weekOf": "Semaine du {{date}}", "insightsToNextLevel": "Insights pour atteindre {{level}}", "lifetimeInsights": "{{count}} Insights au total", "today": "Aujourd’hui", "yesterday": "Hier", "insights": "Insights", "challengeCompleted": "Défi terminé", "journeyStarted": "Parcours commencé", "activityCompleted": "Activité terminée", "mood": "Humeur :" },
   "celebrations": { "shareWin": { "perfectBadge": "LEÇON PARFAITE", "perfectTitle": "Leçon sans faute !", "completeTitle": "Leçon terminée !", "xpReward": "+{{totalXP}} XP", "streak": { "oneDay": "{{count}} jour", "otherDays": "{{count}} jours" }, "footer": "Rejoins-moi sur Happy : de petits pas vers plus de calme." } },
   "profile": { "nameEdit": { "title": "Modifier le nom", "placeholder": "Votre nom", "description": "Les autres peuvent voir ce nom. Vous pouvez le modifier à tout moment.", "nameRequired": "Le nom ne peut pas être vide.", "updateFailed": "Impossible de modifier votre nom. Veuillez réessayer." } },
   "navigation": {

@@ -26,7 +26,7 @@ interface XPItem extends TimelineItemData {
 // ponytail: normalize event titles to category + detail per audit #9-#13
 function normalizeTimelineItem(
   entry: XPHistoryEntry,
-  t: (key: "xp.challengeCompleted" | "xp.journeyStarted" | "xp.activityCompleted" | "xp.mood") => string,
+  t: (key: "progressionScreen.challengeCompleted" | "progressionScreen.journeyStarted" | "progressionScreen.activityCompleted" | "progressionScreen.mood") => string,
 ): {
   category: string;
   detail?: string;
@@ -42,7 +42,7 @@ function normalizeTimelineItem(
       .replace(/^Challenge:\s*/i, "")
       .trim();
     return {
-      category: t("xp.challengeCompleted"),
+      category: t("progressionScreen.challengeCompleted"),
       detail: cleanName,
       status: "challenge",
       isMultiLine: true,
@@ -52,7 +52,7 @@ function normalizeTimelineItem(
   // Journey milestone check (e.g. "First step on your journey")
   if (/journey/i.test(desc) || /first step/i.test(desc)) {
     return {
-      category: t("xp.journeyStarted"),
+      category: t("progressionScreen.journeyStarted"),
       detail: "Sleep Reset",
       status: "milestone",
       isMultiLine: true,
@@ -63,7 +63,7 @@ function normalizeTimelineItem(
   if (/^Mood logged:\s*(.+)$/i.test(desc) || /^Mood:\s*(.+)$/i.test(desc)) {
     const moodName = desc.replace(/^Mood( logged)?:\s*/i, "").trim();
     return {
-      category: t("xp.mood"),
+      category: t("progressionScreen.mood"),
       detail: moodName,
       status: "completed",
       isMultiLine: false,
@@ -74,7 +74,7 @@ function normalizeTimelineItem(
   if (/^Completed:\s*(.+)$/i.test(desc)) {
     const activityName = desc.replace(/^Completed:\s*/i, "").trim();
     return {
-      category: t("xp.activityCompleted"),
+      category: t("progressionScreen.activityCompleted"),
       detail: activityName,
       status: "completed",
       isMultiLine: true,
@@ -90,7 +90,7 @@ function normalizeTimelineItem(
 
 const transformHistoryToTimeline = (
   entries: XPHistoryEntry[],
-  t: (key: "xp.challengeCompleted" | "xp.journeyStarted" | "xp.activityCompleted" | "xp.mood") => string,
+  t: (key: "progressionScreen.challengeCompleted" | "progressionScreen.journeyStarted" | "progressionScreen.activityCompleted" | "progressionScreen.mood") => string,
 ): TimelineSection<XPItem>[] => {
   const grouped = new Map<
     number,
@@ -131,14 +131,14 @@ const transformHistoryToTimeline = (
 // ponytail: day-level reward header matching audit items 3, 4, 5
 const renderSectionHeader = (
   section: TimelineSection<XPItem>,
-  t: (key: "xp.today" | "xp.yesterday" | "xp.insights") => string,
+  t: (key: "progressionScreen.today" | "progressionScreen.yesterday" | "progressionScreen.insights") => string,
 ) => {
   const isToday = dayjs(section.date).isSame(dayjs(), "day");
   const isYesterday = dayjs(section.date).isSame(dayjs().subtract(1, "day"), "day");
   const dayLabel = isToday
-    ? t("xp.today")
+    ? t("progressionScreen.today")
     : isYesterday
-      ? t("xp.yesterday")
+      ? t("progressionScreen.yesterday")
       : dayjs(section.date).format("D MMM");
 
   return (
@@ -162,7 +162,7 @@ const renderSectionHeader = (
             fontSize: 11,
           }}
         >
-          {section.dailyTotal} {t("xp.insights")}
+          {section.dailyTotal} {t("progressionScreen.insights")}
         </Text>
       )}
     </View>

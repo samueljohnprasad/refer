@@ -4,13 +4,10 @@ import { useColorScheme } from "react-native";
 import { Stack, router } from "expo-router";
 import Animated from "react-native-reanimated";
 import { AmbientTapDust } from "@/src/components/ui/AmbientTapDust";
-import { GlassView } from "expo-glass-effect";
-import { SafeAreaView } from "@/src/components/tw";
 
 import CourseCatalogSheet from "./components/CourseCatalogSheet";
 import NextJourneyBridgeDock from "./components/NextJourneyBridgeDock";
-import { HomeMainButton } from "./components/home-main-button";
-import { DuolingoHeader } from "./components/DuolingoHeader";
+import { JourneyMapHeader } from "./components/JourneyMapHeader";
 import JourneyMapFlashList from "./components/JourneyMapFlashList";
 import JourneyLoadingSkeleton from "./components/JourneyLoadingSkeleton";
 import JourneyUnavailableState from "./components/JourneyUnavailableState";
@@ -49,9 +46,7 @@ export const JourneyMapView = React.memo(function JourneyMapView({
   const {
     courseId,
     isCourseCatalogPresented,
-    userStats,
     enrolledCourses,
-    activeCourseSummary,
     animatedStyle,
     controller,
   } = model;
@@ -144,39 +139,7 @@ export const JourneyMapView = React.memo(function JourneyMapView({
           headerTransparent: true,
           headerShadowVisible: false,
           header: () => (
-            <GlassView
-              glassEffectStyle="regular"
-              style={{
-                paddingBottom: 16,
-                borderBottomWidth: 0,
-                elevation: 0,
-                shadowOpacity: 0,
-                shadowRadius: 0,
-                shadowColor: "transparent",
-                overflow: "hidden",
-              }}
-            >
-              <SafeAreaView edges={["top"]}>
-                {!isOnboarding && (
-                  <DuolingoHeader
-                    stats={userStats}
-                    enrolledCourses={enrolledCourses}
-                    activeCourseId={courseId}
-                    activeCourseSummary={activeCourseSummary}
-                    onAddCoursePress={onAddCoursePress}
-                    onCourseSelect={setActiveCourseId}
-                  />
-                )}
-                <HomeMainButton
-                  onPress={controller.handleOpenSections}
-                  unitLabel={controller.headerState.label}
-                  unitTitle={controller.headerState.title}
-                  faceColor={controller.headerState.faceColor}
-                  rimColor={controller.headerState.rimColor}
-                  unitIconKey={controller.headerState.iconKey}
-                />
-              </SafeAreaView>
-            </GlassView>
+            <JourneyMapHeader model={model} actions={actions} isOnboarding={isOnboarding} />
           ),
         }}
       />

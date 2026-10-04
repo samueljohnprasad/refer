@@ -1,5 +1,6 @@
 // ponytail: true
 import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View, Text } from "react-native";
 import Animated, {
   useSharedValue,
@@ -50,6 +51,7 @@ export const Node = React.memo(React.forwardRef<View, NodeProps>(function Node({
   onPress,
   accessibilityLabel,
 }: NodeProps, ref) {
+  const { t } = useTranslation("journeys");
   const vm = useNodeViewModel(type, state, iconName ?? null);
   const yOffset = useSharedValue(0);
   const opacity = useSharedValue(1);
@@ -84,6 +86,7 @@ export const Node = React.memo(React.forwardRef<View, NodeProps>(function Node({
   }, [vm.isInteractive, onPress]);
 
   const hSize = size / 2;
+  const displayLabel = label === "START" ? t("start").toUpperCase() : label;
 
   // Animate the face of the silhouette.
   // We use `cy` for lesson (ellipse) and `transform` for path shapes.
@@ -225,7 +228,7 @@ export const Node = React.memo(React.forwardRef<View, NodeProps>(function Node({
             ]}
           >
             <Text style={{ fontFamily: APP_FONT_FAMILIES.bold, fontSize: 14, color: "#4B4B4B" }}>
-              {label}
+              {displayLabel}
             </Text>
             <View
               style={{

@@ -5,6 +5,23 @@ import StageProgressBar from "@/src/components/ui/StageProgressBar";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { useTranslation } from "react-i18next";
 
+const LEVEL_TRANSLATION_KEYS = {
+  1: "xp.levelNames.level1",
+  2: "xp.levelNames.level2",
+  3: "xp.levelNames.level3",
+  4: "xp.levelNames.level4",
+  5: "xp.levelNames.level5",
+  6: "xp.levelNames.level6",
+  7: "xp.levelNames.level7",
+  8: "xp.levelNames.level8",
+  9: "xp.levelNames.level9",
+  10: "xp.levelNames.level10",
+} as const;
+
+const getLevelTranslationKey = (level: number) =>
+  LEVEL_TRANSLATION_KEYS[level as keyof typeof LEVEL_TRANSLATION_KEYS] ??
+  LEVEL_TRANSLATION_KEYS[1];
+
 interface XPHistorySummaryProps {
   totalXP: number;
   todayXP: number;
@@ -36,7 +53,7 @@ export const XPHistorySummary: React.FC<XPHistorySummaryProps> = React.memo(
             marginBottom: 8,
           }}
         >
-          {t("xp.currentLevel")}
+          {t("progressionScreen.currentLevel")}
         </Text>
 
         {/* 2. Brand Rank Display: muted sage-green status identity */}
@@ -49,7 +66,7 @@ export const XPHistorySummary: React.FC<XPHistorySummaryProps> = React.memo(
               lineHeight: 22,
             }}
           >
-            ✦  {currentLevel.name}
+            ✦  {t(getLevelTranslationKey(currentLevel.level))}
           </Text>
         </View>
 
@@ -80,7 +97,7 @@ export const XPHistorySummary: React.FC<XPHistorySummaryProps> = React.memo(
                   color: "#3A3A3C",
                 }}
               >
-                {` ${t("xp.insightsToNextLevel", { level: nextLevel?.name || t("xp.nextLevel") })}`}
+                {` ${t("progressionScreen.insightsToNextLevel", { level: nextLevel ? t(getLevelTranslationKey(nextLevel.level)) : t("xp.nextLevel") })}`}
               </Text>
             </>
           )}
@@ -104,7 +121,7 @@ export const XPHistorySummary: React.FC<XPHistorySummaryProps> = React.memo(
             fontSize: 12,
           }}
         >
-          {t("xp.lifetimeInsights", { count: totalXP })}
+          {t("progressionScreen.lifetimeInsights", { count: totalXP })}
         </Text>
       </View>
     );
