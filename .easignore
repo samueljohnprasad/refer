@@ -1,2 +1,70 @@
+# dependencies
+node_modules/
+.venv/
+.claude
+iOS/
+android/
+ios/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+graphify-out
+lint_results.json
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+.env
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env
+.env*
+*.env
+supabase/functions/.env
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+# Superdesign local draft artifacts
+.superdesign/tmp/
+.temp/plan-mode/
+
+.env.local
+
+# App Store Connect local credentials
+.asc/
+.asc
+
+# RevenueCat local credentials and config
+.revenuecat.json
+.revenuecat/
+
+.env.*
+credentials.json
+.credentials
+
+# Remotion & marketing assets
 remotion/
 remotion.config.ts
+screenshots/
