@@ -2,6 +2,7 @@ const { withUniwindConfig } = require('uniwind/metro');
 const { getDefaultConfig } = require("expo/metro-config");
 
 const config = getDefaultConfig(__dirname);
+const { transformer, resolver } = config;
 // The Remotion project shares this repo but is build-time only — keep Metro from
 // crawling or resolving it. Anchored to this directory so node_modules/remotion
 // (which Remotion's own tooling needs) is untouched.
