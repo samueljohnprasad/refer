@@ -133,6 +133,15 @@
       "body_scan_pmr": "Escaneo corporal y relajación muscular progresiva",
       "mindful_breathing_1min": "Respiración consciente",
       "unknown": "Ejercicio"
+    },
+    "reframeLabels": {
+      "balancedThought": "Pensamiento equilibrado",
+      "balancedPerspective": "Perspectiva equilibrada",
+      "gratitudeReflection": "Reflexión de gratitud",
+      "moreBalancedThought": "Pensamiento más equilibrado",
+      "copingPlan": "Tu plan de afrontamiento",
+      "observedThought": "El pensamiento que observaste",
+      "default": "Tu reformulación"
     }
   },
   "flow": {

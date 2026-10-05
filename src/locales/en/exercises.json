@@ -133,6 +133,15 @@
       "body_scan_pmr": "Body Scan & PMR",
       "mindful_breathing_1min": "Mindful Breathing",
       "unknown": "Exercise"
+    },
+    "reframeLabels": {
+      "balancedThought": "Balanced thought",
+      "balancedPerspective": "Balanced perspective",
+      "gratitudeReflection": "Gratitude reflection",
+      "moreBalancedThought": "More balanced thought",
+      "copingPlan": "Your coping plan",
+      "observedThought": "The thought you observed",
+      "default": "Your reframe"
     }
   },
   "flow": {

@@ -133,6 +133,15 @@
       "body_scan_pmr": "身体扫描与渐进式肌肉放松",
       "mindful_breathing_1min": "正念呼吸",
       "unknown": "练习"
+    },
+    "reframeLabels": {
+      "balancedThought": "平衡的想法",
+      "balancedPerspective": "平衡的视角",
+      "gratitudeReflection": "感恩反思",
+      "moreBalancedThought": "更平衡的想法",
+      "copingPlan": "你的应对计划",
+      "observedThought": "你观察到的想法",
+      "default": "你的重新看法"
     }
   },
   "flow": {

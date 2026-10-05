@@ -133,6 +133,15 @@
       "body_scan_pmr": "Körperscan und progressive Muskelentspannung",
       "mindful_breathing_1min": "Achtsames Atmen",
       "unknown": "Übung"
+    },
+    "reframeLabels": {
+      "balancedThought": "Ausgewogener Gedanke",
+      "balancedPerspective": "Ausgewogene Perspektive",
+      "gratitudeReflection": "Dankbarkeitsreflexion",
+      "moreBalancedThought": "Ausgewogenerer Gedanke",
+      "copingPlan": "Dein Bewältigungsplan",
+      "observedThought": "Der beobachtete Gedanke",
+      "default": "Deine Neubewertung"
     }
   },
   "flow": {

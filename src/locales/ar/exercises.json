@@ -133,6 +133,15 @@
       "body_scan_pmr": "مسح الجسم واسترخاء العضلات التدريجي",
       "mindful_breathing_1min": "تنفّس بوعي",
       "unknown": "تمرين"
+    },
+    "reframeLabels": {
+      "balancedThought": "فكرة متوازنة",
+      "balancedPerspective": "منظور متوازن",
+      "gratitudeReflection": "تأمل الامتنان",
+      "moreBalancedThought": "فكرة أكثر توازنًا",
+      "copingPlan": "خطة المواجهة الخاصة بك",
+      "observedThought": "الفكرة التي لاحظتها",
+      "default": "إعادة صياغتك للفكرة"
     }
   },
   "flow": {

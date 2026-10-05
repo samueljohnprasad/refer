@@ -33,6 +33,28 @@ export interface UseExerciseAIReturn {
   readonly loadingMessage: string;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function normalizeSuggestions(items: unknown[]): AISuggestionItem[] {
+  return items.flatMap((item) => {
+    if (!isRecord(item)) return [];
+
+    const nestedText = isRecord(item.text) ? item.text : undefined;
+    const text = typeof item.text === 'string'
+      ? item.text
+      : typeof nestedText?.text === 'string' ? nestedText.text : undefined;
+    if (text === undefined) return [];
+
+    const emoji = typeof item.emoji === 'string'
+      ? item.emoji
+      : typeof nestedText?.emoji === 'string' ? nestedText.emoji : undefined;
+
+    return [{ ...item, text, ...(emoji === undefined ? {} : { emoji }) } as AISuggestionItem];
+  });
+}
+
 // ─── Hook ───────────────────────────────────────────────────────────────────
 
 export function useExerciseAI<T extends Record<string, any>>({
@@ -89,7 +111,7 @@ export function useExerciseAI<T extends Record<string, any>>({
         abortSignal: signal,
       });
 
-      return items as AISuggestionItem[];
+      return normalizeSuggestions(items);
     },
     enabled: !!aiConfig && !readOnly && !!prompt.trim(),
     staleTime: Infinity,

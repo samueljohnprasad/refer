@@ -6,6 +6,16 @@ import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import type { CopingCard } from "@/src/types/exerciseFlow";
 import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
 import { useTranslation } from "react-i18next";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+
+const REFRAME_LABEL_KEYS = {
+  thought_catcher: "copingCards.reframeLabels.balancedThought",
+  thought_reframing: "copingCards.reframeLabels.balancedPerspective",
+  gratitude_reframe: "copingCards.reframeLabels.gratitudeReflection",
+  abc_analysis: "copingCards.reframeLabels.moreBalancedThought",
+  decatastrophizing: "copingCards.reframeLabels.copingPlan",
+  detached_mindfulness: "copingCards.reframeLabels.observedThought",
+} as const;
 
 const EXERCISE_LABEL_KEYS = {
   thought_catcher: "copingCards.exerciseTypes.thought_catcher",
@@ -35,6 +45,7 @@ interface CopingCardItemProps {
 export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
   ({ card }) => {
     const { i18n, t } = useTranslation("exercises");
+    const translateCopy = useExerciseCopy();
     const [expanded, setExpanded] = useState(false);
     const [isTruncated, setIsTruncated] = useState(false);
     const exerciseLabelKey =
@@ -82,7 +93,11 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
         {/* Optional label if user assigned or exercise created one */}
         {card.reframe_label ? (
           <Text className="text-[13px] font-semibold text-sage-700 mb-2">
-            {card.reframe_label}
+            {t(
+              REFRAME_LABEL_KEYS[card.exercise_type as keyof typeof REFRAME_LABEL_KEYS]
+                ?? "copingCards.reframeLabels.default",
+              { defaultValue: translateCopy(card.reframe_label) },
+            )}
           </Text>
         ) : null}
 
