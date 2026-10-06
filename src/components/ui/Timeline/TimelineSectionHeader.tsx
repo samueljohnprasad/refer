@@ -1,133 +1,208 @@
-import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
 import { View, Text } from "react-native";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 
 interface TimelineSectionHeaderProps {
   readonly date: number;
-  readonly title?: string;
   readonly mode?: "days" | "weeks" | "months";
 }
 
-export const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = React.memo(({ date, title, mode = "days" }) => {
-    const { t } = useTranslation("common");
-    if (mode === "months" || mode === "weeks") {
-      // For weeks or months, render the provided title if available, otherwise fallback to standard text
-      // E.g., for Months: "July 2026". We might want to stack month and year similar to how "1 WED" is rendered.
-      if (mode === "months") {
-        const monthStr = dayjs(date).format("MMM").toUpperCase();
-        const yearStr = dayjs(date).format("YYYY");
-        return (
-          <View className="items-center px-2 py-1">
-            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#1A1A1A", fontSize: 13 }}>{monthStr}</Text>
-            <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#8E8E93", fontSize: 10, letterSpacing: 1.2 }}>{yearStr}</Text>
-          </View>
-        );
-      }
-      
-      // For weeks, display the date range and year cleanly
-      if (mode === "weeks" && title) {
-        // title is like "JUL 6-12, 2026" or "JUN 29 - JUL 5, 2026"
-        const parts = title.split(", ");
-        const dateRange = parts[0] || "";
-        const yearStr = parts[1] || "";
-        
-        if (dateRange.includes(" - ")) {
-          // Cross-month: "JUN 29 - JUL 5"
-          const [start, end] = dateRange.split(" - ");
-          return (
-            <View className="items-center px-2 py-1">
-              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#1A1A1A", fontSize: 10, textAlign: 'center' }}>{start}</Text>
-              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#1A1A1A", fontSize: 10, textAlign: 'center' }}>{end}</Text>
-              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#8E8E93", fontSize: 9, letterSpacing: 1.2, marginTop: 2 }}>{yearStr}</Text>
-            </View>
-          );
-        } else {
-          // Same-month: "JUN 22-28"
-          const spaceIdx = dateRange.indexOf(" ");
-          const month = dateRange.substring(0, spaceIdx);
-          const days = dateRange.substring(spaceIdx + 1);
-          return (
-            <View className="items-center px-2 py-1">
-              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#1A1A1A", fontSize: 11, textAlign: 'center' }}>{month}</Text>
-              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#1A1A1A", fontSize: 11, textAlign: 'center' }}>{days}</Text>
-              <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: "#8E8E93", fontSize: 9, letterSpacing: 1.2, marginTop: 2 }}>{yearStr}</Text>
-            </View>
-          );
-        }
-      }
-    }
+const MONTH_FORMAT: Intl.DateTimeFormatOptions = { month: "short" };
+const WEEK_DATE_FORMAT: Intl.DateTimeFormatOptions = {
+  month: "short",
+  day: "numeric",
+};
 
-    // Default "days" mode rendering
-    const isToday = dayjs(date).isSame(dayjs(), "day");
-    const isYesterday = dayjs(date).isSame(dayjs().subtract(1, "day"), "day");
+interface TimelineDateProps {
+  readonly date: Date;
+  readonly locale: string;
+  readonly todayLabel: string;
+  readonly yesterdayLabel: string;
+}
 
-    // ponytail: quiet group label as context not hero content
-    let prefix = null;
-    if (isToday) {
-      prefix = (
-        <Text
-          style={{
-            fontFamily: APP_FONT_FAMILIES.semiBold,
-            color: "#8E8E93",
-            fontSize: 10,
-            letterSpacing: 0.2,
-          }}
-        >
-          {t("timeline.todayLabel")}
-        </Text>
-      );
-    } else if (isYesterday) {
-      prefix = (
-        <Text
-          style={{
-            fontFamily: APP_FONT_FAMILIES.semiBold,
-            color: "#8E8E93",
-            fontSize: 10,
-            letterSpacing: 0.2,
-          }}
-        >
-          {t("timeline.yesterdayLabel")}
-        </Text>
-      );
-    } else {
-      const dayNum = dayjs(date).format("D");
-      const monthStr = dayjs(date).format("MMM").toUpperCase();
-      const yearStr = dayjs(date).format("YYYY");
-      prefix = (
-        <View className="items-center">
-          <Text
-            style={{
-              fontFamily: APP_FONT_FAMILIES.semiBold,
-              color: "#8E8E93",
-              fontSize: 10,
-            }}
-          >
-            {monthStr} {dayNum}
-          </Text>
-          <Text
-            style={{
-              fontFamily: APP_FONT_FAMILIES.regular,
-              color: "#AEAEB2",
-              fontSize: 9,
-              letterSpacing: 0.5,
-              marginTop: 1,
-            }}
-          >
-            {yearStr}
-          </Text>
-        </View>
-      );
-    }
+function formatMonth(date: Date, locale: string): string {
+  return new Intl.DateTimeFormat(locale, MONTH_FORMAT)
+    .format(date)
+    .toLocaleUpperCase(locale);
+}
 
+function formatYear(date: Date, locale: string): string {
+  return new Intl.NumberFormat(locale, { useGrouping: false }).format(
+    date.getFullYear(),
+  );
+}
+
+function formatDay(date: Date, locale: string): string {
+  return new Intl.NumberFormat(locale, { useGrouping: false }).format(
+    date.getDate(),
+  );
+}
+
+function isSameMonth(startDate: Date, endDate: Date): boolean {
+  return (
+    startDate.getMonth() === endDate.getMonth() &&
+    startDate.getFullYear() === endDate.getFullYear()
+  );
+}
+
+function formatWeekDate(date: Date, locale: string): string {
+  return new Intl.DateTimeFormat(locale, WEEK_DATE_FORMAT).format(date);
+}
+
+function getWeekDateLabels(startDate: Date, locale: string) {
+  const endDate = new Date(startDate);
+  endDate.setDate(endDate.getDate() + 6);
+
+  if (isSameMonth(startDate, endDate)) {
+    return {
+      first: formatMonth(startDate, locale),
+      second: `${formatDay(startDate, locale)}–${formatDay(endDate, locale)}`,
+      year: formatYear(startDate, locale),
+    };
+  }
+  return {
+    first: formatWeekDate(startDate, locale),
+    second: formatWeekDate(endDate, locale),
+    year: formatYear(startDate, locale),
+  };
+}
+
+function MonthTimelineDate({ date, locale }: TimelineDateProps) {
+  return (
+    <View className="w-full items-center py-1">
+      <Text
+        className="happy-font-body-semibold text-[13px] text-ink"
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
+      >
+        {formatMonth(date, locale)}
+      </Text>
+      <Text
+        className="happy-font-body-semibold mt-px text-[10px] tracking-[0.5px] text-ink-muted"
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
+      >
+        {formatYear(date, locale)}
+      </Text>
+    </View>
+  );
+}
+
+function WeekTimelineDate({ date, locale }: TimelineDateProps) {
+  const labels = getWeekDateLabels(date, locale);
+
+  return (
+    <View className="w-full items-center py-1">
+      <Text
+        className="happy-font-body-semibold text-center text-[10px] text-ink"
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
+      >
+        {labels.first}
+      </Text>
+      <Text
+        className="happy-font-body-semibold text-center text-[10px] text-ink"
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
+      >
+        {labels.second}
+      </Text>
+      <Text
+        className="happy-font-body-semibold mt-0.5 text-[9px] tracking-[0.5px] text-ink-muted"
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
+      >
+        {labels.year}
+      </Text>
+    </View>
+  );
+}
+
+function getRelativeDayLabel(
+  date: number,
+  todayLabel: string,
+  yesterdayLabel: string,
+): string | undefined {
+  const elapsedDays = dayjs().startOf("day").diff(dayjs(date).startOf("day"), "day");
+  return new Map([
+    [0, todayLabel],
+    [1, yesterdayLabel],
+  ]).get(elapsedDays);
+}
+
+function RelativeDayTimelineDate({ label }: { label: string }) {
+  return (
+    <View className="w-full items-center">
+      <Text className="happy-font-body-semibold text-[10px] tracking-[0.2px] text-ink-soft">
+        {label}
+      </Text>
+    </View>
+  );
+}
+
+function DayTimelineDate({ date, locale, todayLabel, yesterdayLabel }: TimelineDateProps) {
+  const relativeLabel = getRelativeDayLabel(
+    date.getTime(),
+    todayLabel,
+    yesterdayLabel,
+  );
+  if (relativeLabel) {
+    return <RelativeDayTimelineDate label={relativeLabel} />;
+  }
+
+  const dateLabel = new Intl.DateTimeFormat(locale, {
+    month: "short",
+    day: "numeric",
+  }).format(date);
+
+  return (
+    <View className="w-full items-center">
+      <Text
+        className="happy-font-body-semibold text-[10px] text-ink-soft"
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
+      >
+        {dateLabel}
+      </Text>
+      <Text
+        className="happy-font-body mt-px text-[9px] tracking-[0.5px] text-ink-muted"
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
+      >
+        {formatYear(date, locale)}
+      </Text>
+    </View>
+  );
+}
+
+const DATE_COMPONENTS = {
+  days: DayTimelineDate,
+  weeks: WeekTimelineDate,
+  months: MonthTimelineDate,
+} satisfies Record<NonNullable<TimelineSectionHeaderProps["mode"]>, React.FC<TimelineDateProps>>;
+
+export const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> =
+  React.memo(({ date, mode = "days" }) => {
+    const { t, i18n } = useTranslation("common");
+    const locale = i18n.language;
+    const sectionDate = new Date(date);
+    const DateComponent = DATE_COMPONENTS[mode];
     return (
-      <View className="items-center">
-        {prefix}
-      </View>
+      <DateComponent
+        date={sectionDate}
+        locale={locale}
+        todayLabel={t("timeline.todayLabel")}
+        yesterdayLabel={t("timeline.yesterdayLabel")}
+      />
     );
-});
+  });
 
 TimelineSectionHeader.displayName = "TimelineSectionHeader";

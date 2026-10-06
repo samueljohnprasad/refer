@@ -1,6 +1,5 @@
 import React from "react";
 import { Pressable, View, type DimensionValue } from "react-native";
-import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { Text } from "@/src/components/ui/Text";
 import MoodBadge from "@/src/components/MoodBadge";
@@ -29,12 +28,12 @@ export const CalendarDayCell = React.memo<CalendarDayCellProps>(({
   disabled = false,
   cellStyle,
 }) => {
-  const { t } = useTranslation("journal");
+  const { i18n, t } = useTranslation("journal");
   if (!inCurrentMonth) {
     return <View style={cellStyle} className="justify-center items-center p-0.5"><View className="w-full h-full" /></View>;
   }
 
-  const dayLabel = format(day, "d");
+  const dayLabel = new Intl.NumberFormat(i18n.language).format(day.getDate());
   const dateBgStyle = isSelected
     ? { backgroundColor: SEMANTIC_COLORS.selection.surface, borderColor: SEMANTIC_COLORS.selection.foreground, borderWidth: 1 }
     : isTodayDate

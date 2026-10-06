@@ -100,7 +100,6 @@ function TimelineInner<T extends TimelineItemData>({
                 {isFirstItemInSection && (
                   <TimelineSectionHeader
                     date={section.date}
-                    title={section.title}
                     mode={mode}
                   />
                 )}
