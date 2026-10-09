@@ -61,7 +61,7 @@
   "checklist": { "title": "Per iniziare", "dismiss": "Chiudi la lista", "incomplete": "Da fare", "completed": "Completato", "complete": "{{completed}}/{{total}} completati", "earnXp": "Ottieni {{count}} XP", "items": { "first_mood": "Registra il tuo primo stato d’animo", "first_journal": "Scrivi la tua prima voce di diario", "first_cbt": "Prova un esercizio di CBT", "setup_reminders": "Imposta promemoria giornalieri", "first_habit": "Crea la tua prima abitudine" } },
   "mascot_greeting": {
     "label": "La tua guida",
-    "hi": "Ciao, sono Mochi.",
+    "hi": "Ciao, sono Happi.",
     "intro": "Sono un panda. Sono dolce e paziente. Sarò al tuo fianco in questo percorso. Prima della tua prima lezione, rispondi a",
     "questions_count": "6 brevi domande",
     "before_lesson": ".",

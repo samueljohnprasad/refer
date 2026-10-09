@@ -61,7 +61,7 @@
   "checklist": { "title": "开始使用", "dismiss": "关闭清单", "incomplete": "未完成", "completed": "已完成", "complete": "已完成 {{completed}}/{{total}} 项", "earnXp": "赚取 {{count}} XP", "items": { "first_mood": "记录首次心情", "first_journal": "写下第一篇日记", "first_cbt": "尝试一次 CBT 练习", "setup_reminders": "设置每日提醒", "first_habit": "创建第一个习惯" } },
   "mascot_greeting": {
     "label": "你的指引者",
-    "hi": "嗨，我是Mochi。",
+    "hi": "嗨，我是 Happi。",
     "intro": "我是只温柔又有耐心的熊猫。第一课之前，请先回答",
     "questions_count": "6 个简单问题",
     "before_lesson": "。我会陪你一起开始。",

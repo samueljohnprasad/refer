@@ -1,7 +1,7 @@
 {
   "name": "happy",
   "main": "expo-router/entry",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
@@ -117,6 +117,7 @@
     "expo-symbols": "~56.0.6",
     "expo-system-ui": "~56.0.5",
     "expo-updates": "~56.0.23",
+    "expo-video": "~56.1.4",
     "expo-web-browser": "~56.0.5",
     "fix": "^0.0.6",
     "heroui-native": "^1.0.6",

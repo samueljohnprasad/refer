@@ -2,6 +2,7 @@ const appConfig = require("./app.json");
 
 module.exports = () => ({
   ...appConfig.expo,
+  plugins: [...(appConfig.expo.plugins || []), "expo-video"],
   extra: {
     ...appConfig.expo.extra,
     posthogProjectToken:

@@ -77,7 +77,7 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = React.memo(
             />
           </Animated.View>
 
-          {/* Center Stage: Grounded Mochi mascot with breathing presence */}
+          {/* Center Stage: Grounded Happi mascot with breathing presence */}
           <Animated.View
             entering={FadeInDown.duration(220).delay(60).reduceMotion(ReduceMotion.System)}
             className="items-center justify-center my-auto py-2"

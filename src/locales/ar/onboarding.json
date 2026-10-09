@@ -46,7 +46,7 @@
   "checklist": { "title": "البداية", "dismiss": "إغلاق القائمة", "incomplete": "غير مكتمل", "completed": "مكتمل", "complete": "اكتمل {{completed}} من {{total}}", "earnXp": "اكسب {{count}} XP", "items": { "first_mood": "سجّل مزاجك لأول مرة", "first_journal": "اكتب أول تدوينة في يومياتك", "first_cbt": "جرّب تمرينًا من العلاج المعرفي السلوكي", "setup_reminders": "أعدّ التذكيرات اليومية", "first_habit": "أنشئ عادتك الأولى" } },
   "mascot_greeting": {
     "label": "مرشدك",
-    "hi": "أهلاً، أنا Mochi.",
+    "hi": "أهلاً، أنا Happi.",
     "intro": "أنا باندا. هادئ وصبور، وسأكون رفيقك في هذه الرحلة. فقط",
     "questions_count": "٦ أسئلة سريعة",
     "before_lesson": "قبل درسك الأول.",

@@ -125,7 +125,7 @@ export interface FeelingOption {
   label: string;
 }
 
-export type MochiExpression =
+export type HappiExpression =
   | "happy"
   | "waving"
   | "concentrating"

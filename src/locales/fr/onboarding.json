@@ -46,7 +46,7 @@
   "checklist": { "title": "Pour commencer", "dismiss": "Fermer la liste", "incomplete": "À faire", "completed": "Terminé", "complete": "{{completed}}/{{total}} terminé(s)", "earnXp": "Gagnez {{count}} XP", "items": { "first_mood": "Noter votre première humeur", "first_journal": "Écrire votre première entrée de journal", "first_cbt": "Essayer un exercice de TCC", "setup_reminders": "Configurer les rappels quotidiens", "first_habit": "Créer votre première habitude" } },
   "mascot_greeting": {
     "label": "Ton guide",
-    "hi": "Salut, je suis Mochi.",
+    "hi": "Salut, je suis Happi.",
     "intro": "Je suis un panda. Je suis doux. Je suis patient. Je serai ton compagnon tout au long de ce voyage, juste",
     "questions_count": "6 petites questions",
     "before_lesson": "avant ta première leçon.",

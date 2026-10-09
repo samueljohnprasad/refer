@@ -7,7 +7,7 @@ import { DividerCell } from "./DividerCell";
 import { JourneyNodeCell } from "./JourneyNodeCell";
 import { MascotCell } from "./MascotCell";
 import JourneyLoadingSkeleton from "./JourneyLoadingSkeleton";
-import MochiMascot from "@/src/screens/OnboardingScreen/components/MochiMascot";
+import HappiMascot from "@/src/screens/OnboardingScreen/components/HappiMascot";
 import type { JourneyFlashListItem, PathNodeData } from "@/src/types/journey";
 
 export const ESTIMATED_ITEM_SIZE = 120;
@@ -81,7 +81,7 @@ export function JourneyMapEmptyState(): React.JSX.Element {
   const { t } = useTranslation("journeys");
   return (
     <View className="flex-1 items-center justify-center px-8 pb-16">
-      <MochiMascot expression="concentrating" size={100} delay={0} />
+      <HappiMascot expression="concentrating" size={100} delay={0} />
       <Text
         style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
         className="mt-5 text-center text-[24px] leading-tight text-ink"

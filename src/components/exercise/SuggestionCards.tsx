@@ -5,10 +5,29 @@ import { Text } from "@/src/components/ui/Text";
 import { Skeleton } from "@/src/components/ui/Skeleton";
 import { Feather } from "@expo/vector-icons";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
+import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 
 export interface SuggestionItem {
   label: string;
   emoji?: string;
+}
+
+function readSuggestionText(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (value && typeof value === "object" && "text" in value) {
+    const text = (value as { text?: unknown }).text;
+    return typeof text === "string" ? text : "";
+  }
+  return "";
+}
+
+function readSuggestionEmoji(value: unknown): string | undefined {
+  if (typeof value === "string") return value;
+  if (value && typeof value === "object" && "emoji" in value) {
+    const emoji = (value as { emoji?: unknown }).emoji;
+    return typeof emoji === "string" ? emoji : undefined;
+  }
+  return undefined;
 }
 
 export function SuggestionCards({
@@ -32,11 +51,12 @@ export function SuggestionCards({
   loadingMessage?: string;
   readOnly?: boolean;
 }) {
+  const translateCopy = useExerciseCopy();
   const { width } = useWindowDimensions();
   const isCompact = width < 390;
   const visibleActionLabel = isCompact
-    ? actionLabel.split(" ")[0]
-    : actionLabel;
+    ? translateCopy(actionLabel).split(" ")[0]
+    : translateCopy(actionLabel);
 
   if (isLoading) {
     return (
@@ -76,30 +96,34 @@ export function SuggestionCards({
         </Text>
       ) : null}
       {suggestions.map((s, index: number) => {
+        const label = readSuggestionText(s.label);
+        if (!label) return null;
+
+        const emoji = readSuggestionEmoji(s.emoji) ?? readSuggestionEmoji(s.label);
         const isSelected = Array.isArray(currentValue)
-          ? currentValue.includes(s.label)
-          : currentValue === s.label;
+          ? currentValue.includes(label)
+          : currentValue === label;
         return (
           <Pressable
-            key={`${s.label || ""}-${index}`}
+            key={`${label}-${index}`}
             onPress={
               readOnly
                 ? undefined
                 : () => {
                     triggerSelectionHaptic();
-                    onSelect(s.label);
+                    onSelect(label);
                   }
             }
             accessibilityRole="button"
-            accessibilityLabel={`${actionLabel}: ${s.label}`}
+            accessibilityLabel={`${actionLabel}: ${label}`}
             accessibilityState={{ selected: isSelected }}
             className={`flex-row items-start py-3.5 border-t ${
               isSelected ? "border-sage-300" : "border-sage-100/70"
             } active:opacity-70`}
             style={{ minHeight: 48 }}
           >
-            {s.emoji && (
-              <Text className="text-[17px] mr-3 mt-[1px]">{s.emoji}</Text>
+            {emoji && (
+              <Text className="text-[17px] mr-3 mt-[1px]">{emoji}</Text>
             )}
             <Text
               className="text-[14.5px] flex-1 leading-relaxed pr-3"
@@ -108,7 +132,7 @@ export function SuggestionCards({
                 fontWeight: isSelected ? "500" : "400",
               }}
             >
-              {s.label}
+              {label}
             </Text>
             {isSelected ? (
               <View className="mt-0.5">

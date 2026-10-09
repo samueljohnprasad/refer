@@ -4,7 +4,7 @@ import { Text, View, ScrollView, Pressable } from 'react-native';
 import { BlurView } from 'expo-blur';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
-import MochiMascot from '../components/MochiMascot';
+import HappiMascot from '../components/HappiMascot';
 import PricingTierCard from '../components/PricingTierCard';
 import TactileButton from '../components/TactileButton';
 import DiscountInterceptModal from '../components/DiscountInterceptModal';
@@ -57,7 +57,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
               {t('paywall.appOfTheDay')}
             </Text>
           </View>
-          <MochiMascot expression="happy" size={84} delay={200} />
+          <HappiMascot expression="happy" size={84} delay={200} />
           <Text
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="mt-3 text-center text-[26px] leading-[1.15] tracking-[-0.02em] text-ink"

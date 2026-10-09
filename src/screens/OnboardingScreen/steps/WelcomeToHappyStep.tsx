@@ -7,7 +7,7 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Book01Icon, LockIcon, FireIcon } from "@hugeicons/core-free-icons";
 import { Card } from "@/src/components/ui/Card";
-import MochiMascot from "../components/MochiMascot";
+import HappiMascot from "../components/HappiMascot";
 import { DailyGoalMinutes } from "../types";
 import { useTranslation } from "react-i18next";
 
@@ -59,7 +59,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
 
       {/* Mascot Hero */}
       <View className="items-center">
-        <MochiMascot expression="peaceful" size={82} delay={40} />
+        <HappiMascot expression="peaceful" size={82} delay={40} />
       </View>
 
       {/* Header Copy */}

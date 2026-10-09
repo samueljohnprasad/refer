@@ -125,7 +125,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
         validate: (r) => r.situation.trim().length >= 5,
         ai: {
           promptBuilder: (r, context) =>
-            `You are a CBT therapist assistant. Generate 3 common, relatable everyday situations for the first step of a CBT thought record. Each item must be an observable fact a camera could capture or a calendar/message log could verify. Do NOT include emotions, interpretations, predictions, or phrases like "I feel", "I'm scared", "bad day", "they dislike me", or "this will go wrong". Keep each item brief, realistic, and in the first person.\n\nGood examples:\n- "I have a doctor appointment at 3 PM."\n- "I sent a message and have not received a reply yet."\n- "My manager gave me feedback this morning."\n\nRandom seed: ${getSeed(context)}`,
+            `You are a CBT therapist assistant. Generate 3 common, relatable everyday situations for the first step of a CBT thought record. Each item must be an observable fact a camera could capture or a calendar/message log could verify. Do NOT include emotions, interpretations, predictions, or phrases like "I feel", "I'm scared", "bad day", "they dislike me", or "this will go wrong". Keep each item brief, realistic, and in the first person. Generate fresh examples; do not copy sample sentences from these instructions.\n\nRandom seed: ${getSeed(context)}`,
           responseSchema: {
             type: "array",
             items: {

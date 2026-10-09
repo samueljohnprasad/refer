@@ -5,7 +5,7 @@ import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
-import MochiMascot from "../components/MochiMascot";
+import HappiMascot from "../components/HappiMascot";
 import { DailyGoalMinutes, StressTiming } from "../types";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Mail01Icon } from "@hugeicons/core-free-icons";
@@ -272,7 +272,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
           gap: 12,
         }}
       >
-        <MochiMascot expression="notes" size={54} animate={false} />
+        <HappiMascot expression="notes" size={54} animate={false} />
         <Text
           style={{
             flex: 1,

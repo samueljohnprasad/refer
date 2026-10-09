@@ -61,7 +61,7 @@
   "checklist": { "title": "Primeiros passos", "dismiss": "Fechar lista", "incomplete": "Por fazer", "completed": "Concluído", "complete": "{{completed}}/{{total}} concluídos", "earnXp": "Ganha {{count}} XP", "items": { "first_mood": "Regista o teu primeiro estado de espírito", "first_journal": "Escreve a tua primeira entrada no diário", "first_cbt": "Experimenta um exercício de TCC", "setup_reminders": "Configura lembretes diários", "first_habit": "Cria o teu primeiro hábito" } },
   "mascot_greeting": {
     "label": "O seu guia",
-    "hi": "Olá, sou o Mochi.",
+    "hi": "Olá, sou o Happi.",
     "intro": "Sou um panda gentil e paciente. Vou acompanhar o seu percurso. Antes da primeira lição, responda a",
     "questions_count": "6 perguntas rápidas",
     "before_lesson": ".",

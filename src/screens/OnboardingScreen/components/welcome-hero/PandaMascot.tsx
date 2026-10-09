@@ -1,6 +1,6 @@
 // ponytail: animated panda mascot with breathing loop, squash/stretch, and floating heart without ground shadow
 import React from "react";
-import { Image } from "react-native";
+import { VideoView, useVideoPlayer } from "expo-video";
 import Animated, {
   SharedValue,
   useAnimatedStyle,
@@ -16,6 +16,11 @@ interface PandaMascotProps {
 }
 
 export function PandaMascot({ frame, scale }: PandaMascotProps): React.JSX.Element {
+  const player = useVideoPlayer(require("@/assets/video/panda-explorer.mp4"), (videoPlayer) => {
+    videoPlayer.loop = true;
+    videoPlayer.muted = true;
+    videoPlayer.play();
+  });
   const pandaWidth: number = PANDA.width * scale;
   const pandaLeft: number = PANDA.left * scale;
   const pandaTop: number = PANDA.top * scale;
@@ -104,10 +109,16 @@ export function PandaMascot({ frame, scale }: PandaMascotProps): React.JSX.Eleme
           pandaStyle,
         ]}
       >
-        <Image
-          source={require("@/assets/images/panda/panda-happy.png")}
+        <VideoView
+          player={player}
           style={{ width: pandaWidth, height: pandaWidth }}
-          resizeMode="contain"
+          contentFit="contain"
+          nativeControls={false}
+          allowsFullscreen={false}
+          allowsPictureInPicture={false}
+          accessible
+          accessibilityLabel="Happi the panda exploring the journey"
+          pointerEvents="none"
         />
       </Animated.View>
     </>

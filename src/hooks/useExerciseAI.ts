@@ -86,7 +86,13 @@ export function useExerciseAI<T extends Record<string, any>>({
     if (!aiConfig || readOnly) return '';
     try {
       const builtPrompt = aiConfig.promptBuilder(response, { seed: sessionSeedRef.current });
-      return `${builtPrompt}\n\nWrite all user-facing suggestion text in ${responseLanguage}. Keep the required structured response format.`;
+      const languageRule = [
+        `OUTPUT LANGUAGE REQUIREMENT: Write every user-facing string in ${responseLanguage}.`,
+        `The prompt below may be written in English and may contain English examples; those are instructions only. Do not copy or return them in English.`,
+        `All suggestion text must sound natural in ${responseLanguage}. English user-facing text is invalid unless it is a proper name.`,
+        "Keep the required structured response format and return only the requested structured data.",
+      ].join(" ");
+      return `${languageRule}\n\n${builtPrompt}\n\nReminder: every user-facing string in the structured response must be in ${responseLanguage}.`;
     } catch (e) {
       console.warn("Exercise AI prompt builder failed:", e);
       return '';

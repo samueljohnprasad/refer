@@ -8,8 +8,8 @@
 - **Secondary Category:** Lifestyle / Medical
 - **Platform:** iOS (iOS 26+ target architecture)
 - **Price Model:** Freemium (Free core exercises + Premium subscription)
-- **Launch Date:** Active / Current Version 1.5.0
-- **Current Version:** 1.5.0
+- **Launch Date:** Active
+- **Current Version:** 1.5.3
 
 ## Value Proposition
 - **Problem:** Millions struggle with anxiety, overwhelming thoughts, and negative mental loops, but traditional CBT worksheets feel dry, clinical, and difficult to stick to. Most mood apps only log raw numbers without teaching therapeutic skills or uncovering long-term patterns.
@@ -19,7 +19,7 @@
   2. **Multi-Timeframe Insights Engine:** Daily timeline breakdowns, Weekly mood trends, Monthly emotional pattern detection, and Yearly mental wellness rewind.
   3. **Multimodal Voice & Photo Journaling:** AI voice-to-reflection synthesis (Gemini 2.5 Flash STT) + photo OCR of handwritten journal notes.
   4. **Holistic Habit & Lifestyle Tracking:** Correlates daily mental states with nutrition, habits, and coping mechanisms.
-- **Elevator Pitch:** Happy turns Cognitive Behavioral Therapy (CBT) and mindful journaling into gamified learning journeys and life-changing daily, weekly, monthly, and yearly emotional insights.
+- **Elevator Pitch:** Happy turns practical CBT journaling into short, guided journeys for working with anxious thoughts and building a steadier daily practice.
 
 ## Competitors
 | App | App ID | Strengths | Weaknesses |
@@ -31,22 +31,21 @@
 | Fabulous: Daily Habit Tracker | 1203637303 | Strong journey-based coaching | Overwhelming notifications, heavy paywall pressure, not CBT-focused |
 
 ## Current ASO State
-- **Title:** Happy: CBT Courses & Journey (28/30 chars)
+- **Title:** Happy: CBT Journal & Courses (28/30 chars)
 - **Subtitle:** Gamified Mental Health & Mood (29/30 chars)
-- **Keyword Field (100/100 chars, 0 duplicate words):**
-  `therapy,anxiety,relief,journal,depression,stress,selfcare,mindfulness,panic,overthinking,diary,sleep`
-- **Promotional Text (160/170 chars):**
-  `Level up your mental wellness. Happy turns CBT into gamified learning journeys with interactive chapter maps, 5-minute courses, and rewarding daily reflections.`
-- **Rating:** 4.8 / 5.0 target benchmark
-- **Primary Indexed Combos:** gamified mental health, cbt courses, mental health journey, cbt journey, gamified cbt, anxiety courses, depression journey, mood diary, therapy journal, panic relief
+- **Keyword Field:** Version-scoped metadata is current through 1.5.2; the 1.5.3 package is staged locally.
+- **Ratings and Keyword Rankings:** Not verified in this repository. Do not present targets as live performance.
+- **Primary Search Intent:** CBT journaling, anxiety tools, thought reframing, voice journaling, mood insights.
 
 ## Goals & KPIs
-1. **ASO Visibility:** Rank in top 3 for "CBT courses", "mental health journey", "CBT journal", "mood insights", and "gamified mood tracker".
-2. **Conversion Rate (CVR):** Reach >8.5% tap-to-install from App Store search impressions through gamified course & multi-timeframe analytics screenshot storytelling.
-3. **Retention & Engagement:** Maintain 45%+ Day-7 and 25%+ Day-30 retention driven by structured course milestones, weekly review digests, and panda celebration rewards.
+1. **Qualified downloads:** Increase App Store search impressions, product-page conversion, and installs for CBT and anxiety-management intent.
+2. **Subscriptions:** Increase first paywall view, trial start, trial-to-paid, and annual-plan selection without lowering early activation.
+3. **Activation and retention:** Protect onboarding completion, first exercise completion, Day-1 return, Day-7 return, and paid retention while optimizing acquisition.
+
+Record current baselines before setting targets. The repository does not contain verified ranking, rating, or conversion data.
 
 ## Resources & Constraints
-- **Budget:** Organic ASO + micro Apple Search Ads (ASA) campaigns.
+- **Budget:** Organic ASO plus small Apple Search Ads campaigns.
 - **Team:** Agile product & engineering team.
 - **Stack:** Expo / React Native, Supabase, Gemini 2.5 Flash STT, NativeWind.
 - **Design Language:** Physical 3D buttons, Nunito typography, cheerful panda mascot, zero decorative UI slop.
@@ -55,6 +54,12 @@
 - **Primary:** United States (US), Canada (CA), United Kingdom (GB), Australia (AU)
 - **Secondary (Metadata Live / Staged):** Germany (DE), France (FR), Japan (JA), South Korea (KO)
 - **Languages:** English (US, GB, CA, AU), French (FR, CA), German (DE), Japanese (JA), Korean (KO), Spanish (MX multiplier)
+
+## Marketing Claim Rules
+
+- Promote only capabilities that are available in the released build.
+- Do not use outcome statistics, awards, expert endorsements, encryption guarantees, or refund promises without current evidence and owner approval.
+- Keep health-language educational and supportive. Happy helps people practice CBT tools; it does not diagnose, replace professional care, or promise clinical outcomes.
 
 ## 10-Slot Storyboard Summary
 

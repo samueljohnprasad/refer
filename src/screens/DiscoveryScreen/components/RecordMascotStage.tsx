@@ -40,7 +40,7 @@ export const RecordMascotStage = React.memo(() => {
     <View className="items-center justify-center" pointerEvents="none">
       <Animated.View style={animatedStyle} className="items-center">
         <Mascot state="panda-notes" size={135} />
-        {/* ponytail: grounding contact shadow gives Mochi physical presence on canvas */}
+        {/* ponytail: grounding contact shadow gives Happi physical presence on canvas */}
         <View className="w-20 h-2.5 rounded-full bg-black/[0.06] mt-0.5" />
       </Animated.View>
     </View>

@@ -9,10 +9,10 @@ import Animated, {
   withTiming, 
   Easing 
 } from "react-native-reanimated";
-import { MochiExpression } from "../types";
+import { HappiExpression } from "../types";
 
 /* eslint-disable @typescript-eslint/no-require-imports */
-const MASCOT_IMAGES: Record<MochiExpression, ImageSourcePropType> = {
+const MASCOT_IMAGES: Record<HappiExpression, ImageSourcePropType> = {
   happy: require("@/assets/images/panda/panda-happy.png"),
   waving: require("@/assets/images/panda-hi.png"),
   concentrating: require("@/assets/images/panda/panda-confused-thinking.png"),
@@ -21,14 +21,14 @@ const MASCOT_IMAGES: Record<MochiExpression, ImageSourcePropType> = {
   notes: require("@/assets/images/panda/panda-notes.png"),
 };
 
-interface MochiMascotProps {
-  expression: MochiExpression;
+interface HappiMascotProps {
+  expression: HappiExpression;
   size?: number;
   animate?: boolean;
   delay?: number;
 }
 
-const MochiMascot: React.FC<MochiMascotProps> = ({
+const HappiMascot: React.FC<HappiMascotProps> = ({
   expression,
   size = 140,
   animate = true,
@@ -61,7 +61,7 @@ const MochiMascot: React.FC<MochiMascotProps> = ({
     >
       <Image
         accessible={true}
-        accessibilityLabel={`Mochi the panda ${expression}`}
+        accessibilityLabel={`Happi the panda ${expression}`}
         source={MASCOT_IMAGES[expression]}
         style={{ width: size * 0.9, height: size * 0.9 }}
         resizeMode="contain"
@@ -70,4 +70,4 @@ const MochiMascot: React.FC<MochiMascotProps> = ({
   );
 };
 
-export default React.memo(MochiMascot);
+export default React.memo(HappiMascot);

@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
-import MochiMascot from "../components/MochiMascot";
+import HappiMascot from "../components/HappiMascot";
 import SpeechBubble from "../components/SpeechBubble";
 import { useTranslation } from "react-i18next";
 
@@ -25,7 +25,7 @@ const MascotGreetingStep: React.FC = () => {
     >
       <View className="flex-1 justify-between py-6">
         <View className="items-center justify-center pt-4">
-          <MochiMascot
+          <HappiMascot
             expression="waving"
             size={160}
             delay={MASCOT_ENTER_DELAY_MS}

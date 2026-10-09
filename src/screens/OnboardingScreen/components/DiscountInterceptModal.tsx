@@ -3,7 +3,7 @@ import React from "react";
 import { Text, View, Modal, Pressable } from "react-native";
 import Animated, { FadeIn, SlideInDown } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import MochiMascot from "./MochiMascot";
+import HappiMascot from "./HappiMascot";
 import TactileButton from "./TactileButton";
 import { useTranslation } from "react-i18next";
 
@@ -32,7 +32,7 @@ const DiscountInterceptModal: React.FC<DiscountInterceptModalProps> = ({
           className="w-full rounded-t-3xl bg-cream px-6 pb-10 pt-6"
         >
           <View className="items-center">
-            <MochiMascot expression="happy" size={80} animate={false} />
+            <HappiMascot expression="happy" size={80} animate={false} />
             <Text
               style={{ fontFamily: APP_FONT_FAMILIES.bold }}
               className="mt-2 text-xs font-bold uppercase tracking-widest text-sage-500"

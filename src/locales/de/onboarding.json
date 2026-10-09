@@ -46,7 +46,7 @@
   "checklist": { "title": "Erste Schritte", "dismiss": "Checkliste schließen", "incomplete": "Offen", "completed": "Erledigt", "complete": "{{completed}}/{{total}} erledigt", "earnXp": "Verdiene {{count}} XP", "items": { "first_mood": "Erfasse deine erste Stimmung", "first_journal": "Schreibe deinen ersten Tagebucheintrag", "first_cbt": "Probiere eine CBT-Übung aus", "setup_reminders": "Richte tägliche Erinnerungen ein", "first_habit": "Erstelle deine erste Gewohnheit" } },
   "mascot_greeting": {
     "label": "Dein Begleiter",
-    "hi": "Hallo, ich bin Mochi.",
+    "hi": "Hallo, ich bin Happi.",
     "intro": "Ich bin ein Panda. Ich bin sanft. Ich bin geduldig. Ich begleite dich auf dieser Reise – nur",
     "questions_count": "6 kurze Fragen",
     "before_lesson": "vor deiner ersten Lektion.",

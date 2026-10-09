@@ -11,7 +11,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { SymbolView } from "expo-symbols";
 import { Feather } from "@expo/vector-icons";
-import MochiMascot from "../components/MochiMascot";
+import HappiMascot from "../components/HappiMascot";
 import LoadingTaskRow from "../components/LoadingTaskRow";
 import { useAutoAdvance } from "../hooks/useAutoAdvance";
 import { getBuildingJourneyConfig } from "../config/buildingJourneyConfig";
@@ -77,7 +77,7 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
 
   return (
     <View className="flex-1 items-center justify-center px-6">
-      <MochiMascot
+      <HappiMascot
         expression={allComplete ? "celebrating" : "concentrating"}
         size={150}
         delay={0}

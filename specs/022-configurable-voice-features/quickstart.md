@@ -8,7 +8,7 @@
 - **Preconditions**: In `src/constants/voice.ts`, set `ENABLE_VOICE = false`.
 - **Steps**:
   1. Launch app and navigate to Discovery tab.
-  2. Observe the capture action cluster beneath Mochi.
+  2. Observe the capture action cluster beneath Happi.
 - **Expected Outcome**:
   - The green round microphone button is absent.
   - The Text button is rendered as the primary capture action (or secondary beside Photo).

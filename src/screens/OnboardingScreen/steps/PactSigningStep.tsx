@@ -8,7 +8,7 @@ import { Text } from "@/src/components/ui/Text";
 import Animated, { FadeIn, useAnimatedStyle } from "react-native-reanimated";
 import { SymbolView } from "expo-symbols";
 import { AnimatedFireIcon } from "@/src/components/ui/AnimatedStatIcon";
-import MochiMascot from "../components/MochiMascot";
+import HappiMascot from "../components/HappiMascot";
 import { useHoldToCommit } from "../hooks/useHoldToCommit";
 import { DailyGoalMinutes } from "../types";
 import { useTranslation } from "react-i18next";
@@ -57,7 +57,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
     >
       {/* Top Hero Section */}
       <View className="items-center pt-1">
-        <MochiMascot expression="notes" size={100} delay={0} />
+        <HappiMascot expression="notes" size={100} delay={0} />
 
         <Animated.View entering={FadeIn.duration(180).delay(40)} className="mt-2 items-center">
           <Text
