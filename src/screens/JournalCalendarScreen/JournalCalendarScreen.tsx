@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useCallback, useState } from "react";
-import { View, Text, ScrollView, Pressable } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
@@ -20,43 +20,11 @@ import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { ContinueJourneyCard } from "@/src/components/ContinueJourneyCard/ContinueJourneyCard";
 import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
+import { HomeHeader } from "./components/HomeHeader";
 
 
 // Re-export for backward compat from other files that import from here.
 export { PALETTE } from "@/constants/palette";
-
-const getGreetingKey = (
-  hour: number,
-): "morning" | "afternoon" | "evening" | "windDown" => {
-  if (hour >= 4 && hour < 12) return "morning";
-  if (hour >= 12 && hour < 17) return "afternoon";
-  if (hour >= 17 && hour < 22) return "evening";
-  return "windDown";
-};
-
-// ponytail: unconstrained full-width localized greeting
-const Greeting = React.memo<{
-  displayName?: string;
-  isLoading: boolean;
-}>(({ displayName, isLoading }) => {
-  const { t } = useTranslation("home");
-  const greetingKey = useMemo(() => getGreetingKey(new Date().getHours()), []);
-  const greeting = t(`greeting.${greetingKey}`);
-  const fallbackName = t("greeting.fallbackName");
-
-  return (
-    <View className="w-full">
-      <Text
-        className="text-[24px] font-bold tracking-tight text-ink"
-        style={{ color: SEMANTIC_COLORS.text.primary }}
-        numberOfLines={1}
-        adjustsFontSizeToFit
-      >
-        {greeting}, {isLoading ? "..." : displayName || fallbackName}
-      </Text>
-    </View>
-  );
-});
 
 export default function JournalCalendarScreen() {
   const { t: tHome } = useTranslation("home");
@@ -189,9 +157,11 @@ export default function JournalCalendarScreen() {
       >
         <View className="px-5 pb-12 pt-4">
           <View>
-            <Greeting
+            <HomeHeader
               displayName={userProfile?.displayName}
               isLoading={isLoadingProfile}
+              streak={currentStreak}
+              onStreakPress={() => setShowStreakModal(true)}
             />
           </View>
 
