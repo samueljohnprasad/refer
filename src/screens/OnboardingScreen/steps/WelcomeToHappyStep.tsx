@@ -4,7 +4,7 @@ import React from "react";
 import { Text, View, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, { FadeIn } from "react-native-reanimated";
-import HappiMascot from "../components/HappiMascot";
+import OnboardingPandaAnimation from "../components/OnboardingPandaAnimation";
 import OnboardingHandoffSummary from "../components/OnboardingHandoffSummary";
 import { DailyGoalMinutes } from "../types";
 import { useTranslation } from "react-i18next";
@@ -36,7 +36,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
       className="flex-1 px-6"
     >
       <Animated.View entering={FadeIn.duration(200).delay(40)} className="items-center">
-        <HappiMascot expression="peaceful" size={88} delay={40} />
+        <OnboardingPandaAnimation size={112} delay={40} />
         <View className="mt-2 items-center">
           <Text
             style={{ fontFamily: APP_FONT_FAMILIES.bold }}

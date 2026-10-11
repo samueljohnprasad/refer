@@ -101,7 +101,7 @@ export default function ExercisesScreen(): ReactElement {
           style={{ flex: 1, backgroundColor: "#FFFFFF" }}
           contentInsetAdjustmentBehavior="automatic"
           scrollEventThrottle={16}
-          contentContainerStyle={{ paddingTop: headerHeight - insets.top + 16, paddingBottom: 220, paddingHorizontal: 20 }}
+          contentContainerStyle={{ paddingTop: headerHeight - insets.top + 16, paddingBottom: 260, paddingHorizontal: 20 }}
           showsVerticalScrollIndicator={false}
         >
           {recommendation && getExerciseConfig(recommendation.exerciseType) ? null : null}

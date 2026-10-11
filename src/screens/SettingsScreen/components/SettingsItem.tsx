@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Feather } from "@expo/vector-icons";
+import { SymbolView } from "expo-symbols";
 import * as Haptics from "expo-haptics";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
@@ -29,12 +29,13 @@ export const SettingsItem: React.FC<SettingsItemProps> = ({
     onPress();
   };
 
-  const iconColor = danger ? "#EF4444" : String(SEMANTIC_COLORS.text.primary ?? "#243323");
+  const iconColor = danger
+    ? "#EF4444"
+    : String(SEMANTIC_COLORS.brand.pressed);
 
   return (
-    // ponytail: standard 70pt list-row with quiet disclosure chevron and inset divider
     <Pressable
-      className="active:bg-black/[0.03] dark:active:bg-white/[0.05] min-h-[70px] flex-row items-center px-4"
+      className="min-h-[64px] flex-row items-center px-1 active:bg-sage-50/70"
       onPress={handlePress}
       accessibilityRole="button"
       accessibilityLabel={subtitle ? `${title}. ${subtitle}` : title}
@@ -48,8 +49,8 @@ export const SettingsItem: React.FC<SettingsItemProps> = ({
         />
       </View>
       <View
-        className={`flex-1 flex-row items-center py-3.5 pr-1 min-h-[70px] ${
-          !isLast ? "border-b border-black/[0.04] dark:border-white/[0.06]" : ""
+        className={`min-h-[64px] flex-1 flex-row items-center py-3 pr-1 ${
+          !isLast ? "border-b border-sage-100" : ""
         }`}
       >
         <View className="flex-1 justify-center pr-2">
@@ -61,13 +62,20 @@ export const SettingsItem: React.FC<SettingsItemProps> = ({
             {title}
           </Text>
           {subtitle && (
-            <Text className="text-[14px] text-ink-muted mt-0.5 leading-snug">
+            <Text className="mt-0.5 text-[14px] leading-snug text-ink-soft">
               {subtitle}
             </Text>
           )}
         </View>
         {showArrow && !danger && (
-          <Feather name="chevron-right" size={16} color="#A1A1AA" />
+          <View className="h-11 w-11 items-end justify-center">
+            <SymbolView
+              name="chevron.right"
+              size={14}
+              tintColor={String(SEMANTIC_COLORS.brand.pressed)}
+              weight="semibold"
+            />
+          </View>
         )}
       </View>
     </Pressable>

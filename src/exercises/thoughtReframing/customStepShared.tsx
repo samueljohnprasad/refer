@@ -51,23 +51,6 @@ function StepTitle({ title, subtitle }: { title: string; subtitle: string }) {
   );
 }
 
-function InlineFactHint({ text }: { text: string }) {
-  const translateCopy = useExerciseCopy();
-  return (
-    <View className="mb-5 flex-row items-start px-1">
-      <View className="mr-3 mt-[2px]">
-        <Feather name="camera" size={15} color={SEMANTIC_COLORS.brand.pressed} />
-      </View>
-      <Text
-        variant="caption"
-        className="text-[13px] leading-[19px] flex-1 text-sage-800"
-      >
-        {translateCopy(text)}
-      </Text>
-    </View>
-  );
-}
-
 function InlineThoughtHint({ text }: { text: string }) {
   const translateCopy = useExerciseCopy();
   return (
@@ -246,4 +229,4 @@ const THOUGHT_SUGGESTIONS: SuggestionItem[] = [
   { label: "They may be upset with me" },
 ];
 
-export { COLLAPSED_EMOTION_COUNT, COLLAPSED_DISTORTION_COUNT, MAX_DISTORTIONS, CBT_COMPOSER_MIN_HEIGHT, useCompactExerciseViewport, StepShell, StepTitle, InlineFactHint, InlineThoughtHint, ExampleDetailRow, LoadingRow, AiUnavailableNote, RequirementNote, MoreOptionsButton, SITUATION_SUGGESTIONS, THOUGHT_SUGGESTIONS };
+export { COLLAPSED_EMOTION_COUNT, COLLAPSED_DISTORTION_COUNT, MAX_DISTORTIONS, CBT_COMPOSER_MIN_HEIGHT, useCompactExerciseViewport, StepShell, StepTitle, InlineThoughtHint, ExampleDetailRow, LoadingRow, AiUnavailableNote, RequirementNote, MoreOptionsButton, SITUATION_SUGGESTIONS, THOUGHT_SUGGESTIONS };

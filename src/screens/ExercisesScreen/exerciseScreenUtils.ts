@@ -12,11 +12,11 @@ export interface NutrieBadgeTheme {
 
 const CATEGORY_BADGE_THEME: Record<ExerciseCategory, NutrieBadgeTheme> = {
   cbt_core: {
-    bg: "#E8FBF0",
-    text: "#22C55E",
-    iconColor: "#22C55E",
-    rim: "#16A34A",
-    cardRim: "#C4EED4",
+    bg: "#E5EDE1",
+    text: "#5F7F58",
+    iconColor: "#44633F",
+    rim: "#44633F",
+    cardRim: "#D3E0CD",
     sf: "brain.head.profile",
     feather: "cpu",
   },

@@ -3,12 +3,9 @@ import { View, type ViewStyle } from "react-native";
 import Animated, { type AnimatedStyle } from "react-native-reanimated";
 import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
 import { pickerStyle, tag, tint } from "@expo/ui/swift-ui/modifiers";
-import { GlassView } from "expo-glass-effect";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { ZapIcon } from "@hugeicons/core-free-icons";
 import { Text } from "@/src/components/ui/Text";
 import { TouchableGlass } from "@/src/components/touchable-glass";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
@@ -35,15 +32,11 @@ export function ExercisesTabHeader({
   ] as const;
 
   return (
-    <GlassView
-      glassEffectStyle="regular"
+    <View
       style={{
-        borderBottomWidth: 0,
-        elevation: 0,
-        shadowOpacity: 0,
-        shadowRadius: 0,
-        shadowColor: "transparent",
-        overflow: "hidden",
+        backgroundColor: "#FCFDFB",
+        borderBottomWidth: 1,
+        borderBottomColor: "#EEF2EC",
       }}
     >
       <SafeAreaView edges={["top"]}>
@@ -59,7 +52,7 @@ export function ExercisesTabHeader({
                     accessibilityLabel={t("tab.completedCount", { count: completedCount })}
                     className="flex-row items-center justify-center rounded-full bg-sage-50/80 px-3 py-1.5"
                   >
-                    <HugeiconsIcon icon={ZapIcon} size={16} color={SEMANTIC_COLORS.brand.pressed} />
+                    <SymbolView name="checkmark.circle.fill" size={16} tintColor={SEMANTIC_COLORS.brand.pressed} />
                     <Text variant="chip" className="ml-1.5 font-nunito-bold text-sage-700">
                       {completedCount}
                     </Text>
@@ -97,6 +90,6 @@ export function ExercisesTabHeader({
           </Animated.View>
         </View>
       </SafeAreaView>
-    </GlassView>
+    </View>
   );
 }

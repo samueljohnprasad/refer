@@ -14,16 +14,16 @@ export const ExerciseIntroSequence: React.FC<ExerciseIntroSequenceProps> =
     }
 
     return (
-      <View className="px-2">
+      <View>
         {steps.map((step, index) => {
           const isFirst = index === 0;
           const isLast = index === steps.length - 1;
 
           return (
-            <View key={`${index}-${step}`} className="flex-row items-start pb-4">
-              <View className="mr-5 items-center">
+            <View key={`${index}-${step}`} className="flex-row items-start">
+              <View className="mr-4 items-center">
                 <View
-                  className="z-10 h-8 w-8 items-center justify-center rounded-full border-[4px]"
+                  className="z-10 h-8 w-8 items-center justify-center rounded-full border-[3px]"
                   style={{
                     backgroundColor: isFirst ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.border.default,
                     borderColor: SEMANTIC_COLORS.surface.primary,
@@ -42,17 +42,21 @@ export const ExerciseIntroSequence: React.FC<ExerciseIntroSequenceProps> =
                 </View>
                 {!isLast ? (
                   <View
-                    className="mt-1 h-6 w-px"
-                    style={{ backgroundColor: SEMANTIC_COLORS.surface.secondary }}
+                    className="h-8 w-px"
+                    style={{ backgroundColor: SEMANTIC_COLORS.border.default }}
                   />
                 ) : null}
               </View>
 
               <View className="flex-1 pt-1">
                 <Text
-                  variant="body-bold"
+                  variant={isFirst ? "body-bold" : "body"}
                   className="text-[16px] leading-[23px]"
-                  style={{ color: SEMANTIC_COLORS.text.primary }}
+                  style={{
+                    color: isFirst
+                      ? SEMANTIC_COLORS.text.primary
+                      : SEMANTIC_COLORS.text.secondary,
+                  }}
                 >
                   {step}
                 </Text>

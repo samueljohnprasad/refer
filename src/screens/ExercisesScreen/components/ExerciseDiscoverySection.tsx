@@ -13,7 +13,7 @@ import type { ExerciseCategory, ExerciseConfig } from "@/src/types/exerciseFlow"
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CAROUSEL_PEEK = 20;
 const CAROUSEL_GAP = 12;
-const JUMP_BACK_CARD_WIDTH = (SCREEN_WIDTH - CAROUSEL_PEEK * 2) / 2.3;
+const JUMP_BACK_CARD_WIDTH = SCREEN_WIDTH - CAROUSEL_PEEK * 2;
 const SHELF_CARD_WIDTH = (SCREEN_WIDTH - CAROUSEL_PEEK * 2 - CAROUSEL_GAP * 2) / 1.85;
 
 interface ExercisePressProps {
@@ -72,8 +72,8 @@ export const DiscoverSection = memo(function DiscoverSection({
     <View style={{ marginBottom: 32 }}>
       <View style={[nutrieStyles.sectionHeader, !isFirst && { paddingTop: 16 }]}>
         <View style={[nutrieStyles.categoryBadge, { backgroundColor: "transparent", paddingHorizontal: 0 }]}>
-          {Platform.OS === "ios" ? <SymbolView name={badgeTheme.sf as any} size={16} tintColor={badgeTheme.text} weight="bold" style={{ width: 18, height: 18 }} /> : <Feather name={badgeTheme.feather as any} size={16} color={badgeTheme.text} />}
-          <TextLabel color={badgeTheme.text}>{label} • {availableExercises.length}</TextLabel>
+          {Platform.OS === "ios" ? <SymbolView name={badgeTheme.sf as any} size={16} tintColor="#44633F" weight="bold" style={{ width: 18, height: 18 }} /> : <Feather name={badgeTheme.feather as any} size={16} color="#44633F" />}
+          <TextLabel color="#44633F">{label} • {availableExercises.length}</TextLabel>
         </View>
       </View>
       {featuredExercise ? <FeaturedExerciseHero exercise={featuredExercise} onPress={onPress} /> : null}

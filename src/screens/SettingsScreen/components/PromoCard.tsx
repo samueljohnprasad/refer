@@ -2,7 +2,9 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { View, Text, Pressable } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { ArrowRight01Icon, SparklesIcon } from "@hugeicons/core-free-icons";
+import { CrownIcon } from "@hugeicons/core-free-icons";
+import { SymbolView } from "expo-symbols";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
 interface PromoCardProps {
   onLayout: (event: any) => void;
@@ -15,37 +17,37 @@ export const PromoCard: React.FC<PromoCardProps> = ({
 }) => {
   const { t } = useTranslation("settings");
   return (
-    // ponytail: restrained pale sage-cream premium row with warm gold sparkle accent (~80pt height)
     <Pressable
       onPress={onPromoPress}
       onLayout={onLayout}
-      className="flex-row items-center bg-[#F4F6F2] dark:bg-neutral-900 rounded-2xl px-4 py-3.5 mb-6 mx-5 border border-[#E2E8E0] dark:border-neutral-800 active:bg-[#EBEFE8]"
+      className="mx-5 mb-5 min-h-[64px] flex-row items-center border-b border-sage-200 px-1 py-3 active:opacity-70"
       accessibilityRole="button"
       accessibilityLabel={t("premium.unlockAccessibility")}
     >
-      {/* Restrained warm gold badge for sparkle icon */}
-      <View className="w-9 h-9 rounded-xl bg-amber-100/70 dark:bg-amber-950/40 items-center justify-center mr-3.5 border border-amber-200/50">
+      <View className="mr-3.5 h-8 w-8 items-center justify-center">
         <HugeiconsIcon
-          icon={SparklesIcon}
-          size={18}
-          color="#D97706"
-          strokeWidth={2}
+          icon={CrownIcon}
+          size={24}
+          color={String(SEMANTIC_COLORS.brand.pressed)}
+          strokeWidth={1.8}
         />
       </View>
       <View className="flex-1 justify-center">
-        <Text className="text-[16px] font-semibold text-ink leading-snug">
+        <Text className="text-[17px] font-bold leading-snug text-ink">
           {t("premium.unlockTitle")}
         </Text>
-        <Text className="text-[14px] text-ink-muted mt-0.5 leading-snug">
+        <Text className="mt-0.5 text-[14px] leading-snug text-ink-soft">
           {t("premium.unlockSubtitle")}
         </Text>
       </View>
-      <HugeiconsIcon
-        icon={ArrowRight01Icon}
-        size={18}
-        color="#A1A1AA"
-        strokeWidth={2}
-      />
+      <View className="h-11 w-11 items-end justify-center">
+        <SymbolView
+          name="chevron.right"
+          size={16}
+          tintColor={String(SEMANTIC_COLORS.brand.pressed)}
+          weight="semibold"
+        />
+      </View>
     </Pressable>
   );
 };

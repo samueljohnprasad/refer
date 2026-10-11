@@ -11,14 +11,13 @@ export const SettingsSection: React.FC<SettingsSectionProps> = ({
   title,
 }) => {
   return (
-    // ponytail: clean grouped section container with subtle border and zero shadow
-    <View className="mb-6 mx-5">
+    <View className="mx-5 mb-7">
       {title && (
-        <Text className="text-[12px] font-semibold text-ink-muted uppercase tracking-wider mb-2 ml-4">
+        <Text className="mb-1 ml-0 text-[14px] font-bold text-ink">
           {title}
         </Text>
       )}
-      <View className="bg-white dark:bg-neutral-900 rounded-2xl border border-black/[0.06] dark:border-white/10 overflow-hidden shadow-none">
+      <View>
         {React.Children.map(children, (child, index) => {
           if (React.isValidElement(child)) {
             return React.cloneElement(child as React.ReactElement<any>, {

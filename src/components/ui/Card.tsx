@@ -12,7 +12,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import { SPRING_BOUNCY } from "@/src/utils/motionTokens";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 
 // ─── Variant config ───────────────────────────────────────────────────────────
@@ -70,7 +69,8 @@ interface CardProps extends ViewProps {
   radius?: Radius;
   onPress?: (event?: GestureResponderEvent) => void;
   haptic?: "none" | "light" | "medium";
-  showDepth?: boolean; // Kept for backwards compatibility but ignored visually
+  showDepth?: boolean;
+  depth?: "subtle" | "default";
   disabled?: boolean;
   className?: string;
   contentClassName?: string;
@@ -89,6 +89,7 @@ export function Card({
   onPress,
   haptic = "light",
   showDepth = true,
+  depth = "default",
   disabled = false,
   className = "",
   contentClassName = "",
@@ -100,6 +101,9 @@ export function Card({
 }: CardProps) {
   const config = VARIANTS[variant];
   const radiusClass = RADIUS_CLASS[radius];
+  const depthClass = depth === "subtle"
+    ? "top-[2px] bottom-[-2px]"
+    : "top-[4px] bottom-[-4px]";
   const isInteractive = Boolean(onPress) && !disabled;
 
   const reducedMotion = useReducedMotion();
@@ -156,7 +160,7 @@ export function Card({
       {showDepth && (
         <Animated.View
           style={[styles.continuousCurve, rimStyle]}
-          className={`absolute left-0 right-0 top-[4px] bottom-[-4px] ${config.rimClass} ${radiusClass}`}
+          className={`absolute left-0 right-0 ${depthClass} ${config.rimClass} ${radiusClass}`}
         />
       )}
       <Animated.View

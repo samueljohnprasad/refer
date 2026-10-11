@@ -1,8 +1,7 @@
 import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import React from "react";
 import { View } from "react-native";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Timer01Icon } from "@hugeicons/core-free-icons";
+import { SymbolView } from "expo-symbols";
 import { Text } from "@/src/components/ui/Text";
 
 interface ExerciseIntroDurationPillProps {
@@ -13,13 +12,13 @@ export const ExerciseIntroDurationPill: React.FC<
   ExerciseIntroDurationPillProps
 > = React.memo(({ duration }) => {
   return (
-    <View className="mb-7 flex-row items-center justify-center">
+    <View className="mb-5 flex-row items-center justify-center">
       <View className="flex-row items-center rounded-full bg-sage-50 px-3 py-1.5">
-        <HugeiconsIcon
-          icon={Timer01Icon}
+        <SymbolView
+          name="timer"
           size={14}
-          color={SEMANTIC_COLORS.text.secondary}
-          strokeWidth={2}
+          tintColor={SEMANTIC_COLORS.text.secondary}
+          weight="medium"
         />
         <Text
           variant="chip"

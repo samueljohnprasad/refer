@@ -1,9 +1,7 @@
 import { memo, useCallback, type ReactElement } from "react";
-import { Dimensions, Platform, Pressable, View } from "react-native";
+import { Dimensions, Platform, View } from "react-native";
 import { SymbolView } from "expo-symbols";
 import { Feather } from "@expo/vector-icons";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { ArrowRight01Icon, PlayIcon, ZapIcon } from "@hugeicons/core-free-icons";
 import { useTranslation } from "react-i18next";
 import { CircularRevealWrapper } from "@/src/components/CircularRevealWrapper";
 import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
@@ -76,7 +74,7 @@ export const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingTop: 4 }}>
           <XpLabel xp={exercise.xp} />
           <View style={{ backgroundColor: badgeTheme.text, flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 9999 }}>
-            <HugeiconsIcon icon={PlayIcon} size={12} color="#FFFFFF" />
+            {Platform.OS === "ios" ? <SymbolView name="play.fill" size={12} tintColor="#FFFFFF" /> : <Feather name="play" size={12} color="#FFFFFF" />}
             <Text style={{ color: "#FFFFFF", fontSize: 12, fontWeight: "800" }}>{t("library.start")}</Text>
           </View>
         </View>
@@ -98,7 +96,7 @@ export const ExerciseShelfCard = memo(function ExerciseShelfCard({ exercise, onP
 
   return (
     <CircularRevealWrapper href={buildExerciseRoute(exercise.type)} color={badgeTheme.bg} duration={800} disabled={isGated}>
-      <Card variant="tile" radius="lg" showDepth onPress={handlePress} style={{ width: SHELF_CARD_WIDTH }} rimStyle={{ backgroundColor: "#D4D4D4" }} faceStyle={{ minHeight: 130 }} contentClassName="p-4 justify-between flex-1">
+      <Card variant="tile" radius="lg" showDepth={false} onPress={handlePress} style={{ width: SHELF_CARD_WIDTH }} faceStyle={{ minHeight: 130 }} contentClassName="p-4 justify-between flex-1">
         <View style={{ marginBottom: 10, height: 32, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           <ExerciseIcon type={exercise.type} size={24} color={badgeTheme.iconColor} />
           {isGated ? <TextBadge label="PRO" /> : null}
@@ -124,9 +122,17 @@ export const CompactExerciseRow = memo(function CompactExerciseRow({ exercise, o
 
   return (
     <CircularRevealWrapper href={buildExerciseRoute(exercise.type)} color={badgeTheme.bg} duration={800} disabled={isGated}>
-      <Pressable onPress={handlePress} style={({ pressed }) => [{ flexDirection: "row", alignItems: "center", paddingVertical: 11, paddingHorizontal: 14, backgroundColor: "#FFFFFF", borderRadius: 16, borderWidth: 1.5, borderColor: "rgba(0,0,0,0.06)", borderBottomWidth: 3, borderBottomColor: "rgba(0,0,0,0.10)", marginBottom: 8 }, pressed && { opacity: 0.85, transform: [{ scale: 0.99 }] }]}>
-        <View style={{ backgroundColor: badgeTheme.bg, width: 38, height: 38, borderRadius: 10, alignItems: "center", justifyContent: "center", marginRight: 12 }}>
-          <ExerciseIcon type={exercise.type} size={20} color={badgeTheme.iconColor} />
+      <Card
+        variant="tile"
+        radius="lg"
+        depth="subtle"
+        onPress={handlePress}
+        style={{ marginBottom: 8 }}
+        rimStyle={{ backgroundColor: "#E1E1E1" }}
+        contentClassName="flex-row items-center px-3.5 py-3"
+      >
+        <View style={{ width: 28, alignItems: "center", justifyContent: "center", marginRight: 12 }}>
+          <ExerciseIcon type={exercise.type} size={24} color={badgeTheme.iconColor} />
         </View>
         <View style={{ flex: 1, minWidth: 0, justifyContent: "center" }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -135,8 +141,8 @@ export const CompactExerciseRow = memo(function CompactExerciseRow({ exercise, o
           </View>
           <Text style={[nutrieStyles.exerciseSubtitle, { fontSize: 13 }]} numberOfLines={1}>{localizeDuration(exercise.duration, t("flow.ui.engine.minutesShort"))} • +{exercise.xp} XP</Text>
         </View>
-        <HugeiconsIcon icon={ArrowRight01Icon} size={16} color="#A1A1AA" />
-      </Pressable>
+        {Platform.OS === "ios" ? <SymbolView name="chevron.right" size={15} tintColor="#7A8D78" /> : <Feather name="chevron-right" size={16} color="#7A8D78" />}
+      </Card>
     </CircularRevealWrapper>
   );
 });
@@ -146,7 +152,7 @@ function TextBadge({ label }: { label: string }) {
 }
 
 function XpLabel({ xp }: { xp: number }) {
-  return <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}><HugeiconsIcon icon={ZapIcon} size={15} color="#C89400" /><Text style={{ fontSize: 13, fontWeight: "800", color: "#A67C00" }}>+{xp} XP</Text></View>;
+  return <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>{Platform.OS === "ios" ? <SymbolView name="bolt.fill" size={14} tintColor="#A67C00" /> : <Feather name="zap" size={14} color="#A67C00" />}<Text style={{ fontSize: 13, fontWeight: "800", color: "#A67C00" }}>+{xp} XP</Text></View>;
 }
 
 function DurationBadge({ duration, color, minutesShort }: { duration: string; color: string; minutesShort: string }) {

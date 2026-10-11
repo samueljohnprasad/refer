@@ -58,7 +58,7 @@ export const HomeHeader = memo(function HomeHeader({
           {greeting}
         </Text>
         <Text
-          className="happy-font-heading-bold mt-1 text-[42px] font-extrabold leading-[41px] tracking-tight text-ink"
+          className="happy-font-heading-bold mt-1 text-[42px] font-extrabold leading-[48px] tracking-tight text-ink"
           numberOfLines={1}
           adjustsFontSizeToFit
           minimumFontScale={0.75}

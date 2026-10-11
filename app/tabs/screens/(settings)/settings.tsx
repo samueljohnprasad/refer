@@ -28,6 +28,7 @@ const Settings = () => {
             color: textColor,
           },
           headerTitleAlign: "center",
+          headerBackButtonDisplayMode: "minimal",
           headerLeft: () => null,
         }}
       />

@@ -10,7 +10,7 @@ import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
 import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 import * as Haptics from "expo-haptics";
 import type { ThoughtReframingResponse, StepProps } from "@/src/types/exerciseFlow";
-import { CBT_COMPOSER_MIN_HEIGHT, StepShell, StepTitle, InlineFactHint, LoadingRow, AiUnavailableNote, SITUATION_SUGGESTIONS } from "./customStepShared";
+import { CBT_COMPOSER_MIN_HEIGHT, StepShell, StepTitle, LoadingRow, AiUnavailableNote, SITUATION_SUGGESTIONS } from "./customStepShared";
 
 export function TRSituationStep({
   response,
@@ -115,9 +115,8 @@ export function TRSituationStep({
     >
       <StepTitle
         title="What happened?"
-        subtitle="Start with the moment, not what it meant."
+        subtitle="Write what a camera could have seen or heard."
       />
-      <InlineFactHint text="Write what a camera could have seen or heard." />
 
       <ExerciseTextComposer
         value={response.situation}
@@ -149,6 +148,7 @@ export function TRSituationStep({
         <ReflectionDisclosure
           expanded={showSituationExamples}
           onToggle={() => setShowSituationExamples((current) => !current)}
+          className="mt-1"
         >
           {showSituationExamples && isAiLoading ? (
             <LoadingRow message="Finding relevant examples..." />

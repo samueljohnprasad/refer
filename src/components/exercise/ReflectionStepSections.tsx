@@ -57,16 +57,18 @@ export function ReflectionDisclosure({
   expanded,
   onToggle,
   title = "Need an example?",
+  className = "mt-3",
   children,
 }: {
   expanded: boolean;
   onToggle: () => void;
   title?: string;
+  className?: string;
   children?: React.ReactNode;
 }) {
   const translateCopy = useExerciseCopy();
   return (
-    <View className="mt-3">
+    <View className={className}>
       <Pressable
         onPress={() => {
           triggerSelectionHaptic();
