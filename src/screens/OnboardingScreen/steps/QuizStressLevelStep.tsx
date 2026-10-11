@@ -1,10 +1,11 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useCallback } from "react";
-import { Text, View, ScrollView, Platform } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import OptionCard from "../components/OptionCard";
 import { MotivationAnswer, StressLevel } from "../types";
 import { MOTIVATION_FOLLOWUP } from "../constants";
+import { useHeaderHeight } from "expo-router/react-navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 
@@ -21,10 +22,10 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
   onSelect,
   onAdvance,
 }) => {
+  const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("onboarding");
   const followup = MOTIVATION_FOLLOWUP[motivation];
-  const contentTopPadding = Platform.OS === "ios" ? 100 : insets.top + 100;
 
   const handleSelect = useCallback(
     (id: StressLevel) => {
@@ -44,8 +45,8 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        paddingBottom: 40,
-        paddingTop: contentTopPadding,
+        paddingBottom: Math.max(insets.bottom + 40, 64),
+        paddingTop: Math.max(headerHeight - insets.top, 16),
       }}
       contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6"
@@ -69,7 +70,7 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
         </Text>
       </Animated.View>
 
-      <View className="mt-5 gap-3.5">
+      <View className="mt-6 gap-3">
         {followup.options.map((option, index) => (
           <OptionCard
             key={option.id}
@@ -77,6 +78,7 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
             isSelected={selected === option.id}
             onSelect={() => handleSelect(option.id)}
             index={index}
+            presentation="list"
           />
         ))}
       </View>

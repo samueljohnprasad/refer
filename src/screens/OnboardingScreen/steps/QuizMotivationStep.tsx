@@ -1,6 +1,6 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useCallback } from "react";
-import { Text, View, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import OptionCard from "../components/OptionCard";
 import { MotivationAnswer } from "../types";
@@ -42,7 +42,7 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
       contentInsetAdjustmentBehavior="automatic"
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        paddingBottom: 40,
+        paddingBottom: Math.max(insets.bottom + 40, 64),
         paddingTop: Math.max(headerHeight - insets.top, 16),
       }}
       className="flex-1 px-6"
@@ -69,7 +69,7 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
         {t("quiz_motivation.description")}
       </Animated.Text>
 
-      <View className="mt-6 gap-3.5">
+      <View className="mt-6 gap-3">
         {MOTIVATION_OPTIONS.map((option, index) => (
           <OptionCard
             key={option.id}
@@ -77,6 +77,7 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
             isSelected={selected === option.id}
             onSelect={() => handleSelect(option.id)}
             index={index}
+            presentation="list"
           />
         ))}
       </View>

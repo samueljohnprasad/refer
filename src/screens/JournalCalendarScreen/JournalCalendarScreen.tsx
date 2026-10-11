@@ -10,7 +10,7 @@ import { FeaturedPromptCard } from "@/src/components/FeaturedPromptCard";
 import { usePostHog } from "posthog-react-native";
 import { UpdateModal } from "@/src/components/modals";
 import { useAppUpdate } from "@/src/hooks/useAppUpdate";
-import { StreakDisplay, WeeklyStreakWidget } from "@/src/components/Streak";
+import { StreakDisplay } from "@/src/components/Streak";
 import { useStreak } from "@/src/hooks/useStreak";
 import { QuickJournalPrompt } from "../DiscoveryScreen/QuickJournalSection";
 import { ALL_PROMPTS } from "../AllPromptsScreen/AllPromptsScreen";
@@ -132,11 +132,11 @@ export default function JournalCalendarScreen() {
         }}
       />
       {/* ponytail: subtle tertiary settings action in header toolbar */}
-      <Stack.Toolbar placement="right" tintColor={SEMANTIC_COLORS.text.tertiary}>
+      <Stack.Toolbar placement="right" tintColor={SEMANTIC_COLORS.text.secondary}>
         <Stack.Toolbar.Button
           icon="gearshape"
           accessibilityLabel={tCommon("navigation.settings")}
-          tintColor={SEMANTIC_COLORS.text.tertiary}
+          tintColor={SEMANTIC_COLORS.text.secondary}
           onPress={handleSettingsPress}
         />
       </Stack.Toolbar>
@@ -153,26 +153,22 @@ export default function JournalCalendarScreen() {
         scrollEventThrottle={16}
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ paddingBottom: 112 }}
+        contentContainerStyle={{ paddingBottom: 128 }}
       >
-        <View className="px-5 pb-12 pt-4">
-          <View>
-            <HomeHeader
-              displayName={userProfile?.displayName}
-              isLoading={isLoadingProfile}
-              streak={currentStreak}
-              onStreakPress={() => setShowStreakModal(true)}
-            />
-          </View>
+        <View className="px-6 pb-12 pt-4">
+          <HomeHeader
+            displayName={userProfile?.displayName}
+            isLoading={isLoadingProfile}
+            streak={currentStreak}
+            onStreakPress={() => setShowStreakModal(true)}
+          />
 
           {/* ponytail: action-first home screen hierarchy */}
           {/* Section 1 (Hero): Today's Reflection */}
-          <View className="mt-6">
-            <View className="mb-1.5 px-1">
-              <Text className="text-[11px] font-semibold tracking-wider text-ink-muted/80 uppercase">
-                {tHome("sections.todayReflection")}
-              </Text>
-            </View>
+          <View className="mt-5 border-t border-ink/10 pt-5">
+            <Text className="happy-font-body-bold mb-2.5 px-1 text-[12px] font-bold tracking-[1px] text-sage-700 uppercase">
+              {tHome("sections.todayReflection")}
+            </Text>
             <FeaturedPromptCard
               prompts={ALL_PROMPTS}
               onPress={(prompt) =>
@@ -181,8 +177,8 @@ export default function JournalCalendarScreen() {
             />
           </View>
 
-          {/* Section 2 (Check-in): Contained Mood Logger */}
-          <View className="mt-6">
+          {/* Section 2 (Check-in): open mood logger */}
+          <View className="mt-8">
             <EmotionLogger
               selectedDate={selectedEmotionDate}
               onEmotionLogged={handleEmotionLogged}
@@ -190,17 +186,9 @@ export default function JournalCalendarScreen() {
             />
           </View>
 
-          {/* Section 3 (Learning): Tactile Continue Journey Card */}
-          <View className="mt-6">
+          {/* Section 3 (Learning): open continue-journey row */}
+          <View className="mt-9">
             <ContinueJourneyCard />
-          </View>
-
-          {/* ponytail: Section 4 (Reinforcement) — Weekly streak progress board anchors feed */}
-          <View className="mt-6">
-            <WeeklyStreakWidget
-              showDepth={false}
-              onPress={() => router.push("/tabs/screens/xp-history")}
-            />
           </View>
         </View>
       </ScrollView>

@@ -1,20 +1,17 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useStreak } from "@/src/hooks/useStreak";
 import { AnimatedFireIcon } from "@/src/components/ui/AnimatedStatIcon";
-import { Card } from "@/src/components/ui/Card";
 import { useTranslation } from "react-i18next";
 
 interface WeeklyStreakWidgetProps {
   onPress?: () => void;
-  showDepth?: boolean;
 }
 
 export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
   onPress,
-  showDepth = false,
 }) => {
   const { t } = useTranslation("home");
   const { currentStreak, weeklyProgress, isLoading } = useStreak();
@@ -26,16 +23,12 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
   const labels = t("streak.weekDays", { returnObjects: true }) as string[];
 
   return (
-    // ponytail: interactive card surface with chevron affordance
-    <Card
-      variant="tile"
-      radius="lg"
+    // ponytail: keep reinforcement on the canvas instead of inside another card
+    <Pressable
+      className="flex-row items-center justify-between border-y border-black/[0.08] py-2 active:opacity-70"
       onPress={onPress}
-      showDepth={showDepth}
-      haptic="light"
       accessibilityRole="button"
       accessibilityLabel={t("streak.a11yLabel", { count: currentStreak })}
-      contentClassName="w-full flex-row items-center justify-between py-2 px-3.5"
     >
       {/* Left: Streak label */}
       <View className="flex-row items-center gap-2">
@@ -73,6 +66,6 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
           color="#8E8E93"
         />
       </View>
-    </Card>
+    </Pressable>
   );
 };

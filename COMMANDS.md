@@ -39,3 +39,5 @@ https://revenuecat-shipaton-2025.devpost.com/project-gallery?page=1
 https://github.com/haplollc/Minted
 https://www.aihero.dev/skills
 https://reactnativefeel.com/sim
+https://super-easy-apps.kit.com/
+https://forwardfuture.com/

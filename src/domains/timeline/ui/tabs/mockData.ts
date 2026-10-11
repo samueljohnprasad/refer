@@ -282,6 +282,36 @@ export const MOCK_WEEKS_TIMELINE_DATA = [
     start_date: '2026-06-01',
     end_date: '2026-06-07',
     aiInsight: null
+  },
+  {
+    date: '2026-W22',
+    start_date: '2026-05-25',
+    end_date: '2026-05-31',
+    aiInsight: {
+      id: 'w4',
+      summary: "This week, noticing the difference between a delayed reply and a negative judgment helped soften anxious assumptions. Writing down the evidence before reacting made it easier to choose a calmer next step."
+    }
+  },
+  {
+    date: '2026-W21',
+    start_date: '2026-05-18',
+    end_date: '2026-05-24',
+    aiInsight: null
+  },
+  {
+    date: '2026-W20',
+    start_date: '2026-05-11',
+    end_date: '2026-05-17',
+    aiInsight: {
+      id: 'w5',
+      summary: "A busy start to the week made it tempting to take on everything at once. Breaking commitments into smaller steps and leaving room for recovery helped you protect your energy without losing momentum."
+    }
+  },
+  {
+    date: '2026-W19',
+    start_date: '2026-05-04',
+    end_date: '2026-05-10',
+    aiInsight: null
   }
 ];
 

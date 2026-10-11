@@ -7,11 +7,15 @@ export function CourseOutlineSkeleton(): React.JSX.Element {
   const { t } = useTranslation("onboarding");
 
   return (
-    <View className="mt-2 gap-3" accessibilityLabel={t("plan_reveal.loading_milestones")}>
+    <View className="mt-2" accessibilityLabel={t("plan_reveal.loading_milestones")}>
       {Array.from({ length: 3 }).map((_, index) => (
         <View
           key={index}
-          className="flex-row items-center gap-3 rounded-2xl border border-neutral-200/80 bg-white p-4"
+          className={`flex-row items-center gap-3 px-3 py-3.5 ${
+            index === 0
+              ? "rounded-2xl bg-sage-50"
+              : "border-b border-sage-100"
+          }`}
         >
           <Skeleton width={36} height={36} radius={18} />
           <View className="flex-1 gap-1.5">

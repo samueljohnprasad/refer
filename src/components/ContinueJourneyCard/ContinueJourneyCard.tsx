@@ -1,12 +1,11 @@
 // src/components/ContinueJourneyCard/ContinueJourneyCard.tsx
-// ponytail: compact continue journey card with unified tap target
+// ponytail: compact continue journey row with unified tap target
 
 import React from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Pressable } from "react-native";
 import { useTranslation } from "react-i18next";
 // ponytail: use native expo-symbols SymbolView instead of lucide icons
 import { SymbolView } from "expo-symbols";
-import { Card } from "@/src/components/ui/Card";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import {
   getCourseImageSource,
@@ -28,7 +27,7 @@ export function ContinueJourneyCard({
     return (
       <View className={className} testID={testID}>
         <View className="mb-1.5 px-1">
-          <Text className="text-[11px] font-semibold tracking-wider text-ink-muted/80 uppercase">
+        <Text className="happy-font-body-bold text-[12px] font-bold tracking-[1px] text-sage-700 uppercase">
             {t("sections.continueJourney")}
           </Text>
         </View>
@@ -58,19 +57,15 @@ export function ContinueJourneyCard({
 
   return (
     <View className={className} testID={testID}>
-      <View className="mb-2 px-1">
-        <Text className="text-[11px] font-semibold tracking-wider text-brand-primary/80 uppercase">
+      <View className="mb-2.5 px-1">
+        <Text className="happy-font-body-bold text-[12px] font-bold tracking-[1px] text-sage-700 uppercase">
           {t("sections.continueJourney")}
         </Text>
       </View>
 
-      <Card
-        variant="tile"
-        radius="lg"
-        showDepth={false}
-        haptic="light"
+      <Pressable
+        className="border-y border-sage-200 py-4 active:opacity-70"
         onPress={actions.handleCardPress}
-        contentClassName="p-3.5 pt-3 pb-3"
         accessibilityRole="button"
         accessibilityLabel={a11yLabel}
       >
@@ -79,13 +74,13 @@ export function ContinueJourneyCard({
             <View className="flex-row items-center justify-between">
               <View className="flex-1 pr-5">
                 <Text
-                  className="font-bold text-[16px] text-ink tracking-tight"
+                  className="happy-font-heading-bold font-bold text-[16px] text-ink tracking-tight"
                   numberOfLines={1}
                 >
                   {state.courseTitle}
                 </Text>
                 <Text
-                  className="font-medium text-[14px] text-ink mt-0.5 leading-tight"
+                  className="happy-font-body-medium font-medium text-[14px] text-ink mt-0.5 leading-tight"
                   numberOfLines={2}
                 >
                   {state.activityTitle}
@@ -97,7 +92,7 @@ export function ContinueJourneyCard({
                       size={11}
                       tintColor={SEMANTIC_COLORS.text.tertiary as string}
                     />
-                    <Text className="text-[11px] font-medium text-ink-muted ml-1">
+                    <Text className="happy-font-body-medium text-[11px] font-medium text-ink-muted ml-1">
                       {t("journey.durationCompact", { count: state.estimatedMins })}
                     </Text>
                   </View>
@@ -118,7 +113,7 @@ export function ContinueJourneyCard({
                   }}
                   className="w-10 h-10 rounded-full items-center justify-center"
                 >
-                  <Text className="text-white font-bold text-[15px]">
+                  <Text className="happy-font-body-bold text-white font-bold text-[15px]">
                     {getCourseMonogram(state.courseTitle)}
                   </Text>
                 </View>
@@ -136,10 +131,10 @@ export function ContinueJourneyCard({
           <>
             <View className="flex-row items-center justify-between">
               <View className="flex-1 pr-3">
-                <Text className="font-bold text-[16px] text-ink tracking-tight">
+                <Text className="happy-font-heading-bold font-bold text-[16px] text-ink tracking-tight">
                   {t("journey.findNextStep")}
                 </Text>
-                <Text className="text-[14px] text-ink-soft mt-0.5">
+                <Text className="happy-font-body text-[14px] text-ink-soft mt-0.5">
                   {t("journey.chooseJourney")}
                 </Text>
               </View>
@@ -162,10 +157,10 @@ export function ContinueJourneyCard({
           <>
             <View className="flex-row items-center justify-between">
               <View className="flex-1 pr-3">
-                <Text className="font-bold text-[16px] text-ink tracking-tight">
+                <Text className="happy-font-heading-bold font-bold text-[16px] text-ink tracking-tight">
                   {t("journey.completeTitle")}
                 </Text>
-                <Text className="text-[14px] text-ink-soft mt-0.5">
+                <Text className="happy-font-body text-[14px] text-ink-soft mt-0.5">
                   {t("journey.completeDesc")}
                 </Text>
               </View>
@@ -177,7 +172,7 @@ export function ContinueJourneyCard({
                 />
               ) : (
                 <View className="w-10 h-10 rounded-full bg-sage-100 items-center justify-center">
-                  <Text className="text-brand-primary font-bold text-[15px]">✓</Text>
+                  <Text className="happy-font-body-bold text-brand-primary font-bold text-[15px]">✓</Text>
                 </View>
               )}
             </View>
@@ -192,10 +187,10 @@ export function ContinueJourneyCard({
           <>
             <View className="flex-row items-center justify-between">
               <View className="flex-1 pr-3">
-                <Text className="font-bold text-[16px] text-ink tracking-tight">
+                <Text className="happy-font-heading-bold font-bold text-[16px] text-ink tracking-tight">
                   {t("journey.continueJourney")}
                 </Text>
-                <Text className="text-[14px] text-ink-soft mt-0.5">
+                <Text className="happy-font-body text-[14px] text-ink-soft mt-0.5">
                   {t("journey.pickUpWhereLeft")}
                 </Text>
               </View>
@@ -213,26 +208,24 @@ export function ContinueJourneyCard({
             />
           </>
         )}
-      </Card>
+      </Pressable>
     </View>
   );
 }
 
-// ponytail: unified tactile arrow button for journey card CTA matching Duolingo quest patterns
+// ponytail: quiet inline action keeps the journey row open and scannable
 function ContinueJourneyActionRow({ label }: { label: string }) {
   return (
-    <View className="mt-3 pt-2.5 flex-row items-center justify-between border-t border-black/[0.04]">
-      <Text className="text-[13px] font-bold text-brand-primary">
+    <View className="mt-3 flex-row items-center justify-between">
+      <Text className="happy-font-body-semibold text-[13px] font-semibold text-sage-600">
         {label}
       </Text>
-      <View className="w-6 h-6 rounded-full bg-brand-primary items-center justify-center shadow-xs">
-        <SymbolView
-          name="arrow.right"
-          size={13}
-          tintColor="#FFFFFF"
-          weight="bold"
-        />
-      </View>
+      <SymbolView
+        name="arrow.right"
+        size={17}
+        tintColor={SEMANTIC_COLORS.brand.primary as string}
+        weight="semibold"
+      />
     </View>
   );
 }

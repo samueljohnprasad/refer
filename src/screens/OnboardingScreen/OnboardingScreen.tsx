@@ -40,6 +40,7 @@ const WELCOME_CTA_REVEAL_DELAY_MS = 520;
 const WELCOME_CTA_HANDOFF_DELAY_MS = 110;
 const STEP_CTA_REVEAL_DURATION_MS = 180;
 const STEP_CTA_REVEAL_OFFSET = 6;
+const WELCOME_FOOTER_BOTTOM_OFFSET = 20;
 
 const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const { width: screenWidth } = useWindowDimensions();
@@ -263,7 +264,6 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
           handlePactCommit={handlePactCommit}
           updateNotificationTime={updateNotificationTime}
           updateTrialStarted={updateTrialStarted}
-          handleContinue={handleContinue}
         />
       </Animated.View>
 
@@ -271,7 +271,13 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         <ScreenLayout.Footer
           pointerEvents="box-none"
           variant={currentStepConfig.transparentFooter ? "transparent" : "solid"}
-          style={!currentStepConfig.transparentFooter ? { backgroundColor: containerBackgroundColor } : undefined}
+          style={
+            !currentStepConfig.transparentFooter
+              ? { backgroundColor: containerBackgroundColor }
+              : currentStep === "welcome_to_happy"
+                ? { bottom: WELCOME_FOOTER_BOTTOM_OFFSET }
+                : undefined
+          }
         >
           <Animated.View
             style={footerAnimatedStyle}

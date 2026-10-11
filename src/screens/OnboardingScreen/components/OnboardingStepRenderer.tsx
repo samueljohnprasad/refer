@@ -34,7 +34,6 @@ export interface OnboardingStepRendererProps {
   handlePactCommit: () => void;
   updateNotificationTime: (t: NotificationTime) => void;
   updateTrialStarted: (started: boolean) => void;
-  handleContinue: (skipped?: boolean) => void;
 }
 
 export const OnboardingStepRenderer: React.FC<OnboardingStepRendererProps> = ({
@@ -49,7 +48,6 @@ export const OnboardingStepRenderer: React.FC<OnboardingStepRendererProps> = ({
   handlePactCommit,
   updateNotificationTime,
   updateTrialStarted,
-  handleContinue,
 }) => {
   switch (currentStep) {
     case "welcome":
@@ -153,7 +151,6 @@ export const OnboardingStepRenderer: React.FC<OnboardingStepRendererProps> = ({
         <WelcomeToHappyStep
           planName={derivedPlanName}
           dailyGoal={formData.dailyGoal}
-          onLoginPress={() => handleContinue(false)}
         />
       );
     default:

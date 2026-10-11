@@ -3,6 +3,8 @@ import { Text, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { Card } from "@/src/components/ui/Card";
 import { QuizOption } from "../types";
+import { SymbolView, type SymbolViewProps } from "expo-symbols";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   Yoga01Icon,
@@ -102,11 +104,114 @@ export function getQuizIcon(id: string) {
   }
 }
 
+function getQuizSymbol(id: string): SymbolViewProps["name"] {
+  switch (id) {
+    case "anxiety":
+      return "figure.mind.and.body";
+    case "mood":
+      return "face.smiling";
+    case "stress":
+      return "waveform.path.ecg";
+    case "self_understanding":
+      return "person.crop.circle";
+    case "sleep":
+      return "moon.zzz";
+    case "light":
+      return "leaf.fill";
+    case "moderate":
+      return "cloud.fill";
+    case "heavy":
+      return "exclamationmark.triangle.fill";
+    case "overwhelming":
+      return "cloud.rain.fill";
+    default:
+      return "circle.fill";
+  }
+}
+
 interface OptionCardProps<T extends string> {
   option: QuizOption<T>;
   isSelected: boolean;
   onSelect: () => void;
   index: number;
+  presentation?: "card" | "list";
+}
+
+const SelectionIndicator: React.FC<{ visible: boolean }> = ({ visible }) =>
+  visible ? (
+    <SymbolView
+      name="checkmark.circle.fill"
+      size={22}
+      tintColor="#587C51"
+      type="hierarchical"
+    />
+  ) : null;
+
+function ListOptionRow<T extends string>({
+  option,
+  isSelected,
+  onSelect,
+  index,
+}: OptionCardProps<T>) {
+  const theme = getOptionTheme(option.id);
+
+  return (
+    <Animated.View entering={FadeIn.delay(120 + index * 50).duration(200)}>
+      <Card
+        variant={isSelected ? "answer-selected" : "answer"}
+        radius="lg"
+        onPress={onSelect}
+        accessibilityRole="button"
+        accessibilityState={{ selected: isSelected }}
+        accessibilityLabel={`${option.title}, ${option.subtitle}`}
+        accessibilityHint="Select this goal"
+        className="w-full"
+        contentClassName="min-h-[76px] flex-row items-center gap-4 px-4 py-3"
+        showDepth
+        depth="subtle"
+        faceStyle={
+          isSelected
+            ? { backgroundColor: "#EAF3E7", borderWidth: 2 }
+            : { borderColor: "#E1E8DF", borderWidth: 1.5 }
+        }
+        haptic="medium"
+      >
+        <View className="w-8 items-center">
+          <SymbolView
+            name={getQuizSymbol(option.id)}
+            size={22}
+            tintColor={isSelected ? "#44633F" : theme.iconColor}
+            type="hierarchical"
+          />
+        </View>
+
+        <View className="min-w-0 flex-1">
+          <Text
+            style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+            className={`text-[16px] leading-tight ${isSelected ? "text-sage-800" : "text-ink"}`}
+          >
+            {option.title}
+          </Text>
+          <Text
+            style={{ fontFamily: APP_FONT_FAMILIES.regular }}
+            className="mt-1 text-[13px] leading-snug text-ink-soft"
+          >
+            {option.subtitle}
+          </Text>
+        </View>
+
+        <SelectionIndicator visible={isSelected} />
+        {!isSelected && (
+          <SymbolView
+            name="chevron.forward"
+            size={18}
+            tintColor="#7D8D7B"
+            type="hierarchical"
+          />
+        )}
+      </Card>
+    </Animated.View>
+  );
 }
 
 function OptionCardInner<T extends string>({
@@ -114,8 +219,13 @@ function OptionCardInner<T extends string>({
   isSelected,
   onSelect,
   index,
+  presentation = "card",
 }: OptionCardProps<T>) {
   const theme = getOptionTheme(option.id);
+
+  if (presentation === "list") {
+    return <ListOptionRow {...{ option, isSelected, onSelect, index }} />;
+  }
 
   return (
     <Animated.View entering={FadeIn.delay(120 + index * 50).duration(200)}>

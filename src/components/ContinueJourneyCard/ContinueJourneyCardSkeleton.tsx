@@ -10,7 +10,7 @@ export function ContinueJourneyCardSkeleton(): React.JSX.Element {
   const { t } = useTranslation("home");
   return (
     <View
-      className="rounded-2xl border border-sand/40 bg-surface-card p-4"
+      className="border-y border-sand/40 py-4"
       accessibilityRole="progressbar"
       accessibilityLabel={t("journey.a11yLoading")}
     >
@@ -27,7 +27,7 @@ export function ContinueJourneyCardSkeleton(): React.JSX.Element {
         <Skeleton width={44} height={44} radius={22} />
       </View>
       {/* Bottom action button skeleton */}
-      <View className="mt-3 pt-2 border-t border-sand/20 flex-row justify-between items-center">
+      <View className="mt-3 flex-row items-center justify-between">
         <Skeleton width="35%" height={14} radius={4} />
         <Skeleton width={16} height={16} radius={8} />
       </View>

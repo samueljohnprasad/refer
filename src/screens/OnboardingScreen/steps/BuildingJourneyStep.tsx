@@ -1,7 +1,7 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { SAGE } from "@/src/theme/palette";
 import React, { useEffect, useMemo } from "react";
-import { Platform, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import Animated, {
   FadeIn,
@@ -10,7 +10,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { SymbolView } from "expo-symbols";
-import { Feather } from "@expo/vector-icons";
 import HappiMascot from "../components/HappiMascot";
 import LoadingTaskRow from "../components/LoadingTaskRow";
 import { useAutoAdvance } from "../hooks/useAutoAdvance";
@@ -98,12 +97,11 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
         </Text>
       </Animated.View>
 
-      {/* 3D tactile progress bar */}
       <View className="mt-5 w-full">
         <View className="flex-row items-center justify-between mb-1.5 px-0.5">
           <Text
             style={{ fontFamily: APP_FONT_FAMILIES.bold }}
-            className="text-xs text-ink-muted"
+            className="text-xs text-ink-soft"
           >
             {allComplete ? t("building_journey.complete") : t("building_journey.generating")}
           </Text>
@@ -116,7 +114,7 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
         </View>
         <View
           style={{ backgroundColor: SAGE[100] }}
-          className="h-2.5 w-full rounded-full overflow-hidden"
+          className="h-2 w-full overflow-hidden rounded-full"
         >
           <Animated.View
             style={[
@@ -124,8 +122,6 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
                 height: "100%",
                 borderRadius: 999,
                 backgroundColor: SAGE[500],
-                borderBottomWidth: 2,
-                borderBottomColor: SAGE[600],
               },
               animatedProgressStyle,
             ]}
@@ -133,7 +129,7 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
         </View>
       </View>
 
-      <View className="mt-6 w-full gap-3.5">
+      <View className="mt-5 w-full">
         {tasks.map((task, index) => (
           <LoadingTaskRow
             key={task.id}
@@ -141,23 +137,20 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
             completed={task.completed}
             inProgress={task.inProgress}
             index={index}
+            isLast={index === tasks.length - 1}
           />
         ))}
       </View>
 
       <Animated.View
         entering={FadeIn.delay(300).duration(200)}
-        className="mt-6 flex-row items-center justify-center gap-1.5 opacity-60"
+        className="mt-4 flex-row items-center justify-center gap-1.5 opacity-70"
       >
-        {Platform.OS === "ios" ? (
-          <SymbolView
-            name={"lock.fill" as any}
-            size={11}
-            tintColor={SAGE[600]}
-          />
-        ) : (
-          <Feather name="lock" size={11} color={SAGE[600]} />
-        )}
+        <SymbolView
+          name={"lock.fill" as any}
+          size={11}
+          tintColor={SAGE[600]}
+        />
         <Text
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SAGE[600] }}
           className="text-xs"

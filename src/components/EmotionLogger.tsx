@@ -67,7 +67,7 @@ const EmotionItem: React.FC<{
   const moodName: string = t(emotion.i18nKey);
 
   return (
-    // ponytail: clean emoji without circle border and showing count badge like previous
+    // ponytail: keep the mood family visible without turning it into a card
     <PressableScale
       onPress={handlePress}
       disabled={isLoading}
@@ -79,24 +79,23 @@ const EmotionItem: React.FC<{
         loggedCount:
           count > 0 ? `, ${t("moods.accessibilityCount", { count })}` : "",
       })}
-      className="flex-1 items-center justify-center min-h-[56px] py-1"
+      className="min-h-[66px] w-[54px] flex-none items-center justify-center py-1"
     >
       <View className="relative items-center justify-center">
-        <MoodIcon mood={emotion.moodKey} size={38} />
+        <MoodIcon mood={emotion.moodKey} size={40} />
         {count > 0 && (
           <Animated.View
-            className="absolute -right-[4px] -top-[4px] h-[18px] min-w-[18px] items-center justify-center rounded-full border-[1.5px] border-brand-surface bg-sage-pill px-1"
+            className="absolute -right-[4px] -top-[4px] h-[18px] min-w-[18px] items-center justify-center rounded-full border-[1.5px] border-brand-surface bg-sage-100 px-1"
             style={animatedCountStyle}
           >
-            <Text variant="chip" color="sage" className="z-10 text-[10px]">
+            <Text className="happy-font-body-bold z-10 text-[10px] font-bold text-sage-700">
               {count > 99 ? "99+" : count}
             </Text>
           </Animated.View>
         )}
       </View>
       <Text
-        variant="chip"
-        className="mt-1.5 text-[12px] font-medium text-ink-muted"
+        className="happy-font-body-bold mt-1.5 text-[13px] font-bold text-sage-600"
       >
         {moodName}
       </Text>
@@ -160,15 +159,15 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
       ],
     );
     return (
-      <View className="gap-1.5">
+      <View className="gap-2">
         <View className="flex-row items-center justify-between px-1 mb-0.5">
-          <Text className="text-[11px] font-semibold tracking-wider text-ink-muted/80 uppercase">
+          <Text className="happy-font-body-bold text-[12px] font-bold tracking-[1px] text-sage-700 uppercase">
             {t("sections.howAreYouFeeling")}
           </Text>
         </View>
 
-        {/* ponytail: contained soft card surface for mood check-in (Finch / Stoic benchmark) */}
-        <View className="bg-white rounded-2xl border border-black/[0.06] px-2 py-3 shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex-row justify-between">
+        {/* ponytail: mood choices sit directly on the canvas, like the exploration layout */}
+        <View className="flex-row justify-between px-0 pt-3">
           {EMOTIONS.map((emotion) => (
             <MemoizedEmotionItem
               key={emotion.id}

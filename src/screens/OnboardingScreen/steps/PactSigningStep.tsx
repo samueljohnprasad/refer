@@ -7,7 +7,6 @@ import { View, Pressable, StyleSheet } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import Animated, { FadeIn, useAnimatedStyle } from "react-native-reanimated";
 import { SymbolView } from "expo-symbols";
-import { AnimatedFireIcon } from "@/src/components/ui/AnimatedStatIcon";
 import HappiMascot from "../components/HappiMascot";
 import { useHoldToCommit } from "../hooks/useHoldToCommit";
 import { DailyGoalMinutes } from "../types";
@@ -49,9 +48,9 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
 
   return (
     <View
-      className="flex-1 px-6 justify-between"
+      className="flex-1 px-6"
       style={{
-        paddingTop: Math.max(headerHeight + 8, insets.top + 54),
+        paddingTop: Math.max(headerHeight + 4, insets.top + 48),
         paddingBottom: Math.max(insets.bottom, 24),
       }}
     >
@@ -78,29 +77,23 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
       {/* Center Hero Object: Non-tactile Static Display Card (ZERO nested boxes, NOT clickable) */}
       <Animated.View
         entering={FadeIn.duration(200).delay(100)}
-        className="w-full my-auto"
+        className="w-full mt-12"
       >
         <View
           style={{ borderCurve: "continuous" }}
-          className="w-full rounded-2xl bg-surface-primary border border-border-default shadow-sm p-5 gap-4"
+          className="w-full rounded-[20px] border border-sage-100 bg-sage-50 p-5 gap-5"
         >
-          {/* Header row: Streak Goal + Day 1 starts today */}
-          <View className="flex-row items-center justify-between px-1">
+          {/* Header row: the commitment's seven-day frame */}
+          <View className="flex-row items-center gap-1.5 px-1">
             <View className="flex-row items-center gap-1.5">
-              <AnimatedFireIcon width={18} height={18} viewBox="11 5 21 24" />
+              <SymbolView name="flame.fill" size={18} tintColor="#F59E0B" />
               <Text
                 style={{ fontFamily: APP_FONT_FAMILIES.bold }}
-                className="text-[12px] uppercase tracking-wider text-sage-800"
+                className="text-[13px] tracking-[0.02em] text-sage-800"
               >
                 {t("pact_signing.streak_goal")}
               </Text>
             </View>
-            <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.bold }}
-              className="text-[12px] text-amber-700"
-            >
-              {t("pact_signing.day_1_today")}
-            </Text>
           </View>
 
           {/* 7-Day Embedded Streak Track - directly on card surface (no inner box) */}
@@ -116,14 +109,14 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
                 <View
                   className={`h-9 w-9 items-center justify-center rounded-full border-2 ${
                     d.isToday
-                      ? "bg-amber-100/90 border-amber-400 shadow-sm"
+                      ? "bg-amber-100 border-amber-400"
                       : d.isLast
-                        ? "bg-amber-50/70 border-amber-300/80"
-                        : "bg-surface-secondary/70 border-border-default/80"
+                        ? "bg-surface-primary border-sage-300"
+                        : "bg-surface-primary border-sage-100"
                   }`}
                 >
                   {d.isToday ? (
-                    <AnimatedFireIcon width={22} height={22} viewBox="11 5 21 24" />
+                    <SymbolView name="flame.fill" size={21} tintColor="#F59E0B" />
                   ) : d.isLast ? (
                     <SymbolView name="flag.fill" size={14} tintColor="#B45309" />
                   ) : (
@@ -140,12 +133,12 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
           </View>
 
           {/* Subtle Hairline Divider */}
-          <View className="h-px w-full bg-border-default/40 my-0.5" />
+          <View className="h-px w-full bg-sage-200/70 my-0.5" />
 
           {/* The Vow - directly on card surface (no inner box) */}
           <Text
-            style={{ fontFamily: APP_FONT_FAMILIES.bold }}
-            className="text-center text-[16px] leading-[24px] text-ink px-2"
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
+            className="text-center text-[17px] leading-[25px] text-ink px-2"
           >
             {t("pact_signing.vow", { minutes: dailyGoal })}
           </Text>
@@ -170,19 +163,8 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
       {/* Bottom Hold-to-Commit Action */}
       <Animated.View
         entering={FadeIn.duration(180).delay(160)}
-        className="w-full gap-2.5"
+        className="w-full gap-2.5 mt-auto pt-8"
       >
-        <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="text-center text-[13px] text-ink-soft happy-font-body-semibold"
-        >
-          {committed
-            ? t("pact_signing.hint_done")
-            : isHolding
-              ? t("pact_signing.hint_holding")
-              : t("pact_signing.hint_idle")}
-        </Text>
-
         {/* 3D Tactile Hold-to-Commit Button with visible fill */}
         <Pressable
           onPressIn={onPressIn}

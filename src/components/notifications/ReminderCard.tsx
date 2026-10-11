@@ -18,6 +18,7 @@ type ReminderCardProps = {
   onTimeChange?: (hour: number, minute: number) => void;
   onPressItem?: () => void;
   isLast?: boolean;
+  appearance?: "default" | "schedule";
 };
 
 const iconMap: Record<string, SymbolViewProps["name"]> = {
@@ -35,10 +36,12 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
     onTimeChange,
     onPressItem,
     isLast = false,
+    appearance = "default",
   }) => {
     const { t } = useTranslation("settings");
     const icon = iconMap[item.id] || "clock.fill";
     const title = String(t(`reminders.slots.${item.id}.title` as any));
+    const isScheduleAppearance = appearance === "schedule";
 
     const handlePress = () => {
       Haptics.selectionAsync();
@@ -50,7 +53,7 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
 
     return (
       <View
-        className={`flex-row items-center px-4 py-3 bg-transparent ${
+        className={`flex-row items-center px-4 py-3.5 bg-transparent ${
           !isLast ? "border-b border-sage-200/50" : ""
         } ${isSelected ? "opacity-100" : "opacity-45"}`}
       >
@@ -58,18 +61,23 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
         <Pressable
           onPress={handlePress}
           hitSlop={6}
+          className={isScheduleAppearance ? "mr-3 w-7 items-center justify-center" : ""}
           accessibilityRole="checkbox"
           accessibilityState={{ checked: isSelected }}
           accessibilityLabel={`${title} icon`}
         >
           <View
-            className={`w-9 h-9 rounded-xl items-center justify-center mr-3 ${
-              isSelected ? "bg-sage-100/90" : "bg-neutral-100"
-            }`}
+            className={
+              isScheduleAppearance
+                ? "h-8 w-7 items-center justify-center"
+                : `h-9 w-9 items-center justify-center rounded-xl mr-3 ${
+                    isSelected ? "bg-sage-100/90" : "bg-neutral-100"
+                  }`
+            }
           >
             <SymbolView
               name={icon as SymbolViewProps["name"]}
-              size={18}
+              size={isScheduleAppearance ? 20 : 18}
               tintColor={
                 isSelected
                   ? SEMANTIC_COLORS.brand.primary

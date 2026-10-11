@@ -127,6 +127,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
     canSkip: true,
     skipButtonLabel: "Skip for now",
     analyticsLabel: "notification_permission",
+    transparentFooter: true,
   },
   {
     name: "welcome_to_happy",
@@ -139,6 +140,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
     canSkip: true,
     skipButtonLabel: "Maybe later",
     analyticsLabel: "welcome_to_happy",
+    transparentFooter: true,
   },
 ] as const;
 

@@ -2,10 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { View, TouchableOpacity, Text as RNText, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { AnimatedProgressBar } from "@/src/components/progress";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { ArrowLeft02Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { SymbolView } from "expo-symbols";
 
 export interface LessonHeaderProps {
   /** Callback when the close/back button is pressed */
@@ -67,17 +64,9 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
             X
           </RNText>
         ) : backButtonVariant === "close-icon" ? (
-          <HugeiconsIcon
-            icon={Cancel01Icon}
-            size={20}
-            color={iconColor}
-          />
+          <SymbolView name="xmark" size={18} tintColor={iconColor} weight="medium" />
         ) : (
-          <HugeiconsIcon
-            icon={ArrowLeft02Icon}
-            size={20}
-            color={iconColor}
-          />
+          <SymbolView name="arrow.left" size={18} tintColor={iconColor} weight="medium" />
         )}
       </TouchableOpacity>
 

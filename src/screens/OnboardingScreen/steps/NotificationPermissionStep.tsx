@@ -1,14 +1,13 @@
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Text, ScrollView, Platform } from "react-native";
+import { useHeaderHeight } from "expo-router/react-navigation";
+import { Text, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { NotificationTime } from "../types";
 import { ReminderCard } from "@/src/components/notifications/ReminderCard";
 import { useReminderConfig } from "@/src/components/notifications/useReminderConfig";
 import { DEFAULT_REMINDERS } from "@/src/components/notifications/constants";
-import { SymbolView } from "expo-symbols";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { useTranslation } from "react-i18next";
 
 interface NotificationPermissionStepProps {
@@ -17,14 +16,16 @@ interface NotificationPermissionStepProps {
   stressTiming?: string;
 }
 
-// ponytail: benchmarked against stoic & Duolingo Mobbin flows (CBT habit proof + single-viewport no-scroll layout)
+const FOOTER_CLEARANCE = 188;
+
+// ponytail: one quiet schedule surface keeps the choice legible without card stacking
 const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   selectedTime,
   onSelectTime,
 }) => {
+  const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("onboarding");
-  const contentTopPadding = Platform.OS === "ios" ? insets.top + 32 : insets.top + 28;
   // ponytail: do not prompt OS dialog while toggling in onboarding; prompt on Continue click
   const {
     items,
@@ -46,22 +47,13 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
       showsVerticalScrollIndicator={false}
       bounces={false}
       contentContainerStyle={{
-        paddingBottom: 24,
-        paddingTop: contentTopPadding,
+        paddingBottom: FOOTER_CLEARANCE,
+        paddingTop: Math.max(headerHeight - insets.top, 16),
       }}
       contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6"
     >
-      <Animated.View entering={FadeIn.duration(160).delay(80)}>
-        <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.bold }}
-          className="text-[11px] font-bold uppercase tracking-wider text-sage-600"
-        >
-          {t("notification.step_label")}
-        </Text>
-      </Animated.View>
-
-      <Animated.View entering={FadeIn.duration(180).delay(120)} className="mt-1.5">
+      <Animated.View entering={FadeIn.duration(180).delay(120)}>
         <Text
           style={{ fontFamily: APP_FONT_FAMILIES.extraBold }}
           className="text-[28px] leading-[34px] text-ink happy-font-body-extrabold"
@@ -80,7 +72,7 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
       <Animated.View
         entering={FadeIn.duration(180).delay(180)}
         style={{ borderCurve: "continuous" }}
-        className="mt-5 overflow-hidden rounded-2xl border border-sage-200/80 bg-warm-white shadow-sm"
+        className="mt-7 overflow-hidden border-y border-sage-200/60 bg-transparent"
       >
         {items.map((item, index) => {
           const isSelected = cfg[item.id]?.enabled;
@@ -93,34 +85,16 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
               onToggle={() => toggleSelected(item.id)}
               onTimeChange={(hour, minute) => handleTimeChange(item.id, hour, minute)}
               isLast={index === items.length - 1}
+              appearance="schedule"
             />
           );
         })}
       </Animated.View>
 
-      {/* Habit Consistency Proof Badge */}
-      <Animated.View
-        entering={FadeIn.duration(180).delay(220)}
-        className="mt-4 flex-row items-center justify-center gap-2 py-2 px-3.5 rounded-full bg-sage-100/70 border border-sage-200/70 self-center"
-      >
-        <SymbolView
-          name="chart.line.uptrend.xyaxis"
-          size={14}
-          tintColor={SEMANTIC_COLORS.brand.pressed}
-          type="hierarchical"
-        />
+      <Animated.View entering={FadeIn.duration(180).delay(220)} className="mt-5 px-1">
         <Text
           style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="text-[12px] text-sage-800"
-        >
-          {t("notification.consistency_proof")}
-        </Text>
-      </Animated.View>
-
-      <Animated.View entering={FadeIn.duration(180).delay(260)} className="mt-2.5 px-1">
-        <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="text-center text-[13px] leading-relaxed text-ink-soft"
+          className="text-[13px] leading-relaxed text-ink-soft"
         >
           {t("notification.customize_note")}
         </Text>
