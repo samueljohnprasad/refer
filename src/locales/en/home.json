@@ -38,6 +38,10 @@
     "10": "What did you learn today?"
   },
   "journey": {
+    "nextAction": "Your next action",
+    "nextActionTitle": "Keep going with your starter path",
+    "nextActionDescription": "A short practice is ready when you are.",
+    "nextActionA11y": "Open your next starter path action",
     "completeTitle": "Journey complete",
     "completeDesc": "You can revisit the skills you’ve learned.",
     "reviewSkills": "Review your skills",

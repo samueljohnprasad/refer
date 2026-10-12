@@ -35,6 +35,7 @@ export function ExerciseTextListComposer(props: ListComposerProps) {
     readOnly = false,
     addLabel,
     minHeight = 118,
+    textOnly = false,
     helperText,
     requirementText,
     requirementVisible,
@@ -43,6 +44,7 @@ export function ExerciseTextListComposer(props: ListComposerProps) {
     autoFocus = true,
   } = props;
   const { isVoiceEnabled } = useVoiceFeature();
+  const canUseVoice = isVoiceEnabled && !textOnly;
   const [value, setValue] = useState("");
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const { recordedStatus, recordingCurrentState, record, stopRecording } =
@@ -90,7 +92,7 @@ export function ExerciseTextListComposer(props: ListComposerProps) {
   }, [recordedStatus, transcribeAudio, t]);
 
   const handleToggleRecording = async () => {
-    if (!isVoiceEnabled) return;
+    if (!canUseVoice) return;
     setVoiceError(null);
     if (isRecording) {
       try {
@@ -117,7 +119,7 @@ export function ExerciseTextListComposer(props: ListComposerProps) {
   const activePlaceholder =
     placeholder ??
     t(
-      isVoiceEnabled
+      canUseVoice
         ? "flow.ui.copy.text_composer_voice_placeholder"
         : "flow.ui.copy.text_composer_item_placeholder",
     );
@@ -181,7 +183,7 @@ export function ExerciseTextListComposer(props: ListComposerProps) {
             submitBehavior="submit"
             footer={
               <View style={composerStyles.footer}>
-                {isVoiceEnabled ? (
+                {canUseVoice ? (
                   <Pressable
                     onPress={handleToggleRecording}
                     disabled={

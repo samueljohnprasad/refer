@@ -28,6 +28,7 @@ export function TRBalancedThoughtStep({
   isAiLoading,
   aiError,
   readOnly,
+  textOnly,
   progress,
   onClose,
 }: StepProps<ThoughtReframingResponse>) {
@@ -63,16 +64,16 @@ export function TRBalancedThoughtStep({
 
   const handleUseBalancedOption = useCallback(
     (text: string): void => {
-      if (readOnly) return;
+      if (readOnly || textOnly) return;
       void Haptics.selectionAsync();
       onUpdate({ balancedThought: text });
       setShowBalancedOptions(false);
     },
-    [onUpdate, readOnly],
+    [onUpdate, readOnly, textOnly],
   );
 
   const handleToggleRecording = useCallback(async (): Promise<void> => {
-    if (readOnly || !isVoiceEnabled) return;
+    if (readOnly || textOnly || !isVoiceEnabled) return;
 
     setVoiceError(null);
     if (isRecording) {
@@ -107,6 +108,7 @@ export function TRBalancedThoughtStep({
     isRecording,
     onUpdate,
     readOnly,
+    textOnly,
     isVoiceEnabled,
     record,
     response.balancedThought,
@@ -168,7 +170,7 @@ export function TRBalancedThoughtStep({
         onWavePress={handleToggleRecording}
         isRecording={isRecording}
         isTranscribing={isTranscribing}
-        showVoice={!readOnly && isVoiceEnabled}
+        showVoice={!readOnly && !textOnly && isVoiceEnabled}
       />
 
       {voiceError ? (
@@ -177,7 +179,7 @@ export function TRBalancedThoughtStep({
         </Text>
       ) : null}
 
-      {!readOnly && (isAiLoading || suggestions.length > 0 || !!aiError) ? (
+      {!readOnly && !textOnly && (isAiLoading || suggestions.length > 0 || !!aiError) ? (
         <View
           className="mt-5 pt-2"
           style={{ borderTopWidth: 1, borderTopColor: SEMANTIC_COLORS.border.default }}

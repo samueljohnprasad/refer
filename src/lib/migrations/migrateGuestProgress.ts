@@ -8,14 +8,13 @@
  * - Reads progress from AsyncStorage.
  * - If the P1.1 tables (user_journey_enrollments, user_node_completions)
  *   are present, inserts the rows. If they don't exist yet, it's a no-op.
- * - Always clears local guest data after running so the next session starts clean.
+ * - Retains local guest data until a schema-correct migration exists.
  *
  * Once P1.1 ships, uncomment the Supabase inserts below.
  */
 
 import {
   loadGuestProgress,
-  clearGuestProgress,
   GuestProgress,
 } from '@/hooks/data/useGuestProgress';
 
@@ -50,8 +49,5 @@ export async function migrateGuestProgress(_userId: string): Promise<void> {
     );
   } catch (err) {
     console.warn('[migrateGuestProgress] Unexpected error during migration:', err);
-  } finally {
-    // Always clear local guest data
-    await clearGuestProgress();
   }
 }

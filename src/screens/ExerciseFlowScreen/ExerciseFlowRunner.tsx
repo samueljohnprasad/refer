@@ -28,12 +28,14 @@ interface ResolvedExerciseFlowScreenProps {
   config: ExerciseConfig<any>;
   existingEntry?: ExerciseEntry | null;
   readOnly: boolean;
+  textOnly: boolean;
 }
 
 export const ExerciseFlowRunner: React.FC<ResolvedExerciseFlowScreenProps> = ({
   config,
   existingEntry,
   readOnly,
+  textOnly,
 }) => {
   const router = useRouter();
   const { t } = useTranslation("exercises");
@@ -91,6 +93,7 @@ export const ExerciseFlowRunner: React.FC<ResolvedExerciseFlowScreenProps> = ({
     currentStepIndex: flow.currentStepIndex,
     response: flow.response,
     readOnly,
+    disabled: textOnly,
   });
   const isFinalStep = flow.currentStepIndex === flow.totalSteps - 1;
 
@@ -106,6 +109,7 @@ export const ExerciseFlowRunner: React.FC<ResolvedExerciseFlowScreenProps> = ({
       existingEntry,
       exerciseType,
       readOnly,
+      textOnly,
       flow,
       save,
       router,
@@ -186,6 +190,7 @@ export const ExerciseFlowRunner: React.FC<ResolvedExerciseFlowScreenProps> = ({
       aiError: ai.error,
       isSaving,
       readOnly,
+      textOnly,
       autoFocus: currentStep?.autoFocus ?? !readOnly,
       setPrimaryOverride,
     }),
@@ -197,6 +202,7 @@ export const ExerciseFlowRunner: React.FC<ResolvedExerciseFlowScreenProps> = ({
       ai.error,
       isSaving,
       readOnly,
+      textOnly,
       handleClose,
       handleSave,
       handleNavigateDeeper,

@@ -30,6 +30,11 @@ import { migrateGuestProgress } from "../lib/migrations/migrateGuestProgress";
 import { store, resetStore } from "../store/store";
 import { usePostHog } from "posthog-react-native";
 import AuthNetworkErrorScreen from "./AuthNetworkErrorScreen";
+import {
+  createIdentityLinkOperationId,
+  isRetryableIdentityLinkError,
+  IdentityLinkResultV1,
+} from "../network/auth/identity-link-result";
 
 export type AuthProviderId = "apple" | "google";
 
@@ -39,11 +44,7 @@ export interface AccountConflict {
   message: string;
 }
 
-export type ClaimProfileResult =
-  | { status: "linked"; session: Session; user: User }
-  | { status: "existing_account"; conflict: AccountConflict }
-  | { status: "cancelled" }
-  | { status: "failed"; error: unknown };
+export type ClaimProfileResult = IdentityLinkResultV1;
 
 export type MoveToExistingAccountResult =
   | { status: "signed_in"; session: Session; user: User }
@@ -369,13 +370,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const claimProfile = async (
     provider: AuthProviderId,
   ): Promise<ClaimProfileResult> => {
+    const operationId = createIdentityLinkOperationId();
     let anonymousUserId = "";
+    let effectiveUserId = "";
 
     try {
       const currentSession = await ensureAnonymousSessionInternal();
       if (!currentSession?.user) {
         return {
           status: "failed",
+          operationId,
+          anonymousUserId,
+          effectiveUserId,
+          retryable: false,
           error: new Error("No anonymous session available."),
         };
       }
@@ -385,6 +392,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (!currentSession.user.is_anonymous) {
         return {
           status: "linked",
+          operationId,
+          anonymousUserId: currentSession.user.id,
+          effectiveUserId: currentSession.user.id,
+          retryable: false,
           session: currentSession,
           user: currentSession.user,
         };
@@ -403,7 +414,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (!nextSession?.user) {
         return {
           status: "failed",
+          operationId,
+          anonymousUserId,
+          effectiveUserId,
+          retryable: false,
           error: new Error("No session returned after linking identity."),
+        };
+      }
+
+      effectiveUserId = nextSession.user.id;
+      if (effectiveUserId !== anonymousUserId) {
+        return {
+          status: "failed",
+          operationId,
+          anonymousUserId,
+          effectiveUserId,
+          retryable: false,
+          error: new Error("Identity link changed the active user."),
         };
       }
 
@@ -412,10 +439,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(nextSession.user);
       setAccountConflict(null);
 
-      return { status: "linked", session: nextSession, user: nextSession.user };
+      return {
+        status: "linked",
+        operationId,
+        anonymousUserId,
+        effectiveUserId,
+        retryable: false,
+        session: nextSession,
+        user: nextSession.user,
+      };
     } catch (err) {
       if (err instanceof AuthFlowCancelledError) {
-        return { status: "cancelled" };
+        return {
+          status: "cancelled",
+          operationId,
+          anonymousUserId,
+          effectiveUserId,
+          retryable: false,
+        };
       }
 
       if (
@@ -431,10 +472,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               : "This login is already linked to another Happy account.",
         };
         setAccountConflict(conflict);
-        return { status: "existing_account", conflict };
+        return {
+          status: "recovery_required",
+          operationId,
+          anonymousUserId,
+          effectiveUserId,
+          retryable: false,
+          conflict,
+        };
       }
 
-      return { status: "failed", error: err };
+      return {
+        status: isRetryableIdentityLinkError(err) ? "retryable_failure" : "failed",
+        operationId,
+        anonymousUserId,
+        effectiveUserId,
+        retryable: isRetryableIdentityLinkError(err),
+        error: err,
+      } as ClaimProfileResult;
     }
   };
 

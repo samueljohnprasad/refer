@@ -18,6 +18,7 @@ export function TREvidenceForStep({
   isValid,
   isSaving,
   readOnly,
+  textOnly,
   progress,
   onClose,
   aiSuggestions,
@@ -97,11 +98,12 @@ export function TREvidenceForStep({
         }
         placeholder={translateCopy("Type a fact here...")}
         readOnly={readOnly}
+        textOnly={textOnly}
         addLabel={translateCopy("Add")}
         minHeight={CBT_COMPOSER_MIN_HEIGHT}
       />
 
-      {!readOnly ? (
+      {!readOnly && !textOnly ? (
         <ReflectionDisclosure
           expanded={showEvidenceSuggestions}
           onToggle={() => setShowEvidenceSuggestions((current) => !current)}

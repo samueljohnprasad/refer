@@ -19,6 +19,7 @@ import { useSetAtom } from "jotai";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { ContinueJourneyCard } from "@/src/components/ContinueJourneyCard/ContinueJourneyCard";
+import { StarterPathNextActionCard } from "@/src/domains/journey/ui/components/StarterPathNextActionCard";
 import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
 import { HomeHeader } from "./components/HomeHeader";
 
@@ -188,6 +189,7 @@ export default function JournalCalendarScreen() {
 
           {/* Section 3 (Learning): open continue-journey row */}
           <View className="mt-9">
+            <StarterPathNextActionCard />
             <ContinueJourneyCard />
           </View>
         </View>

@@ -22,6 +22,7 @@ export function TRDistortionsStep({
   isAiLoading,
   aiError,
   readOnly,
+  textOnly,
   progress,
   onClose,
 }: StepProps<ThoughtReframingResponse>) {
@@ -148,7 +149,7 @@ export function TRDistortionsStep({
         label="patterns"
       />
 
-      {!readOnly && (
+      {!readOnly && !textOnly && (
         <Pressable
           onPress={handleTogglePatternHelp}
           accessibilityRole="button"
@@ -173,7 +174,7 @@ export function TRDistortionsStep({
         </Pressable>
       )}
 
-      {showPatternHelp && (
+      {showPatternHelp && !textOnly && (
         <View className="mb-4">
           {isAiLoading && (
             <LoadingRow message="Looking for possible matches..." />

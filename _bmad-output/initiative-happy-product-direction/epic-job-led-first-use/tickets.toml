@@ -1,0 +1,165 @@
+# Epic 1 breakdown. Table order is the recommended build order.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Anonymous starter path reaches a reusable next action"
+description = "Runs one new user through anonymous continuity, the Understand anxious thoughts goal, one authored lesson, a linked practice handoff, and a focused Home return using the shared StarterPath contract."
+verify = "On a clean local session, a reviewer starts anonymously, selects Understand anxious thoughts, completes the authored lesson, sees Thought Catcher as the linked next action with boundary copy, and reaches Home without seeing the full catalog first."
+covers = ["CAP-1", "CAP-5", "CAP-6"]
+after = []
+hitl = true
+risk = "medium"
+unknown = "The local tracer must use the existing Expo route and synthetic data until hosted anonymous-auth and the released route are verified."
+references = [
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/experience-flow.md#first-time-user",
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#AD-1",
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#AD-4",
+  "app/index.tsx",
+  "app/tabs/screens/(onboarding)/premium-onboarding.tsx",
+  "src/screens/OnboardingScreen/OnboardingScreen.tsx",
+]
+
+[[entry]]
+id = 2
+type = "story"
+title = "Anonymous progress stays with the same user when identity is linked"
+description = "Makes anonymous-to-identified continuity explicit so optional Apple or Google signup after activation preserves the same Supabase-owned starter progress and pauses safely on an identity conflict."
+verify = "After completing the tracer, a reviewer links an identity and restarts the app to find the same user-owned path state; a conflicting provider identity leaves the anonymous data attached to its original user and presents a recovery outcome."
+covers = ["CAP-5", "CAP-6"]
+after = [1]
+hitl = true
+risk = "high"
+unknown = "Hosted provider-linking behavior, replay evidence, and the final recovery wording still require a real preview environment check."
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#AD-1",
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#AD-8",
+  "src/context/AuthContext.tsx",
+  "src/network/auth/apple-auth.ts",
+  "src/network/auth/google-auth.ts",
+]
+
+[[entry]]
+id = 3
+type = "story"
+title = "StarterPath progress persists and switches without loss"
+description = "Adds the Journey-owned versioned StarterPath progress and active-path mutation so completing a step, resuming later, or switching paths cannot overwrite another path's progress."
+verify = "With two available paths, a reviewer completes a step on path A, switches to path B, restarts, and returns to path A to see its earlier progress and next action intact while path B has its own state."
+covers = ["CAP-1", "CAP-5"]
+after = [2]
+hitl = false
+risk = "high"
+unknown = "The migration and backfill boundary between current Redux active-course state, v5 progress, and the new StarterPath rows must be confirmed during implementation."
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#AD-4",
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#AD-8",
+  "supabase/migrations/20260428000000_journey_map_v5.sql",
+  "hooks/journey/useActiveCourse.ts",
+  "hooks/journey/useCourseProgress.ts",
+]
+
+[[entry]]
+id = 4
+type = "story"
+title = "Anxious-thoughts goal resolves to the authored starter bundle"
+description = "Maps the first plain-language goal to the published anxiety course, authored lesson, reusable Thought Catcher exercise, guided text prompt, and versioned next action without using display labels as identifiers."
+verify = "A catalog lookup for Understand anxious thoughts returns the agreed course, lesson, exercise, reflection prompt, and next-action identifiers, and each referenced lesson and exercise is available in the local authored data."
+covers = ["CAP-1"]
+after = [3]
+hitl = false
+risk = "medium"
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#AD-4",
+  "supabase/seed/anxiety_section_1_unit_1.sql",
+  "src/data/exerciseRegistry.ts",
+  "src/data/exerciseLinkingMap.ts",
+  "src/screens/OnboardingScreen/utils/courseResolver.ts",
+]
+
+[[entry]]
+id = 5
+type = "story"
+title = "Home resumes one next action without hiding the catalog"
+description = "Makes Home read the shared StarterPath progress, show one useful next action with repeat and switch options, and keep Journeys, Exercises, Journal, Insights, rewards, and settings directly reachable after activation."
+verify = "After the starter lesson or a later return, Home shows the current next action or an honest completion state, while a reviewer can still open the direct Journeys, Exercises, Journal, Insights, rewards, and settings surfaces without losing path progress."
+covers = ["CAP-5", "CAP-6"]
+after = [3, 4]
+hitl = false
+risk = "medium"
+references = [
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/experience-flow.md#returning-user",
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#AD-4",
+  "app/tabs/(tabs)/home/index.tsx",
+  "hooks/journey/useActiveCourse.ts",
+  "hooks/journey/useCourseProgress.ts",
+]
+
+[[entry]]
+id = 6
+type = "story"
+title = "Boundary and privacy guidance covers first use and account linking"
+description = "Places concise, localized guidance at onboarding, the first lesson handoff, sensitive reflection handoff, and optional signup so users understand self-guided education, private content, and the limits of Happy before relying on it."
+verify = "A reviewer can complete the first-use flow and account-linking attempt while seeing clear non-diagnostic, non-crisis, privacy, and optional-signup language at the relevant decision points, with no sensitive reflection content sent to ordinary analytics or logs."
+covers = ["CAP-6"]
+after = [1, 2]
+hitl = false
+risk = "medium"
+references = [
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/product-guardrails.md",
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#AD-7",
+  "PRODUCT.md",
+  "DESIGN.md",
+  "src/components/SignInBottomSheet.tsx",
+]
+
+[[entry]]
+id = 7
+type = "story"
+title = "Activation and paywall boundaries are observable without blocking the first loop"
+description = "Defines metadata-only activation events and moves subscription exposure behind activation so the anonymous first lesson-to-practice-to-reflection loop remains free while post-activation premium selection can still open the paywall."
+verify = "A clean session completes the first meaningful loop without a paywall; metadata events record goal, lesson, handoff, save, Home, and readiness states without user text; selecting a premium item after activation can show the paywall, and the release checklist records iOS 26 and hosted-environment evidence."
+covers = ["CAP-1", "CAP-5", "CAP-6"]
+after = [5, 6]
+hitl = true
+risk = "high"
+unknown = "The released paywall offerings, hosted Supabase project separation, current native deployment target, and final event names need verification before claiming production readiness."
+references = [
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/spec-happy-product-direction.md#Constraints",
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#Operational-Envelope",
+  "src/screens/OnboardingScreen/hooks/useOnboardingAnalytics.ts",
+  "src/context/RevenueCatProvider.tsx",
+  "app/paywall.tsx",
+]
+
+[[entry]]
+id = 8
+type = "story"
+title = "Refactor sweep closes the first-use foundation"
+description = "Removes duplication and deferred cleanup revealed by the Epic 1 build while preserving the agreed auth, StarterPath, Home, trust, and subscription contracts."
+verify = "A review of the completed Epic 1 diff finds no duplicate StarterPath mutation, stale first-use paywall route, or new direct cross-domain persistence access, and the documented local checks pass."
+covers = []
+after = [1, 2, 3, 4, 5, 6, 7]
+hitl = false
+risk = "medium"
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#AD-9",
+]
+
+[[entry]]
+id = 9
+type = "story"
+title = "Second authored StarterPath helps users feel less overwhelmed"
+description = "Adds the approved Feel less overwhelmed path with the Stress is a signal lesson, Grounding Reset practice, private text reflection, reversible path selection, durable progress, Home continuation, and metadata-only activation evidence while preserving the existing anxious-thoughts path."
+verify = "A reviewer selects Feel less overwhelmed, completes Stress is a signal, reaches Grounding Reset, completes the practice, saves the private text check-in, returns to Home with the next action preserved, and confirms the existing Understand anxious thoughts path still resolves unchanged."
+covers = ["CAP-1", "CAP-2", "CAP-3", "CAP-5", "CAP-6"]
+after = [3, 4]
+hitl = true
+risk = "high"
+unknown = "The released-build exercise identifier and final authored copy for Grounding Reset must be confirmed before implementation; no diagnosis, symptom-relief promise, or raw reflection analytics may be introduced."
+references = [
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/starter-paths.md#second-path-feel-less-overwhelmed",
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/experience-flow.md#returning-user",
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/product-guardrails.md#experience-rules",
+  "src/domains/journey/data/starterPathProgress.repo.ts",
+  "src/screens/StarterPathScreen/StarterPathScreen.tsx",
+]

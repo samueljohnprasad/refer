@@ -23,6 +23,7 @@ export function TRAutomaticThoughtStep({
   isValid,
   isSaving,
   readOnly,
+  textOnly,
   progress,
   onClose,
   aiSuggestions,
@@ -71,6 +72,7 @@ export function TRAutomaticThoughtStep({
   );
   const canUseThoughtSuggestions =
     !readOnly &&
+    !textOnly &&
     showThoughtSuggestions &&
     !isAiLoading &&
     visibleThoughtSuggestions.length > 0;
@@ -84,7 +86,7 @@ export function TRAutomaticThoughtStep({
   );
 
   const handleToggleRecording = useCallback(async (): Promise<void> => {
-    if (readOnly || !isVoiceEnabled) return;
+    if (readOnly || textOnly || !isVoiceEnabled) return;
 
     setVoiceError(null);
     if (isRecording) {
@@ -112,7 +114,7 @@ export function TRAutomaticThoughtStep({
     } catch {
       setVoiceError(translateCopy("Voice input unavailable. You can type this instead."));
     }
-  }, [isRecording, onUpdate, readOnly, isVoiceEnabled, record, response.automaticThought, stopRecording, transcribeAudio, translateCopy]);
+  }, [isRecording, onUpdate, readOnly, textOnly, isVoiceEnabled, record, response.automaticThought, stopRecording, transcribeAudio, translateCopy]);
 
   return (
     <StepShell
@@ -167,7 +169,7 @@ export function TRAutomaticThoughtStep({
         onWavePress={handleToggleRecording}
         isRecording={isRecording}
         isTranscribing={isTranscribing}
-        showVoice={!readOnly && isVoiceEnabled}
+        showVoice={!readOnly && !textOnly && isVoiceEnabled}
       />
 
       {voiceError ? (
@@ -176,7 +178,7 @@ export function TRAutomaticThoughtStep({
         </Text>
       ) : null}
 
-      {!readOnly && visibleThoughtSuggestions.length > 0 && (
+      {!readOnly && !textOnly && visibleThoughtSuggestions.length > 0 && (
         <Pressable
           onPress={() => setShowThoughtSuggestions((current) => !current)}
           accessibilityRole="button"
@@ -197,24 +199,24 @@ export function TRAutomaticThoughtStep({
         </Pressable>
       )}
 
-      {showThoughtSuggestions && isAiLoading && (
+      {!textOnly && showThoughtSuggestions && isAiLoading && (
         <LoadingRow message="Finding starting points..." />
       )}
-      {showThoughtSuggestions && (
+      {!textOnly && showThoughtSuggestions && (
         <AiUnavailableNote visible={!!aiError && !isAiLoading} />
       )}
 
-      {showThoughtSuggestions && (
+      {!textOnly && showThoughtSuggestions && (
         <View>
           <ExampleDetailRow
             scenario={translateCopy("I made a small mistake at work...")}
             thought={translateCopy("I'm going to get fired and lose everything.")}
-            onUse={readOnly ? undefined : useThoughtExample}
+            onUse={readOnly || textOnly ? undefined : useThoughtExample}
           />
           <ExampleDetailRow
             scenario={translateCopy("A friend didn't reply to my text...")}
             thought={translateCopy("They're bored of me and are ignoring me on purpose.")}
-            onUse={readOnly ? undefined : useThoughtExample}
+            onUse={readOnly || textOnly ? undefined : useThoughtExample}
           />
 
           {canUseThoughtSuggestions ? (

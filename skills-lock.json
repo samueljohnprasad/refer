@@ -30,6 +30,12 @@
       "skillPath": "skills/agent-device/SKILL.md",
       "computedHash": "a09ff3456969a416fb35de14484a933e70df307bc11ba77bf3b0a9ea2f723c07"
     },
+    "agent-update-manager": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/agent-update-manager/SKILL.md",
+      "computedHash": "b95314180bcf95c12cc3f601900b71414846c7f06b3441e4b6d9e0cd3df508b3"
+    },
     "ai-slides": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -39,6 +45,12 @@
       "source": "TerminalSkills/skills",
       "sourceType": "github",
       "computedHash": "2cb0ed52299b00b06017a5a59a378fcfb1827e5a0c8d7bd7982b23f60c09adcb"
+    },
+    "analytics-optimization-analyst": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/analytics-optimization-analyst/SKILL.md",
+      "computedHash": "fba6a5baa0958d3554772f0ed3b603d3b5fcf8d0690fdbd53411c03fc2bef310"
     },
     "android-aso": {
       "source": "eronred/aso-skills",
@@ -465,6 +477,12 @@
       "sourceType": "github",
       "computedHash": "b5d0f38c9063817d67214ff6dfc003c8bfcbe3e7ce2a94202e6ad7812b9eabc6"
     },
+    "brand-strategist": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/brand-strategist/SKILL.md",
+      "computedHash": "20f906ad3ba562458449d27d7da83e7effb0ce274e4ccc92d208ce9eb379ce06"
+    },
     "branding": {
       "source": "omer-metin/skills-for-antigravity",
       "sourceType": "github",
@@ -558,6 +576,12 @@
       "skillPath": "skills/engineering/codebase-design/SKILL.md",
       "computedHash": "5a17552cc1482f1a40124bf4e6c9dbd90ac0dbb47e71c07d47369f9e5f2ae3b5"
     },
+    "competitive-intelligence-agent": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/competitive-intelligence-agent/SKILL.md",
+      "computedHash": "5c75c13f2dadbf6f60804c3c7352eb09fb6ca0c764b98cb1c0811c4de8c3e62d"
+    },
     "competitor-analysis": {
       "source": "eronred/aso-skills",
       "sourceType": "github",
@@ -574,6 +598,12 @@
       "source": "omer-metin/skills-for-antigravity",
       "sourceType": "github",
       "computedHash": "de6ee08f6c076b7195e8a702f9b759e40bac9477503224c498beee3682c0e072"
+    },
+    "content-strategist": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/content-strategist/SKILL.md",
+      "computedHash": "c6d8e29dd206f79dc8fe442b18f4f96e5c2f5de135276b7198b2ba49099e0bd3"
     },
     "content-strategy": {
       "source": "omer-metin/skills-for-antigravity",
@@ -629,11 +659,23 @@
       "sourceType": "github",
       "computedHash": "05195efde734ffada65f3d5b23a21c326c1cb248eca22b97997341c18c0dd037"
     },
+    "crm-customer-retention-agent": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/crm-customer-retention-agent/SKILL.md",
+      "computedHash": "4998253db4b69ef4e119ea432ec59cffda597ab39faf991990a15a856bbde11c"
+    },
     "custom-product-pages": {
       "source": "eronred/aso-skills",
       "sourceType": "github",
       "skillPath": "skills/custom-product-pages/SKILL.md",
       "computedHash": "56728f769e5a118cbaeba4190989197e291759be64bc4278be6315c9cac99cf6"
+    },
+    "customer-journey-funnel-strategist": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/customer-journey-funnel-strategist/SKILL.md",
+      "computedHash": "a4a23367a9548110b1fc6ffb81d42804caf8070d254e0a5f09727a4c7336d195"
     },
     "design-critique": {
       "source": "anthropics/knowledge-work-plugins",
@@ -717,6 +759,12 @@
       "skillPath": "plugins/expo/skills/eas-workflows/SKILL.md",
       "computedHash": "5cb703e967d4b96c27b38787e4b9fbb92b50f5ed475026decdf428fda8e7fd5b"
     },
+    "email-lifecycle-marketer": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/email-lifecycle-marketer/SKILL.md",
+      "computedHash": "a50e366e67f22582bd4ed75a2d258775d27d0e83e438cf92b0b9e045507fb395"
+    },
     "emil-design-eng": {
       "source": "emilkowalski/skills",
       "sourceType": "github",
@@ -728,6 +776,12 @@
       "sourceType": "github",
       "skillPath": "look-before-you-leap/skills/engineering-discipline/SKILL.md",
       "computedHash": "c526120a97258ee7a17bd717dd75e0b283651f8f4813c251529af5f40f0dbf38"
+    },
+    "ethics-compliance-reviewer": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/ethics-compliance-reviewer/SKILL.md",
+      "computedHash": "74fcdd64c5b862c1a9bff9bc2655a7b589228b0fd596a6e55dfa028df0a1f004"
     },
     "expo": {
       "source": "claude-dev-suite/claude-dev-suite",
@@ -923,6 +977,12 @@
       "skillPath": "skills/productivity/grilling/SKILL.md",
       "computedHash": "4dd886b0196bf43729d954ae326016f2bd9f5f79d892500b407c33a753362f14"
     },
+    "growth-creative-agent": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/growth-creative-agent/SKILL.md",
+      "computedHash": "24f97c5c69b639176103d3fabea71751bf00e5d8ca0d1b2707684fee6086d6b2"
+    },
     "growth-loops": {
       "source": "omer-metin/skills-for-antigravity",
       "sourceType": "github",
@@ -1004,6 +1064,12 @@
       "skillPath": "skills/brutalist-skill/SKILL.md",
       "computedHash": "8fc355c4aadb7d29c53ca28bc41be3cd6eea765d121e3737c4dc2d0f90a8effa"
     },
+    "influencer-partnership-strategist": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/influencer-partnership-strategist/SKILL.md",
+      "computedHash": "6793fb0b55bc73cf442cd6c1f637c4efde44d9035ff5afaab575ad4df225df46"
+    },
     "integrate-revenuecat": {
       "source": "RevenueCat/ai-toolkit",
       "sourceType": "github",
@@ -1025,6 +1091,12 @@
       "sourceType": "github",
       "skillPath": "skills/keyword-research/SKILL.md",
       "computedHash": "16189d57cc4e195b71ddc82445b3a16e8b2f9090669e01fb39e8c8d094f6a06c"
+    },
+    "landing-page-conversion-specialist": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/landing-page-conversion-specialist/SKILL.md",
+      "computedHash": "8b8dd8f0d9cade193295afe5f183b9963913013b002e0af501392b5468b553c6"
     },
     "landing-page-design": {
       "source": "omer-metin/skills-for-antigravity",
@@ -1119,10 +1191,34 @@
       "skillPath": "skills/market-pulse/SKILL.md",
       "computedHash": "2a118a484a70877347bc1f28699ac8451ee64d6e148b41b7c234147557cef47f"
     },
+    "market-research-analyst": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/market-research-analyst/SKILL.md",
+      "computedHash": "19911d24b04e453318980005c24da87fa7a2ff0d81fe5d69e0e8f9085e2efd49"
+    },
     "marketing": {
       "source": "omer-metin/skills-for-antigravity",
       "sourceType": "github",
       "computedHash": "346e536c384ae82a98d5281fc37545abca7a205b2dc5cc4045ceb17159e82c4d"
+    },
+    "marketing-automation-specialist": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing-automation-specialist/SKILL.md",
+      "computedHash": "616850b27c163c0cce94eaceac22fc0c795f127b273f46b9a5765efacb954054"
+    },
+    "marketing-director": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing-director/SKILL.md",
+      "computedHash": "789e9905c3b86a24c2a1b3fa6a4210a80ab575ec2dbf7617462dcf7d7498353e"
+    },
+    "marketing-orchestrator": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing-orchestrator/SKILL.md",
+      "computedHash": "ff8e393ddbb8daf989412c4511a3dacfd0c8be261791fd0b3548a5924ef78949"
     },
     "mental-health-psychoeducation": {
       "source": "jk-0001/skills",
@@ -1187,6 +1283,12 @@
       "sourceType": "github",
       "skillPath": "skills/onboarding-optimization/SKILL.md",
       "computedHash": "ad4ecee81dec8ecce4a83759e7a5a1f19d8f6a393500d27a231525e735311747"
+    },
+    "paid-ads-specialist": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/paid-ads-specialist/SKILL.md",
+      "computedHash": "8f7a2fcc7ec03b5693a9102d9ebca69da05c7bc06cfdf89f1a5568d91c024a8f"
     },
     "paywall-optimization": {
       "source": "eronred/aso-skills",
@@ -1600,6 +1702,12 @@
       "skillPath": "skills/seasonal-aso/SKILL.md",
       "computedHash": "9b3a8d8e23e9964ee0d9e91aa6fc8da5c97b29262169f44ed17335121f656a27"
     },
+    "seo-aio-strategist": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/seo-aio-strategist/SKILL.md",
+      "computedHash": "2b375734a578c4dec9443180b24fff2a5448e4ad0bae2fc87263f71dc31902d3"
+    },
     "setup-matt-pocock-skills": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -1628,6 +1736,12 @@
       "sourceType": "github",
       "skillPath": "skills/design-mobile-apps/SKILL.md",
       "computedHash": "40a4e8ce47d78cac424768ec2f45d7934ef9e007545729d8dab7be9b0e518b79"
+    },
+    "social-media-engagement-agent": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/social-media-engagement-agent/SKILL.md",
+      "computedHash": "a4dec8314d6fa072b3c848e514376c39aa03e5db283696422c7eeba73559a253"
     },
     "solid-principles": {
       "source": "claude-dev-suite/claude-dev-suite",
@@ -1747,6 +1861,18 @@
       "sourceType": "github",
       "skillPath": "skills/react-native-skills/SKILL.md",
       "computedHash": "41d24eafa7c3d82e270439808f7cfbc4d51aeb2d14f2809a2267c16275784d06"
+    },
+    "video-creative-director": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/video-creative-director/SKILL.md",
+      "computedHash": "75a5547f24c8aa89b129f4176bc6a4450229ee6547f971a8be68498905043395"
+    },
+    "video-pattern-reverse-engineer": {
+      "source": "lensetek/Digital-Marketing-Agent_Skills",
+      "sourceType": "github",
+      "skillPath": "skills/video-pattern-reverse-engineer/SKILL.md",
+      "computedHash": "f63701ef00d2c8041c8d16e23d1ecf7c28049119025956176365639e3461a3f6"
     },
     "visual-hierarchy": {
       "source": "claude-dev-suite/claude-dev-suite",

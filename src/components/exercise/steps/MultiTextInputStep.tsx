@@ -69,6 +69,7 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     isAiLoading,
     aiLoadingMessage,
     readOnly,
+    textOnly,
     autoFocus = true,
     tipText,
     tipIcon,
@@ -193,6 +194,7 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
               maxItems={maxItems}
               maxLength={maxLength}
               readOnly={readOnly}
+              textOnly={textOnly}
               minHeight={composerMinHeight}
               autoFocus={autoFocus}
             />

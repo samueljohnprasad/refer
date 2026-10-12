@@ -1,0 +1,37 @@
+# Initiative epic breakdown. Table order is the recommended build order.
+
+[[epic]]
+id = 1
+slug = "epic-job-led-first-use"
+title = "Job-led first use and trust foundation"
+covers = ["CAP-1", "CAP-5", "CAP-6"]
+
+[[epic]]
+id = 2
+slug = "epic-guided-practice-loop"
+title = "Guided course-to-practice loop"
+covers = ["CAP-2"]
+after = [
+  { epic = 1, needs = "the StarterPath, first-use surface, and lesson-to-practice handoff contracts" },
+  { epic = 1, needs = "the shared boundary, privacy, safety, and activation contracts" },
+]
+
+[[epic]]
+id = 3
+slug = "epic-private-reflection"
+title = "Private reflection"
+covers = ["CAP-3"]
+after = [
+  { epic = 2, needs = "the acknowledged PracticeCompletionV1 output and continuation signal" },
+  { epic = 1, needs = "the shared boundary, privacy, safety, and activation contracts" },
+]
+
+[[epic]]
+id = 4
+slug = "epic-pattern-insights"
+title = "One deterministic pattern insight"
+covers = ["CAP-4"]
+after = [
+  { epic = 3, needs = "the canonical private reflection, lineage, and structured source-data contract" },
+  { epic = 1, needs = "the shared boundary, privacy, safety, and activation contracts" },
+]

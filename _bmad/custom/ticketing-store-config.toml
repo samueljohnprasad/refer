@@ -1,0 +1,32 @@
+# Ticketing config: tickets as files in the repo (default). Read by every skill that creates, reads, or moves tickets.
+# Tickets and artifacts live together as markdown files under output_folder.
+
+description = "Quick setup: local Markdown tickets under version control. No tracker or account needed."
+
+[tickets]
+store = "repo"
+
+access = "Read and write the files under output_folder."
+
+fields = "risk and severity live in frontmatter; estimate and estimate_basis do too."
+
+reference = "A reference is a line in the ticket's References section: type — location, section."
+
+[verbs]
+setup = "Tickets live in output_folder. Create backlog/ and the active initiative folder when needed."
+write = "Create or edit ticket files and tickets.toml entries. Status and assignee are written through tickets.py mark."
+query = "Resolve tickets by path, id, file name, or title; read status from tickets.py status."
+
+[tickets.types]
+initiative = "initiative"
+epic = "epic"
+story = "story"
+spike = "spike"
+bug = "bug"
+
+[tickets.status]
+backlog = "backlog"
+in-progress = "in-progress"
+review = "review"
+done = "done"
+dropped = "dropped"

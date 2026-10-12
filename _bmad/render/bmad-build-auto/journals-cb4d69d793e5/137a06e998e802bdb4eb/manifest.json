@@ -1,0 +1,56 @@
+{
+  "generation_hash": "137a06e998e802bdb4eb",
+  "inputs": {
+    "jinja2_version": "3.1.6",
+    "project_root": "/Users/samuelprasad/Desktop/happy/journals",
+    "renderer_sha256": "a622fd5d9f633690323bdecf6cc9dc28625ef0d7b9d971fcc3cd101ed271fa19",
+    "resolved_values": {
+      "config.core.output_folder": "/Users/samuelprasad/Desktop/happy/journals/_bmad-output",
+      "customization.workflow.activation_steps_append": [],
+      "customization.workflow.activation_steps_prepend": [],
+      "customization.workflow.implementation_handoff": "Launch a subagent with no prior conversation context, with this prompt:\n\n> Read {plan_file} fully and implement it — the plan is the sole source of truth. Load every file listed in its frontmatter `context:` before you start.\n>\n> When done, report what you changed, how you verified it, and anything left incomplete or risky.\n",
+      "customization.workflow.on_complete": "",
+      "customization.workflow.persistent_facts": [],
+      "customization.workflow.quick_lenses": [
+        {
+          "id": "quick",
+          "instruction": "Launch a context-free subagent with this prompt:\n\nRead `{plan_file}` — the plan holding the acceptance criteria and intent — and the files its frontmatter `context:` lists. Read the agent instruction files (`AGENTS.md`, `CLAUDE.md`, or equivalents) at the repository root and in the directories the diff touches; those are the rules. Then read the unified diff at `{diff_file}` — it is the change under review.\n\nReport unmet acceptance criteria, broken rules, and bugs. Each finding: the location, what goes wrong, and evidence checked against the surrounding code. Output a Markdown list of findings only — no severity, priority, or ranking.\n\nDo not invoke any skill, and do not spawn subagents of your own — you are the reviewer. Return your findings as text in your final message; do not route them through any findings-reporting tool the host may offer.\n\n",
+          "name": "Quick"
+        }
+      ],
+      "customization.workflow.review": "quick",
+      "customization.workflow.route": "auto",
+      "customization.workflow.route_selection": "Decide whether to use a coding subagent (full) or implement directly (oneshot).\nUsing the information already gathered, with no further reading and minimal\nextra reasoning, estimate the lines of code to add or modify.\n100 lines or fewer: oneshot. Otherwise: full.\nIf the change touches more than five files and is not simple or mechanical,\nconsider upgrading to full.\n"
+    },
+    "skill_root": "/Users/samuelprasad/Desktop/happy/journals/.agents/skills/bmad-build-auto",
+    "source_sha256": {
+      "plan-template.md": "dd498c7523f010dbf33b2645714d7f93c237ed22f575e7d877be73ac7495bbf0",
+      "references/claims-check.md": "6cb20a86d819b95272876bca0dffef59ca07ba6a373d804295066751043867c0",
+      "references/deletion-check.md": "0f1f124e4e957147e89164a272b10bedc694ad0d9ad2618c8610ac74ee9cb0da",
+      "review-prompts/edge-case-hunter.md": "b909fe0ec8e4daaf2550d0ec783618c5146261d0dbc0e054698ce00d0905a3d1",
+      "review-prompts/verification-gap.md": "45ab0b8c4c56c5c055c97a293a8591a67e256d0b1a2058ce1f093cd866be8d03",
+      "step-01-clarify-and-route.md": "3288dc68b5769b637049e917f95ada290e9551bd7f84d6e71dd3b88f22d70111",
+      "step-02-plan.md": "fec5f5448d2c60d79660c7e501d930238ecf42426e1a8cb7a333db375fe324eb",
+      "step-03-implement.md": "5ae1a589919dff820596a41eca7dbf3b63c5f737c0d19193aa2a6dc0d32c1018",
+      "step-04-review.md": "4232a58fe4f8e706c9be9e7db4dda7a313b9e40a7b3c9b1a650dfb26eb79a32f",
+      "workflow.md": "ae1841a70272e22835ef55b703675d14a49b81e93fe256beb308a58ec447fb46"
+    }
+  },
+  "outputs": {
+    "plan-template.md": "dd498c7523f010dbf33b2645714d7f93c237ed22f575e7d877be73ac7495bbf0",
+    "references/claims-check.md": "6cb20a86d819b95272876bca0dffef59ca07ba6a373d804295066751043867c0",
+    "references/deletion-check.md": "0f1f124e4e957147e89164a272b10bedc694ad0d9ad2618c8610ac74ee9cb0da",
+    "review-prompts/edge-case-hunter.md": "b909fe0ec8e4daaf2550d0ec783618c5146261d0dbc0e054698ce00d0905a3d1",
+    "review-prompts/verification-gap.md": "45ab0b8c4c56c5c055c97a293a8591a67e256d0b1a2058ce1f093cd866be8d03",
+    "step-01-clarify-and-route.md": "aec8af0f44b0837a047cf264de15a44b642c03d70739cf23caca13cb95267e75",
+    "step-02-plan.md": "dfd07c2d30ad8dddcf082dce87f542f67a3aff59ac7dc6ae72805fcfbc5afd08",
+    "step-03-implement.md": "30baaad184e65eee2cc0ee71ce0c36768734d209f6b14409bc3c0f34a8f974e5",
+    "step-04-review.md": "5351a1e2949a6ac75f8c6c450d47555012a2aa72f68032b1cd01fda0691a036f",
+    "workflow.md": "8b4a21c0fa3a8b779fd7238b930529a2e2ef3abcd7c5f7f4da2c1ff8d6b35538"
+  },
+  "project_root": "/Users/samuelprasad/Desktop/happy/journals",
+  "project_slug": "journals",
+  "root_hash": "cb4d69d793e5",
+  "schema_version": 1,
+  "skill": "bmad-build-auto"
+}

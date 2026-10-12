@@ -5,7 +5,6 @@ import { useToast } from "heroui-native";
 import * as AppleAuthentication from "expo-apple-authentication";
 import * as Haptics from "expo-haptics";
 import type { CustomerInfo } from "react-native-purchases";
-import { clearGuestProgress } from "@/hooks/data/useGuestProgress";
 import { useAuth, type AuthProviderId } from "@/src/context/AuthContext";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useTranslation } from "react-i18next";
@@ -144,7 +143,7 @@ export function useSignInBottomSheetController({
 
       const result = await claimProfile(provider);
       if (result.status !== "linked") {
-        if (result.status === "failed") {
+        if (result.status === "failed" || result.status === "retryable_failure") {
           showError(t("accountAuth.toasts.signInFailed"));
         }
         return;
@@ -218,7 +217,6 @@ export function useSignInBottomSheetController({
         info = await restorePurchases();
       }
 
-      await clearGuestProgress();
       if (hadPremiumBeforeMove && !hasPremiumEntitlement(info)) {
         setPremiumRecovery({
           appUserID: await getAppUserID(),

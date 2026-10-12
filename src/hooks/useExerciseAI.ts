@@ -23,6 +23,7 @@ export interface UseExerciseAIOptions<T> {
   readonly currentStepIndex: number;
   readonly response: T;
   readonly readOnly?: boolean;
+  readonly disabled?: boolean;
 }
 
 export interface UseExerciseAIReturn {
@@ -62,6 +63,7 @@ export function useExerciseAI<T extends Record<string, any>>({
   currentStepIndex,
   response,
   readOnly,
+  disabled = false,
 }: UseExerciseAIOptions<T>): UseExerciseAIReturn {
   const { i18n } = useTranslation("exercises");
   const translateCopy = useExerciseCopy();
@@ -70,7 +72,7 @@ export function useExerciseAI<T extends Record<string, any>>({
   const sessionSeedRef = useRef<number>(Math.random());
 
   const currentStep = steps[currentStepIndex];
-  const aiConfig = currentStep?.ai;
+  const aiConfig = disabled ? undefined : currentStep?.ai;
   const locale = i18n.resolvedLanguage?.split("-")[0] ?? "en";
   const languageNames: Record<string, string> = {
     ar: "Arabic", de: "German", en: "English", es: "Spanish",

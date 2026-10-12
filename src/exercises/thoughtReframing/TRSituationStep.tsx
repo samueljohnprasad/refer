@@ -21,6 +21,7 @@ export function TRSituationStep({
   isValid,
   isSaving,
   readOnly,
+  textOnly,
   progress,
   onClose,
   aiSuggestions,
@@ -68,12 +69,12 @@ export function TRSituationStep({
     [suggestions],
   );
   const isRecording = recordingCurrentState === "recording";
-  const canOfferExamples = !readOnly && exampleSuggestions.length > 0;
+  const canOfferExamples = !readOnly && !textOnly && exampleSuggestions.length > 0;
   const canUseExamples =
     canOfferExamples && showSituationExamples && !isAiLoading;
 
   const handleToggleRecording = useCallback(async (): Promise<void> => {
-    if (readOnly || !isVoiceEnabled) return;
+    if (readOnly || textOnly || !isVoiceEnabled) return;
 
     setVoiceError(null);
     if (isRecording) {
@@ -101,7 +102,7 @@ export function TRSituationStep({
     } catch {
       setVoiceError(translateCopy("Voice input unavailable. You can type this instead."));
     }
-  }, [isRecording, onUpdate, readOnly, isVoiceEnabled, record, response.situation, stopRecording, transcribeAudio, translateCopy]);
+  }, [isRecording, onUpdate, readOnly, textOnly, isVoiceEnabled, record, response.situation, stopRecording, transcribeAudio, translateCopy]);
 
   return (
     <StepShell
@@ -131,7 +132,7 @@ export function TRSituationStep({
         onWavePress={handleToggleRecording}
         isRecording={isRecording}
         isTranscribing={isTranscribing}
-        showVoice={!readOnly && isVoiceEnabled}
+        showVoice={!readOnly && !textOnly && isVoiceEnabled}
       />
 
       {voiceError ? (
@@ -141,7 +142,7 @@ export function TRSituationStep({
       ) : null}
 
       <AiUnavailableNote
-        visible={showSituationExamples && !!aiError && !isAiLoading}
+        visible={!textOnly && showSituationExamples && !!aiError && !isAiLoading}
       />
 
       {canOfferExamples ? (

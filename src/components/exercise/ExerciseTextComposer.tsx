@@ -60,6 +60,7 @@ type ListComposerProps = BaseComposerProps & {
   placeholder?: string;
   addLabel?: string;
   maxItems?: number;
+  textOnly?: boolean;
 };
 
 export type ExerciseTextComposerProps = SingleComposerProps | ListComposerProps;

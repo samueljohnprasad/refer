@@ -19,6 +19,7 @@ export function TREvidenceAgainstStep({
   isValid,
   isSaving,
   readOnly,
+  textOnly,
   progress,
   onClose,
   aiSuggestions,
@@ -110,11 +111,12 @@ export function TREvidenceAgainstStep({
         }
         placeholder={translateCopy("Add a fact that contradicts the thought...")}
         readOnly={readOnly}
+        textOnly={textOnly}
         addLabel={translateCopy("Add")}
         minHeight={CBT_COMPOSER_MIN_HEIGHT}
       />
 
-      {!readOnly ? (
+      {!readOnly && !textOnly ? (
         <ReflectionDisclosure
           expanded={showEvidenceSuggestions}
           onToggle={() => setShowEvidenceSuggestions((current) => !current)}

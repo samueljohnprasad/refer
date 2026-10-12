@@ -1837,6 +1837,7 @@ export type Database = {
       }
       user_preferences: {
         Row: {
+          active_path_id: string | null
           created_at: string
           daily_reminder_enabled: boolean | null
           remainders: Json | null
@@ -1844,6 +1845,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          active_path_id?: string | null
           created_at?: string
           daily_reminder_enabled?: boolean | null
           remainders?: Json | null
@@ -1851,6 +1853,7 @@ export type Database = {
           user_id?: string
         }
         Update: {
+          active_path_id?: string | null
           created_at?: string
           daily_reminder_enabled?: boolean | null
           remainders?: Json | null
@@ -1866,6 +1869,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_starter_path_progress: {
+        Row: {
+          last_idempotency_key: string | null
+          last_completed_step: string | null
+          next_action: Json
+          path_id: string
+          path_version: number
+          revision: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          last_idempotency_key?: string | null
+          last_completed_step?: string | null
+          next_action: Json
+          path_id: string
+          path_version: number
+          revision?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          last_idempotency_key?: string | null
+          last_completed_step?: string | null
+          next_action?: Json
+          path_id?: string
+          path_version?: number
+          revision?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_rewards: {
         Row: {
@@ -2146,6 +2185,17 @@ export type Database = {
       }
     }
     Functions: {
+      complete_starter_path_step: {
+        Args: {
+          p_expected_revision: number
+          p_idempotency_key: string
+          p_next_action: Json
+          p_path_id: string
+          p_path_version: number
+          p_step_id: string
+        }
+        Returns: Json
+      }
       cleanup_old_challenges: { Args: never; Returns: undefined }
       get_journey_catalog: { Args: never; Returns: Json }
       get_journey_template: { Args: { p_slug: string }; Returns: Json }

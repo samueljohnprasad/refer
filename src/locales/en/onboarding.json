@@ -11,6 +11,35 @@
     "maybe_later": "Maybe later",
     "setting_up": "Setting up..."
   },
+  "starter_path": {
+    "back": "Back",
+    "boundary": "Happy offers self-guided education and exercises. It is not a diagnosis, professional treatment, or a replacement for professional care.",
+    "goal": {
+      "eyebrow": "Start with one question",
+      "title": "What would you like to understand?",
+      "description": "Choose one small question to begin with. You can explore other paths later.",
+      "choice": "Understand anxious thoughts",
+      "choice_description": "Learn why your mind sounds the alarm, then practise what helps.",
+      "continue_button": "SHOW ME THE FIRST LESSON"
+    },
+    "lesson": {
+      "eyebrow": "Lesson 1 · Anxiety",
+      "title": "Anxiety has a job",
+      "paragraph_one": "Anxiety is your mind and body trying to protect you. Sometimes it sounds the alarm early, even when the moment is safe.",
+      "paragraph_two": "When you notice the alarm, you get a little more choice about what to do next. The first step is catching the thought that arrived with it.",
+      "continue_button": "MEET THE NEXT TOOL"
+    },
+    "practice": {
+      "eyebrow": "Your next step",
+      "title": "Try Thought Catcher",
+      "description": "Catch one anxious thought, look at what happened, and write a more balanced perspective.",
+      "tool_title": "Thought Catcher",
+      "tool_description": "A short, guided CBT exercise for slowing down one thought at a time.",
+      "open_button": "OPEN THOUGHT CATCHER",
+      "home_button": "CONTINUE TO HOME",
+      "completion_error": "We could not save your progress yet. Try again when you are ready."
+    }
+  },
   "welcome": {
     "headline_line1": "Start your",
     "headline_line2": "journey within",

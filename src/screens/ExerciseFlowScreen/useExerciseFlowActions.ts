@@ -29,6 +29,7 @@ interface ExerciseFlowActionsProps {
   existingEntry?: ExerciseEntry | null;
   exerciseType: ExerciseType;
   readOnly: boolean;
+  textOnly: boolean;
   flow: ReturnType<typeof useExerciseFlow<any>>;
   save: UseExerciseMutationReturn["save"];
   router: ReturnType<typeof useRouter>;
@@ -45,6 +46,7 @@ export function useExerciseFlowActions({
   existingEntry,
   exerciseType,
   readOnly,
+  textOnly,
   flow,
   save,
   router,
@@ -153,7 +155,10 @@ export function useExerciseFlowActions({
         }
 
         isConfirmedExitRef.current = true;
-        router.replace({ pathname: "/tabs/screens/exercise-flow", params: { type } });
+        router.replace({
+          pathname: "/tabs/screens/exercise-flow",
+          params: { type, ...(textOnly ? { textOnly: "true" } : {}) },
+        });
       } catch {
         Alert.alert(t("flow.ui.saveFailed"), t("flow.ui.tryAgain"));
       }
@@ -169,6 +174,7 @@ export function useExerciseFlowActions({
       t,
       isConfirmedExitRef,
       router,
+      textOnly,
     ],
   );
 

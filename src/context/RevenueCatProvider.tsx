@@ -64,6 +64,13 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
     return nextHasPro;
   };
 
+  const trackPaywallGateHit = (): void => {
+    posthog?.capture("premium_gate_hit", {
+      feature: "premium_subscription",
+      context: "paywall_presentation",
+    });
+  };
+
   const refreshCustomerInfo = async (): Promise<CustomerInfo | null> => {
     try {
       const info = await Purchases.getCustomerInfo();
@@ -123,6 +130,7 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   async function presentPaywall(): Promise<boolean> {
+    trackPaywallGateHit();
     if (isPaywallPresentationInProgressRef.current) {
       return false;
     }
@@ -171,6 +179,7 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   async function presentPaywallIfNeeded(): Promise<boolean> {
+    trackPaywallGateHit();
     try {
       const offerings = await Purchases.getOfferings();
       const offering = offerings.current;

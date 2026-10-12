@@ -198,6 +198,8 @@ export interface StepProps<T = Record<string, any>> {
   isSaving?: boolean;
   /** Whether this is a read-only view (completed entry) */
   readOnly?: boolean;
+  /** Hide voice and AI assistance for safety-scoped starter flows */
+  textOnly?: boolean;
   /** Whether input fields inside this step should auto-focus */
   autoFocus?: boolean;
   /** Allow step to override the primary action button in the footer */
