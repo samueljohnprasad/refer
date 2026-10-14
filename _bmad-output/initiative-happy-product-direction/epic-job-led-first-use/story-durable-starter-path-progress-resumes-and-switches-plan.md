@@ -3,13 +3,13 @@ title: 'Durable starter path progress resumes and switches safely'
 type: 'feature'
 ticket: 3
 created: '2026-10-12'
-status: 'in-progress'
+status: 'in-review'
 baseline_revision: '656f03223e38af81c8ddd4ecafd74b77135cfeb1'
 route: 'full'
 route_source: 'manual'
-review: ''
-review_source: ''
-lenses_ran: []
+review: 'quick'
+review_source: 'pinned'
+lenses_ran: ['quick']
 review_loop_iteration: 0
 context:
   - '/Users/samuelprasad/Desktop/happy/journals/PRODUCT.md'
