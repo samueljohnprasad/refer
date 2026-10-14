@@ -1,0 +1,40 @@
+# Guided practice loop stories. Table order is the recommended build order.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Resolve StarterPath practice contracts"
+description = "Maps each authored StarterPath lesson to one existing guided exercise, preserving the anxiety path and exposing stable practice metadata to the handoff."
+verify = "Each authored path opens its mapped exercise with the expected localized title, practice reference, and source lineage; the existing anxiety path remains unchanged."
+covers = ["CAP-2"]
+after = ["epic-job-led-first-use"]
+hitl = false
+risk = "medium"
+unknown = "The current authored mappings are anxiety to thought reframing and overwhelmed to 5-4-3-2-1 grounding; any additional path mapping must use an existing exercise unless product content is explicitly added."
+references = ["_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#ad-2", "src/domains/journey/model/starterPath.ts", "src/data/exerciseRegistry.ts"]
+
+[[entry]]
+id = 2
+type = "story"
+title = "Persist acknowledged practice completion"
+description = "Connects the starter practice runtime to one stable practice session and persists one normalized PracticeCompletionV1 without duplicate evidence on retry."
+verify = "A user can start and complete the mapped practice, reload the app, and see the acknowledged completion restored; repeating the practice does not create duplicate completion evidence."
+covers = ["CAP-2"]
+after = [1]
+hitl = false
+risk = "high"
+unknown = "The existing exercise completion boundary and durable storage path must be confirmed before implementation so anonymous progress and later reflection lineage remain intact."
+references = ["_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#ad-3", "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#ad-8", "src/domains/journey"]
+
+[[entry]]
+id = 3
+type = "story"
+title = "Expose the reusable practice next action"
+description = "Shows one clear post-completion continuation and makes the completed practice reusable from the existing Exercises or coping-tool surface without clinical claims."
+verify = "After completion the user sees one understandable next action, can reopen the same practice from its reusable surface, and sees no claim of diagnosis, guaranteed relief, or clinical efficacy."
+covers = ["CAP-2"]
+after = [2]
+hitl = true
+risk = "medium"
+unknown = "The exact reusable Exercises or coping-card entry point must be selected from the existing released surface during build."
+references = ["_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/product-guardrails.md", "DESIGN.md", "app/tabs/screens/(exercises)"]

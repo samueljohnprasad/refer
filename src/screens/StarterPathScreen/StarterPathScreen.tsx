@@ -10,12 +10,17 @@ import { XPActionType } from "@/src/types/xp";
 import { updateUserStreak } from "@/src/lib/api/mentalHealthJourneyApi";
 import { buildReminderConfig } from "@/src/screens/OnboardingScreen/utils/reminderConfig";
 import { useAuth } from "@/src/context/AuthContext";
-import { ANXIOUS_THOUGHTS_STARTER_PATH } from "@/src/domains/journey/model/starterPath";
+import {
+  getStarterPath,
+  STARTER_PATHS,
+  type StarterPathV1,
+} from "@/src/domains/journey/model/starterPath";
 import {
   completeStarterPathStep,
+  loadActiveStarterPathId,
   loadStarterPathProgress,
   setActiveStarterPath,
-  saveStarterPathProgress,
+  switchStarterPath,
 } from "@/src/domains/journey/data/starterPathProgress.repo";
 import {
   StarterPathContent,
@@ -48,6 +53,9 @@ export default function StarterPathScreen(): React.JSX.Element {
     trackOnboardingCompleted,
   } = useOnboardingAnalytics();
   const [step, setStep] = useState<StarterStep>("goal");
+  const [selectedPath, setSelectedPath] = useState<StarterPathV1>(
+    STARTER_PATHS[0],
+  );
   const [isCompleting, setIsCompleting] = useState(false);
   const [hasCompletionError, setHasCompletionError] = useState(false);
   const completionInFlightRef = useRef(false);
@@ -56,18 +64,20 @@ export default function StarterPathScreen(): React.JSX.Element {
   useEffect(() => {
     if (!user) return;
 
-    void loadStarterPathProgress(
-      user.id,
-      ANXIOUS_THOUGHTS_STARTER_PATH.pathId,
-      ANXIOUS_THOUGHTS_STARTER_PATH.pathVersion,
-    )
-      .then((progress) => {
+    void loadActiveStarterPathId(user.id)
+      .then((activePathId) => {
+        const activePath = getStarterPath(activePathId);
+        setSelectedPath(activePath);
+        return loadStarterPathProgress(
+          user.id,
+          activePath.pathId,
+          activePath.pathVersion,
+        ).then((progress) => ({ activePath, progress }));
+      })
+      .then(({ progress }) => {
         progressRevisionRef.current = progress?.revision ?? 0;
-        if (progress?.lastCompletedStep === "lesson_complete") {
-          setStep("practice");
-        } else if (progress?.lastCompletedStep === "goal_selected") {
-          setStep("lesson");
-        }
+        if (progress?.lastCompletedStep === "lesson_complete") setStep("practice");
+        if (progress?.lastCompletedStep === "goal_selected") setStep("lesson");
       })
       .catch((error) => {
         console.warn("[StarterPath] Failed to resume progress:", error);
@@ -77,11 +87,11 @@ export default function StarterPathScreen(): React.JSX.Element {
   useEffect(() => {
     trackStarted();
     posthog?.capture("starter_path_started", {
-      path_id: ANXIOUS_THOUGHTS_STARTER_PATH.pathId,
-      path_version: ANXIOUS_THOUGHTS_STARTER_PATH.pathVersion,
+      path_id: selectedPath.pathId,
+      path_version: selectedPath.pathVersion,
     });
     trackStepViewed("quiz_motivation", 1);
-  }, [posthog, trackStarted, trackStepViewed]);
+  }, [posthog, selectedPath, trackStarted, trackStepViewed]);
 
   const translate = useCallback(
     (key: string): string => t(key, { defaultValue: key }),
@@ -94,41 +104,46 @@ export default function StarterPathScreen(): React.JSX.Element {
 
   const openPractice = useCallback((): void => {
     posthog?.capture("starter_path_practice_opened", {
-      path_id: ANXIOUS_THOUGHTS_STARTER_PATH.pathId,
-      path_version: ANXIOUS_THOUGHTS_STARTER_PATH.pathVersion,
-      practice_id: ANXIOUS_THOUGHTS_STARTER_PATH.nextAction.targetId,
+      path_id: selectedPath.pathId,
+      path_version: selectedPath.pathVersion,
+      practice_id: selectedPath.nextAction.targetId,
     });
     router.push({
       pathname: "/tabs/screens/exercise-flow",
       params: {
-        type: ANXIOUS_THOUGHTS_STARTER_PATH.practiceRef.id,
+        type: selectedPath.practiceRef.id,
         textOnly: "true",
       },
     });
-  }, [posthog]);
+  }, [posthog, selectedPath]);
+
+  const selectPath = useCallback((pathId: string): void => {
+    const path = getStarterPath(pathId);
+    setSelectedPath(path);
+    progressRevisionRef.current = 0;
+  }, []);
 
   const advanceStep = useCallback(async (): Promise<void> => {
     if (step === "goal") {
       if (user) {
-        const progress = await saveStarterPathProgress({
-          userId: user.id,
-          pathId: ANXIOUS_THOUGHTS_STARTER_PATH.pathId,
-          pathVersion: ANXIOUS_THOUGHTS_STARTER_PATH.pathVersion,
-          status: "active",
-          lastCompletedStep: "goal_selected",
-          lastIdempotencyKey: null,
-          nextAction: {
+        const result = await switchStarterPath(
+          user.id,
+          selectedPath.pathId,
+          selectedPath.pathVersion,
+          {
             kind: "lesson",
-            targetId: ANXIOUS_THOUGHTS_STARTER_PATH.lessonNodeId,
-            pathId: ANXIOUS_THOUGHTS_STARTER_PATH.pathId,
+            targetId: selectedPath.lessonNodeId,
+            pathId: selectedPath.pathId,
             reasonCode: "lesson_complete",
           },
-          revision: 0,
-          updatedAt: new Date().toISOString(),
-        });
-        progressRevisionRef.current = progress.revision;
+        );
+        progressRevisionRef.current = result.progress.revision;
+        if (result.progress.lastCompletedStep === "lesson_complete") {
+          setStep("practice");
+          return;
+        }
       }
-      trackGoalsSelected([ANXIOUS_THOUGHTS_STARTER_PATH.goalId]);
+      trackGoalsSelected([selectedPath.goalId]);
       trackStepCompleted("quiz_motivation", 1);
       trackStepViewed("lesson_complete", 2);
       setStep("lesson");
@@ -139,29 +154,29 @@ export default function StarterPathScreen(): React.JSX.Element {
       const result = await completeStarterPathStep(
         {
           userId: user.id,
-          pathId: ANXIOUS_THOUGHTS_STARTER_PATH.pathId,
-          pathVersion: ANXIOUS_THOUGHTS_STARTER_PATH.pathVersion,
+          pathId: selectedPath.pathId,
+          pathVersion: selectedPath.pathVersion,
           status: "active",
           lastCompletedStep: "goal_selected",
           lastIdempotencyKey: null,
           nextAction: {
             kind: "lesson",
-            targetId: ANXIOUS_THOUGHTS_STARTER_PATH.lessonNodeId,
-            pathId: ANXIOUS_THOUGHTS_STARTER_PATH.pathId,
+            targetId: selectedPath.lessonNodeId,
+            pathId: selectedPath.pathId,
             reasonCode: "lesson_complete",
           },
           revision: progressRevisionRef.current,
           updatedAt: new Date().toISOString(),
         },
         "lesson_complete",
-        ANXIOUS_THOUGHTS_STARTER_PATH.nextAction,
+        selectedPath.nextAction,
         `starter-path-lesson-${user.id}-${Date.now()}`,
       );
       if (result.conflict) {
         const currentProgress = await loadStarterPathProgress(
           user.id,
-          ANXIOUS_THOUGHTS_STARTER_PATH.pathId,
-          ANXIOUS_THOUGHTS_STARTER_PATH.pathVersion,
+          selectedPath.pathId,
+          selectedPath.pathVersion,
         );
         progressRevisionRef.current = currentProgress?.revision ?? 0;
         setStep(currentProgress?.lastCompletedStep === "lesson_complete" ? "practice" : "lesson");
@@ -172,7 +187,7 @@ export default function StarterPathScreen(): React.JSX.Element {
     trackStepCompleted("lesson_complete", 2);
     trackStepViewed("journey_step_preview", 3);
     setStep("practice");
-  }, [step, trackGoalsSelected, trackStepCompleted, trackStepViewed, user]);
+  }, [selectedPath, step, trackGoalsSelected, trackStepCompleted, trackStepViewed, user]);
 
   const completePath = useCallback(async (): Promise<void> => {
     try {
@@ -183,10 +198,10 @@ export default function StarterPathScreen(): React.JSX.Element {
         motivation: "anxiety",
         reasons: ["anxiety"],
       });
-      await setActiveStarterPath(user.id, ANXIOUS_THOUGHTS_STARTER_PATH.pathId);
+      await setActiveStarterPath(user.id, selectedPath.pathId);
       posthog?.capture("starter_path_completed", {
-        path_id: ANXIOUS_THOUGHTS_STARTER_PATH.pathId,
-        path_version: ANXIOUS_THOUGHTS_STARTER_PATH.pathVersion,
+        path_id: selectedPath.pathId,
+        path_version: selectedPath.pathVersion,
       });
       await Promise.allSettled([
         updateUserStreak(),
@@ -197,8 +212,8 @@ export default function StarterPathScreen(): React.JSX.Element {
       ]);
       trackOnboardingCompleted(3);
       posthog?.capture("starter_path_home_returned", {
-        path_id: ANXIOUS_THOUGHTS_STARTER_PATH.pathId,
-        path_version: ANXIOUS_THOUGHTS_STARTER_PATH.pathVersion,
+        path_id: selectedPath.pathId,
+        path_version: selectedPath.pathVersion,
       });
       router.replace("/tabs/(tabs)/home");
     } catch (error) {
@@ -211,6 +226,7 @@ export default function StarterPathScreen(): React.JSX.Element {
     posthog,
     t,
     trackOnboardingCompleted,
+    selectedPath,
     user,
   ]);
 
@@ -230,16 +246,20 @@ export default function StarterPathScreen(): React.JSX.Element {
     <ScreenLayout>
       <StarterPathHeader
         step={step}
+        path={selectedPath}
         translate={translate}
         onBack={goBack}
       />
       <StarterPathContent
         step={step}
+        path={selectedPath}
         translate={translate}
         hasCompletionError={hasCompletionError}
         isCompleting={isCompleting}
         onOpenPractice={openPractice}
         onContinueHome={continueHome}
+        availablePaths={STARTER_PATHS}
+        onSelectPath={selectPath}
       />
       <StarterPathFooter
         step={step}

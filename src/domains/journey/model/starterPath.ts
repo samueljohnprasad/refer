@@ -103,3 +103,62 @@ export const ANXIOUS_THOUGHTS_STARTER_PATH: StarterPathV1 = {
     boundary: "starter_path.boundary",
   },
 };
+
+export const FEEL_LESS_OVERWHELMED_STARTER_PATH: StarterPathV1 = {
+  pathId: "feel_less_overwhelmed",
+  pathVersion: 1,
+  goalId: "feel_less_overwhelmed",
+  courseId: "stress-steady-under-pressure",
+  lessonNodeId: "stress-steady-under-pressure-l1",
+  practiceRef: {
+    source: "exercise_catalog",
+    id: "grounding_54321",
+  },
+  reflectionPromptId: "stress_small_next_step",
+  nextAction: {
+    kind: "practice",
+    targetId: "grounding_54321",
+    pathId: "feel_less_overwhelmed",
+    reasonCode: "lesson_complete",
+  },
+  copyKeys: {
+    goal: {
+      eyebrow: "starter_path.stress.goal.eyebrow",
+      title: "starter_path.stress.goal.title",
+      description: "starter_path.stress.goal.description",
+      choice: "starter_path.stress.goal.choice",
+      choiceDescription: "starter_path.stress.goal.choice_description",
+      continueButton: "starter_path.stress.goal.continue_button",
+    },
+    lesson: {
+      eyebrow: "starter_path.stress.lesson.eyebrow",
+      title: "starter_path.stress.lesson.title",
+      paragraphOne: "starter_path.stress.lesson.paragraph_one",
+      paragraphTwo: "starter_path.stress.lesson.paragraph_two",
+      continueButton: "starter_path.stress.lesson.continue_button",
+    },
+    practice: {
+      eyebrow: "starter_path.stress.practice.eyebrow",
+      title: "starter_path.stress.practice.title",
+      description: "starter_path.stress.practice.description",
+      toolTitle: "starter_path.stress.practice.tool_title",
+      toolDescription: "starter_path.stress.practice.tool_description",
+      openButton: "starter_path.stress.practice.open_button",
+      homeButton: "starter_path.stress.practice.home_button",
+      completionError: "starter_path.stress.practice.completion_error",
+    },
+    boundary: "starter_path.boundary",
+  },
+};
+
+export const STARTER_PATHS = [
+  ANXIOUS_THOUGHTS_STARTER_PATH,
+  FEEL_LESS_OVERWHELMED_STARTER_PATH,
+] as const;
+
+export function getStarterPath(pathId: string | null | undefined): StarterPathV1 {
+  return (
+    STARTER_PATHS.find((path) => path.pathId === pathId) ??
+    ANXIOUS_THOUGHTS_STARTER_PATH
+  );
+}

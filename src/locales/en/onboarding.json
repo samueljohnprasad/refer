@@ -38,6 +38,33 @@
       "open_button": "OPEN THOUGHT CATCHER",
       "home_button": "CONTINUE TO HOME",
       "completion_error": "We could not save your progress yet. Try again when you are ready."
+    },
+    "stress": {
+      "goal": {
+        "eyebrow": "Start with one question",
+        "title": "What would feel lighter?",
+        "description": "Choose one small question to begin with. You can explore other paths later.",
+        "choice": "Feel less overwhelmed",
+        "choice_description": "Understand what stress is telling you, then practise coming back to the present.",
+        "continue_button": "SHOW ME THE FIRST LESSON"
+      },
+      "lesson": {
+        "eyebrow": "Lesson 1 · Stress",
+        "title": "Stress is a signal",
+        "paragraph_one": "Stress can show up in your body, thoughts, or habits. Noticing one signal gives you information without turning it into a verdict.",
+        "paragraph_two": "Name what you notice, then choose one small next action. You do not have to solve everything before you take the next step.",
+        "continue_button": "MEET THE NEXT TOOL"
+      },
+      "practice": {
+        "eyebrow": "Your next step",
+        "title": "Try Grounding Reset",
+        "description": "Use your senses to notice what is here, one small detail at a time.",
+        "tool_title": "5-4-3-2-1 Grounding",
+        "tool_description": "A short sensory exercise for reconnecting with the present moment.",
+        "open_button": "OPEN GROUNDING RESET",
+        "home_button": "CONTINUE TO HOME",
+        "completion_error": "We could not save your progress yet. Try again when you are ready."
+      }
     }
   },
   "welcome": {
