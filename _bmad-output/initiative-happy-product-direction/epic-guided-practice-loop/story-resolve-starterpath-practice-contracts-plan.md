@@ -1,7 +1,7 @@
 ---
 title: "Resolve StarterPath practice contracts"
 ticket: 1
-status: in-progress
+status: draft
 ---
 
 ## Auto Run Result
