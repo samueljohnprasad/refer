@@ -18,6 +18,7 @@ import { ExerciseTimeline } from "./components/ExerciseTimeline";
 import { JumpBackInShelf, DiscoverSection } from "./components/ExerciseDiscoverySection";
 import { TimelineSkeleton } from "@/src/components/ui/Timeline/TimelineSkeleton";
 import { getCategoryBadgeTheme, buildExerciseRoute } from "./exerciseScreenUtils";
+import { useRecentPracticeCompletion } from "./hooks/useRecentPracticeCompletion";
 
 type TabKey = "discover" | "log";
 const TAB_KEYS = ["discover", "log"] as const;
@@ -37,6 +38,7 @@ export default function ExercisesScreen(): ReactElement {
   const { data: completedCount = 0 } = useCompletedExercisesCount();
   const { hasPro, requirePro } = useFreemiumGate();
   const { recentIds } = useRecentExercises();
+  const { completion } = useRecentPracticeCompletion();
   const tabPillStyle = useMemo(() => ({ transform: [{ scale: 1 }] }), []);
 
   useEffect(() => {
@@ -46,9 +48,12 @@ export default function ExercisesScreen(): ReactElement {
   const allExercises = useMemo(() => exerciseGroups.flatMap((group) => group.exercises), [exerciseGroups]);
   const defaultJumpBackInIds = useMemo(() => ["mindful_breathing_1min", "thought_reframing"], []);
   const jumpBackInItems = useMemo(() => {
-    const ids = Array.from(new Set([...recentIds, ...defaultJumpBackInIds])).slice(0, 2);
+    const acknowledgedId = completion?.source_id;
+    const ids = Array.from(new Set([acknowledgedId, ...recentIds, ...defaultJumpBackInIds]))
+      .filter((id): id is string => Boolean(id))
+      .slice(0, 2);
     return ids.map((id) => allExercises.find((exercise) => exercise.type === id)).filter(Boolean) as ExerciseConfig<any>[];
-  }, [allExercises, defaultJumpBackInIds, recentIds]);
+  }, [allExercises, completion?.source_id, defaultJumpBackInIds, recentIds]);
   const jumpBackInTypes = useMemo(() => new Set(jumpBackInItems.map((item) => item.type)), [jumpBackInItems]);
 
   const handleExercisePress = useCallback(async (exercise: ExerciseConfig<any>) => {
@@ -108,7 +113,11 @@ export default function ExercisesScreen(): ReactElement {
           {exerciseGroups.length === 0 ? <EmptyDiscoverState /> : (
             <>
               <Animated.View entering={FadeInDown.duration(400).delay(100)}>
-                <JumpBackInShelf items={jumpBackInItems} onPress={handleExercisePress} />
+                <JumpBackInShelf
+                  items={jumpBackInItems}
+                  onPress={handleExercisePress}
+                  title={completion ? t("runtime.practiceAgain") : undefined}
+                />
               </Animated.View>
               {exerciseGroups.map((group, index) => (
                 <Animated.View key={group.category} entering={FadeInDown.duration(400).delay(200 + index * 100)}>

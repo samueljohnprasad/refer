@@ -23,6 +23,35 @@ interface AcknowledgePracticeCompletionInput {
   completedAt?: string;
 }
 
+export async function getLatestPracticeCompletion(
+  userId: string,
+): Promise<PracticeCompletionV1 | null> {
+  const { data, error } = await supabase
+    .from("practice_completions" as any)
+    .select("*")
+    .eq("user_id", userId)
+    .order("completed_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data || !isPracticeCompletion(data)) return null;
+  return data;
+}
+
+function isPracticeCompletion(value: unknown): value is PracticeCompletionV1 {
+  if (!value || typeof value !== "object") return false;
+  const row = value as Partial<PracticeCompletionV1>;
+  return (
+    typeof row.practice_session_id === "string" &&
+    typeof row.user_id === "string" &&
+    typeof row.completed_at === "string" &&
+    typeof row.source_id === "string" &&
+    typeof row.source_kind === "string" &&
+    row.completion_kind === "submitted"
+  );
+}
+
 export async function acknowledgePracticeCompletion(
   input: AcknowledgePracticeCompletionInput,
 ): Promise<PracticeCompletionV1> {

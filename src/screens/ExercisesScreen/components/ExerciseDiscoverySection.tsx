@@ -20,14 +20,14 @@ interface ExercisePressProps {
   onPress: (exercise: ExerciseConfig<any>) => void;
 }
 
-export function JumpBackInShelf({ items, onPress }: { items: ExerciseConfig<any>[] } & ExercisePressProps) {
+export function JumpBackInShelf({ items, onPress, title }: { items: ExerciseConfig<any>[]; title?: string } & ExercisePressProps) {
   const { t } = useTranslation("exercises");
   if (items.length === 0) return null;
 
   return (
     <View style={{ marginBottom: 20 }}>
       <View style={[nutrieStyles.sectionHeader, { paddingTop: 8 }]}>
-        <TextLabel>{t("library.jumpBackIn")}</TextLabel>
+        <TextLabel>{title ?? t("library.jumpBackIn")}</TextLabel>
       </View>
       <View style={{ marginHorizontal: -CAROUSEL_PEEK, marginTop: 10 }}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: CAROUSEL_GAP, paddingHorizontal: CAROUSEL_PEEK, paddingTop: 4, paddingBottom: 8 }} snapToInterval={JUMP_BACK_CARD_WIDTH + CAROUSEL_GAP} decelerationRate="fast">

@@ -3,11 +3,12 @@ title: 'Expose the reusable practice next action'
 type: 'feature'
 ticket: 3
 created: '2026-10-15'
-status: ready-for-dev
+status: built
+baseline_revision: 'ce7bc919'
 route: 'full'
 route_source: 'auto'
-review: ''
-review_source: ''
+review: 'quick'
+review_source: 'pinned'
 lenses_ran: []
 review_loop_iteration: 0
 followup_review_recommended: false
@@ -68,9 +69,14 @@ deferred: []
 
 ## Implementation Notes
 
+- Direct implementation was used because the auto workflow's required subagent dispatch was unavailable. Reused the existing Jump Back In shelf as the reusable practice surface; the latest valid completion is placed first and remains subject to the existing exercise registry filter.
+- Files touched: `src/domains/practice/data/practiceCompletion.repo.ts`, `src/screens/ExercisesScreen/hooks/useRecentPracticeCompletion.ts`, `src/screens/ExercisesScreen/ExercisesScreen.tsx`, and `src/screens/ExercisesScreen/components/ExerciseDiscoverySection.tsx`.
+
 ## Plan Change Log
 
 ## Review Triage Log
+
+- Self-review: no verified findings. The latest valid completion is validated before it is inserted into the existing shelf; missing, malformed, failed, and unknown exercise rows leave the existing catalog usable.
 
 ## Design Notes
 
