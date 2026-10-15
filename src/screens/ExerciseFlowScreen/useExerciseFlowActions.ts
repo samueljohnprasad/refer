@@ -5,6 +5,7 @@ import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { usePostHog } from "posthog-react-native";
+import { useAuth } from "@/src/context/AuthContext";
 import { useXPOptional } from "@/src/context/XPContext";
 import { useExerciseFlow } from "@/src/hooks/useExerciseFlow";
 import { XPActionType, XP_REWARDS } from "@/src/types/xp";
@@ -16,6 +17,7 @@ import type {
   ExerciseType,
 } from "@/src/types/exerciseFlow";
 import type { UseExerciseMutationReturn } from "@/src/hooks/useExerciseMutation";
+import { acknowledgePracticeCompletion } from "@/src/domains/practice/data/practiceCompletion.repo";
 
 const logger = createLogger("exercise-flow-screen");
 
@@ -39,6 +41,11 @@ interface ExerciseFlowActionsProps {
   exerciseStartedAtRef: MutableRefObject<number>;
   setCelebration: Dispatch<SetStateAction<CelebrationState | null>>;
   exitScreen: () => void;
+  practiceSessionId?: string;
+  pathId?: string;
+  pathVersion?: number;
+  practiceSource?: string;
+  practiceId?: string;
 }
 
 export function useExerciseFlowActions({
@@ -56,8 +63,14 @@ export function useExerciseFlowActions({
   exerciseStartedAtRef,
   setCelebration,
   exitScreen,
+  practiceSessionId,
+  pathId,
+  pathVersion,
+  practiceSource,
+  practiceId,
 }: ExerciseFlowActionsProps) {
   const { t } = useTranslation("exercises");
+  const { user } = useAuth();
   const exerciseTitle = t(
     `copingCards.exerciseTypes.${exerciseType}` as const,
     { defaultValue: config.title },
@@ -95,6 +108,22 @@ export function useExerciseFlowActions({
     try {
       const payload = flow.getSavePayload("completed");
       await save(payload, existingEntry?.id);
+      if (
+        user?.id &&
+        practiceSessionId &&
+        pathId &&
+        pathVersion !== undefined &&
+        practiceSource &&
+        practiceId
+      ) {
+        await acknowledgePracticeCompletion({
+          userId: user.id,
+          practiceSessionId,
+          pathId,
+          pathVersion,
+          practiceRef: { source: practiceSource, id: practiceId },
+        });
+      }
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
       const isFreshCompletion = !existingEntry || existingEntry.status !== "completed";
@@ -135,6 +164,12 @@ export function useExerciseFlowActions({
     t,
     exerciseStartedAtRef,
     setCelebration,
+    practiceSessionId,
+    pathId,
+    pathVersion,
+    practiceSource,
+    practiceId,
+    user,
   ]);
 
   const handleNavigateDeeper = useCallback(

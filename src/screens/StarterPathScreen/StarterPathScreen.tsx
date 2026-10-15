@@ -62,6 +62,7 @@ export default function StarterPathScreen(): React.JSX.Element {
   const [hasCompletionError, setHasCompletionError] = useState(false);
   const completionInFlightRef = useRef(false);
   const progressRevisionRef = useRef(0);
+  const practiceSessionIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -110,6 +111,7 @@ export default function StarterPathScreen(): React.JSX.Element {
       setHasCompletionError(true);
       return;
     }
+    practiceSessionIdRef.current = crypto.randomUUID();
 
     posthog?.capture("starter_path_practice_opened", {
       path_id: selectedPath.pathId,
@@ -121,6 +123,10 @@ export default function StarterPathScreen(): React.JSX.Element {
       params: {
         type: practice.id,
         textOnly: "true",
+        practiceSessionId: practiceSessionIdRef.current,
+        pathId: selectedPath.pathId,
+        pathVersion: String(selectedPath.pathVersion),
+        practiceSource: practice.source,
       },
     });
   }, [posthog, selectedPath]);

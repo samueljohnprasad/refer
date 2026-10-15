@@ -9,6 +9,11 @@ export default function ExerciseFlowRoute() {
     entryId?: string;
     readOnly?: string;
     textOnly?: string;
+    practiceSessionId?: string;
+    pathId?: string;
+    pathVersion?: string;
+    practiceSource?: string;
+    practiceId?: string;
   }>();
 
   return (
@@ -17,6 +22,11 @@ export default function ExerciseFlowRoute() {
         entryId={params.entryId}
         readOnly={params.readOnly === "true"}
         textOnly={params.textOnly === "true"}
+        practiceSessionId={params.practiceSessionId}
+        pathId={params.pathId}
+        pathVersion={params.pathVersion ? Number(params.pathVersion) : undefined}
+        practiceSource={params.practiceSource}
+        practiceId={params.practiceId ?? params.type}
       />
   );
 }

@@ -13,6 +13,11 @@ interface ExerciseFlowScreenProps {
   entryId?: string;
   readOnly?: boolean;
   textOnly?: boolean;
+  practiceSessionId?: string;
+  pathId?: string;
+  pathVersion?: number;
+  practiceSource?: string;
+  practiceId?: string;
 }
 
 export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
@@ -20,6 +25,11 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
   entryId,
   readOnly = false,
   textOnly = false,
+  practiceSessionId,
+  pathId,
+  pathVersion,
+  practiceSource,
+  practiceId,
 }) => {
   const { t } = useTranslation("exercises");
   const router = useRouter();
@@ -58,6 +68,11 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
       existingEntry={entry}
       readOnly={readOnly}
       textOnly={textOnly}
+      practiceSessionId={practiceSessionId}
+      pathId={pathId}
+      pathVersion={pathVersion}
+      practiceSource={practiceSource}
+      practiceId={practiceId}
     />
   );
 };

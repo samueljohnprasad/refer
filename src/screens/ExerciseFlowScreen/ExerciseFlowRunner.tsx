@@ -29,6 +29,11 @@ interface ResolvedExerciseFlowScreenProps {
   existingEntry?: ExerciseEntry | null;
   readOnly: boolean;
   textOnly: boolean;
+  practiceSessionId?: string;
+  pathId?: string;
+  pathVersion?: number;
+  practiceSource?: string;
+  practiceId?: string;
 }
 
 export const ExerciseFlowRunner: React.FC<ResolvedExerciseFlowScreenProps> = ({
@@ -36,6 +41,11 @@ export const ExerciseFlowRunner: React.FC<ResolvedExerciseFlowScreenProps> = ({
   existingEntry,
   readOnly,
   textOnly,
+  practiceSessionId,
+  pathId,
+  pathVersion,
+  practiceSource,
+  practiceId,
 }) => {
   const router = useRouter();
   const { t } = useTranslation("exercises");
@@ -119,6 +129,11 @@ export const ExerciseFlowRunner: React.FC<ResolvedExerciseFlowScreenProps> = ({
       exerciseStartedAtRef,
       setCelebration,
       exitScreen,
+      practiceSessionId,
+      pathId,
+      pathVersion,
+      practiceSource,
+      practiceId,
     });
 
   useEffect(() => {
