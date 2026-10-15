@@ -3,7 +3,7 @@ title: 'Expose the reusable practice next action'
 type: 'feature'
 ticket: 3
 created: '2026-10-15'
-status: blocked
+status: ready-for-dev
 route: 'full'
 route_source: 'auto'
 review: ''
@@ -14,8 +14,6 @@ followup_review_recommended: false
 context: []
 warnings: []
 deferred: []
-blocked_at: "2026-10-15"
-blocked_reason: "no subagents: local task runner rejected the required synchronous implementation subagent dispatch"
 ---
 
 <intent-contract>
