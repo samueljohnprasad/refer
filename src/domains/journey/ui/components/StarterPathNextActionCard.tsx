@@ -3,22 +3,24 @@ import { Pressable, Text, View } from "react-native";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 
-import { ANXIOUS_THOUGHTS_STARTER_PATH } from "../../model/starterPath";
 import { useStarterPathProgress } from "../../data/useStarterPathProgress";
 
 export function StarterPathNextActionCard(): React.JSX.Element | null {
   const { t } = useTranslation("home");
-  const { progress, isLoading } = useStarterPathProgress(
-    ANXIOUS_THOUGHTS_STARTER_PATH.pathId,
-    ANXIOUS_THOUGHTS_STARTER_PATH.pathVersion,
-  );
+  const { progress, isLoading } = useStarterPathProgress();
 
   const openNextAction = useCallback((): void => {
     if (!progress) return;
     if (progress.nextAction.kind === "practice") {
       router.push({
         pathname: "/tabs/screens/exercise-flow",
-        params: { type: progress.nextAction.targetId, textOnly: "true" },
+        params: {
+          type: progress.nextAction.targetId,
+          textOnly: "true",
+          pathId: progress.pathId,
+          pathVersion: String(progress.pathVersion),
+          practiceSource: "exercise_catalog",
+        },
       });
       return;
     }

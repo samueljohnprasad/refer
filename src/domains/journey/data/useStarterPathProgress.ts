@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { useAuth } from "@/src/context/AuthContext";
-import type { StarterPathNextAction } from "../model/starterPath";
+import {
+  getStarterPath,
+  type StarterPathNextAction,
+} from "../model/starterPath";
 import type { StarterPathProgressV1 } from "../model/starterPathProgress";
 import {
   loadActiveStarterPathId,
@@ -22,8 +25,8 @@ export interface UseStarterPathProgressResult {
 }
 
 export function useStarterPathProgress(
-  pathId: string,
-  pathVersion: number,
+  requestedPathId?: string,
+  requestedPathVersion?: number,
 ): UseStarterPathProgressResult {
   const { user } = useAuth();
   const [progress, setProgress] = useState<StarterPathProgressV1 | null>(null);
@@ -41,6 +44,13 @@ export function useStarterPathProgress(
     setError(null);
     try {
       const activePathId = await loadActiveStarterPathId(user.id);
+      const pathId = requestedPathId ?? activePathId ?? "";
+      const pathVersion =
+        requestedPathVersion ?? getStarterPath(pathId).pathVersion;
+      if (!pathId) {
+        setProgress(null);
+        return;
+      }
       if (activePathId && activePathId !== pathId) {
         setProgress(null);
         return;
@@ -51,7 +61,7 @@ export function useStarterPathProgress(
     } finally {
       setIsLoading(false);
     }
-  }, [pathId, pathVersion, user]);
+  }, [requestedPathId, requestedPathVersion, user]);
 
   useEffect(() => {
     void reload();
