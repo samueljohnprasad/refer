@@ -57,6 +57,14 @@ export interface StarterPathV1 {
   copyKeys: StarterPathCopyKeys;
 }
 
+export function resolveStarterPathPractice(
+  path: StarterPathV1,
+  isRegisteredPractice: (practiceId: string) => boolean,
+): StarterPathV1["practiceRef"] | null {
+  const { id } = path.practiceRef;
+  return isRegisteredPractice(id) ? path.practiceRef : null;
+}
+
 export const ANXIOUS_THOUGHTS_STARTER_PATH: StarterPathV1 = {
   pathId: "understand_anxious_thoughts",
   pathVersion: 1,

@@ -74,6 +74,10 @@ export function getExerciseConfig<T extends ExerciseType>(
   return configMap.get(type);
 }
 
+export function hasExerciseConfig(type: string): type is ExerciseType {
+  return configMap.has(type as ExerciseType);
+}
+
 /** Get all exercise configs */
 export function getAllExercises(): ExerciseConfig<any>[] {
   return ALL_CONFIGS;

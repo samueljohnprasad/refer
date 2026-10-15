@@ -10,8 +10,10 @@ import { XPActionType } from "@/src/types/xp";
 import { updateUserStreak } from "@/src/lib/api/mentalHealthJourneyApi";
 import { buildReminderConfig } from "@/src/screens/OnboardingScreen/utils/reminderConfig";
 import { useAuth } from "@/src/context/AuthContext";
+import { hasExerciseConfig } from "@/src/data/exerciseRegistry";
 import {
   getStarterPath,
+  resolveStarterPathPractice,
   STARTER_PATHS,
   type StarterPathV1,
 } from "@/src/domains/journey/model/starterPath";
@@ -103,15 +105,21 @@ export default function StarterPathScreen(): React.JSX.Element {
   }, []);
 
   const openPractice = useCallback((): void => {
+    const practice = resolveStarterPathPractice(selectedPath, hasExerciseConfig);
+    if (!practice) {
+      setHasCompletionError(true);
+      return;
+    }
+
     posthog?.capture("starter_path_practice_opened", {
       path_id: selectedPath.pathId,
       path_version: selectedPath.pathVersion,
-      practice_id: selectedPath.nextAction.targetId,
+      practice_id: practice.id,
     });
     router.push({
       pathname: "/tabs/screens/exercise-flow",
       params: {
-        type: selectedPath.practiceRef.id,
+        type: practice.id,
         textOnly: "true",
       },
     });
