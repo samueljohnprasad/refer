@@ -1,9 +1,7 @@
 ---
 title: "Resolve StarterPath practice contracts"
 ticket: 1
-status: blocked
-blocked_at: "2026-10-15"
-blocked_reason: "version-control metadata not writable: ticket plan status change is uncommitted; commit the plan status before rerunning"
+status: in-progress
 ---
 
 ## Auto Run Result
