@@ -121,6 +121,10 @@ const AuthContext = createContext<AuthContextType>({
   ensureAnonymousSession: async () => null,
   claimProfile: async () => ({
     status: "failed",
+    operationId: "auth-provider-missing",
+    anonymousUserId: "",
+    effectiveUserId: "",
+    retryable: false,
     error: new Error("AuthProvider missing"),
   }),
   moveToExistingAccount: async () => ({
