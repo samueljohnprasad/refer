@@ -1,9 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useCallback, useEffect, useMemo, useState, Suspense, type ReactElement } from "react";
 import { ScrollView, View } from "react-native";
-import Animated, { FadeInDown } from "react-native-reanimated";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useHeaderHeight } from "expo-router/react-navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getExerciseConfig, getExercisesGrouped } from "@/src/data/exerciseRegistry";
 import type { ExerciseConfig } from "@/src/types/exerciseFlow";
@@ -33,7 +31,6 @@ export default function ExercisesScreen(): ReactElement {
   const params = useLocalSearchParams<{ tab?: string }>();
   const recommendation = useExerciseRecommendation();
   const exerciseGroups = useMemo(() => getExercisesGrouped(), []);
-  const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
   const { data: completedCount = 0 } = useCompletedExercisesCount();
   const { hasPro, requirePro } = useFreemiumGate();
@@ -69,6 +66,10 @@ export default function ExercisesScreen(): ReactElement {
     router.setParams({ tab });
   }, []);
 
+  const handlePracticePress = useCallback(() => {
+    router.push("/tabs/(tabs)/exercises/practice" as never);
+  }, []);
+
   const navigateWithReveal = useCircularRevealNavigate();
   const handleLogPress = useCallback((item: HistoryLogItem, event?: any) => {
     const color = item.exerciseType
@@ -95,10 +96,18 @@ export default function ExercisesScreen(): ReactElement {
     <>
       <Stack.Screen
         options={{
-          headerTransparent: true,
+          headerTransparent: false,
           headerShown: true,
           headerShadowVisible: false,
-          header: () => <ExercisesTabHeader activeTab={activeTab} completedCount={completedCount} tabPillStyle={tabPillStyle} onTabChange={handleTabPress} />,
+          header: () => (
+            <ExercisesTabHeader
+              activeTab={activeTab}
+              completedCount={completedCount}
+              tabPillStyle={tabPillStyle}
+              onTabChange={handleTabPress}
+              onPracticePress={handlePracticePress}
+            />
+          ),
         }}
       />
       {activeTab === "discover" ? (
@@ -106,23 +115,19 @@ export default function ExercisesScreen(): ReactElement {
           style={{ flex: 1, backgroundColor: "#FFFFFF" }}
           contentInsetAdjustmentBehavior="automatic"
           scrollEventThrottle={16}
-          contentContainerStyle={{ paddingTop: headerHeight - insets.top + 16, paddingBottom: 260, paddingHorizontal: 20 }}
+          contentContainerStyle={{ paddingTop: 16, paddingBottom: insets.bottom + 120, paddingHorizontal: 20 }}
           showsVerticalScrollIndicator={false}
         >
           {recommendation && getExerciseConfig(recommendation.exerciseType) ? null : null}
           {exerciseGroups.length === 0 ? <EmptyDiscoverState /> : (
             <>
-              <Animated.View entering={FadeInDown.duration(400).delay(100)}>
-                <JumpBackInShelf
-                  items={jumpBackInItems}
-                  onPress={handleExercisePress}
-                  title={completion ? t("runtime.practiceAgain") : undefined}
-                />
-              </Animated.View>
+              <JumpBackInShelf
+                items={jumpBackInItems}
+                onPress={handleExercisePress}
+                title={completion ? t("runtime.practiceAgain") : undefined}
+              />
               {exerciseGroups.map((group, index) => (
-                <Animated.View key={group.category} entering={FadeInDown.duration(400).delay(200 + index * 100)}>
-                  <DiscoverSection label={t(`categories.${group.category}`)} category={group.category} exercises={group.exercises} excludedExerciseTypes={jumpBackInTypes} onPress={handleExercisePress} isFirst={index === 0} />
-                </Animated.View>
+                <DiscoverSection key={group.category} label={t(`categories.${group.category}`)} category={group.category} exercises={group.exercises} excludedExerciseTypes={jumpBackInTypes} onPress={handleExercisePress} isFirst={index === 0} />
               ))}
             </>
           )}

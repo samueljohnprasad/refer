@@ -203,7 +203,7 @@ export function useDailyNotesHeaderModel(onBookmarksPress?: () => void) {
       return;
     }
     if (isAfter(startOfDay(day), startOfDay(new Date()))) return;
-    router.push({ pathname: "/tabs/(tabs)/record", params: { date: day.toISOString() } });
+    router.push({ pathname: "/tabs/screens/record", params: { date: day.toISOString() } });
   }, []);
   const handleCalendarPress = useCallback(() => toggle(), [toggle]);
   const calendarIconStyle = useAnimatedStyle(() => ({ transform: [{ rotateY: `${progress.value * 180}deg` }] }));
@@ -215,7 +215,7 @@ export function useDailyNotesHeaderModel(onBookmarksPress?: () => void) {
   }, [onBookmarksPress, bookmarkWobble]);
   const handleTimelinePress = useCallback(() => {
     void Haptics.selectionAsync();
-    router.push("/tabs/screens/timelines");
+    router.navigate("/tabs/timeline");
   }, []);
   const bookmarkIconStyle = useAnimatedStyle(() => ({
     transform: [{ rotateZ: `${bookmarkWobble.value}deg` }],

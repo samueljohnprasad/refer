@@ -563,7 +563,7 @@ export const DEFAULT_CHECKLIST_ITEMS: readonly OnboardingChecklistItem[] = [
     id: "first_journal",
     label: "Write your first journal entry",
     completed: false,
-    route: "/tabs/(tabs)/record",
+    route: "/tabs/screens/record",
     xpReward: 30,
   },
   {

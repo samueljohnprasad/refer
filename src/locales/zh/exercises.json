@@ -32,6 +32,7 @@
   "tab": {
     "lessons": "课程",
     "myLog": "我的记录",
+    "practice": "练习",
     "view": "练习视图",
     "copingCards": "我的应对卡片",
     "completedCount": "已完成 {{count}} 项练习"

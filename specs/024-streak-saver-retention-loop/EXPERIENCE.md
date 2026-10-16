@@ -21,7 +21,7 @@ Push Notification Banner (7:00 PM Local Time)
        ▼ (Tap)
 Direct Deep Link Router
        │
-       ├──► Active Exercise / Journey Node Screen (/tabs/(tabs)/record)
+       ├──► Active Exercise / Journey Node Screen (/tabs/screens/record)
        │         │
        │         ▼ (Exercise Complete)
        │    Streak Increment & 3D Celebration Modal
@@ -64,7 +64,7 @@ Direct Deep Link Router
 | :--- | :--- | :--- | :--- |
 | **Streak Active (Saved)** | Exercise logged today | Green checkmark on streak header | Pending 7 PM notification cancelled immediately |
 | **Streak At-Risk** | Past 6:00 PM, no log today | Flame icon pulses in header | Local 7 PM notification queued |
-| **Notification Tapped** | Tap banner | Deep links to `/tabs/(tabs)/record` | Payload parsed, screen opens in <1s |
+| **Notification Tapped** | Tap banner | Deep links to `/tabs/screens/record` | Payload parsed, screen opens in <1s |
 | **Milestone Achieved** | Streak reaches Day 3, 7, 15 | 3D Celebration Modal + Confetti | Triggers native `StoreReview.requestReview()` |
 
 ---

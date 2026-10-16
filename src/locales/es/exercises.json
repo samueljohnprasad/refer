@@ -32,6 +32,7 @@
   "tab": {
     "lessons": "Lecciones",
     "myLog": "Mi registro",
+    "practice": "Práctica",
     "view": "Vista de ejercicios",
     "copingCards": "Mis tarjetas para afrontar",
     "completedCount": "{{count}} ejercicios completados"

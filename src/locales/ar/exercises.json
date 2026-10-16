@@ -32,6 +32,7 @@
   "tab": {
     "lessons": "الدروس",
     "myLog": "سجلي",
+    "practice": "تدريب",
     "view": "عرض التمارين",
     "copingCards": "بطاقات التأقلم",
     "completedCount": "أُكمل {{count}} من التمارين"

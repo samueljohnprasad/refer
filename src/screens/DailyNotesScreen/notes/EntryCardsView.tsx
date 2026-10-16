@@ -96,7 +96,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         title={t("empty.titles", { returnObjects: true }) as string[]}
         description={t("empty.description")}
         buttonText={t("empty.recordVoice")}
-        onButtonPress={() => router.push("/tabs/(tabs)/record")}
+        onButtonPress={() => router.push("/tabs/screens/record")}
         buttonIcon={Mic01Icon}
         secondaryButtonText={t("empty.writeText")}
         onSecondaryButtonPress={() =>
@@ -115,7 +115,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         variant="primary"
         size="md"
         className="flex-1"
-        onPress={() => router.push("/tabs/(tabs)/record")}
+        onPress={() => router.push("/tabs/screens/record")}
         leftIcon={
           <HugeiconsIcon
             icon={Mic01Icon}

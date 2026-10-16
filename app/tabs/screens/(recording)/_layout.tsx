@@ -17,6 +17,15 @@ export default function RecordingGroupLayout() {
       }}
     >
       <Stack.Screen
+        name="record"
+        options={{
+          headerShown: true,
+          title: t("navigation.capture"),
+          headerBackButtonDisplayMode: "minimal",
+          animation: "slide_from_right",
+        }}
+      />
+      <Stack.Screen
         name="all-prompts"
         options={{
           headerShown: true,

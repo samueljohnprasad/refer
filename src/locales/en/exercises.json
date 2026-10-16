@@ -32,6 +32,7 @@
   "tab": {
     "lessons": "Lessons",
     "myLog": "My Log",
+    "practice": "Practice",
     "view": "Exercises View",
     "copingCards": "My Coping Cards",
     "completedCount": "{{count}} exercises completed"

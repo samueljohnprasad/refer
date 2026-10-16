@@ -1,7 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Text } from "@/src/components/ui/Text";
-import { router } from "expo-router";
 import { useInsightNudge } from "@/src/hooks/insights/useInsightNudge";
 import { Card } from "@/src/components/ui/Card";
 
@@ -12,7 +11,6 @@ export const InsightNudgeCard: React.FC = React.memo(() => {
   if (!nudge) {
     return (
       <Card
-        onPress={() => router.push("/tabs/screens/insights" as never)}
         variant="tile"
         radius="xl"
         contentClassName="p-4"
@@ -24,20 +22,12 @@ export const InsightNudgeCard: React.FC = React.memo(() => {
         <Text className="happy-font-body text-[13px] text-ink-muted mt-1 leading-relaxed">
           {t("insights.ui.unlockDescription")}
         </Text>
-        <Text className="happy-font-body-bold text-[13px] text-sage-600 mt-3">
-          {t("insights.ui.viewInsights")} →
-        </Text>
       </Card>
     );
   }
 
-  const handlePress = () => {
-    router.push("/tabs/screens/insights" as never);
-  };
-
   return (
     <Card
-      onPress={handlePress}
       variant="tile"
       radius="xl"
       contentClassName="p-4"
@@ -49,9 +39,6 @@ export const InsightNudgeCard: React.FC = React.memo(() => {
       </Text>
       <Text className="happy-font-body text-[13px] text-ink-muted mt-1 leading-relaxed">
         {nudge.detail}
-      </Text>
-      <Text className="happy-font-body-bold text-[13px] text-sage-600 mt-3">
-        {nudge.ctaLabel} →
       </Text>
     </Card>
   );

@@ -47,11 +47,11 @@ export const DiscoveryView: React.FC<DiscoveryViewProps> = React.memo(
   }) => {
     const { t } = useTranslation("journal");
     const insets = useSafeAreaInsets();
-    // ponytail: ensure bottom action cluster and its labels sit cleanly above NativeTabs bar (49pt tab bar + safe bottom inset + 16pt breathing room)
-    const bottomPadding = Math.max(insets.bottom, 20) + 64;
+    // ponytail: keep the composer clear of the home indicator on the standalone recording route
+    const bottomPadding = Math.max(insets.bottom, 20) + 20;
 
     return (
-      <SafeAreaView className="flex-1 bg-sage-50" edges={["top"]}>
+      <SafeAreaView className="flex-1 bg-sage-50" edges={["bottom"]}>
         <View
           className="flex-1 px-5 pt-1 justify-between"
           style={{ paddingBottom: bottomPadding }}

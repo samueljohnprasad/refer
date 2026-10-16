@@ -79,6 +79,10 @@ export default function JournalCalendarScreen() {
     router.push("/tabs/screens/settings");
   }, []);
 
+  const handleCapturePress = useCallback(() => {
+    router.push("/tabs/screens/record");
+  }, []);
+
   const { journalRoute, isVoiceEnabled } = useVoiceFeature();
 
   const handleQuickJournalPress = useCallback(
@@ -134,6 +138,12 @@ export default function JournalCalendarScreen() {
       />
       {/* ponytail: subtle tertiary settings action in header toolbar */}
       <Stack.Toolbar placement="right" tintColor={SEMANTIC_COLORS.text.secondary}>
+        <Stack.Toolbar.Button
+          icon="plus"
+          accessibilityLabel={tCommon("navigation.capture")}
+          tintColor={SEMANTIC_COLORS.text.secondary}
+          onPress={handleCapturePress}
+        />
         <Stack.Toolbar.Button
           icon="gearshape"
           accessibilityLabel={tCommon("navigation.settings")}

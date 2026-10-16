@@ -29,7 +29,13 @@ import { DaysTimelineTab } from "@/src/domains/timeline/ui/tabs/DaysTimelineTab"
 import { WeeksTimelineTab } from "@/src/domains/timeline/ui/tabs/WeeksTimelineTab";
 import { MonthsTimelineTab } from "@/src/domains/timeline/ui/tabs/MonthsTimelineTab";
 
-export default function TimelinesScreen() {
+type TimelinesScreenProps = {
+  showBackButton?: boolean;
+};
+
+export default function TimelinesScreen({
+  showBackButton = true,
+}: TimelinesScreenProps) {
   const router = useRouter();
   const { t } = useTranslation("common");
   const [activeTab, setActiveTab] = useState<"days" | "weeks" | "months">(
@@ -77,12 +83,13 @@ export default function TimelinesScreen() {
               </Host>
             </View>
           ),
-          headerLeft: () => (
-            // Aligned native back button, small footprint but large hit target (Point 16, 17, 18)
-            <Pressable onPress={() => router.back()} className="px-2 py-2 ml-[-8px]">
-              <SymbolView name="chevron.left" size={20} tintColor="#1A1A1A" weight="semibold" />
-            </Pressable>
-          ),
+          headerLeft: showBackButton
+            ? () => (
+                <Pressable onPress={() => router.back()} className="px-2 py-2 ml-[-8px]">
+                  <SymbolView name="chevron.left" size={20} tintColor="#1A1A1A" weight="semibold" />
+                </Pressable>
+              )
+            : undefined,
           headerRight: () => null,
         }}
       />

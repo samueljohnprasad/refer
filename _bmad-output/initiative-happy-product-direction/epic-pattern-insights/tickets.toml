@@ -83,7 +83,7 @@ references = [
   "app/tabs/(tabs)/_layout.tsx",
   "app/tabs/(tabs)/insights/index.tsx",
   "app/tabs/(tabs)/insights/_layout.tsx",
-  "app/tabs/(tabs)/record.tsx",
+  "app/tabs/screens/(recording)/record.tsx",
   "app/tabs/screens/(tracking)/_layout.tsx",
   "app/tabs/screens/(tracking)/insights.tsx",
 ]

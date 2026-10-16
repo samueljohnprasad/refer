@@ -32,6 +32,7 @@
   "tab": {
     "lessons": "Lezioni",
     "myLog": "Il mio diario",
+    "practice": "Pratica",
     "view": "Vista esercizi",
     "copingCards": "Le mie carte di supporto",
     "completedCount": "{{count}} esercizi completati"

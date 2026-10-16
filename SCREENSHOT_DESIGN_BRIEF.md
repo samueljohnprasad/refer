@@ -78,7 +78,7 @@
 - **Goal:** Remove the friction of staring at a blank page—just speak out loud.
 - **Headline (800):** Speak Your Mind Freely
 - **Subheadline (600):** Voice notes turned into structured reflections
-- **Screen to Capture:** Voice Recording & Reflection Screen (`app/tabs/(tabs)/record.tsx`)
+- **Screen to Capture:** Voice Recording & Reflection Screen (`app/tabs/screens/(recording)/record.tsx`)
 - **Key Visual Elements:**
   - Pulsing animated green audio waveform.
   - Clean card showing live transcribed speech with an highlighted insight pill ("Identified: Overthinking Loop").

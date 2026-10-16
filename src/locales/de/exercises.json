@@ -32,6 +32,7 @@
   "tab": {
     "lessons": "Lektionen",
     "myLog": "Mein Verlauf",
+    "practice": "Üben",
     "view": "Übungsansicht",
     "copingCards": "Meine Bewältigungskarten",
     "completedCount": "{{count}} Übungen abgeschlossen"

@@ -10,7 +10,7 @@ import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
 export default function TabLayout() {
   const isDark = useColorScheme() === "dark";
-  const { t } = useTranslation("common");
+  const { t: tCommon } = useTranslation("common");
   useWidgetWeekMoods();
 
   return (
@@ -24,7 +24,7 @@ export default function TabLayout() {
         isDark ? "systemUltraThinMaterialDark" : "systemUltraThinMaterialLight"
       }
       disableTransparentOnScrollEdge
-      minimizeBehavior="onScrollDown"
+      minimizeBehavior="never"
       indicatorColor="transparent"
       rippleColor="rgba(93, 126, 87, 0.12)"
       labelStyle={{
@@ -32,7 +32,7 @@ export default function TabLayout() {
       }}
     >
       <NativeTabs.Trigger name="home">
-        <Label>{t("navigation.home")}</Label>
+        <Label>{tCommon("navigation.home")}</Label>
         <Icon
           sf={{
             default: "house",
@@ -41,7 +41,7 @@ export default function TabLayout() {
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="journal">
-        <Label>{t("navigation.journal")}</Label>
+        <Label>{tCommon("navigation.journal")}</Label>
         <Icon
           sf={{
             default: "book",
@@ -49,17 +49,17 @@ export default function TabLayout() {
           }}
         />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="record">
-        <Label>{t("navigation.capture")}</Label>
+      <NativeTabs.Trigger name="timeline">
+        <Label>{tCommon("navigation.timeline")}</Label>
         <Icon
           sf={{
-            default: "plus",
-            selected: "plus",
+            default: "chart.bar.xaxis",
+            selected: "chart.bar.fill",
           }}
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="journeys">
-        <Label>{t("navigation.journeys")}</Label>
+        <Label>{tCommon("navigation.journeys")}</Label>
         <Icon
           sf={{
             default: "map",
@@ -68,7 +68,7 @@ export default function TabLayout() {
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="exercises">
-        <Label>{t("navigation.exercises")}</Label>
+        <Label>{tCommon("navigation.exercises")}</Label>
         <Icon
           sf={{
             default: "leaf",

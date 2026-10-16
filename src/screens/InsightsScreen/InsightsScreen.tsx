@@ -3,7 +3,6 @@ import { View, ScrollView, Pressable } from "react-native";
 import { useTranslation } from "react-i18next";
 import { startOfWeek, endOfWeek } from "date-fns";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
-import Animated, { FadeInDown } from "react-native-reanimated";
 import { Text } from "@/components/ui/Text";
 import { router, Stack } from "expo-router";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -24,19 +23,13 @@ import { InsightNarrativeCard } from "@/src/components/insights/InsightNarrative
 import { InsightNudgeCard } from "@/src/components/insights/InsightNudgeCard";
 import { DeterministicInsightCard } from "@/src/components/insights/DeterministicInsightCard";
 import type { ExerciseCategory } from "@/src/types/exerciseFlow";
+import { PracticeEmptyState } from "./components/PracticeEmptyState";
 
 const CATEGORY_ICONS = {
   cbt_core: Brain01Icon,
   anxiety: Activity01Icon,
   mindfulness: Yoga01Icon,
   overthinking: WindPower01Icon,
-} as const;
-
-const CATEGORY_COLORS = {
-  cbt_core: "#eef2e8",
-  anxiety: "#f8fbf6",
-  mindfulness: "#eef2e8",
-  overthinking: "#eaf0e2",
 } as const;
 
 const CATEGORY_ROUTES: Record<ExerciseCategory, string> = {
@@ -50,6 +43,9 @@ export default function InsightsScreen() {
   const { t } = useTranslation("common");
   const [timeRange, setTimeRange] = useState<TimeRange>("30d");
   const { data, isLoading } = useInsightsOverview(timeRange);
+  const handleStartExercise = useCallback(() => {
+    router.push("/tabs/(tabs)/exercises" as never);
+  }, []);
 
   const { startOfWeekDate, endOfWeekDate } = useMemo(() => {
     const today = new Date();
@@ -64,10 +60,10 @@ export default function InsightsScreen() {
       options={{
         title: t("timelineAnalytics.title"),
         headerShown: true,
-        headerTransparent: true,
-        headerLargeTitle: true,
-        // headerBlurEffect: "regular",
+        headerTransparent: false,
+        headerLargeTitle: false,
         headerShadowVisible: false,
+        headerBackButtonDisplayMode: "minimal",
         headerRight: () => (
           <TimeRangeSelector value={timeRange} onChange={setTimeRange} />
         ),
@@ -93,7 +89,7 @@ export default function InsightsScreen() {
       <>
         {HeaderComponent}
         <View className="flex-1 happy-brand-screen">
-          <EmptyState />
+          <PracticeEmptyState onChooseExercise={handleStartExercise} />
         </View>
       </>
     );
@@ -108,23 +104,23 @@ export default function InsightsScreen() {
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{ paddingBottom: 128, paddingTop: 110 }}
       >
-        <Animated.View entering={FadeInDown.duration(400).delay(150)} className="px-4 mt-5">
+        <View className="px-4 mt-5">
           <DeterministicInsightCard />
-        </Animated.View>
-        <Animated.View entering={FadeInDown.duration(400).delay(200)} className="px-4 mt-5">
+        </View>
+        <View className="px-4 mt-5">
           <InsightNarrativeCard />
-        </Animated.View>
-        <Animated.View entering={FadeInDown.duration(400).delay(250)} className="px-4 mt-4">
+        </View>
+        <View className="px-4 mt-4">
           <InsightNudgeCard />
-        </Animated.View>
-        <Animated.View entering={FadeInDown.duration(400).delay(300)} className="mt-4">
+        </View>
+        <View className="mt-4">
           <WeeklyMoodChart
             startDate={startOfWeekDate}
             endDate={endOfWeekDate}
             title={t("timelineAnalytics.moodTrends")}
           />
-        </Animated.View>
-        <Animated.View entering={FadeInDown.duration(400).delay(800)} className="px-4 mt-8">
+        </View>
+        <View className="px-4 mt-8">
           <Text className="text-[12px] font-bold text-sage-700 uppercase tracking-wider mb-4 ml-2">
             {t("timelineAnalytics.deepDives")}
           </Text>
@@ -133,7 +129,7 @@ export default function InsightsScreen() {
               <CategoryListRow key={cat.category} summary={cat} />
             ))}
           </View>
-        </Animated.View>
+        </View>
       </ScrollView>
     </>
   );
@@ -144,7 +140,6 @@ export default function InsightsScreen() {
 function CategoryListRow({ summary }: { summary: CategorySummary }) {
   const { t } = useTranslation("common");
   const icon = CATEGORY_ICONS[summary.category];
-  const bgColor = CATEGORY_COLORS[summary.category];
 
   const handlePress = useCallback(() => {
     router.push(CATEGORY_ROUTES[summary.category] as never);
@@ -155,10 +150,7 @@ function CategoryListRow({ summary }: { summary: CategorySummary }) {
       onPress={handlePress}
       className="flex-row items-center p-3 rounded-2xl active:bg-sage-50 transition-colors"
     >
-      <View
-        className="h-12 w-12 rounded-[16px] items-center justify-center mr-4"
-        style={{ backgroundColor: bgColor }}
-      >
+      <View className="mr-4 h-10 w-10 items-center justify-center">
         <HugeiconsIcon icon={icon} size={22} color="#2a3f2a" />
       </View>
       <View className="flex-1">
@@ -172,33 +164,5 @@ function CategoryListRow({ summary }: { summary: CategorySummary }) {
       </View>
       <HugeiconsIcon icon={ArrowRight01Icon} size={20} color="#94a3b8" />
     </Pressable>
-  );
-}
-
-
-function EmptyState() {
-  const { t } = useTranslation("common");
-  const handlePress = useCallback(() => {
-    router.push("/tabs/(tabs)/exercises" as never);
-  }, []);
-
-  return (
-    <View className="flex-1 items-center justify-center px-8">
-      <Text className="text-[48px] mb-4">🌿</Text>
-      <Text className="happy-font-heading-bold text-xl text-ink text-center mb-2">
-        {t("timelineAnalytics.emptyTitle")}
-      </Text>
-      <Text className="happy-font-body-medium text-sm text-ink-muted text-center leading-relaxed mb-6">
-        {t("timelineAnalytics.emptyDescription")}
-      </Text>
-      <Pressable
-        onPress={handlePress}
-        className="h-12 px-6 rounded-2xl items-center justify-center happy-brand-primary-cta active:opacity-90"
-      >
-        <Text className="happy-font-body-bold text-sm text-white">
-          {t("timelineAnalytics.startExercise")}
-        </Text>
-      </Pressable>
-    </View>
   );
 }

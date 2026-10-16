@@ -163,10 +163,10 @@ export default function RootLayout() {
             expoRouter.push("/tabs/(tabs)/home" as any);
             break;
           case "weekly_insight":
-            expoRouter.push("/tabs/screens/insights" as any);
+            expoRouter.push("/tabs/timeline" as any);
             break;
           default:
-            expoRouter.push("/tabs/(tabs)/record" as any);
+            expoRouter.push("/tabs/screens/record" as any);
             break;
         }
       },

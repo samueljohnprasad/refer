@@ -17,6 +17,7 @@ interface ExercisesTabHeaderProps {
   completedCount: number;
   tabPillStyle: AnimatedStyle<ViewStyle>;
   onTabChange: (tab: ExercisesTab) => void;
+  onPracticePress: () => void;
 }
 
 export function ExercisesTabHeader({
@@ -24,12 +25,19 @@ export function ExercisesTabHeader({
   completedCount,
   tabPillStyle,
   onTabChange,
+  onPracticePress,
 }: ExercisesTabHeaderProps) {
   const { t } = useTranslation("exercises");
   const options = [
     { value: "discover", label: t("tab.lessons") },
     { value: "log", label: t("tab.myLog") },
+    { value: "practice", label: t("tab.practice") },
   ] as const;
+  const selectionHandlers: Record<string, () => void> = {
+    discover: () => onTabChange("discover"),
+    log: () => onTabChange("log"),
+    practice: onPracticePress,
+  };
 
   return (
     <View
@@ -43,7 +51,7 @@ export function ExercisesTabHeader({
         <View className="px-5 pb-3 pt-3">
           <View className="mb-5">
             <View className="flex-row items-center justify-between pt-2">
-              <Text variant="body-bold" className="text-[32px] leading-[38px] tracking-tight">
+              <Text variant="h1" className="text-[32px] leading-[38px] tracking-tight">
                 {t("title")}
               </Text>
               <View className="flex-row items-center gap-3">
@@ -76,9 +84,7 @@ export function ExercisesTabHeader({
                 modifiers={[pickerStyle("segmented"), tint(SEMANTIC_COLORS.brand.pressed)]}
                 label={t("tab.view")}
                 selection={activeTab}
-                onSelectionChange={(selection) => {
-                  if (selection === "discover" || selection === "log") onTabChange(selection);
-                }}
+                onSelectionChange={(selection) => selectionHandlers[selection]?.()}
               >
                 {options.map((option) => (
                   <SwiftUIText key={option.value} modifiers={[tag(option.value)]}>

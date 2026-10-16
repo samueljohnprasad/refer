@@ -13,7 +13,7 @@ export const COMPLETE_EXERCISE_STATUSES = new Set([
 ]);
 
 export const HAPPY_ASSISTANT_ROUTES = {
-  record: "/tabs/(tabs)/record",
+  record: "/tabs/screens/record",
   journal: "/tabs/(tabs)/journal",
   exercisesLog: "/tabs/(tabs)/exercises?tab=log",
   journeys: "/tabs/(tabs)/journeys",
@@ -46,7 +46,7 @@ export function shouldHideAssistant(pathname: string | null): boolean {
     path.includes("Summary") ||
     path.includes("reminders") ||
     path.includes("support-chat") ||
-    path.includes("timelines") ||
+    path.includes("timeline") ||
     path.includes("xp-history") ||
     path.includes("achievements") ||
     path.includes("keyboard-recorder") ||
