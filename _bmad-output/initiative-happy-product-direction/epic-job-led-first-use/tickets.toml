@@ -163,3 +163,20 @@ references = [
   "src/domains/journey/data/starterPathProgress.repo.ts",
   "src/screens/StarterPathScreen/StarterPathScreen.tsx",
 ]
+
+[[entry]]
+id = 10
+type = "story"
+title = "Selected StarterPath enrolls its matching course"
+description = "Binds each selected StarterPath to its matching onboarding motivation so completing the first loop enrolls the chosen canonical course without silently falling back to the anxious-thoughts course."
+verify = "A reviewer completes each authored StarterPath from a clean anonymous session and confirms the selected path enrolls its matching course, while the existing anxious-thoughts path and unrelated onboarding motivations remain unchanged."
+covers = ["CAP-1", "CAP-5"]
+after = [9]
+hitl = false
+risk = "medium"
+refine = true
+references = [
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/spec-happy-product-direction.md#Constraints",
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/starter-paths.md#contract",
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#AD-4",
+]
