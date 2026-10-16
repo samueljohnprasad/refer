@@ -6,6 +6,8 @@ This companion defines the approved authored bundles behind the first-use path s
 
 `understand_anxious_thoughts`
 
+The approved first activation bundle is: Understand anxious thoughts -> Anxiety has a job -> Thought Catcher -> private text reflection -> Home.
+
 The existing anxiety path is unchanged by this update.
 
 ## Second path: feel less overwhelmed
@@ -24,6 +26,8 @@ The existing anxiety path is unchanged by this update.
 
 ## Boundaries
 
+- Each path owns its goal, canonical lesson, linked practice, reflection prompt, and course enrollment target; do not replace these with a hardcoded default.
+- The lesson target and progress must resolve through the canonical Journeys course system rather than a parallel starter-only lesson state.
 - Use educational and supportive language only.
 - Do not promise calm, relief, control, or symptom reduction.
 - Do not diagnose, assess crisis risk, prescribe treatment, or replace professional care.

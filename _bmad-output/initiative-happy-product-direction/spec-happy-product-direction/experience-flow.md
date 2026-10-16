@@ -22,13 +22,15 @@ The first-time flow must not show the whole course catalog, all exercise categor
 
 ## Returning user
 
-Home is the recurring coordinator. It exposes one clear next action based on the active StarterPath and acknowledged progress:
+Home is the recurring coordinator. When a StarterPath is active, it exposes one dominant continuation action based on acknowledged progress:
 
 - continue the next lesson;
 - repeat a completed tool;
 - complete the linked reflection;
 - switch to another path without deleting preserved progress; or
 - review an available activity summary or emerging pattern.
+
+Journal prompts, mood check-ins, and direct navigation remain available as secondary actions; they do not compete with the active path's primary continuation.
 
 The Exercises tab remains a direct library for CBT and coping tools. The Journeys tab remains a direct catalog and progress surface. The Journal tab remains the private reflection history, and Record remains the capture entry point.
 
@@ -64,4 +66,4 @@ Retries keep the same practice session identity. Unsynced work is not counted as
 
 ## Product boundaries
 
-The first loop is text-only, non-diagnostic, and free of a subscription wall. Voice, photo, free-text AI narratives, high-risk interpretation, and unsupported health claims remain outside the core experience until their privacy, safety, retention, and release gates are verified.
+The first loop is text-only, non-diagnostic, and free of a subscription wall. StarterPath lessons use canonical course content and progress rather than a duplicate learning state. Voice, photo, free-text AI narratives, high-risk interpretation, and unsupported health claims remain outside the core experience until their privacy, safety, retention, and release gates are verified.
