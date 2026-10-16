@@ -2,7 +2,7 @@
 title: "Happy Product Brief"
 status: draft
 created: 2026-10-11
-updated: 2026-10-11
+updated: 2026-10-16
 ---
 
 # Product Brief: Happy
@@ -38,6 +38,10 @@ Happy brings the learning and practice loop into one mobile product:
 - **Gentle progression:** roadmaps, checkpoints, streaks, and rewards that encourage returning without making progress feel like a competition.
 
 The product should always make the next step clear: learn one idea, try one practice, or answer one useful prompt.
+
+### Navigation and discoverability
+
+Insights are the product's **Notice** step and must be a first-class destination in the primary iOS app shell, not a child of a generic Tracking route. Keep the tab bar focused to five destinations: **Home, Journal, Insights, Journeys, and Exercises**. Treat Capture as a prominent add action from Home and Journal rather than a permanent destination. Home should also surface an insight-readiness card after activation; before enough evidence exists, it should explain how to build toward a useful personal pattern instead of hiding the feature.
 
 ## What Makes This Different
 
@@ -78,6 +82,8 @@ Record current baselines before setting numerical targets. The first success mod
 - First lesson start and completion
 - Lesson-to-tool usage
 - Tool-to-journal completion
+- Insight entry reach after the first meaningful loop
+- First insight-readiness view and insight-open usage
 - Day-1 and Day-7 return
 - Repeat course or tool usage
 - Journal entries that produce usable personal insight
@@ -102,6 +108,7 @@ The product should not use downloads, streaks, or subscriptions as proof of clin
 - Sleep-reset and related wellness learning
 - Guided text, voice, and photo journaling where available and clearly explained
 - Personal reflection and pattern insights
+- A first-class Insights destination connected to the Notice step of the core loop
 - Calm, playful progression that supports practice
 - Clear self-help boundaries, privacy communication, and professional-care signposting when needed
 

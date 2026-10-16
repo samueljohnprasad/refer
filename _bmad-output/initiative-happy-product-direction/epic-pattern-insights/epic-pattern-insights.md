@@ -2,7 +2,7 @@
 tracker_id: ""
 key: ""
 type: epic
-status: done
+status: in-progress
 title: "One deterministic pattern insight"
 parent: initiative-happy-product-direction
 covers: ["CAP-4"]
@@ -21,7 +21,7 @@ Help the user notice one personal pattern from sufficient reflection and practic
 
 ## Outcome
 
-After sufficient private data exists, a user sees one dated, time-bounded personal pattern with an understandable non-diagnostic explanation; CAP-4 is observable without treating an insight as a clinical conclusion.
+After sufficient private data exists, a user can reach Insights directly as the Notice destination and see one dated, time-bounded personal pattern with an understandable non-diagnostic explanation; CAP-4 is observable without treating an insight as a clinical conclusion.
 
 ## Requirements
 
@@ -36,6 +36,7 @@ After sufficient private data exists, a user sees one dated, time-bounded person
 5. The insight states its observation count and time window and explains what was observed without diagnosing or prescribing.
 6. Empty, insufficient-data, projection-pending, and changed-data states are understandable.
 7. The insight surface adopts the shared privacy and safety boundary contract; AI narrative is not required.
+8. The primary iOS shell exposes Insights directly as Notice through Home, Journal, Insights, Journeys, and Exercises; Capture is reached from Home and Journal add actions, and Home explains readiness before thresholds pass.
 
 ## Boundaries
 
@@ -62,3 +63,6 @@ Owns one initial pattern calculation, threshold and explanation rules, insight p
 - Decision: The first pattern is deterministic, source-transparent, time-bounded, and non-diagnostic; insufficient data is a valid visible state.
 - Unknown: the exact first pattern family, metric schema, empty-state wording, and hosted privacy/retention evidence.
 - Decision: Do not treat streaks, completion counts, or subscriptions as evidence that the product works clinically.
+- Source conflict: Current routes expose the Insights screen both as a hidden primary-tab route (`app/tabs/(tabs)/insights`) and under `(tracking)`; the spec requires the primary route to become canonical and Tracking to remain compatibility-only.
+- Decision: Reopen Epic 4 for one navigation follow-up story; completed insight-contract, readiness, surface, and cleanup work remains unchanged.
+- Decision: Do not add a second refactor sweep for this follow-up; the navigation slice is one bounded UI route/trigger change and its cleanup belongs inside that story.

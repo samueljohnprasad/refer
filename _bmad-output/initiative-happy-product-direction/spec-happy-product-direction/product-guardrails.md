@@ -29,5 +29,7 @@
 - The first path should connect one goal to one lesson, one related practice, and one reflection.
 - Every lesson should lead to one relevant practice, reflection, or clear next step.
 - Every practice should make completion and continuation understandable.
+- The primary navigation exposes Insights directly as the Notice step; generic Tracking cannot be the only entry point.
+- Capture is reached through prominent add actions from Home and Journal rather than a permanent primary destination.
 - Insights should show their time window and avoid diagnostic interpretation.
 - Gamification supports returning and practice; it is not evidence that the product works clinically.

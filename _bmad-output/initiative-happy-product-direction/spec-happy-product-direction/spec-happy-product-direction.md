@@ -34,7 +34,7 @@ Happy addresses the gap between mental-health education, practical self-guided e
 
 - **CAP-4**
   - **intent:** Users can review time-based reflections and recognise recurring emotions, triggers, habits, or coping patterns.
-  - **success:** The product shows insufficient data until 3 relevant completed practices exist in 7 days for an activity summary or 5 relevant structured observations across 3 days in 30 days for an emerging pattern; ready output includes its count, time window, and no diagnostic conclusion.
+  - **success:** From the primary Insights destination, the product shows insufficient data until 3 relevant completed practices exist in 7 days for an activity summary or 5 relevant structured observations across 3 days in 30 days for an emerging pattern; ready output includes its count, time window, and no diagnostic conclusion.
 
 - **CAP-5**
   - **intent:** Users can resume or switch their learning and practice path with progress preserved and one clear next action.
@@ -48,6 +48,8 @@ Happy addresses the gap between mental-health education, practical self-guided e
 
 - Happy targets iOS 26+; the contract does not require Android or older-iOS behavior.
 - First use shows one goal-led lesson, one related CBT practice, one text reflection, and immediate feedback before exposing the broader catalog and secondary surfaces.
+- The primary iOS shell has five direct destinations: Home, Journal, Insights, Journeys, and Exercises. Insights is the Notice step and must not be discoverable only through a generic Tracking route.
+- Capture is a prominent add action from Home and Journal, not a permanent primary destination. After activation, Home surfaces insight readiness and explains how to build evidence when thresholds are not met.
 - The selected StarterPath is authoritative for its goal, canonical lesson, linked practice, reflection, and course enrollment; a fallback must not silently override that selection.
 - StarterPath is a routing layer over canonical course content and progress, not a parallel lesson state with duplicated learning progress.
 - When a StarterPath is active, Home has one dominant continuation action; journal, mood, and other entry points remain available but secondary.
@@ -73,7 +75,7 @@ Happy addresses the gap between mental-health education, practical self-guided e
 
 ## Success signal
 
-Within seven days of becoming eligible, a user chooses a plain-language goal, completes at least one matching course lesson, one related practice, and one journal reflection, then returns to a preserved next step or time-bounded personal insight. These events are observable, baselines are recorded before targets are set, and trust is not degraded by unsafe claims, privacy confusion, or excessive messaging. Business success is qualified discovery, product-page conversion, trial start, and paid retention without harming early activation; numerical targets remain open until baselines exist.
+Within seven days of becoming eligible, a user chooses a plain-language goal, completes at least one matching course lesson, one related practice, and one journal reflection, then returns to a preserved next step or opens the directly reachable Insights destination to see an honest readiness state or time-bounded personal insight. These events are observable, baselines are recorded before targets are set, and trust is not degraded by unsafe claims, privacy confusion, or excessive messaging. Business success is qualified discovery, product-page conversion, trial start, and paid retention without harming early activation; numerical targets remain open until baselines exist.
 
 ## Assumptions
 

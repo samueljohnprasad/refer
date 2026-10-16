@@ -14,6 +14,7 @@ export interface DayButtonProps {
   onPress: () => void;
   disabled?: boolean;
   onLayout?: (e: LayoutChangeEvent) => void;
+  edge?: "left" | "right";
 }
 
 // Simplified version without individual shared values - much more performant
@@ -25,6 +26,7 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
   onPress,
   disabled = false,
   onLayout,
+  edge,
 }) => {
   const handlePress = (): void => {
     if (disabled) return;
@@ -48,7 +50,9 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
     >
       <View
         onLayout={onLayout}
-        className="items-center px-1 py-1.5 rounded-xl"
+        className={`items-center py-1.5 rounded-xl ${
+          edge === "left" ? "pr-1" : edge === "right" ? "pl-1" : "px-1"
+        }`}
         style={{
           backgroundColor,
           borderColor: isSelected ? "transparent" : "transparent", // Always transparent if selected to show pill
@@ -95,6 +99,7 @@ const areDayButtonPropsEqual = (
     prev.isToday === next.isToday &&
     prev.day.getTime() === next.day.getTime() &&
     prev.dayName === next.dayName &&
+    prev.edge === next.edge &&
     (prev.disabled ?? false) === (next.disabled ?? false)
     // Intentionally ignoring onPress reference to avoid re-renders due to new function identity
   );

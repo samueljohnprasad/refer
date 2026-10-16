@@ -180,3 +180,29 @@ references = [
   "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/starter-paths.md#contract",
   "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#AD-4",
 ]
+
+[[entry]]
+id = 11
+type = "bug"
+title = "Canonical starter courses are published and enrollable end to end"
+description = "Closes the remaining enrollment gap after ticket 1.10: the authored StarterPaths must resolve to stable canonical course identities, those courses must be present and published in reproducible local and hosted data, and completion must persist the selected enrollment so Journeys opens the matching first lesson."
+verify = "After a clean database reset and a clean anonymous app session, completing Understand anxious thoughts enrolls Anxiety: From Alarm to Action and opens its authored first lesson; completing Feel less overwhelmed enrolls Steady Under Pressure and opens its authored first lesson; no unrelated course is enrolled when a canonical target is unavailable; existing non-StarterPath motivations keep their current mappings; the same checks pass against the isolated preview or hosted environment used for release."
+covers = ["CAP-1", "CAP-5"]
+after = [10]
+hitl = true
+risk = "high"
+refine = true
+unknown = "The hosted course rows, publication state, seed promotion path, and current release environment must be verified before claiming this works outside the local fixture."
+references = [
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/spec-happy-product-direction.md#Constraints",
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/starter-paths.md#contract",
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#Operational-Envelope",
+  "_bmad-output/initiative-happy-product-direction/epic-job-led-first-use/story-selected-starterpath-enrolls-its-matching-course.md",
+  "src/domains/journey/model/starterPath.ts",
+  "src/screens/OnboardingScreen/utils/courseResolver.ts",
+  "hooks/data/useCompleteOnboarding.ts",
+  "src/domains/journey/data/courseServerQueries.ts",
+  "supabase/config.toml",
+  "supabase/seed/anxiety_section_1_unit_1.sql",
+  "supabase/seed/stress_steady_under_presssure_section_1.sql",
+]

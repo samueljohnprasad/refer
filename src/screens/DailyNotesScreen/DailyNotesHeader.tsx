@@ -173,7 +173,7 @@ const DailyNotesHeader = React.memo(
                 style={[weekHeaderAnimatedStyle]}
               >
                 <Animated.View
-                  className="flex flex-1 flex-row gap-1 relative"
+                  className="flex flex-1 flex-row relative"
                   style={[weekSlideAnimatedStyle]}
                   accessibilityElementsHidden={isExpanded}
                   importantForAccessibility={
@@ -207,7 +207,7 @@ const DailyNotesHeader = React.memo(
                   )}
 
                   {weekDaysData.map((dayData, index) => (
-                    <View className="flex-1 gap-1 mb-1.5" key={dayData.dayStr}>
+                    <View className="flex-1 min-w-0 gap-1 mb-1.5" key={dayData.dayStr}>
                       <DayButton
                         day={dayData.day}
                         dayName={dayData.dayName}
@@ -215,6 +215,7 @@ const DailyNotesHeader = React.memo(
                         isToday={dayData.isTodayDate}
                         disabled={dayData.disabled}
                         onPress={dayPressHandlers(dayData)}
+                        edge={index === 0 ? "left" : index === 6 ? "right" : undefined}
                         onLayout={index === 0 ? (e) => setButtonHeight(e.nativeEvent.layout.height) : undefined}
                       />
                       <View className="h-6 items-center justify-center mt-0.5">

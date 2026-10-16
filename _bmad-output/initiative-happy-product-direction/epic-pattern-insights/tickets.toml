@@ -62,3 +62,28 @@ risk = "medium"
 references = [
   "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#ad-6",
 ]
+
+[[entry]]
+id = 5
+type = "story"
+title = "Make Insights a first-class primary destination"
+description = "Promotes the existing deterministic Insights surface to the primary iOS shell, moves Capture to Home and Journal add actions, and exposes an honest insight-readiness entry after activation without changing insight evidence rules."
+verify = "After activation, a reviewer can open Insights directly from a five-destination shell containing Home, Journal, Insights, Journeys, and Exercises, start Capture from Home or Journal, and see the correct insufficient-data or ready state while legacy Tracking routes and private-data boundaries remain intact."
+covers = ["CAP-4"]
+after = [4]
+hitl = true
+risk = "medium"
+unknown = "The current app exposes Insights through both a hidden primary-tab route and a Tracking route; implementation must make the primary route canonical while preserving valid deep links and localized labels, icons, and accessibility names."
+references = [
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/spec-happy-product-direction.md#Constraints",
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/experience-flow.md#returning-user",
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/experience-flow.md#existing-surface-map",
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/product-guardrails.md#experience-rules",
+  "DESIGN.md#Overview",
+  "app/tabs/(tabs)/_layout.tsx",
+  "app/tabs/(tabs)/insights/index.tsx",
+  "app/tabs/(tabs)/insights/_layout.tsx",
+  "app/tabs/(tabs)/record.tsx",
+  "app/tabs/screens/(tracking)/_layout.tsx",
+  "app/tabs/screens/(tracking)/insights.tsx",
+]

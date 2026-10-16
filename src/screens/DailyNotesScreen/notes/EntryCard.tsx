@@ -86,7 +86,7 @@ export const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
               end={{ x: 1, y: 1 }}
               style={{
                 paddingVertical: 13,
-                paddingHorizontal: 15,
+                paddingHorizontal: 16,
                 borderRadius: 16,
                 overflow: "hidden",
                 borderWidth: 1,

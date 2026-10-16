@@ -152,8 +152,8 @@ export function useDailyNotesHeaderModel(onBookmarksPress?: () => void) {
       pillOpacity.value = withTiming(0, { duration: 150 });
       return;
     }
-    const cellWidth = (weekWidth - 24) / 7;
-    const xPosition = selectedIndex * (cellWidth + 4);
+    const cellWidth = weekWidth / 7;
+    const xPosition = selectedIndex * cellWidth;
     if (pillOpacity.value === 0) {
       pillX.value = xPosition;
       pillOpacity.value = withTiming(1, { duration: 150 });
@@ -166,7 +166,7 @@ export function useDailyNotesHeaderModel(onBookmarksPress?: () => void) {
     if (!weekWidth) return { opacity: 0 };
     return {
       position: "absolute",
-      width: (weekWidth - 24) / 7,
+      width: weekWidth / 7,
       height: buttonHeight,
       transform: [{ translateX: pillX.value }],
       opacity: pillOpacity.value,
