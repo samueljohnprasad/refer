@@ -216,8 +216,8 @@ export default function StarterPathScreen(): React.JSX.Element {
       await markCompleted({
         cfg: buildReminderConfig("evening"),
         reminderEnabled: false,
-        motivation: "anxiety",
-        reasons: ["anxiety"],
+        motivation: selectedPath.motivation,
+        reasons: [selectedPath.motivation],
       });
       await setActiveStarterPath(user.id, selectedPath.pathId);
       posthog?.capture("starter_path_completed", {

@@ -1,3 +1,5 @@
+import type { MotivationAnswer } from "@/src/screens/OnboardingScreen/types";
+
 export type StarterPathActionKind =
   | "lesson"
   | "practice"
@@ -46,6 +48,7 @@ export interface StarterPathV1 {
   pathId: string;
   pathVersion: 1;
   goalId: string;
+  motivation: MotivationAnswer;
   courseId: string;
   lessonNodeId: string;
   practiceRef: {
@@ -69,6 +72,7 @@ export const ANXIOUS_THOUGHTS_STARTER_PATH: StarterPathV1 = {
   pathId: "understand_anxious_thoughts",
   pathVersion: 1,
   goalId: "understand_anxious_thoughts",
+  motivation: "anxiety",
   courseId: "anxiety",
   lessonNodeId: "anxiety-s1-u1-n1-anxiety-has-a-job",
   practiceRef: {
@@ -116,6 +120,7 @@ export const FEEL_LESS_OVERWHELMED_STARTER_PATH: StarterPathV1 = {
   pathId: "feel_less_overwhelmed",
   pathVersion: 1,
   goalId: "feel_less_overwhelmed",
+  motivation: "stress",
   courseId: "stress-steady-under-pressure",
   lessonNodeId: "stress-steady-under-pressure-l1",
   practiceRef: {

@@ -1,3 +1,12 @@
+- source_plan: `_bmad-output/initiative-happy-product-direction/epic-job-led-first-use/story-selected-starterpath-enrolls-its-matching-course-plan.md`
+  summary: Align the authored anxiety StarterPath motivation with the catalog title/source used by the published course resolver.
+  evidence: The resolver searches for `Quieting the Storm`, while the configured published anxiety seed uses `Anxiety: From Alarm to Action`; catalog lookup can therefore return no course.
+- source_plan: `_bmad-output/initiative-happy-product-direction/epic-job-led-first-use/story-selected-starterpath-enrolls-its-matching-course-plan.md`
+  summary: Publish the authored stress course before claiming the Feel less overwhelmed StarterPath is release-ready.
+  evidence: The stress course seed sets `is_published` to false and the catalog query only returns published courses, so the path-specific motivation handoff alone cannot enroll it locally.
+- source_plan: `_bmad-output/initiative-happy-product-direction/epic-job-led-first-use/story-selected-starterpath-enrolls-its-matching-course-plan.md`
+  summary: Add hosted or device evidence for both authored StarterPath enrollment outcomes.
+  evidence: Static wiring and diff checks pass, but repository rules prohibit adding test cases and no hosted catalog/device run was available in this build.
 - source_plan: `/Users/samuelprasad/Desktop/happy/journals/_bmad-output/initiative-happy-product-direction/epic-job-led-first-use/story-anonymous-starter-path-reaches-a-reusable-next-action-plan.md`
   summary: Existing metadata, installed skill bundles, and BMAD artifacts remain outside ticket 1.1 runtime scope.
   evidence: The worktree was already dirty before ticket 1.1 implementation; repository rules require preserving those user changes, and the build review diff includes them because it is based on the recorded HEAD revision.
