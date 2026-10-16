@@ -3,7 +3,7 @@ title: 'Expose the reusable practice next action'
 type: 'feature'
 ticket: 3
 created: '2026-10-15'
-status: built
+status: done
 baseline_revision: 'ce7bc919'
 route: 'full'
 route_source: 'auto'

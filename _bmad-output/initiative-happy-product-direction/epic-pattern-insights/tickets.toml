@@ -1,0 +1,64 @@
+# Epic 4 story breakdown. Table order is the build order.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Establish the canonical insight observation contract"
+description = "Defines and persists one versioned InsightObservationV1 projection from acknowledged practice and reflection lineage, including deterministic identity, metric validation, evidence keys, and user-local time context."
+verify = "A signed-in user's acknowledged source data produces at most one valid observation per insight family, retries update the same observation, invalid metrics are excluded, and the stored observation retains the required time context."
+covers = ["CAP-4"]
+after = ["epic-private-reflection", "epic-job-led-first-use"]
+hitl = true
+risk = "high"
+unknown = "The first family and metric keys are now fixed by the Epic 4 decision: coping_path with path_id and path_version."
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#ad-5",
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#ad-7",
+]
+plan_checkpoint = true
+
+[[entry]]
+id = 2
+type = "story"
+title = "Calculate deterministic readiness and one pattern"
+description = "Calculates activity-summary and emerging-pattern readiness from the canonical observations with explicit rolling windows, distinct-session and active-day thresholds, and a source-transparent non-diagnostic explanation."
+verify = "The read model reports insufficient data below each threshold and reports the observation count, active-day count, time window, and deterministic explanation once the relevant threshold is met."
+covers = ["CAP-4"]
+after = [1]
+hitl = false
+risk = "high"
+unknown = "The exact first pattern rule follows the family and metric decision recorded by the preceding contract story."
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#ad-5",
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#ad-6",
+]
+
+[[entry]]
+id = 3
+type = "story"
+title = "Expose the private deterministic insight surface"
+description = "Adds the shared insight read surface and localized states for empty, insufficient-data, projection-pending, ready, and changed-data conditions while preserving privacy and non-diagnostic boundary copy."
+verify = "A user can open the insight surface and see the correct state for each readiness condition; a ready insight shows its count, active days, time window, and observed-pattern explanation without reflection text or clinical claims."
+covers = ["CAP-4"]
+after = [2]
+hitl = true
+risk = "medium"
+references = [
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/product-guardrails.md",
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/experience-flow.md",
+  "DESIGN.md",
+]
+
+[[entry]]
+id = 4
+type = "story"
+title = "Refactor sweep closes the deterministic insight foundation"
+description = "Cleans up the completed Epic 4 implementation so the canonical observation, readiness rules, surface, and boundary copy remain focused, reusable, and consistent with the project limits."
+verify = "The Epic 4 path remains runnable after cleanup, touched component and helper files stay within the project size limit, and no legacy insight path can be mistaken for the CAP-4 source of truth."
+covers = ["CAP-4"]
+after = [1, 2, 3]
+hitl = false
+risk = "medium"
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#ad-6",
+]

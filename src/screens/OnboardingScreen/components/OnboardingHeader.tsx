@@ -27,9 +27,15 @@ export const getHeaderConfig = (stepName: OnboardingStepName): HeaderConfig => {
     case "welcome":
     case "building_journey":
     case "lesson_complete":
-    case "soft_paywall":
     case "welcome_to_happy":
       return { visible: false };
+    case "soft_paywall":
+      return {
+        visible: true,
+        showBackButton: true,
+        backButtonVariant: "close",
+        progress: 0.8,
+      };
     case "journey_map":
       return {
         visible: true,
@@ -51,7 +57,7 @@ export const getHeaderConfig = (stepName: OnboardingStepName): HeaderConfig => {
         showBackButton: true,
       };
     case "pact_signing":
-      return { visible: true, showBackButton: true, progress: 0.6 };
+      return { visible: true, showBackButton: false, progress: 0.6 };
     case "letter_from_future":
       return {
         visible: true,
@@ -71,12 +77,14 @@ interface OnboardingHeaderProps {
   stepName: OnboardingStepName;
   backgroundColor: string;
   onBack: () => void;
+  onClose?: () => void;
 }
 
 export const OnboardingHeader: React.FC<OnboardingHeaderProps> = ({
   stepName,
   backgroundColor,
   onBack,
+  onClose,
 }) => {
   const { t } = useTranslation("onboarding");
   const headerConfig = getHeaderConfig(stepName);
@@ -111,7 +119,13 @@ export const OnboardingHeader: React.FC<OnboardingHeaderProps> = ({
               ]}
             />
             <LessonHeader
-              onClose={headerConfig.showBackButton ? onBack : undefined}
+              onClose={
+                headerConfig.showBackButton
+                  ? stepName === "soft_paywall" && onClose
+                    ? onClose
+                    : onBack
+                  : undefined
+              }
               backButtonVariant={
                 headerConfig.backButtonVariant === "close"
                   ? "close-icon"

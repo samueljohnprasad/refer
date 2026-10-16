@@ -3,7 +3,7 @@ title: 'Anonymous progress stays with the same user when identity is linked'
 type: 'feature'
 ticket: 2
 created: '2026-10-12'
-status: 'built'
+status: done
 baseline_revision: '656f03223e38af81c8ddd4ecafd74b77135cfeb1'
 route: 'full'
 route_source: 'auto'

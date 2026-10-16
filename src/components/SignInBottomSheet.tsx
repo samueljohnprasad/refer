@@ -29,7 +29,7 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(
       onDismiss,
       onSkip,
       onSuccess,
-      showSkipButton = false,
+      showSkipButton = true,
       onOpenChange,
     },
     ref,
@@ -47,12 +47,13 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(
       dismiss: controller.dismissSheet,
     }));
 
+    // ponytail: comfortable detents preventing button/text cutoff on iOS dynamic type
     const sheetHeight =
       controller.premiumRecovery || controller.accountConflict
-        ? 380
+        ? 410
         : showSkipButton
-          ? 285
-          : 245;
+          ? 320
+          : 280;
 
     return (
       <Host

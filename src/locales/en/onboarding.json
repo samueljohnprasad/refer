@@ -20,7 +20,7 @@
       "description": "Choose one small question to begin with. You can explore other paths later.",
       "choice": "Understand anxious thoughts",
       "choice_description": "Learn why your mind sounds the alarm, then practise what helps.",
-      "continue_button": "SHOW ME THE FIRST LESSON"
+      "continue_button": "Continue"
     },
     "lesson": {
       "eyebrow": "Lesson 1 · Anxiety",
@@ -46,7 +46,7 @@
         "description": "Choose one small question to begin with. You can explore other paths later.",
         "choice": "Feel less overwhelmed",
         "choice_description": "Understand what stress is telling you, then practise coming back to the present.",
-        "continue_button": "SHOW ME THE FIRST LESSON"
+        "continue_button": "Continue"
       },
       "lesson": {
         "eyebrow": "Lesson 1 · Stress",

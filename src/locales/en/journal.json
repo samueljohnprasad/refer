@@ -114,5 +114,32 @@
     "count_other": "{{count}} pinned notes",
     "emptyTitle": "No Pinned Notes",
     "emptyDescription": "Tap the bookmark icon on any journal entry to save it here for quick access."
+  },
+  "guided": {
+    "eyebrow": "Private Reflection",
+    "title": "Guided Reflection",
+    "placeholder": "Write your reflection here...",
+    "save": "SAVE REFLECTION",
+    "saving": "SAVING...",
+    "skip": "Skip for now",
+    "boundary": "Private & local to your account. Reflections are not shared publicly or used for medical diagnosis.",
+    "gated_voice": "Voice reflection deferred",
+    "gated_voice_desc": "Voice processing deferred until privacy validation is complete",
+    "gated_photo": "Photo reflection deferred",
+    "gated_photo_desc": "Photo processing deferred until privacy validation is complete",
+    "prompts": {
+      "notice_the_anxiety_alarm": {
+        "title": "Catch the Anxiety Alarm",
+        "prompt": "What unhelpful thought or alarm did you catch just now, and what is one gentler, more balanced way to look at it?"
+      },
+      "stress_small_next_step": {
+        "title": "Grounding Next Step",
+        "prompt": "What helped you feel more grounded during this reset, and what is one small next action you can take?"
+      },
+      "default": {
+        "title": "Take a Moment to Reflect",
+        "prompt": "What did you notice during this practice, and what would feel helpful to remember?"
+      }
+    }
   }
 }

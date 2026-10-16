@@ -12,11 +12,13 @@ import { useTranslation } from "react-i18next";
 
 interface AuthNetworkErrorScreenProps {
   onRetry: () => void;
+  onContinueOffline?: () => void;
   retrying: boolean;
 }
 
 export default function AuthNetworkErrorScreen({
   onRetry,
+  onContinueOffline,
   retrying,
 }: AuthNetworkErrorScreenProps) {
   const { t } = useTranslation("settings");
@@ -47,7 +49,7 @@ export default function AuthNetworkErrorScreen({
           >
             {retrying && <ActivityIndicator size="small" color="#FFF" />}
             {!retrying && (
-              <HugeiconsIcon icon={ReloadIcon} size={20} color="#FFF" />
+               <HugeiconsIcon icon={ReloadIcon} size={20} color="#FFF" />
             )}
             <Text className="text-white text-lg font-bold">
               {retrying
@@ -56,6 +58,17 @@ export default function AuthNetworkErrorScreen({
             </Text>
           </LinearGradient>
         </TouchableOpacity>
+        {onContinueOffline && (
+          <TouchableOpacity
+            onPress={onContinueOffline}
+            activeOpacity={0.7}
+            className="mt-4 px-6 py-3"
+          >
+            <Text className="text-gray-500 font-semibold text-base">
+              {t("accountAuth.networkError.continueOffline")}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

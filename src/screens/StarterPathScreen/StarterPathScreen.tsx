@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { randomUUID } from "expo-crypto";
 import { usePostHog } from "posthog-react-native";
 import { ScreenLayout } from "@/src/components/ui/ScreenLayout";
 import { useCompleteOnboarding } from "@/hooks/data/useCompleteOnboarding";
@@ -102,8 +103,14 @@ export default function StarterPathScreen(): React.JSX.Element {
   );
 
   const goBack = useCallback((): void => {
+    if (step === "goal") {
+      if (router.canGoBack()) {
+        router.back();
+      }
+      return;
+    }
     setStep((currentStep) => PREVIOUS_STEP[currentStep]);
-  }, []);
+  }, [step]);
 
   const openPractice = useCallback((): void => {
     const practice = resolveStarterPathPractice(selectedPath, hasExerciseConfig);
@@ -111,7 +118,7 @@ export default function StarterPathScreen(): React.JSX.Element {
       setHasCompletionError(true);
       return;
     }
-    practiceSessionIdRef.current = crypto.randomUUID();
+    practiceSessionIdRef.current = randomUUID();
 
     posthog?.capture("starter_path_practice_opened", {
       path_id: selectedPath.pathId,
@@ -277,6 +284,7 @@ export default function StarterPathScreen(): React.JSX.Element {
       />
       <StarterPathFooter
         step={step}
+        path={selectedPath}
         translate={translate}
         onAdvance={advanceStep}
       />

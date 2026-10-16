@@ -3,7 +3,7 @@ title: 'Anxious-thoughts goal resolves to the authored starter bundle'
 type: 'feature'
 ticket: 4
 created: '2026-10-12'
-status: 'built'
+status: done
 route: 'full'
 route_source: 'queue-evidence'
 review: 'quick'

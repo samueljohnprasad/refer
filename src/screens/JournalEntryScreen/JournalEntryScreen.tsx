@@ -19,6 +19,7 @@ import {
 import { Enums } from "@/database.types";
 import { FeelingsType } from "@/src/network/genAi";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { GuidedReflectionBadge } from "@/src/domains/journal/ui/GuidedReflectionBadge";
 import {
   MOOD_GRADIENTS,
   getRelativeDayTitle,
@@ -36,6 +37,9 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
 
   // Handle potential array response from API
   const entry = Array.isArray(insights) ? insights[0] : insights;
+  const lineage = Array.isArray(entry?.journal_reflection_lineage)
+    ? entry.journal_reflection_lineage[0]
+    : entry?.journal_reflection_lineage;
 
   const [selectedMood, setSelectedMood] = useState<Enums<"mood">>(
     entry?.moods?.main_mood || "great"
@@ -200,6 +204,10 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
                 onAddFeeling={addFeelingString}
                 onRemoveFeeling={removeFeelingByIndex}
               />
+
+              {lineage && !isEditing && (
+                <GuidedReflectionBadge lineage={lineage} size="md" />
+              )}
 
               <TranscriptSection
                 text={journalText || (isEditing ? "" : t("entryDetail.noTranscript"))}

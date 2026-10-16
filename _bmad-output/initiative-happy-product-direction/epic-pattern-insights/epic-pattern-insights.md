@@ -2,6 +2,7 @@
 tracker_id: ""
 key: ""
 type: epic
+status: done
 title: "One deterministic pattern insight"
 parent: initiative-happy-product-direction
 covers: ["CAP-4"]
@@ -52,6 +53,10 @@ Owns one initial pattern calculation, threshold and explanation rules, insight p
 ## Notes
 
 - Waits on Epic 3's canonical private reflection and source-data contract.
+- Decision: The tracer is the canonical observation projection; readiness and the insight surface consume that contract rather than legacy temporal or AI narrative paths.
+- Decision: The first deterministic family is `coping_path`, using repeated authored path completion as a source-transparent coping-pattern observation; its metric keys are `path_id` and `path_version`.
+- Decision: Sequence contract and metric choice before deterministic readiness, then surface states, then a cleanup pass.
+- Decision: Voice, photo, free-text AI narratives, diagnosis, and crisis guidance remain deferred from CAP-4.
 - Recommendation: begin with one deterministic CBT/reflection pattern rather than AI-generated narrative themes.
 - Decision: The readiness ladder is 3 distinct completed practices in 7 days for activity summary and 5 relevant structured observations across 3 distinct days in 30 days for pattern readiness.
 - Decision: The first pattern is deterministic, source-transparent, time-bounded, and non-diagnostic; insufficient data is a valid visible state.

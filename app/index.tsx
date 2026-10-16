@@ -53,13 +53,16 @@ export default function Home(): React.JSX.Element {
     // Light haptic for button press
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-    const nextSession = session ?? (await ensureAnonymousSession());
-    if (nextSession) {
-      router.replace("/tabs/screens/onboard-container");
-      return;
+    try {
+      if (!session) {
+        await ensureAnonymousSession();
+      }
+    } catch (err) {
+      // ponytail: if Supabase is unreachable (e.g. firewall/offline), proceed in guest mode
+      console.warn("[Home] Anonymous session failed, continuing as guest:", err);
     }
 
-    sheetRef.current?.present();
+    router.replace("/tabs/screens/onboard-container");
   };
 
   const handlePressIn = (): void => {

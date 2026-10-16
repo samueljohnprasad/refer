@@ -1,4 +1,5 @@
 import React from "react";
+import { View } from "react-native";
 import RevenueCatUI from "react-native-purchases-ui";
 import WelcomeStep from "../steps/WelcomeStep";
 import MascotGreetingStep from "../steps/MascotGreetingStep";
@@ -130,21 +131,24 @@ export const OnboardingStepRenderer: React.FC<OnboardingStepRendererProps> = ({
       );
     case "soft_paywall":
       return (
-        <RevenueCatUI.Paywall
-          options={{ displayCloseButton: true }}
-          onPurchaseCompleted={() => {
-            updateTrialStarted(true);
-            goNext();
-          }}
-          onRestoreCompleted={() => {
-            updateTrialStarted(true);
-            goNext();
-          }}
-          onDismiss={() => {
-            updateTrialStarted(false);
-            goNext();
-          }}
-        />
+        <View style={{ flex: 1 }}>
+          <RevenueCatUI.Paywall
+            style={{ flex: 1 }}
+            options={{ displayCloseButton: true }}
+            onPurchaseCompleted={() => {
+              updateTrialStarted(true);
+              goNext();
+            }}
+            onRestoreCompleted={() => {
+              updateTrialStarted(true);
+              goNext();
+            }}
+            onDismiss={() => {
+              updateTrialStarted(false);
+              goNext();
+            }}
+          />
+        </View>
       );
     case "welcome_to_happy":
       return (

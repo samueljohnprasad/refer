@@ -2,6 +2,7 @@
 tracker_id: ""
 key: ""
 type: epic
+status: done
 title: "Private reflection"
 parent: initiative-happy-product-direction
 covers: ["CAP-3"]

@@ -197,6 +197,7 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
               textOnly={textOnly}
               minHeight={composerMinHeight}
               autoFocus={autoFocus}
+              accessibilityLabel={translateCopy(title)}
             />
           </View>
         )}

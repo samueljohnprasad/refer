@@ -36,6 +36,7 @@ type BaseComposerProps = {
   readOnly?: boolean;
   autoFocus?: boolean;
   glow?: boolean;
+  accessibilityLabel?: string;
 };
 
 type SingleComposerProps = BaseComposerProps & {
@@ -167,6 +168,7 @@ function SingleComposer(props: SingleComposerProps) {
     blurOnSubmit = true,
     readOnly = false,
     autoFocus = true,
+    accessibilityLabel,
   } = props;
   const { isVoiceEnabled } = useVoiceFeature();
   const footer = useMemo(() => {
@@ -212,6 +214,7 @@ function SingleComposer(props: SingleComposerProps) {
         minHeight={minHeight}
         readOnly={readOnly}
         autoFocus={autoFocus}
+        accessibilityLabel={accessibilityLabel}
         blurOnSubmit={blurOnSubmit}
         onSubmitEditing={onSubmitEditing}
         footer={footer}

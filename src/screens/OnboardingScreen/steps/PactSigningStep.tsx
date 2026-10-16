@@ -169,6 +169,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
         <Pressable
           onPressIn={onPressIn}
           onPressOut={onPressOut}
+          onPress={onPressOut}
           disabled={committed}
           accessibilityRole="button"
           accessibilityLabel={committed ? t("pact_signing.button_done") : t("pact_signing.button_idle")}

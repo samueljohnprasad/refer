@@ -2,6 +2,7 @@
 tracker_id: ""
 key: ""
 type: epic
+status: done
 title: "Job-led first use and trust foundation"
 parent: initiative-happy-product-direction
 covers: ["CAP-1", "CAP-5", "CAP-6"]

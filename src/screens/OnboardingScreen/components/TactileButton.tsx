@@ -14,6 +14,8 @@ interface TactileButtonProps {
   height?: number;
   fontSize?: number;
   pressDepth?: number;
+  faceColor?: string;
+  rimColor?: string;
 }
 
 const TactileButton: React.FC<TactileButtonProps> = ({
@@ -26,6 +28,8 @@ const TactileButton: React.FC<TactileButtonProps> = ({
   height = 60,
   fontSize,
   pressDepth = 6,
+  faceColor,
+  rimColor,
 }) => {
   // ponytail: secondary variant remains accessible plain text action
   if (variant === "secondary") {
@@ -65,6 +69,8 @@ const TactileButton: React.FC<TactileButtonProps> = ({
       height={height}
       fontSize={fontSize}
       pressDepth={pressDepth}
+      faceColor={faceColor}
+      rimColor={rimColor}
     />
   );
 };

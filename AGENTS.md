@@ -8,7 +8,15 @@ use impeccable skill (`impeccable` — distinctive high-end design intelligence 
 use graphify skill (`graphify` — query/path/explain graph before raw grep/exploration, run `graphify update .` after edits)
 use clean-code skill (`clean-code` — readable names, small functions, single responsibility, clean error handling)
 
-Happy is an Expo Router React Native app for gamified CBT journaling and mental health exercises. The product direction is premium, trustworthy, calm, playful, gamified, and engaging like Duolingo. Read `PRODUCT.md` and `DESIGN.md` before making user-facing UI changes.
+Happy is an Expo Router React Native app for gamified CBT journaling and mental health exercises. The product direction is premium, trustworthy, calm, playful, gamified, and engaging like Duolingo. Read the `Happy Core` section in `PRODUCT.md` as the product source of truth, and read `PRODUCT.md` and `DESIGN.md` before making user-facing UI changes.
+
+## Happy Core (always preserve)
+
+- Happy is a guided mental-health learning system, not only a journal or a set of CBT tools.
+- Core loop: Learn → Practice → Journal → Insight.
+- First useful path: anonymous Supabase session → plain-language goal → short lesson → linked practice → Home.
+- Signup and paywall come after the first useful loop, never before it.
+- Keep learning playful and trustworthy; do not add diagnosis claims, clinical promises, or disconnected feature showcases.
 
 ## Commands
 

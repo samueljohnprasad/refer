@@ -29,7 +29,8 @@ export const useMentalHealthData = (selectedDate: Date) => {
             summary,
             structured_memory
           ),
-          moods(*)
+          moods(*),
+          journal_reflection_lineage(*)
           `,
         )
         .eq("user_id", user.id)

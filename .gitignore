@@ -67,6 +67,9 @@ supabase/functions/.env
 .revenuecat.json
 .revenuecat/
 
+# PostHog local credentials
+.posthog.json
+.posthog/
 
 .env.*
 credentials.json

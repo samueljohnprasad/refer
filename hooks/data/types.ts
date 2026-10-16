@@ -24,8 +24,11 @@ export type JournalAIInsightsExtended = {
   strengthSpotlight?: string | null;
 };
 
+import type { ReflectionContextV1 } from "@/src/domains/journal/model/reflectionLineage";
+
 export type JournalEntry = Tables<"journal_records"> & {
   journal_ai?: Tables<"journal_ai"> | null;
   moods?: Tables<"moods"> | null;
+  journal_reflection_lineage?: ReflectionContextV1 | ReflectionContextV1[] | null;
 };
 

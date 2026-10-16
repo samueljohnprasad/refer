@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { randomUUID } from "expo-crypto";
 import { supabase } from "@/src/network/auth/supabase";
 import { useAuth } from "@/src/context/AuthContext";
 import {
@@ -231,7 +232,7 @@ export const useRewards = (): UseRewardsReturn => {
 
         // Update local state
         const newReward: UserReward = {
-          id: crypto.randomUUID(),
+          id: randomUUID(),
           rewardId: rewardId,
           unlockedAt: new Date().toISOString(),
         };

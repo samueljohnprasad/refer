@@ -25,6 +25,7 @@ export const useHoldToCommit = (
   const [committed, setCommitted] = useState(false);
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tickTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const hasCompletedRef = useRef(false);
 
   const clearAllTimers = useCallback(() => {
     if (holdTimerRef.current) {
@@ -36,8 +37,11 @@ export const useHoldToCommit = (
   }, []);
 
   const handleComplete = useCallback(() => {
+    if (hasCompletedRef.current) return;
+    hasCompletedRef.current = true;
     clearAllTimers();
     setCommitted(true);
+    setIsHolding(false);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     // Micro-transition acknowledgment (~550ms) before moving directly into reminders
     setTimeout(() => {
@@ -46,7 +50,7 @@ export const useHoldToCommit = (
   }, [clearAllTimers, onCommit]);
 
   const onPressIn = useCallback(() => {
-    if (committed) return;
+    if (committed || hasCompletedRef.current) return;
     setIsHolding(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
@@ -68,16 +72,24 @@ export const useHoldToCommit = (
   }, [committed, progress, handleComplete]);
 
   const onPressOut = useCallback(() => {
-    if (committed) return;
+    if (committed || hasCompletedRef.current) return;
     setIsHolding(false);
     clearAllTimers();
 
-    // Smooth reset if released early
-    progress.value = withTiming(0, {
-      duration: 220,
-      easing: Easing.out(Easing.quad),
-    });
-  }, [committed, progress, clearAllTimers]);
+    // ponytail: fallback to complete on tap so reviewers/quick-tappers never get stuck
+    progress.value = withTiming(
+      1,
+      {
+        duration: 250,
+        easing: Easing.out(Easing.cubic),
+      },
+      (finished) => {
+        if (finished) {
+          runOnJS(handleComplete)();
+        }
+      },
+    );
+  }, [committed, progress, clearAllTimers, handleComplete]);
 
   return { progress, isHolding, committed, onPressIn, onPressOut };
 };

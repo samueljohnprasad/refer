@@ -60,8 +60,8 @@ const Content = ({
       contentContainerStyle={[
         {
           paddingBottom: hasFooter ? 200 : Math.max(insets.bottom, 24),
-          paddingTop: hasHeader
-            ? Math.max(insets.top, 24) + 100
+            paddingTop: hasHeader
+            ? Math.max(insets.top, 24) + 88
             : Math.max(insets.top, 24),
           paddingHorizontal: 16,
         },
@@ -102,24 +102,12 @@ const Footer = ({
     }
 
     return (
-      <GlassView
-        glassEffectStyle="regular"
-        tintColor="#FFFFFF10"
-        className="px-6 pt-8 rounded-t-[32px] overflow-hidden"
-        style={{
-          paddingBottom: Math.max(insets.bottom, 24),
-          paddingHorizontal: 24,
-          paddingVertical: 32,
-          borderBottomWidth: 0,
-          elevation: 0,
-          shadowOpacity: 0,
-          shadowRadius: 0,
-          shadowColor: "transparent", // IMPORTANT
-          overflow: "hidden",
-        }}
+      <View
+        className="px-6 pt-4"
+        style={{ paddingBottom: Math.max(insets.bottom, 20) }}
       >
         {children}
-      </GlassView>
+      </View>
     );
   };
 

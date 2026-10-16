@@ -22,6 +22,7 @@ import {
 import { TimeRangeSelector } from "./components/TimeRangeSelector";
 import { InsightNarrativeCard } from "@/src/components/insights/InsightNarrativeCard";
 import { InsightNudgeCard } from "@/src/components/insights/InsightNudgeCard";
+import { DeterministicInsightCard } from "@/src/components/insights/DeterministicInsightCard";
 import type { ExerciseCategory } from "@/src/types/exerciseFlow";
 
 const CATEGORY_ICONS = {
@@ -107,7 +108,9 @@ export default function InsightsScreen() {
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{ paddingBottom: 128, paddingTop: 110 }}
       >
-
+        <Animated.View entering={FadeInDown.duration(400).delay(150)} className="px-4 mt-5">
+          <DeterministicInsightCard />
+        </Animated.View>
         <Animated.View entering={FadeInDown.duration(400).delay(200)} className="px-4 mt-5">
           <InsightNarrativeCard />
         </Animated.View>

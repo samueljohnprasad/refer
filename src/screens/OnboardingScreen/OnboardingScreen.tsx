@@ -11,16 +11,14 @@ import { useOnboardingFlow } from "./hooks/useOnboardingFlow";
 import { useOnboardingAnalytics } from "./hooks/useOnboardingAnalytics";
 import { useOnboardingTransitions } from "./hooks/useOnboardingTransitions";
 import { useCompleteOnboarding } from "@/hooks/data/useCompleteOnboarding";
-import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { ONBOARDING_STEPS } from "./constants";
 import { ScreenLayout } from "@/src/components/ui/ScreenLayout";
 import { updateUserStreak } from "@/src/lib/api/mentalHealthJourneyApi";
 import { XPActionType } from "@/src/types/xp";
 import { useXP } from "@/src/context/XPContext";
-import { SymbolImage } from "@/src/components/symbol-image";
-import TactileButton from "./components/TactileButton";
 import { OnboardingHeader } from "./components/OnboardingHeader";
 import { OnboardingStepRenderer } from "./components/OnboardingStepRenderer";
+import { OnboardingFooter } from "./components/OnboardingFooter";
 import { buildReminderConfig } from "./utils/reminderConfig";
 import { useGetCourseCatalogQuery } from "@/src/domains/journey/data/journeyApi";
 import { resolveCourseForMotivation } from "./utils/courseResolver";
@@ -40,13 +38,11 @@ const WELCOME_CTA_REVEAL_DELAY_MS = 520;
 const WELCOME_CTA_HANDOFF_DELAY_MS = 110;
 const STEP_CTA_REVEAL_DURATION_MS = 180;
 const STEP_CTA_REVEAL_OFFSET = 6;
-const WELCOME_FOOTER_BOTTOM_OFFSET = 20;
 
 const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const { width: screenWidth } = useWindowDimensions();
   const analytics = useOnboardingAnalytics();
   const { markCompleted } = useCompleteOnboarding();
-  const { presentPaywall } = useRevenueCat();
   const { user } = useAuth();
   const { t } = useTranslation("onboarding");
   const remindersCfg = useAtomValue(cfgAtom);
@@ -230,6 +226,18 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     goNext();
   }, [updatePactSigned, goNext]);
 
+  const handleDismissPaywall = useCallback(() => {
+    Haptics.selectionAsync();
+    updateTrialStarted(false);
+    goNext();
+  }, [updateTrialStarted, goNext]);
+
+  const handleSkip = useCallback(() => {
+    analytics.trackStepSkipped(currentStep);
+    if (isLastStep) handleContinue(true);
+    else goNext();
+  }, [analytics, currentStep, isLastStep, handleContinue, goNext]);
+
   const isContinueDisabled =
     !canContinue ||
     loading ||
@@ -249,6 +257,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         stepName={currentStep}
         backgroundColor={containerBackgroundColor}
         onBack={handleBack}
+        onClose={currentStep === "soft_paywall" ? handleDismissPaywall : undefined}
       />
 
       <Animated.View style={[{ flex: 1 }, stepContainerStyle]}>
@@ -267,42 +276,16 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         />
       </Animated.View>
 
-      {showContinueButton && (
-        <ScreenLayout.Footer
-          pointerEvents="box-none"
-          variant={currentStepConfig.transparentFooter ? "transparent" : "solid"}
-          style={
-            !currentStepConfig.transparentFooter
-              ? { backgroundColor: containerBackgroundColor }
-              : currentStep === "welcome_to_happy"
-                ? { bottom: WELCOME_FOOTER_BOTTOM_OFFSET }
-                : undefined
-          }
-        >
-          <Animated.View
-            style={footerAnimatedStyle}
-            className="w-full gap-3"
-          >
-            <TactileButton
-              label={loading ? t("buttons.setting_up") : t(currentStep === "welcome" ? "buttons.lets_begin" : currentStep === "plan_reveal" ? "buttons.start_my_journey" : currentStep === "notification_permission" ? "buttons.set_reminders" : currentStep === "welcome_to_happy" ? "buttons.save_my_progress" : "buttons.continue")}
-              onPress={() => handleContinue(false)}
-              disabled={isContinueDisabled}
-              rightIcon={currentStepConfig.name === "welcome" ? <SymbolImage name="arrow.up" size={18} tintColor="#FFFFFF" /> : undefined}
-            />
-            {currentStepConfig.canSkip && (
-              <TactileButton
-                label={t(currentStep === "welcome_to_happy" ? "buttons.maybe_later" : "buttons.skip_for_now")}
-                onPress={() => {
-                  analytics.trackStepSkipped(currentStep);
-                  if (isLastStep) handleContinue(true);
-                  else goNext();
-                }}
-                variant="secondary"
-              />
-            )}
-          </Animated.View>
-        </ScreenLayout.Footer>
-      )}
+      <OnboardingFooter
+        currentStep={currentStep}
+        currentStepConfig={currentStepConfig}
+        containerBackgroundColor={containerBackgroundColor}
+        footerAnimatedStyle={footerAnimatedStyle}
+        isContinueDisabled={isContinueDisabled}
+        loading={loading}
+        onContinue={handleContinue}
+        onSkip={handleSkip}
+      />
     </ScreenLayout>
   );
 };

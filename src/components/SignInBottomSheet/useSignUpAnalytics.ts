@@ -10,6 +10,9 @@ interface SignupAnalytics {
   trackSheetViewed: (source: SignupSource) => void;
   trackProviderTapped: (provider: SignupProvider, source: SignupSource) => void;
   trackAuthSucceeded: (provider: SignupProvider, source: SignupSource) => void;
+  trackAuthCancelled: (provider: SignupProvider, source: SignupSource) => void;
+  trackAuthFailed: (provider: SignupProvider, source: SignupSource, error?: unknown) => void;
+  trackConflictDetected: (provider: SignupProvider, source: SignupSource) => void;
   trackSkipped: (source: SignupSource) => void;
   trackDismissed: (source: SignupSource) => void;
 }
@@ -57,6 +60,42 @@ export function useSignupAnalytics(): SignupAnalytics {
     [capture],
   );
 
+  const trackAuthCancelled = useCallback(
+    (provider: SignupProvider, source: SignupSource): void => {
+      capture("signup_auth_cancelled", {
+        provider,
+        source,
+        copy_variant: SIGNUP_COPY_VARIANT,
+      });
+    },
+    [capture],
+  );
+
+  const trackAuthFailed = useCallback(
+    (provider: SignupProvider, source: SignupSource, error?: unknown): void => {
+      const errorMessage =
+        error instanceof Error ? error.message : typeof error === "string" ? error : "unknown";
+      capture("signup_auth_failed", {
+        provider,
+        source,
+        error_message: errorMessage,
+        copy_variant: SIGNUP_COPY_VARIANT,
+      });
+    },
+    [capture],
+  );
+
+  const trackConflictDetected = useCallback(
+    (provider: SignupProvider, source: SignupSource): void => {
+      capture("signup_account_conflict_detected", {
+        provider,
+        source,
+        copy_variant: SIGNUP_COPY_VARIANT,
+      });
+    },
+    [capture],
+  );
+
   const trackSkipped = useCallback((source: SignupSource): void => {
     capture("signup_skipped", {
       source,
@@ -75,6 +114,9 @@ export function useSignupAnalytics(): SignupAnalytics {
     trackSheetViewed,
     trackProviderTapped,
     trackAuthSucceeded,
+    trackAuthCancelled,
+    trackAuthFailed,
+    trackConflictDetected,
     trackSkipped,
     trackDismissed,
   };

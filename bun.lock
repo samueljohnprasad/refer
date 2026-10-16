@@ -71,6 +71,7 @@
         "expo-blur": "~56.0.3",
         "expo-clipboard": "~56.0.4",
         "expo-constants": "~56.0.18",
+        "expo-crypto": "~56.0.5",
         "expo-dev-client": "~56.0.20",
         "expo-device": "~56.0.4",
         "expo-file-system": "~56.0.8",
@@ -1582,7 +1583,7 @@
 
     "expo-constants": ["expo-constants@56.0.23", "", { "dependencies": { "@expo/env": "~2.3.1" }, "peerDependencies": { "expo": "*", "react-native": "*" } }, "sha512-rlHmhwvKqljCNdqs4xdxcHzk22rbnVv05lyQqQtYXFkzreFErsQYVDvDCiw3LG6vjQRRTPTEdSgtyNgs8y9cBA=="],
 
-    "expo-crypto": ["expo-crypto@56.0.4", "", { "peerDependencies": { "expo": "*" } }, "sha512-fRNEhoXRXgAWBpe3/hq5X+KXTit3OZqdiAGts1YvNEUHQb+H5591mpPac0Yw+sZg9pXcrjRnzo5AxvZaENpc7g=="],
+    "expo-crypto": ["expo-crypto@56.0.5", "", { "peerDependencies": { "expo": "*" } }, "sha512-H2gPvzWX+gt0BhWH7FaNHqO1RZ8fmbJP96d6z0/wHzEIiL5y+NV2i00qczZRW0Hu+Nu2LpNeBpArqzsRM8aWFA=="],
 
     "expo-dev-client": ["expo-dev-client@56.0.24", "", { "dependencies": { "expo-dev-launcher": "~56.0.25", "expo-dev-menu": "~56.0.21", "expo-dev-menu-interface": "~56.0.0", "expo-manifests": "~56.0.4", "expo-updates-interface": "~56.0.1" }, "peerDependencies": { "expo": "*" } }, "sha512-Nc5EKGiq7fVP60ONHiXVh4jTNHQbajbYwGA69Ahm02hKBp27CBnGkOxHp04hkgbcN6JLD8F1Y+W8SjXb0ioUJg=="],
 
@@ -3071,6 +3072,8 @@
     "esrecurse/estraverse": ["estraverse@5.3.0", "", {}, "sha512-MMdARuVEQziNTeJD8DgMqmhwR11BRQ/cBP+pLtYdSTnf3MIO8fFeiINEbX36ZdNlfU/7A9f3gUw49B3oQsvwBA=="],
 
     "expo-auth-session/expo-constants": ["expo-constants@56.0.22", "", { "dependencies": { "@expo/env": "~2.3.1" }, "peerDependencies": { "expo": "*", "react-native": "*" } }, "sha512-XNRssTBSGDR3gsaYhhp513WdpPsLi89wgfYT0wLsCtMY8vXAgXR4jNlaYGXFCnvNVbx9gEDSBHOSntqRK1i8Lw=="],
+
+    "expo-auth-session/expo-crypto": ["expo-crypto@56.0.4", "", { "peerDependencies": { "expo": "*" } }, "sha512-fRNEhoXRXgAWBpe3/hq5X+KXTit3OZqdiAGts1YvNEUHQb+H5591mpPac0Yw+sZg9pXcrjRnzo5AxvZaENpc7g=="],
 
     "expo-linking/expo-constants": ["expo-constants@56.0.22", "", { "dependencies": { "@expo/env": "~2.3.1" }, "peerDependencies": { "expo": "*", "react-native": "*" } }, "sha512-XNRssTBSGDR3gsaYhhp513WdpPsLi89wgfYT0wLsCtMY8vXAgXR4jNlaYGXFCnvNVbx9gEDSBHOSntqRK1i8Lw=="],
 

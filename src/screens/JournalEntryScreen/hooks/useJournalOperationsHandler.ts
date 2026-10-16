@@ -93,7 +93,12 @@ export const useJournalOperationsHandler = ({
       }
 
       await saveJournal(updatedInsights);
-      posthog?.capture("journal_entry_saved");
+      // ponytail: rich telemetry properties for journal save analytics
+      posthog?.capture("journal_entry_saved", {
+        main_mood: selectedMood ?? "unspecified",
+        has_audio: entry?.input_type === "audio",
+        text_length: journalText.length,
+      });
       toast.show({
         placement: "top",
         variant: "success",

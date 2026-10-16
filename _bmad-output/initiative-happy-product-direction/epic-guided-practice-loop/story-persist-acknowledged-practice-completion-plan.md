@@ -3,7 +3,7 @@ title: 'Persist acknowledged practice completion'
 type: 'feature'
 ticket: '2'
 created: '2026-10-15'
-status: 'built'
+status: done
 review: 'quick'
 review_source: 'pinned'
 lenses_ran: ['quick']

@@ -3,7 +3,7 @@ title: 'Activation and paywall boundaries are observable without blocking the fi
 type: 'feature'
 ticket: 7
 created: '2026-10-12'
-status: 'built'
+status: done
 baseline_revision: '656f03223e38af81c8ddd4ecafd74b77135cfeb1'
 route: 'full'
 route_source: 'queue'

@@ -10,6 +10,7 @@ import { Link } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { useTranslation } from "react-i18next";
+import { GuidedReflectionBadge } from "@/src/domains/journal/ui/GuidedReflectionBadge";
 
 export interface EntryCardProps {
   entry: JournalEntry;
@@ -45,6 +46,9 @@ export const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
     : "";
   const isBookmarked: boolean = entry.is_bookmarked || false;
   const currentGradient = MOOD_GRADIENTS[entry.moods?.main_mood || "great"] || MOOD_GRADIENTS.great;
+  const lineage = Array.isArray(entry.journal_reflection_lineage)
+    ? entry.journal_reflection_lineage[0]
+    : entry.journal_reflection_lineage;
 
   const handleBookmarkPress = useCallback(
     (e: { stopPropagation: () => void }): void => {
@@ -89,6 +93,7 @@ export const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
                 borderColor: "rgba(0,0,0,0.04)",
               }}
             >
+              {lineage && <GuidedReflectionBadge lineage={lineage} size="sm" />}
               {/* Header: Title */}
               <Text
                 color="ink"

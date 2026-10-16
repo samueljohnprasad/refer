@@ -1,4 +1,4 @@
-import type { TextStyle, ViewStyle } from "react-native";
+import type { ColorValue, TextStyle, ViewStyle } from "react-native";
 
 export interface AnimatedProgressBarProps {
   /**
@@ -29,13 +29,13 @@ export interface AnimatedProgressBarProps {
    * Color of the progress indicator
    * @default '#2089dc'
    */
-  progressColor?: string;
+  progressColor?: ColorValue;
 
   /**
    * Color of the background track
    * @default '#e0e0e0'
    */
-  trackColor?: string;
+  trackColor?: ColorValue;
 
   /**
    * Border radius of the progress bar

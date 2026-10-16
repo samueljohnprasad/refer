@@ -1,8 +1,17 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { View, TouchableOpacity, Text as RNText, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Text as RNText,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+  type ColorValue,
+} from "react-native";
 import { AnimatedProgressBar } from "@/src/components/progress";
 import { SymbolView } from "expo-symbols";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
 export interface LessonHeaderProps {
   /** Callback when the close/back button is pressed */
@@ -12,13 +21,13 @@ export interface LessonHeaderProps {
   /** Label to show on the trailing edge, e.g., "+10 XP" */
   trailingLabel?: string;
   /** Color of the 'x' close icon */
-  iconColor?: string;
+  iconColor?: ColorValue;
   /** Color of the trailing label text */
-  trailingLabelColor?: string;
+  trailingLabelColor?: ColorValue;
   /** Color of the progress bar fill */
-  progressFillColor?: string;
+  progressFillColor?: ColorValue;
   /** Color of the progress bar track */
-  progressTrackColor?: string;
+  progressTrackColor?: ColorValue;
   /** Height of the progress bar */
   progressHeight?: number;
   /** Type of back button to show */
@@ -31,17 +40,17 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
   onClose,
   progress,
   trailingLabel,
-  iconColor = "#4F604F",
-  trailingLabelColor = "#C8694B",
-  progressFillColor = "#5f7f58",
-  progressTrackColor = "#e5ede1",
-  progressHeight = 12,
+  iconColor = SEMANTIC_COLORS.text.secondary,
+  trailingLabelColor = SEMANTIC_COLORS.brand.pressed,
+  progressFillColor = SEMANTIC_COLORS.brand.primary,
+  progressTrackColor = SEMANTIC_COLORS.brand.soft,
+  progressHeight = 8,
   backButtonVariant = "close-icon",
   style,
 }) => {
   const { t } = useTranslation("journeys");
   return (
-    <View style={[styles.container, style]} className="flex-row items-center gap-4 px-6 pt-2 pb-6">
+    <View style={[styles.container, style]} className="flex-row items-center gap-3 px-5 pt-2 pb-4">
       <TouchableOpacity
         onPress={onClose}
         activeOpacity={0.7}

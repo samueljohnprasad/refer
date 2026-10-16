@@ -3,7 +3,7 @@ title: 'Boundary and privacy guidance covers first use and account linking'
 type: 'feature'
 ticket: 6
 created: '2026-10-12'
-status: 'built'
+status: done
 route: 'full'
 route_source: 'queue-evidence'
 review: 'quick'

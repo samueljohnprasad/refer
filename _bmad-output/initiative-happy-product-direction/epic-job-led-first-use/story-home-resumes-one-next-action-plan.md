@@ -3,7 +3,7 @@ title: 'Home resumes one next action without hiding the catalog'
 type: 'feature'
 ticket: 5
 created: '2026-10-12'
-status: 'built'
+status: done
 route: 'full'
 route_source: 'queue'
 review: ''

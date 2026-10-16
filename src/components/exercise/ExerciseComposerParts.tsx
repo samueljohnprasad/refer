@@ -32,6 +32,7 @@ export function ComposerShell({
   maxLength,
   submitBehavior,
   autoFocus = true,
+  accessibilityLabel,
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -46,6 +47,7 @@ export function ComposerShell({
   maxLength?: number;
   submitBehavior?: "submit" | "newline";
   autoFocus?: boolean;
+  accessibilityLabel?: string;
 }) {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<TextInput>(null);
@@ -72,6 +74,8 @@ export function ComposerShell({
             value={value}
             onChangeText={onChange}
             placeholder={placeholder}
+            accessibilityLabel={accessibilityLabel ?? placeholder ?? "Response"}
+            accessibilityRole="text"
             placeholderTextColor={SEMANTIC_COLORS.text.secondary}
             onSubmitEditing={onSubmitEditing}
             onFocus={() => setIsFocused(true)}

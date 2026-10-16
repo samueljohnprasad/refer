@@ -1,149 +1,322 @@
 ---
 name: mobile-app-ui-design
-description: Design high-quality mobile app UI/UX screens, flows, and components. Use this skill whenever the user asks to design a mobile app screen, create app mockups, build mobile UI components, improve an existing mobile app design, create onboarding flows, design mobile navigation, or requests any mobile-first interface work. Also trigger when the user mentions app design, mobile UI, mobile UX, screen design, app mockups, wireframes, or wants to build React Native / Flutter / SwiftUI style interfaces as visual prototypes. Even if the user just says "design an app" or "make this screen look better", use this skill.
+description: >
+  Design iPhone apps that look and feel like Apple Design Award work instead of
+  AI slop. Interviews for the concept, explores three genuinely different
+  visual directions on the real core screen before committing, writes real
+  content first, then designs every screen with deliberate type, colour,
+  spacing, imagery and motion on iOS 26 (Liquid Glass) structure. Renders
+  high-fidelity mockups at 3x with a real iPhone status bar and Apple's own
+  fonts, runs a slop scan on the rendered result (emoji icons, purple
+  gradients, confetti colour, greeting headers, card stacks, clipped or
+  colliding text, weak contrast, flat type scale), and has a fresh pair of
+  eyes score the screens against a rubric until they pass. Can carry the
+  design into SwiftUI and App Store screenshot panels. Use for "design my
+  app", "iPhone app UI", "iOS app design", "make my app look premium", "this
+  looks like AI made it", "redesign this screen", "App Store screenshots",
+  "mobile app mockup", "SwiftUI design", "mobile-app-ui-design", "app-designer",
+  or any request for an iPhone app that should look crafted by a professional designer.
+allowed-tools: Bash, Read, Write, Edit, Glob, Grep, AskUserQuestion, Agent
 ---
 
-# Mobile App UI/UX Design Skill
+# App Designer (Mobile App UI/UX Design)
 
-This skill guides the creation of professional, polished mobile app interfaces that follow proven design principles used by top-tier apps like Airbnb, Duolingo, Spotify, Revolut, and Phantom.
+AI slop is not ugly. It is **average**: every decision left at the most likely
+value. Cream and terracotta because the app is calm. Lime on black because it
+is money. Inter because it is a UI. "Good morning, Maya" because it is a home
+screen. Each choice is defensible, and together they make an app nobody can
+tell apart from the last hundred.
 
-## Core Philosophy
+Award-winning apps are the opposite: a few **specific, defended decisions**,
+executed with craft at every pixel, a world with **warmth and richness** in it,
+and one interaction people remember. This skill is a process for making those
+decisions on purpose and proving on the rendered screen that you made them.
 
-Great mobile UI isn't about flashiness — it's about intentionality. Every pixel, every spacing value, every color choice should serve the user. The goal is to create interfaces that feel smooth, personal, and alive — not just functional.
+**What you produce:** `DIRECTION.md` (brief, concept, tokens, content,
+signature), a three-direction exploration, high-fidelity screens and the app
+icon rendered at 3x, a clean slop scan, a scored critique per round, and, when
+asked, SwiftUI code and App Store panels.
 
-Before designing anything, understand three things:
-1. **What is the user trying to accomplish?** (reduce friction to that goal)
-2. **How should this make the user feel?** (trust, delight, confidence, calm)
-3. **What's the one thing they should notice first?** (visual hierarchy)
+`<skill>` below means this skill's folder:
+`.agents/skills/mobile-app-ui-design` (or `~/.claude/skills/mobile-app-ui-design`).
 
-## Design Process
+## The references
 
-Follow this sequence for any mobile screen:
+Read each one when its step needs it, not all up front:
 
-### Step 1: Understand the Context
-- What type of app? (fitness, finance, social, productivity, health, crypto, etc.)
-- Who is the user? (new, returning, power user — adapt the experience)
-- What's the primary action on this screen?
-- What industry design conventions apply? (See `references/industry-conventions.md`)
+| File | Read before |
+|---|---|
+| [slop.md](references/slop.md) | Step 1. What not to do, with what to do instead. Includes this skill's own failure mode |
+| [directions.md](references/directions.md) | Step 2 |
+| [type.md](references/type.md), [color.md](references/color.md), [layout.md](references/layout.md) | Step 2 tokens, and Step 4 |
+| [copy.md](references/copy.md) | Step 3 |
+| [imagery.md](references/imagery.md) | Step 2 (what imagery you can actually get) and Step 4 |
+| [motion.md](references/motion.md) | the signature in Step 2, and Step 4 |
+| [critique.md](references/critique.md) | Step 5 |
+| [appstore.md](references/appstore.md) | App Store screenshot panels |
+| [swiftui.md](references/swiftui.md) | writing SwiftUI |
+| [industry-conventions.md](references/industry-conventions.md) | Industry-specific design patterns & conventions |
 
-### Step 2: Structure First (UX Lens)
-- Map the user flow: what screen comes before and after?
-- Identify the MVP elements — only what's essential for this screen
-- Place primary actions in the **thumb zone** (bottom 1/3 of screen)
-- Follow the **F-pattern** reading order for content layout
-- Reduce interaction cost: expose content directly instead of hiding behind taps
-- Turn empty states into opportunities with guidance, illustration, and a CTA
-- Choose the right input method: sliders/scroll wheels for one-time setup, text fields for repeated/precise entry
+## Step 0: The brief
 
-### Step 3: Apply Visual Design (UI Lens)
-Follow these rules in order:
+Ask before designing. One message, short:
 
-#### Typography
-- Use **one font family** (two max, with clear hierarchy purpose)
-- Maximum **4 font sizes** and **2 font weights**
-- Use monospace variants for large numbers (prices, stats, metrics)
-- Keep text containers under 600px wide for readability
-- Create hierarchy with size, weight, and opacity — not just bold everything
+1. **What is the app, and who is it for?** In their words.
+2. **The core action:** what someone does in the first ten seconds of
+   opening it, every day.
+3. **Three words for how it should feel**, and up to three references
+   *from outside apps*: a magazine, a shop, an object, a film, a place.
+4. **What exists already:** name, logo, colours, fonts, photos, a codebase.
+5. **What they need:** screens to look at, a SwiftUI build, App Store
+   screenshots, or a redesign of something existing (ask for screenshots).
+6. **Image generation:** if an image-generation tool is connected and it costs
+   them credits, ask whether you may use it.
 
-#### Color System (60/30/10 Rule)
-- **60%** — neutral base (white, light gray, or dark background)
-- **30%** — complementary color (black text, dark elements)
-- **10%** — brand/accent color (CTAs, key indicators, icons)
-- Use **opacity variations** of the neutral color for text hierarchy: 100% for headings, 80% for body, 60-70% for secondary text
-- Use the accent color at 5% opacity for secondary buttons and subtle card highlights
-- Match shadow colors to the background (tint shadows, never pure gray/black on colored backgrounds)
-- Save strong colors (like red) for meaningful moments — overuse kills hierarchy
+Do not re-ask what the user already said. If they are unreachable or said
+"just do it", answer the questions yourself, mark the brief **self-authored**,
+and do not spend paid credits.
 
-#### Spacing (8-Point Grid System)
-- All spacing values must be divisible by **8 or 4** (8, 12, 16, 24, 32, 48, 64, 80, 96)
-- Use **relationship-based spacing**: related elements closer together, unrelated further apart
-- Multiplier rule: if related text elements are 16px apart, the gap to the next group should be 2× (32px)
-- Section vertical padding: at least 80-96px (160px for major sections on larger screens)
-- Card internal padding: 24-32px baseline
-- Larger text = larger spacing needed
+Create the working folder and `DIRECTION.md`, and put the brief at its top.
 
-#### Shadows
-- Always use **soft shadows** — never harsh/distinct
-- Match shadow color to the background with a tinted hue
-- Use subtle white inner shadows on buttons to add dimension
-- Add faded drop shadows for depth without heaviness
+### If this is a redesign
 
-#### Visual Cues & Imagery
-- Use icons, emojis, illustrations, and images to make information digestible
-- User avatars/photos > initials > generic icons (for representing people)
-- Color-coded categories with soft solid backgrounds + clean isolated images
-- Keep visual style consistent across the entire app — no random stock photo mix
-- Use AI-generated or curated visuals with matching color palettes
+An existing app changes the job: you are replacing a look, not inventing a
+product. Before Step 1, add a `## Current app` section to DIRECTION.md:
 
-### Step 4: Design for Emotion (Peak-End Rule)
-The user will remember two moments: the **peak** (most intense) and the **end** (last impression).
+1. **Audit it.** Screenshot or rebuild its key screens into `before.html` and
+   run `shoot.mjs` on them. Name which slop.md tells it hits (often one of
+   the two named faces almost exactly) and paste the scan's FAILs.
+2. **Inventory: keep / lose / unknown.** Every feature, data point and
+   screen, and every good idea worth carrying over (a clever line of copy, a
+   useful number). This list is a contract: the redesign must keep every
+   "keep".
+3. **Harvest assets** from the codebase or the user: logo, photos, icons,
+   brand colours, real data. Use them before drawing anything.
+4. **Decisions for the user.** Any change to the name, the tab structure, the
+   hero metric or a removed feature is a decision you list explicitly, not one
+   you make silently.
+5. The current look counts as a **history row** for this app: the new
+   direction must differ from it on at least 3 of 5 columns.
+6. The deliverable gains a **before/after**: `before-after.html` with the old
+   core screen beside the new one, shot like everything else.
 
-- **Identify your peak moment**: completing a core task, hitting a milestone, finding what they want
-- **Design the peak**: micro-animations, celebratory feedback, sparkles, badges, encouraging copy
-- **Design the ending**: summary card, progress affirmation, gentle nudge to return
-- Add **emotional feedback loops**: success states should feel rewarding (bounce, glow, sparkle)
-- Celebrate small wins — success states don't need to be huge, but they should feel intentional
-- Use motion and animation as trust signals, especially in high-stakes domains (finance, crypto, health)
+## Step 1: Know the traps
 
-### Step 5: Polish & Details
-- Add subtle glow effects behind key elements (blur + opacity)
-- Use tiny white inner shadows on primary buttons
-- Add 5% opacity primary-color borders on secondary elements
-- Consider micro-animations for state changes
-- Ensure all tap targets are at least 44×44pt
-- Check contrast ratios for accessibility
-- Design error states, empty states, loading states, and success states
+Read [slop.md](references/slop.md) in full, including **"The overcorrection"**:
+the austere grey-paper-and-mono look that an anti-slop process falls into
+when it forgets that award apps are also *rich*. Then read the history file:
 
-## Smart Patterns to Apply
+```bash
+mkdir -p ~/.app-designer
+[ -f ~/.app-designer/history.md ] || printf '| date | app | source family | ground | type | accent hue | richness source |\n|---|---|---|---|---|---|---|\n' > ~/.app-designer/history.md
+cat ~/.app-designer/history.md
+```
 
-### Personalization by User Stage
-- **New users**: simple welcome, guided setup, minimal options
-- **Returning users**: personalized content, routine-focused, progress indicators
-- **Power users**: advanced stats, optimization tools, dense information
+Every row there is a look you may not repeat (Step 2 explains the rule). On a
+fresh machine it is empty and the rule starts with your first app.
 
-### Smarter Search
-Never show a blank search screen. Include:
-- Recent searches
-- Popular/trending items
-- Personalized recommendations
+## Step 2: Direction, by exploration
 
-### Order/Status Tracking
-- Open with a confident status message
-- Humanize with photos, names, quick-action buttons
-- Use visual timelines instead of text-based date lists
+Read [directions.md](references/directions.md) and [imagery.md](references/imagery.md).
 
-### Category Screens
-- Use color-coded cards with soft backgrounds and clean isolated images
-- Ensure visual consistency across all category items
-- Create rhythm in the layout for effortless scanning
+1. **Find out what imagery you can really get** (the user's assets, generation
+   if allowed, verified photo URLs, or none). This decides what directions are
+   honest. Do not promise photography you cannot deliver.
+2. **Write three concept sentences**: "<App> is a <thing>." Each from a
+   **different source family** (see directions.md: printed matter, objects
+   and materials, places, media, nature, play). At most one may be a printed
+   form (ticket, ledger, receipt, label, timetable).
+3. **Render the core screen three ways**, one per concept, in one file
+   (`explore.html`), with real content and full craft. Not wireframes. The
+   three must differ on all three axes:
+   - **Ground:** one light, one dark, one saturated colour field or
+     full-bleed image.
+   - **Type:** three different families or designs (serif / grotesque or
+     expanded / rounded or mono or custom).
+   - **Richness source:** photography, illustration or shape language,
+     colour and material. Different in each.
+   - **Accent hue:** three different hue families, so the brief's mood
+     does not quietly pick the palette for all three.
+4. Shoot it (`shoot.mjs explore.html --out shots/explore`), look at each, and
+   **choose**. Write in DIRECTION.md which one won, and one line each on why
+   the other two lost. Picking the safest of the three is usually wrong:
+   pick the one that is most *this app* and that an editor would remember.
+   You may merge, but say what came from where.
+5. **Check it against the history.** It must differ from every row in
+   `~/.app-designer/history.md` on at least 3 of the 5 columns. Use only these
+   words in the columns, so the comparison is mechanical:
+   - source family: `printed` `object` `place` `media` `nature` `play`
+   - ground: `light` `dark` `colour-field` `image`
+   - type: `serif` `grotesque` `expanded` `condensed` `rounded` `mono` `custom-display`
+   - accent hue: `red` `orange` `yellow` `green` `teal` `blue` `violet` `pink` `neutral`
+   - richness: `photo` `illustration` `shape` `colour-material` `3d-object`
 
-### Selection Over Manual Input
-- Offer tappable selections for common options (job titles, preferences, etc.)
-- Include icons/emojis alongside options for personality
-- Provide an "Other" option with manual input as fallback
+   Re-read the file before appending in Step 6: another session may have
+   added a row while you worked.
+6. Then write the rest of DIRECTION.md:
+   - **The category default you are refusing**: what the top three apps in
+     the category share, and which of those you are not doing. Include the
+     category's colour cliché (a flag's colours for a language app, green for
+     money, sage for plants, navy and violet for sleep), which the history
+     columns cannot catch.
+   - **Tokens:** the colour roles for light and dark (hex), type families,
+     5 to 7 size steps with weights and tracking, side margin, radius family,
+     spacing scale (type.md, color.md, layout.md).
+   - **The richness source**, written as an art direction: photography
+     (light, distance, grade), an illustration or shape language (one hand),
+     or a colour and material system. Every app has at least one. Pure
+     greyscale typography on paper is not one.
+   - **The signature interaction** as a storyboard: trigger, frames, timing,
+     haptic, reduced-motion fallback (motion.md §6).
 
-## Anti-Patterns to Avoid
-- Overusing flashy gradients and blur effects (unless you can truly pull it off)
-- More than 4 font sizes or 3 font weights
-- Random spacing values (use the 8-point grid!)
-- Hiding key content behind banners or extra taps
-- Placing CTAs outside the thumb zone
-- Generic empty states with no guidance
-- Using sliders for frequent/precise data entry
-- Making all information the same visual weight (no hierarchy)
-- Emphasizing labels over values (e.g., making "Sales" bigger than "591")
-- Pure gray/black shadows on colored backgrounds
+If the user is reachable, show them the exploration sheet and your pick
+before Step 3.
 
-## Implementation Notes
+## Step 3: Content first
 
-When building these designs as React artifacts or HTML:
-- Use Tailwind CSS utility classes for spacing, colors, and typography
-- Import Lucide React for clean, consistent iconography
-- Use Recharts for any data visualization
-- Apply CSS transitions for micro-interactions and state changes
-- Use CSS variables for the color system
-- Mobile-first: design for 375px width (iPhone SE) as baseline
-- Use `rounded-2xl` or `rounded-3xl` for modern card aesthetics
-- Apply `backdrop-blur` for glassmorphism effects where appropriate
+Read [copy.md](references/copy.md). In a `## Content` section of DIRECTION.md,
+write the exact content of every screen before any layout: every label,
+value, name, date and image subject. Specific, uneven, believable data, in a
+realistic state (some done, one overdue, one new). Content decides the
+layout, never the reverse.
 
-For deeper guidance on industry-specific conventions and emotional design patterns, read `references/industry-conventions.md`.
+## Step 4: Design the screens
+
+**The set** (5 to 8 frames, in `mockup.html`, plus the icon). If the brief
+names more screens than fit, pick the ones that carry the core loop and
+list the rest as not designed:
+
+1. The core screen, in a realistic mid-use state.
+2. A detail screen (one level deeper).
+3. A second core-loop screen: creation, a list, or a different tab.
+4. The signature: one storyboard panel (`data-chrome="none"`) holding 3 to 4
+   `.mini` frames of the moment, or 2 to 3 full frozen frames
+   (`data-freeze`). See motion.md §6.
+5. The core screen in dark mode (`data-theme="dark"`).
+6. An empty or first-run state, if the app has one worth designing.
+7. The app icon (`<section class="app-icon">`). See imagery.md §4.
+
+**The device kit.** Link `<skill>/assets/device.css` in the head and
+`<skill>/assets/device.js` at the end of the body (as `file://` URLs). Each
+`<section class="screen" data-name="slug">` is a 402 x 874 iPhone 17 Pro
+screen with status bar, Dynamic Island and home indicator injected.
+Attributes on a screen: `data-time="18:52"` (match the clock to your
+content), `data-chrome="light"` (white chrome) or `"none"`, `data-home`
+(indicator alone), `data-theme="dark"`, `data-freeze="450"` (pause
+animations at 450ms), `data-dense` (deliberately dense).
+
+Attributes inside a screen: `data-system` on replicas of system components
+(tab bar, keyboard, segmented control), `data-scrolls` on a scroll view whose
+content runs under the tab bar or off the side (show that it scrolls: let
+the list pass under the glass), `data-float` on floating chrome you drew
+yourself, `data-behind` on the presenting view under a sheet, `data-bleed` on
+deliberately off-screen content, `.mini` for a scaled-down screen inside a
+storyboard panel.
+
+Fonts: `var(--sf)` (SF Pro, all widths via `font-stretch`), `var(--ny)` (New
+York), `var(--sf-rounded)`, `var(--sf-mono)`, plus any web font you load. iOS
+text styles as `.t-large-title` ... `.t-caption2`. Floating glass as
+`.glass`. The header comment in device.css lists all of it.
+
+Put tokens on `:root` named after the DIRECTION.md roles, and their dark
+values on `.screen[data-theme="dark"]` (restate `color` there).
+
+**Build layouts that flex**, not absolute coordinates: flex or grid columns,
+heights in `%` or `flex: 1`, so the same markup survives the small-phone
+render. Absolute positioning is for overlays and illustration only. A screen
+that genuinely scrolls may run long with `data-scroll`.
+
+**Design rules, in the order they usually go wrong:**
+
+1. **One hero per screen**, at least twice the size of anything else.
+2. **Richness on the core screen**: the image, the colour field, the shape
+   language or the material is *on* the first screen, not saved for later.
+3. **Real type contrast:** a display moment (34 to 96pt) against 13 to 15pt
+   metadata, weights two steps apart, negative tracking on display.
+4. **Rhythm:** tight inside groups, loose between, a rest where the screen
+   decides (dense screens are exempt). Space before boxes. More space above
+   a heading than below.
+5. **One accent, one role.** Neutrals tinted. Contrast measured.
+6. **iOS 26 structure** (layout.md §5): content edge to edge, Liquid Glass
+   only on the floating navigation layer, primary action in the thumb zone.
+   Keep native *behaviour*; the *look* of the navigation layer may follow
+   the concept.
+7. **Never** grey placeholder boxes, emoji icons, or stock illustration.
+
+## Step 5: Shoot, scan, critique
+
+```bash
+# if it says playwright-core is missing: (cd <skill> && npm install)
+node <skill>/scripts/shoot.mjs mockup.html --out shots/r1
+node <skill>/scripts/shoot.mjs mockup.html --out shots/r1-se --width 375 --height 667   # small phone, scanned too
+```
+
+It renders every screen and the icon at 3x, tiles `sheet.png`, and scans the
+rendered DOM: clipped, colliding and off-screen text, emoji, purple
+gradients, too many hues, glows and blobs, greetings, centred FABs, nested
+cards and card stacks, icon chips, families and default fonts, flat or
+bloated type scales, text under 11pt, contrast, marketing words, small tap
+targets, ragged left edges. Exit code 1 on any FAIL.
+
+1. **Fix every FAIL. Answer every warn** (fix it, or one line on why it is
+   deliberate).
+2. **Open every 3x PNG**, not only the sheet. The sheet shows the flow;
+   defects live in the full-size frames.
+3. **Score it** with [critique.md](references/critique.md). If you can spawn
+   an agent, spawn **one** critic for the whole job and brief it as
+   critique.md says (concept, refused defaults, rubric, PNG paths); wait for
+   its scores before editing. Otherwise score it yourself, harder than feels
+   fair. Write scores, findings and any declined asks to `CRITIQUE.md`.
+
+## Step 6: Iterate
+
+Fix what the critique found, shoot into a new folder (`r2`, `r3`), compare.
+**At least two rounds, at most four.** Done, plateau and budget are defined in
+critique.md "When to stop". Always: no FAILs, every warn answered.
+
+When you stop (done or not), append one row to the history so the next app
+cannot repeat this one:
+
+```bash
+echo "| <date> | <app> | <source family> | <ground> | <type> | <accent hue> | <richness source> |" >> ~/.app-designer/history.md
+```
+
+## Step 7: Build or ship (when asked)
+
+- **SwiftUI:** [swiftui.md](references/swiftui.md). Tokens first, then screens
+  with native components styled by the tokens. Run it in the simulator and
+  compare screenshots with the mockups.
+- **App Store screenshots:** [appstore.md](references/appstore.md).
+
+## Hard rules
+
+| Never | Instead |
+|---|---|
+| Committing to a direction without rendering three | Step 2: three concepts, three grounds, three type families |
+| The category's default look (cream wellness, dark-lime fintech, purple AI) | Name the default in DIRECTION.md and refuse it |
+| This skill's own default: grey paper, black ink, one red, mono, ruled rows | slop.md, "The overcorrection". At most one printed-form concept per exploration |
+| A core screen with no richness (all type, all grey) | Image, colour field, shape language or material, on screen one |
+| Repeating a row of `~/.app-designer/history.md` | Differ on 3 of 5 columns |
+| "Good morning, Name" or any greeting header | The date, the place, or the thing itself |
+| The dashboard skeleton (hero stat card, 2x2 tiles, "Recent") by default | The core action owns the first screen |
+| Emoji as icons or in UI copy | SF Symbols (SF-style SVG in mockups), one weight |
+| Indigo/violet gradients, glows, blurred colour blobs | A colour from the concept, flat |
+| More than one accent hue (plus semantic colour if the domain needs it) | One accent, one role |
+| Cards inside cards, a screen that is a stack of boxes | Space and alignment, hairlines, then containers |
+| Inter / Poppins / Manrope / Playfair as an unexamined default | A face with a stated reason |
+| A centred floating "+" over the tab bar | Primary action in context, or a toolbar button |
+| Marketing copy, exclamation marks, fake-round data, lorem | copy.md |
+| Grey placeholder boxes or broken image URLs | Real images, verified, or a designed colour or shape field |
+| Liquid Glass on content cards | Glass for the navigation layer only |
+| Staggered fade-up on every element | Motion only where state changes; springs |
+| No signature interaction | One storyboarded, haptic, concept-born moment |
+| Grading your own work and calling it done | One fresh critic, briefed on the refused defaults, critique.md's stop rule |
+
+## Report
+
+Short: the three concepts and why two lost, the category default refused, the
+signature, the path to the latest `sheet.png`, the scan result, the rubric
+scores per round, what changed between rounds, and what you could not verify
+(real-device feel, motion timing, fonts on a non-Mac machine). Say if the
+brief was self-authored. For a redesign, add the before/after, the keep list
+with each item checked off, and the decisions the user needs to make.

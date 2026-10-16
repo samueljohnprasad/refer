@@ -3,7 +3,7 @@ title: 'Resolve StarterPath practice contracts'
 type: 'feature'
 ticket: '1'
 created: '2026-10-15'
-status: 'built'
+status: done
 route: 'full'
 route_source: 'auto'
 review: 'quick'

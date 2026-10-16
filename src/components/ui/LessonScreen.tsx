@@ -73,6 +73,7 @@ interface LessonScreenProps
 
 import { GlassView } from "expo-glass-effect";
 import { Stack } from "expo-router";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
 /**
  * Fixed top bar with close/back navigation, animated progress bar, and
@@ -101,7 +102,7 @@ const ProgressHeader: React.FC<ProgressHeaderProps> = ({
         header: () => (
           <GlassView
             glassEffectStyle="regular"
-            tintColor="#FFFFFF"
+            tintColor={SEMANTIC_COLORS.surface.canvas}
             className="pb-2 overflow-hidden"
             style={[
               {
@@ -111,7 +112,7 @@ const ProgressHeader: React.FC<ProgressHeaderProps> = ({
                 shadowOpacity: 0,
                 shadowRadius: 0,
                 shadowColor: "transparent", // IMPORTANT
-                backgroundColor: "#FFFFFF",
+                backgroundColor: SEMANTIC_COLORS.surface.canvas,
                 overflow: "hidden",
               },
               style,

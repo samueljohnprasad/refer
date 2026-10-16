@@ -135,15 +135,29 @@ export function useSignInBottomSheetController({
           finishSuccessfully();
           return;
         }
+        if (result.status === "cancelled") {
+          signupAnalytics.trackAuthCancelled(provider, source);
+          return;
+        }
         if (result.status === "failed") {
+          signupAnalytics.trackAuthFailed(provider, source, result.error);
           showError(t("accountAuth.toasts.signInFailed"));
         }
         return;
       }
 
       const result = await claimProfile(provider);
+      if (result.status === "cancelled") {
+        signupAnalytics.trackAuthCancelled(provider, source);
+        return;
+      }
+      if (result.status === "recovery_required") {
+        signupAnalytics.trackConflictDetected(provider, source);
+        return;
+      }
       if (result.status !== "linked") {
         if (result.status === "failed" || result.status === "retryable_failure") {
+          signupAnalytics.trackAuthFailed(provider, source, result.error);
           showError(t("accountAuth.toasts.signInFailed"));
         }
         return;
@@ -163,7 +177,8 @@ export function useSignInBottomSheetController({
       showSuccess(t("accountAuth.toasts.accountCreated"));
       signupAnalytics.trackAuthSucceeded(provider, source);
       finishSuccessfully();
-    } catch {
+    } catch (err) {
+      signupAnalytics.trackAuthFailed(provider, source, err);
       showError(t("accountAuth.toasts.signInFailed"));
     } finally {
       setBusyProvider(null);
@@ -206,8 +221,12 @@ export function useSignInBottomSheetController({
       setBusyMove(true);
       const hadPremiumBeforeMove = hasPro;
       const result = await moveToExistingAccount(accountConflict.provider);
-      if (result.status === "cancelled") return;
+      if (result.status === "cancelled") {
+        signupAnalytics.trackAuthCancelled(accountConflict.provider, source);
+        return;
+      }
       if (result.status === "failed") {
+        signupAnalytics.trackAuthFailed(accountConflict.provider, source, result.error);
         showError(t("accountAuth.toasts.switchFailed"));
         return;
       }

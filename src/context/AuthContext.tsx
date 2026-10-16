@@ -557,7 +557,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Show error screen if initialization failed
   if (error && !loading) {
-    return <AuthNetworkErrorScreen onRetry={handleRetry} retrying={retrying} />;
+    return (
+      <AuthNetworkErrorScreen
+        onRetry={handleRetry}
+        onContinueOffline={() => {
+          // ponytail: allow offline/guest mode when Supabase is unreachable
+          setError(false);
+          setLoading(false);
+        }}
+        retrying={retrying}
+      />
+    );
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

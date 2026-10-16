@@ -22,8 +22,8 @@ export default function JournalEntryRoute() {
       const fetchEntry = async () => {
         setLoading(true);
         const { data, error } = await supabase
-          .from("journal_entries")
-          .select("*, journal_ai!left(*)")
+          .from("journal_records")
+          .select("*, journal_ai!left(*), moods(*), journal_reflection_lineage(*)")
           .eq("id", id)
           .single();
           

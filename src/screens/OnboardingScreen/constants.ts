@@ -98,7 +98,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
     name: "pact_signing",
     stage: 5,
     backgroundColor: ONBOARDING_BACKGROUND,
-    showBackButton: true,
+    showBackButton: false,
     showContinueButton: false,
     continueButtonLabel: "",
     autoAdvance: false,

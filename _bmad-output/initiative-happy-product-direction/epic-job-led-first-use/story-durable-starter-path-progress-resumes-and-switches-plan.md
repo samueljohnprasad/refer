@@ -3,7 +3,7 @@ title: 'Durable starter path progress resumes and switches safely'
 type: 'feature'
 ticket: 3
 created: '2026-10-12'
-status: 'in-review'
+status: done
 baseline_revision: '656f03223e38af81c8ddd4ecafd74b77135cfeb1'
 route: 'full'
 route_source: 'manual'

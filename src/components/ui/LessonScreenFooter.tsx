@@ -68,7 +68,7 @@ export function LessonScreenFooter({
           ? "bg-red-100 border-t border-red-200"
           : variant === "transparent"
           ? "bg-transparent border-t-0"
-          : "bg-white border-t border-brand-border"
+          : "bg-brand-surface border-t border-brand-border"
       }`}
     >
       <View className="w-full gap-1">

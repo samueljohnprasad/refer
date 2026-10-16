@@ -1,0 +1,52 @@
+# Private reflection stories. Table order is the recommended build order.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Canonical reflection lineage and persistence contracts"
+description = "Defines the ReflectionContextV1 schema and establishes atomic persistence and delete-cascade for journal_records and journal_reflection_lineage under auth.uid()."
+verify = "Saving a guided reflection atomically records the canonical journal record and ReflectionContextV1 row; deleting the record deletes its lineage; unlinked journal rows cannot satisfy guided step criteria."
+covers = ["CAP-3"]
+after = ["epic-guided-practice-loop", "epic-job-led-first-use"]
+hitl = false
+risk = "high"
+unknown = "The exact schema and migration for journal_reflection_lineage and ensuring RLS and foreign-key cascade with journal_records are verified before building client integration."
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#ad-7",
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#ad-8",
+  "src/domains/practice/data/practiceCompletion.repo.ts"
+]
+
+[[entry]]
+id = 2
+type = "story"
+title = "Post-practice guided reflection prompt and text capture"
+description = "Opens one relevant guided text reflection prompt upon practice completion for each authored StarterPath, captures user text, and visibly gates voice and photo inputs with honest privacy copy."
+verify = "Completing a StarterPath practice routes into its mapped reflection prompt (e.g. reframing for anxious thoughts, grounding reset for overwhelmed); user can enter and submit text; voice and photo show clear deferred/unsupported indicators without clinical claims."
+covers = ["CAP-3"]
+after = [1]
+hitl = false
+risk = "medium"
+unknown = "Handoff navigation from exercise completion to reflection modal/screen across the different exercise controllers."
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#ad-2",
+  "_bmad-output/initiative-happy-product-direction/spec-happy-product-direction/product-guardrails.md",
+  "src/domains/journey/model/starterPath.ts"
+]
+
+[[entry]]
+id = 3
+type = "story"
+title = "Private journal retrieval and lineage display"
+description = "Surfaces saved reflections in the private journal feed with guided lineage metadata, verifies RLS privacy scoping, and supports user-initiated deletion with cascading lineage removal."
+verify = "User can view saved guided reflections in their private journal with accurate path/exercise context; reflections are never visible publicly; user can delete a reflection and its lineage is cleanly purged."
+covers = ["CAP-3"]
+after = [2]
+hitl = true
+risk = "medium"
+unknown = "How existing timeline/daily-notes journal views format custom guided reflection records and badges."
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-happy-product-direction/architecture-happy-product-direction.md#ad-7",
+  "src/screens/JournalEntryScreen",
+  "hooks/journals/useJournalOperations.ts"
+]

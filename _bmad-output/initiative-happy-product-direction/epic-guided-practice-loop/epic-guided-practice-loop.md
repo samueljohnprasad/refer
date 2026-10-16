@@ -2,6 +2,7 @@
 tracker_id: ""
 key: ""
 type: epic
+status: done
 title: "Guided course-to-practice loop"
 parent: initiative-happy-product-direction
 covers: ["CAP-2"]

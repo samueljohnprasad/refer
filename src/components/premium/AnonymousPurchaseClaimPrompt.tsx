@@ -37,5 +37,6 @@ export default function AnonymousPurchaseClaimPrompt(): React.JSX.Element {
     shouldPromptAccountClaim,
   ]);
 
-  return <SignInBottomSheet ref={sheetRef} />;
+  // ponytail: explicit source tracking and skip option so user is never trapped after paywall
+  return <SignInBottomSheet ref={sheetRef} source="onboarding" showSkipButton={true} />;
 }

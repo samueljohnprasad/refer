@@ -1,8 +1,12 @@
 import React from "react";
 import { Pressable, Text, View } from "react-native";
+import { SymbolView } from "expo-symbols";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Brain01Icon } from "@hugeicons/core-free-icons";
 import { ScreenLayout } from "@/src/components/ui/ScreenLayout";
 import TactileButton from "@/src/screens/OnboardingScreen/components/TactileButton";
 import type { StarterPathV1 } from "@/src/domains/journey/model/starterPath";
+import { StarterPathGoalOption } from "./StarterPathGoalOption";
 
 export type StarterStep = "goal" | "lesson" | "practice";
 
@@ -16,6 +20,7 @@ interface GoalStepProps extends StarterStepProps {
   onSelectPath: (pathId: string) => void;
 }
 
+// ponytail: benchmark goal step with balanced vertical hierarchy and squircle options
 function GoalStep({
   translate,
   path,
@@ -24,39 +29,32 @@ function GoalStep({
 }: GoalStepProps): React.JSX.Element {
   const pathCopy = path.copyKeys;
   return (
-    <View className="gap-6">
+    <View className="gap-6 pt-1">
       <View className="gap-2">
-        <Text className="text-sm font-bold tracking-wide text-sage-600">
-          {translate(pathCopy.goal.eyebrow)}
-        </Text>
-        <Text className="text-[32px] leading-9 text-ink happy-font-body-extrabold">
+        <View className="self-start rounded-full border border-sage-200/80 bg-sage-100/90 px-3.5 py-1">
+          <Text className="text-[12px] uppercase tracking-wider text-sage-700 happy-font-body-extrabold">
+            {translate(pathCopy.goal.eyebrow)}
+          </Text>
+        </View>
+        <Text className="text-[32px] leading-[38px] text-ink happy-font-body-extrabold tracking-tight mt-1">
           {translate(pathCopy.goal.title)}
         </Text>
-        <Text className="text-base leading-6 text-ink-soft happy-font-body-medium">
+        <Text className="text-[16px] leading-[23px] text-ink-soft happy-font-body-medium">
           {translate(pathCopy.goal.description)}
         </Text>
       </View>
 
-      <View className="gap-3">
+      <View className="gap-4 pt-3">
         {availablePaths.map((candidatePath) => {
-          const candidateCopy = candidatePath.copyKeys.goal;
           const isSelected = candidatePath.pathId === path.pathId;
           return (
-            <Pressable
+            <StarterPathGoalOption
               key={candidatePath.pathId}
-              accessibilityRole="button"
-              accessibilityState={{ selected: isSelected }}
-              onPress={() => onSelectPath(candidatePath.pathId)}
-              className={`rounded-3xl border-2 p-5 ${isSelected ? "border-sage-600 bg-sage-50" : "border-sage-200 bg-white"}`}
-            >
-              <Text className="mb-2 text-2xl">{isSelected ? "🌊" : "🌿"}</Text>
-              <Text className="text-xl text-ink happy-font-body-bold">
-                {translate(candidateCopy.choice)}
-              </Text>
-              <Text className="mt-1 text-base leading-6 text-ink-soft happy-font-body-medium">
-                {translate(candidateCopy.choiceDescription)}
-              </Text>
-            </Pressable>
+              path={candidatePath}
+              selected={isSelected}
+              translate={translate}
+              onSelect={() => onSelectPath(candidatePath.pathId)}
+            />
           );
         })}
       </View>
@@ -67,17 +65,19 @@ function GoalStep({
 function LessonStep({ translate, path }: StarterStepProps): React.JSX.Element {
   const pathCopy = path.copyKeys;
   return (
-    <View className="gap-5">
+    <View className="gap-5 pt-1">
       <View className="gap-2">
-        <Text className="text-sm font-bold tracking-wide text-sage-600">
-          {translate(pathCopy.lesson.eyebrow)}
-        </Text>
-        <Text className="text-[32px] leading-9 text-ink happy-font-body-extrabold">
+        <View className="self-start rounded-full border border-sage-200/80 bg-sage-100/90 px-3.5 py-1">
+          <Text className="text-[12px] uppercase tracking-wider text-sage-700 happy-font-body-extrabold">
+            {translate(pathCopy.lesson.eyebrow)}
+          </Text>
+        </View>
+        <Text className="text-[32px] leading-[38px] text-ink happy-font-body-extrabold tracking-tight mt-1">
           {translate(pathCopy.lesson.title)}
         </Text>
       </View>
 
-      <View className="gap-4 rounded-3xl bg-sage-50 p-5">
+      <View className="gap-4 rounded-3xl border-2 border-b-[5px] border-sage-200 border-b-sage-300 bg-sage-50 p-6">
         <Text className="text-base leading-6 text-ink happy-font-body-medium">
           {translate(pathCopy.lesson.paragraphOne)}
         </Text>
@@ -86,7 +86,7 @@ function LessonStep({ translate, path }: StarterStepProps): React.JSX.Element {
         </Text>
       </View>
 
-      <View className="rounded-2xl border border-sage-200 bg-white p-4">
+      <View className="rounded-2xl border-2 border-b-4 border-brand-border border-b-brand-border-strong bg-white p-4">
         <Text className="text-sm leading-5 text-ink-soft happy-font-body-medium">
           {translate(pathCopy.boundary)}
         </Text>
@@ -104,6 +104,7 @@ interface PracticeStepProps extends StarterStepProps {
 
 function PracticeStep({
   translate,
+  path,
   hasCompletionError,
   isCompleting,
   onOpenPractice,
@@ -111,25 +112,32 @@ function PracticeStep({
 }: PracticeStepProps): React.JSX.Element {
   const pathCopy = path.copyKeys;
   return (
-    <View className="gap-5">
+    <View className="gap-5 pt-1">
       <View className="gap-2">
-        <Text className="text-sm font-bold tracking-wide text-sage-600">
-          {translate(pathCopy.practice.eyebrow)}
-        </Text>
-        <Text className="text-[32px] leading-9 text-ink happy-font-body-extrabold">
+        <View className="self-start rounded-full border border-sage-200/80 bg-sage-100/90 px-3.5 py-1">
+          <Text className="text-[12px] uppercase tracking-wider text-sage-700 happy-font-body-extrabold">
+            {translate(pathCopy.practice.eyebrow)}
+          </Text>
+        </View>
+        <Text className="text-[32px] leading-[38px] text-ink happy-font-body-extrabold tracking-tight mt-1">
           {translate(pathCopy.practice.title)}
         </Text>
         <Text className="text-base leading-6 text-ink-soft happy-font-body-medium">
-        {translate(pathCopy.practice.description)}
+          {translate(pathCopy.practice.description)}
         </Text>
       </View>
 
-      <View className="rounded-3xl border-2 border-sage-600 bg-sage-50 p-5">
-        <Text className="mb-2 text-2xl">🧠</Text>
+      <View className="rounded-3xl border-2 border-b-[5px] border-sage-500 border-b-sage-700 bg-sage-50 px-6 py-6">
+        <View
+          accessible={false}
+          className="mb-5 h-14 w-14 items-center justify-center rounded-2xl border-2 border-b-4 border-sage-200 border-b-sage-300 bg-sage-100"
+        >
+          <HugeiconsIcon icon={Brain01Icon} size={28} color="#44633F" strokeWidth={2} />
+        </View>
         <Text className="text-xl text-ink happy-font-body-bold">
           {translate(pathCopy.practice.toolTitle)}
         </Text>
-        <Text className="mt-1 text-base leading-6 text-ink-soft happy-font-body-medium">
+        <Text className="mt-2 text-base leading-6 text-ink-soft happy-font-body-medium">
           {translate(pathCopy.practice.toolDescription)}
         </Text>
       </View>
@@ -149,6 +157,11 @@ function PracticeStep({
           label={translate(pathCopy.practice.openButton)}
           onPress={onOpenPractice}
           disabled={isCompleting}
+          height={60}
+          fontSize={17}
+          pressDepth={6}
+          faceColor="#44633F"
+          rimColor="#29452A"
         />
         <TactileButton
           label={translate(pathCopy.practice.homeButton)}
@@ -161,36 +174,7 @@ function PracticeStep({
   );
 }
 
-interface StarterPathHeaderProps extends StarterStepProps {
-  step: StarterStep;
-  onBack: () => void;
-}
-
-export function StarterPathHeader({
-  step,
-  translate,
-  onBack,
-}: StarterPathHeaderProps): React.JSX.Element {
-  const backButton =
-    step === "goal" ? null : (
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={translate("starter_path.back")}
-        onPress={onBack}
-        className="min-h-[44px] justify-center"
-      >
-        <Text className="text-base text-sage-700 happy-font-body-bold">
-          {translate("starter_path.back")}
-        </Text>
-      </Pressable>
-    );
-
-  return (
-    <ScreenLayout.Header className="bg-brand-surface">
-      {backButton}
-    </ScreenLayout.Header>
-  );
-}
+export { StarterPathHeader } from "./StarterPathHeader";
 
 interface StarterPathContentProps extends PracticeStepProps {
   step: StarterStep;
@@ -232,7 +216,7 @@ export function StarterPathContent({
   };
 
   return (
-    <ScreenLayout.Content hasHeader={step !== "goal"}>
+    <ScreenLayout.Content hasHeader={true}>
       {contentByStep[step]}
     </ScreenLayout.Content>
   );
@@ -256,6 +240,11 @@ export function StarterPathFooter({
         <TactileButton
           label={translate(pathCopy.goal.continueButton)}
           onPress={onAdvance}
+          height={60}
+          fontSize={17}
+          pressDepth={6}
+          faceColor="#44633F"
+          rimColor="#29452A"
         />
       </ScreenLayout.Footer>
     ),
@@ -264,6 +253,11 @@ export function StarterPathFooter({
         <TactileButton
           label={translate(pathCopy.lesson.continueButton)}
           onPress={onAdvance}
+          height={60}
+          fontSize={17}
+          pressDepth={6}
+          faceColor="#44633F"
+          rimColor="#29452A"
         />
       </ScreenLayout.Footer>
     ),

@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import { View, BackHandler } from "react-native";
+import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
-import { useNavigation, usePreventRemove } from "expo-router/react-navigation";
 import { useExerciseFlow } from "@/src/hooks/useExerciseFlow";
 import { useExerciseMutation } from "@/src/hooks/useExerciseMutation";
 import { useExerciseAI } from "@/src/hooks/useExerciseAI";
@@ -17,12 +16,13 @@ import { usePostHog } from "posthog-react-native";
 import { requestReviewForMilestone } from "@/src/hooks/useReviewPrompt";
 import { AnimatedStepContainer } from "./AnimatedStepContainer";
 import { useExerciseFlowActions } from "./useExerciseFlowActions";
+import { useExerciseNavigationGuard } from "./hooks/useExerciseNavigationGuard";
 import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
 import { useXPOptional } from "@/src/context/XPContext";
-import { LessonCompleteCelebration } from "@/src/components/celebration/LessonCompleteCelebration";
+import { ExerciseCompletionContainer } from "./components/ExerciseCompletionContainer";
 
 interface ResolvedExerciseFlowScreenProps {
   config: ExerciseConfig<any>;
@@ -51,10 +51,8 @@ export const ExerciseFlowRunner: React.FC<ResolvedExerciseFlowScreenProps> = ({
   const { t } = useTranslation("exercises");
   const translateCopy = useExerciseCopy();
   const exerciseType = config.type;
-  const navigation = useNavigation();
   const isConfirmedExitRef = useRef(false);
   const [isConfirmedExit, setIsConfirmedExit] = React.useState(false);
-  const pendingExitActionRef = useRef<Parameters<typeof navigation.dispatch>[0] | null>(null);
   // ─── Flow state ───────────────────────────────────────────────────
   const flow = useExerciseFlow(config as ExerciseConfig<any>, existingEntry, readOnly);
 
@@ -136,37 +134,13 @@ export const ExerciseFlowRunner: React.FC<ResolvedExerciseFlowScreenProps> = ({
       practiceId,
     });
 
-  useEffect(() => {
-    const action = pendingExitActionRef.current;
-    if (!isConfirmedExit || !action) return;
-
-    pendingExitActionRef.current = null;
-    navigation.dispatch(action);
-  }, [isConfirmedExit, navigation]);
-
-  // Trigger AI when entering a step with AI config (now handled internally by useExerciseAI)
-
-  // ─── Android hardware back button ─────────────────────────────────
-  React.useEffect(() => {
-    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
-      handleClose();
-      return true;
-    });
-    return () => sub.remove();
-  }, [handleClose]);
-
-  // ─── iOS swipe-back gesture prevention ────────────────────────────
-  usePreventRemove(
-    !readOnly && flow.currentStepIndex > 0 && !isConfirmedExit,
-    ({ data: { action } }) => {
-      if (isConfirmedExitRef.current) {
-        pendingExitActionRef.current = action;
-        return;
-      }
-
-      handleClose();
-    },
-  );
+  useExerciseNavigationGuard({
+    readOnly,
+    currentStepIndex: flow.currentStepIndex,
+    isConfirmedExit,
+    isConfirmedExitRef,
+    onClose: handleClose,
+  });
 
   // ─── Step rendering ───────────────────────────────────────────────
   const StepComponent = currentStep?.component;
@@ -293,18 +267,19 @@ export const ExerciseFlowRunner: React.FC<ResolvedExerciseFlowScreenProps> = ({
         </AnimatedStepContainer>
       </LessonScreen>
 
-      {celebration && (
-        <LessonCompleteCelebration
-          isVisible={!!celebration}
-          xpEarned={celebration.xp}
-          durationMs={celebration.durationMs}
-          lessonTitle={exerciseTitle}
-          title={t("flow.ui.celebrationTitle")}
-          message={t("flow.ui.celebrationMessage")}
-          continueLabel={t("flow.ui.continue")}
-          onContinue={exitScreen}
-        />
-      )}
+      <ExerciseCompletionContainer
+        celebration={celebration}
+        exerciseTitle={exerciseTitle}
+        pathId={pathId}
+        pathVersion={pathVersion}
+        practiceSessionId={practiceSessionId}
+        practiceSource={practiceSource}
+        practiceId={practiceId}
+        onExit={exitScreen}
+        continueLabel={t("flow.ui.continue")}
+        celebrationTitle={t("flow.ui.celebrationTitle")}
+        celebrationMessage={t("flow.ui.celebrationMessage")}
+      />
     </>
   );
 };
