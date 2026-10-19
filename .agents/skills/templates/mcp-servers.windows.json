@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--isolated",
+        "--no-usage-statistics",
+        "--no-performance-crux",
+        "--redact-network-headers"
+      ]
+    },
+    "windows-mcp": {
+      "command": "uvx",
+      "args": [
+        "--python",
+        "3.14",
+        "windows-mcp",
+        "serve"
+      ],
+      "env": {
+        "ANONYMIZED_TELEMETRY": "false",
+        "WINDOWS_MCP_EXCLUDE_TOOLS": "PowerShell,Registry"
+      }
+    }
+  }
+}

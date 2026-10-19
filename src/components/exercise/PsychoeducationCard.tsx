@@ -21,7 +21,7 @@ export const PsychoeducationCard: React.FC<PsychoeducationCardProps> = ({
   if (!content) return null;
 
   return (
-    <View className={`mb-4 z-50 self-start ${className}`}>
+    <View className={`mb-4 z-50 self-start rounded-full bg-sage-100/80 border border-sage-200/80 px-3.5 py-1.5 ${className}`}>
       <Host matchContents>
         <Popover
           isPresented={expanded}
@@ -42,10 +42,17 @@ export const PsychoeducationCard: React.FC<PsychoeducationCardProps> = ({
               }}
               modifiers={[buttonStyle("plain")]}
             >
-              <HStack spacing={4}>
+              <HStack spacing={6}>
+                <SwiftUIImage
+                  systemName="lightbulb"
+                  modifiers={[
+                    foregroundStyle(SEMANTIC_COLORS.brand.primary),
+                    font({ weight: "semibold", size: 12 }),
+                  ]}
+                />
                 <SwiftUIText
                   modifiers={[
-                    foregroundStyle(SEMANTIC_COLORS.text.secondary),
+                    foregroundStyle(SEMANTIC_COLORS.brand.pressed),
                     font({ weight: "semibold", size: 13 }),
                   ]}
                 >
@@ -54,7 +61,7 @@ export const PsychoeducationCard: React.FC<PsychoeducationCardProps> = ({
                 <SwiftUIImage
                   systemName={expanded ? "chevron.up" : "chevron.down"}
                   modifiers={[
-                    foregroundStyle(SEMANTIC_COLORS.text.secondary),
+                    foregroundStyle(SEMANTIC_COLORS.brand.primary),
                     font({ weight: "semibold", size: 10 }),
                   ]}
                 />

@@ -112,8 +112,10 @@ export const AchievementsScreen: React.FC = () => {
           accessibilityLabel={t("achievements.listA11y")}
         >
           {/* Compact Top Summary */}
-          <View className="items-center pt-1.5 pb-2.5">
-            <Text className="happy-font-body-bold text-[20px] text-ink">
+          <View className="items-center pt-2 pb-2">
+            {/* ponytail: flex mascot celebrates resilience badges */}
+            <Mascot state="panda-flex" size={80} />
+            <Text className="happy-font-body-bold text-[20px] text-ink mt-2">
               {t("achievements.unlockedCount", { unlocked: unlockedCount, total: totalCount })}
             </Text>
           </View>

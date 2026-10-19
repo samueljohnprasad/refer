@@ -1,10 +1,6 @@
-import { GoogleGenAI } from "@google/genai";
+import { ai } from "@/src/network/geminiClient";
 import * as FileSystem from "expo-file-system/legacy";
 import { observeGeminiGeneration } from "@/src/observability/ai";
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY!,
-});
 
 /**
  * Extract text from a journal page image using Gemini Vision

@@ -493,37 +493,38 @@ export const FEELINGS: readonly FeelingOption[] = [
   { id: "grateful", emoji: "🙏", label: "Grateful" },
 ];
 
+// ponytail: match active paywall screenshot tiers ($49.99/yr with 68% OFF, $4.99/mo, $2.99/wk)
 export const PRICING_PLANS: readonly PricingPlanConfig[] = [
   {
-    tier: "weekly",
-    label: "Weekly",
-    price: "$7.99",
-    detailLabel: "Cancel anytime",
-    perUnit: "/week",
-    featured: false,
-    isDecoy: true,
-  },
-  {
     tier: "annual",
-    label: "Annual",
-    price: "$99.99",
-    perUnit: "billed yearly",
+    label: "Yearly",
+    price: "$49.99",
+    perUnit: "$0.95/week",
     featured: true,
     headline: "365 days of showing up for yourself.",
-    badge: "Best value",
-    savings: "Save 67%",
-    comparisonPrice: "$299/yr",
+    badge: "68% OFF",
+    savings: "68% OFF",
+    comparisonPrice: "$155.48/yr",
     detailPrefix: "Just ",
-    detailEmphasis: "$0.27 per day",
-    detailSuffix: " · billed yearly",
+    detailEmphasis: "$0.14 per day",
+    detailSuffix: " · $0.95/week",
   },
   {
     tier: "monthly",
     label: "Monthly",
-    price: "$14.99",
+    price: "$4.99",
     detailLabel: "Cancel anytime",
-    perUnit: "/month",
+    perUnit: "$1.14/week",
     featured: false,
+  },
+  {
+    tier: "weekly",
+    label: "Weekly",
+    price: "$2.99",
+    detailLabel: "Cancel anytime",
+    perUnit: "$2.99/week",
+    featured: false,
+    isDecoy: true,
   },
 ];
 

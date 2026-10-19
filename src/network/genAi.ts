@@ -1,6 +1,6 @@
 import { FetchWeekEntriesType } from "@/hooks/data/useWeeklyAISummaries";
 import { Enums } from "@/types/types";
-import { GoogleGenAI } from "@google/genai";
+import { ai } from "@/src/network/geminiClient";
 import { getMoodScore } from "../utils/mood";
 import { observeGeminiGeneration } from "@/src/observability/ai";
 
@@ -41,10 +41,6 @@ export type InsightsType = {
   nextJournalPrompt: string | null; // Open question to explore in the next entry
   strengthSpotlight: string | null; // Specific strength demonstrated in the entry
 };
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY!,
-});
 
 export type AIRecommendation = {
   title: string;

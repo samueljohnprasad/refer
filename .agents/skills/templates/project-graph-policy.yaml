@@ -1,0 +1,16 @@
+schema_version: 1
+project_id: replace-with-opaque-project-id
+isolation: isolated
+graph_provider: graphify
+graph_path: graphify-out/graph.json
+allow_cross_project: false
+allowed_project_ids: []
+allow_global_registration: false
+allow_graph_merge: false
+allow_arbitrary_project_path: false
+semantic_backend: local-or-explicitly-approved
+publish_graph: false
+handoff:
+  state_directory: .agent-workspace
+  lease_minutes: 30
+  durable_memory_requires_approval: true

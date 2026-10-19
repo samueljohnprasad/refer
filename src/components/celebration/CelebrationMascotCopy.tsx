@@ -13,6 +13,9 @@ const PANDA = {
   happy: require("../../../assets/images/panda/panda-happy.png"),
   plant: require("../../../assets/images/panda/panda-plant.png"),
   proud: require("../../../assets/images/panda/panda-love-hug.png"),
+  flex: require("../../../assets/images/panda/panda-flex.png"),
+  transcend: require("../../../assets/images/panda/panda-transcend.png"),
+  pleading: require("../../../assets/images/panda/panda-pleading.png"),
 } as const;
 
 export type CelebrationPandaVariant = keyof typeof PANDA;

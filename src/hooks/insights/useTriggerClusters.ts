@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { GoogleGenAI } from "@google/genai";
+import { ai } from "@/src/network/geminiClient";
 import { useAuth } from "@/src/context/AuthContext";
 import { useExerciseStats } from "./useExerciseStats";
 import { usePersonalEffectiveness } from "./usePersonalEffectiveness";
@@ -30,12 +30,6 @@ export interface TriggerClustersData {
   clusters: TriggerCluster[];
   summary: string;
 }
-
-// ─── Gemini client ───────────────────────────────────────────────────────────
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY!,
-});
 
 // ─── Entry extraction ────────────────────────────────────────────────────────
 

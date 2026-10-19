@@ -74,3 +74,4 @@ supabase/functions/.env
 .env.*
 credentials.json
 .credentials
+.update-state.json

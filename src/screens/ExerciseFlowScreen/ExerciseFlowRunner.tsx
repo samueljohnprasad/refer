@@ -225,7 +225,7 @@ export const ExerciseFlowRunner: React.FC<ResolvedExerciseFlowScreenProps> = ({
     <>
       <LessonScreen
         className="flex-1"
-        style={{ backgroundColor: config.backgroundColor ?? "#FFFFFF" }}
+        style={{ backgroundColor: config.backgroundColor ?? SEMANTIC_COLORS.surface.canvas }}
         hideHeader={currentStep?.hideHeader || readOnly}
         hideFooter={currentStep?.hideFooter}
         progress={flow.progress}

@@ -102,7 +102,7 @@ const ProgressHeader: React.FC<ProgressHeaderProps> = ({
         header: () => (
           <GlassView
             glassEffectStyle="regular"
-            tintColor={SEMANTIC_COLORS.surface.canvas}
+            tintColor={SEMANTIC_COLORS.surface.canvas as string}
             className="pb-2 overflow-hidden"
             style={[
               {

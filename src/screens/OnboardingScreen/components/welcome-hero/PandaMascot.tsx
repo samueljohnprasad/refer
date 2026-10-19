@@ -1,5 +1,6 @@
-// ponytail: animated panda mascot with breathing loop, squash/stretch, and floating heart without ground shadow
+// ponytail: clean stable video mascot with gentle floating heart, no artificial video zoom/stretch
 import React from "react";
+import { View } from "react-native";
 import { VideoView, useVideoPlayer } from "expo-video";
 import Animated, {
   SharedValue,
@@ -16,47 +17,18 @@ interface PandaMascotProps {
 }
 
 export function PandaMascot({ frame, scale }: PandaMascotProps): React.JSX.Element {
-  const player = useVideoPlayer(require("@/assets/video/panda-explorer.mp4"), (videoPlayer) => {
-    videoPlayer.loop = true;
-    videoPlayer.muted = true;
-    videoPlayer.play();
-  });
+  const player = useVideoPlayer(
+    require("@/assets/video/onboarding-welcome-panda.mov"),
+    (videoPlayer) => {
+      videoPlayer.loop = true;
+      videoPlayer.muted = true;
+      videoPlayer.play();
+    },
+  );
+
   const pandaWidth: number = PANDA.width * scale;
   const pandaLeft: number = PANDA.left * scale;
   const pandaTop: number = PANDA.top * scale;
-
-  const pandaStyle = useAnimatedStyle(() => {
-    const f: number = frame.value;
-    const pandaIn: number = interpolate(
-      f,
-      [T.pandaAt, T.pandaAt + 22],
-      [0, 1],
-      Extrapolation.CLAMP
-    );
-    const phase: number = f / 50;
-    const pandaBob: number = Math.sin(phase) * (9 * scale);
-    const stretch: number = Math.cos(phase) * 0.025;
-    const pandaTilt: number = Math.sin(phase * 0.47 + 1.3) * 1.6;
-    const landSquash: number = interpolate(
-      f,
-      [T.pandaAt, T.pandaAt + 7, T.pandaAt + 16],
-      [0, 1, 0],
-      Extrapolation.CLAMP
-    );
-    const scaleY: number = Math.max(pandaIn, 0) * (1 + stretch - landSquash * 0.1);
-    const scaleX: number = Math.max(pandaIn, 0) * (1 - stretch * 0.6 + landSquash * 0.14);
-    const translateY: number = (1 - pandaIn) * (46 * scale) + pandaBob;
-
-    return {
-      opacity: pandaIn,
-      transform: [
-        { translateY },
-        { rotate: `${pandaTilt}deg` },
-        { scaleX },
-        { scaleY },
-      ],
-    };
-  });
 
   const heartStyle = useAnimatedStyle(() => {
     const f: number = frame.value;
@@ -96,18 +68,16 @@ export function PandaMascot({ frame, scale }: PandaMascotProps): React.JSX.Eleme
         </Svg>
       </Animated.View>
 
-      {/* Animated Panda */}
-      <Animated.View
-        style={[
-          {
-            position: "absolute",
-            left: pandaLeft,
-            top: pandaTop,
-            width: pandaWidth,
-            height: pandaWidth,
-          },
-          pandaStyle,
-        ]}
+      {/* Stable Video Mascot (no artificial scale/stretch/zoom) */}
+      <View
+        style={{
+          position: "absolute",
+          left: pandaLeft,
+          top: pandaTop,
+          width: pandaWidth,
+          height: pandaWidth,
+        }}
+        pointerEvents="none"
       >
         <VideoView
           player={player}
@@ -117,10 +87,9 @@ export function PandaMascot({ frame, scale }: PandaMascotProps): React.JSX.Eleme
           allowsFullscreen={false}
           allowsPictureInPicture={false}
           accessible
-          accessibilityLabel="Happi the panda exploring the journey"
-          pointerEvents="none"
+          accessibilityLabel="Happi the panda"
         />
-      </Animated.View>
+      </View>
     </>
   );
 }

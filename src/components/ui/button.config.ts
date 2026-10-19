@@ -32,9 +32,9 @@ export const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
     // ponytail: match journey map & lesson screen tactile depth (SAGE[600])
     rimColor: SEMANTIC_COLORS.brand.pressed,
     labelColor: SEMANTIC_COLORS.surface.primary,
-    disabledFaceColor: "#F3F6FA",
-    disabledRimColor: "#E9EEF5",
-    disabledLabelColor: "#64748B",
+    disabledFaceColor: "#E5E7EB",
+    disabledRimColor: "#CBD5E1",
+    disabledLabelColor: "#9CA3AF",
   },
   secondary: {
     faceColor: SEMANTIC_COLORS.surface.primary,

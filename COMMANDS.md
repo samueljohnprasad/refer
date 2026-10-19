@@ -41,3 +41,4 @@ https://www.aihero.dev/skills
 https://reactnativefeel.com/sim
 https://super-easy-apps.kit.com/
 https://forwardfuture.com/
+https://github.com/wondelai/skills

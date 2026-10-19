@@ -57,7 +57,8 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
               {t('paywall.appOfTheDay')}
             </Text>
           </View>
-          <HappiMascot expression="happy" size={84} delay={200} />
+          {/* ponytail: transcend panda radiates breakthrough clarity above pricing */}
+          <HappiMascot expression="transcend" size={96} delay={200} />
           <Text
             style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
             className="mt-3 text-center text-[26px] leading-[1.15] tracking-[-0.02em] text-ink"

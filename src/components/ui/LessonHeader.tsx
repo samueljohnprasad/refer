@@ -44,7 +44,7 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
   trailingLabelColor = SEMANTIC_COLORS.brand.pressed,
   progressFillColor = SEMANTIC_COLORS.brand.primary,
   progressTrackColor = SEMANTIC_COLORS.brand.soft,
-  progressHeight = 8,
+  progressHeight = 10,
   backButtonVariant = "close-icon",
   style,
 }) => {

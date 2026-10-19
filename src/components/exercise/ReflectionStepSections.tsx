@@ -77,19 +77,20 @@ export function ReflectionDisclosure({
         accessibilityRole="button"
         accessibilityLabel={translateCopy(expanded ? "Hide examples" : "Show optional examples")}
         accessibilityState={{ expanded }}
-        className="mb-2 flex-row items-center justify-between border-t border-sage-100/70 py-3 active:opacity-70"
+        className="mb-2 flex-row items-center justify-between rounded-2xl border border-sage-200/80 bg-sage-50/60 px-4 py-3 active:opacity-80"
+        style={{ borderCurve: "continuous" }}
       >
-        <Text variant="label-bold" className="text-[14px] text-sage-700">
+        <Text variant="label-bold" className="text-[14px] text-sage-800">
           {translateCopy(expanded ? "Hide examples" : title)}
         </Text>
         <Feather
           name={expanded ? "chevron-up" : "chevron-down"}
           size={18}
-          color={SEMANTIC_COLORS.text.secondary}
+          color={SEMANTIC_COLORS.brand.primary}
         />
       </Pressable>
 
-      {expanded ? <View>{children}</View> : null}
+      {expanded ? <View className="pt-2">{children}</View> : null}
     </View>
   );
 }

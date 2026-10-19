@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { GoogleGenAI } from "@google/genai";
+import { ai } from "@/src/network/geminiClient";
 import { useAuth } from "@/src/context/AuthContext";
 import { usePersonalEffectiveness } from "./usePersonalEffectiveness";
 import { useSkillProgression } from "./useSkillProgression";
@@ -14,12 +14,6 @@ export interface InsightNarrativeData {
   narrative: string;
   generatedAt: string;
 }
-
-// ─── Gemini client ───────────────────────────────────────────────────────────
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY!,
-});
 
 // ─── Hook ────────────────────────────────────────────────────────────────────
 

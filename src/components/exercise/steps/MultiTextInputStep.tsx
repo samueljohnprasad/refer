@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAppDispatch } from "@/src/store/hooks";
 import { setAssistantMessage } from "@/src/store/slices/happyAssistantSlice";
 import { View } from "react-native";
+import { useComposerVoice } from "@/src/components/exercise/hooks/useComposerVoice";
 import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
@@ -87,18 +88,41 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     const responseItems = responseRecord[fieldKey];
     
     const isStringMode = typeof responseItems === "string";
+    const isSingleMode = isStringMode || maxItems === 1;
 
     const items = Array.isArray(responseItems)
       ? responseItems.filter((item): item is string => typeof item === "string")
       : (isStringMode && responseItems.trim() !== "" ? [responseItems] : []);
 
-    const composerMinHeight = configuredComposerMinHeight ?? 100;
+    const singleValue = isStringMode ? ((responseItems as string) ?? "") : (items[0] ?? "");
+
+    const composerMinHeight = configuredComposerMinHeight ?? 110;
     const [showSuggestions, setShowSuggestions] = useState(
       !suggestionsCollapsedByDefault,
     );
 
+    const handleSingleChange = (text: string) => {
+      if (isStringMode) {
+        onUpdate({ [fieldKey]: text } as Partial<typeof response>);
+      } else {
+        onUpdate({ [fieldKey]: text.trim() ? [text] : [] } as Partial<typeof response>);
+      }
+    };
+
+    const {
+      canUseVoice,
+      isRecording,
+      isTranscribing,
+      voiceError,
+      handleToggleRecording,
+    } = useComposerVoice({
+      enabled: !textOnly && (Boolean(showVoice) || Boolean(alwaysShowVoice)),
+      currentValue: singleValue,
+      onTranscription: handleSingleChange,
+    });
+
     useEffect(() => {
-      if (validationMessage && items.length > 0) {
+      if (validationMessage && (singleValue.length > 0 || items.length > 0)) {
         dispatch(setAssistantMessage(validationMessage));
       } else {
         dispatch(setAssistantMessage(null));
@@ -106,14 +130,14 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
       return () => {
         dispatch(setAssistantMessage(null));
       };
-    }, [validationMessage, items.length, dispatch]);
+    }, [validationMessage, singleValue.length, items.length, dispatch]);
 
     const addItem = (item: string) => {
       const trimmed = item.trim();
       if (!trimmed) return;
       
-      if (isStringMode || maxItems === 1) {
-        onUpdate({ [fieldKey]: trimmed } as Partial<typeof response>);
+      if (isSingleMode) {
+        handleSingleChange(trimmed);
       } else {
         if (items.length >= maxItems) return;
         onUpdate({ [fieldKey]: [...items, trimmed] } as Partial<typeof response>);
@@ -121,8 +145,8 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     };
 
     const removeItem = (index: number) => {
-      if (isStringMode || maxItems === 1) {
-        onUpdate({ [fieldKey]: "" } as Partial<typeof response>);
+      if (isSingleMode) {
+        handleSingleChange("");
       } else {
         onUpdate({
           [fieldKey]: items.filter((_, i) => i !== index),
@@ -131,12 +155,8 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     };
 
     const handleSuggestionSelect = (text: string) => {
-      if (isStringMode || maxItems === 1) {
-        if (items.includes(text)) {
-          onUpdate({ [fieldKey]: "" } as Partial<typeof response>);
-        } else {
-          onUpdate({ [fieldKey]: text } as Partial<typeof response>);
-        }
+      if (isSingleMode) {
+        handleSingleChange(text);
       } else {
         if (items.includes(text)) {
           onUpdate({
@@ -183,22 +203,45 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
           <PsychoeducationCard content={translateCopy(tipText)} />
         ) : null}
 
-        {(items.length > 0 || !readOnly) && (
+        {(isSingleMode || items.length > 0 || !readOnly) && (
           <View className="mt-2" style={{ zIndex: 10 }}>
-            <ExerciseTextComposer
-              mode="list"
-              items={items}
-              onAdd={addItem}
-              onRemove={removeItem}
-              placeholder={translateCopy(placeholder)}
-              maxItems={maxItems}
-              maxLength={maxLength}
-              readOnly={readOnly}
-              textOnly={textOnly}
-              minHeight={composerMinHeight}
-              autoFocus={autoFocus}
-              accessibilityLabel={translateCopy(title)}
-            />
+            {isSingleMode ? (
+              <ExerciseTextComposer
+                value={singleValue}
+                onChange={handleSingleChange}
+                placeholder={translateCopy(placeholder)}
+                minHeight={composerMinHeight}
+                maxLength={maxLength}
+                readOnly={readOnly}
+                autoFocus={autoFocus}
+                accessibilityLabel={translateCopy(title)}
+                onWavePress={handleToggleRecording}
+                isRecording={isRecording}
+                isTranscribing={isTranscribing}
+                showVoice={canUseVoice}
+                alwaysShowVoice={alwaysShowVoice}
+              />
+            ) : (
+              <ExerciseTextComposer
+                mode="list"
+                items={items}
+                onAdd={addItem}
+                onRemove={removeItem}
+                placeholder={translateCopy(placeholder)}
+                maxItems={maxItems}
+                maxLength={maxLength}
+                readOnly={readOnly}
+                textOnly={textOnly}
+                minHeight={composerMinHeight}
+                autoFocus={autoFocus}
+                accessibilityLabel={translateCopy(title)}
+              />
+            )}
+            {voiceError ? (
+              <Text className="mt-2 text-[13px] leading-relaxed text-ink-soft">
+                {voiceError}
+              </Text>
+            ) : null}
           </View>
         )}
 

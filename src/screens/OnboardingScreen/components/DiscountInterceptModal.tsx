@@ -32,7 +32,8 @@ const DiscountInterceptModal: React.FC<DiscountInterceptModalProps> = ({
           className="w-full rounded-t-3xl bg-cream px-6 pb-10 pt-6"
         >
           <View className="items-center">
-            <HappiMascot expression="happy" size={80} animate={false} />
+            {/* ponytail: pleading puppy-dog eyes for exit-intent retention */}
+            <HappiMascot expression="pleading" size={90} animate={false} />
             <Text
               style={{ fontFamily: APP_FONT_FAMILIES.bold }}
               className="mt-2 text-xs font-bold uppercase tracking-widest text-sage-500"

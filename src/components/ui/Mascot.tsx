@@ -15,7 +15,10 @@ export type MascotState =
   | 'panda-pillow-hug'
   | 'panda-plant'
   | 'panda-super-excite'
-  | 'panda-yet-sleep-pillow';
+  | 'panda-yet-sleep-pillow'
+  | 'panda-flex'
+  | 'panda-transcend'
+  | 'panda-pleading';
 
 const MASCOT_IMAGES: Record<MascotState, any> = {
   hi: require('@/assets/images/panda-hi.png'),
@@ -30,6 +33,9 @@ const MASCOT_IMAGES: Record<MascotState, any> = {
   'panda-plant': require('@/assets/images/panda/panda-plant.png'),
   'panda-super-excite': require('@/assets/images/panda/panda-super-excite.png'),
   'panda-yet-sleep-pillow': require('@/assets/images/panda/panda-yet-sleep-pillow.png'),
+  'panda-flex': require('@/assets/images/panda/panda-flex.png'),
+  'panda-transcend': require('@/assets/images/panda/panda-transcend.png'),
+  'panda-pleading': require('@/assets/images/panda/panda-pleading.png'),
 };
 
 interface MascotProps {

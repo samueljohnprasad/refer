@@ -1,9 +1,5 @@
-import { GoogleGenAI } from "@google/genai";
+import { ai } from "@/src/network/geminiClient";
 import { observeGeminiGeneration } from "@/src/observability/ai";
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY!,
-});
 
 export interface ThoughtEntry {
   index: number;

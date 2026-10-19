@@ -35,12 +35,13 @@ export function PandaMetaphor({ progress, animationKey }: PandaMetaphorProps) {
   });
 
   const getImageSource = () => {
+    // ponytail: map therapeutic celebration moments to high-res situational pandas
     switch (animationKey) {
-      case 'anxiety_relax': return require('../../../assets/images/panda/panda-love-hug.png');
-      case 'thought_reframe': return require('../../../assets/images/panda/panda-confused-thinking.png');
-      case 'sleep_calm': return require('../../../assets/images/panda/panda-pillow-hug.png');
-      case 'generic_success': return require('../../../assets/images/panda/panda-happy.png');
-      default: return require('../../../assets/images/panda/panda-happy.png');
+      case 'anxiety_relax': return require('../../../assets/images/panda/panda-breathing.png');
+      case 'thought_reframe': return require('../../../assets/images/panda/panda-transcend.png');
+      case 'sleep_calm': return require('../../../assets/images/panda/panda-sleep.png');
+      case 'generic_success': return require('../../../assets/images/panda/panda-flex.png');
+      default: return require('../../../assets/images/panda/panda-celebration.png');
     }
   };
 

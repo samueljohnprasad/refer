@@ -125,13 +125,26 @@ export interface FeelingOption {
   label: string;
 }
 
+// ponytail: expand mascot expressions with Duolingo-grade acting states (flex, transcend, pleading)
 export type HappiExpression =
   | "happy"
   | "waving"
   | "concentrating"
   | "celebrating"
+  | "celebrating_jump"
   | "peaceful"
-  | "notes";
+  | "notes"
+  | "breathing"
+  | "detective"
+  | "comfort"
+  | "insight"
+  | "sleep"
+  | "proud_tears"
+  | "pancake"
+  | "side_eye"
+  | "flex"
+  | "transcend"
+  | "pleading";
 
 export interface OnboardingChecklistItem {
   id: string;

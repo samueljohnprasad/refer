@@ -12,13 +12,26 @@ import Animated, {
 import { HappiExpression } from "../types";
 
 /* eslint-disable @typescript-eslint/no-require-imports */
+// ponytail: map new high-res transparent panda actions directly to assets
 const MASCOT_IMAGES: Record<HappiExpression, ImageSourcePropType> = {
   happy: require("@/assets/images/panda/panda-happy.png"),
   waving: require("@/assets/images/panda-hi.png"),
   concentrating: require("@/assets/images/panda/panda-confused-thinking.png"),
   celebrating: require("@/assets/images/panda/panda-super-excite.png"),
+  celebrating_jump: require("@/assets/images/panda/panda-celebration.png"),
   peaceful: require("@/assets/images/panda/panda-love-hug.png"),
   notes: require("@/assets/images/panda/panda-notes.png"),
+  breathing: require("@/assets/images/panda/panda-breathing.png"),
+  detective: require("@/assets/images/panda/panda-detective.png"),
+  comfort: require("@/assets/images/panda/panda-comfort.png"),
+  insight: require("@/assets/images/panda/panda-insight.png"),
+  sleep: require("@/assets/images/panda/panda-sleep.png"),
+  proud_tears: require("@/assets/images/panda/panda-proud-tears.png"),
+  pancake: require("@/assets/images/panda/panda-pancake.png"),
+  side_eye: require("@/assets/images/panda/panda-side-eye.png"),
+  flex: require("@/assets/images/panda/panda-flex.png"),
+  transcend: require("@/assets/images/panda/panda-transcend.png"),
+  pleading: require("@/assets/images/panda/panda-pleading.png"),
 };
 
 interface HappiMascotProps {

@@ -15,8 +15,9 @@ import Animated, {
 } from "react-native-reanimated";
 import { SEMANTIC_COLORS } from "@/src/components/exercise/courseExerciseTheme";
 import { Text } from "@/src/components/ui/Text";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 
-const borderRadius = 20;
+const borderRadius = 24;
 
 export function ComposerShell({
   value,
@@ -195,38 +196,47 @@ export function WaveBar({ delay }: { delay: number }) {
 export const composerStyles = StyleSheet.create({
   container: {
     width: "100%",
-    paddingBottom: 20,
+    paddingBottom: 16,
     backgroundColor: "transparent",
   },
   inputWrapper: {
     position: "relative",
     width: "100%",
     borderRadius,
-    borderWidth: 1,
-    borderColor: SEMANTIC_COLORS.border.default,
+    borderCurve: "continuous",
+    borderWidth: 2,
+    borderBottomWidth: 5,
+    borderColor: "#E5E9E2",
+    borderBottomColor: "#D0D7CC",
     backgroundColor: SEMANTIC_COLORS.surface.primary,
   },
-  inputWrapperFocused: { borderColor: SEMANTIC_COLORS.brand.primary },
+  inputWrapperFocused: {
+    borderColor: SEMANTIC_COLORS.brand.primary,
+    borderBottomColor: SEMANTIC_COLORS.brand.pressed,
+  },
   inputWrapperRecording: {
-    borderColor: SEMANTIC_COLORS.text.secondary,
-    backgroundColor: SEMANTIC_COLORS.surface.elevated,
+    borderColor: SEMANTIC_COLORS.brand.primary,
+    borderBottomColor: SEMANTIC_COLORS.brand.pressed,
+    backgroundColor: "#F4F7F2",
   },
   inputContainer: {
     backgroundColor: "transparent",
     borderRadius,
-    paddingHorizontal: 16,
-    paddingTop: 14,
-    paddingBottom: 12,
+    borderCurve: "continuous",
+    paddingHorizontal: 18,
+    paddingTop: 16,
+    paddingBottom: 14,
   },
   input: {
-    fontSize: 16,
-    lineHeight: 23,
+    fontFamily: APP_FONT_FAMILIES.regular,
+    fontSize: 17,
+    lineHeight: 25,
     color: SEMANTIC_COLORS.text.primary,
     textAlignVertical: "top",
     paddingTop: 0,
     paddingBottom: 0,
   },
-  footerContainer: { minHeight: 44, marginTop: 8, position: "relative" },
+  footerContainer: { minHeight: 44, marginTop: 10, position: "relative" },
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -240,24 +250,28 @@ export const composerStyles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: SEMANTIC_COLORS.surface.elevated,
-    borderWidth: 1,
-    borderColor: SEMANTIC_COLORS.surface.secondary,
+    backgroundColor: "#F8FAF7",
+    borderWidth: 2,
+    borderBottomWidth: 3,
+    borderColor: "#E5E9E2",
+    borderBottomColor: "#D0D7CC",
     justifyContent: "center",
     alignItems: "center",
   },
   waveButtonRecording: {
-    backgroundColor: SEMANTIC_COLORS.surface.secondary,
-    borderColor: SEMANTIC_COLORS.text.disabled,
+    backgroundColor: "#EBF2E8",
+    borderColor: SEMANTIC_COLORS.brand.primary,
+    borderBottomColor: SEMANTIC_COLORS.brand.pressed,
   },
   inlineActionButton: {
     height: 44,
     borderRadius: 22,
-    borderWidth: 1,
+    borderWidth: 2,
+    borderBottomWidth: 3,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
   },
-  pressed: { opacity: 0.72, transform: [{ scale: 0.98 }] },
+  pressed: { transform: [{ translateY: 2 }] },
 });

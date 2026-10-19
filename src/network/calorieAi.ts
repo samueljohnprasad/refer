@@ -1,11 +1,8 @@
-import { GoogleGenAI } from "@google/genai";
+import { ai } from "@/src/network/geminiClient";
 import { File } from "expo-file-system";
 import { getAllMicronutrientNames } from "@/src/config/micronutrients";
 import { observeGeminiGeneration } from "@/src/observability/ai";
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY!,
-});
 /**
  * Individual micronutrient entry
  */
