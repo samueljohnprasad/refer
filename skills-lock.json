@@ -1684,6 +1684,12 @@
       "skillPath": "skills/review-management/SKILL.md",
       "computedHash": "3bf51fff1800b1a8b7984cd232c89ee62f58a1d4b2c2cd88107d1260acfbe21d"
     },
+    "rossark-motion-skill": {
+      "source": "rossark0/rossark-motion-skill",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "213fcf732ba413d9a0ec37dac0eb627419efdf4b4d6e8ec6d02f6e430b82b4b4"
+    },
     "scaffold-exercises": {
       "source": "mattpocock/skills",
       "sourceType": "github",

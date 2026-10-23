@@ -93,7 +93,7 @@ function TimelineInner<T extends TimelineItemData>({
             renderSectionHeader &&
             renderSectionHeader(section)}
 
-          <View className="flex-row items-stretch px-4">
+          <View className="flex-row items-stretch">
             {/* 1. Date Column (fixed width, hidden when section header is rendered) */}
             {!renderSectionHeader && (
               <View className="w-[56px] items-end pt-[10px] pr-2">
@@ -162,7 +162,7 @@ function TimelineInner<T extends TimelineItemData>({
       }
       ListEmptyComponent={ListEmptyComponent}
       ListFooterComponent={<LoadingFooter visible={isLoadingMore} />}
-      contentContainerStyle={{ paddingBottom: 120, paddingHorizontal: 20 }}
+      contentContainerStyle={{ paddingBottom: 120, paddingHorizontal: 16 }}
       showsVerticalScrollIndicator={false}
       contentInsetAdjustmentBehavior="automatic"
       scrollEventThrottle={16}

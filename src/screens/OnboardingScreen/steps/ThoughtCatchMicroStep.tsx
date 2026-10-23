@@ -17,6 +17,7 @@ import { XPActionType } from "@/src/types/xp";
 import type { MotivationAnswer } from "../types";
 import { DISTORTION_OPTIONS, THOUGHT_SCENARIOS } from "./thoughtCatchData";
 import { SpeechBubbleCard } from "./SpeechBubbleCard";
+import { useOnboardingAnalytics } from "../hooks/useOnboardingAnalytics";
 
 interface ThoughtCatchMicroStepProps {
   onComplete: () => void;
@@ -33,6 +34,7 @@ export const ThoughtCatchMicroStep: React.FC<ThoughtCatchMicroStepProps> = ({
     null,
   );
   const xp = useXP();
+  const analytics = useOnboardingAnalytics();
 
   const scenario =
     (motivation && THOUGHT_SCENARIOS[motivation]) ?? THOUGHT_SCENARIOS.default;
@@ -41,6 +43,8 @@ export const ThoughtCatchMicroStep: React.FC<ThoughtCatchMicroStepProps> = ({
     (id: string): void => {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       setSelectedDistortion(id);
+      analytics.trackThoughtSelected(scenario.thought, id, scenario.thought);
+      analytics.trackThoughtReframeViewed(id);
 
       // ponytail: award +10 XP immediately on reframing and persist locally per AD-8
       void xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
@@ -58,7 +62,7 @@ export const ThoughtCatchMicroStep: React.FC<ThoughtCatchMicroStepProps> = ({
         }),
       );
     },
-    [xp, scenario],
+    [xp, scenario, analytics],
   );
 
   const handleContinue = useCallback((): void => {

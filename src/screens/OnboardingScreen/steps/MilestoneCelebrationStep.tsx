@@ -11,6 +11,7 @@ import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { SAGE } from "@/src/theme/palette";
 import { useStreak } from "@/src/hooks/useStreak";
 import { updateUserStreak } from "@/src/lib/api/mentalHealthJourneyApi";
+import { useOnboardingAnalytics } from "../hooks/useOnboardingAnalytics";
 
 interface MilestoneCelebrationStepProps {
   onCommit: () => void;
@@ -41,12 +42,14 @@ export const MilestoneCelebrationStep: React.FC<
   }, []);
 
   const displayStreak = Math.max(1, currentStreak);
+  const analytics = useOnboardingAnalytics();
 
   const handleLockIn = useCallback((): void => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    analytics.trackStreakLockIn(displayStreak);
     void updateUserStreak();
     onCommit();
-  }, [onCommit]);
+  }, [displayStreak, analytics, onCommit]);
 
   const topPadding = (headerHeight > 0 ? headerHeight : insets.top + 44) + 12;
   const bottomPadding = Math.max(insets.bottom, 16) + 12;

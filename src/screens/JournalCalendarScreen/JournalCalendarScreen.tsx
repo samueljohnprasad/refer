@@ -164,9 +164,9 @@ export default function JournalCalendarScreen() {
         scrollEventThrottle={16}
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ paddingBottom: 128 }}
+        contentContainerStyle={{ paddingBottom: 144 }}
       >
-        <View className="px-6 pb-12 pt-4">
+        <View className="px-6 pb-16 pt-8">
           <HomeHeader
             displayName={userProfile?.displayName}
             isLoading={isLoadingProfile}
@@ -176,8 +176,8 @@ export default function JournalCalendarScreen() {
 
           {/* ponytail: action-first home screen hierarchy */}
           {/* Section 1 (Hero): Today's Reflection */}
-          <View className="mt-5 border-t border-ink/10 pt-5">
-            <Text className="happy-font-body-bold mb-2.5 px-1 text-[12px] font-bold tracking-[1px] text-sage-700 uppercase">
+          <View className="mt-8 border-t border-ink/10 pt-6">
+            <Text className="happy-font-body-bold mb-4 px-1 text-[12px] font-bold tracking-[1px] text-sage-700 uppercase">
               {tHome("sections.todayReflection")}
             </Text>
             <FeaturedPromptCard
@@ -189,7 +189,7 @@ export default function JournalCalendarScreen() {
           </View>
 
           {/* Section 2 (Check-in): open mood logger */}
-          <View className="mt-8">
+          <View className="mt-12">
             <EmotionLogger
               selectedDate={selectedEmotionDate}
               onEmotionLogged={handleEmotionLogged}
@@ -198,7 +198,7 @@ export default function JournalCalendarScreen() {
           </View>
 
           {/* Section 3 (Learning): open continue-journey row */}
-          <View className="mt-9">
+          <View className="mt-12">
             <StarterPathNextActionCard />
             <ContinueJourneyCard />
           </View>

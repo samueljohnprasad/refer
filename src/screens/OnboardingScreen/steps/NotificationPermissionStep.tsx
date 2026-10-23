@@ -1,5 +1,5 @@
 // ponytail: reminder picker with panda mascot & tactile time cards — no preview noise
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useCallback } from "react";
 import { View, Text, ScrollView, Switch, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "expo-router/react-navigation";
@@ -12,6 +12,7 @@ import Svg, { Path } from "react-native-svg";
 import HappiMascot from "../components/HappiMascot";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { SAGE } from "@/src/theme/palette";
+import { useOnboardingAnalytics } from "../hooks/useOnboardingAnalytics";
 import { useReminderConfig } from "@/src/components/notifications/useReminderConfig";
 import { DEFAULT_REMINDERS } from "@/src/components/notifications/constants";
 import type { NotificationTime } from "../types";
@@ -40,10 +41,29 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("onboarding");
+  const analytics = useOnboardingAnalytics();
 
   const { items, cfg, handleTimeChange, toggleSelected } = useReminderConfig(
     DEFAULT_REMINDERS,
     { requestPermissionsOnToggle: false },
+  );
+
+  const onToggleSlot = useCallback(
+    (id: string, isCurrentlySelected: boolean) => {
+      Haptics.selectionAsync();
+      analytics.trackReminderSlotToggled(id, !isCurrentlySelected);
+      toggleSelected(id);
+    },
+    [analytics, toggleSelected],
+  );
+
+  const onTimeChange = useCallback(
+    (id: string, hours: number, minutes: number) => {
+      const pad = (n: number) => n.toString().padStart(2, "0");
+      analytics.trackReminderTimeChanged(id, `${pad(hours)}:${pad(minutes)}`);
+      handleTimeChange(id, hours, minutes);
+    },
+    [analytics, handleTimeChange],
   );
 
   useEffect(() => {
@@ -155,10 +175,7 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
               } px-4 py-3.5 flex-row items-center gap-3.5`}
             >
               <Pressable
-                onPress={() => {
-                  Haptics.selectionAsync();
-                  toggleSelected(item.id);
-                }}
+                onPress={() => onToggleSlot(item.id, !!isSelected)}
                 className="w-8 items-center justify-center"
               >
                 <SymbolView
@@ -182,7 +199,7 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
                     <DatePicker
                       selection={new Date(new Date().setHours(item.hour, item.minute, 0, 0))}
                       displayedComponents={["hourAndMinute"]}
-                      onDateChange={(date: Date) => handleTimeChange(item.id, date.getHours(), date.getMinutes())}
+                      onDateChange={(date: Date) => onTimeChange(item.id, date.getHours(), date.getMinutes())}
                     />
                   </Host>
                 </View>
@@ -190,10 +207,7 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
 
               <Switch
                 value={isSelected}
-                onValueChange={() => {
-                  Haptics.selectionAsync();
-                  toggleSelected(item.id);
-                }}
+                onValueChange={() => onToggleSlot(item.id, !!isSelected)}
                 trackColor={{ true: SAGE[500], false: "#E5E5EA" }}
                 ios_backgroundColor="#E5E5EA"
                 accessibilityRole="switch"

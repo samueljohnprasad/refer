@@ -1,8 +1,9 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { I18nManager, Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { SymbolView } from "expo-symbols";
 import { Mascot } from "@/src/components/ui/Mascot";
+import { HappySceneModal } from "@/src/components/ui/happy-scene/HappySceneModal";
 import { ORANGE, SAGE } from "@/src/theme/palette";
 
 type HomeHeaderProps = {
@@ -34,6 +35,7 @@ export const HomeHeader = memo(function HomeHeader({
   onStreakPress,
 }: HomeHeaderProps): React.JSX.Element {
   const { t } = useTranslation("home");
+  const [showHappy, setShowHappy] = useState(false);
   const greeting = t(`greeting.${getGreetingKey(new Date().getHours())}`);
   const name = isLoading ? "..." : displayName || t("greeting.fallbackName");
   const streakLabel = t("streak.dayLabel");
@@ -41,14 +43,17 @@ export const HomeHeader = memo(function HomeHeader({
   return (
     <View className="relative min-h-[184px]">
       {/* ponytail: open composition lets the mascot feel illustrated, not boxed */}
-      <View
-        accessibilityElementsHidden
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Happy"
+        onPress={() => setShowHappy(true)}
         className="absolute bottom-0 h-[174px] w-[168px] items-center justify-end"
         style={MASCOT_POSITION}
       >
         <View className="absolute bottom-0.5 h-[148px] w-[148px] rounded-full bg-sage-100" />
-        <Mascot state="panda-plant" size={158} />
-      </View>
+        <Mascot state="panda-happy" size={158} />
+      </Pressable>
+      {showHappy && <HappySceneModal onClose={() => setShowHappy(false)} />}
 
       <View
         className="min-h-[184px] justify-start pt-6"

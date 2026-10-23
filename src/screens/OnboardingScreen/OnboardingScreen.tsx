@@ -13,13 +13,11 @@ import { useOnboardingTransitions } from "./hooks/useOnboardingTransitions";
 import { useCompleteOnboarding } from "@/hooks/data/useCompleteOnboarding";
 import { ONBOARDING_STEPS } from "./constants";
 import { ScreenLayout } from "@/src/components/ui/ScreenLayout";
-import { updateUserStreak } from "@/src/lib/api/mentalHealthJourneyApi";
-import { XPActionType } from "@/src/types/xp";
 import { useXP } from "@/src/context/XPContext";
 import { OnboardingHeader } from "./components/OnboardingHeader";
 import { OnboardingStepRenderer } from "./components/OnboardingStepRenderer";
 import { OnboardingFooter } from "./components/OnboardingFooter";
-import { buildReminderConfig } from "./utils/reminderConfig";
+import { completeOnboardingUser } from "./utils/onboardingCompletion";
 import { useGetCourseCatalogQuery } from "@/src/domains/journey/data/journeyApi";
 import { resolveCourseForMotivation } from "./utils/courseResolver";
 import { setActiveCourse } from "@/src/domains/journey/state/journeySlice";
@@ -52,21 +50,9 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const dispatch = useAppDispatch();
 
   const {
-    currentStepIndex,
-    currentStep,
-    isLastStep,
-    formData,
-    derivedPlanName,
-    goNext,
-    goBack,
-    updateMotivation,
-    updateStressLevel,
-    updateDailyGoal,
-    updatePactSigned,
-    updateFeeling,
-    updateNotificationTime,
-    updatePricingTier,
-    updateTrialStarted,
+    currentStepIndex, currentStep, isLastStep, formData, derivedPlanName,
+    goNext, goBack, updateMotivation, updateStressLevel, updateDailyGoal,
+    updatePactSigned, updateNotificationTime, updatePricingTier, updateTrialStarted,
   } = useOnboardingFlow();
 
   // ponytail: query catalog and resolve course matching user motivation
@@ -142,44 +128,40 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
 
   const handleContinue = useCallback(
     async (skipped: boolean = false) => {
-      if (!isStepActionReady || loading) return;
+      const isPaywallDismissal = currentStep === "soft_paywall" && skipped;
+      if ((!isStepActionReady && !isPaywallDismissal) || loading) return;
 
       analytics.trackStepCompleted(currentStep, currentStepIndex);
       if (skipped) {
         analytics.trackOnboardingSkipped(currentStep);
       }
 
-      if (currentStep === "notification_permission" && !skipped) {
-        await handleNotificationPermissionOnContinue(user?.id, remindersCfg);
+      if (currentStep === "notification_permission") {
+        const slotStatus: Record<string, boolean> = {};
+        Object.entries(remindersCfg).forEach(([k, v]) => {
+          slotStatus[k] = v.enabled;
+        });
+        analytics.trackNotificationDecision(
+          skipped ? "skipped" : "set_reminders",
+          slotStatus,
+        );
+        if (!skipped) {
+          await handleNotificationPermissionOnContinue(user?.id, remindersCfg);
+        }
       }
 
       if (isLastStep) {
         try {
           setLoading(true);
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          // ponytail: save real configured reminders from onboarding, fallback to motivation time
-          const finalCfg =
-            Object.keys(remindersCfg).length > 0
-              ? remindersCfg
-              : buildReminderConfig(formData.notificationTime);
-          const hasAnyEnabled = Object.values(finalCfg).some((c) => c.enabled);
-
-          await markCompleted({
-            name: "",
-            reasons: formData.motivation ? [formData.motivation] : [],
-            cfg: finalCfg,
-            reminderEnabled: hasAnyEnabled,
-            motivation: formData.motivation,
+          await completeOnboardingUser({
+            remindersCfg,
+            formData,
+            markCompleted,
+            xp,
+            xpDescription: t("xp_first_step"),
           });
-
-          await updateUserStreak();
-          await xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
-            customAmount: 15,
-            customDescription: t("xp_first_step"),
-          });
-
           analytics.trackOnboardingCompleted(currentStepIndex + 1);
-
           await onComplete(skipped);
         } catch (error) {
           console.error("[Onboarding] Failed to complete:", error);
@@ -205,8 +187,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
       currentStepIndex,
       isLastStep,
       markCompleted,
-      formData.motivation,
-      formData.notificationTime,
+      formData,
       xp,
       onComplete,
       goNext,
@@ -218,8 +199,12 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
 
   const handleBack = useCallback(() => {
     Haptics.selectionAsync();
+    const prevStep = ONBOARDING_STEPS[currentStepIndex - 1]?.name;
+    if (prevStep) {
+      analytics.trackBackNavigated(currentStep, prevStep);
+    }
     goBack();
-  }, [goBack]);
+  }, [currentStep, currentStepIndex, analytics, goBack]);
 
   const handlePactCommit = useCallback(() => {
     updatePactSigned();
@@ -228,13 +213,14 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
 
   const handleDismissPaywall = useCallback(() => {
     Haptics.selectionAsync();
+    analytics.trackPaywallDismissed("close_button");
     updateTrialStarted(false);
     if (isLastStep) {
       handleContinue(true);
     } else {
       goNext();
     }
-  }, [updateTrialStarted, isLastStep, handleContinue, goNext]);
+  }, [analytics, updateTrialStarted, isLastStep, handleContinue, goNext]);
 
   const handleStepComplete = useCallback(
     (skipped: boolean = false) => {
@@ -248,10 +234,10 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   );
 
   const handleSkip = useCallback(() => {
-    analytics.trackStepSkipped(currentStep);
+    analytics.trackStepSkipped(currentStep, currentStepIndex);
     if (isLastStep) handleContinue(true);
     else goNext();
-  }, [analytics, currentStep, isLastStep, handleContinue, goNext]);
+  }, [analytics, currentStep, currentStepIndex, isLastStep, handleContinue, goNext]);
 
   const isContinueDisabled =
     !canContinue ||

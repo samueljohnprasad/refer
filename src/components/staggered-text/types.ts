@@ -16,6 +16,8 @@ export interface StaggeredTextProps {
   height?: number;
   letterSpacing?: number;
   animationConfig?: StaggeredTextAnimationConfig;
+  multiline?: boolean;
+  align?: "left" | "center" | "right";
 }
 
 export interface StaggeredCharacterProps {

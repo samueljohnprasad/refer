@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { View } from "react-native";
 import RevenueCatUI from "react-native-purchases-ui";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
+import { useOnboardingAnalytics } from "../hooks/useOnboardingAnalytics";
 import type { PricingTier } from "../types";
 
 interface SoftPaywallStepProps {
@@ -16,15 +17,22 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
   onContinueFree,
 }) => {
   const { registerPurchasedCustomer } = useRevenueCat();
+  const analytics = useOnboardingAnalytics();
 
   const handleAccessGranted = useCallback(
     (customerInfo: Parameters<typeof registerPurchasedCustomer>[0]): void => {
+      analytics.trackTrialStarted("annual");
       if (registerPurchasedCustomer(customerInfo)) {
         onStartTrial();
       }
     },
-    [onStartTrial, registerPurchasedCustomer],
+    [onStartTrial, registerPurchasedCustomer, analytics],
   );
+
+  const handleDismiss = useCallback((): void => {
+    analytics.trackPaywallDismissed("close_button");
+    onContinueFree();
+  }, [onContinueFree, analytics]);
 
   return (
     <View className="flex-1 bg-surface-canvas">
@@ -37,7 +45,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
         onRestoreCompleted={({ customerInfo }) =>
           handleAccessGranted(customerInfo)
         }
-        onDismiss={onContinueFree}
+        onDismiss={handleDismiss}
       />
     </View>
   );

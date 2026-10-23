@@ -8,6 +8,7 @@ import { MOTIVATION_OPTIONS } from "../constants";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
+import { useOnboardingAnalytics } from "../hooks/useOnboardingAnalytics";
 
 const STEP_LABEL_ENTER_DELAY_MS = 80;
 const TITLE_ENTER_DELAY_MS = 140;
@@ -27,14 +28,16 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("onboarding");
+  const analytics = useOnboardingAnalytics();
 
   const handleSelect = useCallback(
     (id: MotivationAnswer) => {
+      analytics.trackMotivationSelected(id, selected !== undefined && selected !== id);
       onSelect(id);
       // ponytail: 360ms lets user enjoy bouncy tactile feedback before smooth advance
       setTimeout(onAdvance, 360);
     },
-    [onSelect, onAdvance],
+    [onSelect, onAdvance, analytics, selected],
   );
 
   return (

@@ -104,6 +104,72 @@ export const StaggeredText = memo(function StaggeredText(
 
   if (!activeText) return null;
 
+  if (props.multiline) {
+    const words = activeText.split(" ");
+    let runningCharIndex = 0;
+    const justify =
+      props.align === "left"
+        ? "flex-start"
+        : props.align === "right"
+          ? "flex-end"
+          : "center";
+
+    return (
+      <View
+        accessible
+        accessibilityRole="header"
+        accessibilityLabel={activeText}
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: justify,
+          alignItems: "center",
+        }}
+      >
+        {words.map((word, wordIndex) => {
+          const wordStartIndex = runningCharIndex;
+          runningCharIndex += word.length + 1;
+
+          return (
+            <View
+              key={`${props.activeIndex}-w-${wordIndex}`}
+              style={{ flexDirection: "row", alignItems: "center" }}
+            >
+              {Array.from(word).map((character, charIndex) => (
+                <AnimatedCharacter
+                  key={`${props.activeIndex}-c-${wordStartIndex + charIndex}`}
+                  character={character}
+                  delay={
+                    (wordStartIndex + charIndex) *
+                    props.animationConfig.characterDelay
+                  }
+                  duration={props.animationConfig.duration}
+                  easing={props.animationConfig.easing}
+                  fontFamily={props.fontFamily}
+                  fontSize={props.fontSize}
+                  color={props.color}
+                  letterSpacing={props.letterSpacing}
+                  reduceMotion={reduceMotion}
+                />
+              ))}
+              {wordIndex < words.length - 1 && (
+                <Animated.Text
+                  style={{
+                    fontFamily: props.fontFamily,
+                    fontSize: props.fontSize,
+                    color: props.color,
+                  }}
+                >
+                  {" "}
+                </Animated.Text>
+              )}
+            </View>
+          );
+        })}
+      </View>
+    );
+  }
+
   return (
     <View
       accessible
@@ -135,7 +201,9 @@ function resolveStaggeredTextProps(inputProps: StaggeredTextProps) {
 
   return {
     ...props,
-    height: inputProps.height ?? props.fontSize * 1.5,
+    height: inputProps.height ?? (inputProps.multiline ? undefined : props.fontSize * 1.5),
+    multiline: inputProps.multiline ?? false,
+    align: inputProps.align ?? "center",
     animationConfig: {
       ...DEFAULT_ANIMATION_CONFIG,
       ...inputProps.animationConfig,

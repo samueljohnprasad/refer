@@ -1,7 +1,11 @@
-import React, { useState, useCallback } from "react";
-import { Pressable, Text, View } from "react-native";
+// ponytail: dynamic staggered reflection prompts matching the Journal tab transition & auto-cycle
+import React, { useState, useCallback, useEffect, useMemo } from "react";
+import { Pressable, View } from "react-native";
+import * as Haptics from "expo-haptics";
 import { SymbolView } from "expo-symbols";
 import { CourseExercisePrimaryButton } from "@/src/components/exercise/CourseExerciseShell";
+import { StaggeredText } from "@/src/components/staggered-text";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { useTranslation } from "react-i18next";
 import { SAGE } from "@/src/theme/palette";
 
@@ -12,10 +16,6 @@ interface FeaturedPromptCardProps {
   onPress: (prompt: QuickJournalPrompt) => void;
 }
 
-/**
- * Featured journaling prompt for the open home-screen treatment.
- * Accessible, scalable typography, high contrast focus
- */
 export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
   prompts,
   onPress,
@@ -23,16 +23,30 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
   const { t } = useTranslation("home");
   const [activeIndex, setActiveIndex] = useState(0);
 
+  // Auto-cycle prompts every 4 seconds, matching Journal tab EmptyState
+  useEffect(() => {
+    if (prompts.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % prompts.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [prompts.length, activeIndex]);
+
   const cyclePrompt = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setActiveIndex((prev) => (prev + 1) % prompts.length);
   }, [prompts.length]);
+
+  const promptTexts = useMemo(
+    () => prompts.map((p) => String(t(`prompts.${p.id}` as any))),
+    [prompts, t],
+  );
 
   const currentPrompt = prompts[activeIndex];
 
   if (!currentPrompt || prompts.length === 0) return null;
 
   return (
-    // ponytail: keep the prompt open; only the primary action gets a surface
     <View className="relative">
       <View className="absolute right-0 top-0 z-10">
         <Pressable
@@ -51,14 +65,23 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
         </Pressable>
       </View>
 
-      <View className="min-h-[56px] pr-12 justify-center" key={currentPrompt.id}>
-        <Text className="happy-font-heading-bold text-[25px] font-extrabold leading-7 tracking-tight text-ink">
-          {String(t(`prompts.${currentPrompt.id}` as any))}
-        </Text>
+      <View className="min-h-[58px] pr-12 justify-center">
+        <StaggeredText
+          texts={promptTexts}
+          activeIndex={activeIndex}
+          fontSize={25}
+          fontFamily={APP_FONT_FAMILIES.extraBold}
+          color="#1A201C"
+          multiline={true}
+          align="left"
+          animationConfig={{
+            duration: 240,
+            characterDelay: 18,
+          }}
+        />
       </View>
 
-      {/* ponytail: preserve the established tactile reflection button */}
-      <View className="mt-2.5">
+      <View className="mt-3">
         <CourseExercisePrimaryButton
           label={t("actions.startReflection")}
           height={52}

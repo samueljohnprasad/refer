@@ -53,6 +53,15 @@ This repo currently has multiple lockfiles (`package-lock.json`, `yarn.lock`, `b
 - Inputs are the primary object on exercise screens. Optional suggestions, AI, and voice controls should feel secondary.
 - Avoid generic gradients, decorative ghost cards, sparkle/assistant decoration, oversized arbitrary radii, and monotonous card stacks.
 - Keep tap targets large, text readable, and mobile layouts stable across keyboard and safe-area states.
+- Cut taglines, helper text, and secondary labels. If a screen needs them to make sense, fix the layout.
+
+## Mandatory UI design gate
+
+- Every UI change, redesign, or new screen must use `.agents/skills/mobile-app-ui-design/SKILL.md` before implementation and during review. This applies equally to existing screens and brand-new screens.
+- Treat the skill as an acceptance gate, not optional inspiration: review the result against its anti-slop rules, layout/type/colour guidance, accessibility expectations, and critique rubric; flag every issue; then fix the issues before accepting the work.
+- For existing screens that fail the skill’s requirements, redesign them to meet the skill rather than preserving weak patterns merely because they already exist. Preserve working product behaviour and user intent while improving the visual system.
+- When available, use the Mobbin MCP server to study strong mobile patterns and references. Mobbin research supports the design review but does not replace the mobile-app-ui-design skill review or its required issue resolution.
+- Do not call a UI task complete until the review outcome, remaining risks, and any verification limits are stated clearly. If a full render, critique, or device check cannot be run, mark the task as not fully approved and explain what remains.
 
 ## Verification
 
@@ -75,6 +84,7 @@ This repo currently has multiple lockfiles (`package-lock.json`, `yarn.lock`, `b
 - Do not add subtitles, helper text, or descriptive copy beneath headings, labels, cards, or settings by default. Use concise, self-explanatory labels; add supporting copy only when explicitly requested or needed to prevent misunderstanding or error.
 - Keep comments focused on durable reasoning. Do not add comments about minor events, bug fixes, or historical migrations unless they answer an important question future readers will have.
 - This project supports iOS 26 and later only. Do not add Android support or fallbacks for iOS versions below 26.
+- Make the best decision that elevates the user experience (UX), developer experience (DX), and agent experience (AX), without breaking anything.
 - dont write the test cases
 - STRICT: NEVER commit or push code or assets unless user explicitly instructs in that prompt. Keep all changes uncommitted.
 
