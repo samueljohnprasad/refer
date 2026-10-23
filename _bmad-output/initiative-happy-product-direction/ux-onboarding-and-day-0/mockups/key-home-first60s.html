@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Key Screen: Home Landing — First 60 Seconds</title>
+<style>
+:root {
+  --canvas: #F8FAF7;
+  --surface: #FFFFFF;
+  --sage-50: #F8FBF6;
+  --sage-100: #E5EDE1;
+  --sage-200: #D3E0CD;
+  --sage-500: #5F7F58;
+  --sage-600: #44633F;
+  --sage-700: #29452A;
+  --sage-800: #152714;
+  --ink: #142414;
+  --ink-soft: #767676;
+  --amber: #FF9600;
+  --gold: #FFD900;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #E8ECE6;
+  font-family: -apple-system, BlinkMacSystemFont, "Nunito", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+.phone-frame {
+  width: 393px;
+  height: 852px;
+  background: var(--canvas);
+  border-radius: 54px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.18), 0 0 0 12px #222;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 126px;
+  height: 35px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 10;
+}
+.header-bar {
+  padding: 56px 24px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.streak-capsule {
+  background: #FFF7ED;
+  border: 1.5px solid #FDBA74;
+  color: #EA580C;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.1);
+}
+.header-icons {
+  display: flex;
+  gap: 12px;
+  font-size: 18px;
+  color: var(--ink-soft);
+}
+.hero-welcome {
+  padding: 12px 24px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.greeting-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.greeting-sub {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--sage-700);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.greeting-main {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.mascot-pond {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--sage-100);
+  border: 2px solid var(--sage-200);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+}
+.content {
+  flex: 1;
+  padding: 0 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.checkin-card {
+  background: var(--surface);
+  border: 2px solid var(--sage-200);
+  border-radius: 22px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.section-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+.mood-bubbles {
+  display: flex;
+  justify-content: space-between;
+}
+.mood-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.mood-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--sage-50);
+  border: 1.5px solid var(--sage-200);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  transition: transform 0.15s ease;
+}
+.mood-item:hover .mood-circle {
+  transform: scale(1.08);
+  border-color: var(--sage-500);
+}
+.mood-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.lesson-card {
+  background: var(--surface);
+  border: 2px solid var(--sage-500);
+  border-radius: 22px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 14px rgba(95, 127, 88, 0.1);
+  position: relative;
+}
+.lesson-tag {
+  align-self: flex-start;
+  background: var(--sage-100);
+  color: var(--sage-700);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.lesson-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.lesson-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+.tactile-button {
+  background: var(--sage-600);
+  border-radius: 999px;
+  padding-bottom: 5px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+.tactile-face {
+  background: var(--sage-500);
+  color: #FFF;
+  height: 48px;
+  border-radius: 999px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.tab-bar {
+  height: 82px;
+  background: var(--surface);
+  border-top: 1px solid var(--sage-200);
+  display: flex;
+  justify-content: space-around;
+  padding-top: 10px;
+}
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.tab-item.active {
+  color: var(--sage-700);
+}
+.tab-icon { font-size: 20px; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="dynamic-island"></div>
+  <div class="header-bar">
+    <div class="streak-capsule">🔥 1 Day</div>
+    <div class="header-icons">
+      <span>🔔</span>
+      <span>⚙️</span>
+    </div>
+  </div>
+  <div class="hero-welcome">
+    <div class="greeting-text">
+      <div class="greeting-sub">Good Evening, Maya</div>
+      <div class="greeting-main">Ready to wind down?</div>
+    </div>
+    <div class="mascot-pond">🐼</div>
+  </div>
+  <div class="content">
+    <div class="checkin-card">
+      <div class="section-title">How is your mind feeling right now?</div>
+      <div class="mood-bubbles">
+        <div class="mood-item"><div class="mood-circle">😔</div><span class="mood-name">Down</span></div>
+        <div class="mood-item"><div class="mood-circle">😰</div><span class="mood-name">Anxious</span></div>
+        <div class="mood-item"><div class="mood-circle">😐</div><span class="mood-name">Okay</span></div>
+        <div class="mood-item"><div class="mood-circle">🙂</div><span class="mood-name">Calm</span></div>
+        <div class="mood-item"><div class="mood-circle">✨</div><span class="mood-name">Great</span></div>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <div class="lesson-tag">✦ Your Next Micro-Step</div>
+      <div class="lesson-title">Lesson 1 · The Alarm System</div>
+      <div class="lesson-desc">Understand why your mind sounds panic alarms when there is no danger. 2 minutes.</div>
+      <div class="tactile-button">
+        <div class="tactile-face">START LESSON (2 MIN)</div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-bar">
+    <div class="tab-item active"><span class="tab-icon">🏠</span><span>Home</span></div>
+    <div class="tab-item"><span class="tab-icon">📚</span><span>Exercises</span></div>
+    <div class="tab-item"><span class="tab-icon">📖</span><span>Journal</span></div>
+    <div class="tab-item"><span class="tab-icon">📊</span><span>Insights</span></div>
+  </div>
+</div>
+</body>
+</html>

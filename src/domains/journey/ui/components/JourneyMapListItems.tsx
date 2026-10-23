@@ -81,7 +81,8 @@ export function JourneyMapEmptyState(): React.JSX.Element {
   const { t } = useTranslation("journeys");
   return (
     <View className="flex-1 items-center justify-center px-8 pb-16">
-      <HappiMascot expression="concentrating" size={100} delay={0} />
+      {/* ponytail: high-res pondering mascot for map empty/loading state */}
+      <HappiMascot expression="pondering" size={110} delay={0} />
       <Text
         style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
         className="mt-5 text-center text-[24px] leading-tight text-ink"

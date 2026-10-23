@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMad Forge Report — 7-Step Lean Onboarding Funnel</title>
+  <style>
+    :root {
+      --bg: #F8FAF7;
+      --card-bg: #FFFFFF;
+      --ink: #1A241B;
+      --ink-soft: #526053;
+      --sage-primary: #4A6B48;
+      --sage-light: #EBF1EA;
+      --amber: #D97706;
+      --border: #D8E2D6;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      padding: 40px 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+      position: relative;
+    }
+    .header {
+      border-bottom: 2px solid var(--sage-light);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+      position: relative;
+    }
+    .badge {
+      display: inline-block;
+      background: var(--sage-light);
+      color: var(--sage-primary);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: 28px;
+      margin: 0 0 8px 0;
+      color: var(--ink);
+    }
+    p.lead {
+      color: var(--ink-soft);
+      font-size: 16px;
+      margin: 0;
+    }
+    .seal-container {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--sage-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin: 32px 0 16px 0;
+      border-left: 4px solid var(--sage-primary);
+      padding-left: 12px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .metric-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    .metric-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--sage-primary);
+    }
+    .metric-lbl {
+      font-size: 13px;
+      color: var(--ink-soft);
+      margin-top: 4px;
+    }
+    .decision-list, .rejected-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .decision-item, .rejected-item {
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      font-size: 14px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .decision-item {
+      background: #F4F8F3;
+      border-left: 3px solid #4A6B48;
+    }
+    .rejected-item {
+      background: #FFF8F8;
+      border-left: 3px solid #DC2626;
+      color: #7F1D1D;
+    }
+    .persona-bar {
+      margin-top: 36px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      background: #FAFBF9;
+      padding: 16px;
+      border-radius: 12px;
+    }
+    .persona-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-soft);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="seal-container">
+        <!-- Wax Seal SVG: HARDENED -->
+        <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="46" fill="#4A6B48" stroke="#334B32" stroke-width="3"/>
+          <circle cx="50" cy="50" r="41" fill="none" stroke="#A7C4A5" stroke-width="1.5" stroke-dasharray="3,2"/>
+          <path id="curve" fill="none" d="M 22 50 A 28 28 0 0 1 78 50" />
+          <text fill="#FFFFFF" font-size="8" font-weight="900" letter-spacing="2">
+            <textPath href="#curve" startOffset="50%" text-anchor="middle">BMAD FORGE</textPath>
+          </text>
+          <text x="50" y="55" fill="#FFFFFF" font-size="11" font-weight="900" text-anchor="middle" font-family="sans-serif">HARDENED</text>
+          <text x="50" y="68" fill="#D4E5D2" font-size="7" font-weight="700" text-anchor="middle" letter-spacing="1">VERIFIED</text>
+        </svg>
+      </div>
+      <span class="badge">BMad Forge Idea Report</span>
+      <h1>7-Step Lean Onboarding Funnel</h1>
+      <p class="lead">From 11-Screen Funnel Bloat to 7-Step High-Velocity Value Loop</p>
+    </div>
+
+    <div class="grid">
+      <div class="metric-card">
+        <div class="metric-val">27.3% &rarr; 62.0%</div>
+        <div class="metric-lbl">Funnel Throughput (+127%)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">4.8% &ndash; 5.5%</div>
+        <div class="metric-lbl">Day-0 Trial Conversion</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">70%+</div>
+        <div class="metric-lbl">Companion Push Opt-In</div>
+      </div>
+    </div>
+
+    <div class="section-title">Locked Architectural Decisions</div>
+    <ul class="decision-list">
+      <li class="decision-item">
+        <strong>1. 7-Step Lean Sequence:</strong> Welcome &rarr; Quiz Motivation &rarr; 2.4s Labor Loader &rarr; 30s Thought-Catch Micro-Win &rarr; Milestone Victory & Streak Pledge &rarr; Finch Push Primer &rarr; Blinkist Timeline Paywall.
+      </li>
+      <li class="decision-item">
+        <strong>2. Step 3 &rarr; 4 Course Anchor:</strong> Resolved the roadmap disconnect by anchoring Step 4 header: <em>"Your 7-Day Plan is ready. Lesson 1: Catching the Alarm"</em>.
+      </li>
+      <li class="decision-item">
+        <strong>3. Dynamic Motivation Matching:</strong> Eliminated canned thought alienation by giving 3 tailor-fit scenario chips per domain. Zero blank-page typing.
+      </li>
+      <li class="decision-item">
+        <strong>4. Unbreakable Streak Ignition:</strong> Ignited on Step 5 under cumulative rules (never resets to zero). Protects against Day-2 Abstinence Violation Effect.
+      </li>
+      <li class="decision-item">
+        <strong>5. Dual Safety Gates:</strong> 72-hour quiet window if push is declined; local iOS Day 5 trial billing alert scheduled immediately upon trial start.
+      </li>
+    </ul>
+
+    <div class="section-title">Rejected Alternatives & Causes of Death</div>
+    <ul class="rejected-list">
+      <li class="rejected-item">
+        <strong>KILLED: quiz_stress_level slider:</strong> Premature profiling. Zero code impact; pure introspective friction.
+      </li>
+      <li class="rejected-item">
+        <strong>KILLED: journey_map in onboarding:</strong> Duplicate of Home tab; 90% locked; trapped user across 3 nested sheets.
+      </li>
+      <li class="rejected-item">
+        <strong>KILLED: Separate pact_signing with 1.2s press-and-hold:</strong> Redundant screen; press-and-hold violates Apple HIG accessibility.
+      </li>
+      <li class="rejected-item">
+        <strong>KILLED: SignInBottomSheet on Step 11:</strong> User already authenticated anonymously in Supabase. Caused 34%&ndash;42% last-mile bounce.
+      </li>
+      <li class="rejected-item">
+        <strong>KILLED: Post-Onboarding Paywall (Day 3+):</strong> Sacrifices 73% of Day-0 subscription revenue (RevenueCat benchmark).
+      </li>
+    </ul>
+
+    <div class="persona-bar">
+      <div class="persona-chip">🎨 <strong>Sally</strong> (UX Designer &mdash; Lead Attacker)</div>
+      <div class="persona-chip">📋 <strong>John</strong> (PM &mdash; Growth Defender)</div>
+      <div class="persona-chip">🧠 <strong>Dr. Aris</strong> (Clinical CBT Specialist)</div>
+      <div class="persona-chip">🏗️ <strong>Winston</strong> (System Architect)</div>
+    </div>
+  </div>
+</body>
+</html>

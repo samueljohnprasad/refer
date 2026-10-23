@@ -17,6 +17,7 @@ import {
 } from "@/src/components/chat/prompt-input";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { Mascot } from "@/src/components/ui/Mascot";
 
 interface SupportChatConversationProps {
   messages: IMessage[];
@@ -60,17 +61,23 @@ const SupportChatConversation: React.FC<SupportChatConversationProps> = ({
             justifyContent: "center",
             alignItems: "center",
             marginBottom: 4,
+            overflow: "hidden",
           }}
         >
-          <Text
-            style={{
-              color: isSupport ? SEMANTIC_COLORS.surface.primary : SEMANTIC_COLORS.text.tertiary,
-              fontSize: 16,
-              fontWeight: "600",
-            }}
-          >
-            {firstLetter}
-          </Text>
+          {isSupport ? (
+            // ponytail: caring comfort panda as official support avatar
+            <Mascot state="panda-comfort" size={34} />
+          ) : (
+            <Text
+              style={{
+                color: SEMANTIC_COLORS.text.tertiary,
+                fontSize: 16,
+                fontWeight: "600",
+              }}
+            >
+              {firstLetter}
+            </Text>
+          )}
         </View>
         {isSupport && (
           <Text style={{ fontSize: 10, color: SEMANTIC_COLORS.text.tertiary, fontWeight: "500" }}>
@@ -160,6 +167,49 @@ const SupportChatConversation: React.FC<SupportChatConversationProps> = ({
     </View>
   );
 
+  const renderChatEmpty = (): React.JSX.Element => (
+    <View
+      style={{
+        flex: 1,
+        transform: [{ scaleY: -1 }],
+        alignItems: "center",
+        justifyContent: "center",
+        paddingHorizontal: 32,
+        paddingTop: 48,
+      }}
+    >
+      {/* ponytail: welcoming headset mascot invites user support questions */}
+      <View style={{ marginBottom: 16, alignItems: "center", justifyContent: "center" }}>
+        <Mascot state="panda-headset" size={130} />
+      </View>
+      <Text
+        style={{
+          fontFamily: APP_FONT_FAMILIES.bold,
+          fontSize: 18,
+          color: SEMANTIC_COLORS.text.primary,
+          textAlign: "center",
+          marginBottom: 8,
+        }}
+      >
+        {t("support.emptyTitle", { defaultValue: "We're here to help!" })}
+      </Text>
+      <Text
+        style={{
+          fontFamily: APP_FONT_FAMILIES.medium,
+          fontSize: 14,
+          lineHeight: 20,
+          color: SEMANTIC_COLORS.text.tertiary,
+          textAlign: "center",
+          maxWidth: 260,
+        }}
+      >
+        {t("support.emptyMessage", {
+          defaultValue: "Ask anything about Happy, your CBT practices, or technical questions.",
+        })}
+      </Text>
+    </View>
+  );
+
   return (
     <GiftedChat
       messages={messages}
@@ -177,6 +227,7 @@ const SupportChatConversation: React.FC<SupportChatConversationProps> = ({
       renderDay={renderDay}
       renderTime={renderTime}
       renderInputToolbar={renderInputToolbar}
+      renderChatEmpty={renderChatEmpty}
       quickReplyStyle={{
         backgroundColor: SEMANTIC_COLORS.selection.surface,
         borderColor: SEMANTIC_COLORS.brand.primary,

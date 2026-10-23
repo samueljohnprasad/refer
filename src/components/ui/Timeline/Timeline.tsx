@@ -93,10 +93,10 @@ function TimelineInner<T extends TimelineItemData>({
             renderSectionHeader &&
             renderSectionHeader(section)}
 
-          <View className="flex-row items-stretch px-5">
+          <View className="flex-row items-stretch px-4">
             {/* 1. Date Column (fixed width, hidden when section header is rendered) */}
             {!renderSectionHeader && (
-              <View className="w-[52px] items-end pt-[9px] pr-2">
+              <View className="w-[56px] items-end pt-[10px] pr-2">
                 {isFirstItemInSection && (
                   <TimelineSectionHeader
                     date={section.date}
@@ -107,14 +107,14 @@ function TimelineInner<T extends TimelineItemData>({
             )}
 
             {/* 2. Stem Column (fixed width, centered) */}
-            <View className="w-[20px] items-center relative">
+            <View className="w-[22px] items-center relative">
               {/* The dotted line connects ALL dots */}
               {!(isVeryFirst && isVeryLast) && (
                 <TimelineStemLine
                   flex={false}
                   style={{
                     position: "absolute",
-                    left: 9,
+                    left: 10,
                     top: isVeryFirst ? 18 : 0,
                     bottom: isVeryLast ? undefined : 0,
                     height: isVeryLast ? 18 : undefined,
@@ -129,7 +129,7 @@ function TimelineInner<T extends TimelineItemData>({
             </View>
 
             {/* 3. Content Column */}
-            <View className="flex-1 pl-2 py-2">
+            <View className="flex-1 pl-3 py-2">
               {renderItem(item, index)}
             </View>
           </View>

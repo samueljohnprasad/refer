@@ -14,12 +14,11 @@ import { Card } from "@/src/components/ui/Card";
 import { useLocalAI, LocalAIStatus } from "@/src/hooks/useAppleIntelligence";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
-import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
-  SparklesIcon,
   ArrowRight01Icon,
   ArrowUp01Icon,
 } from "@hugeicons/core-free-icons";
+import HappiMascot from "@/src/screens/OnboardingScreen/components/HappiMascot";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -393,19 +392,9 @@ const AppleIntelligencePresentation: React.FC<AppleIntelligencePresentationProps
                 entering={FadeInDown.duration(300)}
                 className="items-center mb-6 mt-4"
               >
-                <View
-                  className="h-16 w-16 rounded-full items-center justify-center mb-4"
-                  style={{
-                    backgroundColor: SEMANTIC_COLORS.brand.soft,
-                    borderWidth: 4,
-                    borderColor: SEMANTIC_COLORS.selection.surface,
-                  }}
-                >
-                  <HugeiconsIcon
-                    icon={SparklesIcon}
-                    size={32}
-                    color={SEMANTIC_COLORS.brand.pressed}
-                  />
+                {/* ponytail: Happi in on-device AI Sage mode with spectacles and star orb */}
+                <View className="mb-2 items-center justify-center">
+                  <HappiMascot expression="sage" size={120} />
                 </View>
                 <Text
                   className="happy-font-body-bold text-[24px] text-center tracking-tight"

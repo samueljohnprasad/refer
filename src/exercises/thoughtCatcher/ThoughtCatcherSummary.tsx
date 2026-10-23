@@ -145,7 +145,8 @@ export const ThoughtCatcherCheckpointSummary: React.FC<
     <ThoughtRecordRecap
       title="Thought caught"
       subtitle="Here is what you have so far."
-      showMascot={false}
+      showMascot={true}
+      mascotState="panda-detective"
       situation={response.situation}
       automaticThought={response.automaticThought}
       preScore={response.intensity}

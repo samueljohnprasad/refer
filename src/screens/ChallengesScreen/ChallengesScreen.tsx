@@ -16,6 +16,7 @@ import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 
 import { Card } from "@/src/components/ui/Card";
+import { Mascot } from "@/src/components/ui/Mascot";
 import { useTranslation } from "react-i18next";
 
 type TabType = "daily" | "weekly";
@@ -160,8 +161,9 @@ export const ChallengesScreen: React.FC = () => {
         >
           {activeChallenges.length === 0 ? (
             <View className="items-center justify-center py-24 px-8">
-              <View className="w-20 h-20 rounded-full bg-sage-pill border border-sage-100 items-center justify-center mb-6">
-                <Text className="text-4xl">🎯</Text>
+              {/* ponytail: flex mascot celebrates completing all cognitive challenges */}
+              <View className="happy-mascot-stage mb-5 h-24 w-24 items-center justify-center rounded-[32px]">
+                <Mascot state="panda-flex" size={76} />
               </View>
               <Text className="happy-font-body-bold text-lg text-ink text-center mb-2">
                 {t("challenges.allCaughtUp")}

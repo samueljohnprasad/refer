@@ -1,4 +1,4 @@
-# 09 — Retention & Engagement Blueprint
+      • Glanceable Happi the Panda on home screen reflecting current mood state. Tapping launches# 09 — Retention & Engagement Blueprint
 
 > **Target App**: Happy (`com.samuelprasad.happy` • Apple ID: `6755650433`)  
 > **Theoretical Foundation**: Frameworks from 29 Product Leaders (Sarah Tavel, Jackson Shuttleworth / Duolingo, Kristen Berman, Albert Cheng)  
@@ -66,9 +66,9 @@
 ### B. Mounting Loss (The cost of abandoning the app increases)
 1. **The Mental Health Ledger**: Months of clinical thought diaries and reframe records that cannot be exported to a generic notes app.
 2. **Happi Panda Bond**: Mascot emotional attachment, unlocked expressions ([`panda-proud-tears`](file:///Users/samuelprasad/Desktop/happy/journals/assets/images/panda/panda-proud-tears.png), [`panda-transcend`](file:///Users/samuelprasad/Desktop/happy/journals/assets/images/panda/panda-transcend.png), [`panda-flex`](file:///Users/samuelprasad/Desktop/happy/journals/assets/images/panda/panda-flex.png)), and vanity accessories.
-3. **The Streak & Streak Shields**: 
-   - A broken streak causes demoralization and app uninstalls.
-   - Happy provides 1 auto-equipped **Streak Shield** per 7 consecutive days logged to preserve momentum through acute depressive dips.
+3. **The Unbreakable Streak (Cumulative Momentum)**: 
+   - A broken streak causes demoralization, shame spirals, and app uninstalls in mental health.
+   - Happy explicitly bans streak breaks and resets to zero. If a user logs 3 days, their streak is 3. If they return after 7 days of absence, their streak remains 3 and increases to 4 on their next active day. Zero loss, zero shame, pure lifetime accumulation.
 
 ---
 

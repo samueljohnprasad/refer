@@ -16,7 +16,9 @@ graphify-out
 lint_results.json
 design
 store
-
+assets/animations
+launch
+docs/paywall-polish
 
 # Native
 .kotlin/

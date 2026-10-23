@@ -76,18 +76,6 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     });
   }, [actualDataToDisplay]);
 
-  const renderHeader = () => {
-    if (!isTimelineEmpty) return null;
-    return (
-      <View className="px-6 pb-6 pt-2 items-center opacity-80">
-        <Text className="text-center text-[15px] leading-6 tracking-[0.2px] text-[#767676]" style={{ fontFamily: APP_FONT_FAMILIES.regular }}>
-          <Text style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: '#142414' }}>{t('timeline.sampleData')}</Text>
-          {'\n'}{t('timeline.sampleDataDescription')}
-        </Text>
-      </View>
-    );
-  };
-
   const renderTimelineItem = (item: DailyTimelineItem) => {
     const isGenerating = generatingDates.has(item.originalDateString);
     
@@ -125,7 +113,6 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
       sections={sections}
       renderItem={renderTimelineItem}
       isLoadingMore={isFetchingNextPage}
-      ListHeaderComponent={renderHeader() || undefined}
       onEndReached={() => {
         if (hasNextPage && !isFetchingNextPage && !isTimelineEmpty) {
           fetchNextPage();

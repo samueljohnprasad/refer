@@ -108,7 +108,8 @@ const BreathingAura = () => {
       <View className="w-44 h-44 rounded-full bg-emerald-500/[0.08] items-center justify-center">
         <Animated.View style={pandaStyle}>
           <Image
-            source={require("@/assets/images/panda/panda-notes.png")}
+            // ponytail: upgrade to high-res situational journaling vector
+            source={require("@/assets/images/panda/panda-journaling.png")}
             className="w-28 h-28"
             resizeMode="contain"
             accessibilityLabel={t("capture.analysis.mascot")}

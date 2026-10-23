@@ -14,6 +14,7 @@ import {
 } from "@/src/domains/journey/model/courseVisuals";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
+import { Mascot } from "@/src/components/ui/Mascot";
 import { CourseSheetHeader } from "./CourseSheetHeader";
 
 interface CourseCatalogListProps {
@@ -166,8 +167,12 @@ function CourseCatalogSkeleton(): React.JSX.Element {
 function CourseCatalogEmptyState(): React.JSX.Element {
   const { t } = useTranslation("journeys");
   return (
-    <View className="items-center justify-center py-12">
-      <Text variant="body" className="text-center">
+    <View className="items-center justify-center px-8 py-12">
+      {/* ponytail: joyful explorer panda with map guides catalog discovery */}
+      <View className="happy-mascot-stage mb-4 h-24 w-24 items-center justify-center rounded-[32px]">
+        <Mascot state="panda-explorer" size={80} />
+      </View>
+      <Text variant="body" className="text-center font-bold text-ink">
         {t("emptyCatalog")}
       </Text>
     </View>

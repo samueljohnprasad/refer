@@ -12,7 +12,6 @@ import {
   Cancel01Icon,
   Tick02Icon,
   Delete02Icon,
-  AlertCircleIcon,
 } from "@hugeicons/core-free-icons";
 import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
@@ -20,6 +19,7 @@ import * as Haptics from "expo-haptics";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 import { Button } from "@/src/components/ui/Button";
+import HappiMascot from "@/src/screens/OnboardingScreen/components/HappiMascot";
 
 interface ConfirmationModalProps {
   title: string;
@@ -87,7 +87,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         >
           <Group
             modifiers={[
-              presentationDetents([{ height: 330 }]),
+              presentationDetents([{ height: 360 }]),
               presentationDragIndicator("visible"),
             ]}
           >
@@ -98,18 +98,20 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                   space="sm"
                 >
                   <View className="items-center w-full">
-                    {/* Icon Header */}
-                    <View
-                      className={`w-12 h-12 rounded-full items-center justify-center mb-4 ${
-                        isDestructive ? "bg-red-50" : "bg-sage-pill"
-                      }`}
-                    >
-                      <HugeiconsIcon
-                        icon={isDestructive ? AlertCircleIcon : Tick02Icon}
-                        size={22}
-                        color={isDestructive ? SEMANTIC_COLORS.error.foreground : SEMANTIC_COLORS.brand.pressed}
-                      />
-                    </View>
+                    {/* ponytail: gentle caring pause mascot softens destructive confirmation anxiety */}
+                    {isDestructive ? (
+                      <View className="mb-2 items-center">
+                        <HappiMascot expression="caution" size={84} delay={0} />
+                      </View>
+                    ) : (
+                      <View className="w-12 h-12 rounded-full items-center justify-center mb-4 bg-sage-pill">
+                        <HugeiconsIcon
+                          icon={Tick02Icon}
+                          size={22}
+                          color={SEMANTIC_COLORS.brand.pressed}
+                        />
+                      </View>
+                    )}
 
                     <Heading className="happy-font-heading-bold text-center text-3xl text-ink mb-2 leading-9">
                       {title}

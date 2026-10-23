@@ -19,16 +19,10 @@ export default function PremiumOnboardingRoute(): React.JSX.Element {
     router.replace("/tabs/(tabs)/home");
   }, [router]);
 
-  const handleComplete = useCallback(async (skipped?: boolean): Promise<void> => {
-    if (isAnonymous && !skipped) {
-      setTimeout(() => {
-        signInSheetRef.current?.present();
-      }, 300);
-      return;
-    }
-
+  const handleComplete = useCallback(async (_skipped?: boolean): Promise<void> => {
+    // ponytail: route anonymous guest directly to home without last-mile sheet friction
     continueToHome();
-  }, [isAnonymous, continueToHome]);
+  }, [continueToHome]);
 
   return (
     <View className="flex-1">

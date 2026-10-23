@@ -10,7 +10,10 @@ import PactSigningStep from "../steps/PactSigningStep";
 import BuildingJourneyStep from "../steps/BuildingJourneyStep";
 import PlanRevealStep from "../steps/PlanRevealStep";
 import LessonCompleteStep from "../steps/LessonCompleteStep";
+import ThoughtCatchMicroStep from "../steps/ThoughtCatchMicroStep";
+import MilestoneCelebrationStep from "../steps/MilestoneCelebrationStep";
 import NotificationPermissionStep from "../steps/NotificationPermissionStep";
+import SoftPaywallStep from "../steps/SoftPaywallStep";
 import JourneyMapContainer from "@/src/domains/journey/ui/JourneyMapContainer";
 import LetterFromFutureStep from "../steps/LetterFromFutureStep";
 import WelcomeToHappyStep from "../steps/WelcomeToHappyStep";
@@ -21,6 +24,7 @@ import type {
   StressLevel,
   DailyGoalMinutes,
   NotificationTime,
+  PricingTier,
 } from "../types";
 
 export interface OnboardingStepRendererProps {
@@ -29,12 +33,14 @@ export interface OnboardingStepRendererProps {
   derivedPlanName: string;
   onboardingCourseId?: string | null;
   goNext: () => void;
+  onStepComplete?: (skipped?: boolean) => void;
   updateMotivation: (m: MotivationAnswer) => void;
   updateStressLevel: (s: StressLevel) => void;
   updateDailyGoal: (d: DailyGoalMinutes) => void;
   handlePactCommit: () => void;
   updateNotificationTime: (t: NotificationTime) => void;
   updateTrialStarted: (started: boolean) => void;
+  updatePricingTier?: (t: PricingTier) => void;
 }
 
 export const OnboardingStepRenderer: React.FC<OnboardingStepRendererProps> = ({
@@ -43,12 +49,14 @@ export const OnboardingStepRenderer: React.FC<OnboardingStepRendererProps> = ({
   derivedPlanName,
   onboardingCourseId,
   goNext,
+  onStepComplete,
   updateMotivation,
   updateStressLevel,
   updateDailyGoal,
   handlePactCommit,
   updateNotificationTime,
   updateTrialStarted,
+  updatePricingTier,
 }) => {
   switch (currentStep) {
     case "welcome":
@@ -105,6 +113,20 @@ export const OnboardingStepRenderer: React.FC<OnboardingStepRendererProps> = ({
       );
     case "lesson_complete":
       return <LessonCompleteStep />;
+    case "thought_catch_micro":
+      return (
+        <ThoughtCatchMicroStep
+          onComplete={goNext}
+          motivation={formData.motivation}
+        />
+      );
+    case "milestone_celebration":
+      return (
+        <MilestoneCelebrationStep
+          onCommit={handlePactCommit}
+          dailyGoalMinutes={formData.dailyGoal}
+        />
+      );
     case "notification_permission":
       return (
         <NotificationPermissionStep
@@ -131,24 +153,20 @@ export const OnboardingStepRenderer: React.FC<OnboardingStepRendererProps> = ({
       );
     case "soft_paywall":
       return (
-        <View style={{ flex: 1 }}>
-          <RevenueCatUI.Paywall
-            style={{ flex: 1 }}
-            options={{ displayCloseButton: true }}
-            onPurchaseCompleted={() => {
-              updateTrialStarted(true);
-              goNext();
-            }}
-            onRestoreCompleted={() => {
-              updateTrialStarted(true);
-              goNext();
-            }}
-            onDismiss={() => {
-              updateTrialStarted(false);
-              goNext();
-            }}
-          />
-        </View>
+        <SoftPaywallStep
+          selectedTier={formData.selectedPricingTier}
+          onSelectTier={updatePricingTier ?? (() => {})}
+          onStartTrial={() => {
+            updateTrialStarted(true);
+            if (onStepComplete) onStepComplete(false);
+            else goNext();
+          }}
+          onContinueFree={() => {
+            updateTrialStarted(false);
+            if (onStepComplete) onStepComplete(true);
+            else goNext();
+          }}
+        />
       );
     case "welcome_to_happy":
       return (

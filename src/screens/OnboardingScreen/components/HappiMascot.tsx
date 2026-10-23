@@ -1,14 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Image, ImageSourcePropType } from "react-native";
-import Animated, { 
-  FadeIn, 
-  useSharedValue, 
-  useAnimatedStyle, 
-  withRepeat, 
-  withSequence, 
-  withTiming, 
-  Easing 
-} from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import { HappiExpression } from "../types";
 
 /* eslint-disable @typescript-eslint/no-require-imports */
@@ -32,6 +24,33 @@ const MASCOT_IMAGES: Record<HappiExpression, ImageSourcePropType> = {
   flex: require("@/assets/images/panda/panda-flex.png"),
   transcend: require("@/assets/images/panda/panda-transcend.png"),
   pleading: require("@/assets/images/panda/panda-pleading.png"),
+  self_hug: require("@/assets/images/panda/panda-self-hug.png"),
+  high_five: require("@/assets/images/panda/panda-high-five.png"),
+  pondering: require("@/assets/images/panda/panda-pondering.png"),
+  shield: require("@/assets/images/panda/panda-shield.png"),
+  sprout: require("@/assets/images/panda/panda-sprout.png"),
+  journaling: require("@/assets/images/panda/panda-journaling.png"),
+  umbrella: require("@/assets/images/panda/panda-umbrella.png"),
+  heart_bandage: require("@/assets/images/panda/panda-heart-bandage.png"),
+  lantern: require("@/assets/images/panda/panda-lantern.png"),
+  bubble: require("@/assets/images/panda/panda-bubble.png"),
+  tea: require("@/assets/images/panda/panda-tea.png"),
+  cheer: require("@/assets/images/panda/panda-cheer.png"),
+  coping_card: require("@/assets/images/panda/panda-coping-card.png"),
+  habit: require("@/assets/images/panda/panda-habit.png"),
+  analyst: require("@/assets/images/panda/panda-analyst.png"),
+  explorer: require("@/assets/images/panda/panda-explorer.png"),
+  flag_milestone: require("@/assets/images/panda/panda-flag-milestone.png"),
+  milestone: require("@/assets/images/panda/panda-milestone.png"),
+  sage: require("@/assets/images/panda/panda-sage.png"),
+  target: require("@/assets/images/panda/panda-target.png"),
+  bell: require("@/assets/images/panda/panda-bell.png"),
+  headset: require("@/assets/images/panda/panda-headset.png"),
+  nametag: require("@/assets/images/panda/panda-nametag.png"),
+  toolkit: require("@/assets/images/panda/panda-toolkit.png"),
+  stopwatch: require("@/assets/images/panda/panda-stopwatch.png"),
+  paper_plane: require("@/assets/images/panda/panda-paper-plane.png"),
+  caution: require("@/assets/images/panda/panda-caution.png"),
 };
 
 interface HappiMascotProps {
@@ -47,29 +66,11 @@ const HappiMascot: React.FC<HappiMascotProps> = ({
   animate = true,
   delay = 0,
 }) => {
-  const translateY = useSharedValue(0);
-
-  useEffect(() => {
-    if (animate) {
-      translateY.value = withRepeat(
-        withSequence(
-          withTiming(-4, { duration: 1500, easing: Easing.inOut(Easing.sin) }),
-          withTiming(0, { duration: 1500, easing: Easing.inOut(Easing.sin) })
-        ),
-        -1,
-        true
-      );
-    }
-  }, [animate]);
-
-  const floatingStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
-  }));
-
+  // ponytail: kill generic floating slop - mascot stays firmly anchored like Duolingo Duo
   return (
     <Animated.View
-      entering={animate ? FadeIn.delay(delay).duration(220) : undefined}
-      style={[{ width: size, height: size }, floatingStyle]}
+      entering={animate ? FadeIn.delay(delay).duration(200) : undefined}
+      style={{ width: size, height: size }}
       className="items-center justify-center"
     >
       <Image

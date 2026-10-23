@@ -8,8 +8,9 @@ const XPHistoryTimelineEmptyState: React.FC = React.memo(() => {
 
   return (
     <View className="items-center justify-center px-8 py-20">
+      {/* ponytail: energetic cheer mascot boosts XP motivation */}
       <View className="happy-mascot-stage h-20 w-20 items-center justify-center rounded-[28px]">
-        <Mascot state="panda-notes" size={54} />
+        <Mascot state="panda-cheer" size={60} />
       </View>
       <Text className="happy-font-heading-bold mt-4 text-lg text-ink">
         {t("xp.noInsightsYet")}

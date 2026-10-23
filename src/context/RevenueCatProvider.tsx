@@ -12,6 +12,7 @@ import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
 import { usePostHog } from "posthog-react-native";
 import {
   isPurchaseCancelledError,
+  logRevenueCatRequestFailure,
   revenueCatLogHandler,
 } from "./revenueCatLogging";
 
@@ -23,6 +24,7 @@ interface RevenueCatContextValue {
   refreshCustomerInfo: () => Promise<CustomerInfo | null>;
   identifyCurrentUser: (userId: string) => Promise<CustomerInfo | null>;
   restorePurchases: () => Promise<CustomerInfo | null>;
+  registerPurchasedCustomer: (info: CustomerInfo) => boolean;
   getAppUserID: () => Promise<string | null>;
   shouldPromptAccountClaim: boolean;
   dismissAccountClaimPrompt: () => void;
@@ -77,8 +79,8 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
       setCustomerInfo(info);
       hasProHandler(info);
       return info;
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      logRevenueCatRequestFailure("Customer info", error);
       return null;
     } finally {
       setIsLoadingRevenueCat(false);
@@ -94,8 +96,8 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
       setCustomerInfo(result.customerInfo);
       hasProHandler(result.customerInfo);
       return result.customerInfo;
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      logRevenueCatRequestFailure("User identification", error);
       await refreshCustomerInfo();
       return null;
     }
@@ -113,12 +115,20 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
         });
       }
       return info;
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      logRevenueCatRequestFailure("Restore purchases", error);
       return null;
     } finally {
       setIsLoadingRevenueCat(false);
     }
+  };
+
+  const registerPurchasedCustomer = (info: CustomerInfo): boolean => {
+    setCustomerInfo(info);
+    if (!hasProHandler(info)) return false;
+    posthog?.capture("subscription_access_granted", { source: "purchase" });
+    if (isAnonymous) setShouldPromptAccountClaim(true);
+    return true;
   };
 
   const getAppUserID = async (): Promise<string | null> => {
@@ -272,6 +282,7 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
         refreshCustomerInfo,
         identifyCurrentUser,
         restorePurchases,
+        registerPurchasedCustomer,
         getAppUserID,
         shouldPromptAccountClaim,
         dismissAccountClaimPrompt: () => setShouldPromptAccountClaim(false),

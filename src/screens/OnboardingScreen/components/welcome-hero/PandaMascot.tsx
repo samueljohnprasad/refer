@@ -84,7 +84,6 @@ export function PandaMascot({ frame, scale }: PandaMascotProps): React.JSX.Eleme
           style={{ width: pandaWidth, height: pandaWidth }}
           contentFit="contain"
           nativeControls={false}
-          allowsFullscreen={false}
           allowsPictureInPicture={false}
           accessible
           accessibilityLabel="Happi the panda"

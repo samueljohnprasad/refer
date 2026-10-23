@@ -355,6 +355,7 @@
   },
   "xp_first_step": "First step on your journey",
   "paywall": {
+    "polish": { "title": "Keep learning with Happy.", "description": "More room to learn, practise, and reflect.", "learn": "Guided lessons for everyday challenges", "practice": "CBT tools linked to what you learn", "reflect": "Space to spot patterns over time", "billing": { "annual": "Billed yearly", "monthly": "Billed monthly", "weekly": "Billed weekly" }, "continuePlus": "Continue with Plus", "storeTerms": "Apple will show the price and any trial before you confirm.", "restore": "Restore purchases", "loadingPlans": "Loading plans…", "plansUnavailable": "Plans unavailable. Tap to try again.", "purchaseFailed": "Could not complete the purchase. Try again.", "nothingToRestore": "No previous purchase found." },
     "appOfTheDay": "App of the Day", "headlineStart": "Become someone who doesn't run from", "headlineEnd": "how they feel.", "featureSummary": "{{journeys}} journeys · {{exercises}}+ exercises · Unlimited AI insights",
     "lockedTitle_one": "Your next lesson (locked without Plus)", "lockedTitle_other": "Your next {{count}} lessons (locked without Plus)",
     "lessons": { "day2": { "title": "The Thought Spiral", "meta": "Day 2 · 5 min · Cognitive distortions" }, "day3": { "title": "Body as Compass", "meta": "Day 3 · 5 min · Somatic awareness" }, "day4": { "title": "Thought Records: Your First CBT Tool", "meta": "Day 4 · 7 min · Hands-on exercise" } },

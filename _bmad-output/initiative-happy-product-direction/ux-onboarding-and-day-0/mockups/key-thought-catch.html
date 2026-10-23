@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Key Screen: Step 4 — Thought Catch Micro-Win</title>
+<style>
+/* Governed by DESIGN.md.Components.tactile-button & EXPERIENCE.md.KeyFlows.Step4 */
+:root {
+  --canvas: #F8FAF7;
+  --surface: #FFFFFF;
+  --sage-50: #F8FBF6;
+  --sage-100: #E5EDE1;
+  --sage-200: #D3E0CD;
+  --sage-500: #5F7F58;
+  --sage-600: #44633F;
+  --sage-700: #29452A;
+  --sage-800: #152714;
+  --ink: #142414;
+  --ink-soft: #767676;
+  --gold: #D4A943;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #E8ECE6;
+  font-family: -apple-system, BlinkMacSystemFont, "Nunito", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+.phone-frame {
+  width: 393px;
+  height: 852px;
+  background: var(--canvas);
+  border-radius: 54px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.18), 0 0 0 12px #222;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 126px;
+  height: 35px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 10;
+}
+.header {
+  padding: 60px 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.progress-bar {
+  height: 8px;
+  background: var(--sage-200);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-fill {
+  width: 57%; /* Step 4 of 7 */
+  height: 100%;
+  background: var(--sage-500);
+  border-radius: 999px;
+}
+.course-pill {
+  align-self: flex-start;
+  background: var(--sage-100);
+  color: var(--sage-700);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.screen-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.25;
+}
+.content {
+  flex: 1;
+  padding: 8px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.racing-thought-card {
+  background: var(--surface);
+  border: 2px solid var(--sage-200);
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  position: relative;
+}
+.card-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+}
+.thought-text {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.4;
+  font-style: italic;
+}
+.chips-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--sage-700);
+  margin-top: 4px;
+}
+.distortion-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.chip {
+  background: var(--surface);
+  border: 2px solid var(--sage-200);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.chip.active {
+  background: var(--sage-100);
+  border-color: var(--sage-500);
+  color: var(--sage-800);
+  box-shadow: 0 2px 8px rgba(95, 127, 88, 0.15);
+}
+.chip-emoji { font-size: 18px; }
+.reframe-card {
+  background: var(--sage-50);
+  border: 2px solid var(--sage-500);
+  border-radius: 20px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: popIn 0.25s ease-out;
+}
+.reframe-pill {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--sage-600);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.reframe-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--sage-800);
+  line-height: 1.4;
+}
+.xp-banner {
+  align-self: center;
+  background: #FFFDF0;
+  border: 1.5px solid var(--gold);
+  color: #8C6A1A;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+.footer {
+  padding: 16px 24px 36px;
+}
+.tactile-button {
+  background: var(--sage-600);
+  border-radius: 999px;
+  padding-bottom: 6px;
+  cursor: pointer;
+}
+.tactile-face {
+  background: var(--sage-500);
+  color: #FFF;
+  height: 56px;
+  border-radius: 999px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+@keyframes popIn {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="dynamic-island"></div>
+  <div class="header">
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+    <div class="course-pill">✦ Lesson 1 · Catching the Alarm (30s)</div>
+    <div class="screen-title">Notice the trap in your thinking</div>
+  </div>
+  <div class="content">
+    <div class="racing-thought-card">
+      <div class="card-label">Anxious Racing Thought</div>
+      <div class="thought-text">"I have so much on my plate today, I'm definitely going to fail."</div>
+    </div>
+    
+    <div class="chips-label">Which thinking trap is active?</div>
+    <div class="distortion-chips">
+      <div class="chip active">
+        <span class="chip-emoji">🌪️</span>
+        <span>Worst-case spiral</span>
+      </div>
+      <div class="chip">
+        <span class="chip-emoji">⚖️</span>
+        <span>All-or-nothing</span>
+      </div>
+      <div class="chip">
+        <span class="chip-emoji">🔮</span>
+        <span>Predicting failure</span>
+      </div>
+    </div>
+
+    <div class="reframe-card">
+      <div class="reframe-pill">✦ Reframed Reality</div>
+      <div class="reframe-text">"I have a lot on my plate, but I can tackle just one small step right now."</div>
+    </div>
+
+    <div class="xp-banner">✦ +10 XP EARNED · FIRST THOUGHT CAUGHT</div>
+  </div>
+  <div class="footer">
+    <div class="tactile-button">
+      <div class="tactile-face">CONTINUE</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

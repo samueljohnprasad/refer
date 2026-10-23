@@ -3,73 +3,10 @@ import React, { useMemo } from "react";
 import { ActivityIndicator, StyleSheet, Text, View, FlatList, Pressable } from "react-native";
 import dayjs from "dayjs";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 import type { HistoryLogItem } from "../hooks/useCBTHistory";
-import {
-  getExerciseConfig,
-  getCategoryMeta,
-} from "@/src/data/exerciseRegistry";
 import { useHeaderHeight } from "expo-router/react-navigation";
-import { Button } from "@/src/components/ui/Button";
-import { useRouter } from "expo-router";
-
-// We replicate the formatting from ExercisesScreen
-const LEGACY_LOG_META = {
-  catcher: { label: "Thought Catcher" },
-  reframing: { label: "Thought Reframing" },
-  gratitude: { label: "Gratitude Reframe" },
-};
-
-function getHistoryXp(item: HistoryLogItem): number {
-  if (item.type === "unified" && item.exerciseType) {
-    return getExerciseConfig(item.exerciseType)?.xp ?? 0;
-  }
-  if (item.type === "catcher") return 10;
-  if (item.type === "reframing") return 15;
-  if (item.type === "gratitude") return 10;
-  return 0;
-}
-
-function formatStatus(item: HistoryLogItem) {
-  if (
-    item.status === "checker_completed" ||
-    item.status === "completed" ||
-    item.status === "summary"
-  ) {
-    return { label: "Completed", isComplete: true, xpEarned: getHistoryXp(item) };
-  }
-  if (item.status === "catcher_completed") {
-    return { label: "Ready to Reframe", isComplete: false, xpEarned: 0 };
-  }
-  return { label: "Resume", isComplete: false, xpEarned: 0 };
-}
-
-function getLogPresentation(item: HistoryLogItem) {
-  if (item.type === "unified" && item.exerciseType) {
-    const config = getExerciseConfig(item.exerciseType);
-    const categoryMeta = config ? getCategoryMeta(config.category) : null;
-    return {
-      heading: categoryMeta?.label ?? "Exercise",
-      title: config?.title ?? item.title ?? "Exercise",
-    };
-  }
-  if (item.type === "catcher") {
-    return {
-      heading: LEGACY_LOG_META.catcher.label,
-      title: item.title?.trim() || "Untitled Session",
-    };
-  }
-  if (item.type === "reframing") {
-    return {
-      heading: LEGACY_LOG_META.reframing.label,
-      title: item.title?.trim() || "Untitled Session",
-    };
-  }
-  return {
-    heading: LEGACY_LOG_META.gratitude.label,
-    title: item.title?.trim() || "Untitled Session",
-  };
-}
+import { formatStatus, getLogPresentation } from "./cbtHistoryHelpers";
+import { ExerciseTimelineEmptyState } from "./ExerciseTimelineEmptyState";
 
 interface CBTHistoryTimelineProps {
   entries: HistoryLogItem[];
@@ -79,25 +16,6 @@ interface CBTHistoryTimelineProps {
   contentPaddingTop?: number;
   onPressItem: (item: HistoryLogItem) => void;
 }
-
-const EmptyState: React.FC = React.memo(() => {
-  const router = useRouter();
-  return (
-    <View className="items-center justify-center px-8 py-24">
-      <Text className="happy-font-heading-bold text-2xl text-ink">
-        A space for your thoughts
-      </Text>
-      <Text className="happy-font-body-medium mt-3 mb-8 text-center text-base leading-relaxed text-ink-muted">
-        Your completed reflections and exercises will live here.
-      </Text>
-      <Button
-        label="Explore Exercises"
-        onPress={() => router.push("/tabs/(tabs)/exercises" as never)}
-      />
-    </View>
-  );
-});
-EmptyState.displayName = "EmptyState";
 
 const Footer: React.FC<{ isLoadingMore: boolean }> = ({ isLoadingMore }) => {
   if (!isLoadingMore) return null;
@@ -171,7 +89,7 @@ export const CBTHistoryTimeline: React.FC<CBTHistoryTimelineProps> = React.memo(
     header,
     isLoadingMore,
     onEndReached,
-    contentPaddingTop,
+    contentPaddingTop: _contentPaddingTop,
     onPressItem,
   }) => {
     const headerHeight = useHeaderHeight();
@@ -223,7 +141,7 @@ export const CBTHistoryTimeline: React.FC<CBTHistoryTimelineProps> = React.memo(
           onEndReached={onEndReached}
           onEndReachedThreshold={0.5}
           ListHeaderComponent={header}
-          ListEmptyComponent={<EmptyState />}
+          ListEmptyComponent={<ExerciseTimelineEmptyState />}
           ListFooterComponent={<Footer isLoadingMore={isLoadingMore} />}
           contentContainerStyle={{
             paddingTop: headerHeight + 24,

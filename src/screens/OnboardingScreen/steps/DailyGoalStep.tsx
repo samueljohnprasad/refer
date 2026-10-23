@@ -5,6 +5,7 @@ import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import GoalCard from "../components/GoalCard";
+import HappiMascot from "../components/HappiMascot";
 import { DailyGoalMinutes, MotivationAnswer } from "../types";
 import { DAILY_GOAL_CARDS } from "../constants";
 
@@ -39,8 +40,13 @@ const DailyGoalStep: React.FC<DailyGoalStepProps> = ({
         paddingTop: headerHeight - insets.top,
       }}
       contentInsetAdjustmentBehavior="automatic"
-      className="flex-1 px-6 pt-8"
+      className="flex-1 px-6 pt-4"
     >
+      {/* ponytail: stopwatch mascot visually anchors daily commitment */}
+      <View className="items-center mb-2">
+        <HappiMascot expression="stopwatch" size={110} delay={0} />
+      </View>
+
       <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <Text className="happy-font-heading mt-2 text-3xl leading-tight text-ink">
           {translatedHeadlineMain}

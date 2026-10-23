@@ -103,7 +103,8 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
         </>
       ) : habitsWithStatus.length === 0 ? (
         <EmptyState
-          mascotState="panda-yet-sleep-pillow"
+          // ponytail: replace sleepy pillow with motivational checklist panda
+          mascotState="panda-habit"
           title={t("empty.titles", { returnObjects: true }) as string[]}
           // ponytail: concise habit empty-state copy
           description={t("empty.description")}

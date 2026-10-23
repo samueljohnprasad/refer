@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy: Sprint 1 Core Mechanics — Brainstorm Keepsake</title>
+  <style>
+    :root {
+      --sage-50: #f8fbf6;
+      --sage-100: #e5ede1;
+      --sage-200: #d3e0cd;
+      --sage-500: #5f7f58;
+      --sage-700: #29452a;
+      --lavender: #C8BEE6;
+      --lavender-dark: #6B5B95;
+      --ink: #142414;
+      --ink-muted: #6B7280;
+      --surface: #ffffff;
+      --gold: #FFD900;
+      --terracotta: #FF4B4B;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Nunito", "Segoe UI", Roboto, sans-serif;
+      background: var(--sage-50);
+      color: var(--ink);
+      line-height: 1.6;
+      padding: 32px 16px;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 2px dashed var(--sage-200);
+    }
+    .badge {
+      display: inline-block;
+      background: var(--lavender);
+      color: var(--lavender-dark);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: 34px;
+      font-weight: 800;
+      color: var(--sage-700);
+      margin-bottom: 8px;
+    }
+    p.lead {
+      font-size: 17px;
+      color: var(--ink-muted);
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+      justify-content: center;
+    }
+    .tab-btn {
+      background: var(--surface);
+      border: 2px solid var(--sage-200);
+      padding: 10px 18px;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--sage-700);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover, .tab-btn.active {
+      background: var(--sage-500);
+      border-color: var(--sage-500);
+      color: var(--surface);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(95, 127, 88, 0.2);
+    }
+    .section-desc {
+      background: var(--surface);
+      border: 1px solid var(--sage-200);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 24px;
+      font-size: 15px;
+      color: var(--sage-700);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .card {
+      background: var(--surface);
+      border: 2px solid var(--sage-100);
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
+    .card:hover {
+      border-color: var(--lavender);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(200, 190, 230, 0.25);
+    }
+    .card-num {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--lavender-dark);
+      background: var(--sage-100);
+      display: inline-block;
+      width: fit-content;
+      padding: 2px 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .card-text {
+      font-size: 14px;
+      color: var(--ink-muted);
+      line-height: 1.5;
+    }
+    .climax-box {
+      background: linear-gradient(135deg, #e5ede1 0%, #f3effa 100%);
+      border: 2px solid var(--lavender);
+      border-radius: 24px;
+      padding: 32px;
+      margin-top: 40px;
+      text-align: center;
+    }
+    .climax-box h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--sage-700);
+      margin-bottom: 12px;
+    }
+    .climax-box p {
+      font-size: 16px;
+      color: var(--ink);
+      max-width: 720px;
+      margin: 0 auto 20px;
+    }
+    .triad {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .triad-item {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 16px 20px;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--sage-700);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      border: 1px solid var(--sage-200);
+    }
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 13px;
+      color: var(--ink-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">BMad Creative Keepsake</span>
+      <h1>Sprint 1 Core Mechanics: Divergent Brainstorm</h1>
+      <p class="lead">40 tactile micro-interactions and psychological hooks across 4 lateral thinking lenses to eliminate friction in Happy's MVP.</p>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showCategory('all')">All 40 Ideas</button>
+      <button class="tab-btn" onclick="showCategory('low-battery')">1. Low-Battery Mode (Constraint)</button>
+      <button class="tab-btn" onclick="showCategory('streak')">2. Unbreakable Streak (Biomimetic)</button>
+      <button class="tab-btn" onclick="showCategory('coping')">3. Pocket Coping Cards (Somatic)</button>
+      <button class="tab-btn" onclick="showCategory('gamification')">4. Hooks & Delight (Theatrical)</button>
+    </div>
+
+    <div id="ideas-container" class="grid">
+      <!-- Injected via JavaScript -->
+    </div>
+
+    <div class="climax-box">
+      <h2>✨ The Breakthrough Synthesis: The Zero-Friction Triad</h2>
+      <p>Combining the strongest ideas into one seamless Sprint 1 user experience: an exhausted user opens the app at midnight, uses the <strong>1-Thumb Rocking Arc</strong> (<15s), builds upon their permanent <strong>Sediment Resilience Ledger</strong> (zero streak guilt), and gains a <strong>Silent Pocket Pacing Haptic</strong> to carry into tomorrow.</p>
+      <div class="triad">
+        <div class="triad-item">🌙 1-Thumb Rocking Arc (<15s)</div>
+        <div class="triad-item">🪵 Tree Ring Unbreakable Streak</div>
+        <div class="triad-item">📳 Silent Pocket Pacing Haptic</div>
+      </div>
+    </div>
+
+    <footer>
+      Generated via BMad Brainstorming Autonomous Mode • Staged in <code>_bmad-output/initiative-happy-product-direction/brainstorm-sprint-1-core-mechanics/</code>
+    </footer>
+  </div>
+
+  <script>
+    const ideas = [
+      // 1. Low-Battery Mode
+      { cat: 'low-battery', num: '01', title: '1-Thumb Rocking Haptic Arc', text: 'User never lifts thumb: sliding along an arc selects mood, holding for 3s pulses calming breath, release logs the day in under 12 seconds.' },
+      { cat: 'low-battery', num: '02', title: 'Somatic Puff & Release', text: 'Happi inhales with user for 4s with subtle expansion vibration; releasing thumb records "I am breathing" without text entry.' },
+      { cat: 'low-battery', num: '03', title: 'Dim Screen Night-Shift Mode', text: 'Low-battery mode auto-engages 10% brightness and warm amber tint after 9:00 PM to avoid blinding tired eyes in bed.' },
+      { cat: 'low-battery', num: '04', title: '"Today Was Heavy" 1-Tap Pill', text: 'Single pre-set card bypassing all sliders when user has zero decision energy: "Brain is tired. Logging presence."' },
+      { cat: 'low-battery', num: '05', title: 'Pillow Squeeze Haptic', text: 'Two-finger pinch on screen mimics squishing a soft mochi pillow with a satisfying panda-pancake deflated haptic response.' },
+      { cat: 'low-battery', num: '06', title: 'Audio 3-Second Whisper', text: 'User speaks one word ("exhausted"), app transcribes and tags emotion, registering presence in 3 seconds.' },
+      { cat: 'low-battery', num: '07', title: '1-Tap Word Cloud Tags', text: '6 floating mood tags (Foggy, Overwhelmed, Numb, Restless, Tender, Grounded); 1 tap and the daily habit is sealed.' },
+      { cat: 'low-battery', num: '08', title: 'Lockscreen Interactive Widget', text: 'Tap small Happi widget directly from iPhone lockscreen to log presence without opening the full application.' },
+      { cat: 'low-battery', num: '09', title: 'Panda High-Five Touch', text: 'Tap Happi\'s outstretched mitten paw (panda-high-five); gentle heart particle burst seals the day with zero friction.' },
+      { cat: 'low-battery', num: '10', title: '10s Physiological Double-Inhale', text: 'Guided dual-breath bar with lung expansion animation; single tap completes the check-in and resets nervous system.' },
+
+      // 2. Unbreakable Streak
+      { cat: 'streak', num: '11', title: 'Tree Ring Growth Model', text: 'Streak visualizes as concentric tree rings in wood cross-section; gap days are narrower dry rings, but the tree never shrinks.' },
+      { cat: 'streak', num: '12', title: 'Bamboo Root Rhizome', text: 'When days are missed, Happi explains: "Bamboo roots grow underground for weeks before shooting up. You were resting your roots."' },
+      { cat: 'streak', num: '13', title: 'River Pebble Zen Garden', text: 'Every check-in adds a smooth river stone to a personal rock garden; 30 stones build an unshakeable cairn of resilience.' },
+      { cat: 'streak', num: '14', title: 'Tidal Rhythm (Ebb & Flow)', text: 'Absence framed as natural low tide: "The ocean always pulls back before returning. Welcome back to high tide."' },
+      { cat: 'streak', num: '15', title: 'Bear Hibernation Mode', text: 'Inactivity >5 days shows Happi cozy asleep (panda-sleep); returning wakes Happi with a warm mug (panda-tea), zero shame.' },
+      { cat: 'streak', num: '16', title: 'Layered Geology Sediment Strata', text: 'Days logged stack as permanent geological stone strata that cannot be eroded by missed days or life chaos.' },
+      { cat: 'streak', num: '17', title: 'Constellation Stargazing Map', text: 'Active days connect glowing stars; gaps are peaceful dark space that makes the constellation shine brighter.' },
+      { cat: 'streak', num: '18', title: 'Dormant Botanical Seed', text: 'Seeds hold moisture through drought; missing days leaves the seed dormant, never dead. One drop of rain resumes growth.' },
+      { cat: 'streak', num: '19', title: 'Chrysalis Molting Milestones', text: 'At Day 7, 14, 30, Happi molts a cozy accessory, celebrating shedding an old layer of negative self-talk.' },
+      { cat: 'streak', num: '20', title: 'Migration Flock Formation', text: 'Linked accountability buddies fly in formation; if one rests, the other holds altitude without breaking flight.' },
+
+      // 3. Pocket Coping Cards
+      { cat: 'coping', num: '21', title: 'Silent Pocket Pacing Haptic', text: 'Back of Coping Card pulses 4-4-4-4 box breath inside user\'s pocket for covert physical grounding during meetings.' },
+      { cat: 'coping', num: '22', title: 'Cold Water Wrist Anchor', text: 'Coping card triggers physical sensory prompt: "Run cold water over your wrists for 15s" with a chilling frost sound.' },
+      { cat: 'coping', num: '23', title: 'Tactile 3D Card Deck Flip', text: 'Gesture-driven card flip with realistic cardstock friction sound; front is panic thought, back is grounded reframe.' },
+      { cat: 'coping', num: '24', title: 'Squeeze to Reveal Reframe', text: 'User holds thumb firmly on screen to burn through the mental fog and physically reveal the reframed thought.' },
+      { cat: 'coping', num: '25', title: 'Distress Level Thermometer', text: 'Dynamic slider on card dragged from red (85° Fever) to sage green (68° Calm) as physical heart rate drops.' },
+      { cat: 'coping', num: '26', title: 'Personal Voice Reframe Mantra', text: 'User records their own calm voice saying their reframe; 1-tap plays their own voice back during acute panic.' },
+      { cat: 'coping', num: '27', title: 'Lockscreen Emergency Card Pass', text: 'Export top emergency coping card to Apple Wallet / lock screen widget for instant 1-swipe offline access.' },
+      { cat: 'coping', num: '28', title: 'Blind 5-4-3-2-1 Sensory Pulses', text: 'Screen dims; phone delivers 5 pulses (see), 4 (touch), 3 (hear) to ground sensory overload in a dark room.' },
+      { cat: 'coping', num: '29', title: 'Tear-Away Paper Thought Card', text: 'User swipes card violently down off screen to "rip up" an irrational thought with a crisp paper-tear sound.' },
+      { cat: 'coping', num: '30', title: 'Pocket Hug Quilted Border', text: 'Tapping distress button on card wraps the card in a soft quilted border with panda-self-hug animation.' },
+
+      // 4. Gamification & Hooks
+      { cat: 'gamification', num: '31', title: 'Zero-Gravity Bubble Pop', text: 'Intrusive thoughts lose gravity and float as bubbles; tapping pops them into calming lavender mist with panda-bubble.' },
+      { cat: 'gamification', num: '32', title: 'Detective Panda Interrogation', text: 'Intrusive thought treated like cartoon suspect; Happi inspects with magnifying glass (panda-detective).' },
+      { cat: 'gamification', num: '33', title: 'The Absurd Worst-Case Game', text: 'Decatastrophizing ladder pushes thought to comedy extreme; Happi equips cartoon umbrella (panda-umbrella).' },
+      { cat: 'gamification', num: '34', title: 'Midnight Speakeasy Tea House', text: 'App opened after 10:00 PM transforms UI into a dimly lit, cozy izakaya with ambient tea sounds (panda-tea).' },
+      { cat: 'gamification', num: '35', title: 'Distortion Hall of Mirrors', text: 'Visualizes cognitive biases as funny carnival mirrors (magnifying mirror = catastrophizing; tinted = filter).' },
+      { cat: 'gamification', num: '36', title: 'Time Capsule Pact with Past Self', text: 'User leaves 1 kind sentence to future anxious self; app delivers it back during detected panic spikes.' },
+      { cat: 'gamification', num: '37', title: '"Return Courage" Reverse Milestone', text: 'App celebrates returning after 7-day absence: "Coming back takes more courage than a streak! Resilience Badge Unlocked!"' },
+      { cat: 'gamification', num: '38', title: 'Boundary Shield Forge', text: 'Saying no to people-pleasing transforms into a physical lavender shield deflecting worry (panda-shield).' },
+      { cat: 'gamification', num: '39', title: 'Interactive 3D Celestial Sphere', text: 'Past reflections mapped as navigable 3D starry sky sphere rotated with smooth touch gestures.' },
+      { cat: 'gamification', num: '40', title: 'Dynamic Island Mascot Companion', text: 'Happi stretches, sips tea, or naps directly on iPhone Dynamic Island throughout daily routine.' }
+    ];
+
+    function renderIdeas(items) {
+      const container = document.getElementById('ideas-container');
+      container.innerHTML = items.map(item => `
+        <div class="card">
+          <div>
+            <span class="card-num">#${item.num} • ${item.cat.toUpperCase()}</span>
+            <div class="card-title">${item.title}</div>
+            <div class="card-text">${item.text}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function showCategory(cat) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      if (cat === 'all') {
+        renderIdeas(ideas);
+      } else {
+        renderIdeas(ideas.filter(i => i.cat === cat));
+      }
+    }
+
+    renderIdeas(ideas);
+  </script>
+</body>
+</html>

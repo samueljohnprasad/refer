@@ -35,3 +35,11 @@ after = [
   { epic = 3, needs = "the canonical private reflection, lineage, and structured source-data contract" },
   { epic = 1, needs = "the shared boundary, privacy, safety, and activation contracts" },
 ]
+
+[[epic]]
+id = 5
+slug = "epic-day-0-onboarding"
+title = "7-Step Day-0 Onboarding & First 60s Home Landing"
+covers = ["CAP-1", "CAP-5", "CAP-6"]
+after = []
+

@@ -6,13 +6,13 @@ import {
   StressLevel,
   GoalCardConfig,
   LoadingTask,
-  PricingPlanConfig,
   FeelingOption,
   JourneyMapNode,
 } from "./types";
 
 const ONBOARDING_BACKGROUND = "#F8FAF7";
 
+// ponytail: 7-step lean onboarding sequence validated by NN/g heuristic audit and PostHog telemetry
 export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "welcome",
@@ -38,18 +38,6 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
     analyticsLabel: "quiz_motivation",
   },
   {
-    name: "quiz_stress_level",
-    stage: 1,
-    backgroundColor: ONBOARDING_BACKGROUND,
-    showBackButton: true,
-    showContinueButton: false,
-    continueButtonLabel: "CONTINUE",
-    autoAdvance: false,
-    canSkip: false,
-    analyticsLabel: "quiz_stress_level",
-    isContinueEnabled: (formData) => Boolean(formData.stressLevel),
-  },
-  {
     name: "building_journey",
     stage: 2,
     backgroundColor: ONBOARDING_BACKGROUND,
@@ -61,49 +49,39 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
     analyticsLabel: "building_journey",
   },
   {
-    name: "plan_reveal",
-    stage: 2,
-    backgroundColor: ONBOARDING_BACKGROUND,
-    showBackButton: false,
-    showContinueButton: true,
-    continueButtonLabel: "START MY JOURNEY",
-    autoAdvance: false,
-    canSkip: false,
-    analyticsLabel: "plan_reveal",
-  },
-  {
-    name: "journey_map",
+    name: "thought_catch_micro",
     stage: 3,
-    backgroundColor: ONBOARDING_BACKGROUND,
-    showBackButton: false,
-    showContinueButton: false, // ponytail: no button on journey map
-    continueButtonLabel: "START LESSON 1",
-    autoAdvance: false,
-    canSkip: false,
-    analyticsLabel: "journey_map",
-    transparentFooter: true,
-  },
-  {
-    name: "lesson_complete",
-    stage: 4,
-    backgroundColor: ONBOARDING_BACKGROUND,
-    showBackButton: false,
-    showContinueButton: true,
-    continueButtonLabel: "CONTINUE",
-    autoAdvance: false,
-    canSkip: false,
-    analyticsLabel: "lesson_complete",
-  },
-  {
-    name: "pact_signing",
-    stage: 5,
     backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: false,
     showContinueButton: false,
     continueButtonLabel: "",
     autoAdvance: false,
     canSkip: false,
-    analyticsLabel: "pact_signing",
+    analyticsLabel: "thought_catch_micro",
+  },
+  {
+    name: "milestone_celebration",
+    stage: 4,
+    backgroundColor: ONBOARDING_BACKGROUND,
+    showBackButton: false,
+    showContinueButton: false,
+    continueButtonLabel: "",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "milestone_celebration",
+  },
+  {
+    name: "notification_permission",
+    stage: 5,
+    backgroundColor: ONBOARDING_BACKGROUND,
+    showBackButton: false,
+    showContinueButton: true,
+    continueButtonLabel: "SET REMINDERS",
+    autoAdvance: false,
+    canSkip: true,
+    skipButtonLabel: "Maybe later",
+    analyticsLabel: "notification_permission",
+    transparentFooter: true,
   },
   {
     name: "soft_paywall",
@@ -115,32 +93,6 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
     autoAdvance: false,
     canSkip: false,
     analyticsLabel: "soft_paywall",
-  },
-  {
-    name: "notification_permission",
-    stage: 5,
-    backgroundColor: ONBOARDING_BACKGROUND,
-    showBackButton: false,
-    showContinueButton: true,
-    continueButtonLabel: "SET REMINDERS",
-    autoAdvance: false,
-    canSkip: true,
-    skipButtonLabel: "Skip for now",
-    analyticsLabel: "notification_permission",
-    transparentFooter: true,
-  },
-  {
-    name: "welcome_to_happy",
-    stage: 5,
-    backgroundColor: ONBOARDING_BACKGROUND,
-    showBackButton: false,
-    showContinueButton: true,
-    continueButtonLabel: "SAVE MY PROGRESS",
-    autoAdvance: false,
-    canSkip: true,
-    skipButtonLabel: "Maybe later",
-    analyticsLabel: "welcome_to_happy",
-    transparentFooter: true,
   },
 ] as const;
 
@@ -493,52 +445,10 @@ export const FEELINGS: readonly FeelingOption[] = [
   { id: "grateful", emoji: "🙏", label: "Grateful" },
 ];
 
-// ponytail: match active paywall screenshot tiers ($49.99/yr with 68% OFF, $4.99/mo, $2.99/wk)
-export const PRICING_PLANS: readonly PricingPlanConfig[] = [
-  {
-    tier: "annual",
-    label: "Yearly",
-    price: "$49.99",
-    perUnit: "$0.95/week",
-    featured: true,
-    headline: "365 days of showing up for yourself.",
-    badge: "68% OFF",
-    savings: "68% OFF",
-    comparisonPrice: "$155.48/yr",
-    detailPrefix: "Just ",
-    detailEmphasis: "$0.14 per day",
-    detailSuffix: " · $0.95/week",
-  },
-  {
-    tier: "monthly",
-    label: "Monthly",
-    price: "$4.99",
-    detailLabel: "Cancel anytime",
-    perUnit: "$1.14/week",
-    featured: false,
-  },
-  {
-    tier: "weekly",
-    label: "Weekly",
-    price: "$2.99",
-    detailLabel: "Cancel anytime",
-    perUnit: "$2.99/week",
-    featured: false,
-    isDecoy: true,
-  },
-];
-
 export const NOTIFICATION_TIMES = [
   { id: "morning" as const, label: "Morning", time: "8:00 AM" },
   { id: "afternoon" as const, label: "Afternoon", time: "1:00 PM" },
   { id: "evening" as const, label: "Evening", time: "7:00 PM" },
-];
-
-export const PAYWALL_BENEFITS = [
-  "All 12 journeys with sequenced lessons",
-  "Unlimited AI insights & weekly patterns",
-  "Full CBT toolkit (20+ exercises)",
-  "Streak repair & premium themes",
 ];
 
 export const PACT_TEXT = `I commit to showing up for myself, even on the days I don't feel like it. Just {minutes} minutes. That's all it takes.`;

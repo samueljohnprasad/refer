@@ -11,11 +11,29 @@ import { styles } from "@/src/components/celebration/lessonCompleteCelebrationSt
 const PANDA = {
   celebrate: require("../../../assets/images/panda/panda-super-excite.png"),
   happy: require("../../../assets/images/panda/panda-happy.png"),
-  plant: require("../../../assets/images/panda/panda-plant.png"),
+  // ponytail: upgrade plant to high-res sprout and add situational pandas
+  plant: require("../../../assets/images/panda/panda-sprout.png"),
   proud: require("../../../assets/images/panda/panda-love-hug.png"),
   flex: require("../../../assets/images/panda/panda-flex.png"),
   transcend: require("../../../assets/images/panda/panda-transcend.png"),
   pleading: require("../../../assets/images/panda/panda-pleading.png"),
+  self_hug: require("../../../assets/images/panda/panda-self-hug.png"),
+  high_five: require("../../../assets/images/panda/panda-high-five.png"),
+  pondering: require("../../../assets/images/panda/panda-pondering.png"),
+  shield: require("../../../assets/images/panda/panda-shield.png"),
+  sprout: require("../../../assets/images/panda/panda-sprout.png"),
+  journaling: require("../../../assets/images/panda/panda-journaling.png"),
+  umbrella: require("../../../assets/images/panda/panda-umbrella.png"),
+  heart_bandage: require("../../../assets/images/panda/panda-heart-bandage.png"),
+  lantern: require("../../../assets/images/panda/panda-lantern.png"),
+  bubble: require("../../../assets/images/panda/panda-bubble.png"),
+  tea: require("../../../assets/images/panda/panda-tea.png"),
+  cheer: require("../../../assets/images/panda/panda-cheer.png"),
+  coping_card: require("../../../assets/images/panda/panda-coping-card.png"),
+  habit: require("../../../assets/images/panda/panda-habit.png"),
+  analyst: require("../../../assets/images/panda/panda-analyst.png"),
+  explorer: require("../../../assets/images/panda/panda-explorer.png"),
+  milestone: require("../../../assets/images/panda/panda-flag-milestone.png"),
 } as const;
 
 export type CelebrationPandaVariant = keyof typeof PANDA;

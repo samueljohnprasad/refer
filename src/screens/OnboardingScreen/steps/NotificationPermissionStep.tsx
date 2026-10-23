@@ -1,14 +1,20 @@
-import { APP_FONT_FAMILIES } from "@/src/theme/typography";
-import React, { useEffect } from "react";
+// ponytail: reminder picker with panda mascot & tactile time cards — no preview noise
+import React, { useEffect, useMemo } from "react";
+import { View, Text, ScrollView, Switch, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "expo-router/react-navigation";
-import { Text, ScrollView } from "react-native";
-import Animated, { FadeIn } from "react-native-reanimated";
-import { NotificationTime } from "../types";
-import { ReminderCard } from "@/src/components/notifications/ReminderCard";
+import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
+import * as Haptics from "expo-haptics";
+import { SymbolView, type SymbolViewProps } from "expo-symbols";
+import { Host, DatePicker } from "@expo/ui/swift-ui";
+import { useTranslation } from "react-i18next";
+import Svg, { Path } from "react-native-svg";
+import HappiMascot from "../components/HappiMascot";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
+import { SAGE } from "@/src/theme/palette";
 import { useReminderConfig } from "@/src/components/notifications/useReminderConfig";
 import { DEFAULT_REMINDERS } from "@/src/components/notifications/constants";
-import { useTranslation } from "react-i18next";
+import type { NotificationTime } from "../types";
 
 interface NotificationPermissionStepProps {
   selectedTime?: NotificationTime;
@@ -16,9 +22,17 @@ interface NotificationPermissionStepProps {
   stressTiming?: string;
 }
 
-const FOOTER_CLEARANCE = 188;
+const SLOT_META: Record<
+  string,
+  { symbol: SymbolViewProps["name"]; tintColor: string; defaultTitle: string }
+> = {
+  "1": { symbol: "sun.and.horizon.fill", tintColor: "#D97706", defaultTitle: "Morning Reflection" },
+  "2": { symbol: "sun.max.fill", tintColor: "#0284C7", defaultTitle: "Midday Check-in" },
+  "3": { symbol: "moon.stars.fill", tintColor: "#4F46E5", defaultTitle: "Evening Wind-down" },
+};
 
-// ponytail: one quiet schedule surface keeps the choice legible without card stacking
+const FOOTER_CLEARANCE = 170;
+
 const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   selectedTime,
   onSelectTime,
@@ -26,77 +40,180 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("onboarding");
-  // ponytail: do not prompt OS dialog while toggling in onboarding; prompt on Continue click
-  const {
-    items,
-    cfg,
-    handleTimeChange,
-    toggleSelected,
-  } = useReminderConfig(DEFAULT_REMINDERS, { requestPermissionsOnToggle: false });
 
-  // Notify parent that a time is "selected" if any reminder is enabled
+  const { items, cfg, handleTimeChange, toggleSelected } = useReminderConfig(
+    DEFAULT_REMINDERS,
+    { requestPermissionsOnToggle: false },
+  );
+
   useEffect(() => {
     const hasEnabled = Object.values(cfg).some((c) => c.enabled);
-    if (hasEnabled && !selectedTime) {
-      onSelectTime("evening");
-    }
+    if (hasEnabled && !selectedTime) onSelectTime("evening");
   }, [cfg, selectedTime, onSelectTime]);
+
+  const activeCount = useMemo(
+    () => Object.values(cfg).filter((c) => c.enabled).length,
+    [cfg],
+  );
+
+  const topPadding = (headerHeight > 0 ? headerHeight : insets.top + 44) + 8;
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       bounces={false}
+      alwaysBounceVertical={false}
+      contentInsetAdjustmentBehavior="never"
       contentContainerStyle={{
+        paddingTop: topPadding,
         paddingBottom: FOOTER_CLEARANCE,
-        paddingTop: Math.max(headerHeight - insets.top, 16),
       }}
-      contentInsetAdjustmentBehavior="automatic"
-      className="flex-1 px-6"
+      className="flex-1 px-5"
     >
-      <Animated.View entering={FadeIn.duration(180).delay(120)}>
+      {/* 1. Header */}
+      <Animated.View entering={FadeIn.duration(200)} className="mb-4">
+        <View className="flex-row items-center mb-1.5">
+          <View className="rounded-full bg-sage-100 px-3 py-1 border border-sage-200">
+            <Text
+              style={{ fontFamily: APP_FONT_FAMILIES.bold, color: SAGE[800] }}
+              className="text-[11px] uppercase tracking-wider"
+            >
+              Step 5 · Daily habit
+            </Text>
+          </View>
+        </View>
         <Text
           style={{ fontFamily: APP_FONT_FAMILIES.extraBold }}
-          className="text-[28px] leading-[34px] text-ink happy-font-body-extrabold"
+          className="text-[26px] text-ink leading-tight"
         >
-          {t("notification.title")}
+          Pick your check-in times
         </Text>
         <Text
           style={{ fontFamily: APP_FONT_FAMILIES.regular }}
-          className="mt-1.5 text-[15px] leading-relaxed text-ink-soft happy-font-body-medium"
+          className="mt-1 text-[15px] text-ink-soft leading-snug"
         >
-          {t("notification.description")}
+          A 2-minute pause builds the habit. Choose when Happi should nudge you.
         </Text>
       </Animated.View>
 
-      {/* Reminder Config List */}
+      {/* 2. Panda Mascot + Dialogue */}
       <Animated.View
-        entering={FadeIn.duration(180).delay(180)}
-        style={{ borderCurve: "continuous" }}
-        className="mt-7 overflow-hidden border-y border-sage-200/60 bg-transparent"
+        entering={FadeInDown.duration(250).delay(80)}
+        className="flex-row items-center gap-3.5 mb-5"
       >
-        {items.map((item, index) => {
-          const isSelected = cfg[item.id]?.enabled;
-          return (
-            <ReminderCard
-              key={item.id}
-              item={item}
-              index={index}
-              isSelected={isSelected}
-              onToggle={() => toggleSelected(item.id)}
-              onTimeChange={(hour, minute) => handleTimeChange(item.id, hour, minute)}
-              isLast={index === items.length - 1}
-              appearance="schedule"
-            />
-          );
-        })}
+        <View className="shrink-0">
+          <HappiMascot expression="bell" size={88} animate={false} delay={0} />
+        </View>
+
+        <View
+          style={{ borderCurve: "continuous" }}
+          className="flex-1 relative rounded-2xl border-2 border-stone-200 bg-white p-3.5"
+        >
+          <Svg
+            width={13}
+            height={18}
+            viewBox="0 0 13 18"
+            style={{ position: "absolute", left: -12, top: "50%", marginTop: -9 }}
+          >
+            <Path d="M13 0 L0 9 L13 18 Z" fill="#ffffff" />
+            <Path d="M13 0 L0 9 L13 18" fill="none" stroke="#e2e8f0" strokeWidth={2} />
+            <Path d="M13 1 L13 17" stroke="#ffffff" strokeWidth={3} />
+          </Svg>
+
+          <Text
+            style={{ fontFamily: APP_FONT_FAMILIES.bold, color: SAGE[700] }}
+            className="text-[11px] uppercase tracking-wider mb-0.5"
+          >
+            Habit commitment
+          </Text>
+          <Text
+            style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+            className="text-[14px] leading-snug text-ink"
+          >
+            "Members with reminders are 3x more likely to keep their daily streak."
+          </Text>
+        </View>
       </Animated.View>
 
-      <Animated.View entering={FadeIn.duration(180).delay(220)} className="mt-5 px-1">
+      {/* 3. Time Cards */}
+      <View className="gap-3">
+        {items.map((item, index) => {
+          const isSelected = cfg[item.id]?.enabled;
+          const meta = SLOT_META[item.id] || {
+            symbol: "clock.fill" as SymbolViewProps["name"],
+            tintColor: SAGE[600],
+            defaultTitle: "Reminder",
+          };
+
+          return (
+            <Animated.View
+              key={item.id}
+              entering={FadeInDown.duration(200).delay(180 + index * 40)}
+              style={{ borderCurve: "continuous" }}
+              className={`rounded-2xl border-2 ${
+                isSelected ? "border-sage-500 bg-sage-50/80" : "border-stone-200 bg-white opacity-55"
+              } px-4 py-3.5 flex-row items-center gap-3.5`}
+            >
+              <Pressable
+                onPress={() => {
+                  Haptics.selectionAsync();
+                  toggleSelected(item.id);
+                }}
+                className="w-8 items-center justify-center"
+              >
+                <SymbolView
+                  name={meta.symbol}
+                  size={24}
+                  tintColor={isSelected ? meta.tintColor : "#9ca3af"}
+                  type="hierarchical"
+                />
+              </Pressable>
+
+              <View className="flex-1 justify-center">
+                <Text
+                  style={{ fontFamily: APP_FONT_FAMILIES.bold }}
+                  className={`text-[15px] leading-tight ${isSelected ? "text-ink" : "text-ink-soft"}`}
+                >
+                  {t(`reminders.slots.${item.id}.title`, { defaultValue: meta.defaultTitle })}
+                </Text>
+
+                <View className="mt-1 items-start" pointerEvents={isSelected ? "auto" : "none"}>
+                  <Host matchContents>
+                    <DatePicker
+                      selection={new Date(new Date().setHours(item.hour, item.minute, 0, 0))}
+                      displayedComponents={["hourAndMinute"]}
+                      onDateChange={(date: Date) => handleTimeChange(item.id, date.getHours(), date.getMinutes())}
+                    />
+                  </Host>
+                </View>
+              </View>
+
+              <Switch
+                value={isSelected}
+                onValueChange={() => {
+                  Haptics.selectionAsync();
+                  toggleSelected(item.id);
+                }}
+                trackColor={{ true: SAGE[500], false: "#E5E5EA" }}
+                ios_backgroundColor="#E5E5EA"
+                accessibilityRole="switch"
+                accessibilityState={{ checked: isSelected }}
+                accessibilityLabel={`${meta.defaultTitle} toggle`}
+              />
+            </Animated.View>
+          );
+        })}
+      </View>
+
+      {/* 5. Status line */}
+      <Animated.View entering={FadeIn.duration(180).delay(240)} className="mt-4 px-1 items-center">
         <Text
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}
-          className="text-[13px] leading-relaxed text-ink-soft"
+          style={{ fontFamily: APP_FONT_FAMILIES.regular }}
+          className="text-xs text-ink-muted text-center"
         >
-          {t("notification.customize_note")}
+          {activeCount > 0
+            ? `${activeCount} check-in${activeCount > 1 ? "s" : ""} scheduled · Change or mute anytime in Settings`
+            : "No reminders set · You can enable them anytime in Settings"}
         </Text>
       </Animated.View>
     </ScrollView>

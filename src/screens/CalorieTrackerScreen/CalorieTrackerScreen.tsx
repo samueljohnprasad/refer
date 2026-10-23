@@ -197,7 +197,8 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
             </View>
           ) : calorieEntries.length === 0 ? (
             <EmptyState
-              mascotState="panda-confused-thinking"
+              // ponytail: mindful tea mascot promotes savoring and healthy relationship with nutrition
+              mascotState="panda-tea"
               title={t("calorie.emptyTitle")}
               description={t("calorie.emptyDescription")}
               buttonText={t("calorie.takePhoto")}

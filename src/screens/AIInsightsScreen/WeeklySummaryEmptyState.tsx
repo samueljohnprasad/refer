@@ -1,8 +1,8 @@
 import React from "react";
-import { ActivityIndicator, Image, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { weeklyAnalysis } from "@/assets/images";
+import { Mascot } from "@/src/components/ui/Mascot";
 
 interface WeeklySummaryEmptyStateProps {
   dateRange: string;
@@ -28,7 +28,10 @@ export function WeeklySummaryEmptyState({
 }: WeeklySummaryEmptyStateProps) {
   return (
     <View className="bg-white rounded-3xl overflow-hidden items-center shadow-sm">
-      <Image source={weeklyAnalysis} style={{ width: "100%", height: 240 }} resizeMode="cover" />
+      {/* ponytail: Duolingo-grade situational analyst panda replaces legacy human stock art */}
+      <View className="w-full pt-8 pb-3 items-center justify-center bg-brand-surface/40">
+        <Mascot state="panda-analyst" size={170} />
+      </View>
       <View className="px-8 pt-6 pb-8">
         <Text className="text-[28px] font-cormorantBold text-[#0F172A] mb-3 text-center leading-tight">
           {labels.title}

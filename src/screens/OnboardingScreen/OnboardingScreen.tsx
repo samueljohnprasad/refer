@@ -229,8 +229,23 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const handleDismissPaywall = useCallback(() => {
     Haptics.selectionAsync();
     updateTrialStarted(false);
-    goNext();
-  }, [updateTrialStarted, goNext]);
+    if (isLastStep) {
+      handleContinue(true);
+    } else {
+      goNext();
+    }
+  }, [updateTrialStarted, isLastStep, handleContinue, goNext]);
+
+  const handleStepComplete = useCallback(
+    (skipped: boolean = false) => {
+      if (isLastStep) {
+        handleContinue(skipped);
+      } else {
+        goNext();
+      }
+    },
+    [isLastStep, handleContinue, goNext],
+  );
 
   const handleSkip = useCallback(() => {
     analytics.trackStepSkipped(currentStep);
@@ -267,12 +282,14 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
           derivedPlanName={derivedPlanName}
           onboardingCourseId={onboardingCourseId}
           goNext={goNext}
+          onStepComplete={handleStepComplete}
           updateMotivation={updateMotivation}
           updateStressLevel={updateStressLevel}
           updateDailyGoal={updateDailyGoal}
           handlePactCommit={handlePactCommit}
           updateNotificationTime={updateNotificationTime}
           updateTrialStarted={updateTrialStarted}
+          updatePricingTier={updatePricingTier}
         />
       </Animated.View>
 

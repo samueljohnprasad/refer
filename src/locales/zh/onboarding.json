@@ -409,6 +409,7 @@
   },
   "xp_first_step": "旅程的第一步",
   "paywall": {
+    "polish": { "title": "和 Happy 一起继续学习。", "description": "给学习、练习与反思更多空间。", "learn": "应对日常挑战的引导课程", "practice": "与所学内容衔接的认知行为工具", "reflect": "逐渐发现自己的行为与情绪模式", "billing": { "annual": "按年计费", "monthly": "按月计费", "weekly": "按周计费" }, "continuePlus": "继续使用 Plus", "storeTerms": "确认前，Apple 会显示价格及任何试用信息。", "restore": "恢复购买", "loadingPlans": "正在加载方案…", "plansUnavailable": "方案暂不可用。点按重试。", "purchaseFailed": "无法完成购买，请重试。", "nothingToRestore": "未找到之前的购买记录。" },
     "appOfTheDay": "今日推荐应用", "headlineStart": "学会面对", "headlineEnd": "自己的感受。", "featureSummary": "{{journeys}} 条成长路径 · {{exercises}} 多种练习 · 无限次 AI 洞察",
     "lockedTitle_one": "下一节课程（需订阅 Plus）", "lockedTitle_other": "接下来的 {{count}} 节课程（需订阅 Plus）",
     "lessons": { "day2": { "title": "思维螺旋", "meta": "第 2 天 · 5 分钟 · 认知偏差" }, "day3": { "title": "身体是指南针", "meta": "第 3 天 · 5 分钟 · 身体觉察" }, "day4": { "title": "思维记录：你的第一个 CBT 工具", "meta": "第 4 天 · 7 分钟 · 动手练习" } },

@@ -1,9 +1,8 @@
 import React from 'react';
-import { Text, Pressable, ActivityIndicator } from 'react-native';
+import { Text, Pressable, ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-// ponytail: use native expo-symbols instead of lucide
-import { SymbolView } from 'expo-symbols';
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
+import { SEMANTIC_COLORS } from "@/src/theme/colors";
 
 interface GenerateInsightCardProps {
   onPress: () => void;
@@ -21,14 +20,14 @@ export const GenerateInsightCard = ({
   return (
     <Pressable 
       onPress={isGenerating ? undefined : onPress}
-      className={`flex-row items-center gap-2.5 py-2.5 px-3 rounded-lg ${!isGenerating ? 'active:bg-black/5' : ''}`}
+      className={`flex-row items-center gap-2.5 py-2.5 ${!isGenerating ? 'active:opacity-60' : ''}`}
     >
       {isGenerating ? (
-        <ActivityIndicator size="small" color="#666666" />
+        <ActivityIndicator size="small" color={SEMANTIC_COLORS.text.secondary} />
       ) : (
-        <SymbolView name="sparkles" size={12} tintColor="#666666" />
+        <View className="h-2.5 w-2.5 rounded-full border-2" style={{ borderColor: SEMANTIC_COLORS.text.tertiary }} />
       )}
-      <Text className="text-[14px] text-[#666666]" style={{ fontFamily: APP_FONT_FAMILIES.semiBold }}>
+      <Text className="text-[14px]" style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.secondary }}>
         {isGenerating ? t('timeline.generating') : title || t('timeline.generate')}
       </Text>
     </Pressable>

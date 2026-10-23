@@ -41,6 +41,20 @@ export function PandaMetaphor({ progress, animationKey }: PandaMetaphorProps) {
       case 'thought_reframe': return require('../../../assets/images/panda/panda-transcend.png');
       case 'sleep_calm': return require('../../../assets/images/panda/panda-sleep.png');
       case 'generic_success': return require('../../../assets/images/panda/panda-flex.png');
+      case 'boundary_protect': return require('../../../assets/images/panda/panda-shield.png');
+      case 'growth_nurture': return require('../../../assets/images/panda/panda-sprout.png');
+      case 'journal_entry': return require('../../../assets/images/panda/panda-journaling.png');
+      case 'weather_storm': return require('../../../assets/images/panda/panda-umbrella.png');
+      case 'healing_tender': return require('../../../assets/images/panda/panda-heart-bandage.png');
+      case 'guiding_light': return require('../../../assets/images/panda/panda-lantern.png');
+      case 'defusion_bubble': return require('../../../assets/images/panda/panda-bubble.png');
+      case 'mindful_tea': return require('../../../assets/images/panda/panda-tea.png');
+      case 'cheer_activation': return require('../../../assets/images/panda/panda-cheer.png');
+      case 'coping_anchor': return require('../../../assets/images/panda/panda-coping-card.png');
+      case 'habit_momentum': return require('../../../assets/images/panda/panda-habit.png');
+      case 'insight_analyst': return require('../../../assets/images/panda/panda-analyst.png');
+      case 'journey_explore': return require('../../../assets/images/panda/panda-explorer.png');
+      case 'badge_milestone': return require('../../../assets/images/panda/panda-flag-milestone.png');
       default: return require('../../../assets/images/panda/panda-celebration.png');
     }
   };

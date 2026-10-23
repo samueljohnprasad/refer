@@ -28,6 +28,7 @@ import * as Haptics from "expo-haptics";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { RADIUS } from "@/src/theme/radius";
 import { Card } from "@/src/components/ui/Card";
+import { Mascot } from "@/src/components/ui/Mascot";
 import { useTranslation } from "react-i18next";
 
 const CATEGORY_TABS: { key: RewardCategory; label: string; emoji: string }[] = [
@@ -241,7 +242,10 @@ export const RewardsShopScreen: React.FC = () => {
 
         {categoryRewards.length === 0 && (
           <View className="items-center py-12">
-            <Text className="text-4xl mb-2">🎁</Text>
+            {/* ponytail: energetic high-five mascot for empty reward category */}
+            <View className="happy-mascot-stage mb-3 h-20 w-20 items-center justify-center rounded-[28px]">
+              <Mascot state="panda-high-five" size={60} />
+            </View>
             <Text className="happy-font-body-medium text-ink-muted">
               {t("rewards.empty")}
             </Text>

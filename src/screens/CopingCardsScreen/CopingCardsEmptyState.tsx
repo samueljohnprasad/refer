@@ -1,23 +1,17 @@
 import React from "react";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { BookmarkAdd01Icon } from "@hugeicons/core-free-icons";
 import { Text } from "@/src/components/ui/Text";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { Mascot } from "@/src/components/ui/Mascot";
 
 export function CopingCardsEmptyState() {
   const { t } = useTranslation("exercises");
 
   return (
-    <View className="items-center justify-center pt-10 pb-20 px-6 mt-20">
-      <View className="h-20 w-20 rounded-full bg-sage-50 items-center justify-center mb-5">
-        <HugeiconsIcon
-          icon={BookmarkAdd01Icon}
-          size={36}
-          color={SEMANTIC_COLORS.brand.primary}
-          strokeWidth={1.5}
-        />
+    <View className="items-center justify-center pt-8 pb-20 px-6 mt-12">
+      {/* ponytail: Duolingo-grade situational mascot replaces generic bookmark icon */}
+      <View className="mb-4 items-center justify-center">
+        <Mascot state="panda-coping-card" size={130} />
       </View>
       <Text
         variant="h2"

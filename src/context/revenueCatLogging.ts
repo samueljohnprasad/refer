@@ -1,5 +1,33 @@
 import { LOG_LEVEL } from "react-native-purchases";
 
+const NETWORK_FAILURE_PATTERN =
+  /bag load failed|error fetching offerings|network|nsurlerror|secure connection|tls|timed out/i;
+
+const getErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+
+  const maybeError = error as { message?: string };
+  return maybeError?.message ?? String(error);
+};
+
+export const isRevenueCatNetworkError = (error: unknown): boolean =>
+  NETWORK_FAILURE_PATTERN.test(getErrorMessage(error));
+
+export const logRevenueCatRequestFailure = (
+  operation: string,
+  error: unknown,
+): void => {
+  const message = `[RevenueCat] ${operation} unavailable: ${getErrorMessage(error)}`;
+
+  if (isRevenueCatNetworkError(error)) {
+    console.warn(message);
+    return;
+  }
+
+  console.error(message);
+};
+
 export const isPurchaseCancelledError = (error: unknown): boolean => {
   const maybeError = error as {
     code?: string | number;
@@ -41,6 +69,11 @@ export const revenueCatLogHandler = (
       message,
     )
   ) {
+    console.warn(formattedMessage);
+    return;
+  }
+
+  if (logLevel === LOG_LEVEL.ERROR && isRevenueCatNetworkError(message)) {
     console.warn(formattedMessage);
     return;
   }

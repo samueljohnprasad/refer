@@ -91,7 +91,8 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   if (entries.length === 0) {
     return (
       <EmptyState
-        mascotState="panda-notes"
+        // ponytail: high-res cognitive journaling mascot
+        mascotState="panda-journaling"
         mascotSize={102}
         title={t("empty.titles", { returnObjects: true }) as string[]}
         description={t("empty.description")}

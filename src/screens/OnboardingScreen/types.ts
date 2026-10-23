@@ -11,6 +11,8 @@ export type OnboardingStepName =
   | "plan_reveal"
   | "journey_step_preview"
   | "lesson_complete"
+  | "thought_catch_micro"
+  | "milestone_celebration"
   | "cbt_step_preview"
   | "notification_permission"
   | "journey_map"
@@ -92,23 +94,6 @@ export interface LoadingTask {
   durationMs: number;
 }
 
-export interface PricingPlanConfig {
-  tier: PricingTier;
-  label: string;
-  price: string;
-  perUnit: string;
-  featured: boolean;
-  headline?: string;
-  badge?: string;
-  savings?: string;
-  comparisonPrice?: string;
-  detailLabel?: string;
-  detailPrefix?: string;
-  detailEmphasis?: string;
-  detailSuffix?: string;
-  isDecoy?: boolean;
-}
-
 export type JourneyNodeStatus = "completed" | "current" | "locked";
 
 export interface JourneyMapNode {
@@ -144,7 +129,35 @@ export type HappiExpression =
   | "side_eye"
   | "flex"
   | "transcend"
-  | "pleading";
+  | "pleading"
+  | "self_hug"
+  | "high_five"
+  | "pondering"
+  | "shield"
+  | "sprout"
+  | "journaling"
+  | "umbrella"
+  | "heart_bandage"
+  | "lantern"
+  | "bubble"
+  | "tea"
+  | "cheer"
+  | "coping_card"
+  | "habit"
+  | "analyst"
+  | "explorer"
+  | "flag_milestone"
+  | "milestone"
+  | "sage"
+  | "target"
+  | "bell"
+  | "headset"
+  | "nametag"
+  | "toolkit"
+  // ponytail: round 3 situational expressions
+  | "stopwatch"
+  | "paper_plane"
+  | "caution";
 
 export interface OnboardingChecklistItem {
   id: string;

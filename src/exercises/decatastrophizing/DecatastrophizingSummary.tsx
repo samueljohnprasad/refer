@@ -11,6 +11,7 @@ import {
   ReflectionTimelineItem,
 } from "@/src/components/exercise/ReflectionTimeline";
 import { Text } from "@/src/components/ui/Text";
+import { Mascot } from "@/src/components/ui/Mascot";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
 import { ExerciseCopyText } from "@/src/components/exercise/ExerciseCopyText";
@@ -110,13 +111,19 @@ export const DecatastrophizingSummary: React.FC<StepProps<DecatastrophizingRespo
 
   return (
     <View className="px-3" style={{ paddingBottom: 40 }}>
-      <View className="pb-6 pt-2">
-        <ExerciseCopyText style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[34px] leading-[37px] tracking-[-0.01em]">
-          Fear put in perspective!
-        </ExerciseCopyText>
-        <ExerciseCopyText style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }} className="mt-2 max-w-[330px] text-[15px] leading-[22px]">
-          You carefully examined your worry and built a plan for it.
-        </ExerciseCopyText>
+      <View className="flex-row items-center justify-between pb-6 pt-2">
+        <View className="flex-1 pr-3">
+          <ExerciseCopyText style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }} className="text-[34px] leading-[37px] tracking-[-0.01em]">
+            Fear put in perspective!
+          </ExerciseCopyText>
+          <ExerciseCopyText style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }} className="mt-2 max-w-[330px] text-[15px] leading-[22px]">
+            You carefully examined your worry and built a plan for it.
+          </ExerciseCopyText>
+        </View>
+        {/* ponytail: umbrella mascot celebrates weathering emotional catastrophe */}
+        <View className="happy-mascot-stage h-20 w-20 items-center justify-center rounded-[28px]">
+          <Mascot state="panda-umbrella" size={62} />
+        </View>
       </View>
 
       {response.copingPlan?.trim() ? (

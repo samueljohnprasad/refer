@@ -28,14 +28,8 @@ export const getHeaderConfig = (stepName: OnboardingStepName): HeaderConfig => {
     case "building_journey":
     case "lesson_complete":
     case "welcome_to_happy":
-      return { visible: false };
     case "soft_paywall":
-      return {
-        visible: true,
-        showBackButton: true,
-        backButtonVariant: "close",
-        progress: 0.8,
-      };
+      return { visible: false };
     case "journey_map":
       return {
         visible: true,
@@ -46,7 +40,13 @@ export const getHeaderConfig = (stepName: OnboardingStepName): HeaderConfig => {
     case "mascot_greeting":
       return { visible: true, showBackButton: true, progress: 0.15 };
     case "quiz_motivation":
-      return { visible: true, showBackButton: true, progress: 0.18 };
+      return { visible: true, showBackButton: true, progress: 0.15 };
+    case "thought_catch_micro":
+      return { visible: true, showBackButton: false, progress: 0.45 };
+    case "milestone_celebration":
+      return { visible: true, showBackButton: false, progress: 0.65 };
+    case "notification_permission":
+      return { visible: true, showBackButton: false, progress: 0.85 };
     case "quiz_stress_level":
       return { visible: true, showBackButton: true, progress: 0.32 };
     case "daily_goal":
@@ -66,8 +66,6 @@ export const getHeaderConfig = (stepName: OnboardingStepName): HeaderConfig => {
         trailingLabelTracking: 0.6,
         trailingLabelAlignment: "center",
       };
-    case "notification_permission":
-      return { visible: true, progress: 0.88 };
     default:
       return { visible: false };
   }

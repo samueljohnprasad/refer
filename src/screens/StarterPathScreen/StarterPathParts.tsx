@@ -1,8 +1,7 @@
 import React from "react";
 import { Pressable, Text, View } from "react-native";
 import { SymbolView } from "expo-symbols";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Brain01Icon } from "@hugeicons/core-free-icons";
+import HappiMascot from "@/src/screens/OnboardingScreen/components/HappiMascot";
 import { ScreenLayout } from "@/src/components/ui/ScreenLayout";
 import TactileButton from "@/src/screens/OnboardingScreen/components/TactileButton";
 import type { StarterPathV1 } from "@/src/domains/journey/model/starterPath";
@@ -128,11 +127,9 @@ function PracticeStep({
       </View>
 
       <View className="rounded-3xl border-2 border-b-[5px] border-sage-500 border-b-sage-700 bg-sage-50 px-6 py-6">
-        <View
-          accessible={false}
-          className="mb-5 h-14 w-14 items-center justify-center rounded-2xl border-2 border-b-4 border-sage-200 border-b-sage-300 bg-sage-100"
-        >
-          <HugeiconsIcon icon={Brain01Icon} size={28} color="#44633F" strokeWidth={2} />
+        {/* ponytail: Happi toolkit mascot with key unlocks the user's first cognitive tool */}
+        <View className="mb-4 items-center justify-center">
+          <HappiMascot expression="toolkit" size={120} />
         </View>
         <Text className="text-xl text-ink happy-font-body-bold">
           {translate(pathCopy.practice.toolTitle)}

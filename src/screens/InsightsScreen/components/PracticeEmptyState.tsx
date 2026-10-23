@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Text } from "@/src/components/ui/Text";
 import { Button } from "@/src/components/ui/Button";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import HappiMascot from "@/src/screens/OnboardingScreen/components/HappiMascot";
 
 type PracticeEmptyStateProps = {
   onChooseExercise: () => void;
@@ -31,15 +32,20 @@ export function PracticeEmptyState({ onChooseExercise }: PracticeEmptyStateProps
         <Text variant="eyebrow">
           {t("timelineAnalytics.practice.baseline")}
         </Text>
-        <Text variant="display" className="mt-10 max-w-[320px]">
+        <Text variant="display" className="mt-4 max-w-[320px]">
           {t("timelineAnalytics.practice.headline")}
         </Text>
-        <Text variant="body" className="mt-4 max-w-[340px]">
+        <Text variant="body" className="mt-3 max-w-[340px]">
           {t("timelineAnalytics.practice.description")}
         </Text>
       </View>
 
-      <View className="mt-10 rounded-[20px] border border-sage-200 bg-sage-50/40 px-5 pb-5 pt-6">
+      {/* ponytail: Happi target mascot motivates 3-exercise baseline milestone */}
+      <View className="my-4 items-center justify-center">
+        <HappiMascot expression="target" size={130} />
+      </View>
+
+      <View className="mt-4 rounded-[20px] border border-sage-200 bg-sage-50/40 px-5 pb-5 pt-6">
         <View className="h-12 justify-center">
           <View className="absolute left-4 right-4 h-px bg-sage-200" />
           <View className="flex-row items-center justify-between">

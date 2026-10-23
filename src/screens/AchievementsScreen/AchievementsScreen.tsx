@@ -152,7 +152,8 @@ const EmptyState: React.FC = () => {
   return (
     <View className="items-center justify-center px-8 py-12">
       <View className="happy-mascot-stage mb-4 h-20 w-20 items-center justify-center rounded-[28px]">
-        <Mascot state="panda-yet-sleep-pillow" size={52} />
+        {/* ponytail: gamified cheerful milestone mascot replaces demotivating sleepy pillow */}
+        <Mascot state="panda-flag-milestone" size={56} />
       </View>
       <Text className="happy-font-heading-bold mb-1 text-center text-lg text-ink">
         {t("achievements.noBadges")}

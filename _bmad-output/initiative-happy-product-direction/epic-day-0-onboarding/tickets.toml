@@ -1,0 +1,101 @@
+# Epic Day-0 Onboarding Breakdown. Table order is the recommended build order.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Step 5 Milestone reuses existing StreakProgressGraphic & cumulative streak ignition"
+description = "Refactors MilestoneCelebrationStep to reuse the existing, clean, polished StreakProgressGraphic from src/components/Streak/StreakCelebrationParts.tsx (StreakCelebrationFlame, DayStreakLabel, WeekStreakRow) instead of custom/diagonal layouts. Tapping LOCK IN DAY 1 STREAK updates local user streak to 1 and advances."
+verify = "In Onboarding Step 5, reviewer sees the animated StreakCelebrationFlame and 7-day row with Day 1 active. Tapping the 3D CTA advances to Step 6 without errors."
+covers = ["CAP-5"]
+after = []
+hitl = false
+risk = "low"
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-onboarding-and-day-0/architecture-onboarding-and-day-0.md#AD-9",
+  "_bmad-output/initiative-happy-product-direction/ux-onboarding-and-day-0/EXPERIENCE.md#AD-9",
+  "src/screens/OnboardingScreen/steps/MilestoneCelebrationStep.tsx",
+  "src/components/Streak/StreakCelebrationParts.tsx",
+  "src/components/Streak/StreakCelebration.tsx"
+]
+
+[[entry]]
+id = 2
+type = "story"
+title = "Step 4 Thought Catch micro-win delivers motivation-matched reframe & +10 XP"
+description = "Verifies ThoughtCatchMicroStep with 3 distortion chips tailored to the Step 2 motivation, immediate chip-tap reframe transition with medium haptic impact, +10 XP celebration banner, and local-first optimistic thought record creation."
+verify = "Selecting 'Manage anxiety' in Step 2 displays the anxiety-specific racing thought in Step 4. Tapping a distortion chip pops the Reframed Reality card and +10 XP badge with tactile haptic response."
+covers = ["CAP-1"]
+after = []
+hitl = false
+risk = "low"
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-onboarding-and-day-0/architecture-onboarding-and-day-0.md#AD-8",
+  "_bmad-output/initiative-happy-product-direction/ux-onboarding-and-day-0/DESIGN.md",
+  "src/screens/OnboardingScreen/steps/ThoughtCatchMicroStep.tsx",
+  "src/screens/OnboardingScreen/steps/QuizMotivationStep.tsx"
+]
+
+[[entry]]
+id = 3
+type = "story"
+title = "Step 3 Harvard Labor Illusion enforces 2.4s timing & auto-advancement"
+description = "Calibrates BuildingJourneyStep and buildingJourneyConfig.ts to complete the 4 generation tasks in exactly 2,400ms with spring progress bar (18 damping, 90 stiffness), on-device privacy badge, success haptic at 100%, and automatic handoff to Step 4."
+verify = "BuildingJourneyStep completes in ~2.4s total, fires success haptic on 100%, and auto-advances to ThoughtCatchMicroStep without requiring user taps."
+covers = ["CAP-1"]
+after = []
+hitl = false
+risk = "low"
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-onboarding-and-day-0/architecture-onboarding-and-day-0.md#AD-7",
+  "src/screens/OnboardingScreen/steps/BuildingJourneyStep.tsx",
+  "src/screens/OnboardingScreen/config/buildingJourneyConfig.ts",
+  "src/screens/OnboardingScreen/hooks/useAutoAdvance.ts"
+]
+
+[[entry]]
+id = 4
+type = "story"
+title = "Step 6 Finch Push Primer & quiet schedule reminder handling"
+description = "Displays Finch companion reminder banner ('Happi • Just now: Ready for a 2-minute thought check?'), time selector (Morning, Afternoon, Evening), native push permission trigger, and 72-hour quiet period fallback on 'Maybe later'."
+verify = "Reviewer sees the companion banner preview in Step 6. Tapping 'SET REMINDERS' triggers system push prompt; tapping 'Maybe later' stores quiet window and advances smoothly."
+covers = ["CAP-6"]
+after = [1]
+hitl = false
+risk = "low"
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-onboarding-and-day-0/architecture-onboarding-and-day-0.md#AD-7",
+  "src/screens/OnboardingScreen/steps/NotificationPermissionStep.tsx"
+]
+
+[[entry]]
+id = 5
+type = "story"
+title = "Step 7 Blinkist Timeline Paywall, 44x44pt dismiss, & 48h trial reminder"
+description = "Integrates Blinkist 3-node transparent timeline paywall ($0 today -> Day 5 push reminder -> Day 7 renewal). Top 44x44pt '✕' dismiss button and secondary 'continue free' bypass directly to Home tab as anonymous guest. Trial start schedules local notification for now + 5 days at 10:00 AM."
+verify = "Reviewer sees the 3-node timeline on Step 7. Tapping ✕ dismisses paywall cleanly without blocking popups. Starting trial registers anonymous RevenueCat customer ID and schedules local reminder."
+covers = ["CAP-6"]
+after = [4]
+hitl = false
+risk = "medium"
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-onboarding-and-day-0/architecture-onboarding-and-day-0.md#AD-10",
+  "src/screens/OnboardingScreen/steps/SoftPaywallStep.tsx",
+  "app/tabs/screens/(onboarding)/premium-onboarding.tsx"
+]
+
+[[entry]]
+id = 6
+type = "story"
+title = "Direct anonymous routing to Home, hydration verification, & zero UI surprises"
+description = "Verifies premium-onboarding.tsx routing guest directly to /tabs/(tabs)/home upon onboarding completion. Confirms JournalCalendarScreen.tsx preserves production UI intact, hydrating cached 1-day streak capsule and StarterPathNextActionCard without layout shifts. Full zero TS error verification."
+verify = "Completing Step 7 or tapping dismiss navigates directly to /tabs/(tabs)/home as an anonymous Supabase guest. HomeHeader displays 🔥 1 Day streak. No unexpected UI changes on Home. npx tsc --noEmit passes with 0 errors."
+covers = ["CAP-5", "CAP-6"]
+after = [1, 2, 3, 5]
+hitl = false
+risk = "low"
+references = [
+  "_bmad-output/initiative-happy-product-direction/architecture-onboarding-and-day-0/architecture-onboarding-and-day-0.md#AD-11",
+  "app/tabs/screens/(onboarding)/premium-onboarding.tsx",
+  "src/screens/JournalCalendarScreen/JournalCalendarScreen.tsx",
+  "src/screens/JournalCalendarScreen/components/HomeHeader.tsx"
+]

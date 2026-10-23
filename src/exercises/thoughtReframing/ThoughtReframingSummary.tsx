@@ -15,6 +15,7 @@ import {
   ReflectionTimelineItem,
 } from "@/src/components/exercise/ReflectionTimeline";
 import { Text } from "@/src/components/ui/Text";
+import { Mascot } from "@/src/components/ui/Mascot";
 import { ExerciseCopyText } from "@/src/components/exercise/ExerciseCopyText";
 import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 import { useTranslation } from "react-i18next";
@@ -172,19 +173,25 @@ export const ThoughtReframingSummary: React.FC<
 
   return (
     <View className="px-3" style={{ paddingBottom: 40 }}>
-      <View className="pb-6 pt-2">
-        <ExerciseCopyText
-          style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
-          className="text-[34px] leading-[37px] tracking-[-0.01em]"
-        >
-          Thought reframed
-        </ExerciseCopyText>
-        <ExerciseCopyText
-          style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
-          className="mt-2 max-w-[330px] text-[15px] leading-[22px]"
-        >
-          You separated what happened from what the thought predicted.
-        </ExerciseCopyText>
+      <View className="flex-row items-center justify-between pb-6 pt-2">
+        <View className="flex-1 pr-3">
+          <ExerciseCopyText
+            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
+            className="text-[34px] leading-[37px] tracking-[-0.01em]"
+          >
+            Thought reframed
+          </ExerciseCopyText>
+          <ExerciseCopyText
+            style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
+            className="mt-2 max-w-[330px] text-[15px] leading-[22px]"
+          >
+            You separated what happened from what the thought predicted.
+          </ExerciseCopyText>
+        </View>
+        {/* ponytail: proud-tears mascot celebrates cognitive reframe breakthrough */}
+        <View className="happy-mascot-stage h-20 w-20 items-center justify-center rounded-[28px]">
+          <Mascot state="panda-proud-tears" size={62} />
+        </View>
       </View>
 
       {response.balancedThought?.trim() ? (

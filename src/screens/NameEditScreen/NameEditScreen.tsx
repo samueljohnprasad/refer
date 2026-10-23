@@ -6,8 +6,7 @@ import { useGradualAnimation } from "@/hooks/useGradualAnimation";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
 import { useUpdateDisplayName } from "@/hooks/post/useUpdateDisplayName";
-// ponytail: use native expo-symbols instead of lucide
-import { SymbolView } from "expo-symbols";
+import HappiMascot from "@/src/screens/OnboardingScreen/components/HappiMascot";
 
 interface NameEditScreenProps {
   setShowModal: (show: boolean) => void;
@@ -65,8 +64,9 @@ export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
 
       <View className="flex-1 px-5 pt-8 items-center">
         {/* Avatar Container */}
-        <View className="w-24 h-24 rounded-full bg-card items-center justify-center mb-8 shadow-sm border border-border">
-          <SymbolView name="person.fill" size={38} tintColor="#8e8e93" />
+        {/* ponytail: Happi holding pastel nametag card anchors profile identity introduction */}
+        <View className="mb-6 items-center justify-center">
+          <HappiMascot expression="nametag" size={110} />
         </View>
 
         {/* Input */}

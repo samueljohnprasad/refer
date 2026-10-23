@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Key Screen: Step 7 — Blinkist Timeline Paywall</title>
+<style>
+:root {
+  --canvas: #F8FAF7;
+  --surface: #FFFFFF;
+  --sage-50: #F8FBF6;
+  --sage-100: #E5EDE1;
+  --sage-200: #D3E0CD;
+  --sage-500: #5F7F58;
+  --sage-600: #44633F;
+  --sage-700: #29452A;
+  --sage-800: #152714;
+  --ink: #142414;
+  --ink-soft: #767676;
+  --gold: #FFD900;
+  --amber: #FF9600;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #E8ECE6;
+  font-family: -apple-system, BlinkMacSystemFont, "Nunito", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+.phone-frame {
+  width: 393px;
+  height: 852px;
+  background: var(--canvas);
+  border-radius: 54px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.18), 0 0 0 12px #222;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 126px;
+  height: 35px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 10;
+}
+.nav-bar {
+  padding: 54px 20px 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+.dismiss-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.content {
+  flex: 1;
+  padding: 4px 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.badge-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.app-badge {
+  background: var(--sage-100);
+  color: var(--sage-700);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.headline {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.25;
+}
+.subhead {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+.timeline-card {
+  background: var(--surface);
+  border: 2px solid var(--sage-200);
+  border-radius: 20px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.timeline-node {
+  display: flex;
+  gap: 14px;
+  position: relative;
+}
+.timeline-node:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 28px;
+  left: 13px;
+  width: 2px;
+  height: 32px;
+  background: var(--sage-200);
+}
+.node-icon-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--sage-100);
+  border: 2px solid var(--sage-500);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 13px;
+  flex-shrink: 0;
+  z-index: 1;
+}
+.node-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.node-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.node-desc {
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.35;
+}
+.locked-curriculum {
+  background: var(--sage-50);
+  border: 1.5px solid var(--sage-200);
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.locked-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--sage-700);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.locked-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.lock-icon { font-size: 12px; color: var(--gold); }
+.footer {
+  padding: 8px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.tactile-button {
+  width: 100%;
+  background: var(--sage-600);
+  border-radius: 999px;
+  padding-bottom: 6px;
+  cursor: pointer;
+}
+.tactile-face {
+  background: var(--sage-500);
+  color: #FFF;
+  height: 56px;
+  border-radius: 999px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+.guarantee-note {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-align: center;
+}
+.skip-link {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  cursor: pointer;
+  padding: 4px;
+}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="dynamic-island"></div>
+  <div class="nav-bar">
+    <div class="dismiss-btn">✕</div>
+  </div>
+  <div class="content">
+    <div class="badge-row">
+      <span class="app-badge">✦ 7-Day Free Trial</span>
+      <span class="app-badge" style="background:#FFF7ED; color:#C2410C;">Save 68%</span>
+    </div>
+    <div class="headline">Build lasting peace of mind with Happy Pro</div>
+    <div class="subhead">Cancel anytime in 1-tap. No surprise charges.</div>
+
+    <div class="timeline-card">
+      <div class="timeline-node">
+        <div class="node-icon-circle">✓</div>
+        <div class="node-info">
+          <div class="node-title">Today: Instant Full Access</div>
+          <div class="node-desc">Unlock all CBT courses, thought records, and companion check-ins for $0.00.</div>
+        </div>
+      </div>
+      <div class="timeline-node">
+        <div class="node-icon-circle">🔔</div>
+        <div class="node-info">
+          <div class="node-title">Day 5: Gentle Reminder</div>
+          <div class="node-desc">We will send you a push notification 48 hours before your trial wraps up.</div>
+        </div>
+      </div>
+      <div class="timeline-node">
+        <div class="node-icon-circle">🔒</div>
+        <div class="node-info">
+          <div class="node-title">Day 7: Annual Subscription Starts</div>
+          <div class="node-desc">$49.99/year ($4.16/month, billed annually). Cancel anytime.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="locked-curriculum">
+      <div class="locked-title">Included in Your Full Plan</div>
+      <div class="locked-row">
+        <span>Day 2 · Taming Anxiety Physical Surges</span>
+        <span class="lock-icon">🔒</span>
+      </div>
+      <div class="locked-row">
+        <span>Day 3 · Unhooking From Rumination Loops</span>
+        <span class="lock-icon">🔒</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="tactile-button">
+      <div class="tactile-face">START 7-DAY FREE TRIAL</div>
+    </div>
+    <div class="guarantee-note">Nothing to pay today • Cancel anytime in Settings</div>
+    <div class="skip-link">No thanks, explore free first</div>
+  </div>
+</div>
+</body>
+</html>
