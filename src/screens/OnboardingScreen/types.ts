@@ -157,7 +157,8 @@ export type HappiExpression =
   // ponytail: round 3 situational expressions
   | "stopwatch"
   | "paper_plane"
-  | "caution";
+  | "caution"
+  | "thought_catcher";
 
 export interface OnboardingChecklistItem {
   id: string;

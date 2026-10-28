@@ -53,7 +53,7 @@ export const HomeHeader = memo(function HomeHeader({
         <View className="absolute bottom-0.5 h-[148px] w-[148px] rounded-full bg-sage-100" />
         <Mascot state="panda-happy" size={158} />
       </Pressable>
-      {showHappy && <HappySceneModal onClose={() => setShowHappy(false)} />}
+      {true && <HappySceneModal onClose={() => setShowHappy(false)} />}
 
       <View
         className="min-h-[184px] justify-start pt-6"

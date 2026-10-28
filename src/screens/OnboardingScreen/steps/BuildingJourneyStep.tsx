@@ -38,7 +38,7 @@ const getTaskCopyKey = (id: string, useGentlePace: boolean): BuildingJourneyTask
   return "building_journey.tasks.cbt";
 };
 
-// ponytail: responsive progress bar, celebrating mascot, and trust caption
+// ponytail: responsive progress bar, analyst-to-high-five mascot, and trust caption
 const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
   onComplete,
   motivation,
@@ -77,8 +77,8 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
   return (
     <View className="flex-1 items-center justify-center px-6">
       <HappiMascot
-        expression={allComplete ? "celebrating" : "concentrating"}
-        size={150}
+        expression={allComplete ? "high_five" : "analyst"}
+        size={120}
         delay={0}
       />
 

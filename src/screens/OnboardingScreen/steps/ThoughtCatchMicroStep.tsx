@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SymbolView } from "expo-symbols";
 import { Card } from "@/src/components/ui/Card";
 import HappiMascot from "../components/HappiMascot";
+import ThoughtCatcherVideo from "../components/ThoughtCatcherVideo";
 import TactileButton from "../components/TactileButton";
 import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { SAGE } from "@/src/theme/palette";
@@ -120,12 +121,16 @@ export const ThoughtCatchMicroStep: React.FC<ThoughtCatchMicroStepProps> = ({
           className="flex-row items-center gap-3.5 mb-5"
         >
           <View className="shrink-0">
-            <HappiMascot
-              expression={hasSelected ? "cheer" : "pondering"}
-              size={92}
-              animate={false}
-              delay={0}
-            />
+            {hasSelected ? (
+              <ThoughtCatcherVideo width={88} height={156} loop />
+            ) : (
+              <HappiMascot
+                expression="pondering"
+                size={94}
+                animate={false}
+                delay={0}
+              />
+            )}
           </View>
 
           <SpeechBubbleCard

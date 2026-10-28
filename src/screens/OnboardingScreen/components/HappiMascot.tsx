@@ -51,6 +51,7 @@ const MASCOT_IMAGES: Record<HappiExpression, ImageSourcePropType> = {
   stopwatch: require("@/assets/images/panda/panda-stopwatch.png"),
   paper_plane: require("@/assets/images/panda/panda-paper-plane.png"),
   caution: require("@/assets/images/panda/panda-caution.png"),
+  thought_catcher: require("@/assets/images/panda/panda-thought-catcher.png"),
 };
 
 interface HappiMascotProps {
