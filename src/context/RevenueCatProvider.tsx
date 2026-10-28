@@ -1,11 +1,5 @@
 import { Platform } from "react-native";
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Purchases, { CustomerInfo } from "react-native-purchases";
 import { useAuth } from "./AuthContext";
 import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
@@ -15,37 +9,18 @@ import {
   logRevenueCatRequestFailure,
   revenueCatLogHandler,
 } from "./revenueCatLogging";
+import {
+  RevenueCatContext,
+  useRevenueCat,
+  type RevenueCatContextValue,
+} from "./RevenueCatContext";
 
-interface RevenueCatContextValue {
-  customerInfo: CustomerInfo | null;
-  isLoadingRevenueCat: boolean;
-  hasPro: boolean;
-  presentPaywall: () => Promise<boolean>;
-  refreshCustomerInfo: () => Promise<CustomerInfo | null>;
-  identifyCurrentUser: (userId: string) => Promise<CustomerInfo | null>;
-  restorePurchases: () => Promise<CustomerInfo | null>;
-  registerPurchasedCustomer: (info: CustomerInfo) => boolean;
-  getAppUserID: () => Promise<string | null>;
-  shouldPromptAccountClaim: boolean;
-  dismissAccountClaimPrompt: () => void;
-}
+export { useRevenueCat, type RevenueCatContextValue };
 
 const apiKey = Platform.select({
   ios: "appl_vziHsnYOgSMjzwblNQBZlcvuNAo",
   android: "test_uplWOSJiaUBXqOcHZzthmJvPxNI",
 });
-
-const RevenueCatContext = createContext<RevenueCatContextValue | undefined>(
-  undefined
-);
-
-export const useRevenueCat = () => {
-  const ctx = useContext(RevenueCatContext);
-  if (!ctx) {
-    throw new Error("useRevenueCat must be used inside RevenueCatProvider");
-  }
-  return ctx;
-};
 
 const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
@@ -66,10 +41,11 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
     return nextHasPro;
   };
 
-  const trackPaywallGateHit = (): void => {
+  const trackPaywallGateHit = (source: string): void => {
     posthog?.capture("premium_gate_hit", {
       feature: "premium_subscription",
       context: "paywall_presentation",
+      source,
     });
   };
 
@@ -139,8 +115,9 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  async function presentPaywall(): Promise<boolean> {
-    trackPaywallGateHit();
+  // ponytail: robust telemetry for paywall impression, dismiss, and completion
+  async function presentPaywall(source = "unknown"): Promise<boolean> {
+    trackPaywallGateHit(source);
     if (isPaywallPresentationInProgressRef.current) {
       return false;
     }
@@ -151,8 +128,14 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
       const offering = offerings.current;
 
       if (!offering) {
+        posthog?.capture("paywall_not_presented", { source, reason: "no_offering" });
         return false;
       }
+
+      posthog?.capture("paywall_viewed", {
+        source,
+        offering_id: offering.identifier,
+      });
 
       const paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall({
         offering: offering,
@@ -160,13 +143,24 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
 
       switch (paywallResult) {
         case PAYWALL_RESULT.NOT_PRESENTED:
+          posthog?.capture("paywall_not_presented", { source });
+          return false;
         case PAYWALL_RESULT.ERROR:
+          posthog?.capture("paywall_error", { source });
+          return false;
         case PAYWALL_RESULT.CANCELLED:
+          posthog?.capture("paywall_dismissed", { source, method: "user_cancelled" });
           return false;
         case PAYWALL_RESULT.PURCHASED:
         case PAYWALL_RESULT.RESTORED:
           setHasPro(true);
           await refreshCustomerInfo();
+          posthog?.capture(
+            paywallResult === PAYWALL_RESULT.PURCHASED
+              ? "paywall_purchased"
+              : "paywall_restored",
+            { source },
+          );
           posthog?.capture("subscription_access_granted", {
             source:
               paywallResult === PAYWALL_RESULT.PURCHASED ? "purchase" : "restore",
@@ -181,6 +175,7 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (e) {
       if (!isPurchaseCancelledError(e)) {
         console.error(e);
+        posthog?.capture("paywall_error", { source, error: String(e) });
       }
       return false;
     } finally {
@@ -189,7 +184,7 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   async function presentPaywallIfNeeded(): Promise<boolean> {
-    trackPaywallGateHit();
+    trackPaywallGateHit("gate_if_needed");
     try {
       const offerings = await Purchases.getOfferings();
       const offering = offerings.current;

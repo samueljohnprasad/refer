@@ -10,6 +10,7 @@ import { createLogger } from "@/src/lib/logger";
 import { usePostHog } from "posthog-react-native";
 import { requestReviewForMilestone } from "@/src/hooks/useReviewPrompt";
 import { useTranslation } from "react-i18next";
+import { trackD0Milestone } from "@/src/hooks/useRetentionTracker";
 
 const log = createLogger("useJournalOperationsHandler");
 
@@ -99,6 +100,7 @@ export const useJournalOperationsHandler = ({
         has_audio: entry?.input_type === "audio",
         text_length: journalText.length,
       });
+      void trackD0Milestone("first_journal");
       toast.show({
         placement: "top",
         variant: "success",

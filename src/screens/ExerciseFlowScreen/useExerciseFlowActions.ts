@@ -18,6 +18,7 @@ import type {
 } from "@/src/types/exerciseFlow";
 import type { UseExerciseMutationReturn } from "@/src/hooks/useExerciseMutation";
 import { acknowledgePracticeCompletion } from "@/src/domains/practice/data/practiceCompletion.repo";
+import { trackD0Milestone } from "@/src/hooks/useRetentionTracker";
 
 const logger = createLogger("exercise-flow-screen");
 
@@ -136,6 +137,7 @@ export function useExerciseFlowActions({
         exercise_type: exerciseType,
         step_count: flow.totalSteps,
       });
+      void trackD0Milestone("first_exercise");
       xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
         customDescription: exerciseTitle || t("flow.ui.exerciseCompleted"),
       });

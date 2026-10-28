@@ -39,6 +39,7 @@ import { useStreakSaverNotification } from "@/src/hooks/useStreakSaverNotificati
 import { useSystemBackgroundColor } from "@/src/utils/useSystemBackgroundColor";
 import { APP_NAVIGATION_FONTS } from "@/src/theme/typography";
 import { useUserIdLogger } from "@/src/hooks/useUserIdLogger";
+import { useRetentionTracker } from "@/src/hooks/useRetentionTracker";
 
 const queryClient = new QueryClient();
 const globalPressableHandlers = {
@@ -59,6 +60,11 @@ function ScreenTracker() {
   return null;
 }
 
+function RetentionTrackerIntegration() {
+  useRetentionTracker();
+  return null;
+}
+
 function AnalyticsProvider({ children }: { children: ReactNode }) {
   if (!posthog) {
     return <>{children}</>;
@@ -67,6 +73,7 @@ function AnalyticsProvider({ children }: { children: ReactNode }) {
   return (
     <PostHogProvider client={posthog}>
       <ScreenTracker />
+      <RetentionTrackerIntegration />
       {children}
     </PostHogProvider>
   );

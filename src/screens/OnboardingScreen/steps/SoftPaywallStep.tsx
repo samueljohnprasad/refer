@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { View } from "react-native";
 import RevenueCatUI from "react-native-purchases-ui";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
@@ -18,6 +18,11 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
 }) => {
   const { registerPurchasedCustomer } = useRevenueCat();
   const analytics = useOnboardingAnalytics();
+
+  // ponytail: log paywall impression as soon as soft paywall step renders
+  useEffect(() => {
+    analytics.trackPaywallViewed();
+  }, [analytics]);
 
   const handleAccessGranted = useCallback(
     (customerInfo: Parameters<typeof registerPurchasedCustomer>[0]): void => {

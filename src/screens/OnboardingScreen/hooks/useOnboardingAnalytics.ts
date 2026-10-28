@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { AppState } from "react-native";
 import { usePostHog } from "posthog-react-native";
 import { OnboardingStepName } from "../types";
+import { trackD0Milestone } from "@/src/hooks/useRetentionTracker";
 
 export type AnalyticsPrimitive = string | number | boolean | string[];
 
@@ -333,6 +334,7 @@ export const useOnboardingAnalytics = (): UseOnboardingAnalyticsReturn => {
         total_duration_seconds: totalSec,
       });
       setUserPersonProperties({ onboarding_completed: true });
+      void trackD0Milestone("onboarding");
     },
     [trackEvent, setUserPersonProperties],
   );

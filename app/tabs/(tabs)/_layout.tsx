@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { useColorScheme } from "react-native";
 import { useTranslation } from "react-i18next";
+import { usePathname } from "expo-router";
+import { usePostHog } from "posthog-react-native";
 
 const Label = NativeTabs.Trigger.Label;
 const Icon = NativeTabs.Trigger.Icon;
@@ -12,6 +14,32 @@ export default function TabLayout() {
   const isDark = useColorScheme() === "dark";
   const { t: tCommon } = useTranslation("common");
   useWidgetWeekMoods();
+
+  // ponytail: minimal tab switch tracking via pathname observer
+  const pathname = usePathname();
+  const posthog = usePostHog();
+  const prevTabRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const match = pathname.match(/\/(home|journal|timeline|journeys|exercises)/);
+    const currentTab = match ? match[1] : null;
+
+    if (currentTab && currentTab !== prevTabRef.current) {
+      if (prevTabRef.current !== null) {
+        posthog?.capture("tab_switched", {
+          from_tab: prevTabRef.current,
+          to_tab: currentTab,
+          path: pathname,
+        });
+      } else {
+        posthog?.capture("tab_initial_viewed", {
+          tab: currentTab,
+          path: pathname,
+        });
+      }
+      prevTabRef.current = currentTab;
+    }
+  }, [pathname, posthog]);
 
   return (
     <NativeTabs
