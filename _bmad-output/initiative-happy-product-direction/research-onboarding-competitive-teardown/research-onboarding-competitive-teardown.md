@@ -1,162 +1,212 @@
-# Competitor Onboarding Teardowns & Friction Analysis
-
-**Topic:** Mobile Onboarding Architectures, Psychological Mechanics & Conversion Benchmarks  
-**Decision:** Redesign Happy's onboarding flow to fix PostHog drop-offs (Lesson/Pact & Soft Paywall) and lift D1 completion from 27.3% to 55%+  
-**Status:** complete | **Type:** competitive | **Topology:** breadth-first | **Preset:** standard  
-
+---
+type: competitive
+topic: Day-0 onboarding activation, CBT aha, trust, and premium intent
+decision: Choose the first useful onboarding loop and the role of Thought Catcher
+status: complete
+created: 2026-10-20
+updated: 2026-10-30
+validation: normal
+verified_claims: 10
+unverified_claims: 1
+overturned_claims: 2
 ---
 
-## 1. Executive Summary
+# Happy onboarding: Thought Catcher and the first useful loop
 
-PostHog telemetry from Happy's last 30 days (excluding internal testing) revealed a steep onboarding leak:
-- **11 users** started and completed early intake (100% through Journey Map)
-- **3 users dropped** during first lesson / pact signing (72.7% remaining)
-- **3 more users dropped** immediately upon hitting the soft paywall (45.5% remaining)
-- Only **3 users reached Home** (27.3% overall completion)
+## Executive decision
 
-This competitive deep recon analyzes how category leaders (**Duolingo, Finch, Headspace, Calm, Fabulous**) design onboarding, corroborated by quantitative data from **RevenueCat** and verbatim **Apple App Store 1–3★ review mining**.
+**Keep Thought Catcher, but redesign its job.** The current canned interaction is a useful demonstration, not a genuine aha moment and not a strong reason to buy Premium. Its tap-the-correct-label structure proves that the app can reveal an answer; it does not yet prove that the user can understand or change a thought that matters to them.
 
-### Core Breakthrough Findings:
-1. **"Play First, Profile Second" (Lazy Registration):** Duolingo defers account creation until *after* Unit 1, Lesson 1 is completed. Delaying registration lifts Day-1 retention by **+20%** [1].
-2. **Active Micro-Exercises Beat Passive Reading:** Cognitive bandwidth in anxious users is severely depleted. Calm uses a 10-second pulsating breath circle on screen 1 [2]; Duolingo uses 1-tap word chips with zero typing [1]. Passive reading of CBT concepts causes immediate bounce.
-3. **The Paywall Placement Trap:** Forcing a paywall before the user interacts with the core loop causes **85% to 92% instant churn** [3]. In contrast, a **Post-First-Win Paywall** yields the highest Day-30 renewal (45%–58%) and lowest refund rates (<2%) [3].
-4. **Fabulous "Pact" Backfire:** While formal commitment contracts exploit Cialdini's consistency bias, pairing a forced contract with an immediate $69.99/yr paywall is cited in App Store reviews as a *"predatory dark pattern targeting neurodivergent users"* [3]. Happy must replace formal pacts with a gentle, 1-tap daily pledge.
+Use five phases: **Route** anonymously to one goal; **Teach** with one worked example; **Practice** through an optional personal attempt; **Continue** by saving the artifact and reaching Home; then **Monetize** with a transparent paywall after the useful loop. The detailed sequence and validation plan appear below.
 
----
+This sequence best fits the available evidence, but no source proves that it will improve Happy's retention or revenue. It is a product hypothesis that requires an in-product experiment.
 
-## 2. Dimension 1: Gamified Onboarding Teardowns (Duolingo & Finch)
+### Direct answers
 
-### A. Duolingo Flow Architecture & Timing
-Duolingo’s 11-step sequence achieves an industry-leading **~51%–54% D1 retention** and **8.6%–9.0% free-to-paid conversion** [1]:
-- **Screen 1–2 (0–5s):** Splash $\rightarrow$ Value prop (*"Learn a language for free. Forever."*) $\rightarrow$ Primary 3D button *"GET STARTED"*.
-- **Screen 3–8 (5–55s):** Low-friction intake: Language selection $\rightarrow$ Attribution $\rightarrow$ Knowledge baseline $\rightarrow$ Motivation $\rightarrow$ Social proof $\rightarrow$ Daily pace (*Casual 3m / Regular 10m*).
-- **Screen 9–10 (55–75s):** Starting point branching $\rightarrow$ Home screen widget preview (*"I'll cheer you on from your home screen"*).
-- **Screen 11 (75s):** Instant handoff to **Unit 1, Lesson 1**. **Zero login screens. Zero paywalls.**
+| Question | Verdict | Why |
+|---|---|---|
+| Does the current Thought Catcher look conceptually sound? | **Partly** | A worked example reduces novice uncertainty, and a short active task is preferable to a long explanation. The canned answer must not masquerade as personalization or mastery [18] [19] [20] [21]. |
+| Does it provide value? | **Yes, as instruction** | It can make the CBT skill understandable: one event can support more than one interpretation. Value becomes stronger when the user makes one meaningful choice and receives specific feedback [19] [20] [21] [32] [33] [34] [35]. |
+| Does it create an aha moment? | **Not reliably in its current form** | A canned correct-answer interaction can create comprehension, but genuine self-recognition is more plausible after optional self-relevant application. That transfer is an evidence-informed inference, not a tested onboarding fact [17] [18] [19] [20] [21] [32] [33] [34] [35]. |
+| Will it make users pay for Premium? | **No evidence** | One micro-exercise does not establish willingness to pay. Premium intent must be earned by demonstrating a repeatable learning path, continuity, and future value. Subscription benchmarks do not isolate Thought Catcher or paywall placement as causes [10]. |
 
-### B. Duolingo First-Lesson Mechanics (Unit 1, Lesson 1)
-- **10–12 micro-questions** completed in 120–180 seconds [1].
-- **Cognitive Ramp ($i + 1$):** Q1–Q3 are trivial picture-word matches ($<2\%$ error rate). Q4–Q7 use audio pattern recognition. Q8–Q10 use tap-to-assemble word chips (no keyboard typing). Missed questions dynamically re-queue at the end so the user *always* finishes on a victory.
-- **Dopamine Delivery:** Bottom drawer snaps up with bright green banner (`#58CC02`), ascending audio chime, and medium haptic feedback. XP burst (+10 XP) and Day 1 Streak flame ignite on completion.
+## Why the hybrid wins
 
-### C. Finch Companion Bonding Pattern
-- **45-Second Egg Hatching:** Finch lets users pick an egg color on screen 2 and hatch a baby bird by screen 4 [1].
-- **Low-Energy Baseline Tasks:** Avoids intimidating goals. Gives micro-tasks: *"Survive the day"*, *"Get out of bed"*, *"Take 3 deep breaths"* (5⚡ energy each). Completing 3 fills the 15⚡ requirement to launch the bird on its Day 1 adventure [1].
-- **Tamagotchi Effect:** The user cares for the digital pet when they lack energy to care for themselves. Paywalls (Finch Plus) are strictly deferred until *after* the pet embarks on its first journey.
+| First-use option | Learning clarity | Personal relevance | Trust and burden | Premium story | Decision |
+|---|---:|---:|---:|---:|---|
+| Current canned correct-answer Thought Catcher | High | Low | Low burden; can feel staged | Weak: one isolated interaction does not justify ongoing value | Keep only as worked example |
+| Blank personal thought record first | Low for novices | High | High disclosure and cognitive burden | Medium if it works | Reject for first action |
+| Worked example → optional personal practice | High | Medium–high | User controls depth | Strongest: teaching plus transfer | **Recommend** |
+| Breathing or mood slider only | High | Medium | Low burden | Weak fit with Learn → Practice → Journal → Insight | Support, not core aha |
 
----
+These ratings are decision heuristics, not comparative test results.
 
-## 3. Dimension 2: Mental Health & CBT Onboarding (Headspace, Fabulous, Calm)
+Worked examples help novices in other learning domains, while active generation and self-explanation generally improve learning [19] [20] [21]. Self-referential encoding can improve memory, but evidence that personalization improves digital mental-health outcomes is scarce and inconclusive [17] [18]. Those findings support a bridge from demonstration to optional application—not an immediate demand for sensitive disclosure.
 
-### A. Intake Quiz Pacing & Fatigue Management
-- **Calm (3–5 questions):** Minimalist. Screen 1 opens with a 10-second breathing circle (*"Take a deep breath"*) before asking a single diagnostic question [2].
-- **Headspace (5–8 questions):** Conversational tone, warm Nunito typography, segmented progress chunks, and science proof beats (*"10 days increases happiness by 16%"*) [2].
-- **Fabulous (15–25 questions):** Heavy clinical diagnostic intake. Uses artificial 3–5s loading screens (*"Analyzing your habits..."* $\rightarrow$ *"Generating 30-day trajectory"*) to trigger the **IKEA / Endowment Effect** [2].
+### Define the aha precisely
 
-### B. Active Micro-Exercises vs. Passive Text Lessons
-- Anxious and neurodivergent users experience executive function depletion. Walls of text explaining CBT triggers, cognitive distortions, or automatic thoughts feel like academic homework.
-- **The Winning Pattern:** A 15–30 second interactive exercise (e.g. popping a cognitive distortion bubble or rating mood on a kinetic slider) delivers parasympathetic down-regulation and high self-efficacy [2].
+> “The event did not change, but I can see another credible interpretation—and I know the move I just practiced.”
 
-### C. Commitment & Pact Ceremonies
-- **Fabulous "Contract with Myself":** User holds a biometric fingerprint icon for 2.5 seconds with escalating haptic pulses, stamping a wax seal *"SIGNED & SEALED"* [2].
-- **The Backfire Risk:** If the contract is placed immediately before a paywall, users feel deceived and trapped into spending money. A daily pledge must feel like self-empowerment, never a commercial pre-condition.
+The aha is not “the app told me the correct distortion label,” “I feel better, therefore this works,” or “I earned XP, therefore I made mental-health progress.” Reappraisal can change immediate interpretation or emotion, but brief digital interventions often do not change broader symptoms [32] [33] [34] [35]. Happy should present this as a skill demonstration, not a clinical outcome.
 
----
+## Supporting evidence
 
-## 4. Dimension 3: Paywall Timing Benchmarks & Review Mining
+### What mature products actually show
 
-### A. Quantitative Placement Benchmarks (RevenueCat / Adapty)
-- **Hard Upfront Paywalls:** Convert at **10.7%** initial trial start, but cause **85%–92% immediate drop-off** and drop Day-7 retention by **45%–60%** [3].
-- **The "Day 0" Intent Rule:** **50%–55%** of paying subscribers and **82%** of trial starts occur during the first session [3].
-- **Post-First-Win Paywall (Happy Core Loop):** Yields **45%–58% Day-30 renewal** (highest in industry) and $<2\%$ refund rates [3].
+Mobbin establishes visible screen order only. It does not establish conversion, retention, wellbeing, or causal superiority.
 
-### B. Notification Permission Best Practices
-- **Cold Native Prompt:** Burning the iOS prompt on app launch yields $<25\%–30\%$ opt-in [3].
-- **Contextual Soft-Ask (Primer):** Yields **55%–70% opt-in** [3].
-- **The Blinkist Trial Transparency Model:** Coupling push notifications with trial reminder transparency (*"We will remind you on Day 5 before your trial ends"*) increased push opt-in from **6% to 74%** and lifted trial starts by **+23%** [3].
+- **Duolingo** routes goals and proficiency into a lesson path, while a captured profile flow lets the user defer account creation [1] [2] [3].
+- **Finch** converts support areas into a concrete starter plan and ties reminders to named goals or actions [4] [5] [6].
+- Captured **Headspace, Calm, and stoic.** variants place a trial or paywall before a completed practice [7] [8] [9]. Their existence does not prove that Happy should copy them.
+- **Ahead and Liven** use long assessments or commitments before later lesson and practice flows [37] [38] [39] [40] [41] [42]. Calling the earlier steps “theatre” is interpretation, not a Mobbin fact.
 
-### C. App Store Review Mining (Verbatim Quotes)
-- **Calm (1★):** *"When you have advertisement saying your app is free, and people download it to find out no it’s not free... That’s not free."* [3]
-- **Fabulous (1★):** *"Fabulous markets itself as support for ADHD... but its onboarding operates on predatory dark patterns designed to trap users in recurring billing... Avoid this ecosystem completely."* [3]
-- **Finch (1★):** *"All the notifications are stacking up. I have to take more and more effort to keep up with this stupid app... so I delete the whole thing."* [3]
-- **Reflectly (4★):** *"The little reminder thing that tells you that you only have so many hours to upgrade... is so fake and obnoxious when you just want to open the app and pour out your feelings."* [3]
+The useful cross-product pattern is a clear sequence the user can understand: **I chose a need → did a real action → saw a result → know what comes next.** Happy should preserve that sequence while staying faithful to Learn → Practice → Journal → Insight.
 
----
+### Trust before monetization
 
-## 5. Cross-Dimension Insights: Synthesizing the Solution
+RevenueCat reports a 2026 median Day-35 download-to-paid rate of 10.7% for hard-paywall apps and 2.1% for freemium apps [10]. This is an observational cohort comparison, not proof that moving Happy's paywall forward will multiply conversion. The denominator is installs, not paywall viewers.
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                     HAPPY'S POSTHOG LEAK DIAGNOSIS & FIX                        │
-├───────────────────────┬──────────────────────────────┬──────────────────────────┤
-│ Observed PostHog Leak │ Root Cause from Recon        │ Proven Competitor Fix    │
-├───────────────────────┼──────────────────────────────┼──────────────────────────┤
-│ Leak 1: 11 → 8 users  │ Heavy reading lesson &       │ Replace reading with a   │
-│ (-27.3% at Lesson/    │ high-friction pact signing   │ 30s active thought-pop   │
-│ Pact transition)      │ trigger cognitive fatigue.   │ + 1-tap panda high-five. │
-├───────────────────────┼──────────────────────────────┼──────────────────────────┤
-│ Leak 2: 8 → 5 users   │ Soft paywall appears before  │ Move paywall to Home     │
-│ (-37.5% at Soft       │ user experiences core value; │ re-entry or trigger post-│
-│ Paywall gate)         │ feels like a bait-and-switch.│ first-win with trial map.│
-├───────────────────────┼──────────────────────────────┼──────────────────────────┤
-│ Leak 3: 5 → 3 users   │ Notification prompt burns    │ Blinkist pattern: pair   │
-│ (-40% at Permission/  │ iOS single chance without    │ notification opt-in with │
-│ Welcome screen)       │ explicit value anchor.       │ streak & trial safety.   │
-└───────────────────────┴──────────────────────────────┴──────────────────────────┘
-```
+RevenueCat also reports that 82.1% of Health & Fitness trial starts occur on Day 0 [10]. Day 0 is not necessarily the first session, and the result does not require the paywall to precede value. Happy can complete one short useful loop and still present the paywall on Day 0.
 
-1. **Intake Flow is Already Strong:** 100% of Happy users completed Quiz Motivation, Stress Level, and Plan Reveal. **Do NOT touch or lengthen the initial intake quiz.**
-2. **The Friction is at the Handoff to Content:** Users stall when pushed into text-heavy CBT psychoeducation. They want tactile catharsis.
-3. **Paywall Timing Must Respect Happy Core:** Paywall must NEVER block the user from reaching the Home dashboard on Day 1.
+The paywall should sell **continuation**, not relief from artificial friction:
 
----
+- a guided journey matched to the selected goal;
+- more linked lessons and practices;
+- continuity across saved reflections;
+- pattern insights only after enough private data exists;
+- a clear trial timeline, renewal price, restore path, and dismiss path.
 
-## 6. Actionable Onboarding Redesign Specification (Sprint 1)
+Qualitative mental-health app research identifies hidden costs, inability to evaluate value, privacy concerns, and loss of control as trust risks [14] [15] [16]. These studies do not yield a universal conversion percentage. Keep raw thought text and personal reflections out of product analytics; instrument stages and choices, not the thought itself.
 
-### Phase 1: Intake & Companion Meet (Screens 1–5) — *Preserve & Polish*
-- **Screen 1 (Splash/Welcome):** Happi the Panda waves. Copy: *"Calm racing thoughts in 90 seconds."* CTA: *"Get Started"* (No login required).
-- **Screen 2 (Motivation):** Single-select cards (*Racing Thoughts, Anxiety, Overthinking, Low Mood*). Auto-advances instantly on tap.
-- **Screen 3 (Stress Level):** Kinetic slider (1–10) with reactive Happi mood expressions.
-- **Screen 4 (Generating Your Plan):** 2.5-second perceived labor loader: *"Happi is personalizing your 2-minute daily calm roadmap..."*
-- **Screen 5 (Plan Reveal):** Trajectory graph showing 30-day cumulative progress with Happi milestone pins.
+### Rewards, commitment, and reminders
 
-### Phase 2: Active First Micro-Win (Screens 6–7) — *Replaces Old Lesson*
-- **Screen 6 (Interactive Thought Catch — 30 Seconds):**
-  - Prompt: *"Let's try catching one thought right now."*
-  - Floating negative thought cloud: *"I'm completely overwhelmed and I'll never catch up."*
-  - 3 clickable cognitive distortion chips: `[Going to Worst Case]` `[All-or-Nothing]` `[Mind Reading]`.
-  - User taps `[Going to Worst Case]`.
-  - Cloud pops with haptic vibration + gentle chime, transforming into reframed thought: *"I have a lot on my plate, but I only need to handle the next 10 minutes."*
-- **Screen 7 (Micro-Win Celebration):**
-  - Happi jumps in celebration (`panda-cheer`).
-  - Drawer pops up: **+10 XP** awarded! Day 1 of Unbreakable Streak ignited.
+Gamification is not an established therapeutic ingredient. Meta-analyses have not shown that the count of gamification or persuasive-design features predicts mental-health efficacy or completion [24] [25]. Consumer-behavior research—not digital mental-health evidence—finds that a broken streak can reduce motivation and repair can soften that damage [26]. Autonomy-supportive interventions show small general health-behavior effects, which supports choice as a direction but does not prove an exact onboarding UI [22] [23].
 
-### Phase 3: Frictionless Daily Pledge & Permission (Screens 8–9) — *Replaces Old Pact*
-- **Screen 8 (The 1-Tap Daily Pledge):**
-  - Title: *"Your 2-Minute Promise"*
-  - Copy: *"I promise to take 2 minutes for my peace of mind each day."*
-  - Interaction: Outstretched panda paw (`panda-high-five`). User taps paw to seal pledge. Instant haptic thud + confetti. Top-right *"Skip"* link clearly visible.
-- **Screen 9 (Contextual Notification Primer):**
-  - Copy: *"When should Happi check in on you?"* Time picker defaults to 9:00 AM.
-  - Transparent value proposition: *"We only send 1 gentle reminder a day to protect your streak. No spam."* CTA: *"Set Reminder"* (triggers iOS prompt).
+Therefore, celebrate completed effort and demonstrated skill. Prefer weekly accumulation, grace, and repair over an “unbreakable” daily streak. Do not award clinical-sounding progress for selecting a canned answer, and do not force a pledge before value.
 
-### Phase 4: Arrival at Home Dashboard (Screen 10)
-- User arrives immediately on `/tabs/home` with anonymous Supabase session.
-- Day 1 journey card active.
-- **Paywall / Account Registration:** Presented contextually *after* the user completes their second action or explores premium exercise packs.
+If Happy asks for commitment, use an optional implementation intention: **If [chosen cue] happens, then I will [tiny practice].** General evidence for if-then planning is stronger than evidence for a vague promise [27] [28]. Its superiority over a coercive onboarding pledge remains untested.
 
----
+Ask for notifications only after the user creates a meaningful action or schedule. Apple and Android recommend contextual permission requests [12] [13]. Notifications can improve immediate opens or actions, but sustained engagement effects are mixed [29] [30] [31].
 
-## 7. Open Questions
+## Corrected legacy claims
 
-1. **Paywall Placement Variant Test:** Should the soft paywall be completely eliminated from the initial onboarding flow, or presented as an optional dismissible trial preview immediately after Screen 9?
-2. **Audio Voice-Over in First Micro-Win:** Does adding a 10-second soothing voice prompt during the Screen 6 thought catch improve engagement or trigger public-space drop-off?
+The earlier version bundled publishers behind three generic citations and overstated several results. These corrections replace those claims.
 
----
+| Legacy claim | Verdict | Correction |
+|---|---|---|
+| Delayed signup raises Day-1 retention by 20% | **Unverified** | Mobbin verifies deferrable profile creation in a captured Duolingo flow, not the retention lift [3]. |
+| Upfront paywalls cause 85–92% immediate churn | **Overturned** | 89.3% is the complement of RevenueCat's 10.7% D35 download-to-paid median. Nonconversion is not subscriber churn, and 35 days is not immediate [10]. |
+| Post-first-win paywalls yield 45–58% Day-30 renewal | **Overturned as labeled** | Current benchmarks place first monthly renewal in the low-50% range for selected segments; they do not isolate post-first-win placement as the cause [10]. |
+| Typical refunds are below 2% | **Overturned** | RevenueCat reports most category medians around 3–4%, with listed category medians from 2.5% to 4.7% [10]. |
+| 82.1% of Health & Fitness trials start in the first session | **Narrowed** | The source says Day 0, not first session [10]. |
+| Blinkist's 6%→74% push opt-in proves delayed prompts win | **Narrowed** | The first-party case reports a bundled redesign with no public sample size or confidence interval. It does not isolate prompt timing [11]. |
+| Contextual notification primers produce 55–70% opt-in | **Unverified as a general benchmark** | Platform guidance supports contextual timing, but not this universal range [12] [13]. |
 
-## 8. Source Appendix
+## Recommended Day-0 sequence
 
-| Ref | Finding / Data Supported | Publisher / Source | Date | Access Date | Confidence |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **[1]** | Duolingo flow, lazy registration (+20% D1), Finch hatching | [Mobbin iOS Flows](https://mobbin.com) / [Lenny's Newsletter](https://www.lennysnewsletter.com) | 2023–2026 | 2026-10-19 | High |
-| **[2]** | Headspace, Calm, Fabulous teardowns & pact mechanics | [Appcues Blog](https://www.appcues.com) / [Duke Center for Advanced Hindsight](https://advancedhindsight.com) | 2021–2025 | 2026-10-19 | High |
-| **[3]** | RevenueCat conversion data, Blinkist notification pattern, App Store reviews | [RevenueCat State of Subscription Apps](https://www.revenuecat.com) / [Apple App Store API](https://apps.apple.com) | 2024–2026 | 2026-10-19 | High |
+### 1. Route
+
+Create the anonymous session and ask one plain-language goal. Use it to select the first short lesson. Avoid diagnosis-like labels and a long assessment.
+
+### 2. Teach
+
+Show situation → first interpretation → another credible interpretation. Explain why the alternative is plausible. Do not make the task a trivia quiz about distortion terminology.
+
+### 3. Practice
+
+Offer **Try with something from today**, **Use another example**, and **Skip for now**. For personal practice, limit the task to a recent, manageable situation, one first interpretation, and one credible alternative. We judge a full blank thought record too demanding for first use; test this assumption in moderated sessions.
+
+### 4. Reflect and save
+
+Optionally ask for a before/after believability or intensity rating. No change is acceptable. Reflect the move learned, save the artifact privately, and show the next lesson or practice on Home.
+
+### 5. Ask for continuity
+
+Offer signup to save or sync. Then offer a tiny if-then plan and reminder. Both remain optional.
+
+### 6. Present Premium
+
+Show a transparent, dismissible paywall after Home arrival or after the saved artifact is visible. Connect benefits to continuation of the journey. Keep trial duration, renewal timing, price, restore, and close controls legible.
+
+## Validation plan
+
+First use 5–8 moderated sessions to compare the canned interaction with the hybrid. Ask users to explain what changed and what the app would help them do next. Watch for forced positivity, label confusion, reluctance to disclose, and mistaken expectations about Premium.
+
+When traffic supports randomization:
+
+- **Control:** worked example only.
+- **Treatment:** worked example plus optional personal practice.
+- Hold signup, reminder, paywall copy, price, and placement constant.
+
+Primary metric: completion of the first useful loop—lesson + linked practice + saved artifact + Home arrival.
+
+Secondary metrics: comprehension, perceived control, time to value, practice completion, second practice within 24 hours and 7 days, signup, paywall dismissal, trial start, trial-to-paid, first renewal, refunds, and complaints.
+
+Guardrails: distress exits, skip use, notification disablement, deletion requests, and no raw reflection content in analytics. Keep engagement, subscription, and wellbeing measures separate. With the current small baseline, report counts and confidence intervals; do not overinterpret percentages.
+
+## Open questions
+
+1. Does optional personal practice improve comprehension and return behavior enough to justify its added burden?
+2. Is Home arrival the clearest value boundary for the paywall, or is the saved-artifact reveal sufficient?
+3. Which continuation benefit creates honest premium intent: guided journeys, saved continuity, or later pattern insights?
+4. Does weekly forgiving progress outperform a daily repairable streak without increasing pressure?
+
+## Source appendix
+
+All sources were accessed on 2026-10-30. Mobbin links refer to captured variants, which may not be the current live default.
+
+| Ref | Source | Date/status |
+|---|---|---|
+| [1] | [Duolingo onboarding](https://mobbin.com/flows/b0b4f93f-5637-46ec-9d77-49ecda6b991d) | Capture date unavailable |
+| [2] | [Duolingo alternate onboarding](https://mobbin.com/flows/ac9d2f58-868d-4fd3-a79c-9655ce6b1522) | Capture date unavailable |
+| [3] | [Duolingo creating a profile](https://mobbin.com/flows/4511e153-c7d5-4b70-b37e-09cc798e49d9) | Capture date unavailable |
+| [4] | [Finch onboarding](https://mobbin.com/flows/80ef83ef-f872-4825-b18d-6b193d60a9aa) | Capture date unavailable |
+| [5] | [Finch setting up goals](https://mobbin.com/flows/19212698-61fe-43ca-9144-60c9e73bbcd2) | Capture date unavailable |
+| [6] | [Finch notifications](https://mobbin.com/flows/e42398a2-8533-456c-ae25-eccac28f5de3) | Capture date unavailable |
+| [7] | [Headspace onboarding](https://mobbin.com/flows/31b21791-dec6-448a-8253-648f5ebbba3e) | Capture date unavailable |
+| [8] | [Calm onboarding](https://mobbin.com/flows/38549b00-2fe8-4fd1-914b-13c4905db245) | Capture date unavailable |
+| [9] | [stoic. onboarding](https://mobbin.com/flows/948a7285-9f2f-46d1-8d82-32da2d4ce828) | Capture date unavailable |
+| [10] | [RevenueCat State of Subscription Apps 2026](https://www.revenuecat.com/state-of-subscription-apps) | Updated 2026-04-22 |
+| [11] | [Blinkist onboarding case](https://uxplanet.org/how-solving-our-biggest-customer-complaint-at-blinkist-led-to-a-23-increase-in-conversion-b60ad514134b) | First-party case; 2021-01-19 |
+| [12] | [Apple notification permission guidance](https://developer.apple.com/documentation/usernotifications/asking-permission-to-use-notifications) | Continuously maintained |
+| [13] | [Android notification permission guidance](https://developer.android.com/develop/ui/compose/notifications/notification-permission) | Updated 2026-10-28 |
+| [14] | [Lived-experience perspectives on mental-health apps](https://mental.jmir.org/2022/2/e29185/) | JMIR; 2022 |
+| [15] | [User-review analysis of mental-health apps](https://www.jmir.org/2022/5/e34351/) | JMIR; 2022 |
+| [16] | [Privacy and trust in mental-health apps](https://pmc.ncbi.nlm.nih.gov/articles/PMC11041456/) | 2024 |
+| [17] | [Self-reference effect meta-analysis](https://pubmed.ncbi.nlm.nih.gov/9136641/) | 1997 |
+| [18] | [Digital mental-health personalization review](https://www.frontiersin.org/journals/digital-health/articles/10.3389/fdgth.2023.1170002/full) | 2023 |
+| [19] | [Worked-examples meta-analysis](https://doi.org/10.1007/s10648-023-09745-1) | 2023 |
+| [20] | [Self-explanation meta-analysis](https://eric.ed.gov/?id=EJ1186664) | 2018 |
+| [21] | [Active-learning meta-analysis](https://doi.org/10.1073/pnas.1319030111) | 2014 |
+| [22] | [Self-determination interventions meta-analysis](https://pubmed.ncbi.nlm.nih.gov/32437175/) | 2020 |
+| [23] | [Autonomous motivation and behavior change](https://pubmed.ncbi.nlm.nih.gov/34881939/) | 2021 |
+| [24] | [Persuasive design in 92 mental-health app RCTs](https://www.nature.com/articles/s41746-025-01567-5) | 2025 |
+| [25] | [Gamification in depression apps](https://pmc.ncbi.nlm.nih.gov/articles/PMC8669581/) | 2021 |
+| [26] | [Broken streaks and repair](https://doi.org/10.1093/jcr/ucac029) | 2022 |
+| [27] | [Psychology of Planning](https://www.annualreviews.org/content/journals/10.1146/annurev-psych-021524-110536) | 2025 |
+| [28] | [The when and how of planning](https://doi.org/10.1080/10463283.2024.2334563) | 2024 |
+| [29] | [Digital mental-health engagement strategies](https://doi.org/10.1177/20552076221098268) | 2022 |
+| [30] | [Tailored push microrandomized trial](https://pmc.ncbi.nlm.nih.gov/articles/PMC6293241/) | 2018 |
+| [31] | [Notifications and app engagement](https://pmc.ncbi.nlm.nih.gov/articles/PMC10337295/) | 2023 |
+| [32] | [Reappraisal of salient negative beliefs](https://pubmed.ncbi.nlm.nih.gov/30656602/) | 2019 |
+| [33] | [Brief cognitive restructuring RCT](https://pubmed.ncbi.nlm.nih.gov/39120779/) | 2024 |
+| [34] | [Digital single-session reappraisal RCT](https://pmc.ncbi.nlm.nih.gov/articles/PMC13255085/) | 2026 |
+| [35] | [Unguided digital single-session intervention](https://pmc.ncbi.nlm.nih.gov/articles/PMC10362424/) | 2023 |
+| [37] | [Ahead short onboarding](https://mobbin.com/flows/97103053-f137-4dcd-85af-31f82e7c1e66) | Capture date unavailable |
+| [38] | [Ahead long onboarding](https://mobbin.com/flows/57e41d19-30db-4443-ab36-b19c8c20dfe4) | Capture date unavailable |
+| [39] | [Ahead journey](https://mobbin.com/flows/4298160c-5dac-4a5a-a687-248472e86d30) | Capture date unavailable |
+| [40] | [Liven onboarding](https://mobbin.com/flows/ba9958ef-dd21-4a03-9ba1-2e5a3f5b51e3) | Capture date unavailable |
+| [41] | [Liven program setup](https://mobbin.com/flows/5695ec7e-a531-4d04-8381-746e3591db36) | Capture date unavailable |
+| [42] | [Liven course](https://mobbin.com/flows/4dba6e5b-b0b8-4644-a6e5-312f4f18d094) | Capture date unavailable |
+
+## Staleness map
+
+| Evidence class | Recheck by | Reason |
+|---|---|---|
+| Mobbin flow captures | 2027-01-30 | Product onboarding and experiments change quickly; capture dates are unavailable. |
+| Subscription benchmarks | 2027-04-30 | Annual datasets and market mix change. |
+| Platform permission guidance | 2027-04-30 | Platform policy and API guidance can change. |
+| User-trust research | 2027-10-30 | Themes are stable, but the market and expectations evolve. |
+| Academic evidence | 2029-10-30 | Core findings are relatively stable; refresh sooner for clinical claims. |
+
+**Earliest scheduled recheck:** 2027-01-30.
