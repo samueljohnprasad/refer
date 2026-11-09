@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Welcome to Happy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+  /* Happi says hello, goal pick, "does this sound like you", then one Thought Catcher chat ending on a saved card
+     with the reminder asked inside it, right after the first value. No plan, pledge or permission step.
+     Spec: _bmad-output/initiative-happy-product-direction/ux-onboarding-and-day-0/EXPERIENCE.md
+     Motion: .agents/skills/rossark-motion-skill. Guide: the production Happi rig plus a thought cloud prop.
+     One main beat per screen; on S2 it is the sky clearing as the reframe lands.
+     Production handoff (what maps to which Expo file): .agents/onboarding-handoff.md */
+  :root{
+    --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--sp-7:48px;
+    --r-s:12px;--r-m:16px;--r-pill:999px;--tap:44px;
+    --t-cap:12px;--t-foot:13px;--t-sub:15px;--t-body:17px;--t-lead:20px;--t-h:24px;--t-title:28px;--t-num:34px;
+    --dur:.28s;--ease:cubic-bezier(.32,.72,0,1);
+    --travel:cubic-bezier(.77,0,.175,1);--open:cubic-bezier(.23,1,.32,1);
+    --font:"Nunito",ui-rounded,-apple-system,system-ui,sans-serif;
+    --bg:#fff;--surface:#fff;--surface-2:#f7f7f7;--tint:#f2f8ef;--sun:#f5b942;--cloud-lo:#e4eee0;--cloud-hi:#a9bfa0;
+    --label:#142414;--label-2:#4b4b4b;--label-3:#767676;
+    --sep:#e5e5e5;--rim:#cfcfcf;
+    --accent:#44633f;--on-accent:#fff;--ink:#5f7f58;--on-ink:#fff;
+    --bw:2px;
+    color-scheme:light;
+  }
+  @media (prefers-contrast:more){:root{--sep:currentColor;--label-3:var(--label-2)}}
+  *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+  [hidden]{display:none!important}
+  html{font-size:17px}
+  body{font-family:var(--font);background:var(--bg);color:var(--label);min-height:100dvh;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;line-height:1.35}
+  #app{width:100%;max-width:430px;height:100dvh;display:flex;flex-direction:column;position:relative;background:var(--bg);overflow:hidden}
+  @media (min-width:600px){
+    body{align-items:center;background:#d9d8d3}
+    #app{width:390px;height:min(844px,calc(100dvh - 48px));border-radius:48px;box-shadow:0 0 0 10px #142414}
+  }
+  button{font:inherit;color:inherit;cursor:pointer}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  header{display:flex;align-items:center;gap:var(--sp-3);padding:calc(var(--sp-2) + env(safe-area-inset-top)) var(--sp-3) 0;min-height:52px}
+  .icon-btn{width:var(--tap);height:var(--tap);display:grid;place-items:center;background:none;border:0;border-radius:var(--r-pill);color:var(--label)}
+  .icon-btn:active{transform:scale(.92)}
+  /* one track from the goal pick to Saved, nudged by every answer (Duolingo, BitePal, Ahead) */
+  .bar{flex:1;position:relative;height:14px;border-radius:var(--r-pill);background:var(--sep);overflow:hidden}
+  .bar i{position:absolute;inset:0 auto 0 0;width:calc(var(--fill,0)*100%);min-width:14px;border-radius:inherit;background:var(--accent);transition:width .5s var(--open)}
+  .bar i::after{content:"";position:absolute;left:7px;right:7px;top:3px;height:3px;border-radius:2px;background:rgba(255,255,255,.3)} /* Duolingo's sheen */
+  .spacer{width:var(--tap)}
+
+  main{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;padding:0 var(--sp-4) var(--sp-5)}
+  main::-webkit-scrollbar{display:none}
+  footer{padding:var(--sp-3) var(--sp-4) calc(var(--sp-4) + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--bg) 88%,transparent);
+    -webkit-backdrop-filter:blur(var(--sp-5)) saturate(1.4);backdrop-filter:blur(var(--sp-5)) saturate(1.4)}
+  footer:empty{display:none}
+  h1{font-size:var(--t-title);line-height:1.1;letter-spacing:-.01em;font-weight:700;text-wrap:balance}
+  .lede{margin-top:var(--sp-2);font-size:var(--t-lead);font-weight:500;color:var(--label-2)}
+
+  /* ===== S0: Happi says hello (Gentler Streak, Finch, Alan open with the character) ===== */
+  .s0{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:var(--sp-7);animation:fade .3s var(--ease) both}
+  .s0 .host{width:220px;margin-top:var(--sp-2)}
+  .s0 h1{margin-top:var(--sp-5)}
+  .s0 .scope0{margin-top:var(--sp-3);max-width:30ch;font-size:var(--t-foot);color:var(--label-2)}
+  .btn+.link{margin-top:var(--sp-2)}
+
+  /* ===== S1: goal pick ===== */
+  .s1{padding-top:var(--sp-3);animation:fade .3s var(--ease) both}
+  .s1 .sky{width:200px;margin:0 0 var(--sp-3) -6px}
+  /* one list of rows, like Duolingo's and Finch's goal pickers; the head is the only colour */
+  .goals{display:flex;flex-direction:column;gap:var(--sp-2);margin-top:var(--sp-5)}
+  /* white card, 2px rim and a 3px rim underneath (Duolingo, BitePal): tactile, and the tinted head tile is the colour */
+  .goal{position:relative;display:flex;align-items:center;gap:var(--sp-3);min-height:76px;padding:var(--sp-2) var(--sp-6) var(--sp-2) var(--sp-2);text-align:left;border:2px solid var(--sep);border-radius:20px;background:var(--surface);box-shadow:0 3px 0 var(--sep);font-size:var(--t-body);font-weight:700;transition:transform .12s var(--open),background var(--dur) var(--ease),border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);animation:drop .45s var(--open) both}
+  .goal:active{transform:translateY(2px);box-shadow:0 1px 0 var(--sep)}
+  .goal.on{background:var(--tint);border-color:var(--ink);box-shadow:0 3px 0 var(--ink);color:var(--accent)}
+  .goal small{display:block;font-size:var(--t-sub);font-weight:500;color:var(--label-2);margin-top:2px}
+  .goal .gi{flex:none;width:58px;height:58px;display:grid;place-items:center;padding:5px;border-radius:16px;background:var(--g,var(--surface-2))}
+  .goal .gi svg{width:100%;height:100%;overflow:hidden}
+  .link+.link{margin-top:0}
+  .link{display:block;margin:var(--sp-5) auto 0;background:none;border:0;min-height:var(--tap);padding:0 var(--sp-3);font-size:var(--t-foot);font-weight:700;color:var(--label-3);text-decoration:underline;text-underline-offset:3px}
+
+  /* ===== S2: the chat ===== */
+  /* one cloud for the whole conversation, sticky at the top; its weather is the thought's weight */
+  .stage{position:sticky;top:0;z-index:2;display:flex;justify-content:flex-end;padding:var(--sp-1) var(--sp-6) var(--sp-2) 0;
+    background:var(--bg)}
+  .stage::after{content:"";position:absolute;left:0;right:0;top:100%;height:18px;pointer-events:none;background:linear-gradient(var(--bg),color-mix(in srgb,var(--bg) 0%,transparent))}
+  .stage .sky{width:132px;margin:0}
+  .stage{transition:opacity .25s var(--open),transform .25s var(--open)}
+  .stage.gone{display:none}
+  /* the reaction beat (BitePal, Duolingo, Ahead): Happi large in the pose of what you picked, its line in a bubble above,
+     then on "Show me" Happi travels to the chat's corner and the line becomes the chat's first message */
+  .stage.hero{position:static;overflow-x:clip;min-height:100%;flex-direction:column;align-items:center;justify-content:center;padding:0 0 var(--sp-5)}
+  .stage.hero::after,.stage.hero .speech{display:none}
+  .stage.hero .host{width:228px;transform:translateX(14%)} /* the rig's viewBox carries the weather cloud on the right: this centres the panda under the tail */
+  .stage.hero:has(.host[hidden]) .say::after{display:none} /* after a crisis match Happi stays gone, so the line has no one to point at */
+  .stage .say{position:relative;max-width:300px;margin-bottom:var(--sp-4);padding:var(--sp-3) var(--sp-4);border:2px solid var(--sep);border-radius:20px;background:var(--surface);
+    font-size:22px;line-height:1.25;text-align:center;animation:say .25s var(--open) .12s both}
+  .stage .say::after{content:"";position:absolute;left:calc(50% - 6px);bottom:-8px;width:12px;height:12px;background:var(--surface);border:2px solid var(--sep);border-top:0;border-left:0;transform:rotate(45deg)}
+  /* the worked example opens on its scene, drawn in the exercise-art style on the goal's tint (Finch, BitePal, How We Feel) */
+  .scene{align-self:stretch;margin:var(--sp-1) 0 var(--sp-3);border-radius:24px;overflow:hidden;background:var(--g);box-shadow:0 3px 0 color-mix(in srgb,var(--g),var(--label) 12%);animation:rise .3s var(--open) both}
+  .scene svg{display:block;width:100%;height:auto;padding:var(--sp-3) var(--sp-3) 0}
+  .scene figcaption{padding:var(--sp-1) var(--sp-4) var(--sp-4);font-weight:700;line-height:1.3}
+  .stage.aside{pointer-events:none;opacity:0;transform:scale(.96);transition-duration:.2s;transition-timing-function:ease-in} /* stepping aside: no face watches you write */
+  .thread{display:flex;flex-direction:column}
+  .bub{align-self:flex-start;max-width:88%;background:var(--tint);border-radius:4px var(--r-m) var(--r-m) var(--r-m);padding:var(--sp-3) var(--sp-4);margin-bottom:var(--sp-2);font-weight:500;line-height:1.4;color:var(--label);animation:say .22s var(--open) both}
+  .msg+.me,.me+.msg,.keep+.msg{margin-top:var(--sp-3)}
+  /* chat lines are the app talking, so they carry no face; Happi speaks in its own bubble on the stage */
+  .msg{display:flex;align-items:flex-end;gap:var(--sp-2);align-self:flex-start;max-width:94%;margin-bottom:var(--sp-2)}
+  .msg .bub,.msg .typing{margin:0;max-width:none}
+  .bub em{font-style:normal;font-weight:700;color:var(--accent)}
+  /* Happi speaks in sentences, no labels inside bubbles. One visual idea runs through the whole chat and
+     into the saved card and My Log: hollow dot = the thought as it showed up, filled dot = the other view. */
+  .bub .pt{position:relative;display:block;margin-top:var(--sp-2);padding-left:22px;font-size:var(--t-lead);font-weight:700;line-height:1.3;letter-spacing:-.01em}
+  .bub .pt::before{content:"";position:absolute;left:0;top:7px;width:11px;height:11px;border-radius:50%;box-sizing:border-box;background:var(--ink)}
+  .bub q.pt{quotes:none} /* ::before is the dot, so open-quote would be lost; quotes are literal in the text */
+  .bub q.pt::before{background:#fff;border:2px solid var(--ink)}
+  .bub .why{display:block;margin-top:var(--sp-2);color:var(--label-2)}
+  .blank{display:inline-block;min-width:96px;border-bottom:var(--bw) solid var(--ink);text-align:center;color:var(--accent)}
+  .me{align-self:flex-end;max-width:85%;background:var(--ink);color:var(--on-ink);border-radius:var(--r-m) var(--r-m) 4px var(--r-m);padding:var(--sp-3) var(--sp-4);
+    margin-bottom:var(--sp-2);font-weight:500;line-height:1.35;overflow-wrap:anywhere;animation:send .2s var(--open) both;transform-origin:100% 100%}
+  .typing{align-self:flex-start;display:flex;gap:5px;padding:var(--sp-3) var(--sp-4);background:var(--tint);border-radius:4px var(--r-m) var(--r-m) var(--r-m);margin-bottom:var(--sp-2)}
+  .typing i{width:7px;height:7px;border-radius:50%;background:var(--cloud-hi);animation:dot 1s ease-in-out infinite}
+  .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+  @keyframes dot{30%{transform:translateY(-4px)}60%{transform:none}}
+  @keyframes say{from{opacity:0;transform:translateY(8px) scale(.97)}}
+  @keyframes send{from{opacity:0;transform:scale(.94)}}
+  @keyframes drop{from{opacity:0;transform:translateY(-10px)}}
+  @keyframes fade{from{opacity:0}}
+
+  /* replies live in the footer, like a keyboard's suggestion strip */
+  .qrs{display:flex;flex-direction:column;gap:var(--sp-2)}
+  .qrs.wrap{flex-direction:row;flex-wrap:wrap}
+  .qr{min-height:var(--tap);text-align:left;border:var(--bw) solid var(--sep);border-radius:var(--r-m) var(--r-m) 4px var(--r-m);background:var(--surface);padding:var(--sp-3) var(--sp-4);font-size:var(--t-body);font-weight:600;line-height:1.3;color:var(--label);transition:transform .12s var(--open),border-color var(--dur) var(--ease);animation:say .22s var(--open) both}
+  .qrs.wrap .qr{border-radius:var(--r-pill);padding:0 var(--sp-4)}
+  .qr:active{transform:scale(.97);border-color:var(--ink)}
+  .qrl{font-size:var(--t-foot);font-weight:500;color:var(--label-3);margin-bottom:var(--sp-2)}
+  /* composer: a filled field, not a ring; no focus styling (L11), the send button carries the colour */
+  .row{display:flex;align-items:flex-end;gap:var(--sp-2);padding:var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-4);background:var(--surface-2);border:1px solid transparent;
+    border-radius:calc(var(--tap)/2 + var(--sp-1) + 1px);transition:border-color var(--dur) var(--ease),background var(--dur) var(--ease)}
+  .row textarea{flex:1;min-width:0;min-height:var(--tap);max-height:8rem;padding:var(--sp-3) 0;border:0;background:transparent;font:inherit;font-weight:500;line-height:1.35;resize:none;outline:none;color:var(--label);field-sizing:content}
+  .row textarea::placeholder{color:var(--label-2)} /* label-3 is 4.24:1 on the grey field */
+  .row button{flex:none;width:var(--tap);height:var(--tap);display:grid;place-items:center;border:0;border-radius:50%;background:var(--ink);color:var(--on-ink);transition:background var(--dur) var(--ease),color var(--dur) var(--ease)}
+  .row button:disabled{background:transparent;color:var(--label-3);cursor:default}
+  .cnt{font-size:var(--t-cap);font-weight:700;color:var(--label-3);text-align:right;margin-top:var(--sp-1);min-height:1em}
+  .starters{display:flex;gap:var(--sp-2);overflow-x:auto;scrollbar-width:none;margin:0 calc(-1*var(--sp-4)) var(--sp-2);padding:0 var(--sp-4)}
+  .starters::-webkit-scrollbar{display:none}
+  .starters .qr{flex:none;white-space:nowrap;min-height:var(--tap);border:0;border-radius:var(--r-pill);background:var(--surface-2);padding:0 14px;font-size:var(--t-sub);font-weight:500;color:var(--label-2)}
+  .starters .qr:active{background:var(--tint);color:var(--accent)}
+  .link.quiet{text-decoration:none;font-weight:500}
+  .btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:56px;border:0;border-radius:var(--r-pill);padding:var(--sp-3) var(--sp-5);
+    font-size:var(--t-body);font-weight:700;background:var(--ink);color:var(--on-ink);transition:transform .12s var(--open)}
+  .btn:active{transform:scale(.98)}
+  .btn.ghost{background:var(--surface-2);color:var(--label-2);border:0}
+
+  /* ===== saved card: the payoff lands where the work happened ===== */
+  /* a keepsake, not a receipt: white card on the tactile rim, a band in the goal's tint with a date (Calm, stoic),
+     Happi's sticker on the corner when there is no scene art (Life Reset), the turn from old thought to new view, then neutral stat tiles */
+  .keep{position:relative;scroll-margin-top:28px;align-self:stretch;margin:var(--sp-5) 0 var(--sp-2);border:2px solid var(--sep);border-radius:24px;background:var(--surface);
+    box-shadow:0 3px 0 var(--sep);animation:rise .3s var(--open) both}
+  @keyframes rise{from{opacity:0;transform:translateY(24px) scale(.97)}}
+  .keep .band{border-radius:22px 22px 0 0;background:var(--g,var(--tint))}
+  .keep .band>svg{display:block;width:100%;height:auto;max-height:112px;padding:var(--sp-4) var(--sp-6) 0} /* the scene it practised on: an image-led keepsake (Calm, stoic) */
+  .keep .top{display:flex;align-items:center;gap:6px;padding:var(--sp-3) 88px var(--sp-3) var(--sp-4);font-size:var(--t-foot);font-weight:700;color:var(--accent)}
+  .keep:not(:has(.sticker)) .top{padding-right:var(--sp-4)}
+  @media (max-width:360px){.keep .top{font-size:var(--t-cap)}}
+  .keep .top time{margin-left:auto;font-size:var(--t-foot);font-weight:600;color:var(--label-2)} /* sentence-case date (Wysa, Bears Gratitude) */
+  .sticker{position:absolute;top:-18px;right:14px;width:62px;height:62px;padding:5px;border:2px solid var(--sep);border-radius:50%;background:var(--surface);
+    box-shadow:0 3px 0 var(--sep);transform:rotate(8deg);animation:stick .25s var(--open) .2s both}
+  .sticker svg{width:100%;height:100%}
+  @keyframes stick{from{opacity:0;transform:rotate(8deg) scale(.95) translateY(-6px)}}
+  .chk{flex:none;width:18px;height:18px}
+  .chk circle{fill:var(--accent)}
+  .chk path{fill:none;stroke:#fff;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:20;stroke-dashoffset:20;animation:draw .35s var(--open) .3s forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .keep .body{padding:var(--sp-4)}
+  .lab{display:block;font-size:var(--t-foot);font-weight:600;color:var(--label-2)} /* quiet sentence-case labels; tracked caps on every block read as template */
+  .was{padding:var(--sp-3) var(--sp-4);border-radius:16px;background:var(--surface-2)}
+  .was p{margin-top:var(--sp-1);font-size:var(--t-sub);font-weight:500;line-height:1.4;color:var(--label)}
+  .was .sit{margin-bottom:var(--sp-2)}
+  .turn{display:grid;place-items:center;width:32px;height:32px;margin:-6px auto;position:relative;z-index:1;border-radius:50%;background:var(--ink);color:var(--on-ink);
+    box-shadow:0 0 0 4px var(--surface);animation:turn .25s var(--open) .4s both}
+  @keyframes turn{from{opacity:0;transform:scale(.95)}}
+  /* the new view in the picked-option colours, without the press rim: it is chosen, not tappable */
+  .now{padding:var(--sp-4);border:2px solid var(--ink);border-radius:16px;background:var(--tint)}
+  .now .lab{color:var(--accent)}
+  .now p{margin-top:var(--sp-1);font-family:var(--display);font-size:var(--t-lead);font-weight:600;line-height:1.25;color:var(--label);text-wrap:pretty}
+  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--sp-2);margin-top:var(--sp-4)}
+  @media (max-width:360px){.stats{grid-template-columns:1fr}} /* "Overgeneralizing" can't wrap */
+  /* neutral chips: the new view stays the card's only coloured block (one accent) */
+  .stat{padding:var(--sp-3);border-radius:16px;background:var(--surface-2);animation:say .25s var(--open) .5s both}
+  .stat+.stat{animation-delay:.58s}
+  .stat:last-child:nth-child(odd){grid-column:1/-1}
+  .stat .lab+span{display:block;margin-top:2px;font-size:var(--t-sub);font-weight:700;line-height:1.25;color:var(--label)}
+  /* the real message, previewed above the ask (Lloyds, WHOOP); reuses production NotificationPreview */
+  .note{display:flex;align-items:flex-start;gap:10px;margin-top:var(--sp-2);padding:10px 12px;border-radius:14px;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.05);animation:drop .35s var(--open) .5s both}
+  .note img{flex:none;width:28px;height:28px;border-radius:7px}
+  .note b{display:block;font-size:var(--t-foot);font-weight:600}
+  .note span{display:block;font-size:var(--t-foot);font-weight:500;color:var(--label-2);line-height:1.3}
+  .note time{margin-left:auto;font-size:var(--t-cap);font-weight:500;color:var(--label-3)}
+  .pick .ic svg.swing{animation:swing .28s var(--travel);transform-origin:50% 10%}
+  @keyframes swing{30%{transform:rotate(-9deg)}70%{transform:rotate(4deg)}}
+  #tm{width:100%;margin-top:var(--sp-2);min-height:52px;padding:0 var(--sp-4);border:2px solid var(--sep);border-radius:18px;background:var(--surface);font:inherit;font-weight:700}
+
+  /* ===== premium pass: patterns lifted from Duolingo, BitePal, Me+, Breeze, Locket (Mobbin, Nov 2026) ===== */
+  /* each screen sits on a soft wash of its own tint, fading to white (Breeze, BitePal) */
+  #app{background:linear-gradient(180deg,var(--wash,#fff) 0,var(--bg) 58%)}
+  /* chunky primary button: a darker rim under the pill; pressing sinks into it (Duolingo) */
+  .btn{box-shadow:0 4px 0 var(--accent);margin-bottom:4px}
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--accent)}
+  .btn:disabled{background:var(--sep);color:var(--label-3);box-shadow:0 4px 0 #d4d4d4;cursor:default;transform:none}
+  .btn.ghost{box-shadow:none;margin-bottom:0}
+  /* Happi asks every question from a bubble beside it (Duolingo); the bubble is the screen's h1 */
+  .ask{display:flex;align-items:flex-start;gap:var(--sp-2);padding-top:var(--sp-3)}
+  .ask .host{flex:none;width:92px}
+  .ask .host :is([data-p=cloud],[data-p=sun],[data-d]){display:none}
+  .ask h1{position:relative;flex:1;margin-top:var(--sp-3);padding:var(--sp-3) var(--sp-4);border:2px solid var(--sep);border-radius:20px;background:var(--surface);font-size:22px;line-height:1.25;animation:say .25s var(--open) both}
+  h1:focus{outline:none}
+  .ask h1::before{content:"";position:absolute;left:-8px;top:28px;width:12px;height:12px;background:var(--surface);border:2px solid var(--sep);border-top:0;border-right:0;transform:rotate(45deg)}
+  .ask .host[hidden]+h1::before{display:none}
+  /* option rows: white card, rim, tinted illustration tile; a selected row fills with sage */
+  .picks{display:flex;flex-direction:column;gap:var(--sp-3);margin-top:var(--sp-5)}
+  .pick{position:relative;display:flex;align-items:center;gap:var(--sp-3);width:100%;min-height:68px;padding:var(--sp-2) var(--sp-4) var(--sp-2) var(--sp-2);text-align:left;border:2px solid var(--sep);border-radius:20px;background:var(--surface);box-shadow:0 3px 0 var(--sep);
+    font-size:var(--t-body);font-weight:700;color:var(--label);transition:transform .12s var(--open),background var(--dur) var(--ease),border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);animation:drop .4s var(--open) both}
+  .pick:active{transform:translateY(2px);box-shadow:0 1px 0 var(--sep)}
+  .pick.on{background:var(--tint);border-color:var(--ink);box-shadow:0 3px 0 var(--ink);color:var(--accent)}
+  .pick .ic{flex:none;width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:var(--g,var(--surface-2))}
+  .pick small{margin-left:auto;font-size:var(--t-foot);font-weight:600;color:var(--label-3)}
+  .pick.on small{color:var(--accent)}
+  .pick small svg{display:block}
+  /* a check badge on picked cards (BitePal, Me+) */
+  .goal.on::after{content:"";position:absolute;right:12px;top:12px;width:24px;height:24px;border-radius:50%;
+    background:var(--ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/14px no-repeat;animation:pop .2s var(--open)}
+  .goal.on::after{top:calc(50% - 12px)}
+  .pick.on:active,.goal.on:active{box-shadow:0 1px 0 var(--ink)}
+  /* reminder ask inside the thread, under the saved card: the real notification, then a time */
+  .remind{align-self:stretch;margin:var(--sp-3) 0 var(--sp-2);animation:say .3s var(--open) both}
+  .rq{font-weight:700}
+  .remind .note{padding:14px;border-radius:16px;margin-top:var(--sp-3);background:var(--surface-2);box-shadow:none} /* a flat banner preview, not another tappable card */
+  .remind .picks{margin-top:var(--sp-3)}
+  .remind .done{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);font-weight:700;color:var(--label-2)}
+  .remind .done button{background:none;border:0;min-height:var(--tap);padding:0 var(--sp-2);font-size:var(--t-foot);font-weight:700;color:var(--accent)}
+  .sheet .btn{box-shadow:none;margin-bottom:0}.sheet .btn:active{transform:scale(.98)} /* sheets stay plain, the crisis sheet above all */
+  #tm:focus,#tm:focus-visible{outline:none} /* L11: no focus styling on fields */
+
+  /* ===== Happi, the guide: the production rig, plus the thought cloud as a prop ===== */
+  .guide{display:block;width:100%;height:auto;overflow:visible}
+  .stage .host{width:148px}
+  /* colour lives in the art: a sky behind Happi, warm when the thought is light, grey-green when it weighs (--w) */
+  .host{position:relative;isolation:isolate}
+  .host::before{content:"";position:absolute;inset:4% -6% 0;z-index:-1;pointer-events:none;border-radius:50%;opacity:.8;
+    background:radial-gradient(circle closest-side,color-mix(in srgb,var(--cloud-hi) calc(var(--w,.3)*100%),color-mix(in srgb,var(--sun) 40%,#fff)),transparent)}
+  /* Happi's own words, short and few (03 Presence caps); chat bubbles are the app talking */
+  .speech{position:relative;width:max-content;max-width:180px;padding:var(--sp-2) var(--sp-3);border:1px solid var(--rim);border-radius:var(--r-m);background:var(--surface);
+    font-size:var(--t-sub);font-weight:600;line-height:1.3;color:var(--label);text-align:left;opacity:0;transform:translateY(4px) scale(.96);transition:opacity .22s var(--open),transform .22s var(--open);pointer-events:none}
+  .speech.on{opacity:1;transform:none}
+  .speech::after{content:"";position:absolute;left:calc(50% - 5px);bottom:-6px;width:10px;height:10px;background:var(--surface);border:1px solid var(--rim);border-top:0;border-left:0;transform:rotate(45deg)}
+  .stage .speech{position:absolute;right:calc(148px + var(--sp-6) + 6px);top:32px;max-width:calc(100% - 148px - var(--sp-6) - 16px)}
+  @media (max-width:380px){.stage .host{width:128px}.stage .speech{right:calc(128px + var(--sp-6) + 6px);max-width:calc(100% - 128px - var(--sp-6) - 16px)}} /* small phones: room for the bubble's words */
+  .stage .speech::after{left:auto;right:-6px;bottom:auto;top:calc(50% - 5px);transform:rotate(-45deg)}
+
+  /* ===== sheets and the sample system prompt ===== */
+  .scrim{position:absolute;inset:0;z-index:5;background:rgba(0,0,0,.4);animation:fade .2s}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:var(--sp-5) var(--sp-4) calc(var(--sp-5) + env(safe-area-inset-bottom));background:var(--bg);border-radius:24px 24px 0 0;animation:up .3s var(--open)}
+  @keyframes up{from{transform:translateY(100%)}}
+  .sheet h3{font-size:var(--t-h);font-weight:700;line-height:1.15;padding-right:var(--tap)}
+  .sheet p{margin:var(--sp-2) 0 var(--sp-4);color:var(--label-2);font-weight:500}
+  .sheet .scope{margin-top:calc(-1*var(--sp-2));font-size:var(--t-foot)}
+  .sheet .btn+.btn{margin-top:var(--sp-2)}
+  .sheet.help{animation:none}
+  a.btn{text-decoration:none}
+  .sheet .x{position:absolute;top:var(--sp-3);right:var(--sp-3);width:var(--tap);height:var(--tap);display:grid;place-items:center;border:0;border-radius:50%;background:var(--surface-2);color:var(--label-2)}
+  .sso{display:flex;flex-direction:column;gap:var(--sp-2)}
+  .sso button{min-height:52px;border-radius:var(--r-pill);border:var(--bw) solid var(--sep);background:var(--surface);font-weight:700}
+  .sso button.dark{background:var(--label);color:#fff;border-color:var(--label)}
+  .ios{position:absolute;inset:0;z-index:7;display:grid;place-items:center;background:rgba(0,0,0,.25);animation:fade .15s}
+  .ios div{width:270px;border-radius:14px;background:rgba(242,242,242,.97);text-align:center;overflow:hidden;animation:pop .2s var(--open);font-family:-apple-system,system-ui,sans-serif}
+  .ios b{display:block;padding:var(--sp-4) var(--sp-4) 2px;font-size:var(--t-sub);line-height:1.25}
+  .ios span{display:block;padding:0 var(--sp-4) var(--sp-4);font-size:var(--t-cap);color:#333}
+  .ios nav{display:flex;border-top:1px solid #ccc}
+  .ios nav button{flex:1;min-height:44px;border:0;background:none;color:#0a7aff;font-size:var(--t-body)}
+  .ios nav button+button{border-left:1px solid #ccc;font-weight:700}
+  .ios em{display:block;padding:var(--sp-2);font-size:var(--t-cap);font-style:normal;color:#888;border-top:1px solid #ddd}
+  @keyframes pop{from{transform:scale(1.1);opacity:0}}
+
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.chk path{stroke-dashoffset:0}}
+</style>
+<link rel="stylesheet" href="happy-ui.css">
+</head>
+<body>
+<div id="app">
+  <header>
+    <button class="icon-btn" id="back" aria-label="Back" hidden><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="bar" id="bar" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="100" hidden><i></i></div>
+    <span class="spacer" id="spacer" hidden></span><button class="link quiet" id="sos" hidden style="margin:0">Get help</button>
+  </header>
+  <main id="main"></main>
+  <footer id="foot"></footer>
+  <div class="scrim" id="scrim" hidden></div>
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t" hidden></section>
+</div>
+<script>
+// ---- data: one worked example per goal (plain-language traps, no clinical terms) ----
+const GOALS=[
+  {id:'worry',tint:'#fff1d6',ideas:{sit:['A friend left my message on read.','I have a doctor’s appointment next week.','My boss said “let’s talk Monday.”'],th:['Something is going to go wrong.','I’ve missed something important.','They’re upset with me.']},label:'Worry',sub:'I worry about what could go wrong',f:.68,
+    mirror:'Worry jumps to what might happen. Let’s catch one together.',
+    scene:'A friend texts: “Can we talk later?”',thought:'I’ve done something wrong.',
+    trap:'mind_reading',why:'She didn’t say what it’s about, so “I did something wrong” is a guess, not a fact.',
+    fair:'I don’t know why she wants to talk. It could be about anything.'},
+  {id:'mood',tint:'#e2eef8',ideas:{sit:['I stayed in bed most of Saturday.','I skipped the thing I’d planned.','I forgot to reply to a few messages.'],th:['I never get anything done.','Nothing is going to get better.','I’m letting everyone down.']},label:'Low mood',sub:'Everything feels hard lately',f:.78,
+    mirror:'Low mood makes everything look worse. Let’s look at one thought.',
+    scene:'You stayed in all weekend.',thought:'I never get anything done.',
+    trap:'overgeneralizing',why:'Resting one weekend doesn’t erase what you got done last month.',
+    fair:'This weekend I rested. Last month I finished a lot.'},
+  {id:'stress',tint:'#fde5dc',ideas:{sit:['Three things are due this week.','My inbox has 80 unread emails.','I’m behind on a project.'],th:['It’s all going to fall apart.','I can’t handle all of this.','If I slip once, I’m done.']},label:'Stress',sub:'I have too much to do',f:.72,
+    mirror:'Stress turns every task into an emergency. Let’s catch one.',
+    scene:'Three things are due on the same day.',thought:'If I miss one, everything falls apart.',
+    trap:'catastrophizing',why:'Deadlines slip and get handled. One late task rarely ruins everything.',
+    fair:'One late task is a problem I can explain, not the end of everything.'},
+  {id:'self',tint:'#ece6f7',ideas:{sit:['I got a word wrong in a meeting.','I snapped at someone I love.','I made a small mistake at work.'],th:['I’m such an idiot.','I always mess things up.','I’m not good enough.']},label:'Self-talk',sub:'I’m hard on myself',f:.64,
+    mirror:'The voice in your head can be very harsh. Let’s look at what it says.',
+    scene:'You stumbled over a word in a meeting.',thought:'I’m such an idiot.',
+    trap:'labeling',why:'Everyone gets a word wrong sometimes. One stumble is a moment, not a verdict on you.',
+    fair:'I stumbled once. That’s a moment, not who I am.'},
+  {id:'sleep',tint:'#e4e6f5',ideas:{sit:['It’s 1 AM and I’m still awake.','I woke up at 3 AM again.','I have an early start tomorrow.'],th:['Tomorrow will be a disaster.','I’ll never fall asleep.','I can’t function on this little sleep.']},label:'Sleep',sub:'My thoughts keep me up',f:.6,
+    mirror:'At night, small worries grow big. Let’s catch one.',
+    scene:'It’s 1 AM and you’re still awake.',thought:'Tomorrow is going to be a disaster.',
+    trap:'fortune_telling',why:'You’ve got through tired days before, so “disaster” is a prediction, not a fact.',
+    fair:'I’ve managed on little sleep before. Tomorrow may be tiring, not ruined.'},
+];
+const TRAPS={
+  mind_reading:'Mind reading',overgeneralizing:'Overgeneralizing',catastrophizing:'Catastrophizing',
+  labeling:'Labeling',fortune_telling:'Fortune telling',all_or_nothing:'All-or-nothing',should:'Should statements',
+};
+const STARTERS=['I don’t actually know that yet.','One moment isn’t the whole story.','What would I tell a friend?'];
+const BELIEF=['Not at all','A little','Somewhat','Mostly','Completely'];
+const MAX=280;
+
+// ---- helpers ----
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const unq=s=>s.trim().replace(/^["“]([^]*)["”]$/,'$1'); // typed thoughts sometimes arrive already quoted
+const bare=s=>unq(s).replace(/[.!?…]+$/,''); // quoted mid-sentence: no “thought.”?
+const buzz=()=>navigator.vibrate&&navigator.vibrate(8);
+const STILL=matchMedia('(prefers-reduced-motion: reduce)').matches;
+// a wait that outlives its screen never resolves, so a chat left by Back stops instead of writing into the next screen
+let live=0;
+const wait=ms=>{const t=live;return new Promise(r=>setTimeout(()=>t===live&&r(),STILL?0:ms))};
+const IC=p=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const store=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
+
+// ================= Happi, the guide =================
+// Web port of the production rig so this prototype maps 1:1 to Expo:
+//   art (verbatim) = src/components/ui/happy-scene/art.ts, joints + matrix() = pose.ts,
+//   curves + wave/loop/seeded/track = src/components/ui/motion/engine.ts. Handoff: onboarding-handoff.md
+// The thought cloud is a prop beside Happi. Its weather f (0 clear .. 1 heavy) is how true the thought feels.
+function bez(x1,y1,x2,y2){const c=(a,b,t)=>((1-3*b+3*a)*t+(3*b-6*a))*t*t+3*a*t;
+  return x=>{let lo=0,hi=1,t=x;for(let i=0;i<24;i++){t=(lo+hi)/2;c(x1,x2,t)<x?lo=t:hi=t}return c(y1,y2,t)}}
+const EASE_IN_OUT=bez(.77,0,.175,1),EASE_OUT=bez(.23,1,.32,1); // engine.ts: things that travel / things that arrive
+const wave=(t,per,ph=0)=>Math.sin((t/per+ph)*Math.PI*2);
+const loop=(t,per,ph=0)=>{const p=(t/per+ph)%1;return p<0?p+1:p};
+const seeded=(i,salt=0)=>{const x=Math.sin(i*12.9898+salt*78.233)*43758.5453;return x-Math.floor(x)};
+const clamp01=x=>Math.min(1,Math.max(0,x));
+function track(t,keys){if(t<=keys[0][0])return keys[0][1];
+  for(let i=1;i<keys.length;i++){const k1=keys[i];if(t<=k1[0]){const k0=keys[i-1],sp=k1[0]-k0[0],p=sp>0?(t-k0[0])/sp:1;
+    return k0[1]+(k1[1]-k0[1])*(k1[2]==='out'?EASE_OUT(p):EASE_IN_OUT(p))}}
+  return keys[keys.length-1][1]}
+function mx(x=0,y=0,angle=0,px=0,py=0,sx=1,sy=1){const r=angle*Math.PI/180,c=Math.cos(r),s=Math.sin(r);
+  return `matrix(${[c*sx,s*sx,-s*sy,c*sy,x+px-c*sx*px+s*sy*py,y+py-s*sx*px-c*sy*py].map(n=>+n.toFixed(4)).join(' ')})`}
+const mix=(a,b,p)=>{const h=x=>[1,3,5].map(i=>parseInt(x.slice(i,i+2),16)),A=h(a),B=h(b);return `rgb(${A.map((x,i)=>Math.round(x+(B[i]-x)*clamp01(p))).join()})`};
+
+const INK='#252525',ink=`fill="${INK}" stroke="${INK}" stroke-width="5.5" stroke-linejoin="round"`,line=`fill="none" stroke="${INK}" stroke-linecap="round" stroke-linejoin="round"`;
+const DROPS=[0,1,2,3].map(i=>({x:+(226+seeded(i,1)*36).toFixed(1),per:950+seeded(i,2)*450,ph:seeded(i,3),len:5+seeded(i,4)*3,cyc:-1,a:0}));
+const HAPPI=(u='')=>`<svg class="guide" viewBox="44 0 236 240" aria-hidden="true">
+  <defs><clipPath id="happi-eye-clip${u}"><ellipse cx="99" cy="99" rx="18.5" ry="17.5"/><ellipse cx="165.5" cy="102.75" rx="18" ry="17.75"/></clipPath></defs>
+  <g data-p="sun"><g data-p="rays" stroke="#F5B942" stroke-width="3" stroke-linecap="round">${[...Array(8)].map((_,i)=>{const a=i*Math.PI/4;
+    return `<line x1="${(Math.cos(a)*14).toFixed(1)}" y1="${(Math.sin(a)*14).toFixed(1)}" x2="${(Math.cos(a)*18).toFixed(1)}" y2="${(Math.sin(a)*18).toFixed(1)}"/>`}).join('')}</g><circle r="10" fill="#F5B942"/></g>
+  <g data-p="cloud"><rect data-p="c3" x="220" y="29" width="50" height="12" rx="6"/><circle data-p="c0" cx="229" cy="30" r="11"/><circle data-p="c1" cx="245" cy="22" r="14"/><circle data-p="c2" cx="260" cy="31" r="10"/></g>
+  <g stroke="#44633F" stroke-width="2.5" stroke-linecap="round">${DROPS.map(d=>`<line data-d x1="${d.x}" x2="${d.x}" y1="44" y2="50" opacity="0"/>`).join('')}</g>
+  <g data-p="shadow"><ellipse cx="130" cy="229" rx="54" ry="8" fill="#BCD0AF"/></g>
+  <g data-p="root">
+    <path d="M97 200 L99 218 C100 226 105 229 111 229 C118 229 123 226 124 219 L125 206 Z" ${ink}/>
+    <path d="M135 206 L136 219 C137 226 142 229 149 229 C155 229 160 226 161 218 L163 200 Z" ${ink}/>
+    <g data-p="body"><path d="M96 150 C92 172 93 196 98 210 C104 216 156 216 162 210 C167 196 168 172 164 150 Z" ${ink}/>
+      <path d="M104 166 C100 180 100 196 104 206 C116 212 144 212 156 206 C160 196 160 180 156 166 C150 158 110 158 104 166 Z" fill="#FFF"/>
+      <g data-p="heart"><path d="M131.5 183 C127 175 117 177 118.5 186 C119.5 192 126 196 131.5 199.5 C137 196 143.5 192 144.5 186 C146 177 136 175 131.5 183 Z" fill="#C8BEE6"/></g>
+      <path d="M118 205 Q130 209.5 142.5 205.5" ${line} stroke-width="4"/></g>
+    <g data-p="armR"><path d="M149 158 A11 11 0 0 1 171 158 L171 172 A11 11 0 0 1 149 172 Z" ${ink}/>
+      <g data-p="foreR"><path d="M149 172 A11 11 0 0 1 171 172 L172.5 186 A12.5 12.5 0 0 1 147.5 186 Z" ${ink}/></g></g>
+    <g data-p="armL"><path d="M87 158 A11 11 0 0 1 109 158 L109 172 A11 11 0 0 1 87 172 Z" ${ink}/></g>
+    <g data-p="head">
+      <g data-p="earL"><path d="M60 36 C66 22 86 18 98 26 C108 33 108 50 100 60 C90 70 70 70 62 60 C56 53 56 44 60 36 Z" ${ink}/></g>
+      <g data-p="earR"><path d="M164 40 C172 30 192 30 200 42 C207 53 205 68 196 74 C186 80 170 76 165 66 C161 58 160 48 164 40 Z" ${ink}/></g>
+      <path d="M66 64 C84 46 104 40 118 40 C124 35 132 33 136 37 C158 38 182 44 196 64 C208 82 212 106 208 124 C204 144 186 158 160 163 C140 166 122 166 102 163 C76 158 55 142 52 112 C51 92 56 76 66 64 Z" fill="#FFF" stroke="${INK}" stroke-width="5.5" stroke-linejoin="round"/>
+      <path d="M131 35 Q138 38 136 47 Q135 52 132 51 M141 45 Q146 49 144 55" ${line} stroke-width="4"/>
+      <ellipse cx="97.5" cy="99" rx="25.5" ry="25" fill="${INK}" transform="rotate(-8 97.5 99)"/><ellipse cx="166" cy="102.5" rx="25.5" ry="25.5" fill="${INK}" transform="rotate(6 166 102.5)"/>
+      <g data-p="eyes"><ellipse cx="99" cy="99" rx="18.5" ry="17.5" fill="#FFF"/><ellipse cx="165.5" cy="102.75" rx="18" ry="17.75" fill="#FFF"/>
+        <g clip-path="url(#happi-eye-clip${u})"><g data-p="pupils" fill="${INK}"><circle cx="100.5" cy="101" r="14"/><circle cx="164.5" cy="105" r="14"/>
+          <g fill="#FFF"><circle cx="95.5" cy="93.5" r="3.3"/><circle cx="91.5" cy="99.5" r="2"/><circle cx="159.5" cy="97" r="3"/><circle cx="155.5" cy="103" r="2"/></g></g><g data-p="cheeks" fill="${INK}"><ellipse cx="99" cy="129" rx="24" ry="12"/><ellipse cx="165.5" cy="133" rx="24" ry="12"/></g></g></g>
+      <g data-p="face"><ellipse cx="131.75" cy="113.75" rx="7" ry="4.6" fill="${INK}"/>
+        <g data-p="mouth"><path d="M121 122 Q123.5 127.5 127 126 Q130 125 132 122.5 Q134 125.5 137 126 Q140.5 127.5 142.5 122.5" ${line} stroke-width="3.5"/></g></g>
+    </g>
+    <g data-p="armLF"><g data-p="foreL"><path d="M87 172 A11 11 0 0 1 109 172 L110.5 186 A12.5 12.5 0 0 1 85.5 186 Z" ${ink}/>
+      <g data-p="pad" opacity="0"><circle cx="98" cy="190" r="4.5" fill="#FFF" stroke="${INK}" stroke-width="2"/></g></g></g>
+  </g></svg>`;
+
+// channels ease from wherever they are to a target (never teleport); idle waves ride on top
+const REST={head:0,gx:0,gy:0,mouth:1,lid:0,sink:0,sy:1,cheek:0,pup:1,sL:12,eL:6,sR:-16,eR:8,f:.35,c0:.65,c1:.65,c2:.65};
+// acting poses. mouth: 1 smile, 0 flat, below 0 turned down. lid: resting eyelid. sink: px the head drops
+const POSES={
+  // eyes are Happi's biggest feature: cheek 0..1 pushes each eye into a smiling arch, pup scales the pupils (small = alarmed)
+  // mouths stay ≥0 and the head sinks ≤2: Happi shows attention, never mirrors distress (03 F6, ED5.1)
+  // arms carry the read at chat size (Duolingo, Yazio, BitePal react with the whole body, not a head tilt).
+  // sL/sR shoulder, eL/eR elbow, degrees; + on sL / - on sR swings the arm out, the opposite folds it in to the chest
+  rest:    {head:0, gx:0,   gy:0,   mouth:1,   lid:0,  sink:0,sy:1,    sL:12, eL:6,   sR:-16,eR:8, cheek:0,pup:1},
+  worry:   {head:7, gx:3.5, gy:-1.5,mouth:0,   lid:0,  sink:1,sy:1,    sL:-6, eL:-78, sR:6,  eR:78, cheek:0,pup:0.9},  // paws clasped at the chest
+  mood:    {head:-6,gx:0,   gy:3,   mouth:0, lid:0.15, sink:2,sy:0.99, sL:2,  eL:0,   sR:-2, eR:0, cheek:0,pup:1},   // arms hang limp, head low
+  stress:  {head:-2,gx:-2.5,gy:-.5, mouth:0, lid:0,  sink:1,sy:.95,  sL:26, eL:34,  sR:-26,eR:-34, cheek:0,pup:0.9}, // braced, arms stiff and out
+  self:    {head:-8,gx:-2.5,gy:3,   mouth:0, lid:.2, sink:1,sy:.985, sL:-8, eL:-82, sR:-6, eR:2, cheek:0,pup:0.9},   // one paw pulled in, shrinking
+  sleep:   {head:8, gx:0,   gy:1.5, mouth:.2,  lid:.65,sink:3,sy:.985, sL:10, eL:4,   sR:4,  eR:96, cheek:0,pup:1},  // head drooping onto a paw tucked under the chin (arm can't reach the eye)
+  heavy:   {head:-4,gx:0,   gy:2.5, mouth:0, lid:.25,sink:2,sy:.97,  sL:4,  eL:0,   sR:-4, eR:0, cheek:0,pup:0.9},   // a thought you believe a lot
+  listen:  {head:-6,gx:-2,  gy:2.5, mouth:.6,  lid:0,  sink:0,sy:1,    sL:12, eL:6,   sR:8,  eR:92, cheek:0,pup:1.05},  // paw to the chin, thinking with you
+  gentle:  {head:8, gx:0,   gy:.5,  mouth:.6,  lid:.15,sink:0,sy:1,    sL:34, eL:30,  sR:-34,eR:-30, cheek:0,pup:1.08}, // arms open, palms out, below the shoulders
+  relieved:{head:-2,gx:3,   gy:-3,  mouth:1,   lid:0,  sink:0,sy:1.01, sL:24, eL:20,  sR:-24,eR:-20, cheek:0.6,pup:1}, // arms open a little and look up at the clearing sky; it plays every reframe, so well under the Welcome-back range
+  pride:   {head:5, gx:0,   gy:0,   mouth:1,   lid:0,  sink:0,sy:1.02, sL:-4, eL:-70, sR:-16,eR:8, cheek:0.6,pup:1},   // paw on the heart
+};
+// follow-through: eyes and mouth lead, the head follows, the body settles last (ms at a 600ms pose)
+const LAG={gx:0,gy:0,mouth:0,lid:60,head:90,sink:150,sy:150,sL:60,sR:60,eL:130,eR:130,cheek:40,pup:0}; // elbows trail the shoulders
+const H={hold:0,t:0,ch:{},shots:{},p:null,run:false,gen:0,last:0,vis:true,blinkAt:1800,blinkN:0,greeted:false};
+for(const k in REST)H.ch[k]={from:REST[k],to:REST[k],t0:0,dur:0,curve:'inOut'};
+const val=k=>{const c=H.ch[k];if(H.t>=c.t0+c.dur)return c.to;if(H.t<=c.t0)return c.from;
+  const p=(H.t-c.t0)/c.dur;return c.from+(c.to-c.from)*(c.curve==='out'?EASE_OUT(p):EASE_IN_OUT(p))};
+function to(k,v,dur=600,delay=0,curve='inOut'){const c=H.ch[k];
+  Object.assign(c,STILL?{from:v,to:v,t0:0,dur:0}:{from:val(k),to:v,t0:H.t+delay,dur,curve})}
+// one-shot keyframes added on top of a channel (a nod, the wave); reduced motion skips them
+const shot=(k,keys)=>{if(!STILL)H.shots[k]={t0:H.t,keys}};
+const sv=k=>{const s=H.shots[k];if(!s)return 0;const d=H.t-s.t0;if(d>=s.keys.at(-1)[0]){delete H.shots[k];return 0}return track(d,s.keys)};
+
+// a long pose (a story beat) owns the gaze until it lands; conversational glances wait
+const act=(name,dur=600)=>{const p=POSES[name];for(const k in p)to(k,p[k],dur,LAG[k]*dur/600);if(dur>=1000)H.hold=H.t+dur+200;wake()};
+const look=(gx,gy)=>{if(!STILL&&H.t<H.hold)return;to('gx',gx,400);to('gy',gy,400);wake()};
+// the body grows under the head, so the head rises with it to show; feet stay down (F11)
+const stretch=()=>{shot('sy',[[0,0],[260,.025],[700,0,'out']]);shot('sink',[[0,0],[260,-3],[700,0,'out']]);wake()};
+const nod=()=>{shot('head',[[0,0],[160,5],[460,0,'out']]);wake()};
+// the brand wave from pose.ts: shoulder raises, elbow trails 90ms, forearm swings on a 680ms beat, then rests
+const greet=()=>{shot('sL',[[0,0],[700,58],[2600,58],[3300,0]]);shot('eL',[[0,0],[90,0],[790,104],[2690,104],[3390,0]]);
+  shot('wave',[[0,0],[800,0],[1100,1],[2300,1],[2600,0]]);wake()};
+// weather; slow=true is the story beat: the puffs part one after another, then the sun climbs its arc
+function sky(f,slow=false){const d=slow?1600:600;to('f',f,d);[0,1,2].forEach(i=>to('c'+i,1-f,d,slow?i*90:0));wake()}
+
+// goal tiles: Happi's head in that goal's pose, drawn once (frequent-use surfaces stay still)
+// viewBox fits ears + tilt; lid is exaggerated so the pose reads at 76px
+// pupils and their highlights shrink together about each pupil's centre, so no white dot floats on the sclera
+const PUP=[[100.5,101,14,0],[164.5,105,14,1],[95.5,93.5,3.3,0],[91.5,99.5,2,0],[159.5,97,3,1],[155.5,103,2,1]];
+const sizePupils=(cs,k)=>cs.forEach((c,i)=>{const[x,y,r,o]=PUP[i],[px,py]=PUP[o];
+  c.setAttribute('cx',(px+(x-px)*k).toFixed(2));c.setAttribute('cy',(py+(y-py)*k).toFixed(2));c.setAttribute('r',(r*k).toFixed(2))});
+const headSvg=(id,pose=id)=>HAPPI('-'+id).replace('viewBox="44 0 236 240"',`viewBox="40 10 180 166" data-pose="${pose}"`);
+function posed(svg){const P=POSES[svg.dataset.pose],q=k=>svg.querySelector(`[data-p="${k}"]`),ear=.5*P.head;
+  [...svg.children].forEach(n=>n.tagName!=='defs'&&n.dataset.p!=='root'&&n.remove());
+  [...q('root').children].forEach(n=>n.dataset.p!=='head'&&n.remove());
+  q('head').setAttribute('transform',mx(0,P.sink,P.head,131,152));q('earL').setAttribute('transform',mx(0,0,-ear,88,62));q('earR').setAttribute('transform',mx(0,0,ear,176,68));
+  q('face').setAttribute('transform',mx(P.gx*.35,P.gy*.25));q('eyes').setAttribute('transform',mx(0,0,0,132,101,1,Math.max(.12,1-Math.min(.85,P.lid*1.7))));
+  q('pupils').setAttribute('transform',mx(P.gx,P.gy));q('cheeks').setAttribute('transform',mx(0,-15*P.cheek));sizePupils([...q('pupils').querySelectorAll('circle')],P.pup);q('mouth').setAttribute('transform',mx(0,0,0,132,124.5,1,P.mouth))}
+function mount(host){if(H.crisis)$$('#main .host,#main .gi,#main .speech').forEach(e=>e.hidden=true);host.innerHTML=HAPPI();const s=host.firstElementChild,q=k=>s.querySelector(`[data-p="${k}"]`);
+  H.p={svg:s};['sun','rays','cloud','c0','c1','c2','c3','shadow','body','heart','armR','foreR','armL','armLF','foreL','pad','head','earL','earR','eyes','pupils','cheeks','face','mouth'].forEach(k=>H.p[k]=q(k));H.p.pd=[...H.p.pupils.querySelectorAll('circle')];
+  if(host.closest('.ask'))s.setAttribute('viewBox','46 12 172 226'); // off the chat the weather means nothing: crop to the panda, the cloud prop is hidden
+  H.p.drops=[...s.querySelectorAll('[data-d]')];io.disconnect();io.observe(s);H.vis=true;render();wake()}
+const set=(el,tr)=>el.setAttribute('transform',tr);
+function render(){const P=H.p;if(!P)return;const t=H.t;
+  const sy=(1+.014*wave(t,3200))*val('sy')+sv('sy'),sx=1/Math.pow(sy,.6),sink=val('sink')+sv('sink');
+  const head=val('head')+sv('head')+.8*wave(t,4400),ear=.5*head+1.2*wave(t,4400,.15);
+  const eLbase=val('eL')+sv('eL'),eL=eLbase+3*wave(t,2200,.4)+13*wave(t,680)*clamp01(sv('wave'));
+  const gx=val('gx')+.8*wave(t,4800),gy=val('gy')+.5*wave(t,3600,.2);
+  // blink: 110ms close, 40ms hold, 190ms ease-out reopen; the next one lands 3 to 4s later, never on a metronome
+  let bl=0;if(!STILL&&t>=H.blinkAt){const d=t-H.blinkAt;if(d<340)bl=track(d,[[0,0],[110,1],[150,1],[340,0,'out']]);else{H.blinkN++;H.blinkAt=t+3000+seeded(H.blinkN,7)*1000}}
+  const hc=(t%1600)/1600,hs=1+(hc<.15?Math.sin(hc/.15*Math.PI)*.08:0);
+  set(P.shadow,mx(0,0,0,130,229,sx,1));
+  set(P.body,mx(0,0,0,130,212,sx,sy));set(P.heart,mx(0,0,0,131.5,188,hs,hs));
+  const aL=mx(0,0,val('sL')+sv('sL')+2*wave(t,3000),98,158);set(P.armL,aL);set(P.armLF,aL);
+  set(P.foreL,mx(0,0,eL,98,172));P.pad.setAttribute('opacity',clamp01((eLbase-70)/50).toFixed(3));
+  set(P.armR,mx(0,0,val('sR')-2*wave(t,4000,.35),160,158));set(P.foreR,mx(0,0,val('eR')+2.5*wave(t,2800,.6),160,172));
+  set(P.head,mx(0,sink,head,131,152)); // sink: the head drops into the shoulders, feet stay on the floor
+  set(P.earL,mx(0,0,-ear,88,62));set(P.earR,mx(0,0,ear,176,68));
+  set(P.face,mx(gx*.35,gy*.25));set(P.eyes,mx(0,0,0,132,101,1,Math.max(.06,1-Math.max(val('lid'),bl))));
+  set(P.pupils,mx(gx,gy));set(P.cheeks,mx(0,-15*val('cheek')));sizePupils(P.pd,val('pup'));set(P.mouth,mx(0,0,0,132,124.5,1,val('mouth')));
+  // thought cloud: heavy = darker and raining; clearing parts the puffs and lifts the sun on an arc
+  const f=val('f');P.svg.parentElement.style.setProperty('--w',f.toFixed(3));const th=(-10+80*(1-f))*Math.PI/180;
+  set(P.sun,`translate(${(240+30*Math.cos(th)).toFixed(2)} ${(44-30*Math.sin(th)).toFixed(2)})`);P.sun.setAttribute('opacity',clamp01(1.15-f*1.4).toFixed(3));
+  set(P.rays,`rotate(${(t/40000*360%360).toFixed(2)})`);
+  P.cloud.setAttribute('fill',mix('#e4eee0','#a9bfa0',f));set(P.cloud,mx(1.5*wave(t,7000),0));
+  let part=0;[[-12,2,229,30],[0,-7,245,22],[12,3,260,31]].forEach(([dx,dy,cx,cy],i)=>{const pa=clamp01((val('c'+i)-.6)/.35);part+=pa/3;
+    set(P['c'+i],mx(dx*pa,dy*pa,0,cx,cy,1-.3*pa,1-.3*pa));P['c'+i].setAttribute('opacity',(1-.6*pa).toFixed(3))});
+  P.c3.setAttribute('opacity',(1-part).toFixed(3));
+  // rain: seeded speed and phase per drop; a drop already falling finishes its fall when the sky clears
+  DROPS.forEach((d,i)=>{const p=loop(t,d.per,d.ph),c=Math.floor(t/d.per+d.ph),el=P.drops[i];
+    if(c!==d.cyc||STILL){d.cyc=c;d.a=clamp01((f-.5)*3)}
+    const y=44+p*18;el.setAttribute('y1',y.toFixed(2));el.setAttribute('y2',(y+d.len).toFixed(2));el.setAttribute('opacity',(d.a*Math.min(1,p*6,(1-p)*3)).toFixed(3))});
+}
+// one clock; nothing runs unseen: paused when the page is hidden, Happi is off screen, or motion is reduced
+const io=new IntersectionObserver(es=>{H.vis=es[0].isIntersecting;wake()});
+function wake(){const on=!STILL&&!document.hidden&&H.vis&&!!H.p?.svg.isConnected&&!H.p.svg.closest('.aside');
+  if(on&&!H.run){H.run=true;H.last=0;const g=++H.gen;const tick=now=>{if(!H.run||g!==H.gen)return;H.t+=H.last?Math.min(now-H.last,64):0;H.last=now;render();requestAnimationFrame(tick)};requestAnimationFrame(tick)}
+  else if(!on){H.run=false;render()}}
+document.addEventListener('visibilitychange',wake);
+
+// ---- state ----
+let R,goal,beat=0,more=true,view='s0';
+// the bar: each stage starts where the last one ended; answers inch it toward the stage's end, never past it,
+// so a longer path (another example, your own) slows down instead of running out of bar
+const STAGES=['Picking a topic','Seeing one','Your turn','Saved'],FROM=[.08,.2,.6,1],TO=[.2,.6,.9,1];
+let st=0,fill=0;
+const paint=()=>{const b=$('#bar');b.style.setProperty('--fill',fill.toFixed(3));b.setAttribute('aria-valuenow',Math.round(fill*100));b.setAttribute('aria-valuetext',`${STAGES[st]}, step ${st+1} of ${STAGES.length}`)};
+const stage=(n,reset)=>{st=n;fill=reset?FROM[n]:Math.max(fill,FROM[n]);paint()};
+const inch=()=>{fill+=(TO[st]-fill)*.35;paint()};
+const fresh=()=>({goal:null,source:'example',situation:'',thought:'',trap:'',fair:'',why:'',before:null,after:null,reminder:null});
+// every screen starts here: header state, the screen's wash, an empty footer
+function enter(name,{back=true,bar=null,wash='#fff'}={}){
+  view=name;live++;pin=true;$('#app').style.setProperty('--wash',wash);$('#sos').hidden=!H.crisis;const on=bar!==null; // Get help stays once a crisis matched
+  // with a bar showing, a hidden Back keeps its slot so the bar stays centred
+  $('#back').hidden=!back&&!on;$('#back').style.visibility=back?'':'hidden';$('#bar').hidden=!on;$('#spacer').hidden=!on||!!H.crisis;if(on)stage(bar,name==='s1');$('#foot').innerHTML=''}
+// a screen whose button just disappeared hands focus to its question, so VoiceOver keeps its place
+const land=()=>{const h=$('#main h1');if(!h)return;h.tabIndex=-1;h.focus({preventScroll:true})};
+// replay a CSS animation: by inline style, or by re-adding a class
+const restart=(el,cls)=>{if(cls){el.classList.remove(cls);void el.getBoundingClientRect();el.classList.add(cls);return}el.style.animation='none';void el.offsetWidth;el.style.animation=''};
+// small filled illustrations for option tiles, drawn in the app palette (no outline icons on choices)
+const IL=p=>`<svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">${p}</svg>`;
+const ART={
+  sun:IL('<g stroke="#f5b942" stroke-width="2.5" stroke-linecap="round"><path d="M16 3v3M16 26v3M3 16h3M26 16h3M6.8 6.8l2.1 2.1M23.1 23.1l2.1 2.1M6.8 25.2l2.1-2.1M23.1 8.9l2.1-2.1"/></g><circle cx="16" cy="16" r="7" fill="#f5b942"/>'),
+  moon:IL('<path d="M25 19.5A10 10 0 1 1 12.5 7a8 8 0 0 0 12.5 12.5Z" fill="#a493d6"/><circle cx="23" cy="8" r="1.5" fill="#f5b942"/><circle cx="27" cy="13" r="1" fill="#f5b942"/>'),
+  clock:IL('<circle cx="16" cy="16" r="11" fill="#7fa7d9"/><path d="M16 10v6l4 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'),
+};
+// one scene per worked example, in the exercise-art.js language: flat chunky shapes on the goal's tint, a darker underside,
+// ink only for tiny details. The caption under it carries the words, so the art is decorative to screen readers
+// sh = [cx, rx] of the floor shadow under whatever stands on the floor; null when nothing does
+const SV=(b,sh=[120,64])=>`<svg viewBox="0 0 240 100" aria-hidden="true">${sh?`<ellipse cx="${sh[0]}" cy="96" rx="${sh[1]}" ry="4" fill="#142414" opacity=".07"/>`:''}${b}</svg>`;
+const Q=(x,y,s,c)=>`<text x="${x}" y="${y}" font-size="${s}" font-weight="700" font-family="Nunito,sans-serif" fill="${c}">?</text>`;
+const SCENE={
+  // a message lands: "Can we talk later?" and the mind starts guessing
+  worry:SV(`<path d="M80 38 q-6 10 0 20M72 33 q-9 15 0 30M160 38 q6 10 0 20M168 33 q9 15 0 30" fill="none" stroke="#e09a24" stroke-width="3" stroke-linecap="round"/>
+    <g transform="rotate(-6 120 52)"><rect x="96" y="14" width="48" height="80" rx="10" fill="#9a83d4"/><rect x="96" y="10" width="48" height="80" rx="10" fill="#c3b3ea"/>
+    <rect x="101" y="18" width="38" height="64" rx="5" fill="#fffaf0"/><rect x="112" y="13" width="16" height="2.5" rx="1.2" fill="#9a83d4"/>
+    <path d="M106 52 l-2 7 l8 -5z" fill="#5f9ed4"/><rect x="104" y="34" width="30" height="20" rx="7" fill="#5f9ed4"/>
+    <line x1="110" y1="41" x2="127" y2="41" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><line x1="110" y1="47" x2="121" y2="47" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></g>
+    ${Q(44,52,24,'#e09a24')}${Q(184,34,18,'#e09a24')}${Q(192,80,13,'#dd7b5a')}`,[120,34]),
+  // a grey day through the window, a blanket that hasn't moved
+  mood:SV(`<rect x="34" y="18" width="62" height="56" rx="7" fill="#a5714a"/><rect x="34" y="14" width="62" height="56" rx="7" fill="#c99363"/>
+    <rect x="40" y="20" width="50" height="44" rx="3" fill="#b9c6cf"/><path d="M48 34 c0-6 8-8 11-4 c3-6 13-5 13 2 c5 0 6 7 0 7h-22c-5 0-6-5-2-5z" fill="#8e9ea9"/>
+    <path d="M52 46l-2 6M62 44l-2 6M72 47l-2 6M82 44l-2 6" stroke="#6f8494" stroke-width="2.5" stroke-linecap="round"/><path d="M65 20v44M40 42h50" stroke="#c99363" stroke-width="3"/>
+    <rect x="132" y="36" width="12" height="58" rx="4" fill="#a5714a"/><rect x="138" y="72" width="78" height="16" rx="6" fill="#a5714a"/><rect x="138" y="68" width="78" height="16" rx="6" fill="#c99363"/>
+    <rect x="144" y="86" width="5" height="9" rx="2" fill="#a5714a"/><rect x="206" y="86" width="5" height="9" rx="2" fill="#a5714a"/>
+    <ellipse cx="156" cy="62" rx="13" ry="7" fill="#fff"/><path d="M156 72 C156 52 178 46 194 52 C208 44 222 54 220 72 Z" fill="#9a83d4"/><path d="M156 69 C156 50 178 44 194 50 C208 42 222 52 220 69 Z" fill="#c3b3ea"/>`,[177,46]),
+  // three pages, the same day circled on every one
+  stress:SV(`${[[70,-12],[120,0],[170,12]].map(([x,r])=>`<g transform="rotate(${r} ${x} 54)">
+    <rect x="${x-27}" y="${28}" width="54" height="62" rx="8" fill="#dd7b5a"/><rect x="${x-27}" y="24" width="54" height="62" rx="8" fill="#fff"/>
+    <path d="M${x-27} 40v-8a8 8 0 0 1 8-8h38a8 8 0 0 1 8 8v8z" fill="#f4a688"/><rect x="${x-14}" y="18" width="5" height="12" rx="2.5" fill="#a5714a"/><rect x="${x+9}" y="18" width="5" height="12" rx="2.5" fill="#a5714a"/>
+    <text x="${x}" y="70" text-anchor="middle" font-size="20" font-weight="700" font-family="Nunito,sans-serif" fill="#dd7b5a">14</text>
+    <ellipse cx="${x}" cy="63" rx="17" ry="13" fill="none" stroke="#dd7b5a" stroke-width="2.5"/></g>`).join('')}
+    <path d="M24 22v12M24 40v.5M216 42v12M216 60v.5" stroke="#e09a24" stroke-width="4" stroke-linecap="round"/>`),
+  // the sentence came out tangled, and the dropped letters are still falling
+  self:SV(`<path d="M78 66 l-12 18 l26 -14z" fill="#9a83d4"/><rect x="66" y="16" width="112" height="56" rx="20" fill="#9a83d4"/><path d="M78 62 l-12 18 l26 -14z" fill="#fff"/><rect x="66" y="12" width="112" height="56" rx="20" fill="#fff"/>
+    <path d="M84 42 c8-16 18 12 26-2 s4-18 12-4 s10 14 16-2 c4-10 12-6 10 4 s-8 8 4 4 s12-10 14-2" fill="none" stroke="#9a83d4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <g font-family="Nunito,sans-serif" font-weight="700" fill="#9a83d4"><text x="150" y="86" font-size="14" transform="rotate(18 150 86)">w</text><text x="168" y="92" font-size="11" transform="rotate(-14 168 92)">o</text><text x="184" y="84" font-size="13" transform="rotate(24 184 84)">r</text></g>
+    <path d="M46 24 l4 4M44 36h6M196 22 l-4 4M200 34h-6" stroke="#dd7b5a" stroke-width="3" stroke-linecap="round"/>`,null),
+  // 1 AM on the clock, the moon still up, and Happi wide awake under the blanket
+  sleep:SV(`<g transform="translate(36 -6) scale(.62)"><path d="M72 18 a20 20 0 1 0 22 26 a16 16 0 0 1 -22 -26z" fill="#f5b942"/></g>
+    <path d="M28 18 q1 5 6 6 q-5 1 -6 6 q-1 -5 -6 -6 q5 -1 6 -6z" fill="#e09a24"/><path d="M106 14 q.7 3.5 4 4 q-3.3 .7 -4 4 q-.7 -3.3 -4 -4 q3.3 -.5 4 -4z" fill="#e09a24"/>
+    <ellipse cx="62" cy="64" rx="28" ry="10" fill="#fffaf0"/><circle cx="46" cy="54" r="5" fill="#142414"/><circle cx="70" cy="54" r="5" fill="#142414"/>
+    <circle cx="58" cy="68" r="17" fill="#fff" stroke="#142414" stroke-width="2"/>
+    <ellipse cx="51" cy="65" rx="5.5" ry="5" fill="#142414"/><ellipse cx="65" cy="65" rx="5.5" ry="5" fill="#142414"/>
+    <circle cx="51" cy="64.5" r="3" fill="#fff"/><circle cx="65" cy="64.5" r="3" fill="#fff"/><circle cx="51.5" cy="65" r="1.5" fill="#142414"/><circle cx="65.5" cy="65" r="1.5" fill="#142414"/>
+    <path d="M20 96 C20 80 40 74 60 76 C82 72 108 76 112 96 Z" fill="#9a83d4"/><path d="M20 94 C20 77 40 71 60 73 C82 69 108 73 112 94 Z" fill="#c3b3ea"/>
+    <circle cx="136" cy="30" r="8" fill="#5f9ed4"/><circle cx="176" cy="30" r="8" fill="#5f9ed4"/><path d="M140 84l-6 10M172 84l6 10" stroke="#5f9ed4" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="156" cy="60" r="31" fill="#5f9ed4"/><circle cx="156" cy="56" r="31" fill="#9cc8ec"/><circle cx="156" cy="56" r="24" fill="#fff"/>
+    <path d="M156 35v3M177 56h-3M156 77v-3M135 56h3" stroke="#5f9ed4" stroke-width="3" stroke-linecap="round"/>
+    <path d="M156 56V40M156 56l4.5 -7.8" stroke="#142414" stroke-width="3" stroke-linecap="round"/><circle cx="156" cy="56" r="2.5" fill="#142414"/>
+    <path d="M206 26 q.8 4 5 5 q-4.2 .8 -5 5 q-.8 -4.2 -5 -5 q4.2 -1 5 -5z" fill="#e09a24"/>`,[156,32]), // awake, so no z's
+};
+const TIMES=[{v:'morning',t:'Morning',s:'8:00 AM',ic:'sun',g:'var(--surface-2)'},{v:'evening',t:'Evening',s:'8:00 PM',ic:'moon',g:'var(--surface-2)'},{v:'pick',t:'Pick a time',s:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>',ic:'clock',g:'var(--surface-2)'}]; // neutral tiles: the icons keep their illustration colours, the tiles add none
+
+// ================= Happi's speech =================
+// Happi's passing remarks in the chat (hello, "You named the thought.", "Saved. It’s yours.") fade on their own;
+// question bubbles (.ask h1) are the screen's question and stay
+const speak=t=>{const s=$('#main .speech');if(!s||H.crisis)return;s.textContent=t;s.classList.add('on');clearTimeout(H.spT);H.spT=setTimeout(()=>s.classList.remove('on'),STILL?6000:3600)};
+
+// ================= S0: hello =================
+function s0(){
+  R=fresh();beat=0;enter('s0',{back:false,wash:'#eef5e9'});
+  $('#main').innerHTML=`<div class="s0"><p class="speech on">Hi, I’m Happi.</p><div class="host" id="guide"></div>
+    <h1>One thought at a time.</h1><p class="lede">Two minutes. No sign-up.</p><p class="scope0">Happy helps you practise CBT skills. It isn’t therapy and doesn’t replace professional care.</p></div>`;
+  $('#foot').innerHTML=`<button class="btn" id="hi">Hi, Happi</button><button class="link" id="who">Who is Happi?</button><button class="link" id="have">I already have an account</button>`;
+  mount($('#guide'));act('rest');sky(.2);
+  if(!H.greeted){H.greeted=true;greet()} // hello once per visit, the brand pose from Home
+  $('#hi').onclick=()=>{buzz();s1()};
+  $('#have').onclick=e=>openSheet('signin',e.currentTarget);$('#who').onclick=e=>openSheet('who',e.currentTarget);
+}
+
+// ================= S1: goal pick =================
+function s1(){
+  R=fresh();beat=0;enter('s1',{bar:0});
+  $('#main').innerHTML=`<div class="s1"><div class="ask"><div class="host" id="guide"></div><h1>What’s on your mind?</h1></div>
+    <div class="goals" role="group" aria-label="Pick what is on your mind">${GOALS.map((g,i)=>
+      `<button class="goal" data-g="${g.id}" style="--g:${g.tint};animation-delay:${80+i*50}ms"><span class="gi">${headSvg(g.id)}</span><span>${g.label}<small>${g.sub}</small></span></button>`).join('')}</div></div>`;
+  $$('.goal .gi svg').forEach(posed);
+  mount($('#guide'));act('rest');sky(.35);
+  $('.goals').onclick=async ev=>{
+    const b=ev.target.closest('.goal');if(!b||$('.goal.on'))return;
+    b.classList.add('on');buzz();inch();goal=GOALS.find(g=>g.id===b.dataset.g);R.goal=goal.id;
+    act(goal.id);sky(goal.f);await wait(420);if(b.isConnected)chat(); // S1's main beat: Happi leans into what you picked
+  };
+  land();
+}
+
+// ================= S2: the Thought Catcher chat =================
+const thread=()=>$('.thread');
+// footer replies take height from main; keep the latest line above them
+let pin=true; // off once the saved card lands: from then on the card's top is what stays in view
+new ResizeObserver(()=>{if(!pin)return;const m=$('#main');m.scrollTop=m.scrollHeight}).observe($('#foot'));
+const scroll=()=>{const m=$('#main');m.scrollTo({top:m.scrollHeight,behavior:STILL?'auto':'smooth'})};
+const progress=()=>{beat++;inch()}; // back before the second reply returns to the goal pick
+async function say(html,cls=''){
+  const row=document.createElement('div');row.className='msg';
+  const t=document.createElement('div');t.className='typing';t.innerHTML='<i></i><i></i><i></i>';t.setAttribute('aria-hidden','true');
+  look(1.5,-2); // thinking while typing
+  thread().append(row);
+  if(!STILL){row.append(t);scroll();await wait(Math.min(900,380+html.replace(/<[^>]+>/g,'').length*7))}
+  t.remove();
+  const b=document.createElement('div');b.className='bub '+cls;b.innerHTML=html;row.append(b);scroll();look(-1.2,1.6);
+  await wait(220);return b;
+}
+const me=(text,from)=>{const p=document.createElement('div');p.className='me';p.textContent=text;thread().append(p);
+  if(from&&!STILL){const m=$('#main');m.scrollTop=m.scrollHeight;const n=p.getBoundingClientRect(); // land first, then fly from the tapped chip
+    p.style.animation='none';p.animate([{transform:`translate(${from.left-n.left}px,${from.top-n.top}px)`,opacity:.7},{transform:'none',opacity:1}],{duration:220,easing:'cubic-bezier(.23,1,.32,1)'})}
+  else scroll();return p};
+// replies render in the footer; resolve with the chosen value and echo it as your bubble
+function choose(items,{wrap=false,label='',echo=true}={}){
+  return new Promise(res=>{
+    $('#foot').innerHTML=`${label?`<p class="qrl">${label}</p>`:''}<div class="qrs${wrap?' wrap':''}" role="group">${items.map((it,i)=>
+      `<button class="qr" data-i="${i}" style="animation-delay:${i*40}ms">${esc(it.t)}</button>`).join('')}</div>`;
+    $('#foot .qrs').onclick=async ev=>{const b=ev.target.closest('.qr');if(!b)return;buzz();const it=items[+b.dataset.i],from=b.getBoundingClientRect();
+      $('#foot .qrs').onclick=null;
+      if(!STILL)$$('#foot .qr').forEach(o=>o!==b&&o.animate([{opacity:1},{opacity:0}],{duration:120,fill:'forwards'}));
+      await wait(120);$('#foot').innerHTML='';if(echo)me(it.t,from);progress();res(it.v??it.t)};
+    $('#foot .qr').focus({preventScroll:true});look(0,2.8);
+  });
+}
+// stepping aside also pauses the clock: opacity 0 still intersects, so the observer alone won't stop it
+const aside=on=>{$('.stage')?.classList.toggle('aside',on||H.crisis);wake()}; // after a crisis match Happi stays gone (zone 2)
+const typing=on=>{aside(on);const sos=on||H.crisis;$('#sos').hidden=!sos;$('#spacer').hidden=sos}; // after a crisis match, Get help stays for the rest of onboarding
+// P6 English crisis phrases; a match keeps the text and opens help, it never blocks or grades
+const CRISIS=/\b((kill|hurt|cut)(ing)? myself|kms|end (my life|it all)|wanna die|want(ed)? to die|wish i (was|were) dead|better off (dead|without me)|suicid\w*|self[- ]?harm\w*|overdos\w*|no reason to live|can'?t go on|can ?not go on|do(n'?t| not) want to be here)\b/i;
+function type({ph,starters=[]}){
+  typing(true);const skip=more?'Skip, show an example':'Skip for now';
+  return new Promise(res=>{
+    $('#foot').innerHTML=`${starters.length?`<div class="starters" role="group" aria-label="Ideas to start from">${starters.map((s,i)=>`<button class="qr" data-s="${i}">${esc(s)}</button>`).join('')}</div>`:''}
+      <div class="row"><textarea id="ta" rows="1" maxlength="${MAX}" placeholder="${esc(ph)}" aria-label="${esc(ph)}"></textarea>
+      <button id="send" aria-label="Send" disabled>${IC('<path d="M12 19V5M5 12l7-7 7 7"/>')}</button></div><p class="cnt" id="cnt" aria-live="polite"></p>
+      <button class="link quiet" id="ex" style="margin-top:0">${skip}</button>`;
+    const ta=$('#ta'),send=$('#send');
+    const upd=()=>{const n=ta.value.length;send.disabled=!ta.value.trim();$('#cnt').textContent=n>=240?`${MAX-n} left`:''};
+    ta.oninput=upd;ta.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send.click()}};
+    $$('#foot [data-s]').forEach(b=>b.onclick=()=>{ta.value=starters[+b.dataset.s];upd();ta.focus();buzz()});
+    send.onclick=()=>{const v=ta.value.trim();if(!v)return;
+      if(!H.crisis&&CRISIS.test(v.replace(/[’‘]/g,"'"))){H.crisis=true;aside(true);openSheet('help',send);return}
+      $('#foot').innerHTML='';typing(false);me(v);progress();res(v)};
+    $('#ex').onclick=()=>{$('#foot').innerHTML='';typing(false);me(skip);progress();res(null)};
+    ta.focus({preventScroll:true});look(0,2.8);
+  });
+}
+
+// teach = situation, then the thought, then a reason the other view is plausible (no terminology quiz).
+// Belief is rated before and after; no change is a fine answer. Copy adapted from ThoughtCatcherSummary getShiftCopy.
+const CHECK=[{t:'Yes',v:'yes'},{t:'Not sure',v:'unsure'},{t:'No',v:'no'}];
+const CHECK_REPLY={yes:'It feels true, and that’s real. But feeling sure isn’t the same as knowing.',
+  unsure:'Not being sure is fine. Let’s look closer.',no:'So your mind added more than what happened.'};
+const shiftCopy=(a,b)=>{const d=a-b;
+  if(d<0)return 'You believe it a bit more right now. You still looked at it closely.';
+  if(d===0)return 'Your belief stayed the same, and you still stopped to check it.';
+  if(d>=2)return 'You believe it a lot less now.';
+  return 'You believe it a little less. That’s room for another view.'};
+const weigh=v=>.2+v*.15; // belief 0..4 is the cloud's weight
+// "Is it actually true?" only when the thought has some weight; asking it right after "Not at all" contradicts the rating
+async function reality(before){
+  if(before===0){await say('Then you don’t believe it. Let’s look at it anyway.');return null}
+  await say('Is it actually true?');
+  const check=await choose(CHECK,{wrap:true});
+  if(check==='yes')act('gentle');else nod();
+  await say(CHECK_REPLY[check]);return check}
+// after the reframe the user's honest answer is not graded by rain or a slump
+async function rate(q,after=false){await say(q);const v=await choose(BELIEF.map((t,i)=>({t,v:i})),{wrap:true});
+  sky(after?Math.min(weigh(v),.3):weigh(v));act(after?'listen':v>=3?'heavy':v===0?'gentle':'listen');return v}
+
+// the hero folds into the chat: Happi travels to the corner (FLIP on the host), the bubble leaves with it
+async function settle(){
+  const el=$('.stage'),s=el.querySelector('.say'),h=$('#guide');
+  if(!STILL){s.animate([{opacity:1},{opacity:0,transform:'scale(.96)'}],{duration:140,easing:'ease-in',fill:'forwards'});await wait(140)} // exits are quicker than entrances
+  const a=h.getBoundingClientRect();
+  s.remove();el.classList.remove('hero');
+  const b=h.getBoundingClientRect();if(STILL||!b.width)return;
+  h.style.transformOrigin='0 0';
+  h.animate([{transform:`translate(${a.left-b.left}px,${a.top-b.top}px) scale(${a.width/b.width})`},{transform:'none'}],{duration:420,easing:'cubic-bezier(.77,0,.175,1)'});
+}
+async function scene(g){
+  const f=document.createElement('figure');f.className='scene';f.style.setProperty('--g',g.tint);
+  f.innerHTML=`${SCENE[g.id]}<figcaption>${esc(g.scene)}</figcaption>`;thread().append(f);scroll();
+  if(!$('#foot').contains(document.activeElement)){f.tabIndex=-1;f.focus({preventScroll:true})} // focus lands on the scene, not the page, until the next reply
+  await wait(600)}
+async function teach(g){
+  await scene(g);
+  await say(`Then this thought shows up:<q class="pt">“${esc(g.thought)}”</q>`);
+  const before=await rate(`If that happened to you, how much would you believe “${esc(bare(g.thought))}”?`);
+  await reality(before);
+  if(before>0){sky(.12,true);act('relieved',1600);stretch()}else{sky(.12);act('listen')} // relief only for a thought that had weight. The main beat: the sky clears as the reframe lands, Happi looks up at it
+  await say(`Here’s another way to see it:<span class="pt">${esc(g.fair)}</span><span class="why">${esc(g.why)} This trap is called “${TRAPS[g.trap].toLowerCase()}.”</span>`);
+  await wait(400);
+  if(before===0){act('rest');return {g,before,after:0}} // nothing to lower; asking again reads as a quiz
+  const after=await rate(`Look at “${esc(bare(g.thought))}” again. How much do you believe it now?`,true);
+  await say(shiftCopy(before,after));act('rest'); // rate's reaction holds while Happi answers
+  return {g,before,after};
+}
+
+// the same three moves on your own moment: what happened, the thought, one fairer view
+async function personal(){
+  sky(.6);act('listen');
+  await say('What happened? Just what a camera would have seen.');
+  const situation=await type({ph:'What happened, in a few words',starters:goal.ideas.sit});
+  if(situation===null)return null;
+  await say('What did your mind add? Write it the way it showed up.');
+  const thought=await type({ph:'The thought, in a few words',starters:goal.ideas.th});
+  if(thought===null)return null;
+  speak('You named the thought.');nod();
+  const before=await rate(`How much do you believe “${esc(bare(thought))}” right now?`);
+  await reality(before);
+  await say('What’s another way to see it? Fair and believable, not forced positive.');
+  const fair=await type({ph:'Another way to see it',starters:STARTERS});
+  if(fair===null)return null;
+  if(before>0){sky(.15,true);act('relieved',1600);stretch()}else{sky(.15);act('listen')}
+  if(before===0)return {source:'personal',situation,thought,fair,trap:'',why:'',before,after:0};
+  const after=await rate(`Look at “${esc(bare(thought))}” again. How much do you believe it now?`,true);
+  await say(shiftCopy(before,after));act('rest');
+  return {source:'personal',situation,thought,fair,trap:'',why:'',before,after};
+}
+const fromExample=({g,before,after})=>({source:'example',art:g.id,situation:g.scene,thought:g.thought,fair:g.fair,trap:g.trap,why:g.why,before,after});
+
+async function chat(){
+  enter('chat',{bar:1});beat=0;
+  $('#main').innerHTML=`<div class="stage hero"><h1 class="say">${esc(goal.mirror)}</h1><p class="speech" aria-live="polite"></p><div class="host" id="guide"></div></div><div class="thread" aria-live="polite"></div>`;
+  // the weather keeps the topic's weight; at this size Happi meets you warm, never a magnified slump (03 F6)
+  mount($('#guide'));act('gentle');stretch();
+  $('#foot').innerHTML='<button class="btn" id="show">Show me</button>';land(); // the line is heard first, then the one button
+  await new Promise(r=>$('#show').onclick=()=>{buzz();r()});
+  $('#foot').innerHTML='';progress();await settle();
+  // the line stays as the chat's first message for sighted history; screen readers already heard it as the heading
+  const m=document.createElement('div');m.className='msg';m.setAttribute('aria-hidden','true');m.innerHTML=`<div class="bub">${esc(goal.mirror)}</div>`;thread().append(m); // a Continue button isn't a reply, so nothing is echoed (Duolingo)
+  more=true;let last=await teach(goal),asked=false;
+  Object.assign(R,fromExample(last));
+  while(true){
+    stage(2);if(!asked)await say('Want to try one of yours?');asked=false;
+    const opts=[{t:'Try with something from today',v:'mine'},...(more?[{t:'Another example',v:'more'}]:[]),{t:'Save this one',v:'go'}];
+    const c=await choose(opts);
+    const another=async lead=>{more=false;const g2=GOALS[(GOALS.indexOf(goal)+1)%GOALS.length];if(lead)await say(lead);sky(g2.f);act(g2.id);
+      last=await teach(g2);Object.assign(R,fromExample(last))};
+    if(c==='more'){await another();continue}
+    if(c==='mine'){
+      const mine=await personal();
+      if(mine){Object.assign(R,mine);break}
+      Object.assign(R,fromExample(last)); // nothing typed is kept when you bail out
+      if(more){await another('Here’s a different one.');continue} // "example instead" shows an example, not a skip
+      asked=true;await say('No problem. Want to try one of yours, or move on?');continue} // never jump to the saved card on a bail-out
+    break;
+  }
+  await saved();
+}
+
+// ================= saved card, then the reminder =================
+const sentence=s=>{s=s.trim();s=s[0].toUpperCase()+s.slice(1);return /[.!?…”"]$/.test(s)?s:s+'.'};
+async function saved(){
+  const mine=R.source==='personal'; // the example's words are the app's, never claimed as the user's
+  stage(3);$('#back').style.visibility=$('#bar').style.visibility='hidden'; // done: no step left to show (Duolingo drops the bar on completion)
+act('pride');sky(.08);speak(mine?'Saved. It’s yours.':'You finished this one.');
+  to('gx',-2.5,500);to('gy',2,500);H.hold=H.t+1500; // quiet pride, eyes on the card with you (03 F5)
+  const card=document.createElement('section');card.className='keep';card.setAttribute('aria-label','Saved reflection'); // not .card: happy-ui.css flattens .card to grey
+  const gid=mine?R.goal:R.art; // "Another example" may have switched goals: the band shows the example actually saved
+  card.style.setProperty('--g',GOALS.find(g=>g.id===gid)?.tint||'');
+  // belief is reported, never graded: same or higher reads as plainly as lower
+  const belief=R.before===0?BELIEF[0]:R.after===R.before?`${BELIEF[R.before]}, still`:`${BELIEF[R.before]}, now ${BELIEF[R.after].toLowerCase()}`;
+  const now=new Date(),ymd=[now.getFullYear(),now.getMonth()+1,now.getDate()].map(n=>String(n).padStart(2,'0')).join('-'); // local date, not UTC
+  // one character per card (Bears Gratitude, Wysa): the sticker only when no scene art is shown, since scenes can hold Happi
+  card.innerHTML=`${H.crisis||!(mine||!SCENE[gid])?'':`<span class="sticker" aria-hidden="true">${headSvg('card','pride')}</span>`}
+    <div class="band">${mine?'':SCENE[gid]||''}<div class="top"><svg class="chk" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16"/><path d="M9 16.5l5 5L23.5 11"/></svg>${mine?'Saved to your journal':'Saved as practice'}<time datetime="${ymd}">${now.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</time></div></div>
+    <div class="body">
+      <div class="was">${mine?`<span class="lab">What happened</span><p class="sit">${esc(sentence(R.situation))}</p>`:''}<span class="lab">${mine?'You thought':'The thought'}</span><p>“${esc(unq(R.thought))}”</p></div>
+      <div class="turn" aria-hidden="true">${IC('<path d="M12 5v14M6 13l6 6 6-6"/>').replace('width="22" height="22"','width="18" height="18"')}</div>
+      <div class="now"><span class="lab">${mine?'You landed on':'Another view'}</span><p>${esc(R.fair)}</p></div>
+      <div class="stats"><div class="stat"><span class="lab">How true it felt</span><span>${belief}</span></div><div class="stat"><span class="lab">Practice</span><span>1 completed · 1 of 3 this week</span></div>${R.trap?`<div class="stat"><span class="lab">Trap</span><span>${TRAPS[R.trap]}</span></div>`:''}</div>
+    </div>`;
+  card.querySelector('.sticker svg')&&posed(card.querySelector('.sticker svg'));
+  // the keepsake lands with its top (art and sticker) in view; on small phones the chips sit below the fold, not the art
+  pin=false;thread().append(card);const top=()=>card.scrollIntoView({block:'start',behavior:STILL?'auto':'smooth'});top();
+  // one-shot, overlapping: card rises, sticker lands, check draws, the turn pops, the chips follow
+  await wait(900);if(view!=='chat')return; // Happi's pride beat lands first; the card stays in the thread
+  // EXPERIENCE.md: the reminder is asked here, right after the value it protects, never as its own step.
+  // Happi steps aside for the ask (zone 6). Go to Home works whatever you answer.
+  aside(true);
+  $('.stage').classList.add('gone'); // the empty stage would sit over the ask and catch taps
+  const r=document.createElement('div');r.className='remind';r.id='remind';r.setAttribute('aria-live','off');thread().append(r);remindAsk();top();
+  $('#foot').innerHTML='<button class="btn" id="go">Go to Home</button>';$('#go').onclick=()=>{buzz();finish()};
+}
+// the ask shows the real notification first (Brilliant, Insight Timer), then one tap on a time; the native prompt only after that
+const at=v=>v==='morning'?'8:00 AM':v==='evening'?'8:00 PM':v;
+const rows=(items,label)=>`<div class="picks" role="group" aria-label="${label}">${items.map((it,i)=>
+  `<button class="pick" data-k="${it.v}" style="animation-delay:${60+i*50}ms"><span class="ic" style="--g:${it.g}">${ART[it.ic]}</span>${it.t}${it.s?`<small>${it.s}</small>`:''}</button>`).join('')}</div>`;
+function remindAsk(focus='q'){
+  $('#remind').innerHTML=`<p class="rq" tabindex="-1">${focus==='pick'?'Pick a new time':'Want a nudge for your next one?'}</p>
+    <div class="note" role="note" aria-label="Preview of the reminder"><img src="../assets/icons/icon-panda.png" alt="" width="28" height="28"><div><b>Happy</b><span>Ready to catch one more thought? 2 minutes.</span></div><time>now</time></div>
+    ${rows(TIMES,'Reminder time')}`; // no "Not now": Go to Home is the skip, one exit instead of two
+  (focus==='q'?$('#remind .rq'):$('#remind .pick')).focus({preventScroll:true});
+  $('#remind .picks').onclick=ev=>{const b=ev.target.closest('.pick');if(!b)return;buzz();const v=b.dataset.k;
+    if(v==='pick'){$('#remind .picks').outerHTML=`<div class="picks" role="group" aria-label="Pick a reminder time"><input type="time" id="tm" value="20:00" aria-label="Reminder time"><button class="pick" id="ok" style="justify-content:center">Set reminder</button></div>`;
+      $('#tm').focus();$('#ok').onclick=()=>{if(!$('#tm').value)return;const [h,m]=$('#tm').value.split(':').map(Number);ask(`${(h%12)||12}:${String(m).padStart(2,'0')} ${h<12?'AM':'PM'}`)};return}
+    restart(b.querySelector('svg'),'swing');ask(at(v))};
+}
+// iOS asks for permission once; changing the time after Allow just reschedules
+const ask=time=>{if(R.reminder&&R.reminder!=='not_now'&&R.reminder!=='denied'){R.reminder=time;return done(`Reminder set for ${time}`)}systemPrompt(time)};
+// the row settles into one quiet line you can change; role=status so the result is heard
+const done=(t,again=true)=>{$('#remind').innerHTML=`<div class="done"><span role="status">${esc(t)}</span>${again?'<button data-again>Change</button>':''}</div>`;
+  $('[data-again]')?.addEventListener('click',()=>remindAsk('pick'));$('#go').focus({preventScroll:true})};
+// sample of the native iOS prompt: it only appears after the user picked a time
+function systemPrompt(time){
+  if($('.ios'))return;const o=document.createElement('div');o.className='ios';
+  o.innerHTML=`<div role="alertdialog" aria-labelledby="ios-t"><b id="ios-t">“Happy” Would Like to Send You Notifications</b><span>Notifications may include alerts, sounds, and icon badges.</span>
+    <nav><button data-a="0">Don’t Allow</button><button data-a="1">Allow</button></nav><em>Sample of the iOS system prompt</em></div>`;
+  $('#app').append(o);o.querySelector('[data-a="1"]').focus();
+  o.onclick=ev=>{const b=ev.target.closest('[data-a]');if(!b)return;o.remove();
+    if(b.dataset.a==='1'){R.reminder=time;done(`Reminder set for ${time}`)}
+    else{R.reminder='denied';done('Reminders are off. You can turn them on in Settings.',false)}}; // no retry this session
+}
+function finish(){
+  R.reminder??='not_now'; // left without picking a time
+  if(R.reminder!=='not_now'&&R.reminder!=='denied')store('happy.reminder',R.reminder);
+  store('happy.onboarding',{...R,crisis:!!H.crisis,trapLabel:R.trap?TRAPS[R.trap]:'',at:Date.now()}); // Home stays quiet after a crisis match
+  location.href='home.html?empty&welcome';
+}
+
+// ================= back, sheets =================
+$('#back').onclick=()=>{
+  if(view==='chat'){if(beat<2)s1();else openSheet('leave',$('#back'));return}
+  const prev={s1:s0}[view];if(!prev)return;
+  prev();if(view==='s0')$('#hi').focus()};
+const SHEETS={
+  // plain, no Happi, no animation, resources first (03 F12, P6 Crisis path). ponytail: US line only, locale rows when localised
+  help:()=>`<h3 id="sh-t">If you’re thinking about hurting yourself, you deserve support now.</h3><p>988 Suicide &amp; Crisis Lifeline · call or text 988</p><a class="btn" href="tel:988">Call 988</a><p class="scope" style="margin-top:var(--sp-3)">Happy isn’t an emergency service. If you might act on these thoughts, call now.</p><button class="btn ghost" data-close>Keep writing</button>`,
+  who:()=>`<h3 id="sh-t">Who is Happi?</h3><p>Happi is a panda who likes slow mornings and noticing small things. Happi keeps you company while you practise the skills in Happy. Happi isn’t a therapist, a coach or a judge, and never grades how you feel. When you write, Happi looks at your words, not at you. When things get serious, Happi steps aside so real people can help. Happi doesn’t need anything from you. You’re welcome here any time.</p><p class="scope">Happy helps you practise CBT skills. It isn’t therapy and doesn’t replace professional care.</p><button class="btn" data-close>Got it</button>`,
+  leave:()=>`<h3 id="sh-t">Leave this practice?</h3><p>Nothing is saved yet.</p><button class="btn" data-close>Keep going</button><button class="btn ghost" data-leave>Leave</button>`,
+  signin:()=>`<h3 id="sh-t">Welcome back</h3><p>Sign in to pick up where you left off.</p><div class="sso">
+    <button class="dark" data-in>Continue with Apple</button><button data-in>Continue with Google</button><button data-in>Continue with email</button></div>
+    <p style="margin:var(--sp-3) 0 0;font-size:var(--t-foot)">Sample sign-in. No account is created.</p>`,
+};
+let from=null;
+function openSheet(k,el=document.activeElement){from=el; // Safari doesn't focus a tapped button, so callers pass it
+  $('#sheet').innerHTML=`<button class="x" data-close aria-label="Close">${IC('<path d="M6 6l12 12M18 6L6 18"/>')}</button>`+SHEETS[k]();$('#sheet').classList.toggle('help',k==='help');
+  $('#scrim').hidden=$('#sheet').hidden=false;$('#sheet .x').focus()}
+function closeSheet(){$('#scrim').hidden=$('#sheet').hidden=true;from&&from.focus()}
+$('#scrim').onclick=closeSheet;
+$('#sos').onclick=e=>openSheet('help',e.currentTarget);
+$('#sheet').onclick=ev=>{
+  if(ev.target.closest('[data-close]'))return closeSheet();
+  if(ev.target.closest('[data-leave]')){closeSheet();s1();$('.goal').focus();return}
+  if(ev.target.closest('[data-in]'))location.href='home.html';
+};
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
+s0();
+</script>
+</body>
+</html>

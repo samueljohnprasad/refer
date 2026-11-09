@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="72" height="64" viewBox="0 0 72 64" fill="none" aria-hidden="true"><!-- exercise node, completed -->
+<ellipse cx="36" cy="35" rx="35" ry="28" fill="#5f7f58"/>
+<ellipse cx="36" cy="29" rx="35" ry="28" fill="#7e9874"/>
+<g transform="translate(19.799999999999997 12.799999999999997) scale(1.35)"><path d="M12 21V12" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+    <path d="M12 14C6.5 14 4 10.5 4 6c5 0 8 3 8 8z" fill="#ffffff"/><path d="M12 11.5C12 6.5 15 3.5 20 3.5c0 5-3 8-8 8z" fill="#ffffff"/></g>
+</svg>

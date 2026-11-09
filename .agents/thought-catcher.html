@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Thought Catcher</title>
+<style>
+  /* ===== tokens (happy-ui.css, linked after, wins on shared names) ===== */
+  :root{
+    --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--sp-7:48px;
+    --r-s:12px;--r-m:16px;--r-l:24px;--r-pill:999px;
+    --tap:44px;
+    --t-cap:12px;--t-foot:13px;--t-sub:15px;--t-body:17px;--t-lead:20px;--t-h:24px;--t-title:28px;--t-num:34px;
+    --dur:.28s;--ease:cubic-bezier(.32,.72,0,1);--spring:cubic-bezier(.34,1.56,.64,1);
+    --font:"Nunito",ui-rounded,-apple-system,system-ui,sans-serif;--display:var(--font);
+    --bg:#fff;--surface:#fff;--surface-2:#f7f7f7;--tint:#f2f8ef;
+    --label:#142414;--label-2:#4b4b4b;--label-3:#767676;
+    --sep:#e5e5e5;--rim:#cfcfcf;
+    --accent:#44633f;--on-accent:#fff;--ink:#5f7f58;--on-ink:#fff;--ink-rim:#29452a;
+    --cloud-lo:#e4eee0;--cloud-hi:#a9bfa0;--wash:#e6f0e2;--warm:#eef3ea;--sun:#f5b942;
+    --rimw:4px;
+    color-scheme:light;
+  }
+  @media (prefers-contrast:more){:root{--sep:currentColor;--label-3:var(--label-2)}}
+
+  /* ===== base ===== */
+  *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+  html{font-size:17px}
+  body{font-family:var(--font);background:var(--bg);color:var(--label);min-height:100dvh;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;line-height:1.35}
+  #app{width:100%;max-width:430px;height:100dvh;display:flex;flex-direction:column;position:relative;background:var(--bg);overflow:hidden}
+  @media (min-width:600px){
+    body{align-items:center;background:#d9d8d3}
+    #app{width:390px;height:min(844px,calc(100dvh - 48px));border-radius:48px;box-shadow:0 0 0 10px #142414}
+  }
+  button{font:inherit;color:inherit;cursor:pointer}
+  header,main,footer{position:relative;z-index:1}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:var(--r-s)}
+  [tabindex="-1"]:focus{outline:0}
+  svg{display:block}
+  [hidden]{display:none!important}
+
+  /* ===== nav ===== */
+  header{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-3) 0;padding-top:calc(var(--sp-2) + env(safe-area-inset-top))}
+  .icon-btn{width:var(--tap);height:var(--tap);display:grid;place-items:center;background:none;border:0;border-radius:var(--r-pill);color:var(--label);transition:transform var(--dur) var(--ease)}
+  .icon-btn:active{transform:scale(.92)}
+  .bar{flex:1;display:flex;gap:6px}
+  .bar>span{flex:1;height:8px;background:var(--sep);border-radius:var(--r-pill);overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:var(--ink);border-radius:inherit;transition:width var(--dur) var(--ease)}
+  .sos{flex:none;min-height:var(--tap);padding:0 var(--sp-2);border:0;background:none;font-size:var(--t-foot);font-weight:600;color:var(--label-2)}
+
+  /* ===== content ===== */
+  main{flex:1;min-height:0;padding:var(--sp-4) var(--sp-4) var(--sp-6);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;animation:enter var(--dur) var(--ease) both}
+  main::-webkit-scrollbar{display:none}
+  @keyframes enter{from{opacity:0;transform:translateY(8px)}}
+  @keyframes pop{from{transform:scale(.6);opacity:0}}
+  @keyframes fall{0%{transform:translateY(-4px);opacity:0}30%{opacity:1}100%{transform:translateY(12px);opacity:0}}
+  @keyframes fade{from{opacity:0}}
+  h1{font-family:var(--display);font-size:var(--t-title);line-height:1.15;letter-spacing:-.01em;text-wrap:balance}
+  .sub{font-size:var(--t-sub);line-height:1.45;font-weight:500;color:var(--label-2);max-width:40ch}
+  .note{font-size:var(--t-foot);font-weight:600;color:var(--label-2);margin-top:var(--sp-2);min-height:1.35em}
+  .meta{font-size:var(--t-foot);font-weight:600;color:var(--label-2);margin-bottom:var(--sp-3)}
+  .scene{border-radius:var(--r-l);background:var(--wash);overflow:hidden}
+  .scene svg{width:100%;height:auto}
+
+  /* Happi asks one question; the instruction, if any, sits under it as plain app text */
+  .ask{display:flex;align-items:flex-end;gap:var(--sp-2);margin:var(--sp-4) 0 var(--sp-5)}
+  .ask .happi{flex:none;width:84px;aspect-ratio:220/246;margin-bottom:-4px;transition:opacity .25s ease-out,transform .25s ease-out}
+  .ask .happi svg{width:100%;height:100%}
+  .say{position:relative;flex:1;align-self:center;background:var(--tint);border-radius:var(--r-m);padding:var(--sp-3) var(--sp-4)}
+  .say::before{content:"";position:absolute;left:-8px;bottom:18px;border:8px solid transparent;border-right-color:var(--tint);border-left:0}
+  .say h1{font-size:var(--t-h);line-height:1.15;font-weight:600}
+  .ask.solo .say::before{display:none}
+  .ask+.sub{margin:calc(-1*var(--sp-3)) 0 var(--sp-4)}
+  /* Happi steps aside while the keyboard is open; it keeps its box so the question does not jump */
+  .typing .ask .happi{opacity:0;transform:scale(.96);transition:opacity .2s ease-in,transform .2s ease-in}
+
+  /* the signature: the moment and the thought it caught, as one sentence with a gap */
+  .me{display:flex;flex-direction:column;align-items:flex-end;margin-bottom:var(--sp-4)}
+  .me p{max-width:85%;background:var(--ink);color:var(--on-ink);border-radius:var(--r-m) var(--r-m) 4px var(--r-m);padding:var(--sp-3) var(--sp-4);font-weight:500;line-height:1.35;overflow-wrap:anywhere}
+  .line{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .gap{font-weight:700}
+  .gap.empty{display:inline-block;min-width:3.5em;text-align:center;border-bottom:2px dashed currentColor;font-size:var(--t-foot);font-weight:500}
+  .line.map{display:block;font-size:var(--t-lead);line-height:1.4;font-weight:500;color:var(--label-2);margin-top:var(--sp-3);-webkit-line-clamp:unset}
+  .line.map .gap.empty{color:var(--label-3)}
+  .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+  /* ===== footer ===== */
+  footer{padding:var(--sp-3) var(--sp-4) calc(var(--sp-4) + env(safe-area-inset-bottom));display:flex;gap:var(--sp-3);
+    background:color-mix(in srgb,var(--bg) 88%,transparent);-webkit-backdrop-filter:blur(var(--sp-5));backdrop-filter:blur(var(--sp-5))}
+  .btn{flex:1;min-height:56px;border:0;border-bottom:var(--rimw) solid var(--ink-rim);border-radius:var(--r-pill);padding:var(--sp-3) var(--sp-5);
+    font-size:18px;font-weight:700;background:var(--ink);color:var(--on-ink);transition:transform .12s var(--spring),border-bottom-width .12s var(--spring)}
+  .btn:active:not(:disabled){transform:translateY(2px);border-bottom-width:2px}
+  .btn:disabled{background:var(--sep);border-bottom-color:var(--rim);color:var(--label-2);cursor:default}
+  .btn.ghost{flex:0 0 auto;background:var(--surface-2);color:var(--label);border:0}
+  .btn.dark{background:#142414;border-bottom-color:#000}
+  a.btn{display:grid;place-items:center;text-decoration:none}
+
+  /* ===== writing fields: viewfinder, thought bubble, fairer frame ===== */
+  .vf,.tb,.frame{display:block}
+  .vf{padding:var(--sp-4) var(--sp-4) var(--sp-3);background:var(--surface-2);border-radius:var(--r-l)}
+  .vf textarea,.tb textarea,.frame textarea{display:block;width:100%;min-height:7.5rem;border:0;outline:0;background:transparent;padding:0;font:inherit;
+    font-size:var(--t-lead);line-height:1.4;font-weight:700;color:var(--label);resize:none;field-sizing:content;overflow-wrap:anywhere}
+  .vf textarea{font-size:var(--t-h);line-height:1.3;min-height:9rem}
+  textarea::placeholder{color:#6b6b6b;font-weight:600}
+  .tb textarea:focus,.frame textarea:focus{background:transparent}
+  .tb{background:#f6ecd8;border-radius:36px;padding:var(--sp-5) var(--sp-5) var(--sp-4);box-shadow:inset 0 -5px 0 #ead7b5}
+  .tb textarea{min-height:6rem}
+  .frame{padding:var(--sp-3);border-radius:var(--r-l);background:#ecd496;box-shadow:inset 0 -5px 0 #d8b86e}
+  .frame>div{background:#fffaf0;border-radius:10px;padding:var(--sp-3) var(--sp-4) var(--sp-4)}
+  .frame textarea{min-height:6rem}
+
+  /* ===== quick replies ===== */
+  .qrs{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:var(--sp-4)}
+  .qr{max-width:100%;min-height:var(--tap);text-align:left;border:0;border-radius:var(--r-pill);background:var(--surface-2);
+    padding:var(--sp-2) var(--sp-4);font-size:var(--t-sub);line-height:1.3;color:var(--label);transition:transform .12s var(--spring)}
+  .qrs .qr{font-weight:600}
+  .qr:active{transform:scale(.97);background:var(--warm)}
+  .qr[aria-pressed=true]{background:var(--warm);box-shadow:inset 0 0 0 2px var(--ink)}
+  .link{display:inline-flex;align-items:center;gap:var(--sp-1);min-height:var(--tap);margin-top:var(--sp-2);padding:0;border:0;background:none;font-size:var(--t-sub);font-weight:600;color:var(--accent);text-decoration:underline;text-underline-offset:3px;text-align:left}
+  .save{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);width:100%;flex:none;margin-top:var(--sp-4);font-size:var(--t-body)}
+
+  /* ===== believability: the thought as weather ===== */
+  .sky{display:block;width:min(100%,200px);height:auto;margin:0 auto var(--sp-4);--f:var(--heat-f,.5)}
+  .sky .sun{fill:var(--sun);stroke:var(--sun);stroke-width:4;stroke-linecap:round;opacity:calc(1 - var(--f));transform:translateY(calc(var(--f)*14px));transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
+  .sky .brow{fill:none;stroke:var(--label);stroke-width:3;stroke-linecap:round;opacity:max(0,calc((var(--f) - .6)*2.5))}
+  .sky .rain{opacity:max(0,calc((var(--f) - .55)*2.2))}
+  .sky .rain line{stroke:var(--accent);stroke-width:3;stroke-linecap:round;animation:fall 1.2s linear infinite}
+  .sky .cloud{fill:color-mix(in srgb,var(--cloud-hi) calc(var(--f)*100%),var(--cloud-lo));transform:scale(calc(.72 + .28*var(--f)));transform-box:fill-box;transform-origin:50% 100%;transition:transform var(--dur) var(--ease)}
+  .sky .eye{fill:var(--label)}
+  .sky .mouth{fill:none;stroke:var(--label);stroke-width:3;stroke-linecap:round;transform:scaleY(calc(1 - 2*var(--f)));transform-box:fill-box;transform-origin:center;transition:transform var(--dur) var(--ease)}
+  .mid{flex:1;min-height:140px;display:grid;place-items:center;overflow:hidden}
+  .mid .sky{width:100%;height:100%;max-width:240px;margin:0}
+  .fill{min-height:100%;display:flex;flex-direction:column}
+  .fill .ctl{margin-top:auto;padding-top:var(--sp-5)}
+  .read{margin:var(--sp-4) 0 var(--sp-2)}
+  .read b{font-size:var(--t-title);line-height:1.1;font-weight:700}
+  .scale{position:relative;height:var(--tap)}
+  .segs{position:absolute;inset:var(--sp-1) 0;display:grid;grid-template-columns:repeat(10,1fr);gap:var(--sp-1)}
+  .segs i{border-radius:8px;background:var(--surface-2);box-shadow:inset 0 0 0 2px var(--rim);transition:background var(--dur) var(--ease)}
+  .segs i.f{background:var(--ink);box-shadow:inset 0 -4px 0 var(--ink-rim)}
+  .segs i.was{position:relative}
+  .segs i.was::after{content:"";position:absolute;left:50%;top:-10px;transform:translateX(-50%);border:6px solid transparent;border-top-color:#29452a}
+  input[type=range]{-webkit-appearance:none;appearance:none;position:absolute;inset:0;width:100%;height:var(--tap);margin:0;background:transparent}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:var(--tap);border-radius:8px;background:var(--surface);border:2px solid var(--ink-rim)}
+  input[type=range]::-moz-range-thumb{width:16px;height:var(--tap);border-radius:8px;background:var(--surface);border:2px solid var(--ink-rim)}
+  input[type=range]::-webkit-slider-runnable-track{height:var(--tap);background:transparent}
+  input[type=range]::-moz-range-track{height:var(--tap);background:transparent}
+  .lbls{display:flex;justify-content:space-between;font-size:var(--t-foot);font-weight:600;color:var(--label-2);margin-top:var(--sp-2)}
+
+  /* ===== keepsake: the caught thought, then the record folded away ===== */
+  .verdict{display:flex;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-4)}
+  .verdict .happi{flex:none;width:72px;aspect-ratio:220/246}
+  .verdict .happi svg{width:100%;height:100%}
+  .verdict h1{font-family:var(--font);font-size:var(--t-h);font-weight:700}
+  .verdict .sub{margin-top:var(--sp-1)}
+  .keep{border-radius:24px;background:var(--wash);padding:var(--sp-3) var(--sp-3) var(--sp-5);animation:pop .5s var(--ease) both}
+  .wx{display:flex;align-items:center;gap:var(--sp-1)}
+  .wx figure{flex:1;margin:0}
+  .wx .sky{width:100%;margin:0}
+  .wx figcaption{display:flex;justify-content:center;gap:var(--sp-2);align-items:baseline;padding:var(--sp-1) var(--sp-1) 0;font-size:var(--t-foot);font-weight:600;color:var(--label-2)}
+  .wx figcaption b{font-size:var(--t-body);font-weight:600;color:var(--label)}
+  .wx>svg{flex:none;width:20px;color:var(--label-2)}
+  .wx.one{justify-content:center}
+  .wx.one figure{flex:0 1 200px}
+  .keep .lead{margin:var(--sp-5) var(--sp-2) 0;font-size:var(--t-sub);font-weight:500;color:var(--label-2);overflow-wrap:anywhere}
+  .keep .rf{margin:var(--sp-1) var(--sp-2) 0;font-family:var(--display);font-size:var(--t-title);line-height:1.15;letter-spacing:-.01em;font-weight:600;text-wrap:pretty;overflow-wrap:anywhere}
+  .keep .was{margin:var(--sp-3) var(--sp-2) 0;font-size:var(--t-sub);font-weight:500;color:var(--label-2);overflow-wrap:anywhere}
+  .ans{margin-top:var(--sp-5);border-radius:var(--r-m);background:var(--surface-2)}
+  .ans>summary{display:flex;align-items:center;min-height:52px;padding:0 var(--sp-4);font-size:var(--t-body);font-weight:700;cursor:pointer;list-style:none}
+  .ans>summary::-webkit-details-marker{display:none}
+  .ans>summary::after{content:"";margin-left:auto;width:9px;height:9px;border:solid var(--label);border-width:0 2px 2px 0;transform:rotate(45deg);transition:transform var(--dur) var(--ease)}
+  .ans[open]>summary::after{transform:rotate(-135deg)}
+  .ans dl{padding:0 var(--sp-4) var(--sp-2)}
+  .ans dt{font-size:var(--t-foot);font-weight:700;color:var(--label-2);padding-top:var(--sp-3);border-top:1px solid var(--sep)}
+  .ans dd{margin:var(--sp-1) 0 var(--sp-3);font-size:var(--t-sub);font-weight:500;line-height:1.4;overflow-wrap:anywhere}
+  .fine{text-align:center;font-size:var(--t-foot);font-weight:600;color:var(--label-2);margin-top:var(--sp-5)}
+
+  /* ===== help sheet ===== */
+  .scrim{position:absolute;inset:0;z-index:5;background:rgba(0,0,0,.4);animation:fade .2s}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:var(--sp-5) var(--sp-4) calc(var(--sp-5) + env(safe-area-inset-bottom));background:var(--bg);border-radius:24px 24px 0 0}
+  .sheet h3{font-size:var(--t-h);font-weight:700;line-height:1.15;padding-right:var(--tap)}
+  .sheet p{margin:var(--sp-2) 0 var(--sp-4);color:var(--label-2);font-weight:500}
+  .sheet .btn+.btn,.sheet .btn+a,.sheet a+.btn{margin-top:var(--sp-2)}
+  .sheet .btn{width:100%}
+  .sheet .x{position:absolute;top:var(--sp-3);right:var(--sp-3);width:var(--tap);height:var(--tap);display:grid;place-items:center;border:0;border-radius:50%;background:var(--surface-2);color:var(--label-2)}
+
+  /* ===== toast ===== */
+  #toast{position:absolute;z-index:2;left:50%;bottom:calc(var(--sp-7) + var(--sp-6) + env(safe-area-inset-bottom));width:max-content;max-width:calc(100% - var(--sp-6));text-align:center;transform:translate(-50%,var(--sp-4));opacity:0;pointer-events:none;
+    background:var(--label);color:var(--bg);padding:var(--sp-3) var(--sp-5);border-radius:var(--r-pill);font-size:var(--t-body);font-weight:700;transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
+  #toast.on{opacity:1;transform:translate(-50%,0)}
+
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+<link rel="stylesheet" href="happy-ui.css">
+</head>
+<body>
+<div id="app">
+  <header><button class="icon-btn" id="back" aria-label="Back"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div class="bar" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="100"><span><i></i></span><span><i></i></span><span><i></i></span></div><button class="sos" id="sos">Get help</button><button class="icon-btn" id="close" aria-label="Exit exercise"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header>
+  <main id="main"></main>
+  <footer><button class="btn ghost" id="secondary" hidden></button><button class="btn" id="next"></button></footer>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div class="scrim" id="scrim" hidden></div>
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t" hidden></section>
+</div>
+
+<script src="happi.js"></script>
+<script src="exercise-art.js"></script>
+<script src="words.js"></script>
+<script>
+// ---- data (in the app the example taps come from AI per step; here they are fixed samples) ----
+const STAGES = ['Moment','Thought','Check'];
+const SITUATIONS = ['My manager asked for a “quick chat” tomorrow without saying why','I texted a friend this morning and she still hasn’t replied'];
+const THOUGHTS = ['I’m about to be let go.','She’s annoyed with me.','I always say the wrong thing.'];
+const BALANCED = ['A quick chat could be about anything. I’ll know more tomorrow.','People get busy. A slow reply isn’t a verdict on me.','I’ve had plenty of good conversations. One awkward moment doesn’t define me.'];
+const REALITY = [['YES','Yes'],['NOT SURE','Not sure'],['NO','No']];
+const REALITY_SAID = {YES:'It still feels true.','NOT SURE':'You weren’t sure yet.',NO:'It doesn’t fully hold up.'};
+const STARTERS = ['It’s possible that ','Even though ','I don’t know yet if ','A kinder way to see it: '];
+const CRISIS = /\b((kill|hurt|cut)(ing)? myself|kms|end (my life|it all)|wanna die|want(ed)? to die|wish i (was|were) dead|better off (dead|without me)|suicid\w*|self[- ]?harm\w*|overdos\w*|no reason to live|can'?t go on|can ?not go on|do(n'?t| not) want to be here)\b/i;
+
+// ---- state ----
+const fresh = () => ({situation:'',thought:'',intensity:5,post:null,isTrue:null,balanced:'',checked:false,cardSaved:false,helpShown:false});
+let R = fresh(), idx = 0;
+let crisis = false; // lasts the whole session: restart never brings Happi back after a crisis phrase
+let pause, qt;      // step timers, cleared whenever the step changes
+
+// ---- helpers ----
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const buzz = () => navigator.vibrate && navigator.vibrate(8);
+// on touch a programmatic focus opens the keyboard over the examples, so only desktop gets it
+const focusField = el => { if (!matchMedia('(pointer: coarse)').matches) el.focus({preventScroll:true}); };
+const IC = p => `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const ARROW = IC('<path d="M5 12h14M13 6l6 6-6 6"/>'), XI = IC('<path d="M6 6l12 12M18 6L6 18"/>'), CHEV = IC('<path d="M9 6l6 6-6 6"/>');
+const BOOKMARK = '<path d="M6 3h12v18l-6-4-6 4Z"/>';
+// words() (real words, not key-mash) lives in words.js, shared by every exercise; a tapped starter alone is not an answer
+const own = t => { const x = String(t).trim(), p = STARTERS.find(s => x.startsWith(s.trim())); return p ? x.slice(p.trim().length) : x; };
+const WORD = v => v === 0 ? 'Not at all' : v <= 3 ? 'A little' : v <= 6 ? 'Partly' : v <= 9 ? 'Mostly' : 'Completely';
+// ponytail: lowercases common sentence openers only; names and "I" stay as typed
+const lc = s => /^(My|A|An|The|We|They|He|She|It|Our|Someone|This|That|Today|Yesterday|At|In|On|After|Before|During)\b/.test(s) ? s[0].toLowerCase() + s.slice(1) : s;
+const happiOn = () => { if (crisis) return false; try { return localStorage.getItem('happi') !== 'off'; } catch { return true; } };
+const head = (q, sub = '', pose = 'catch') => `<div class="ask${happiOn() ? '' : ' solo'}">${happiOn() ? `<div class="happi" data-pose="${pose}"></div>` : ''}<div class="say"><h1>${q}</h1></div></div>${sub ? `<p class="sub">${sub}</p>` : ''}`;
+const quick = (items, attr = 'use') => `<div class="qrs">${items.map(t => `<button class="qr" data-${attr}="${esc(t)}">${esc(t)}</button>`).join('')}</div>`;
+const gap = (t, k) => t ? `<span class="gap" data-k="${k}">${esc(t)}</span>` : `<span class="gap empty" data-k="${k}"><span aria-hidden="true">${k}</span><span class="vh">not written yet</span></span>`;
+const tidy = s => s.trim().replace(/^[“"']+|[”"']+$/g, '').replace(/[.!?]+$/, '');
+const sit = () => lc(tidy(R.situation));
+const line = (b, lead = 'my mind said') => `<div class="me"><p class="line" id="line">When ${gap(sit(),'moment')}, ${lead} ${b.trim() ? `“${gap(tidy(b),'thought')}”` : gap('','thought')}.</p></div>`;
+// re-render the whole sentence: simpler than patching one gap and its quotes
+const liveLine = (b, lead) => { const p = $('#line'); if (p) p.outerHTML = line(b, lead).replace(/^<div class="me">|<\/div>$/g, ''); };
+const mountHappi = () => document.querySelectorAll('.happi').forEach(h => { if (window.Happi && !h._happi) Happi.mount(h); });
+
+document.addEventListener('focusin', e => { if (e.target.matches('textarea') && matchMedia('(pointer: coarse)').matches) $('#main').classList.add('typing'); });
+document.addEventListener('focusout', e => { if (e.target.matches('textarea')) $('#main').classList.remove('typing'); });
+
+// ---- art ----
+const RAYS = [...Array(8)].map((_,i) => { const a = i*Math.PI/4, c = Math.cos(a), n = Math.sin(a), r = Math.round;
+  return `<line x1="${r(140+c*32)}" y1="${r(46+n*32)}" x2="${r(140+c*40)}" y2="${r(46+n*40)}"/>`; }).join('');
+// the thought as weather: --f is believability 0..1
+const SKY = (f, cls = '') => `<svg class="sky ${cls}" viewBox="0 0 200 130" aria-hidden="true"${f == null ? '' : ` style="--f:${f}"`}>
+  <g class="sun"><circle cx="140" cy="46" r="24" stroke="none"/><g class="rays">${RAYS}</g></g>
+  <g class="bob"><g class="cloud"><circle cx="64" cy="78" r="24"/><circle cx="96" cy="62" r="30"/><circle cx="130" cy="80" r="22"/><rect x="40" y="78" width="112" height="24" rx="12"/></g>
+  <circle class="eye" cx="86" cy="80" r="3.5"/><circle class="eye" cx="112" cy="80" r="3.5"/>
+  <path class="brow" d="M80 72L92 75M118 72L106 75"/><path class="mouth" d="M91 91Q99 99 107 91"/></g>
+  <g class="rain">${[78,98,118].map((x,i) => `<line x1="${x}" y1="108" x2="${x}" y2="113" style="animation-delay:${i*.4}s"/>`).join('')}</g></svg>`;
+
+// ---- crisis path (onboarding phrase list; the sheet never blocks Continue and never discards text) ----
+let from = null;
+function openHelp(el = document.activeElement) {
+  crisis = true;
+  document.querySelectorAll('#main .happi').forEach(h => h.remove());
+  document.querySelectorAll('#main .ask').forEach(a => a.classList.add('solo'));
+  from = el;
+  $('#sheet').innerHTML = `<button class="x" data-close aria-label="Close">${XI}</button>
+    <h3 id="sh-t">If you’re thinking about hurting yourself, you deserve support now.</h3>
+    <p>988 Suicide &amp; Crisis Lifeline · call or text 988</p>
+    <a class="btn dark" href="tel:988">Call 988</a><a class="btn" href="sms:988">Text 988</a>
+    <p>In danger right now? Call 911.</p>
+    <p>Happy isn’t an emergency service. If you might act on these thoughts, call now.</p>
+    <button class="btn ghost" data-close>Keep writing</button>`;
+  $('#scrim').hidden = $('#sheet').hidden = false;
+  ['header', 'main', 'footer'].forEach(s => $(s).inert = true); // the sheet is modal: nothing behind it takes focus
+  $('#sheet .x').focus();
+}
+function closeSheet() {
+  $('#scrim').hidden = $('#sheet').hidden = true;
+  ['header', 'main', 'footer'].forEach(s => $(s).inert = false);
+  const t = from && from.isConnected ? from : $('#sos'); t.focus();
+}
+$('#sheet').onclick = e => { if (e.target.closest('[data-close]')) closeSheet(); };
+$('#scrim').onclick = closeSheet;
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#sheet').hidden) closeSheet(); });
+$('#sos').onclick = e => openHelp(e.currentTarget);
+// opens once per run; the next Continue goes through
+function crisisCheck(t, el) { if (R.helpShown || !CRISIS.test(String(t).replace(/[’‘]/g, "'"))) return false; R.helpShown = true; openHelp(el); return true; }
+
+// ---- step builders ----
+// one binder for the writing steps: Continue stays off until there are real words
+function bindText(key, need, hint, exempt) {
+  const ta = $('#ta'), st = $('#status');
+  const upd = () => { const good = words(exempt ? R[key] : own(R[key])) >= need;
+    document.querySelectorAll('[data-use]').forEach(b => b.setAttribute('aria-pressed', b.dataset.use === R[key].trim()));
+    const qs = $('.qrs'); if (qs && $('[data-use]')) qs.hidden = !!R[key].trim();
+    st.textContent = good ? '' : hint; $('#next').disabled = !good; };
+  ta.oninput = () => { R[key] = ta.value; upd(); clearTimeout(pause); pause = setTimeout(() => ta.isConnected && crisisCheck(R[key], ta), 1500); steps[idx].live && steps[idx].live(); };
+  upd(); focusField(ta);
+  document.querySelectorAll('[data-use]').forEach(b => b.onclick = () => { R[key] = b.dataset.use; ta.value = R[key]; upd(); buzz(); ta.focus({preventScroll:true}); steps[idx].live && steps[idx].live(); });
+}
+// a starter goes in front of what is there; tapping never wipes your words
+function bindStarters(key) {
+  document.querySelectorAll('[data-start]').forEach(b => b.onclick = () => { const ta = $('#ta'), cur = ta.value.trim();
+    const old = STARTERS.find(s => cur.startsWith(s.trim())), rest = old ? cur.slice(old.trim().length).trim() : cur;
+    R[key] = b.dataset.start + (old || /^I\b/.test(rest) ? rest : rest.charAt(0).toLowerCase() + rest.slice(1));
+    ta.value = R[key]; ta.dispatchEvent(new Event('input')); focusField(ta); buzz(); });
+}
+function rateStep({key, q, sub = '', before = false}) {
+  return {stage: before ? 2 : 1, valid: () => true,
+    // the second rating starts at the first, so moving nothing reads as "same", never a made-up improvement
+    render: () => { if (R[key] == null) R[key] = R.intensity; const v = R[key];
+      return `<div class="fill">${before ? line(R.balanced, 'I could think') : line(R.thought)}${head(q, sub)}
+      <div class="mid">${SKY(null)}</div>
+      <div class="ctl"><p class="read" aria-hidden="true"><b id="v">${WORD(v)}</b></p>
+      <div class="scale"><div class="segs" aria-hidden="true">${[...Array(10)].map((_,i) => `<i${before && R.intensity > 0 && i === R.intensity - 1 ? ' class="was"' : ''}></i>`).join('')}</div>
+      <input type="range" id="rg" min="0" max="10" step="1" value="${v}" aria-label="${esc(q)}" aria-valuetext="${v} out of 10, ${WORD(v)}"></div>
+      <div class="lbls" aria-hidden="true"><span>Not at all</span><span>Completely</span></div>
+      ${before ? '<p class="note" id="cmp" aria-live="polite"></p>' : ''}</div></div>`; },
+    bind() {
+      const segs = document.querySelectorAll('.segs i'), rg = $('#rg');
+      const draw = () => { const v = R[key];
+        $('#v').textContent = WORD(v); segs.forEach((s,i) => s.classList.toggle('f', i < v));
+        $('#app').style.setProperty('--heat-f', v / 10); rg.setAttribute('aria-valuetext', `${v} out of 10, ${WORD(v)}`);
+        if (before) { const a = WORD(R.intensity), b = WORD(v), lw = s => s.toLowerCase();
+          $('#cmp').textContent = v < R.intensity ? (a !== b ? `Less believable than before: ${a} to ${lw(b)}.` : 'A little less believable than before.')
+            : v === R.intensity ? `Same as before: ${b}.` : (a !== b ? `More believable than before: ${a} to ${lw(b)}.` : 'A little more believable than before.'); } };
+      rg.oninput = e => { R[key] = +e.target.value; if (key === 'intensity') R.post = null; draw(); }; draw();
+    }};
+}
+// what you have so far: the caught thought, as a keepsake
+const caught = () => `<div class="verdict">${happiOn() ? '<div class="happi" data-pose="catch"></div>' : ''}<div><h1>Thought caught.</h1><p class="sub">Catching it is the skill. You can check it any time.</p></div></div>
+  <article class="keep" aria-label="The thought you caught">
+    <div class="wx one"><figure role="img" aria-label="Believability: ${WORD(R.intensity)}">${SKY(R.intensity / 10)}<figcaption aria-hidden="true">Believability<b>${WORD(R.intensity)}</b></figcaption></figure></div>
+    <p class="lead">When ${esc(sit())}, my mind said</p>
+    <p class="rf">“${esc(tidy(R.thought))}”</p>
+  </article>`;
+
+// ---- steps ----
+const steps = [
+  {id:'intro', noProgress:true, noBack:true, next:'Begin', valid:() => true,
+    render:() => `<p class="meta">Thought Catcher · 3 to 5 min · private to you</p>
+      <div class="scene">${window.ART ? ART.thought_catcher() : ''}</div>
+      ${head('Caught a stressful thought?')}
+      <p class="line map">When ${gap('','moment')}, my mind said ${gap('','thought')}.</p>`},
+
+  {stage:0, key:'situation', valid:() => words(R.situation) >= 2,
+    render:() => `${head('What happened?','Write what a camera could have seen or heard.')}
+      <label class="vf"><textarea id="ta" rows="3" maxlength="400" placeholder="This morning, my manager…" aria-label="What happened">${esc(R.situation)}</textarea></label>
+      <p class="note" id="status" aria-live="polite"></p>${quick(SITUATIONS)}`,
+    bind() { bindText('situation', 2, 'A few words is enough to start.', true); }},
+
+  {stage:1, key:'thought', valid:() => words(R.thought) >= 1, live:() => { R.post = null; R.isTrue = null; R.cardSaved = false; liveLine(R.thought); },
+    render:() => `${line(R.thought)}${head('What did your mind say?','Write it the way it showed up, even if it sounds harsh.')}
+      <div class="tb"><textarea id="ta" rows="3" maxlength="300" placeholder="I always say the wrong thing." aria-label="What did your mind say">${esc(R.thought)}</textarea></div>
+      <p class="note" id="status" aria-live="polite"></p>${quick(THOUGHTS)}`,
+    bind() { bindText('thought', 1, 'A few words is enough.', true); }},
+
+  rateStep({key:'intensity', q:'How believable does it feel?'}),
+
+  // checkpoint: the thought is caught. Saving here ends the exercise; "Check it" continues into the checker
+  {id:'checkpoint', stage:1, next:'Check it', secondary:'Save for now', valid:() => true,
+    onSecondary:() => { R.checked = false; idx = steps.length - 1; show(); },
+    render:() => caught()},
+
+  {id:'is_true', stage:2, valid:() => true, next:() => R.isTrue ? 'Continue' : 'Skip',
+    render:() => `${line(R.thought)}${head('Is this thought actually true?')}
+      <div class="qrs" role="group" aria-label="Is this thought actually true?">${REALITY.map(([v,l]) => `<button class="qr" data-v="${v}" aria-pressed="${R.isTrue === v}">${l}</button>`).join('')}</div>
+      <p class="note" id="said" aria-live="polite">${R.isTrue ? REALITY_SAID[R.isTrue] : ''}</p>`,
+    // the answer stays on screen until Continue, so it can be read and changed
+    bind() { document.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { R.isTrue = b.dataset.v; buzz();
+      document.querySelectorAll('[data-v]').forEach(o => o.setAttribute('aria-pressed', o === b));
+      $('#said').textContent = REALITY_SAID[R.isTrue]; $('#next').textContent = 'Continue'; }); }},
+
+  {stage:2, key:'balanced', valid:() => words(own(R.balanced)) >= 2, live:() => { R.post = null; R.cardSaved = false; },
+    render:() => `${line(R.thought)}${head('What’s a fairer way to say it?','Aim for something fair and believable, not forced positive.')}
+      <div class="frame"><div><textarea id="ta" rows="3" maxlength="300" placeholder="It’s possible that…" aria-label="A fairer way to say it">${esc(R.balanced)}</textarea></div></div>
+      <p class="note" id="status" aria-live="polite"></p>${quick(BALANCED)}${quick(STARTERS, 'start')}`,
+    bind() { bindText('balanced', 2, 'A short sentence is enough.'); bindStarters('balanced'); }},
+
+  rateStep({key:'post', q:'How believable does it feel now?', sub:'Any answer is fine.', before:true}),
+
+  {id:'summary', noProgress:true, next:'Save and finish', valid:() => true,
+    render:() => {
+      const link = `<a class="link" href="thought-reframing.html">Go deeper: Thought Reframing ${CHEV}</a>`;
+      if (!R.checked) return `${caught()}<p>${link}</p><p class="fine">Saving keeps this in your exercise history, in your own words.</p>`;
+      if (R.post == null) R.post = R.intensity;
+      const d = R.post - R.intensity, a = WORD(R.intensity), b = WORD(R.post), lw = s => s.toLowerCase();
+      const [h, sub] = d < 0 ? ['It feels less believable now.', a !== b ? `From ${lw(a)} to ${lw(b)}, after you checked it.` : `Still ${lw(b)}, a little less than before.`]
+        : d === 0 ? ['It feels about as believable.', 'That’s okay. You still paused and checked it.']
+        : ['It feels more believable right now.', 'Looking closely can do that for a while. You can come back to it later.'];
+      const fig = (lbl, v) => `<figure role="img" aria-label="${lbl}: ${WORD(v)}">${SKY(v / 10)}<figcaption aria-hidden="true">${lbl}<b>${WORD(v)}</b></figcaption></figure>`;
+      const row = (dt, dd) => dd ? `<dt>${dt}</dt><dd>${dd}</dd>` : '';
+      return `<div class="verdict">${happiOn() ? `<div class="happi" data-pose="${d <= 0 ? 'proud' : 'catch'}"></div>` : ''}<div><h1>${h}</h1><p class="sub">${sub}</p></div></div>
+        <article class="keep" aria-label="Your fairer thought">
+          <div class="wx">${fig('Before', R.intensity)}${ARROW}${fig('Now', R.post)}</div>
+          <p class="lead">When ${esc(sit())}, I could think</p>
+          <p class="rf">“${esc(tidy(R.balanced))}”</p>
+          <p class="was">Instead of “${esc(tidy(R.thought))}”</p>
+        </article>
+        <button class="btn ghost save" id="card" ${R.cardSaved ? 'disabled' : ''}>${IC(BOOKMARK + (R.cardSaved ? '<path d="M9 10l2 2 4-4"/>' : '<path d="M12 7v6M9 10h6"/>'))}${R.cardSaved ? 'Saved to coping cards' : 'Save for a difficult moment'}</button>
+        <details class="ans"><summary>See your answers</summary><dl>
+          ${row('What happened', esc(R.situation.trim()))}
+          ${row('The thought', esc(R.thought.trim()))}
+          ${row('Is it true?', R.isTrue ? esc(REALITY_SAID[R.isTrue]) : '')}
+          ${row('Believability', `${a}, then ${lw(b)}.`)}
+          ${row('Fairer thought', esc(R.balanced.trim()))}
+        </dl></details>
+        <p>${link}</p>
+        <p class="fine">Saving keeps this in your exercise history, in your own words.</p>`;
+    },
+    // update the button in place: a full redraw would collapse the answers and scroll to the top
+    bind() { const c = $('#card'); if (c) c.onclick = () => { R.cardSaved = true; buzz(); toast('Saved to coping cards'); c.disabled = true;
+      c.innerHTML = `${IC(BOOKMARK + '<path d="M9 10l2 2 4-4"/>')}Saved to coping cards`; }; }},
+];
+
+// ---- engine ----
+function show() {
+  const s = steps[idx], last = idx === steps.length - 1;
+  clearTimeout(pause); clearTimeout(qt);
+  $('#main').innerHTML = s.render(); $('#main').scrollTop = 0; $('#main').classList.remove('typing');
+  $('#app').style.removeProperty('--heat-f');
+  const counted = steps.filter(x => !x.noProgress);
+  // each segment is one stage; it fills as that stage's steps are done
+  document.querySelectorAll('.bar i').forEach((f, g) => { const inStage = counted.filter(x => x.stage === g), k = inStage.indexOf(s);
+    f.style.width = (s.noProgress ? (last && R.checked ? 100 : last ? (g < 2 ? 100 : 0) : 0) : s.stage > g ? 100 : s.stage < g ? 0 : Math.round((k + 1) / inStage.length * 100)) + '%'; });
+  const pct = s.noProgress ? (last ? 100 : 0) : Math.round((counted.indexOf(s) + 1) / counted.length * 100);
+  $('.bar').setAttribute('aria-valuenow', pct);
+  $('.bar').setAttribute('aria-valuetext', s.noProgress ? (last ? 'Done' : 'Not started') : `${STAGES[s.stage]}, part ${s.stage + 1} of 3`);
+  $('#back').style.visibility = s.noBack ? 'hidden' : 'visible';
+  $('#next').textContent = typeof s.next === 'function' ? s.next() : s.next || 'Continue';
+  $('#next').disabled = !s.valid();
+  const sec = $('#secondary'); sec.hidden = !s.secondary; sec.textContent = s.secondary || '';
+  mountHappi();
+  s.bind && s.bind();
+  // a new step should be announced: land on its heading unless a field already took focus
+  if (!$('#main').contains(document.activeElement)) { const h = $('#main h1'); h.tabIndex = -1; h.focus({preventScroll:true}); }
+}
+$('#next').onclick = () => {
+  if (idx === steps.length - 1) { buzz(); toast('Saved. It’s yours.'); restart(); return; }
+  const k = steps[idx].key; if (k && crisisCheck(R[k], $('#next'))) return;
+  if (!steps[idx].valid()) return;
+  if (steps[idx].id === 'checkpoint') R.checked = true;
+  idx++; show();
+};
+// back from the caught-only summary returns to the checkpoint, not into the checker
+$('#back').onclick = () => { clearTimeout(qt); if (!idx) return; idx = idx === steps.length - 1 && !R.checked ? steps.findIndex(s => s.id === 'checkpoint') : idx - 1; show(); };
+$('#secondary').onclick = () => steps[idx].onSecondary && steps[idx].onSecondary();
+$('#close').onclick = () => { if (idx === 0 || confirm('Leave this exercise? What you wrote so far won’t be saved.')) restart(); };
+let tt; function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2200); }
+function restart() { R = fresh(); idx = 0; show(); }
+show();
+</script>
+</body>
+</html>

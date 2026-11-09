@@ -10,6 +10,10 @@
     "Mobbin": {
       "serverUrl": "https://api.mobbin.com/mcp",
       "url": "https://api.mobbin.com/mcp"
+    },
+    "higgsfield": {
+      "serverUrl": "https://mcp.higgsfield.ai/mcp",
+      "url": "https://mcp.higgsfield.ai/mcp"
     }
   }
 }

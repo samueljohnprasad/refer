@@ -48,8 +48,8 @@ This repo currently has multiple lockfiles (`package-lock.json`, `yarn.lock`, `b
 
 ## UI Direction
 
-- Follow `DESIGN.md`: bright gamified colors, physical 3D button depth, bouncy animations, rounded shapes, and playful interaction patterns.
-- Use Nunito throughout. Build hierarchy with weight, size, spacing, and color: 800 for primary prompts, 700 for actions, 600 for choices and labels, and 400 for supporting content.
+- Follow `.agents/happy-ui.css` and the mobile-app-ui-design skill: white base, one sage accent, colour in illustration only, flat surfaces with fills instead of heavy borders or 3D rims, calm motion with a reduced-motion fallback.
+- Type: Fredoka (display face) for one line per screen (screen title, hero numeral), Nunito for everything else. Build hierarchy with weight, size, spacing, and color using the `happy-ui.css` tokens: 700 for actions and emphasis, 600 for choices and labels, 500 for body and supporting content. Never two bolds side by side.
 - Inputs are the primary object on exercise screens. Optional suggestions, AI, and voice controls should feel secondary.
 - Avoid generic gradients, decorative ghost cards, sparkle/assistant decoration, oversized arbitrary radii, and monotonous card stacks.
 - Keep tap targets large, text readable, and mobile layouts stable across keyboard and safe-area states.
@@ -61,6 +61,11 @@ This repo currently has multiple lockfiles (`package-lock.json`, `yarn.lock`, `b
 - Treat the skill as an acceptance gate, not optional inspiration: review the result against its anti-slop rules, layout/type/colour guidance, accessibility expectations, and critique rubric; flag every issue; then fix the issues before accepting the work.
 - For existing screens that fail the skill’s requirements, redesign them to meet the skill rather than preserving weak patterns merely because they already exist. Preserve working product behaviour and user intent while improving the visual system.
 - When available, use the Mobbin MCP server to study strong mobile patterns and references. Mobbin research supports the design review but does not replace the mobile-app-ui-design skill review or its required issue resolution.
+- Also load, for every design implementation (screen, flow, component, prototype):
+  - `.agents/skills/mobile-app-ui-design/references/mobbin-principles.md`: cross-app principles learned from Mobbin (restate the user's words, neutral direction wording, one reused visual idea, no container-per-field, slop tells). Cite the principle behind each decision.
+  - `.agents/skills/app-soul-design/references/prototype-learnings.md` (L1–L16) and `checklists/anti-pattern-audit.md` (AP9 visual slop) for Happy's conversational exercises, Happi, and copy/tone.
+- Mobbin first: research the pattern on Mobbin (screens/flows) before designing and cite screen URLs per decision. If the Mobbin MCP is disconnected, ground decisions in `docs/research/soul/02-teardown.md`, say so explicitly, and never present it as fresh research.
+- Mandatory review agent: after every UI implementation or change, spawn a reviewer subagent (Opus) to audit drift, gaps, contrast (AA), aria, orphaned CSS, regressions in neighbouring screens and the skills above, then fix what it finds and report both rounds. Do this without being asked. Soul-level research or spec work (mascot, voice, rituals, absence/return) goes through the `soul-design-researcher` agent (`.claude/agents/soul-design-researcher.md`), which never edits app code.
 - Do not call a UI task complete until the review outcome, remaining risks, and any verification limits are stated clearly. If a full render, critique, or device check cannot be run, mark the task as not fully approved and explain what remains.
 
 ## Verification

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Happi poses</title>
+<style>
+:root{--sp-3:12px;--sp-4:16px;--sp-6:32px;--r-card:20px;--r-pill:999px;--ink:#142414;--accent:#4f7a45;--tint:#e6f0e2}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Nunito",system-ui,sans-serif;background:var(--bg);color:var(--label)}
+main{max-width:960px;margin:0 auto;padding:var(--gap-section) var(--gutter)}
+p.lead{color:var(--label-2);font-size:var(--t-sub);margin:4px 0 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--gap-card)}
+figure{margin:0;border-radius:var(--r-card);background:var(--surface-2);overflow:hidden;cursor:pointer}
+figure .happi{aspect-ratio:220/246;padding:12px 18px 0}
+figure .happi svg{width:100%;height:100%;display:block}
+figcaption{padding:10px var(--pad-card) 14px}
+figcaption b{display:block;font-size:var(--t-body);font-weight:var(--w-strong)}
+figcaption span{font-size:var(--t-foot);color:var(--label-3)}
+[data-hue=catch]{background:var(--hue-catch)}[data-hue=reframe]{background:var(--hue-reframe)}[data-hue=abc]{background:var(--hue-abc)}
+[data-hue=act]{background:var(--hue-act)}[data-hue=ladder]{background:var(--hue-ladder)}
+</style>
+<link rel="stylesheet" href="happy-ui.css">
+</head>
+<body>
+<main>
+  <h1>Happi poses</h1>
+  <p class="lead">Tap a pose to replay its entry. Rig and motion: <code>happi.js</code>.</p>
+  <h2 class="sec">Home</h2>
+  <div class="grid" data-set="wave welcome content evening"></div>
+  <h2 class="sec">Exercises</h2>
+  <div class="grid" data-set="catch:catch reframe:reframe abc:abc act:act ladder:ladder"></div>
+  <h2 class="sec">Completion</h2>
+  <div class="grid" data-set="cheer proud"></div>
+</main>
+<script>
+  // build the tiles before happi.js mounts them
+  for (const grid of document.querySelectorAll("[data-set]"))
+    grid.innerHTML = grid.dataset.set.split(" ").map(s => {
+      const [pose, hue] = s.split(":");
+      return `<figure ${hue ? `data-hue="${hue}"` : ""}><div class="happi" data-pose="${pose}"></div><figcaption><b>${pose}</b><span data-use="${pose}"></span></figcaption></figure>`;
+    }).join("");
+</script>
+<script src="happi.js"></script>
+<script>
+  document.querySelectorAll("[data-use]").forEach(s => s.textContent = Happi.POSES[s.dataset.use].use);
+  document.addEventListener("click", e => { const f = e.target.closest("figure"); if (f) Happi.replay(f.querySelector(".happi")); });
+</script>
+</body>
+</html>

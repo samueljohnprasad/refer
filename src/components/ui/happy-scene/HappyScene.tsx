@@ -1,4 +1,3 @@
-// ponytail: full-screen interactive HappyScene featuring articulated Happi puppet matching Screenshot 2
 import React, { useEffect, useState } from "react";
 import { AppState } from "react-native";
 import Svg, { G, SvgXml, type GProps } from "react-native-svg";
@@ -56,12 +55,15 @@ export function HappyScene({ live = true }: { live?: boolean }): React.JSX.Eleme
   const bodyProps = useAnimatedProps<AnimatedGProps>(() => ({ matrix: pose.value.body }), [live]);
   const heartProps = useAnimatedProps<AnimatedGProps>(() => ({ matrix: pose.value.heart }), [live]);
   const armLProps = useAnimatedProps<AnimatedGProps>(() => ({ matrix: pose.value.armL }), [live]);
+  const armLFrontProps = useAnimatedProps<AnimatedGProps>(() => ({ matrix: pose.value.armL }), [live]);
+  const foreLProps = useAnimatedProps<AnimatedGProps>(() => ({ matrix: pose.value.foreL }), [live]);
+  const padProps = useAnimatedProps<AnimatedGProps>(() => ({ opacity: pose.value.padOpacity }), [live]);
   const armRProps = useAnimatedProps<AnimatedGProps>(() => ({ matrix: pose.value.armR }), [live]);
+  const foreRProps = useAnimatedProps<AnimatedGProps>(() => ({ matrix: pose.value.foreR }), [live]);
   const headProps = useAnimatedProps<AnimatedGProps>(() => ({ matrix: pose.value.head }), [live]);
   const earLProps = useAnimatedProps<AnimatedGProps>(() => ({ matrix: pose.value.earL }), [live]);
   const earRProps = useAnimatedProps<AnimatedGProps>(() => ({ matrix: pose.value.earR }), [live]);
   const faceProps = useAnimatedProps<AnimatedGProps>(() => ({ matrix: pose.value.face }), [live]);
-  const cheeksProps = useAnimatedProps<AnimatedGProps>(() => ({ matrix: pose.value.cheeks }), [live]);
   const eyesProps = useAnimatedProps<AnimatedGProps>(() => ({ matrix: pose.value.eyes }), [live]);
   const pupilsProps = useAnimatedProps<AnimatedGProps>(() => ({ matrix: pose.value.pupils }), [live]);
 
@@ -80,7 +82,6 @@ export function HappyScene({ live = true }: { live?: boolean }): React.JSX.Eleme
         <SvgXml xml={sceneXml(scenery.plant)} width={390} height={844} />
       </AnimatedGroup>
 
-      {/* Articulated Happi Rig on Floor matching Screenshot 2 100% */}
       <G
         transform={`translate(195 ${SCENE.floor}) scale(${SCENE.scale}) translate(-${SCENE.pivotX} -${SCENE.pivotY})`}
       >
@@ -90,12 +91,15 @@ export function HappyScene({ live = true }: { live?: boolean }): React.JSX.Eleme
           bodyProps={bodyProps}
           heartProps={heartProps}
           armLProps={armLProps}
+          armLFrontProps={armLFrontProps}
+          foreLProps={foreLProps}
+          padProps={padProps}
           armRProps={armRProps}
+          foreRProps={foreRProps}
           headProps={headProps}
           earLProps={earLProps}
           earRProps={earRProps}
           faceProps={faceProps}
-          cheeksProps={cheeksProps}
           eyesProps={eyesProps}
           pupilsProps={pupilsProps}
         />

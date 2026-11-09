@@ -1,44 +1,67 @@
-// ponytail: vector art definitions matching 100% to Screenshot 2 / panda.png
+// Happi rig traced off panda-capture.png on a grid: 1 unit = 4 source px. Floor (130, 238), neck (131, 152).
+// Torso is a white front inside a thin ink outline; a black chest band sits under the head; the belly ends in a U whose fold rests on short legs that taper to round feet (panda-capture.png).
+// Arms hang straight down to the hip; both segments cap on the elbow at radius 10, so the joint stays one circle at any bend. Forearms taper to an 8.5 mitt.
 export const INK = "#252525";
-export const WHITE = "#FCFCFA";
-export const HEART = "#C8BEE6";
+export const WHITE = "#FFFFFF";
+export const HEART = "#D3CDEB";
 export const SHADOW = "#BCD0AF";
-export const BLUSH = "#F4B5C2";
+export const STROKE = 3;
+export const LINE = { head: 3, tuft: 3, mouth: 2.5, pad: 1.5, fold: 3 } as const;
+
+export const PIVOT = {
+  floor: [130, 244],
+  body: [130, 227],
+  heart: [130, 201],
+  neck: [131, 152],
+  earL: [80, 72],
+  earR: [178, 76],
+  eyes: [132, 109],
+  shoulderL: [91, 158],
+  elbowL: [91, 180],
+  shoulderR: [169, 158],
+  elbowR: [169, 180],
+} as const;
+
+export const shadow = { cx: 130, cy: 244, rx: 44, ry: 5 } as const;
+
+export const eyes = [
+  {
+    patch: { cx: 97.5, cy: 107, rx: 25.5, ry: 25, rotate: -8 },
+    white: { cx: 99, cy: 107, rx: 18.5, ry: 17.5 },
+    pupil: { cx: 100.5, cy: 109, r: 14 },
+    glints: [{ cx: 95.5, cy: 101.5, r: 3.3 }, { cx: 91.5, cy: 107.5, r: 2 }],
+  },
+  {
+    patch: { cx: 166, cy: 110.5, rx: 25.5, ry: 25.5, rotate: 6 },
+    white: { cx: 165.5, cy: 110.75, rx: 18, ry: 17.75 },
+    pupil: { cx: 164.5, cy: 113, r: 14 },
+    glints: [{ cx: 159.5, cy: 105, r: 3 }, { cx: 155.5, cy: 111, r: 2 }],
+  },
+] as const;
+
+export const nose = { cx: 131.75, cy: 123.75, rx: 6, ry: 4.2 } as const;
+export const pawPad = { cx: 91, cy: 208, r: 3 } as const;
 
 export const paths = {
-  // Legs / Feet
-  legL: "M87 192 Q76 204 79 220 Q82 232 99 226 Q108 222 106 210 L106 193Z",
-  legR: "M129 192 Q124 211 131 220 Q140 228 156 219 Q163 210 152 202 L148 188Z",
+  legL: "M96 211 L96.6 219.6 C97.2 225 98.5 231 100.5 235 C102.3 239 105.5 242.5 112 242.5 L117 242.5 C122.5 242.5 126.5 239.5 126.5 235 L126.5 211 Z",
+  legR: "M164 211 L163.4 219.6 C162.8 225 161.5 231 159.5 235 C157.7 239 154.5 242.5 148 242.5 L143 242.5 C137.5 242.5 133.5 239.5 133.5 235 L133.5 211 Z",
 
-  // Torso
-  torsoBlack: "M83 126 C64 138 62 175 71 194 C80 217 122 219 143 201 C159 184 157 146 143 132Z",
-  bellyWhite: "M86 139 C74 152 73 178 82 192 C95 206 123 206 136 190 C146 175 145 148 132 139Z",
-  bellyHeart: "M108 164 C91 147 85 165 97 176 L108 184 C132 171 124 151 108 164Z",
+  torso: "M95 152 C94 170 94.2 200.16 95 212 C95.5 217 96 220 97.5 222 C104 225.5 118 225.8 130 225.8 C142 225.8 156 225.5 162.5 222 C164 220 164.5 217 165 212 C165.8 200.16 166 170 165 152 Z",
+  belly: "M98.5 206 C97.8 194.32 99.5 185.56 106 182.64 C113 180.77 122 180.53 130 180.53 C138 180.53 147 180.77 154 182.64 C160.5 185.56 162.2 194.32 161.5 206 L161.5 212 C161 216 159.5 218.5 156 220 C150 223.5 140 224.8 130 224.8 C120 224.8 110 223.5 104 220 C100.5 218.5 99 216 98.5 212 Z",
+  bellyFold: "M117 220.6 C120 221.4 123.5 223.6 130 223.6 C136.5 223.6 140 221.4 143 220.6",
+  heart: "M130 196.5 C125.83 188.5 116.56 190.5 117.95 199.5 C118.88 205.5 124.9 209.5 130 213 C135.1 209.5 141.12 205.5 142.05 199.5 C143.44 190.5 134.17 188.5 130 196.5 Z",
 
-  // Left Arm (Viewer's Left)
-  armL: "M78 139 Q61 129 51 146 Q43 164 57 174 Q70 178 80 159Z",
-  foreL: "M57 158 Q43 162 41 179 Q44 191 57 190 Q73 185 72 171Z",
+  upperArmL: "M81 158 A10 10 0 0 1 101 158 L101 180 A10 10 0 0 1 81 180 Z",
+  forearmL: "M81 180 A10 10 0 0 1 101 180 L99.5 204 A8.5 8.5 0 0 1 82.5 204 Z",
+  upperArmR: "M159 158 A10 10 0 0 1 179 158 L179 180 A10 10 0 0 1 159 180 Z",
+  forearmR: "M159 180 A10 10 0 0 1 179 180 L177.5 204 A8.5 8.5 0 0 1 160.5 204 Z",
 
-  // Right Arm (Viewer's Right)
-  armR: "M143 138 Q160 129 171 147 Q177 161 165 173 Q150 177 141 159Z",
-  foreR: "M158 159 Q173 160 179 175 Q180 188 167 192 Q151 192 149 177Z",
+  earL: "M55.2 50.5 A24.5 23.5 0 1 1 104.2 50.5 A24.5 23.5 0 1 1 55.2 50.5 Z",
+  earR: "M160.1 59.8 A24 23.5 0 1 1 208.1 59.8 A24 23.5 0 1 1 160.1 59.8 Z",
 
-  // Ears
-  earL: "M42 62 C18 46 28 13 53 6 C76 0 94 17 88 38Z",
-  earR: "M147 36 C143 13 172 3 191 16 C212 30 205 56 186 66Z",
-
-  // Head
-  headBase: "M40 62 C53 37 76 31 100 24 C113 17 128 14 126 27 C141 20 155 29 165 34 C192 46 202 70 201 96 C207 118 196 137 177 145 C139 159 83 151 53 140 C27 133 24 111 30 89Z",
-  hairTufts: "M125 27 Q124 33 119 35 M133 29 Q139 34 135 41",
-  eyebrows: "M70 47 Q75 44 82 45 M150 54 Q157 54 161 58",
-
-  // Eye Patches
-  eyePatchL: "M48 78 C54 59 73 57 85 66 C96 74 92 88 82 88 C69 86 57 90 48 84Z",
-  eyePatchR: "M132 82 C139 67 157 72 167 82 C178 94 174 103 164 101 C154 96 139 100 132 94Z",
-
-  // Muzzle (Nose + Cat Smile)
-  nose: "M101 93 Q109 89 115 94 Q113 101 106 100 Q101 98 101 93Z",
-  smile: "M108 101 Q101 113 91 105 M108 101 Q117 115 126 106",
+  head: "M98.9 51 C111.4 46.8 113.4 47.3 117.5 46.4 C121.8 45.4 127.3 40.4 131.4 40.4 C135.5 40.4 137.8 46.7 137.9 46.7 C177 49.7 210.2 84.8 210.7 122.1 C211.7 142.3 204.6 156.9 185.5 164.5 C170.3 171.3 150.2 170 131 170 C129.8 169.8 126.5 169.4 124 169.1 C121.5 168.8 118.7 168.4 116 168 C113.3 167.6 110.7 167 108 166.4 C105.3 165.8 103 165.2 100 164.3 C97 163.4 93.3 162.4 90 161.2 C86.7 160 83.3 158.8 80 157.3 C76.7 155.8 72.9 153.9 70 152 C67.1 150.1 64.5 148.1 62.4 146 C60.3 143.9 58.9 141.5 57.6 139.2 C56.3 136.9 55.4 134.2 54.5 132 C53.6 129.8 53 128.2 52.5 126 C52 123.8 51.8 121.3 51.6 119 C51.4 116.7 51.3 113.2 51.3 112.1 C51.3 88.2 69.8 61.1 98.9 51 Z",
+  hairTufts: "M135.5 41.6 Q138.6 46 136.6 52 Q135.2 56.5 132.6 56.2 M140.5 47 Q147 52 144.5 62",
+  mouth: "M124.22 132.15 Q125.97 136 128.43 134.95 Q130.53 134.25 131.93 132.5 Q133.32 134.6 135.43 134.95 Q137.88 136 139.28 132.5",
 } as const;
 
 export const scenery = {

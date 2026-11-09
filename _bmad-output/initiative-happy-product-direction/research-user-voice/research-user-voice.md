@@ -1,5 +1,5 @@
 # Happy — User Voice Deep Recon Report
-**Type:** user-voice | **Preset:** standard | **Topology:** breadth-first | **Depth:** 2 | **Threads:** 3 | **Sources:** 24+ clusters
+**Type:** user-voice | **Preset:** standard | **Topology:** breadth-first | **Depth:** 2 | **Threads:** 3 | **Sources:** 24+ clusters · **Deepened:** 2026-11-09 (Round 2: retention voices)
 
 > [!IMPORTANT]
 > This report is the primary Sprint 1 calibration artifact. Every copy word, prompt, and UX pattern decision should be weighted against this user-voice evidence base.
@@ -208,3 +208,69 @@ Every panda message, every notification, every copy beat must pass this test: *"
 - [`digest-A-blank-slate-fatigue.md`](digests/digest-A-blank-slate-fatigue.md)
 - [`digest-B-streak-guilt-panic.md`](digests/digest-B-streak-guilt-panic.md)
 - [`digest-C-natural-lexicon.md`](digests/digest-C-natural-lexicon.md)
+
+---
+
+## Deepening — Round 2: Retention voices (2026-11-09)
+
+**Why this round.** Decision served: confirm or change the Home lifecycle, notification rules, recall, Happi's role, graduation offer and paywall placement in `docs/research/retention-strategy.md`, using real user words. Four parallel researchers (Q1–Q7), ~110 tool calls, sentiment window 2025-05+ where available. Digests: `digests/D-r2-*`, `E-r2-*`, `F-r2-*`, `G-r2-*`.
+
+**Coverage warning.** reddit.com was unreachable from the research tools this run. Reddit voices come only from one snapshot mirror (r/finch, r/ADHD, r/UXDesign threads). App Store, Trustpilot, review aggregators, journalism and published studies fill the rest. Prevalence claims below are limited to themes with two independent communities or a published study; everything else is labelled.
+
+### R2.1 Why people stay
+- **Attachment to a character keeps people coming back** (HIGH — two apps, a published study theme). "the bird is too cute to disappoint" (Finch, App Store via Appbot, 2023-07); "Wysa's has a cute personality, which is what keeps me coming back" (Wysa, Google Play in a 2024 *mHealth* thematic analysis, PMC11304096). Five distinct voices, Finch + Wysa.
+- **Accumulated history is a tether — and a source of stress** (MEDIUM-LOW, Finch only). "too afraid to let it go after all these years and a 400+ day streak" (r/finch, 2026-04); "haven't missed a day in 4 years" in a 2-star review calling the app "a daily source of stress" (Trustpilot, 2026-06); "Still love my birb, but that's how they got us to stay. It's underhanded" (r/finch, 2026-04). INFERENCE: the streak keeps people present, not necessarily well.
+- **Low effort plus patterns over time** (MEDIUM, Daylio, mostly 2019–2021 reviews, one 2025-12): reports that "assess correlations between moods and behaviours".
+- **Small wins without scolding** (MEDIUM, Finch, App Store + Reddit): "gamifies 'the little wins' in the day"; "I feel so much more grounded".
+
+### R2.2 Reminders and notifications
+- **Streak reset → shame → quit** (HIGH — r/ADHD and r/finch, independent threads, plus Trustpilot). "build a streak, have one bad day, see the reset, feel immediate shame, never open the app again" (r/ADHD, 2026-04); "it punishes you for being human instead of showing you how far you've actually come" (same thread). Counter-voice in the same thread wants a frequency goal: "if I fail one day, it doesn't kill the streak".
+- **Guilt pushes read as deliberate manipulation** (MEDIUM — clear sentiment, but the sharpest quote is about Duolingo): "The notifications make you feel guilty, yes, that's the entire point." (r/UXDesign, 2026-01). Finch compared to "a casino" (r/finch, 2026-04).
+- **One user-chosen daily reminder is accepted** (LOW — ~2 direct voices; Daylio reviewer credits "reminders and goal-setting" for an 869-day run). Counter-voice: some ADHD users want reminders that are harder to ignore (r/ADHD, 2026-05).
+- **Promised trial-end notice that never arrived** (Finch, Trustpilot 2025-10) — see R2.6.
+
+### R2.3 Being remembered
+- **Callback reads as care** (MEDIUM — one diary study, n=26, Woebot/Wysa, 2025, PMC12552820): "It made me feel like he remembered and cared about what I'd shared, which made me feel that our relationship was deepening."
+- **Repetition and forgetting erode value** (MEDIUM-HIGH — two independent studies + store review): "The chat keeps asking the same mood question every day… It gets kind of boring." (same diary study); "After a few months' usage, the AI starts to sound very redundant" (Wysa, *mHealth* 2024); "If I accidentally exit out of the chat feature, I can't go back in to work on the same thought" (same).
+- **Over-applied memory feels intrusive** (LOW-MEDIUM — one outlet, general-purpose ChatGPT): "I wasn't trying to have you opine about my divorce at every chance" (Futurism, 2026-05).
+- **Users want control over what resurfaces** (LOW — Day One forum 2023, plus a per-journal "On This Day" toggle that shipped). No user voice found about painful entries resurfacing in a mental-health app.
+
+### R2.4 Mascot and companion
+- **Bonding drives return** (HIGH, as R2.1). "take care of someone while they were taking care of me too" (Finch, grieving user, Appbot 2026-08).
+- **Losing progress feels like grief** (one verified voice): "Finch broke my heart I cried for days" after losing 2 years of progress (Appbot 2026-08).
+- **Guilt from neglecting the pet:** not verified — only spam-like pages. Engadget's reviewer reports Finch "doesn't take the guilt approach".
+- **"Silly" or "condescending"** (LOW-MEDIUM, minority): "I used to feel silly 'talking' to a cartoon penguin AI bot" — the reviewer says it passed. The "Condescending and inane" review targeted a drag-the-smiley mood input in onboarding, not the penguin (INFERENCE).
+- **Wanting to turn the character off:** not found.
+
+### R2.5 Coming back, and stopping because better
+- **Return moments:** no verified user quotes on what triggers a return or how re-entry feels this run. Company-side signal only: Finch shipped "App Pause" to pause without losing progress (search snippet, page not fetched).
+- **"E-attainment" is a published construct** (MEDIUM — peer-reviewed, 2019): "the discontinuation of eMH engagement after personal goals have been met"; trial attrition "may reflect e-attainment" (JMIR 2019, PMC6908978). A 2024 JMIR scoping review codes "No need to track anymore" as one abandonment reason (PMC11694054). A Berkeley Help@Hand evaluation reportedly found 13% stopped Headspace because they no longer needed it — **unverified** (PDF not extracted).
+- **Value fading into a chore** (LOW, one thread): "it's not really helping me anymore and is just one more thing to do before bed" (r/finch, 2026-04) — ambiguous between improvement and staleness.
+- **Episodic, reactive use** as a recognised pattern (JMIR mHealth 2026) — **unverified**, abstract summary only.
+
+### R2.6 Paywall and onboarding
+- **Trial auto-charge anger** (HIGH — 5 voices, Finch/Headspace/Reflectly, Trustpilot + aggregator; Appbot's analysis of 40,294 Finch reviews Aug 2025–Aug 2026: ~6.7% of negative/mixed reviews cite trial auto-charges, pricing 21–27%). "being told they would sent a notification before the end of the trial. Never got one and got charged 80 euros" (Finch, Trustpilot, 2025-10).
+- **Paywall before the user knows the app** (MEDIUM — Finch, Earkick): "offered a 'free trial' OR discounted subscription for Finch Plus (without knowing what Finch plus means & never having used the app)" (Trustpilot, 2026-03); "locked after one AI chat… please just tell us that upfront" (Earkick).
+- **"Help apps should help people who can't afford help"** (MEDIUM — 2 voices + JMIR preprint snippet on "subscription gatekeeping").
+- **Constant upsell** (MEDIUM): "constantly bugged with 'so you want to upgrade?' notifications" (Reflectly).
+- **Fair = usable free core, optional extras, pay-what-you-can** (MEDIUM, mostly second-hand: Wysa, Finch "Can't Afford It", Earkick).
+- **Onboarding:** forced login that lost data (Reflectly, 1–2 voices). No user complaints about long quizzes were found; evidence there is industry teardowns only.
+
+### R2.7 What this changes in the retention strategy
+
+| Retention-strategy decision | Round-2 effect | Change |
+|---|---|---|
+| Reject daily streak; lifetime count + weekly ring (§4.4) | **Strengthened.** Reset→shame→quit is HIGH; a user asks for exactly a frequency goal that "doesn't kill the streak". Long streaks do tether people, but long-streak users also report stress and manipulation | Add: the lifetime count must survive device loss — progress loss reads as grief. Sign-in/backup copy ties to this |
+| D1 recall bubble, recall line on return (§5.2, §5.8, §6.3) | **Strengthened** (callback = care) and **refined** (repetition = boring) | Add: rotate the check-in question and the greeting; never ask the identical question two days running. Recall only the last *saved* reflection, never unrelated heavy topics |
+| Happi as companion (§5, §6.4) | **Strengthened** (HIGH) | Add: inputs stay adult — word chips, no drag-a-smiley. Keep the "Show Happi" toggle (no demand found; low cost) |
+| Notification rules N1–N8 (§6.1) | Guilt pushes confirmed as manipulation; trial-notice failure is a top complaint | N8 becomes mandatory and doubled: push **and** an in-app banner 2 days before charge; the paywall states the charge date up front |
+| Paywall once at 600 ms after value (§6.5) | **Strengthened** — "paywall before I know the app" is a named complaint | Add: never a paywall before the first saved reflection (already); free core includes every CBT exercise used in distress |
+| Graduation / maintenance mode (§4.6) | Evidence upgraded from grey to **one peer-reviewed construct** (e-attainment, 2019) + a scoping review | Cite JMIR 2019 and 2024; thresholds still inference |
+| Win-back copy (§6.2) | No new evidence — still designed from principles | Unchanged; gap remains |
+
+### R2.8 Still open
+- Return triggers and re-entry feelings (no verified voices).
+- Users asking to hide the mascot.
+- Painful entries resurfacing.
+- Notification-volume complaints for Headspace/Calm.
+- Reddit access: the largest single gap. The next run should use a working mirror or have the user paste threads.

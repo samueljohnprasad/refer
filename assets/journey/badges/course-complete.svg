@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none" aria-hidden="true"><!-- course complete medal -->
+<path d="M76 118L60 176l18-10 10 18 14-56z" fill="#5f7f58"/><path d="M124 118l16 58-18-10-10 18-14-56z" fill="#29452a"/>
+<path d="M56.9 143.2A70 70 0 0 1 40.6 50.9" stroke="#A8C392" stroke-width="3" stroke-linecap="round"/><ellipse cx="49.6" cy="136.6" rx="5" ry="11" fill="#A8C392" transform="rotate(136 49.6 136.6)"/><ellipse cx="37.1" cy="118.7" rx="5" ry="11" fill="#A8C392" transform="rotate(154 37.1 118.7)"/><ellipse cx="30.7" cy="97.7" rx="5" ry="11" fill="#A8C392" transform="rotate(172 30.7 97.7)"/><ellipse cx="31.1" cy="75.8" rx="5" ry="11" fill="#A8C392" transform="rotate(190 31.1 75.8)"/><ellipse cx="38.2" cy="55.1" rx="5" ry="11" fill="#A8C392" transform="rotate(208 38.2 55.1)"/><path d="M143.1 143.2A70 70 0 0 0 159.4 50.9" stroke="#A8C392" stroke-width="3" stroke-linecap="round"/><ellipse cx="150.4" cy="136.6" rx="5" ry="11" fill="#A8C392" transform="rotate(-136 150.4 136.6)"/><ellipse cx="162.9" cy="118.7" rx="5" ry="11" fill="#A8C392" transform="rotate(-154 162.9 118.7)"/><ellipse cx="169.3" cy="97.7" rx="5" ry="11" fill="#A8C392" transform="rotate(-172 169.3 97.7)"/><ellipse cx="168.9" cy="75.8" rx="5" ry="11" fill="#A8C392" transform="rotate(-190 168.9 75.8)"/><ellipse cx="161.8" cy="55.1" rx="5" ry="11" fill="#A8C392" transform="rotate(-208 161.8 55.1)"/>
+<circle cx="100" cy="94" r="60" fill="#29452a"/>
+<circle cx="100" cy="88" r="60" fill="#44633f"/>
+<circle cx="100" cy="88" r="48" fill="#f8fbf6"/>
+<g clip-path="url(#course-medal)"><circle cx="100" cy="76" r="14" fill="#F6C453"/>
+<path d="M52 106c16-20 30-20 48-4 14-14 30-14 48 4v40H52z" fill="#abc0a2"/>
+<path d="M52 120c22-14 44-14 96 0v40H52z" fill="#7e9874"/></g>
+<defs><clipPath id="course-medal"><circle cx="100" cy="88" r="48"/></clipPath></defs>
+</svg>

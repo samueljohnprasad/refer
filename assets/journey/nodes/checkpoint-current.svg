@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="72" height="64" viewBox="0 0 72 64" fill="none" aria-hidden="true"><!-- checkpoint node, current -->
+<path d="M36 10L64 23V47L36 60L8 47V23Z" fill="#44633f" stroke="#44633f" stroke-width="7" stroke-linejoin="round"/>
+<path d="M36 4L64 17V41L36 54L8 41V17Z" fill="#5f7f58" stroke="#5f7f58" stroke-width="7" stroke-linejoin="round"/>
+<g transform="translate(19.799999999999997 12.799999999999997) scale(1.35)"><g fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 21V4"/><path d="M5 4.5c4-2.5 7 2.5 14 0V14c-7 2.5-10-2.5-14 0" fill="#ffffff"/></g></g>
+</svg>

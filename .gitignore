@@ -77,3 +77,5 @@ supabase/functions/.env
 credentials.json
 .credentials
 .update-state.json
+# docs
+# app-soul-design

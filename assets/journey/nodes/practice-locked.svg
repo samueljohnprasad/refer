@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="72" height="64" viewBox="0 0 72 64" fill="none" aria-hidden="true"><!-- practice node, locked -->
+<ellipse cx="36" cy="35" rx="35" ry="28" fill="#d4d4d4"/>
+<ellipse cx="36" cy="29" rx="35" ry="28" fill="#e5e5e5"/>
+<g transform="translate(19.799999999999997 12.799999999999997) scale(1.35)"><g fill="none" stroke="#6b6b6b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 12a8 8 0 1 1-2.6-5.9L20 8.5"/><path d="M20 3.5v5h-5"/></g></g>
+</svg>

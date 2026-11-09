@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Journeys</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700&display=swap">
+<style>
+  /* Journeys tab, built to docs/design/journey-and-reward-spec.md.
+     The reward is arriving: one quiet completion screen, then the path answers (node fills, the ring moves on).
+     Keepsakes hold the user's own words; unit, section and course ends get one calm sheet, ≤1 full celebration per 7 days. */
+  :root{
+    --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;--sp-8:32px;--sp-12:48px;
+    --r-pill:999px;--tap:44px;
+    --t-cap:13px;--t-sub:15px;--t-body:17px;--t-h3:18px;--t-h2:22px;--t-h1:28px;
+    --ease:cubic-bezier(.23,1,.32,1);--io:cubic-bezier(.77,0,.175,1);--in:cubic-bezier(.55,0,1,.45);
+    --font:"Nunito",ui-rounded,-apple-system,system-ui,sans-serif;--display:var(--font);
+    --bg:#fff;--surface:#fff;--surface-2:#f7f7f7;--soft:#f8fbf6;
+    --label:#142414;--label-2:#4b4b4b;--label-3:#6b6b6b;--sep:#e5e5e5;
+    --accent:#44633f;--s100:#e5ede1;--s200:#d3e0cd;--s300:#abc0a2;--s400:#7e9874;--s500:#5f7f58;--s600:#44633f;--s700:#29452a;
+    --low:0 2px 8px rgba(0,0,0,.05);
+    color-scheme:light;
+  }
+  *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+  [hidden]{display:none!important}
+  html{font-size:17px}
+  body{font-family:var(--font);background:var(--bg);color:var(--label);min-height:100dvh;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;line-height:1.35}
+  #app{width:100%;max-width:430px;height:100dvh;display:flex;flex-direction:column;position:relative;background:var(--bg);overflow:hidden}
+  @media (min-width:600px){body{align-items:center;background:#d9d8d3}#app{width:390px;height:min(844px,calc(100dvh - 48px));border-radius:48px;box-shadow:0 0 0 10px #142414}}
+  button,a{font:inherit;color:inherit;cursor:pointer}
+  a{text-decoration:none}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .snap,.snap *{transition:none!important;animation:none!important}
+
+  /* ===== header: courses, practice count, then the unit you are in ===== */
+  header{position:absolute;inset:0 0 auto;z-index:3;padding:calc(var(--sp-2) + env(safe-area-inset-top)) var(--sp-4) var(--sp-3);
+    background:color-mix(in srgb,var(--bg) 84%,transparent);-webkit-backdrop-filter:blur(var(--sp-6)) saturate(1.4);backdrop-filter:blur(var(--sp-6)) saturate(1.4)}
+  .top{display:flex;align-items:center;justify-content:space-between;min-height:var(--tap)}
+  .pillbtn{display:inline-flex;align-items:center;gap:6px;min-height:var(--tap);padding:0 var(--sp-3) 0 var(--sp-2);border:0;border-radius:var(--r-pill);background:none;color:var(--accent);font-size:var(--t-sub);font-weight:700}
+  .pillbtn:active{background:var(--soft)}
+  .count{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 var(--sp-3);border-radius:var(--r-pill);background:var(--soft);color:var(--accent);font-size:var(--t-cap);font-weight:700}
+  .count .rg{width:18px;height:18px;transform:rotate(-90deg)}
+  .count .rg circle{fill:none;stroke-width:3.5}
+  .count .rg .trk{stroke:var(--s100)}.count .rg .val{stroke:var(--accent);stroke-linecap:round}
+  /* the unit banner: sage for every unit (one accent); identity is the title */
+  .banner{display:flex;align-items:center;gap:var(--sp-3);width:100%;min-height:76px;margin-top:var(--sp-1);margin-bottom:4px;padding:var(--sp-3) var(--sp-4);border:0;border-radius:16px;text-align:left;
+    background:var(--s600);box-shadow:0 4px 0 var(--s700);color:#fff;transition:transform .12s var(--ease)}
+  .banner:active{transform:translateY(3px);box-shadow:0 1px 0 var(--s700)}
+  .bt{flex:1;min-width:0}
+  .bt.swap{animation:fade .2s var(--ease)}
+  .bt small{display:block;font-size:var(--t-cap);font-weight:700;color:#fff;letter-spacing:.04em;text-transform:uppercase}
+  .bt .t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-family:var(--font);font-size:var(--t-h3);font-weight:700;line-height:1.33}
+  .well{flex:none;align-self:stretch;margin:-12px -16px -12px 0;width:60px;display:grid;place-items:center;border-left:2px solid rgba(255,255,255,.25);color:#fff}
+
+  /* ===== the path: nodes 120 pt apart, the callout sits on the current ring ===== */
+  main{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;padding-top:var(--hh,160px)}
+  main::-webkit-scrollbar{display:none}
+  #path{position:relative}
+  /* 88 pt hit target; the current node's reaches up over its callout */
+  .node{position:absolute;width:88px;height:88px;padding:0;border:0;background:none;--f:#e5e5e5;--r:#d4d4d4;--c:#afafaf;--b1:#cfcfcf;--b2:#afafaf}
+  .node .pk{position:absolute;left:8px;bottom:9px;width:72px;height:64px;overflow:visible;color:var(--c);transition:color .3s var(--ease),transform .12s var(--ease)}
+  .node:active .pk{transform:scale(.97)}
+  .pk .f{fill:var(--f);stroke:var(--f);transition:fill .3s var(--ease),stroke .3s var(--ease)}
+  .pk .r{fill:var(--r);stroke:var(--r);transition:fill .3s var(--ease),stroke .3s var(--ease)}
+  .pk .b1{fill:var(--b1)}.pk .b2{fill:var(--b2)}
+  .pk .open{opacity:0;transition:opacity .2s var(--ease)}.pk .closed{transition:opacity .2s var(--ease)}
+  .s-completed .pk .open{opacity:1}.s-completed .pk .closed{opacity:0}
+  .s-current{--f:var(--s500);--r:var(--s600);--c:#fff;--b1:var(--s300);--b2:var(--s200)}
+  .s-completed{--f:var(--s500);--r:var(--s600);--c:#fff;--b1:var(--s300);--b2:var(--s200)}
+  .node.pop .pk{animation:pop .3s var(--ease)}
+  @keyframes pop{40%{transform:scale(1.04)}}
+  .node.jig .pk{transform-origin:50% 100%;animation:jig .6s var(--io)}
+  @keyframes jig{25%{transform:translateX(-.7px) scale(1.015,.975)}50%{transform:none}75%{transform:translateX(.7px) scale(1.015,.975)}}
+  .lockb{position:absolute;z-index:1;right:4px;bottom:52px;width:20px;height:20px;display:grid;place-items:center;border-radius:50%;background:#fff;color:var(--label-3);box-shadow:var(--low)}
+  /* ring and callout around the current node: static, one pulse per arrival */
+  .ring{position:absolute;width:96px;height:96px;pointer-events:none}
+  .ring circle{fill:none;stroke:var(--s300);stroke-width:6}
+  .tip{position:absolute;z-index:2;height:32px;padding:0 14px;display:flex;align-items:center;border:2px solid var(--sep);border-radius:var(--r-pill);background:#fff;box-shadow:0 2px 0 var(--sep);
+    font-size:var(--t-body);font-weight:700;color:var(--accent);transform:translateX(-50%);pointer-events:none;white-space:nowrap}
+  .tip::before{content:"";position:absolute;left:calc(50% - 10px);top:100%;border:10px solid transparent;border-top-color:var(--sep);border-bottom:0}
+  .tip::after{content:"";position:absolute;left:calc(50% - 7px);top:100%;border:7px solid transparent;border-top-color:#fff;border-bottom:0}
+  .ring.arrive{animation:ringin .25s var(--ease) both}
+  .tip.arrive{animation:tipin .25s .12s var(--ease) both}
+  @keyframes ringin{from{opacity:0;transform:scale(.94)}}
+  @keyframes tipin{from{opacity:0;transform:translate(-50%,6px)}}
+  .ring.leave{animation:ringout .15s var(--in) forwards}.tip.leave{animation:out .15s var(--in) forwards}
+  @keyframes ringout{to{opacity:0;transform:scale(.97)}}@keyframes out{to{opacity:0}}
+  .divider{position:absolute;left:var(--sp-5);right:var(--sp-5);height:20px;display:flex;align-items:center;gap:var(--sp-3)}
+  .divider i{flex:1;height:1px;background:var(--sep)}
+  .divider span{max-width:75%;font-size:var(--t-cap);font-weight:600;color:var(--label-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .seccard{position:absolute;left:var(--sp-5);right:var(--sp-5);height:96px;padding:var(--sp-4);border-radius:16px;background:var(--s600);color:#fff}
+  .seccard small{display:block;font-size:var(--t-cap);font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.04em}
+  .seccard b{display:block;font-size:var(--t-h3);font-weight:700;line-height:1.33;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .seccard span{display:block;font-size:var(--t-cap);font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* Happi beside the path: no bubble, nothing to tap; looks at where you are */
+  .mas{position:absolute;width:108px;aspect-ratio:220/246;pointer-events:none}
+
+  /* back to where you are */
+  .fab{position:absolute;right:var(--sp-5);bottom:calc(var(--tb,64px) + 16px);z-index:3;width:52px;height:52px;display:grid;place-items:center;border:2px solid var(--sep);border-radius:50%;background:#fff;box-shadow:0 3px 0 var(--sep);color:var(--accent)}
+  .fab:active{transform:translateY(3px);box-shadow:none}
+  .toast.out{animation:unfade .15s var(--in) forwards}
+  .toast{position:absolute;left:var(--sp-4);right:var(--sp-4);top:calc(var(--hh,160px) + var(--sp-2));z-index:4;padding:var(--sp-3) var(--sp-4);border-radius:16px;background:var(--s100);font-size:var(--t-sub);font-weight:700;text-align:center;animation:fade .15s}
+
+  /* ===== empty course ===== */
+  .empty{display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);padding:var(--sp-8) var(--sp-5);text-align:center}
+  .empty .hp{width:150px;aspect-ratio:220/246}
+  .empty h2{font-size:var(--t-h2);font-weight:700}
+  .empty p{font-size:var(--t-sub);font-weight:500;color:var(--label-2)}
+
+  /* ===== sheets ===== */
+  .scrim{position:absolute;inset:0;z-index:5;background:rgba(0,0,0,.4);animation:fade .2s}
+  .scrim.out{animation:unfade .15s var(--in) forwards}
+  @keyframes fade{from{opacity:0}}@keyframes unfade{to{opacity:0}}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:6;max-height:88%;overflow-y:auto;padding:var(--sp-6) var(--sp-4) calc(var(--sp-6) + env(safe-area-inset-bottom));background:var(--bg);border-radius:24px 24px 0 0;animation:up .3s var(--ease)}
+  .sheet.out{animation:down .22s var(--in) forwards}
+  @keyframes up{from{transform:translateY(100%)}}@keyframes down{to{transform:translateY(100%)}}
+  .sheet h2{font-size:var(--t-h2);font-weight:700;line-height:1.27;padding-right:var(--tap)}
+  .sheet .x{position:absolute;top:var(--sp-3);right:var(--sp-3);width:var(--tap);height:var(--tap);display:grid;place-items:center;border:0;border-radius:50%;background:var(--surface-2);color:var(--label-2)}
+  .sub{margin-top:var(--sp-1);font-size:var(--t-sub);font-weight:500;color:var(--label-3)}
+  .acts{display:flex;flex-direction:column;gap:var(--sp-2);margin-top:var(--sp-6)}
+  .btn{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);width:100%;min-height:52px;padding:0 var(--sp-4);border:0;border-radius:var(--r-pill);
+    background:var(--s500);color:#fff;box-shadow:0 4px 0 var(--s700);margin-bottom:4px;font-size:var(--t-body);font-weight:700;transition:transform .12s var(--ease),box-shadow .12s var(--ease)}
+  .btn:active{transform:scale(.97)}
+  .btn.alt{background:var(--surface);color:var(--label);border:2px solid var(--sep);box-shadow:0 4px 0 var(--sep)}
+  .link{align-self:center;min-height:var(--tap);padding:0 var(--sp-4);border:0;background:none;font-size:var(--t-sub);font-weight:600;color:var(--label-3)}
+  .cards{display:flex;flex-direction:column;gap:var(--sp-3);margin-top:var(--sp-4)}
+  .pick{display:block;width:100%;padding:var(--sp-4);text-align:left;border:2px solid var(--sep);border-radius:20px;background:var(--surface);box-shadow:0 3px 0 var(--sep);transition:transform .12s var(--ease)}
+  .pick:active{transform:scale(.98)}
+  .pick.on{border-color:var(--s500);box-shadow:0 3px 0 var(--s500);background:var(--soft)}
+  .pick .h{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2)}
+  .pick b{font-size:var(--t-body);font-weight:700;line-height:1.3}
+  .pick small{display:block;margin-top:2px;font-size:var(--t-cap);font-weight:600;color:var(--label-3)}
+  .pick .cur{flex:none;padding:2px var(--sp-2);border-radius:var(--r-pill);background:var(--s500);color:#fff;font-size:var(--t-cap);font-weight:700}
+  .bar{height:8px;margin-top:var(--sp-3);border-radius:var(--r-pill);background:var(--sep);overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:inherit;background:var(--accent)}
+  .pick .go{display:block;margin-top:var(--sp-2);font-size:var(--t-cap);font-weight:700;color:var(--accent)}
+  .get{list-style:none;padding:0;margin:var(--sp-4) 0 0;display:flex;flex-direction:column;gap:var(--sp-3)}
+  .get li{display:flex;gap:var(--sp-3);align-items:flex-start;font-weight:600}
+  .get li::before{content:"";flex:none;width:10px;height:10px;margin-top:6px;border-radius:50%;background:var(--s500)}
+
+  /* shared beat: rise 8 pt + fade, ease-out; delays come from the spec's beat sheets */
+  @keyframes rise{from{opacity:0;transform:translateY(var(--rise,8px))}}
+  @keyframes appear{from{opacity:0;transform:scale(var(--from,.96))}}
+  .skip :not(.rays,.cloud,.star,.float,.spk){animation:none!important}
+  @media (prefers-reduced-motion:no-preference){.skip .spk{animation:twinkle 2.4s ease-in-out infinite!important}.skip .rays{animation:spin 60s linear infinite!important}}
+
+  /* ===== reward screens: staged, not laid out (docs/research/reward-screens-craft.md) =====
+     Split palette: sage is the only colour for controls; illustration gets warm art tones (cream, honey, sky, blush).
+     Escalation: lesson = day sky, keepsake = warm paper, unit = day + rays, section = dusk, course = night. */
+  .scene{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+  .scene .sky{position:absolute;inset:0;width:100%;height:100%;animation:skyin .45s var(--ease) both}
+  @keyframes skyin{from{opacity:0;transform:scale(1.04)}}
+  .scene .hills{position:absolute;left:0;right:0;bottom:0;width:100%;height:120px}
+  .scene .hills path{animation:rise .5s var(--ease) both;--rise:24px}
+  .scene .hills .h2{animation-delay:.06s}.scene .hills .h3{animation-delay:.12s}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .scene .cloud{animation:drift 9s ease-in-out infinite alternate}.scene .cloud.c2{animation-duration:12s;animation-direction:alternate-reverse}
+  @keyframes drift{to{transform:translateX(14px)}}
+  .scene .star{transform-box:fill-box;transform-origin:center;animation:twinkle 2.6s ease-in-out infinite}
+  @keyframes twinkle{50%{opacity:.35;transform:scale(.7)}}
+  .spk{position:absolute;width:var(--s,16px);height:var(--s,16px);color:var(--c,#fff);pointer-events:none;animation:sparkin .35s var(--d,.35s) var(--ease) both,twinkle 2.4s calc(var(--d,.35s) + .35s) ease-in-out infinite}
+  @keyframes sparkin{from{opacity:0;transform:scale(0) rotate(-40deg)}60%{transform:scale(1.25)}}
+  .ttl,.sheet h2.ttl{font-family:var(--display);font-weight:600;font-size:var(--t-h1);line-height:1.18;letter-spacing:-.01em}
+  /* Happi drops onto the ground: fall, squash on landing, settle */
+  @keyframes drop{0%{opacity:0;transform:translateY(-36px)}55%{opacity:1;transform:translateY(0) scale(1.04,.94)}75%{transform:translateY(-4px) scale(.98,1.02)}100%{transform:none}}
+
+  /* ===== lesson completion (§4): Happi on a hill, your words on paper, what you put in ===== */
+  .done{position:absolute;inset:0;z-index:7;display:flex;flex-direction:column;background:#fff;text-align:center;overflow-y:auto;animation:enter .28s var(--ease)}
+  @keyframes enter{from{opacity:0;transform:translateY(24px)}}
+  .done.leave{animation:out .15s var(--in) forwards}
+  .dstage{position:relative;flex:1 0 auto;min-height:320px;padding-top:env(safe-area-inset-top)}
+  .bub{position:absolute;z-index:1;left:0;right:0;bottom:calc(32px + min(56%,280px));width:fit-content;max-width:min(300px,calc(100% - 40px));margin-inline:auto;padding:var(--sp-3) var(--sp-4);border-radius:20px;background:#fff;box-shadow:0 4px 0 rgba(20,36,20,.06);
+    font-size:var(--t-body);font-weight:600;line-height:1.3;text-wrap:balance;animation:bubin .3s .5s var(--ease) both}
+  .bub::after{content:"";position:absolute;left:calc(50% - 9px);top:100%;border:9px solid transparent;border-top-color:#fff;border-bottom:0}
+  @keyframes bubin{from{opacity:0;transform:translateY(8px) scale(.94)}}
+  .dstage .hp{position:absolute;left:0;right:0;margin-inline:auto;bottom:28px;height:min(56%,280px);aspect-ratio:220/246;transform-origin:50% 100%;animation:drop .55s .15s var(--ease) both}
+  .dbody{position:relative;z-index:1;flex:none;display:flex;flex-direction:column;align-items:center;margin-top:-24px;padding:var(--sp-6) var(--sp-5) calc(var(--sp-6) + env(safe-area-inset-bottom));border-radius:24px 24px 0 0;background:#fff;animation:rise .4s .25s var(--ease) both;--rise:40px}
+  .done h2{animation:rise .3s .45s var(--ease) both}
+    /* the user's words: a taped note */
+  .paper{position:relative;width:100%;margin-top:var(--sp-6);padding:var(--sp-5) var(--sp-4) var(--sp-3);border:1px solid #efe5d2;border-radius:6px;text-align:left;
+    background:#fffdf7;box-shadow:0 8px 18px rgba(90,70,30,.08);
+    transform:rotate(-1.2deg);animation:paperin .45s .58s var(--ease) both}
+  @keyframes paperin{from{opacity:0;transform:translateY(16px) rotate(-5deg)}}
+  .paper::before{content:"";position:absolute;left:calc(50% - 38px);top:-11px;width:76px;height:22px;border-radius:3px;background:rgba(246,196,83,.6);transform:rotate(-3deg)}
+  .paper blockquote{font-size:var(--t-h3);font-weight:600;line-height:1.4;quotes:"‘" "’"}
+  .paper blockquote::before{content:open-quote}.paper blockquote::after{content:close-quote}
+  .paper figcaption{margin-top:var(--sp-1);font-size:var(--t-cap);font-weight:600;color:var(--label-3)}
+  /* where you are: one status, not three tiles (one accent, one number) */
+  .prog{width:100%;margin-top:var(--sp-6);animation:fade .25s .7s var(--ease) both}
+  .prog .seg{display:flex;gap:6px}
+  .prog .seg i{flex:1;height:8px;border-radius:var(--r-pill);background:var(--s100)}
+  .prog .seg i.d{background:var(--s500)}
+  .prog .seg i.now{background:var(--s500);transform-origin:left;animation:fill .4s .8s var(--ease) both}
+  @keyframes fill{from{transform:scaleX(0)}}
+  .done .line{display:block;margin-top:var(--sp-2);font-size:var(--t-sub);font-weight:600;color:var(--label-3)}
+  .done .go{margin-top:auto;padding-top:var(--sp-8);width:100%}
+  .done .btn{animation:fade .2s .9s var(--ease) both}
+
+  /* ===== keepsake (§5): a warm paper sheet, the tin opens, your notes come out taped ===== */
+  .sheet.kp{max-height:94%;padding-top:0;text-align:center;background:#fbf5e9;border-radius:24px 24px 0 0}
+  .kstage{position:relative;height:236px;margin:0 calc(-1 * var(--sp-4));overflow:hidden;border-radius:24px 24px 0 0}
+  .tin2{position:absolute;left:calc(50% - 88px);bottom:10px;width:176px;height:165px;overflow:visible}
+  .tin2 .box{transform-box:view-box;transform-origin:80px 132px;animation:shake .42s var(--io) both}
+  @keyframes shake{20%{transform:rotate(-3deg)}45%{transform:rotate(3deg)}70%{transform:rotate(-1.5deg)}}
+  .tin2 .lid{transform-box:view-box;transform-origin:16px 60px;transform:translate(-4px,-10px) rotate(-26deg);animation:lidpop .45s .42s cubic-bezier(.34,1.56,.64,1) both}
+  @keyframes lidpop{from{transform:translateY(-6px)}}
+  .tin2 .slip{animation:rise .45s var(--ease) both;--rise:34px}.tin2 .s1{animation-delay:.56s}.tin2 .s2{animation-delay:.64s}
+  .kstage .hp{position:absolute;left:calc(50% + 62px);bottom:6px;width:86px;aspect-ratio:220/246;animation:rise .4s .7s var(--ease) both;--rise:14px}
+  .kp h2{padding:0;margin-top:var(--sp-4);animation:rise .3s .6s var(--ease) both}
+  .kp .sub{animation:fade .25s .66s var(--ease) both}
+  .notes{list-style:none;padding:0;margin:var(--sp-5) 0 0;display:flex;flex-direction:column;gap:var(--sp-3);text-align:left}
+  .notes li{position:relative;padding:var(--sp-3) var(--sp-4);border:1px solid #efe5d2;border-radius:6px;background:#fffdf7;box-shadow:0 6px 14px rgba(90,70,30,.07);
+    transform:rotate(var(--r,-1deg));animation:deal .4s var(--ease) both}
+  .notes li:nth-child(2){--r:1deg}.notes li:nth-child(3){--r:-.6deg}
+  @keyframes deal{from{opacity:0;transform:translateY(22px) rotate(0)}}
+  .notes li::before{content:"";position:absolute;left:var(--sp-4);top:-9px;width:48px;height:18px;border-radius:3px;background:var(--tape,rgba(246,196,83,.6));transform:rotate(-4deg)}
+  .notes li:nth-child(2)::before{--tape:rgba(244,201,190,.75);left:auto;right:var(--sp-4);transform:rotate(5deg)}
+  .notes li:nth-child(3)::before{--tape:rgba(191,220,229,.8)}
+  .notes q{display:block;font-size:var(--t-body);font-weight:600;quotes:"‘" "’"}
+  .notes small{display:block;margin-top:2px;font-size:var(--t-cap);font-weight:600;color:var(--label-3)}
+  .kp .btn,.ms .btn{animation:fade .2s var(--ease) both}
+  .kp .btn{animation-delay:1.1s}.ms .btn{animation-delay:1.2s}
+
+  /* ===== unit, section, course (§6): a full-screen scene, the medal above Happi ===== */
+  .sheet.ms{top:0;max-height:none;padding:0;border-radius:0;display:flex;flex-direction:column;text-align:center;animation:enter .32s var(--ease)}
+  .sheet.ms.out{animation:out .2s var(--in) forwards}
+  .mstage{position:relative;flex:1 0 auto;min-height:360px;padding-top:env(safe-area-inset-top);overflow:hidden}
+  .badge{position:absolute;left:calc(50% - 78px);bottom:179px;width:156px;height:156px;overflow:visible;animation:medal .6s .3s cubic-bezier(.34,1.56,.64,1) both}
+  @keyframes medal{from{opacity:0;transform:translateY(-40px) scale(.6) rotate(-12deg)}}
+  .badge .float{animation:bob 3.2s 1s ease-in-out infinite}
+  .halo{position:absolute;left:calc(50% - 78px);bottom:179px;width:156px;height:156px;overflow:visible}
+  .halo .rays{transform-box:view-box;transform-origin:100px 88px;animation:fade .5s .5s var(--ease) both,spin 60s .5s linear infinite}
+  @keyframes bob{50%{transform:translateY(-5px)}}
+  .badge .shine{transform:translateX(150px);animation:shine .7s 1s var(--ease) both}
+  @keyframes shine{from{transform:translateX(-90px)}to{transform:translateX(150px)}}
+  .badge .tails{animation:rise .3s .55s var(--ease) both;--rise:-10px}
+  .badge .leaf{transform-box:fill-box;transform-origin:center;animation:appear .2s var(--ease) both;--from:.4}
+  .hero{position:absolute;left:0;right:0;bottom:120px;height:300px;pointer-events:none}
+  .mstage .hp{position:absolute;left:calc(50% - 64px);bottom:28px;width:128px;aspect-ratio:220/246;transform-origin:50% 100%;animation:drop .55s .2s var(--ease) both}
+  .mbody{position:relative;z-index:1;flex:none;display:flex;flex-direction:column;margin-top:-24px;padding:var(--sp-6) var(--sp-5) calc(var(--sp-6) + env(safe-area-inset-bottom));border-radius:24px 24px 0 0;background:#fff;animation:rise .4s .25s var(--ease) both;--rise:40px}
+  .ms small.eb{display:block;font-size:var(--t-cap);font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);animation:rise .25s .6s var(--ease) both}
+  .ms h2{padding:0;margin-top:2px;animation:rise .3s .62s var(--ease) both}
+  .ms .line{margin-top:var(--sp-1);font-size:var(--t-sub);font-weight:500;color:var(--label-3);animation:fade .25s .76s var(--ease) both}
+  .did{list-style:none;padding:0;margin:var(--sp-5) 0 0;display:flex;flex-direction:column;gap:var(--sp-2);text-align:left}
+  .did li{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-3) var(--sp-2) var(--sp-2);border:2px solid var(--sep);border-radius:16px;font-weight:700;animation:rise .25s var(--ease) both;--rise:8px}
+  .did li i{flex:none;width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:var(--s100);color:var(--s500)}
+  .did li em{flex:1;min-width:0;font-style:normal}
+  .did li span{flex:none;padding:3px 10px;border-radius:var(--r-pill);background:var(--s100);color:var(--s700);font-size:var(--t-cap);font-weight:700}
+  .ms .acts{padding-top:var(--sp-2)}
+  @media (max-height:700px){.mstage{min-height:290px}.hero{bottom:100px;height:240px}.badge,.halo{width:120px;height:120px;left:calc(50% - 60px);bottom:148px}.mstage .hp{width:100px;left:calc(50% - 50px)}
+    .dstage{min-height:260px}.done .go{padding-top:var(--sp-5)}}
+
+  /* course complete: the next journey, docked over the path */
+  .dock{position:absolute;left:var(--sp-4);right:var(--sp-4);bottom:calc(84px + env(safe-area-inset-bottom));z-index:3;overflow:hidden;border:2px solid var(--sep);border-radius:24px;background:var(--surface);box-shadow:var(--low);animation:rise .3s var(--ease);--rise:16px}
+  .dock .a{padding:var(--sp-4) var(--sp-5) var(--sp-3)}
+  .dock .b{padding:var(--sp-3) var(--sp-5) var(--sp-4);background:var(--soft)}
+  .dock small{display:block;font-size:var(--t-cap);font-weight:700;color:var(--accent)}
+  .dock b{display:block;font-size:var(--t-h3);font-weight:700;line-height:1.33}
+  .dock p{margin-top:2px;font-size:var(--t-sub);font-weight:500;color:var(--label-2)}
+  .dock .btn{margin-top:var(--sp-3);min-height:50px}
+  .dock .x{position:absolute;top:var(--sp-2);right:var(--sp-2);width:var(--tap);height:var(--tap);display:grid;place-items:center;border:0;border-radius:50%;background:none;color:var(--label-3)}
+
+  /* ===== tab bar: Journeys is current ===== */
+  nav.tabs{display:flex;padding:var(--sp-2) var(--sp-1) calc(var(--sp-2) + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--bg) 82%,transparent);border-top:1px solid var(--sep);
+    -webkit-backdrop-filter:blur(var(--sp-6)) saturate(1.4);backdrop-filter:blur(var(--sp-6)) saturate(1.4)}
+  nav.tabs a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:var(--tap);padding:var(--sp-1) 0;font-size:var(--t-cap);font-weight:600;color:var(--label-3)}
+  nav.tabs a[aria-current]{color:var(--accent)}
+  nav.tabs svg{width:26px;height:26px}
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}
+    .done,#sheet:not(.out),.scrim:not(.out),.toast:not(.out){animation:fade .15s ease-out!important}.toast.out{animation:unfade .15s forwards!important}}
+</style>
+<link rel="stylesheet" href="happy-ui.css">
+<style>:root{--t-cap:13px;--label-3:#6b6b6b}</style>
+<script src="happi.js" defer></script>
+</head>
+<body>
+<div id="app">
+  <header id="head">
+    <h1 class="sr">Journeys</h1>
+    <div class="top">
+      <button class="pillbtn" id="courses"></button>
+      <span class="count" id="count"></span>
+    </div>
+    <button class="banner" id="banner"><span class="bt" id="bt"><small id="eyebrow"></small><span class="t" id="btitle"></span></span><span class="well" id="well"></span></button>
+  </header>
+  <main id="main"><div id="path"></div></main>
+  <button class="fab" id="fab" aria-label="Go to current step" hidden></button>
+  <nav class="tabs" aria-label="Tabs">
+    <a href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</a>
+    <a href="journal.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3Z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>Journal</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Timeline</a>
+    <a href="journeys.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2Z"/><path d="M9 4v14M15 6v14"/></svg>Journeys</a>
+    <a href="exercises.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-14 14-14 0 9-6 14-14 14Z"/><path d="M5 19c3-5 6-8 10-10" fill="none"/></svg>Exercises</a>
+  </nav>
+  <div class="scrim" id="scrim" hidden></div>
+  <p class="sr" id="live" role="status"></p>
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t" hidden></section>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=x=>String(x??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const get=k=>{try{return JSON.parse(localStorage.getItem(k))}catch{return null}};
+const put=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
+const RM=matchMedia('(prefers-reduced-motion: reduce)');let STILL=RM.matches;RM.addEventListener?.('change',e=>STILL=e.matches);
+const Q=new URLSearchParams(location.search);
+if(Q.has('new'))try{localStorage.removeItem('happy.journeys')}catch{}
+// haptics (spec §9): selection on node press; Soft for completions (the path payoff skips it within 2 s of another); Success only for the week's celebration
+let lastHaptic=0;
+const vib=p=>navigator.vibrate&&navigator.vibrate(p);
+const select=()=>vib(5);
+const soft=()=>{lastHaptic=Date.now();vib(10)};
+const success=()=>{lastHaptic=Date.now();vib([12,60,12])};
+const spaced=f=>{const w=1000-(Date.now()-lastHaptic);w>0?setTimeout(f,w):f()}; // ≥1000 ms between haptics (§9)
+
+const IC=(d,s=24,sw=2.4)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const P={
+  lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  list:'<path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>',
+  layers:'<path d="M12 4l9 5-9 5-9-5Z"/><path d="M3 14l9 5 9-5"/>',
+  up:'<path d="M6 14l6-6 6 6"/>',down:'<path d="M6 10l6 6 6-6"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+};
+
+// ===== art: the same geometry as assets/journey/tools/gen-journey-svgs.js, coloured by CSS state =====
+const G={ // 24-unit glyphs, currentColor
+  sprout:'<path d="M12 21V12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M12 14C6.5 14 4 10.5 4 6c5 0 8 3 8 8z" fill="currentColor"/><path d="M12 11.5C12 6.5 15 3.5 20 3.5c0 5-3 8-8 8z" fill="currentColor"/>',
+  loop:'<g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9L20 8.5"/><path d="M20 3.5v5h-5"/></g>',
+  flag:'<g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4.5c4-2.5 7 2.5 14 0V14c-7 2.5-10-2.5-14 0" fill="currentColor"/></g>',
+  star:'<path d="M12 2.8l2.6 5.3 5.8.85-4.2 4.1 1 5.8L12 16.1l-5.2 2.75 1-5.8-4.2-4.1 5.8-.85z" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
+};
+const glyph=(g,cx=36,cy=29,s=1.35)=>`<g transform="translate(${cx-12*s} ${cy-12*s}) scale(${s})">${G[g]}</g>`;
+const SHAPE={
+  ellipse:(c,dy=0)=>`<ellipse class="${c}" cx="36" cy="${29+dy}" rx="35" ry="28" stroke-width="0"/>`,
+  hexagon:(c,dy=0)=>`<path class="${c}" d="M36 ${4+dy}L64 ${17+dy}V${41+dy}L36 ${54+dy}L8 ${41+dy}V${17+dy}Z" stroke-width="7" stroke-linejoin="round"/>`,
+  rosette:(c,dy=0)=>`<circle class="${c}" cx="36" cy="${29+dy}" r="24" stroke-width="0"/>`+Array.from({length:12},(_,i)=>{const a=i*Math.PI/6;return `<circle class="${c}" cx="${(36+22*Math.cos(a)).toFixed(2)}" cy="${(29+dy+22*Math.sin(a)).toFixed(2)}" r="7" stroke-width="0"/>`}).join(''),
+};
+const TIN_BODY='<rect class="r" x="11" y="30" width="50" height="28" rx="7" stroke-width="0"/><rect class="f" x="11" y="24" width="50" height="28" rx="7" stroke-width="0"/><rect class="b1" x="32" y="24" width="8" height="28"/>';
+const TIN_LID=y=>`<rect class="r" x="7" y="${y+2}" width="58" height="14" rx="6" stroke-width="0"/><rect class="f" x="7" y="${y}" width="58" height="14" rx="6" stroke-width="0"/><rect class="b2" x="32" y="${y}" width="8" height="14"/>`;
+const NOTE='<rect x="22" y="10" width="28" height="24" rx="3" fill="#fff" stroke="#d3e0cd" stroke-width="2"/><path d="M28 17h16M28 22h16M28 27h10" stroke="#abc0a2" stroke-width="2.4" stroke-linecap="round"/>';
+const TIN_IN='<rect class="r" x="15" y="22" width="42" height="9" rx="3" stroke-width="0"/>';
+const TIN=`<g class="closed">${TIN_BODY}${TIN_LID(14)}</g><g class="open"><g transform="translate(0 -9) rotate(-8 36 16)">${TIN_LID(14)}</g>${TIN_IN}<g transform="rotate(-6 36 30)">${NOTE}</g>${TIN_BODY}</g>`;
+const NODE_ART={exercise:['ellipse','sprout'],practice:['ellipse','loop'],checkpoint:['hexagon','flag'],milestone:['rosette','star']};
+const art=t=>`<svg class="pk" viewBox="0 0 72 64" aria-hidden="true">${t==='keepsake'?TIN:SHAPE[NODE_ART[t][0]]('r',6)+SHAPE[NODE_ART[t][0]]('f')+glyph(NODE_ART[t][1])}</svg>`;
+// ===== reward art. Split palette: sage stays the only control colour; illustration also gets warm art tones =====
+const S={50:'#f8fbf6',100:'#e5ede1',200:'#d3e0cd',300:'#abc0a2',400:'#7e9874',500:'#5f7f58',600:'#44633f',700:'#29452a'},LEAF='#A8C392';
+const A={honey:'#F6C453',deep:'#D9A23A',gold:'#FFE7A6',paper:'#FFFDF7',edge:'#EFE5D2',blush:'#F4C9BE',sky:'#BFDCE5'};
+const star4=(x,y,s,f)=>{const a=s*.18;return `<path d="M${x} ${y-s}Q${x+a} ${y-a} ${x+s} ${y}Q${x+a} ${y+a} ${x} ${y+s}Q${x-a} ${y+a} ${x-s} ${y}Q${x-a} ${y-a} ${x} ${y-s}Z" fill="${f}"/>`};
+// sparkles over a stage: [left %, top %, size px, colour, delay s]
+const sparks=list=>list.map(([x,y,s,c,d])=>`<svg class="spk" viewBox="-10 -10 20 20" style="left:${x}%;top:${y}%;--s:${s}px;--c:${c};--d:${d}s" aria-hidden="true">${star4(0,0,10,'currentColor')}</svg>`).join('');
+// a stage behind the hero: sky (slice-scaled) + hills (stretched, fixed height) so Happi always stands on the mound
+const SKY={day:['#D3E8E2','#F4F9F1'],dusk:['#F3C6AE','#FCEBDB'],night:['#1D352D','#3A5847'],paper:['#F7E6C4','#FBF5E9']};
+const HILLS={day:[S[200],S[300],S[400]],dusk:['#E6CBB2',S[300],S[400]],night:['#2E4B3E',S[600],S[500]]};
+let sid=0;
+function scene(kind,{glow=true,cy=40,under=''}={}){
+  const k=++sid,[a,b]=SKY[kind],night=kind==='night',sy=cy*3.2;
+  const extra=night?Array.from({length:22},(_,i)=>{const x=(Math.sin(i*91.7)*.5+.5)*390,y=(Math.sin(i*37.3)*.5+.5)*230,r=1+(i%3)*.7;return `<circle class="star" cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${r}" fill="#FFF3C7" style="animation-delay:${(i%7)*.37}s"/>`}).join('')+`<path d="M62 54a22 22 0 1 0 22 30 18 18 0 1 1-22-30Z" fill="#FFF3C7"/>`
+    :kind==='paper'?'':`<g class="cloud"><ellipse cx="64" cy="70" rx="34" ry="13" fill="#fff" fill-opacity=".85"/><ellipse cx="82" cy="60" rx="20" ry="14" fill="#fff" fill-opacity=".85"/></g><g class="cloud c2"><ellipse cx="322" cy="104" rx="30" ry="11" fill="#fff" fill-opacity=".75"/><ellipse cx="308" cy="96" rx="16" ry="11" fill="#fff" fill-opacity=".75"/></g>`;
+  const hills=HILLS[kind]?(([h1,h2,h3])=>`<svg class="hills" viewBox="0 0 390 120" preserveAspectRatio="none">
+    <path class="h1" d="M0 50C70 18 140 28 200 46S330 28 390 38V120H0Z" fill="${h1}"/>
+    <path class="h2" d="M0 74C60 54 120 58 170 68S320 52 390 64V120H0Z" fill="${h2}"/>
+    <path class="h3" d="M0 98C80 86 140 76 195 76S310 86 390 98V120H0Z" fill="${h3}"/></svg>`)(HILLS[kind]):'';
+  return `<div class="scene" aria-hidden="true"><svg class="sky" viewBox="0 0 390 320" preserveAspectRatio="xMidYMid slice">
+    <defs><linearGradient id="sk${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>
+    <radialGradient id="gl${k}"><stop offset="0" stop-color="${night?'#FFF3C7':'#FFF6D8'}" stop-opacity="${night?.25:.95}"/><stop offset="1" stop-color="#FFF6D8" stop-opacity="0"/></radialGradient></defs>
+    <rect width="390" height="320" fill="url(#sk${k})"/>${glow?`<circle cx="195" cy="${sy}" r="130" fill="url(#gl${k})"/>`:''}${extra}</svg>${under}${hills}</div>`;
+}
+// medals: honey gold with a rim, an inner highlight and one shine sweep; sage ribbon and laurels
+const rosetteBig=(f,cx,cy,r,sc)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${f}"/>`+Array.from({length:16},(_,i)=>{const a=i*Math.PI/8;return `<circle cx="${(cx+(r-2)*Math.cos(a)).toFixed(2)}" cy="${(cy+(r-2)*Math.sin(a)).toFixed(2)}" r="${sc}" fill="${f}"/>`}).join('');
+const tails=(a,b)=>`<g class="tails"><path d="M72 112L56 184l20-11 11 19 13-70z" fill="${a}"/><path d="M128 112l16 72-20-11-11 19-13-70z" fill="${b}"/><path d="M78 118l-11 50M122 118l11 50" stroke="#fff" stroke-opacity=".25" stroke-width="3" stroke-linecap="round"/></g>`;
+const laurel=(side,cy)=>{const pt=(deg,r=72)=>{const th=deg*Math.PI/180,lx=100+r*Math.cos(th);return [side<0?lx:200-lx,cy+r*Math.sin(th)]};
+  const [sx,sy]=pt(128),[ex,ey]=pt(212);
+  return `<path d="M${sx.toFixed(1)} ${sy.toFixed(1)}A72 72 0 0 ${side<0?1:0} ${ex.toFixed(1)} ${ey.toFixed(1)}" stroke="${S[500]}" stroke-width="3" stroke-linecap="round" fill="none"/>`+
+    [0,1,2,3,4].map(i=>{const deg=136+i*18,[x,y]=pt(deg,77);return `<g class="leaf" style="animation-delay:${(.7+i*.05).toFixed(2)}s"><ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="6" ry="12" fill="${i%2?LEAF:S[400]}" transform="rotate(${side<0?deg:-deg} ${x.toFixed(1)} ${y.toFixed(1)})"/></g>`}).join('')};
+const gold=(id,r,cy=88)=>`${rosetteBig(A.deep,100,cy+6,r,10)}${rosetteBig(A.honey,100,cy,r,10)}<circle cx="100" cy="${cy}" r="${r-12}" fill="${A.deep}"/><circle cx="100" cy="${cy}" r="${r-15}" fill="${A.gold}"/>`;
+const shine=(id,r,cy=88)=>`<path d="M${100-r+20} ${cy-14}A${r-16} ${r-16} 0 0 1 ${100+6} ${cy-r+16}" stroke="#fff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <defs><clipPath id="${id}"><circle cx="100" cy="${cy}" r="${r+8}"/></clipPath></defs><g clip-path="url(#${id})"><g transform="rotate(20 100 ${cy})"><rect class="shine" x="40" y="${cy-90}" width="20" height="180" fill="#fff" fill-opacity=".55"/></g></g>`;
+// rays and glow live in the medal's own coordinates, so they always come from its centre
+const medalLight=(level,full)=>{const c=level==='course'?'#FFF3C7':level==='unit'?'#fff':A.honey,o=level==='course'?.08:level==='unit'?.2:.16;
+  return `<defs><radialGradient id="mgl"><stop offset="0" stop-color="#FFF6D8" stop-opacity="${level==='course'?.35:.95}"/><stop offset="1" stop-color="#FFF6D8" stop-opacity="0"/></radialGradient></defs>`+
+  (full?`<g class="rays">${Array.from({length:12},(_,i)=>{const t=i*Math.PI/6,d=.13,p=a=>`${(100+420*Math.cos(t+a)).toFixed(1)} ${(88+420*Math.sin(t+a)).toFixed(1)}`;return `<path d="M100 88L${p(d)}L${p(-d)}Z" fill="${c}" fill-opacity="${o}"/>`}).join('')}</g>`:'')+
+  `<circle cx="100" cy="88" r="120" fill="url(#mgl)"/>`};
+const BADGE={
+  unit:()=>`${tails(S[500],S[600])}<g class="float">${gold('mu',56)}<circle cx="100" cy="88" r="30" fill="${S[500]}"/><g style="color:#fff">${glyph('star',100,88,2)}</g>${shine('mu',56)}</g>`,
+  section:()=>`${laurel(-1,90)}${laurel(1,90)}<g class="float">${gold('ms',54,90)}<g clip-path="url(#msi)"><rect x="54" y="44" width="92" height="92" fill="#F8D7C3"/><circle cx="100" cy="86" r="13" fill="${A.honey}"/><path d="M60 108c13-15 24-15 40-2 13-13 26-13 40 2v30H60z" fill="${S[300]}"/><path d="M60 118c22-12 50-12 80 0v20H60z" fill="${S[400]}"/></g><defs><clipPath id="msi"><circle cx="100" cy="90" r="34"/></clipPath></defs>${shine('ms',54,90)}</g>`,
+  course:()=>`${tails(S[500],S[600])}${laurel(-1,88)}${laurel(1,88)}<g class="float">${gold('mc',60)}<g clip-path="url(#mci)"><rect x="50" y="40" width="100" height="100" fill="#2E4B3E"/>${[[78,64],[118,58],[132,80],[70,86]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.8" fill="#FFF3C7"/>`).join('')}<path d="M92 66a10 10 0 1 0 10 13 8 8 0 1 1-10-13Z" fill="#FFF3C7"/><path d="M56 110c16-18 30-18 44-4 14-14 30-14 44 4v30H56z" fill="${S[500]}"/><path d="M56 122c24-12 52-12 88 0v20H56z" fill="${S[400]}"/></g><defs><clipPath id="mci"><circle cx="100" cy="88" r="40"/></clipPath></defs>${star4(100,22,11,A.honey)}${shine('mc',60)}</g>`,
+};
+// the keepsake tin, open: shakes, the lid pops on its hinge, two notes rise out
+const TIN_OPEN=()=>`<svg class="tin2" viewBox="0 0 160 150" aria-hidden="true"><ellipse cx="80" cy="138" rx="60" ry="8" fill="rgba(90,70,30,.14)"/><g class="box">
+  <rect x="26" y="58" width="108" height="22" rx="8" fill="${S[700]}"/>
+  <g class="lid"><rect x="16" y="48" width="128" height="22" rx="10" fill="${S[600]}"/><rect x="16" y="44" width="128" height="22" rx="10" fill="${S[400]}"/><rect x="26" y="49" width="70" height="4" rx="2" fill="#fff" fill-opacity=".3"/><rect x="72" y="44" width="16" height="22" fill="${A.honey}"/>
+    <path d="M80 44c-9-12-22-8-17 0 3 3 10 2 17 0zM80 44c9-12 22-8 17 0-3 3-10 2-17 0z" fill="${A.honey}" stroke="${A.deep}" stroke-width="2.5" stroke-linejoin="round"/><circle cx="80" cy="44" r="4.5" fill="${A.deep}"/></g>
+  <g class="slip s1"><g transform="rotate(-10 70 56)"><rect x="46" y="20" width="46" height="54" rx="4" fill="${A.paper}" stroke="${A.edge}" stroke-width="2"/><path d="M54 33h30M54 42h30M54 51h18" stroke="${S[300]}" stroke-width="3" stroke-linecap="round"/></g></g>
+  <g class="slip s2"><g transform="rotate(9 96 60)"><rect x="76" y="28" width="40" height="46" rx="4" fill="#FFF4DD" stroke="${A.edge}" stroke-width="2"/><path d="M83 40h25M83 49h25M83 58h14" stroke="${A.deep}" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/></g></g>
+  <rect x="22" y="70" width="116" height="62" rx="14" fill="${S[600]}"/><rect x="22" y="64" width="116" height="62" rx="14" fill="${S[500]}"/>
+  <rect x="32" y="71" width="96" height="6" rx="3" fill="#fff" fill-opacity=".2"/>
+  <rect x="72" y="64" width="16" height="62" fill="${A.honey}"/><rect x="72" y="64" width="4" height="62" fill="#fff" fill-opacity=".35"/>
+</g></svg>`;
+
+// ===== data: sections > units > nodes (production reads these from get-course-tree) =====
+// exercise: learn one skill and try it; practice: repeat it; checkpoint: look back; keepsake: your own words; milestone: the unit's end
+const E=(title,mins,q)=>({type:'exercise',title,mins,q});
+const PR=(title,mins,q)=>({type:'practice',title,mins,q});
+const CK=q=>({type:'checkpoint',title:'Look back',mins:3,q});
+const K=()=>({type:'keepsake',title:'Your keepsake'});
+const M=()=>({type:'milestone',title:'Unit end'});
+const U=(title,skill,nodes)=>({title,skill,nodes:[...nodes,M()]});
+const COURSES=[
+  {id:'storm',title:'Quieting the Storm',sections:[
+    {title:'Understanding anxiety',about:'How the alarm works, and why it fires.',units:[
+      U('How anxiety works','noticing your alarm',[E('What anxiety is for',4,'My chest went tight before the call'),E('Your body’s alarm',5,'Hands shaking, heart racing at work'),E('Fight, flight, freeze',5,'I froze when they asked me'),K(),CK('It feels less strange now')]),
+      U('Map your anxiety cycle','mapping a worry',[E('Triggers',5,'The group chat went quiet'),E('Thoughts',5,'I thought they were angry with me'),PR('Map one worry',6,'Trigger, thought, then I left early'),K(),CK('I can see the loop now')])]},
+    {title:'Working with worry',about:'Meeting a worry without being swept up.',units:[
+      U('Catch the thought','catching a thought',[E('Spot the thought',5,'I will mess this up again'),E('Thought or fact',5,'It was a guess, not a fact'),PR('Catch three thoughts',6,'Three thoughts before lunch'),CK('I notice them sooner')]),
+      U('Loosen the grip','finding another view',[E('Another view',5,'Maybe they were just busy'),E('Test it gently',6,'I asked, and it was fine'),PR('Let the thought be',5,'I let it sit and it passed'),CK('Worry is louder than true')])]}]},
+  {id:'sleep',title:'Sleep Reset',sections:[
+    {title:'How sleep actually works',about:'Your body clock, light and timing.',units:[
+      U('Sleep is body rhythm','working with your body clock',[E('Your body clock',4,'Up at the same time all week'),E('Light and timing',5,'Morning light on the walk'),E('Sleep pressure',4,'No nap, slept by eleven'),K(),CK('Nights feel steadier')]),
+      U('What’s stealing your sleep','settling a busy mind',[E('Racing thoughts',5,'Lists running at two a.m.'),E('Night-time worry',5,'Wrote it down, then slept'),PR('The bed and the brain',5,'Got up instead of lying there'),CK('Bed feels calmer again')])]}]},
+  {id:'mood',title:'Finding Light Again',sections:[]},
+  {id:'stress',title:'Steady Under Pressure',sections:[]},
+  {id:'self',title:'Coming Home to Yourself',sections:[]},
+];
+const TOTAL=c=>c.sections.reduce((n,s)=>n+s.units.reduce((m,u)=>m+u.nodes.length,0),0);
+const PRACTICE=t=>t==='exercise'||t==='practice';
+
+// ===== state: a demo mid-journey (?new fresh start, ?quiet = this week's celebration already used) =====
+const WEEK=7*864e5;
+const ST=get('happy.journeys')||{course:'storm',done:{storm:Q.has('new')?0:2,sleep:0},enrolled:['storm','sleep'],pro:Q.has('pro'),cele:0,out:Date.now(),jig:{}};
+ST.jig??={};if(Q.has('quiet'))ST.cele=Date.now();
+const save=()=>put('happy.journeys',ST);
+const cur=()=>COURSES.find(c=>c.id===ST.course);
+const doneOf=c=>ST.done[c.id]||0;
+const status=(i,done)=>i<done?'completed':i===done?'current':'locked';
+const flat=c=>c.sections.flatMap(s=>s.units.flatMap(u=>u.nodes));
+// a milestone is never the current step: it resolves when its unit's last node completes (production journeyProgress)
+const settle=c=>{const f=flat(c);while(f[ST.done[c.id]||0]?.type==='milestone')ST.done[c.id]=(ST.done[c.id]||0)+1};
+COURSES.forEach(settle);
+const practiced=()=>ST.enrolled.reduce((n,id)=>{const c=COURSES.find(x=>x.id===id);return n+flat(c).slice(0,ST.done[id]||0).filter(x=>PRACTICE(x.type)).length},0);
+
+// ===== layout (spec §1.1): zigzag, 120 pt pitch, first node 112 below the banner, divider +96, next unit +112 =====
+const PITCH=120,TYPE={exercise:'Exercise',practice:'Practice',checkpoint:'Checkpoint',keepsake:'Keepsake',milestone:'Milestone'};
+let LAY={units:[],nodes:[],H:0},SHOWN=0;
+function layout(){
+  const c=cur(),W=$('#path').clientWidth||390,units=[],nodes=[];
+  let y=96,last=96,gi=0; // 112 below the banner's bottom edge, which sits 16 above the header's
+  c.sections.forEach((s,si)=>s.units.forEach((u,uj)=>{
+    const ui=units.length;let divY=null,secY=null,top=0;
+    if(ui>0&&uj===0){secY=last+35+48;y=secY+96+32+87;top=secY-24} // 48 below the rim, 32 above the next callout
+    else if(ui>0){divY=last+96;y=divY+112;top=divY-24}
+    units.push({ui,si,uj,title:u.title,skill:u.skill,secTitle:s.title,about:s.about,divY,secY,top,lastInSec:uj===s.units.length-1,start:gi,end:gi+u.nodes.length-1});
+    u.nodes.forEach((n,k)=>{nodes.push({...n,gi,ui,k,x:W/2+Math.sin(gi*Math.PI/2.5)*W*.17,y});last=y;y+=PITCH;gi++});
+  }));
+  LAY={units,nodes,W,H:last+160};
+}
+const unitOf=n=>LAY.units[n.ui];
+const gated=n=>n.ui>=1&&!ST.pro; // the first unit is free (production useFreemiumGate)
+const label=(n,s)=>{const u=unitOf(n),base=n.type==='keepsake'?TYPE.keepsake:n.type==='milestone'?`${TYPE.milestone}, ${u.title}`:`${TYPE[n.type]} ${n.k+1}, ${n.title}`;
+  const st=s==='current'?(n.type==='keepsake'?'open':'start'):s==='completed'?(n.type==='keepsake'?'opened':'done'):'locked';
+  return `${base}, ${st}${gated(n)?', part of Happy Plus':''}`};
+const box=(n,s)=>s==='current'?{top:n.y-74,h:118}:{top:n.y-44,h:88};
+const nodeHTML=n=>{const s=status(n.gi,SHOWN),b=box(n,s); // every Plus-gated node keeps its lock badge
+  return `<button class="node t-${n.type} s-${s}" data-i="${n.gi}" style="left:${(n.x-44).toFixed(1)}px;top:${b.top}px;height:${b.h}px" aria-label="${esc(label(n,s))}">${art(n.type)}${gated(n)?`<span class="lockb" aria-hidden="true">${IC(P.lock,12,2.6)}</span>`:''}</button>`};
+const ringHTML=n=>`<svg class="ring" style="left:${(n.x-48).toFixed(1)}px;top:${n.y-48}px" viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="48" r="44"/></svg>`;
+const tipHTML=n=>`<span class="tip" aria-hidden="true" style="left:${n.x.toFixed(1)}px;top:${n.y-74}px">${n.type==='keepsake'?'Open':'Start'}</span>`;
+
+function render(shown){
+  TL?.cancel();
+  const c=cur(),total=TOTAL(c);
+  if(!total){LAY={units:[],nodes:[],H:0};$('#fab').hidden=true;undock();$('#path').style.height='';$('#path').innerHTML=`<div class="empty"><div class="hp" data-pose="neutral" aria-hidden="true"></div><h2>Your journey is being prepared</h2><p>Check back soon.</p></div>`;
+    $('#banner').hidden=true;chrome();hp();return}
+  $('#banner').hidden=false;
+  layout();SHOWN=shown??doneOf(c);
+  const {units,nodes,W,H}=LAY,now=nodes[SHOWN];
+  const seps=units.map(u=>u.secY!==null?`<div class="seccard" style="top:${u.secY}px"><small>Section ${u.si+1}</small><b>${esc(u.secTitle)}</b><span>${esc(u.about)}</span></div>`
+    :u.divY!==null?`<div class="divider" style="top:${u.divY-10}px"><i></i><span>${esc(u.title)}</span><i></i></div>`:'').join('');
+  // Happi sits on the side away from the current node and looks at it
+  const ref=now||nodes.at(-1),left=ref.x>W/2,mx=left?24:W-24-108;
+  const mas=`<div class="hp mas" id="mas" data-pose="${left?'look-r':'look-l'}" aria-hidden="true" style="left:${mx}px;top:${ref.y-60}px"></div>`;
+  $('#path').style.height=H+'px';
+  $('#path').innerHTML=`${seps}${mas}${nodes.map(nodeHTML).join('')}${now?ringHTML(now)+tipHTML(now):''}`;
+  chrome();hp();shownUnit=-1;banner(visibleUnit());fab();dock();
+}
+// Happi: our own poses (03-character stills), mounted once happi.js is ready
+const HP={neutral:{hold:1},'look-l':{gx:-3,gy:1.5,hold:500},'look-r':{gx:3,gy:1.5,hold:500}}; // rewards use happi.js cheer (big moments) and proud (quiet ones)
+// cheer has its own hop, so it starts once the CSS drop has landed
+const cheer=el=>{if(!el||el.dataset.pose==='cheer')return;hp();el.dataset.pose='cheer';window.Happi&&el.dataset.m&&Happi.set(el,'cheer')};
+const cheerAt=(el,ms)=>setTimeout(()=>cheer(el),ms);
+function hp(){if(!window.Happi)return;Object.assign(Happi.POSES,HP);$$('.hp:not([data-m])').forEach(el=>{el.dataset.m=1;el.classList.add('happi');Happi.mount(el)})}
+document.addEventListener('DOMContentLoaded',hp);
+const gaze=i=>{const m=$('#mas'),n=LAY.nodes[i];if(!m||!n)return;const right=n.x>m.offsetLeft+m.offsetWidth/2,p=right?'look-r':'look-l';m.dataset.pose=p;window.Happi&&m.dataset.m&&Happi.set(m,p)};
+
+// ===== header =====
+let lh=0,shownUnit=-1;
+function chrome(){
+  const n=ST.enrolled.length,done=practiced(),wk=Math.min(done,3);
+  $('#courses').setAttribute('aria-label',`${n} enrolled courses`);
+  $('#courses').innerHTML=`${IC(P.layers,22,2)}${n}`;
+  $('#count').setAttribute('role','img');
+  $('#count').setAttribute('aria-label',`${done} practice session${done===1?'':'s'}, ${wk} of 3 this week`);
+  $('#count').innerHTML=`<svg class="rg" viewBox="0 0 20 20" aria-hidden="true"><circle class="trk" cx="10" cy="10" r="7.5"/><circle class="val" cx="10" cy="10" r="7.5" pathLength="100" stroke-dasharray="${wk/3*100} 100"/></svg>${done}`;
+  lh=$('#head').offsetHeight;document.documentElement.style.setProperty('--hh',lh+'px');
+  document.documentElement.style.setProperty('--tb',$('nav.tabs').offsetHeight+'px');
+}
+function banner(ui){
+  const u=LAY.units[ui];if(!u||ui===shownUnit)return;const first=shownUnit===-1;shownUnit=ui;
+  $('#eyebrow').textContent=`Section ${u.si+1} · Unit ${u.uj+1}`;$('#btitle').textContent=u.title;
+  $('#well').innerHTML=IC(P.list,22,2.2);
+  $('#banner').setAttribute('aria-label',`Section ${u.si+1}, unit ${u.uj+1}: ${u.title}. Open sections`);
+  if(!first&&!STILL){const b=$('#bt');b.classList.remove('swap');void b.offsetWidth;b.classList.add('swap')}
+}
+const HH=()=>parseInt(getComputedStyle(document.documentElement).getPropertyValue('--hh'))||160;
+const visibleUnit=()=>LAY.units.reduce((a,u)=>LAY.nodes[u.start].y<=$('#main').scrollTop?u.ui:a,0);
+function fab(){
+  const now=LAY.nodes[doneOf(cur())];if(!now){$('#fab').hidden=true;return}
+  const m=$('#main'),hh=HH(),top=now.y+hh-m.scrollTop,above=top+44<hh,below=top-44>m.clientHeight;
+  $('#fab').hidden=!(above||below);
+  if(!$('#fab').hidden)$('#fab').innerHTML=IC(above?P.up:P.down,22,2.6);
+}
+// scroll so a node sits at 42% of the viewport (spec §1.6); 300 ms ease-in-out, instant with reduced motion
+const offsetFor=n=>Math.max(0,n.y+HH()-$('#main').clientHeight*.42);
+let stok=0; // the user's scroll cancels any scroll in flight
+function scrollToY(top,ms=300){const m=$('#main'),from=m.scrollTop,d=top-from,k=++stok;if(STILL||!ms||Math.abs(d)<1){m.scrollTop=top;return}
+  const t0=performance.now(),ez=p=>p<.5?8*p**4:1-8*(1-p)**4;
+  const step=t=>{if(k!==stok)return;const p=Math.min(1,(t-t0)/ms);m.scrollTop=from+d*ez(p);if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+const toCurrent=(animate=true)=>{const now=LAY.nodes[doneOf(cur())]??LAY.nodes.at(-1);if(!now)return;scrollToY(offsetFor(now),animate?300:0);if(!animate){banner(visibleUnit());fab()}};
+let raf=0;
+$('#main').addEventListener('scroll',()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{banner(visibleUnit());fab()})});
+$('#fab').onclick=()=>toCurrent();
+
+// ===== toast, sheets =====
+let tt=0;
+const say=msg=>{const l=$('#live');l.textContent='';setTimeout(()=>l.textContent=msg,50)};
+function toast(msg){$('.toast')?.remove();const t=document.createElement('div');t.className='toast';t.setAttribute('aria-hidden','true');t.textContent=msg;$('#app').append(t);say(msg);clearTimeout(tt);tt=setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),150)},2000)}
+const BEHIND=['header','main','nav.tabs','#fab','.dock'];
+let from=null,ct=0;
+const inert=v=>BEHIND.forEach(s=>{const e=$(s);if(e)e.inert=v});
+function openSheet(html,focusSel,cls=''){
+  clearTimeout(ct);
+  const sh=$('#sheet'),swap=!sh.hidden&&cls&&!sh.classList.contains(cls);
+  if(sh.hidden||sh.classList.contains('out'))from=document.activeElement;
+  sh.className='sheet '+cls;if(swap){sh.style.animation='none';void sh.offsetWidth;sh.style.animation=''}/* a popover becoming a full sheet slides in again */$('#sheet').skip=null;$('#sheet').innerHTML=(cls?'':`<button class="x" data-close aria-label="Close">${IC(P.x,20)}</button>`)+html;
+  $('#scrim').className='scrim';$('#scrim').hidden=$('#sheet').hidden=false;inert(true);
+  ($(focusSel||'#sheet .btn')||$('#sheet .x'))?.focus();
+}
+function closeSheet(then){const sh=$('#sheet');if(sh.hidden)return then&&then();
+  const end=()=>{sh.hidden=$('#scrim').hidden=true;sh.className='sheet';inert(false);if(then)return then();(from&&from.isConnected?from:$('.node.s-current'))?.focus()};
+  if(STILL)return end();sh.classList.add('out');$('#scrim').classList.add('out');ct=setTimeout(end,220)}
+
+const nodeSheet=i=>{const n=LAY.nodes[i],u=unitOf(n),s=status(i,doneOf(cur()));
+  if(n.type==='keepsake'){const q=keptNotes(n);
+    return `<h2 id="sh-t">Your keepsake</h2><p class="sub">${q.length} of your notes from this unit.</p><div class="acts"><button class="btn" data-open="${i}">Open</button></div>`}
+  const sub=n.type==='checkpoint'?`Look back · ~${n.mins} min`:`${esc(u.title)} · ${n.mins} min`;
+  return `<h2 id="sh-t">${esc(n.title)}</h2><p class="sub">${sub}</p><div class="acts"><button class="btn" data-go="${i}">${s==='completed'?'Done':'Start'}</button></div>`};
+const PAYWALL=`<h2 id="sh-t">Keep going with Happy Plus</h2>
+  <ul class="get"><li>Guided journeys, step by step</li><li>Pattern insights from your reflections</li><li>Every exercise, unlocked</li></ul>
+  <div class="acts"><button class="btn" data-trial>Start 7-day free trial</button><button class="link" data-close>Not now</button></div>`;
+function tapNode(i){
+  const n=LAY.nodes[i],s=status(i,doneOf(cur()));select();
+  if(s==='locked')return gated(n)?openSheet(PAYWALL,'[data-trial]'):toast('Finish the step before this one.');
+  if(gated(n))return openSheet(PAYWALL,'[data-trial]');
+  if(n.type==='milestone')return milestoneSheet(i,true);
+  if(n.type==='keepsake'&&s==='completed')return keepsakeSheet(i,true);
+  openSheet(nodeSheet(i));
+}
+function sectionsSheet(){
+  const c=cur(),done=doneOf(c);let first=0;
+  const rows=c.sections.map((s,si)=>{const ns=s.units.flatMap(u=>u.nodes),from0=first,end=first+ns.length;first=end;
+    const ls=ns.filter(x=>PRACTICE(x.type)).length,n=ns.filter((x,k)=>from0+k<done&&PRACTICE(x.type)).length;
+    const isCur=done>=from0&&done<end,complete=done>=end,locked=done<from0;
+    return `<button class="pick${isCur?' on':''}" data-sec="${si}"><span class="h"><b>${esc(s.title)}</b>${isCur?'<span class="cur">Current</span>':''}</span><small>Section ${si+1} · ${n} of ${ls} sessions</small>
+      <span class="bar" aria-hidden="true"><i style="width:${n/ls*100}%"></i></span><span class="go">${locked?'Preview':complete?'Review':'Enter'}</span></button>`}).join('');
+  openSheet(`<p class="sub" style="margin:0">Journey map</p><h2 id="sh-t" style="margin-top:2px">${esc(c.title)}</h2><div class="cards">${rows}</div>`,'#sheet .pick');
+}
+function coursesSheet(discover){
+  const rows=ST.enrolled.map(id=>COURSES.find(c=>c.id===id)).map(c=>{const f=flat(c),t=f.filter(x=>PRACTICE(x.type)).length,d=f.slice(0,ST.done[c.id]||0).filter(x=>PRACTICE(x.type)).length;
+    return `<button class="pick${c.id===ST.course?' on':''}" data-course="${c.id}"><span class="h"><b>${esc(c.title)}</b>${c.id===ST.course?'<span class="cur">Active</span>':''}</span>
+      <small>${t?`${d} of ${t} sessions done`:'Being prepared'}</small>${t?`<span class="bar"><i style="width:${d/t*100}%"></i></span>`:''}</button>`}).join('');
+  const more=COURSES.filter(c=>!ST.enrolled.includes(c.id)).map(c=>`<button class="pick" data-add="${c.id}"><span class="h"><b>${esc(c.title)}</b></span><span class="go">Start journey</span></button>`).join('');
+  openSheet(discover?`<h2 id="sh-t">Discover new journeys</h2><div class="cards">${more||'<p class="sub">No more journeys right now.</p>'}</div>`
+    :`<h2 id="sh-t">My journeys</h2><p class="sub">${ST.enrolled.length} journeys enrolled</p><div class="cards">${rows}</div><div class="acts"><button class="btn alt" data-more>Add course</button></div>`,'#sheet .pick, #sheet .btn');
+}
+
+// ===== a timeline of beats: one clock, interruptible (the first tap jumps every beat to its end) =====
+let TL=null;
+function timeline(beats){
+  if(TL)TL.skip();
+  const ids=[],left=new Set(beats.map((_,k)=>k));
+  const run=k=>{if(!left.delete(k))return;beats[k][1]()};
+  // skip jumps every beat to its end state: one-shot classes are stripped so nothing replays once .snap lifts
+  const t={skip(){ids.forEach(clearTimeout);$('#app').classList.add('snap');[...left].sort((a,b)=>a-b).forEach(run);
+      $$('#path .pop,#path .arrive,#path .jig').forEach(e=>e.classList.remove('pop','arrive','jig'));
+      requestAnimationFrame(()=>$('#app').classList.remove('snap'));if(TL===t)TL=null},
+    cancel(){ids.forEach(clearTimeout);left.clear();if(TL===t)TL=null}};
+  TL=t;
+  if(STILL){t.skip();$('#path').animate?.([{opacity:.5},{opacity:1}],{duration:200,easing:'ease-out'});return t}
+  beats.forEach(([ms],k)=>ids.push(setTimeout(()=>{run(k);if(!left.size&&TL===t)TL=null},ms)));
+  return t;
+}
+let byScroll=false;
+const skipPath=()=>TL&&TL.skip();
+['wheel','touchmove'].forEach(e=>$('#main').addEventListener(e,()=>{stok++;byScroll=true;skipPath();byScroll=false},{passive:true}));
+// any tap or key anywhere ends the payoff first (a sheet it owes then opens under the scrim, before the tap lands)
+['pointerdown','keydown'].forEach(e=>document.addEventListener(e,skipPath,{capture:true,passive:true}));
+
+// node state changes on the live path (no re-render, so Happi never jumps)
+function setState(i,s){const el=$(`.node[data-i="${i}"]`),n=LAY.nodes[i];if(!el)return;
+  el.className=`node t-${n.type} s-${s}`;const b=box(n,s);el.style.top=b.top+'px';el.style.height=b.h+'px';el.setAttribute('aria-label',label(n,s))}
+const replay=(el,c)=>{el.classList.remove(c);void el.getBoundingClientRect();el.classList.add(c)};
+function leaveIndicator(){const now=STILL||$('#app').classList.contains('snap');$$('#path .ring,#path .tip').forEach(e=>{if(now)return e.remove();e.classList.add('leave');setTimeout(()=>e.remove(),150)})}
+const follow=i=>{const a=document.activeElement;if(!a||a===document.body||a.matches('.node'))$(`.node[data-i="${i}"]`)?.focus({preventScroll:true})};
+function arrive(i){const n=LAY.nodes[i];follow(i);$('#path').insertAdjacentHTML('beforeend',ringHTML(n)+tipHTML(n));$$('#path .ring,#path .tip').forEach(e=>!e.classList.contains('leave')&&e.classList.add('arrive'))}
+function jiggle(i){const n=LAY.nodes[i],el=$(`.node[data-i="${i}"]`);if(n?.type!=='keepsake'||ST.jig[i+ST.course]||!el?.classList.contains('s-current'))return;ST.jig[i+ST.course]=1;save();replay(el,'jig')}
+
+// beats 4b–8 of §4.3, from node a to node b, starting at t0 (450 on the normal path)
+function advance(a,b,t0){
+  const n=LAY.nodes[b];if(!n)return [];
+  const ms=n.type==='milestone',out=[];
+  out.push([t0,()=>{if(!byScroll&&n.y+HH()-$('#main').scrollTop>$('#main').clientHeight*.8)scrollToY(offsetFor(n),$('#app').classList.contains('snap')?0:300)}]);
+  out.push([t0+200,()=>{setState(b,ms?'completed':'current');gaze(b);if(!ms){const el=$(`.node[data-i="${b}"]`);el&&replay(el,'pop')}}]);
+  if(ms)out.push([t0+500,()=>{follow(b);milestoneSheet(b)}]);
+  else{out.push([t0+320,()=>arrive(b)]);out.push([t0+720,()=>jiggle(b)])}
+  return out;
+}
+// §4.3: the finished node completes, then the indicator travels on
+function payoff(i,kept){
+  const beats=kept?[[0,()=>setState(i,'completed')],[200,leaveIndicator]]
+    :[[120,()=>{setState(i,'completed');const el=$(`.node[data-i="${i}"]`);el&&replay(el,'pop')}],[420,()=>{if(Date.now()-lastHaptic>=2000)soft();leaveIndicator()}]];
+  timeline([...beats,...advance(i,i+1,kept?230:450)]);
+}
+
+// ===== §4: lesson completion. One screen, the user's words, one button =====
+const words=n=>['no times','once','twice','three times','four times','five times'][n]||`${n} times`;
+const timeNow=()=>new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+// Happi's headline varies by what you did (Duolingo's variety, CBT tone: effort, never a score)
+const TITLES={exercise:['First step, taken.','That took courage.','You tried something new.'],practice:['Another rep, done.','It’s getting familiar.','Steady practice.'],checkpoint:['Look how far you’ve come.']};
+const titleFor=n=>{const t=TITLES[n.type]||TITLES.exercise;return t[n.gi%t.length]};
+function complete(i){
+  const c=cur();if(i!==doneOf(c))return closeSheet();
+  ST.done[c.id]=i+1;settle(c);save();
+  clearTimeout(ct);$('#sheet').hidden=$('#scrim').hidden=true;$('#sheet').className='sheet';from=null;
+  render(i);scrollToY(offsetFor(LAY.nodes[i]),0); // the path reopens with the finished node at 42% (§1.6)
+  const n=LAY.nodes[i],u=unitOf(n),steps=LAY.nodes.filter(x=>x.ui===n.ui&&x.type!=='milestone'),k=steps.indexOf(n);
+  // once per 7 days of use, Happi's line points outward (03 F15); otherwise the save line
+  const out=Date.now()-(ST.out||0)>WEEK;if(out){ST.out=Date.now();save()}
+  const el=document.createElement('div');el.className='done';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','dn-t');
+  el.innerHTML=`<div class="dstage">${scene('day')}${sparks([[16,30,14,'#fff',.4],[80,22,18,A.honey,.48],[24,60,10,A.honey,.56],[78,58,12,'#fff',.62]])}
+      ${out?'<p class="bub">Is there someone you could tell?</p>':''}<div class="hp" data-pose="${out?'proud':'neutral'}" aria-hidden="true"></div></div>
+    <div class="dbody"><h2 class="ttl" id="dn-t" tabindex="-1">${esc(titleFor(n))}</h2>
+    <figure class="paper"><blockquote>${esc(n.q)}</blockquote><figcaption>Saved today, ${timeNow()}</figcaption></figure>
+    <div class="prog where" role="img" aria-label="Step ${k+1} of ${steps.length} in ${esc(u.title)}"><span class="seg" aria-hidden="true">${steps.map((x,j)=>`<i class="${j<k?'d':j===k?'now':''}"></i>`).join('')}</span><small class="line" aria-hidden="true">Step ${k+1} of ${steps.length} · ${esc(u.title)}</small></div>
+    <div class="go"><button class="btn" id="dn-go" aria-disabled="true">Continue</button></div></div>`;
+  $('#app').append(el);inert(true);hp();$('#dn-t').focus();
+  // the button is live once it is fully visible (950 ms) or after a skip; a stray first tap never navigates
+  let ready=false,felt=false;const feel=()=>{if(!felt){felt=true;spaced(soft)}};const tm=[setTimeout(feel,STILL?0:200),setTimeout(()=>arm(),STILL?0:950),...(out?[]:[cheerAt($('.dstage .hp'),STILL?0:700)])];
+  function arm(){ready=true;$('#dn-go').removeAttribute('aria-disabled')}
+  function skip(){tm.forEach(clearTimeout);feel();el.classList.add('skip');if(!out)cheer($('.dstage .hp'));if(!ready)arm()}
+  el.addEventListener('click',ev=>{
+    if(!ready)return skip();
+    if(ev.target.closest('#dn-go')){if(el.classList.contains('leave'))return;el.onkeydown=null;const go=()=>{el.remove();inert(false);$(`.node[data-i="${i}"]`)?.focus({preventScroll:true});payoff(i)};
+      if(STILL)return go();el.classList.add('leave');setTimeout(go,150)}});
+  el.onkeydown=ev=>{if(ev.key==='Escape'){ev.preventDefault();ready?$('#dn-go').click():skip()}};
+  if(STILL)skip();
+}
+
+// ===== §5: keepsake. Its contents are named before it opens =====
+// demo dates: one practice a day, counting back from today (production stores each entry's date)
+const dayOf=ago=>new Date(Date.now()-ago*864e5).toLocaleDateString([],{weekday:'short',day:'numeric',month:'short'});
+const keptNotes=n=>LAY.nodes.filter(x=>x.ui===n.ui&&x.gi<n.gi&&PRACTICE(x.type)).slice(-3);
+function keepsakeSheet(i,already){
+  const n=LAY.nodes[i],u=unitOf(n),notes=keptNotes(n),cnt=LAY.nodes.filter(x=>x.ui===n.ui&&x.gi<n.gi&&PRACTICE(x.type)).length;
+  openSheet(`<div class="kstage">${scene('paper',{cy:52})}${sparks([[22,24,14,A.honey,.5],[76,18,18,A.deep,.58],[30,62,10,A.deep,.66],[70,50,11,A.honey,.72]])}${TIN_OPEN()}<div class="hp" data-pose="proud" aria-hidden="true"></div></div>
+    <h2 class="ttl" id="sh-t">Something to keep</h2>
+    <p class="sub">You practised ${esc(u.skill)} ${words(cnt)}. Saved to your Keepsakes.</p>
+    <ul class="notes">${notes.map((x,k)=>`<li style="animation-delay:${(.78+k*.1).toFixed(2)}s"><q>${esc(x.q)}</q><small>${dayOf(i-x.gi)}</small></li>`).join('')}</ul>
+    <div class="acts"><button class="btn" data-kept="${i}" aria-disabled="true">Continue</button></div>`,'#sh-t','kp');
+  $('#sh-t').tabIndex=-1;$('#sh-t').focus();hp();
+  const sh=$('#sheet');let ready=false;
+  let felt=!!already,said=!!already;const feel=()=>{if(!felt){felt=true;spaced(success)}};
+  const tell=()=>{if(!said){said=true;say('Saved to your Keepsakes')}};
+  const tm=already||STILL?[]:[setTimeout(feel,420),setTimeout(tell,1000),setTimeout(arm,1200)];
+  function arm(){ready=true;$('[data-kept]')?.removeAttribute('aria-disabled')}
+  sh.skip=()=>{tm.forEach(clearTimeout);feel();tell();sh.classList.add('skip');arm()};
+  sh.isReady=()=>ready;
+  if(already||STILL)sh.skip();
+}
+function keep(i){const c=cur(),first=status(i,doneOf(c))==='current';
+  closeSheet(()=>{if(!first)return $(`.node[data-i="${i}"]`)?.focus();ST.done[c.id]=i+1;settle(c);save();payoff(i,true)})}
+
+// ===== §6: unit, section and course ends. One calm sheet; the full celebration is shared, ≤1 per rolling 7 days =====
+function milestoneSheet(i,review){
+  const n=LAY.nodes[i],u=unitOf(n),c=cur(),last=i===LAY.nodes.length-1,level=last?'course':u.lastInSec?'section':'unit';
+  const full=!review&&Date.now()-(ST.cele||0)>WEEK;if(full){ST.cele=Date.now();save()}
+  // what you practised: one row per skill in this level's units, with its real session count
+  const scope=LAY.units.filter(x=>level==='course'||(level==='section'?x.si===u.si:x.ui===u.ui));
+  const skills=[...new Set(scope.map(x=>x.skill))].map(sk=>[sk,LAY.nodes.filter(x=>LAY.units[x.ui].skill===sk&&scope.includes(LAY.units[x.ui])&&PRACTICE(x.type)).length]);
+  const T={unit:[`Unit ${u.uj+1} of ${c.sections[u.si].units.length}`,'Unit complete',`You practised ${u.skill} ${words(LAY.nodes.filter(x=>x.ui===n.ui&&PRACTICE(x.type)).length)}.`],
+    section:[`Section ${u.si+1}`,'Section complete',`Skills you can use any day.`],
+    course:[c.title,'Course complete','Every step here was yours.']}[level];
+  // the bigger the end, the more the scene takes over: unit = day, section = dusk, course = night. The quiet variant keeps the scene, drops the rays and the jump
+  const sky={unit:'day',section:'dusk',course:'night'}[level],sp=level==='course'?'#FFF3C7':level==='section'?'#fff':A.honey;
+  const spk=full?[[14,18,16,sp,.7],[84,14,20,A.honey,.78],[10,46,11,'#fff',.86],[88,44,13,sp,.94],[24,70,9,A.honey,1],[76,72,10,'#fff',1.06]]:[[18,22,12,sp,.8],[82,30,12,sp,.9]];
+  openSheet(`<div class="mstage">${scene(sky,{glow:false,under:`<svg class="halo" viewBox="0 0 200 200">${medalLight(level,full)}</svg>`})}<div class="hero">${sparks(spk)}</div><svg class="badge" viewBox="0 0 200 200" aria-hidden="true">${BADGE[level]()}</svg><div class="hp" data-pose="${full?'neutral':'proud'}" aria-hidden="true"></div></div>
+    <div class="mbody"><small class="eb">${esc(T[0])}</small><h2 class="ttl" id="sh-t" tabindex="-1">${esc(T[1])}</h2><p class="line">${esc(T[2])}</p>
+    ${level!=='section'?'':`<ul class="did">${skills.slice(0,3).map(([sk,c],k)=>`<li style="animation-delay:${(.96+k*.08).toFixed(2)}s"><i><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">${G.sprout}</svg></i><em>${esc(sk[0].toUpperCase()+sk.slice(1))}</em><span>${c} session${c===1?'':'s'}</span></li>`).join('')}</ul>`}
+    <div class="acts"><button class="btn" data-ms="${i}" aria-disabled="true">Continue</button></div></div>`,'#sh-t','ms');
+  $('#sh-t').focus();setTimeout(hp,STILL||review?0:200); // Happi drops in at 200
+  const sh=$('#sheet');let ready=false;
+  let felt=!!review;const feel=()=>{if(!felt){felt=true;spaced(full?success:soft)}};
+  const tm=review||STILL?[]:[setTimeout(feel,600),setTimeout(arm,1300),...(full?[cheerAt($('.mstage .hp'),750)]:[])];
+  function arm(){ready=true;$('[data-ms]')?.removeAttribute('aria-disabled')}
+  sh.skip=()=>{tm.forEach(clearTimeout);feel();sh.classList.add('skip');if(full)cheer($('.mstage .hp'));arm()};sh.isReady=()=>ready;
+  sh.review=!!review;
+  if(review||STILL)sh.skip();
+}
+function msContinue(i){const review=$('#sheet').review;
+  closeSheet(()=>{if(review)return $(`.node[data-i="${i}"]`)?.focus();
+    if(LAY.nodes[i+1])timeline(advance(i,i+1,0));else{dock();$('.dock .btn')?.focus()}})}
+
+function dock(){
+  undock();const c=cur();if(!TOTAL(c)||doneOf(c)<TOTAL(c))return;
+  const next=COURSES.find(x=>x.id!==c.id&&TOTAL(x)&&(ST.done[x.id]||0)<TOTAL(x));
+  const d=document.createElement('section');d.className='dock';d.setAttribute('aria-label','Course complete');
+  d.innerHTML=`<button class="x" data-dock aria-label="Close">${IC(P.x,20)}</button><div class="a"><small>Course complete</small><b>${esc(c.title)}</b><p>Every step here was yours.</p></div>
+    <div class="b">${next?`<small>Next journey</small><b>${esc(next.title)}</b><button class="btn" data-next="${next.id}">Start journey</button>`:`<small>All caught up</small><button class="btn" data-explore>Explore journeys</button>`}</div>`;
+  $('#app').append(d);
+  $('#main').style.paddingBottom=(d.offsetHeight+84+24)+'px';
+}
+const undock=()=>{$('.dock')?.remove();$('#main').style.paddingBottom=''};
+
+// ===== events =====
+document.addEventListener('click',ev=>{const t=ev.target;
+  const sh=$('#sheet');
+  // keepsake and milestone sheets: the first tap only completes the beats
+  if(sh.skip&&!sh.hidden&&!sh.isReady()&&sh.contains(t)){sh.skip();return}
+  const nd=t.closest('.node');if(nd)return tapNode(+nd.dataset.i);
+  if(t.closest('#banner'))return sectionsSheet();
+  if(t.closest('#courses'))return coursesSheet();
+  const go=t.closest('[data-go]');if(go){const i=+go.dataset.go;return status(i,doneOf(cur()))==='completed'?closeSheet():complete(i)}
+  const op=t.closest('[data-open]');if(op)return keepsakeSheet(+op.dataset.open);
+  const kp=t.closest('[data-kept]');if(kp)return keep(+kp.dataset.kept);
+  const ms=t.closest('[data-ms]');if(ms)return msContinue(+ms.dataset.ms);
+  if(t.closest('[data-trial]')){ST.pro=true;save();closeSheet(()=>{render();toast('Welcome to Happy Plus')});return}
+  const sec=t.closest('[data-sec]');if(sec){const u=LAY.units.find(x=>x.si===+sec.dataset.sec);closeSheet();if(u)scrollToY(u.top);return}
+  const co=t.closest('[data-course]');if(co){ST.course=co.dataset.course;save();closeSheet();render();$('#main').scrollTop=0;toCurrent(false);return}
+  if(t.closest('[data-more]'))return coursesSheet(true);
+  const ad=t.closest('[data-add]');if(ad){ST.enrolled.push(ad.dataset.add);ST.course=ad.dataset.add;save();closeSheet();render();$('#main').scrollTop=0;return}
+  if(t.closest('[data-next]')){const id=t.closest('[data-next]').dataset.next;if(!ST.enrolled.includes(id))ST.enrolled.push(id);ST.course=id;save();undock();render();$('#main').scrollTop=0;toCurrent(false);return}
+  if(t.closest('[data-explore]'))return coursesSheet(true);
+  if(t.closest('[data-dock]')){undock();return $('#courses').focus()}
+  if(t.closest('[data-close]')||t===$('#scrim'))return sh.classList.contains('ms')?null:sh.classList.contains('kp')?$('[data-kept]').click():closeSheet();
+});
+document.addEventListener('keydown',ev=>{if(ev.key!=='Escape'||$('.done'))return;
+  const sh=$('#sheet');
+  if(!sh.hidden){if(sh.skip&&!sh.isReady())return sh.skip();if(sh.classList.contains('ms'))return $('[data-ms]').click();if(sh.classList.contains('kp'))return $('[data-kept]').click();return closeSheet()}
+  if($('.dock')){undock();$('#courses').focus()}});
+$('#sheet').addEventListener('keydown',ev=>{if(ev.key!=='Tab')return;
+  const f=$$('#sheet button:not(:disabled)'),i=f.indexOf(document.activeElement);
+  if(ev.shiftKey&&i<=0){ev.preventDefault();f.at(-1).focus()}else if(!ev.shiftKey&&i===f.length-1){ev.preventDefault();f[0].focus()}});
+let rz=0,lw=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if($('#path').clientWidth===lw)return;skipPath();const t=$('#main').scrollTop;render();lw=$('#path').clientWidth;$('#main').scrollTop=t},150)});
+window.ResizeObserver&&new ResizeObserver(()=>{const h=$('#head').offsetHeight;if(h===lh)return;const d=h-lh;lh=h;
+  document.documentElement.style.setProperty('--hh',h+'px');if(d)$('#main').scrollTop+=d;fab()}).observe($('#head'));
+
+render();lw=$('#path').clientWidth;toCurrent(false);
+// one arrival pulse when the path opens on the current node (the keepsake jiggle belongs to the payoff only)
+if(!STILL)$$('#path .ring,#path .tip').forEach(e=>e.classList.add('arrive'));
+</script>
+</body>
+</html>

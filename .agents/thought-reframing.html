@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Thought Reframing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&display=swap">
+<style>
+  /* ===== tokens (happy-ui.css, linked after, wins on shared names) ===== */
+  :root{
+    --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--sp-7:48px;
+    --r-s:12px;--r-m:16px;--r-l:20px;--r-pill:999px;
+    --tap:44px;
+    --t-cap:12px;--t-foot:13px;--t-sub:15px;--t-body:17px;--t-lead:20px;--t-h:24px;--t-title:28px;--t-num:34px;
+    --dur:.28s;--ease:cubic-bezier(.32,.72,0,1);--spring:cubic-bezier(.34,1.56,.64,1);
+    --font:"Nunito",ui-rounded,-apple-system,system-ui,sans-serif;--display:var(--font);
+    --bg:#fff;--surface:#fff;--surface-2:#f7f7f7;--tint:#f2f8ef;
+    --label:#142414;--label-2:#4b4b4b;--label-3:#767676;
+    --sep:#e5e5e5;--rim:#cfcfcf;
+    --accent:#44633f;--on-accent:#fff;--ink:#5f7f58;--on-ink:#fff;--ink-rim:#29452a;
+    /* this exercise's wash and its warm selected state; text on them stays --label / --label-2 (>=7:1) */
+    --cloud-lo:#e4eee0;--cloud-hi:#a9bfa0;--wash:#f6ecd8;--warm:#eef3ea;--sun:#f5b942;--sun2:#e09a24;
+    --bw:2px;--rimw:4px;
+    color-scheme:light;
+  }
+  @media (prefers-contrast:more){:root{--sep:currentColor;--label-3:var(--label-2)}}
+
+  /* ===== base ===== */
+  *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+  html{font-size:17px}
+  body{font-family:var(--font);background:var(--bg);color:var(--label);min-height:100dvh;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;line-height:1.35}
+  #app{width:100%;max-width:430px;height:100dvh;display:flex;flex-direction:column;position:relative;background:var(--bg);overflow:hidden}
+  @media (min-width:600px){
+    body{align-items:center;background:#d9d8d3}
+    #app{width:390px;height:min(844px,calc(100dvh - 48px));border-radius:48px;box-shadow:0 0 0 10px #142414}
+  }
+  button{font:inherit;color:inherit;cursor:pointer}
+  header,main,footer{position:relative;z-index:1}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:var(--r-s)}
+  [tabindex="-1"]:focus{outline:0}
+  svg{display:block}
+  [hidden]{display:none!important}
+
+  /* ===== nav ===== */
+  header{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-3) 0;padding-top:calc(var(--sp-2) + env(safe-area-inset-top))}
+  .icon-btn{width:var(--tap);height:var(--tap);display:grid;place-items:center;background:none;border:0;border-radius:var(--r-pill);color:var(--label);transition:transform var(--dur) var(--ease)}
+  .icon-btn:active{transform:scale(.92)}
+  .bar{flex:1;display:flex;gap:6px}
+  .bar>span{flex:1;height:8px;background:var(--sep);border-radius:var(--r-pill);overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:var(--ink);border-radius:inherit;transition:width var(--dur) var(--ease)}
+
+  /* ===== content ===== */
+  main{flex:1;min-height:0;padding:var(--sp-4) var(--sp-4) var(--sp-6);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;animation:enter var(--dur) var(--ease) both}
+  main::-webkit-scrollbar{display:none}
+  @keyframes enter{from{opacity:0;transform:translateY(8px)}}
+  @keyframes pop{from{transform:scale(.6);opacity:0}}
+  @keyframes drop{from{transform:translateY(-16px);opacity:0}}
+  h1{font-family:var(--display);font-size:var(--t-title);line-height:1.15;letter-spacing:-.01em;text-wrap:balance}
+  /* every step opens the same way: stage, question, one plain line. The picture under it is what changes */
+  .sub{font-size:var(--t-sub);line-height:1.45;font-weight:600;color:var(--label-2);margin-top:var(--sp-2);max-width:40ch}
+  .note{font-size:var(--t-foot);font-weight:600;color:var(--label-3);margin-top:var(--sp-2);min-height:1.35em}
+  .note.ok{color:var(--accent)}
+  /* what you said earlier comes back as your own bubble, then Happi asks the next thing */
+  .me{display:flex;flex-direction:column;align-items:flex-end;margin-bottom:var(--sp-4)}
+  .me small{font-size:var(--t-foot);font-weight:600;color:var(--label-3);margin-bottom:var(--sp-1)}
+  .me p{max-width:85%;background:var(--ink);color:var(--on-ink);border-radius:var(--r-m) var(--r-m) 4px var(--r-m);padding:var(--sp-3) var(--sp-4);font-weight:600;line-height:1.35;overflow-wrap:anywhere}
+
+  /* ===== footer ===== */
+  footer{padding:var(--sp-3) var(--sp-4) calc(var(--sp-4) + env(safe-area-inset-bottom));display:flex;gap:var(--sp-3);
+    background:color-mix(in srgb,var(--bg) 88%,transparent);-webkit-backdrop-filter:blur(var(--sp-5));backdrop-filter:blur(var(--sp-5))}
+  .btn{flex:1;min-height:56px;border:0;border-bottom:var(--rimw) solid var(--ink-rim);border-radius:var(--r-pill);padding:var(--sp-3) var(--sp-5);
+    font-size:18px;font-weight:800;background:var(--ink);color:var(--on-ink);transition:transform .12s var(--spring),border-bottom-width .12s var(--spring)}
+  .btn:active:not(:disabled){transform:translateY(2px);border-bottom-width:2px}
+  .btn:disabled{background:var(--sep);border-bottom-color:var(--rim);color:var(--label-2);cursor:default}
+  .btn.ghost{flex:0 0 auto;background:var(--surface-2);color:var(--label);border:0}
+
+  /* ===== small shared controls ===== */
+  .qrl{font-size:var(--t-foot);font-weight:700;color:var(--label-2);margin-top:var(--sp-5)}
+  .qrs{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:var(--sp-2)}
+  .qr{max-width:100%;min-height:var(--tap);text-align:left;border:0;border-radius:var(--r-pill);background:var(--surface-2);
+    padding:var(--sp-2) var(--sp-4);font-size:var(--t-sub);font-weight:600;line-height:1.3;color:var(--label);transition:transform .12s var(--spring)}
+  .qr:active{transform:scale(.97);background:var(--warm)}
+  .qr[aria-pressed=true]{background:var(--warm);box-shadow:inset 0 0 0 2px var(--ink)}
+  .tick{position:absolute;top:var(--sp-3);right:var(--sp-3);width:24px;height:24px;border-radius:50%;background:var(--ink-rim);color:#fff;display:grid;place-items:center}
+  .just .tick{animation:pop .3s var(--spring)}
+  .tick>svg{width:14px;height:14px;stroke-width:3.5}
+
+  /* ===== intro ===== */
+  .meta{font-size:var(--t-foot);font-weight:700;color:var(--label-2);margin-bottom:var(--sp-3)}
+  .scene{border-radius:var(--r-l);background:var(--wash);overflow:hidden}
+  .scene svg{width:100%;height:auto}
+  .ask{display:flex;align-items:flex-end;gap:var(--sp-2);margin:var(--sp-4) 0 var(--sp-5)}
+  .ask .happi{flex:none;width:84px;aspect-ratio:220/246;margin-bottom:-4px}
+  .ask .happi svg{width:100%;height:100%}
+  .say{position:relative;flex:1;align-self:center;background:var(--tint);border-radius:var(--r-m);padding:var(--sp-3) var(--sp-4)}
+  .say::before{content:"";position:absolute;left:-8px;bottom:18px;border:8px solid transparent;border-right-color:var(--tint);border-left:0}
+  .say h1{font-size:var(--t-h);line-height:1.15}
+  .say p{margin-top:var(--sp-1);font-size:var(--t-sub);font-weight:600;line-height:1.4;color:var(--label-2)}
+  /* the four stages, so the ten minutes have a shape before you start */
+  .path{list-style:none;padding:0;position:relative}
+  .path::before{content:"";position:absolute;left:23px;top:24px;bottom:24px;border-left:2px dashed var(--sep)}
+  .path li{position:relative;display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) 0}
+  .path .gl{flex:none;width:48px;height:48px;background:var(--bg)}
+  .path b{display:block;font-size:var(--t-body);font-weight:800}
+  .path small{display:block;font-size:var(--t-sub);font-weight:600;color:var(--label-2);line-height:1.3}
+
+  /* ===== step 2: a viewfinder, so the answer is what a camera would have caught ===== */
+  .vf{display:block;padding:var(--sp-4) var(--sp-4) var(--sp-3);background:var(--surface-2);border-radius:var(--r-l);transition:background var(--dur) var(--ease),box-shadow var(--dur) var(--ease)}
+  .vf textarea,.tb textarea,.frame textarea{display:block;width:100%;min-height:7.5rem;border:0;outline:0;background:transparent;padding:0;font:inherit;
+    font-size:var(--t-lead);line-height:1.4;font-weight:700;color:var(--label);resize:none;field-sizing:content}
+  .vf textarea:focus,.tb textarea:focus,.frame textarea:focus{background:transparent;border:0}
+  .vf textarea{font-size:var(--t-h);line-height:1.3;min-height:9rem}
+  textarea::placeholder,input::placeholder{color:#6b6b6b;font-weight:600}
+
+  /* ===== step 3: the snapshot from step 2, and the thought floating up from it ===== */
+  .snap{display:block;width:fit-content;max-width:78%;background:#fff;border-radius:6px;padding:var(--sp-2) var(--sp-2) var(--sp-3);transform:rotate(-2.5deg);
+    box-shadow:0 0 0 1px var(--sep),0 6px 16px -10px rgba(20,36,20,.4);margin:0 0 var(--sp-2) var(--sp-1)}
+  .snap div{background:var(--surface-2);border-radius:3px;padding:var(--sp-2) var(--sp-3);font-size:var(--t-sub);font-weight:600;line-height:1.35;color:var(--label);overflow-wrap:anywhere}
+  .snap figcaption{font-size:var(--t-foot);font-weight:700;color:var(--label-2);margin:var(--sp-2) var(--sp-1) 0}
+  .trail{display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin:0 0 var(--sp-1) 28px}
+  .trail i{display:block;border-radius:50%;background:var(--wash);box-shadow:inset 0 -3px 0 #ead7b5}
+  .trail i:first-child{width:12px;height:12px}.trail i:last-child{width:20px;height:20px;margin-left:12px}
+  .tb{position:relative;background:var(--wash);border-radius:36px;padding:var(--sp-5) var(--sp-5) var(--sp-4);box-shadow:inset 0 -5px 0 #ead7b5;transition:box-shadow var(--dur) var(--ease)}
+  .tb textarea{min-height:6rem}
+
+  /* ===== steps 4 and 10: the thought as weather ===== */
+  .sky{display:block;width:min(100%,200px);height:auto;margin:0 auto var(--sp-4)}
+  .sky{--f:var(--heat-f,.5)}
+  .sky .deco circle{fill:var(--cloud-lo)}
+  .sky .deco path{fill:none;stroke:var(--sun);stroke-width:3;stroke-linecap:round}
+  .sky .brow{fill:none;stroke:var(--label);stroke-width:3;stroke-linecap:round;opacity:max(0,calc((var(--f) - .6)*2.5))}
+  /* rain falls only when the thought feels heavy */
+  .sky .rain{opacity:max(0,calc((var(--f) - .55)*2.2))}
+  .sky .rain line{stroke:var(--accent);stroke-width:3;stroke-linecap:round;animation:fall 1.2s linear infinite}
+  @keyframes bob{50%{transform:translateY(-4px)}}
+  @keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+  @keyframes twinkle{50%{opacity:.25}}
+  @keyframes fall{0%{transform:translateY(-4px);opacity:0}30%{opacity:1}100%{transform:translateY(12px);opacity:0}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .sky .sun{fill:var(--sun);stroke:var(--sun);stroke-width:4;stroke-linecap:round;opacity:calc(1 - var(--f));transform:translateY(calc(var(--f)*14px));transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
+  .sky .cloud{fill:color-mix(in srgb,var(--cloud-hi) calc(var(--f)*100%),var(--cloud-lo));transform:scale(calc(.72 + .28*var(--f)));transform-box:fill-box;transform-origin:50% 100%;transition:transform var(--dur) var(--ease)}
+  .sky .eye{fill:var(--label)}
+  .sky .mouth{fill:none;stroke:var(--label);stroke-width:3;stroke-linecap:round;transform:scaleY(calc(1 - 2*var(--f)));transform-box:fill-box;transform-origin:center;transition:transform var(--dur) var(--ease)}
+  .mid{flex:1;min-height:140px;display:grid;place-items:center;overflow:hidden}
+  .mid .sky{width:100%;height:100%;max-width:240px;margin:0}
+  .read{display:flex;align-items:baseline;gap:var(--sp-2);margin:var(--sp-4) 0 var(--sp-2)}
+  .read b{font-family:var(--display);font-size:56px;line-height:.9;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .read span{font-size:var(--t-lead);font-weight:700;color:var(--label-2)}
+  .read em{margin-left:auto;font-style:normal;font-size:var(--t-lead);font-weight:800;color:var(--label)}
+  .fill{min-height:100%;display:flex;flex-direction:column}
+  .fill .ctl{margin-top:auto;padding-top:var(--sp-5)}
+  .scale{position:relative;height:var(--tap)}
+  .segs{position:absolute;inset:var(--sp-1) 0;display:grid;grid-template-columns:repeat(10,1fr);gap:var(--sp-1)}
+  .segs i{border-radius:8px;background:var(--surface-2);box-shadow:inset 0 0 0 2px var(--sep);transition:background var(--dur) var(--ease)}
+  .segs i.f{background:var(--ink);box-shadow:inset 0 -4px 0 var(--ink-rim)}
+  /* step 10 keeps where you started visible: a sun-coloured notch on the cell you chose before */
+  .segs i.was{position:relative}
+  .segs i.was::after{content:"";position:absolute;left:50%;top:-10px;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--sun2)}
+  input[type=range]{-webkit-appearance:none;appearance:none;position:absolute;inset:0;width:100%;height:var(--tap);margin:0;background:transparent}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:var(--tap);border-radius:8px;background:var(--surface);border:2px solid var(--ink-rim)}
+  input[type=range]::-moz-range-thumb{width:16px;height:var(--tap);border-radius:8px;background:var(--surface);border:2px solid var(--ink-rim)}
+  input[type=range]::-webkit-slider-runnable-track{height:var(--tap);background:transparent}
+  input[type=range]::-moz-range-track{height:var(--tap);background:transparent}
+  .lbls{display:flex;justify-content:space-between;font-size:var(--t-foot);font-weight:700;color:var(--label-2);margin-top:var(--sp-2)}
+
+  /* ===== step 5: feelings ===== */
+  .emos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-3)}
+  .emo{position:relative;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-2);min-height:112px;padding:var(--sp-3);border:0;border-radius:var(--r-m);background:var(--surface-2);
+    text-align:center;font-size:var(--t-body);font-weight:700;color:var(--label);transition:transform .12s var(--spring),background var(--dur) var(--ease)}
+  .emo>svg{flex:none;width:56px;height:56px}
+  .emo:active{transform:scale(.97)}
+  .emo[aria-pressed=true]{background:var(--warm);box-shadow:inset 0 0 0 2px var(--ink)}
+  .emo.just[aria-pressed=true]>svg{animation:pop .35s var(--spring)}
+  .emo.dim{color:var(--label-2)}
+  .emo.dim>svg{opacity:.45}
+  .count{min-height:1.45em;font-size:var(--t-sub);font-weight:700;color:var(--label-2);margin:0 0 var(--sp-3)}
+
+  /* ===== step 6: patterns ===== */
+  .pat{position:relative;display:flex;gap:var(--sp-3);width:100%;text-align:left;border:0;border-radius:var(--r-m);padding:var(--sp-3);background:var(--surface-2);
+    margin-bottom:var(--sp-3);color:var(--label);transition:transform .12s var(--spring),background var(--dur) var(--ease)}
+  .pat:active{transform:scale(.99)}
+  .pat[aria-pressed=true]{background:var(--warm);box-shadow:inset 0 0 0 2px var(--ink)}
+  .pat .pic{flex:none;width:64px;height:64px;border-radius:14px;background:var(--wash);overflow:hidden}
+  .pat[aria-pressed=true] .pic{background:#fff}
+  .pat .pic svg{width:100%;height:100%}
+  .pat div{flex:1;min-width:0;padding-right:var(--sp-6)}
+  .pat b{display:block;font-size:var(--t-body);font-weight:800;line-height:1.2}
+  /* name, then the line you'd recognise in your own head; the definition is the quiet part */
+  .pat p{font-size:var(--t-foot);line-height:1.35;font-weight:600;color:var(--label-2);margin-top:2px}
+  .pat i{display:block;font-size:var(--t-sub);line-height:1.35;font-style:normal;font-weight:700;color:var(--label);margin-top:var(--sp-2)}
+  .pat.dim .pic{opacity:.45}
+  .more{width:100%;min-height:var(--tap);border:0;background:none;font-size:var(--t-sub);font-weight:800;color:var(--accent)}
+
+  /* ===== steps 7 and 8: a balance; every fact is a stone you put on it ===== */
+  .balcard{border-radius:var(--r-l);background:var(--wash);overflow:hidden}
+  .balcard svg{width:auto;height:136px;margin:0 auto}
+  .beam,.pan{transition:transform .6s var(--spring);transform-box:view-box}
+  .beam{transform-origin:160px 50px}
+  .stone{animation:drop .45s var(--spring) both}
+  /* captions under the pans they name: For left, Against right, the side you are filling in reads darker */
+  .legend{display:flex;justify-content:space-between;margin:var(--sp-2) var(--sp-2) var(--sp-5)}
+  .legend span{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--t-foot);font-weight:700;color:var(--label-2)}
+  .legend span.cur{color:var(--label);font-weight:800}
+  .legend b{font-family:var(--display);font-size:var(--t-lead);font-weight:600;color:var(--label);font-variant-numeric:tabular-nums}
+  /* For is a square slate, Against a round pebble: colour and shape both carry the difference */
+  .sq,.rd{flex:none;display:inline-block;width:14px;height:12px}
+  .sq{border-radius:3px;background:#5f7f58;box-shadow:inset 0 -3px 0 #44633f}
+  .rd{border-radius:50%;background:#f5b942;box-shadow:inset 0 -3px 0 #e09a24;height:13px}
+  .row>.sq,.row>.rd{align-self:center}
+  .row{display:flex;align-items:flex-end;gap:var(--sp-2);padding:var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-4);background:var(--surface-2);border-radius:28px;transition:background var(--dur) var(--ease)}
+  .row textarea{flex:1;min-width:0;min-height:var(--tap);max-height:9rem;padding:var(--sp-3) 0;border:0;border-radius:0;background:transparent;outline:0;
+    font:inherit;font-size:var(--t-body);font-weight:600;line-height:1.35;resize:none;field-sizing:content}
+  .row textarea:focus{background:transparent;border:0}
+  .row button{flex:none;width:48px;height:48px;display:grid;place-items:center;border:0;border-bottom:var(--rimw) solid var(--ink-rim);border-radius:50%;background:var(--ink);color:#fff;transition:transform .12s var(--spring)}
+  .row button:active:not(:disabled){transform:translateY(2px);border-bottom-width:2px}
+  .row button:disabled{background:var(--sep);border-bottom-color:var(--rim);color:var(--label-2);cursor:default}
+  ul.items{list-style:none;padding:0;margin-top:var(--sp-3)}
+  ul.items:empty{display:none}
+  ul.items li{display:flex;align-items:center;gap:var(--sp-3);min-height:var(--tap);padding:var(--sp-1) 0;font-size:var(--t-body);font-weight:600;border-top:1px solid var(--sep)}
+  ul.items li.new{animation:drop .35s var(--spring)}
+  ul.items li span:not(.sq):not(.rd){flex:1;overflow-wrap:anywhere}
+  ul.items button{flex:none;width:var(--tap);height:var(--tap);display:grid;place-items:center;background:none;border:0;color:var(--label-2);border-radius:var(--r-pill)}
+  /* step 8: the question comes from Happi, the screen's one bubble; the arrow asks a different one */
+  .ask.ask2{margin:0 0 var(--sp-4)}
+  .ask2 .say::before{display:none}
+  .ask2 .say p{margin:0;font-size:var(--t-body);font-weight:700;line-height:1.35;color:var(--label)}
+  .ask2 .icon-btn{flex:none;align-self:center;color:var(--accent)}
+
+  /* ===== step 9: both stacks to stand on, the old frame crooked, the new one straight ===== */
+  .ev{border-bottom:1px solid var(--sep)}
+  .ev summary,.ev>p{display:flex;align-items:center;gap:var(--sp-2);min-height:48px;padding:0 var(--sp-1);cursor:pointer;list-style:none;font-size:var(--t-sub);font-weight:700}
+  .ev summary::-webkit-details-marker{display:none}
+  .ev>p{cursor:default}
+  .ev summary::after{content:"";margin-left:auto;width:8px;height:8px;border:solid var(--label-2);border-width:0 2px 2px 0;transform:rotate(45deg);transition:transform var(--dur) var(--ease)}
+  .ev[open] summary::after{transform:rotate(-135deg)}
+  .ev ul{padding:0 var(--sp-1) var(--sp-3) calc(var(--sp-1) + 22px);overflow-wrap:anywhere;font-size:var(--t-sub);font-weight:600;color:var(--label-2)}
+  .ev li+li{margin-top:var(--sp-1)}
+  .old{position:relative;margin:var(--sp-5) var(--sp-3) 0;padding:var(--sp-3) var(--sp-4);border:3px dashed #8fb184;border-radius:var(--r-m);transform:rotate(-2deg);
+    font-size:var(--t-sub);font-weight:700;color:var(--label-2);overflow-wrap:anywhere}
+  .old small,.frame small{display:block;font-size:var(--t-foot);font-weight:700;color:var(--label-2);margin-bottom:2px}
+  .frame{position:relative;margin-top:var(--sp-4);padding:var(--sp-3);border-radius:var(--r-l);background:#ecd496;box-shadow:inset 0 -5px 0 #d8b86e}
+  .frame>div{background:#fffaf0;border-radius:10px;padding:var(--sp-3) var(--sp-4) var(--sp-4)}
+  .frame textarea{min-height:6rem}
+
+  /* ===== summary: a keepsake, then the record folded away ===== */
+  .verdict{margin-bottom:var(--sp-4)}
+  .verdict h1{font-size:var(--t-h)}
+  .keep{border-radius:24px;background:var(--wash);padding:var(--sp-3) var(--sp-3) var(--sp-5);animation:pop .5s var(--ease) both}
+  .wx{display:flex;align-items:center;gap:var(--sp-1)}
+  .wx figure{flex:1;margin:0}
+  .wx .sky{width:100%;margin:0}
+  .wx figcaption{display:flex;justify-content:center;gap:var(--sp-2);align-items:baseline;padding:var(--sp-1) var(--sp-1) 0;font-size:var(--t-foot);font-weight:700;color:var(--label-2)}
+  .wx figcaption b{font-family:var(--display);font-size:var(--t-h);font-weight:600;color:var(--label)}
+  .wx>svg{flex:none;width:20px;color:var(--label-2)}
+  .keep .lead{margin:var(--sp-5) var(--sp-2) 0;font-size:var(--t-foot);font-weight:700;color:var(--label-2)}
+  .keep .rf{margin:var(--sp-1) var(--sp-2) 0;font-family:var(--display);font-size:var(--t-title);line-height:1.15;letter-spacing:-.01em;font-weight:600;text-wrap:pretty;overflow-wrap:anywhere}
+  .keep .rf.none{font-family:var(--font);font-size:var(--t-body);font-weight:700;color:var(--label-2)}
+  .keep .was{margin:var(--sp-3) var(--sp-2) 0;font-size:var(--t-sub);font-weight:600;color:var(--label-2);overflow-wrap:anywhere}
+  .ans{margin-top:var(--sp-5);border-radius:var(--r-m);background:var(--surface-2)}
+  .ans>summary{display:flex;align-items:center;min-height:52px;padding:0 var(--sp-4);font-size:var(--t-body);font-weight:800;cursor:pointer;list-style:none}
+  .ans>summary::-webkit-details-marker{display:none}
+  .ans>summary::after{content:"";margin-left:auto;width:9px;height:9px;border:solid var(--label);border-width:0 2px 2px 0;transform:rotate(45deg);transition:transform var(--dur) var(--ease)}
+  .ans[open]>summary::after{transform:rotate(-135deg)}
+  .ans dl{padding:0 var(--sp-4) var(--sp-2)}
+  .ans dt{font-size:var(--t-foot);font-weight:800;color:var(--label-2);padding-top:var(--sp-3);border-top:1px solid var(--sep)}
+  .ans dd{margin:var(--sp-1) 0 var(--sp-3);font-size:var(--t-sub);font-weight:600;line-height:1.4;overflow-wrap:anywhere}
+  .ans dd ul{list-style:none;padding:0}
+  .ans dd li{display:flex;align-items:baseline;gap:var(--sp-2)}
+  .ans dd li+li{margin-top:var(--sp-1)}
+  .fine{text-align:center;font-size:var(--t-foot);font-weight:600;color:var(--label-2);margin-top:var(--sp-5)}
+
+  /* ===== toast ===== */
+  #toast{position:absolute;z-index:2;left:50%;bottom:calc(var(--sp-7) + var(--sp-6) + env(safe-area-inset-bottom));width:max-content;max-width:calc(100% - var(--sp-6));text-align:center;transform:translate(-50%,var(--sp-4));opacity:0;pointer-events:none;
+    background:var(--label);color:var(--bg);padding:var(--sp-3) var(--sp-5);border-radius:var(--r-pill);font-size:var(--t-body);font-weight:700;transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
+  #toast.on{opacity:1;transform:translate(-50%,0)}
+
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+<link rel="stylesheet" href="happy-ui.css">
+</head>
+<body>
+<div id="app">
+  <header><button class="icon-btn" id="back" aria-label="Back"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div class="bar" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="100"><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span></div><button class="icon-btn" id="close" aria-label="Exit exercise"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header>
+  <main id="main"></main>
+  <footer><button class="btn ghost" id="secondary" hidden></button><button class="btn" id="next"></button></footer>
+  <div id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<script src="happi.js"></script>
+<script src="words.js"></script>
+<script>
+// ---- data (mirrors src/screens/ThoughtReframingScreen/data) ----
+const EMOTIONS = [['anxious','Anxious'],['sad','Sad'],['angry','Angry'],['ashamed','Ashamed'],['hopeless','Hopeless'],
+  ['guilty','Guilty'],['frustrated','Frustrated'],['fearful','Fearful'],['overwhelmed','Overwhelmed'],['lonely','Lonely']].map(([name,label])=>({name,label}));
+
+const DISTORTIONS = [
+  ['all_or_nothing','All-or-nothing','Black or white, no middle ground.','“If it isn’t perfect, I failed.”'],
+  ['catastrophizing','Catastrophizing','Jumping to the worst outcome.','“This mistake will ruin everything.”'],
+  ['mind_reading','Mind reading','Assuming you know what they think.','“They must think I’m useless.”'],
+  ['overgeneralizing','Overgeneralizing','One event becomes a rule.','“I always mess things up.”'],
+  ['personalizing','Personalizing','Taking the blame for what you don’t control.','“It’s all my fault.”'],
+  ['filtering','Mental filter','Only the bad parts get through.','“Nothing went well today.”'],
+  ['should_statements','Should statements','Strict rules about how things must be.','“I should be able to handle this.”'],
+  ['fortune_telling','Fortune telling','Predicting it will go wrong.','“This will definitely go badly.”'],
+  ['emotional_reasoning','Emotional reasoning','It feels true, so it must be.','“I feel stupid, so I am.”'],
+  ['labeling','Labeling','One word for a whole person.','“I’m such a loser.”'],
+].map(([key,label,desc,example])=>({key,label,desc,example}));
+
+const SOCRATIC = ['What would you tell a friend who thought this?','Have you handled something like this before?','What would someone who likes you say?',
+  'Is there anything that doesn’t fit the thought?','Will this matter in a year?','Is this a fact, or how it feels?'];
+const MAX_EMOTIONS = 3, MAX_DISTORTIONS = 2, COLLAPSED_DISTORTIONS = 4;
+const STAGES = ['Notice','Weigh','Reframe','Check'];
+
+// ---- state ----
+const fresh = () => ({situation:'',thought:'',intensity:5,emotions:[],distortions:[],evFor:[],evAgainst:[],balanced:'',post:null});
+let R = fresh(), idx = 0, showAllDist = false, qIdx = 0;
+
+// ---- helpers ----
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const buzz = () => navigator.vibrate && navigator.vibrate(8);
+// on touch a programmatic focus opens the keyboard over the examples, so only desktop gets it
+const focusField = el => { if (!matchMedia('(pointer: coarse)').matches) el.focus({preventScroll: true}); };
+const IC = p => `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const PLUS = IC('<path d="M12 5v14M5 12h14"/>'), X = IC('<path d="M6 6l12 12M18 6L6 18"/>'), CHECK = IC('<path d="M5 12.5l4.5 4.5L19 7"/>'), ARROW = IC('<path d="M5 12h14M13 6l6 6-6 6"/>'), AGAIN = IC('<path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5"/>');
+// words() (real words, not key-mash) lives in words.js, shared by every exercise
+// a tapped starter ('It’s possible that') is not an answer yet, so it does not count
+const own = t => (typeof STARTERS === 'undefined' ? [] : STARTERS).reduce((x, p) => x.trim().startsWith(p.trim()) ? x.trim().slice(p.trim().length) : x, String(t));
+const WORD = v => v === 0 ? 'Not at all' : v <= 3 ? 'A little' : v <= 6 ? 'Partly' : v <= 9 ? 'Mostly' : 'Completely';
+const head = (stage, title, sub) => `<div class="ask"><div class="happi" data-pose="reframe"></div><div class="say"><h1>${title}</h1>${sub ? `<p>${sub}</p>` : ''}</div></div>`;
+const said = (label, text) => String(text).trim() ? `<div class="me"><small>${label}</small><p>${esc(text.trim())}</p></div>` : '';
+const quick = (label, items, attr = 'use') => `<p class="qrl">${label}</p><div class="qrs">${items.map(t => `<button class="qr" data-${attr}="${esc(t)}">${esc(t)}</button>`).join('')}</div>`;
+
+// ---- art: same visual language as exercise-art.js (flat shapes, darker underside, ink only for faces) ----
+const C = {s1:"#c5d8bc",s2:"#8fb184",s3:"#5f7f58",s4:"#44633f",sun:"#f5b942",sun2:"#e09a24",sky:"#9cc8ec",sky2:"#5f9ed4",
+  cor:"#f4a688",cor2:"#dd7b5a",wood:"#c99363",wood2:"#a5714a",sand:"#ead7b5",ink:"#142414",w:"#ffffff",cream:"#fffaf0",wash:"#f6ecd8"};
+const ART = (() => {
+  const svg = (vb, body, label) => `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" ${label ? `role="img" aria-label="${label}"` : 'aria-hidden="true"'}>${body}</svg>`;
+  const mix = (a, b, t) => '#' + [1, 3, 5].map(i => Math.round(parseInt(a.slice(i, i + 2), 16) * (1 - t) + parseInt(b.slice(i, i + 2), 16) * t).toString(16).padStart(2, '0')).join('');
+  const f1 = n => +n.toFixed(1);
+  const CL = "M10 34 C3 34 0 28 2 23 C3 18 8 16 12 17 C12 9 19 4 27 5 C32 0 42 0 47 6 C55 6 60 13 58 20 C62 23 61 34 52 34 Z";
+  const cloud = (x, y, s, fill, shade) => `<g transform="translate(${f1(x)} ${f1(y)}) scale(${f1(s * 100) / 100})">${shade ? `<path d="${CL}" fill="${shade}" transform="translate(0 3)"/>` : ''}<path d="${CL}" fill="${fill}"/></g>`;
+  const spark = (x, y, r, fill) => `<path d="M${x} ${y - r} Q${x + r * .2} ${y - r * .2} ${x + r} ${y} Q${x + r * .2} ${y + r * .2} ${x} ${y + r} Q${x - r * .2} ${y + r * .2} ${x - r} ${y} Q${x - r * .2} ${y - r * .2} ${x} ${y - r} Z" fill="${fill}"/>`;
+  const rays = (cx, cy, r1, r2, color, op = 1) => [...Array(8)].map((_, i) => {
+    const a = i * Math.PI / 4, c = Math.cos(a), s = Math.sin(a);
+    return `<line x1="${f1(cx + c * r1)}" y1="${f1(cy + s * r1)}" x2="${f1(cx + c * r2)}" y2="${f1(cy + s * r2)}" stroke="${color}" stroke-width="4" stroke-linecap="round" opacity="${f1(op * 100) / 100}"/>`;
+  }).join('');
+  const ln = (d, c = C.ink, w = 3) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const shadow = (cx, cy, rx) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="5" fill="${C.ink}" opacity=".07"/>`;
+  // a face that can frown (m=-1) or smile (m=1); brow > 0 fades in a worried brow
+  const mood = (x, y, s, m, brow = 0) => `<g transform="translate(${f1(x)} ${f1(y)}) scale(${s})">
+    <circle cx="-7" cy="0" r="2.8" fill="${C.ink}"/><circle cx="7" cy="0" r="2.8" fill="${C.ink}"/>
+    ${brow > 0 ? `<path d="M-12 -5 L-4 -8.5 M12 -5 L4 -8.5" fill="none" stroke="${C.ink}" stroke-width="2.4" stroke-linecap="round" opacity="${f1(Math.min(1, brow) * 100) / 100}"/>` : ''}
+    <path d="M-4.5 6 Q0 ${f1(6 + 5 * m)} 4.5 6" fill="none" stroke="${C.ink}" stroke-width="2.4" stroke-linecap="round"/>
+    ${m > .3 ? `<circle cx="-11" cy="4" r="2.8" fill="${C.cor}" opacity=".6"/><circle cx="11" cy="4" r="2.8" fill="${C.cor}" opacity=".6"/>` : ''}</g>`;
+  const heart = (x, y, s, fill) => `<path d="M${x} ${y + s * .9} C${x - s * 1.25} ${y + s * .1} ${x - s * .65} ${y - s * .85} ${x} ${y - s * .2} C${x + s * .65} ${y - s * .85} ${x + s * 1.25} ${y + s * .1} ${x} ${y + s * .9} Z" fill="${fill}"/>`;
+  const camera = `<rect x="8" y="0" width="14" height="9" rx="3" fill="${C.s4}"/><rect x="43" y="1" width="10" height="6" rx="2" fill="${C.sun2}"/>
+    <rect x="0" y="8" width="60" height="36" rx="9" fill="${C.s4}"/><rect x="0" y="5" width="60" height="36" rx="9" fill="${C.s3}"/>
+    <circle cx="31" cy="25" r="14" fill="${C.s4}"/><circle cx="31" cy="23" r="14" fill="${C.w}"/><circle cx="31" cy="23" r="10" fill="${C.sky}"/>
+    <circle cx="31" cy="23" r="4.5" fill="${C.sky2}"/><circle cx="27" cy="19" r="2.4" fill="${C.w}"/><rect x="47" y="11" width="7" height="5" rx="2" fill="${C.sun}"/>`;
+
+  // the weather of a thought: heavy grey cloud and rain at 10, a small white cloud and full sun at 0
+  const skyBody = v => {
+    const t = v / 10, cs = .95 + t * .85, cx = 112 + t * 50, x = cx - 30 * cs, y = 30 + t * 6, sy = 50 + t * 74, bottom = y + 34 * cs;
+    const n = t > .5 ? Math.round((t - .5) * 10) : 0;
+    const rain = [...Array(n)].map((_, i) => { const rx = x + 12 * cs + (i + .5) * (36 * cs / n); return `<line x1="${f1(rx)}" y1="${f1(bottom + 8)}" x2="${f1(rx - 4)}" y2="${f1(bottom + 20)}" stroke="${C.sky2}" stroke-width="3.5" stroke-linecap="round"/>`; }).join('');
+    return `<rect x="0" y="0" width="320" height="168" fill="${mix(C.wash, '#e3e8e0', t)}"/>
+      ${t < .9 ? `<circle cx="232" cy="${f1(sy)}" r="34" fill="${C.sun}" opacity="${f1((1 - t) * 25) / 100}"/>` : ''}
+      ${t < .6 ? rays(232, sy, 31, 40, C.sun, 1 - t / .6) : ''}<circle cx="232" cy="${f1(sy)}" r="23" fill="${C.sun}"/>
+      <path d="M0 128 C52 110 98 114 142 124 C192 108 252 106 320 120 L320 168 L0 168 Z" fill="${mix(C.s2, '#a3ad9f', t * .7)}"/>
+      <path d="M0 146 C60 132 120 136 170 146 C220 136 280 134 320 142 L320 168 L0 168 Z" fill="${mix(C.s3, '#7d8a78', t * .7)}"/>
+      ${t < .35 ? spark(186, 34, 7, C.sun) + spark(286, 82, 5, C.w) : ''}
+      ${rain}${cloud(x, y, cs, mix(C.w, '#adbaa7', t), mix('#e2ead9', '#7f9179', t))}
+      ${mood(x + 30 * cs, y + 22 * cs, .8 + t * .5, 1 - 2 * t, (t - .55) * 2.4)}`;
+  };
+
+  // a balance on a post; pans hang plumb from the beam ends, positions come from the tilt
+  const PIV = [160, 50], ARM = 104;
+  const tilt = (f, a) => Math.max(-14, Math.min(14, (a - f) * 5));
+  const ends = deg => { const r = deg * Math.PI / 180, c = Math.cos(r) * ARM, s = Math.sin(r) * ARM; return [[PIV[0] - c, PIV[1] - s], [PIV[0] + c, PIV[1] + s]]; };
+  const SLOTS = [[-20, 0], [0, 0], [20, 0], [-10, 1], [10, 1], [0, 2]];
+  const stones = (n, kind) => SLOTS.slice(0, Math.min(n, 6)).map(([sx, row]) => {
+    const cy = 37 - row * 14;
+    return kind === 'for'
+      ? `<g class="stone"><rect x="${sx - 9}" y="${cy - 4}" width="18" height="13" rx="4" fill="${C.s4}"/><rect x="${sx - 9}" y="${cy - 7}" width="18" height="13" rx="4" fill="${C.s3}"/><line x1="${sx - 5}" y1="${cy - 3}" x2="${sx + 1}" y2="${cy - 3}" stroke="${C.w}" stroke-width="2" stroke-linecap="round" opacity=".45"/></g>`
+      : `<g class="stone"><ellipse cx="${sx}" cy="${cy + 3}" rx="10" ry="7.5" fill="${C.sun2}"/><ellipse cx="${sx}" cy="${cy}" rx="10" ry="7.5" fill="${C.sun}"/><path d="M${sx - 5} ${cy - 3} Q${sx - 2} ${cy - 5.5} ${sx + 1} ${cy - 4.5}" fill="none" stroke="${C.w}" stroke-width="2" stroke-linecap="round" opacity=".7"/></g>`;
+  }).join('') + (n > 6 ? `<text x="0" y="60" text-anchor="middle" font-family="Nunito,system-ui,sans-serif" font-weight="800" font-size="12" fill="${C.wood2}">+${n - 6}</text>` : '');
+  const pan = (side, [x, y], n) => `<g class="pan" data-p="${side}" transform="translate(${f1(x)} ${f1(y)})" style="transform:translate(${f1(x)}px,${f1(y)}px)">
+    ${ln('M0 0 L-34 46 M0 0 L34 46', C.s4, 2.5)}<circle cx="0" cy="0" r="4" fill="${C.s4}"/>
+    <path d="M-40 49 H40 A40 18 0 0 1 -40 49 Z" fill="${C.wood2}"/><path d="M-40 46 H40 A40 18 0 0 1 -40 46 Z" fill="${C.sand}"/>
+    <g data-s="${side}">${stones(n, side)}</g></g>`;
+  const scaleBody = (f, a) => {
+    const deg = tilt(f, a), [L, Rt] = ends(deg);
+    return `<rect x="0" y="0" width="320" height="178" fill="${C.wash}"/>${shadow(160, 168, 72)}
+      <rect x="153" y="50" width="14" height="104" rx="5" fill="${C.wood2}"/><rect x="156" y="50" width="4" height="98" rx="2" fill="${C.wood}"/>
+      <rect x="118" y="152" width="84" height="14" rx="7" fill="${C.wood2}"/><rect x="118" y="148" width="84" height="13" rx="6.5" fill="${C.wood}"/>
+      <g class="beam" transform="rotate(${f1(deg)} 160 50)" style="transform:rotate(${f1(deg)}deg)"><rect x="52" y="45" width="216" height="11" rx="5.5" fill="${C.wood2}"/><rect x="52" y="42" width="216" height="11" rx="5.5" fill="${C.wood}"/></g>
+      ${pan('for', L, f)}${pan('against', Rt, a)}
+      <circle cx="160" cy="52" r="9" fill="${C.sun2}"/><circle cx="160" cy="49" r="9" fill="${C.sun}"/>`;
+  };
+
+  // emotion faces: one construction, only the features change; selected warms from sage to sun
+  const E = (x1 = 23, x2 = 41, y = 30, r = 3.2) => `<circle cx="${x1}" cy="${y}" r="${r}" fill="${C.ink}"/><circle cx="${x2}" cy="${y}" r="${r}" fill="${C.ink}"/>`;
+  const drop = (x, y, c) => `<path d="M${x} ${y} C${x + 3} ${y + 5} ${x + 4} ${y + 8} ${x} ${y + 10} C${x - 4} ${y + 8} ${x - 3} ${y + 5} ${x} ${y} Z" fill="${c}"/>`;
+  const FEAT = {
+    anxious: E() + ln('M16 22 L26 19 M48 22 L38 19') + ln('M21 44 q2.75 -3 5.5 0 t5.5 0 t5.5 0 t5.5 0') + drop(51, 10, C.sky2),
+    sad: E(23, 41, 31) + ln('M16 23 L26 20 M48 23 L38 20') + ln('M24 46 Q32 39 40 46') + drop(21, 35, C.sky2),
+    angry: E(23, 41, 31) + ln('M15 20 L27 25 M49 20 L37 25') + ln('M24 45 Q32 40 40 45'),
+    ashamed: `<ellipse cx="17" cy="39" rx="5.5" ry="3.5" fill="${C.cor}"/><ellipse cx="47" cy="39" rx="5.5" ry="3.5" fill="${C.cor}"/>` + ln('M18 31 Q23 35 28 31 M36 31 Q41 35 46 31') + ln('M28 44 H36'),
+    hopeless: ln('M18 31 H28 M36 31 H46') + ln('M17 24 L27 25 M47 24 L37 25', C.ink, 2.5) + ln('M25 45 Q32 41 39 45'),
+    guilty: E(19, 37, 31) + ln('M14 24 L24 21 M42 24 L32 21') + ln('M29 44 q3 -2.5 6 0'),
+    frustrated: E(23, 41, 30) + ln('M15 20 L27 25 M49 20 L37 25') + `<rect x="22" y="39" width="20" height="9" rx="3.5" fill="${C.w}" stroke="${C.ink}" stroke-width="2.5"/>` + ln('M22.5 43.5 H41.5', C.ink, 2),
+    fearful: `<circle cx="23" cy="30" r="5.5" fill="${C.w}" stroke="${C.ink}" stroke-width="2.5"/><circle cx="41" cy="30" r="5.5" fill="${C.w}" stroke="${C.ink}" stroke-width="2.5"/>` + E(23, 41, 31, 2.3) + ln('M16 20 Q22 15 28 18 M48 20 Q42 15 36 18') + `<ellipse cx="32" cy="45" rx="4.5" ry="5.5" fill="${C.ink}"/>`,
+    overwhelmed: ln('M14 10 L18 15 M32 3 V9 M50 10 L46 15', C.sun2, 3) + ln('M19 30 a4 4 0 1 1 4 4 M37 30 a4 4 0 1 1 4 4') + ln('M21 45 q2.75 -3 5.5 0 t5.5 0 t5.5 0 t5.5 0'),
+    lonely: E(22, 40, 33) + ln('M16 26 L26 25 M46 26 L36 25', C.ink, 2.5) + ln('M27 46 Q32 42 37 46'),
+  };
+  const face = (n, on) => svg('0 0 64 64', `<circle cx="32" cy="35" r="26" fill="${on ? C.sun2 : C.s2}"/><circle cx="32" cy="32" r="26" fill="${on ? C.sun : C.s1}"/>${FEAT[n]}`);
+
+  // thinking patterns: one small scene each, drawing what the pattern does
+  const PAT = {
+    all_or_nothing: `${shadow(28, 50, 16)}<circle cx="28" cy="31" r="18" fill="${C.s2}"/><circle cx="28" cy="28" r="18" fill="${C.w}"/><path d="M28 10 A18 18 0 0 0 28 46 Z" fill="${C.s4}"/>`,
+    catastrophizing: `<circle cx="11" cy="46" r="4.5" fill="${C.sun2}"/>${ln('M16 42 C20 36 22 33 25 30', C.s3, 2.5).replace('/>', ' stroke-dasharray="1 5"/>')}
+      ${cloud(17, 8, .58, '#adbaa7', '#7f9179')}${ln('M37 28 L33 36 H38 L35 44', C.sun2, 3)}${ln('M26 31 L24 36 M47 31 L45 36', C.sky2, 2.5)}`,
+    mind_reading: `${shadow(28, 51, 20)}<circle cx="14" cy="42" r="8" fill="${C.s3}"/>${mood(14, 42, .38, -.5, 1)}<circle cx="43" cy="43" r="7" fill="${C.cor}"/>${mood(43, 43, .34, 0)}
+      <ellipse cx="31" cy="18" rx="15" ry="11" fill="${C.sand}"/><ellipse cx="31" cy="16" rx="15" ry="11" fill="${C.w}"/>
+      <circle cx="18" cy="31" r="2.6" fill="${C.w}"/><circle cx="15" cy="35.5" r="1.6" fill="${C.w}"/>${mood(31, 15, .55, -1)}`,
+    overgeneralizing: `<rect x="4" y="47" width="48" height="4" rx="2" fill="${C.sand}"/>` + [[6, 52, C.sun, C.sun2], [17, 34, C.s3, C.s4], [28, 16, C.s3, C.s4], [39, 0, C.s3, C.s4]].map(([x, a, c, c2]) =>
+      `<g transform="rotate(${a} ${x + 7} 47)"><rect x="${x}" y="25" width="7" height="22" rx="2" fill="${c2}"/><rect x="${x}" y="25" width="5.5" height="22" rx="2" fill="${c}"/><circle cx="${x + 3}" cy="31" r="1.3" fill="${C.w}"/><circle cx="${x + 3}" cy="40" r="1.3" fill="${C.w}"/></g>`).join(''),
+    personalizing: `<path d="M28 7 L9 50 H47 Z" fill="${C.sun}" opacity=".35"/><rect x="21" y="2" width="14" height="7" rx="3" fill="${C.s4}"/>
+      ${shadow(28, 50, 13)}<path d="M19 50 C18 41 22 35 28 35 C34 35 38 41 37 50 Z" fill="${C.cor2}"/><circle cx="28" cy="27" r="7.5" fill="${C.cor}"/>${mood(28, 27, .42, -.6, 1)}`,
+    filtering: `<circle cx="19" cy="18" r="4.5" fill="${C.s4}"/><circle cx="29" cy="16" r="5" fill="${C.s4}"/><circle cx="38" cy="19" r="4" fill="${C.s4}"/>
+      <path d="M7 22 H49 C47 34 39 40 28 40 C17 40 9 34 7 22 Z" fill="${C.wood2}"/><path d="M7 20 H49 C47 32 39 38 28 38 C17 38 9 32 7 20 Z" fill="${C.wood}"/>
+      ${ln('M21 30 v.1 M28 32 v.1 M35 30 v.1', C.wood2, 3)}<circle cx="24" cy="46" r="2.8" fill="${C.sun}"/><circle cx="33" cy="51" r="2.4" fill="${C.sun}"/>`,
+    should_statements: `<rect x="12" y="9" width="32" height="42" rx="4" fill="${C.wood2}"/><rect x="12" y="6" width="32" height="42" rx="4" fill="${C.wood}"/>
+      <rect x="16" y="12" width="24" height="32" rx="2" fill="${C.w}"/><rect x="21" y="3" width="14" height="7" rx="2.5" fill="${C.s4}"/>
+      ${[17, 26, 35].map(y => `<rect x="19" y="${y}" width="5" height="5" rx="1.2" fill="none" stroke="${C.s3}" stroke-width="1.8"/>${ln(`M27 ${y + 2.5} H37`, C.s1, 2.5)}`).join('')}
+      ${ln('M19.8 19.5 l1.5 1.5 l3 -3.2', C.s4, 2)}${ln('M20 27 l3 3 M23 27 l-3 3', C.cor2, 2)}`,
+    fortune_telling: `${shadow(28, 51, 15)}<path d="M15 51 L19 42 H37 L41 51 Z" fill="${C.wood2}"/><path d="M15 49 L19 40 H37 L41 49 Z" fill="${C.wood}"/>
+      <circle cx="28" cy="25" r="16" fill="${C.sky}"/>${cloud(15, 15, .43, '#7f9179')}${ln('M29 30 L26 35 H30 L28 39', C.sun, 2.5)}
+      ${ln('M17 20 A12 12 0 0 1 24 13', C.w, 2.5)}`,
+    emotional_reasoning: `${heart(15, 26, 10, C.cor2)}${heart(15, 24, 10, C.cor)}${ln('M27 22 h6 M27 28 h6', C.s4, 3)}
+      <rect x="37" y="15" width="15" height="21" rx="2.5" fill="${C.sand}"/><rect x="37" y="13" width="15" height="21" rx="2.5" fill="${C.w}"/>${ln('M40 19 H49 M40 24 H47', C.s1, 2.2)}
+      <circle cx="49" cy="33" r="6" fill="${C.sun2}"/>${ln('M46.3 33 l1.9 1.9 l3.2 -3.6', C.w, 2)}`,
+    labeling: `${shadow(16, 51, 11)}<path d="M7 51 C6 43 10 38 16 38 C22 38 26 43 25 51 Z" fill="${C.s3}"/><circle cx="16" cy="30" r="8" fill="${C.s2}"/>${mood(16, 30, .45, -.4)}
+      ${ln('M21 38 Q24 31 27 27', C.wood2, 2)}<path d="M29 18 H45 Q48 18 48 21 V33 Q48 36 45 36 H29 L22 27 Z" fill="${C.wood2}" transform="translate(0 2)"/><path d="M29 18 H45 Q48 18 48 21 V33 Q48 36 45 36 H29 L22 27 Z" fill="${C.sand}"/>
+      <circle cx="27" cy="27" r="2" fill="${C.wash}"/>${ln('M33 24 H44 M33 30 H41', C.wood2, 3)}`,
+  };
+
+  return {
+    // the old crooked frame drifts off as a grey cloud; the straight one holds a clearer view
+    intro: () => svg('0 0 320 168', `<rect x="0" y="0" width="320" height="168" fill="${C.wash}"/>${shadow(160, 154, 76)}
+      ${cloud(26, 44, .82, '#c4ccbf', '#99a893')}${mood(51, 62, .6, -.7, 1)}${ln('M40 84 L37 92 M52 84 L49 92 M64 84 L61 92', C.sky2, 3)}
+      ${ln('M88 70 C96 62 102 60 106 62', C.s3, 3).replace('/>', ' stroke-dasharray="1 8"/>')}
+      <g transform="rotate(-9 160 84)"><rect x="104" y="32" width="112" height="100" rx="12" fill="none" stroke="${C.s2}" stroke-width="4" stroke-dasharray="9 8" stroke-linecap="round"/></g>
+      <rect x="106" y="40" width="108" height="104" rx="12" fill="${C.sun2}"/><rect x="106" y="36" width="108" height="104" rx="12" fill="${C.sun}"/>
+      <rect x="118" y="48" width="84" height="80" rx="6" fill="${C.cream}"/>
+      ${rays(182, 72, 14, 19, C.sun)}<circle cx="182" cy="72" r="10" fill="${C.sun}"/>
+      ${cloud(124, 70, .58, C.w, C.s1)}${mood(141.4, 82.8, .55, 1)}
+      <path d="M118 122 L118 112 C134 100 150 104 164 112 C176 106 192 104 202 110 L202 122 C202 126 199 128 196 128 L124 128 C121 128 118 126 118 122 Z" fill="${C.s2}"/>
+      <path d="M118 122 L118 120 C138 114 158 116 176 122 C186 119 196 118 202 119 L202 122 C202 126 199 128 196 128 L124 128 C121 128 118 126 118 122 Z" fill="${C.s3}"/>
+      ${spark(250, 40, 9, C.sun)}${spark(270, 108, 5, C.s2)}<circle cx="240" cy="130" r="3" fill="${C.s2}"/>`, 'A grey cloud drifting out of a crooked frame, and a straightened frame showing sun'),
+    glyph: {
+      notice: () => svg('0 0 48 48', `<g transform="translate(6 12) scale(.6)">${camera}</g>`),
+      weigh: () => svg('0 0 48 48', `<rect x="22" y="12" width="4" height="26" rx="2" fill="${C.wood2}"/><rect x="14" y="36" width="20" height="5" rx="2.5" fill="${C.wood2}"/>
+        <g transform="rotate(-9 24 13)"><rect x="7" y="11" width="34" height="4" rx="2" fill="${C.wood}"/></g>
+        ${ln('M7.2 15.7 L2.5 24 M7.2 15.7 L12 24 M40.8 10.3 L36 18.5 M40.8 10.3 L45.5 18.5', C.s4, 1.4)}
+        <path d="M1.5 24 H13 A5.8 4 0 0 1 1.5 24 Z" fill="${C.wood2}"/><rect x="4" y="19" width="5.5" height="5" rx="1.5" fill="${C.s3}"/>
+        <path d="M35 18.5 H46.5 A5.8 4 0 0 1 35 18.5 Z" fill="${C.wood2}"/><circle cx="40.8" cy="16.3" r="2.4" fill="${C.sun}"/><circle cx="24" cy="13" r="2.5" fill="${C.sun2}"/>`),
+      reframe: () => svg('0 0 48 48', `<g transform="rotate(-10 24 24)"><rect x="9" y="11" width="30" height="26" rx="4" fill="none" stroke="${C.s2}" stroke-width="2" stroke-dasharray="4 3"/></g>
+        <rect x="10" y="14" width="28" height="25" rx="4" fill="${C.sun2}"/><rect x="10" y="12" width="28" height="25" rx="4" fill="${C.sun}"/><rect x="14" y="16" width="20" height="17" rx="2" fill="${C.cream}"/>
+        <circle cx="28" cy="21" r="3" fill="${C.sun}"/><path d="M14 33 V29 C19 25 23 26 26 29 C29 27 32 27 34 28 V33 Z" fill="${C.s3}"/>`),
+      check: () => svg('0 0 48 48', `${rays(30, 18, 10, 13, C.sun)}<circle cx="30" cy="18" r="7" fill="${C.sun}"/>${cloud(6, 22, .42, C.w, C.s1)}
+        <path d="M2 44 C14 38 28 39 46 43 L46 48 L2 48 Z" fill="${C.s2}"/>`),
+    },
+    sky: v => svg('0 0 320 168', skyBody(v), `Weather picture: ${v} out of 10, ${v >= 6 ? 'a heavy cloud' : v >= 3 ? 'cloud with some sun' : 'mostly sun'}`),
+    face, scaleBody, tilt, ends, stones,
+    scale: (f, a) => svg('0 0 320 178', scaleBody(f, a)),
+    pat: k => svg('0 0 56 56', PAT[k]),
+  };
+})();
+
+const RAYS = [...Array(8)].map((_, i) => { const a = i * Math.PI / 4, c = Math.cos(a), n = Math.sin(a), r = Math.round;
+  return `<line x1="${r(140 + c * 32)}" y1="${r(46 + n * 32)}" x2="${r(140 + c * 40)}" y2="${r(46 + n * 40)}"/>`; }).join('');
+// the thought as weather, same drawing as the ABC exercise: --f is believability 0..1
+const SKY = (f, cls = '') => `<svg class="sky ${cls}" viewBox="0 0 200 130" aria-hidden="true"${f == null ? '' : ` style="--f:${f}"`}>
+  <g class="sun"><circle cx="140" cy="46" r="24" stroke="none"/><g class="rays">${RAYS}</g></g>
+  <g class="bob"><g class="cloud"><circle cx="64" cy="78" r="24"/><circle cx="96" cy="62" r="30"/><circle cx="130" cy="80" r="22"/><rect x="40" y="78" width="112" height="24" rx="12"/></g>
+  <circle class="eye" cx="86" cy="80" r="3.5"/><circle class="eye" cx="112" cy="80" r="3.5"/>
+  <path class="brow" d="M80 72L92 75M118 72L106 75"/><path class="mouth" d="M91 91Q99 99 107 91"/></g>
+  <g class="rain">${[78, 98, 118].map((x, i) => `<line x1="${x}" y1="108" x2="${x}" y2="113" style="animation-delay:${i * .4}s"/>`).join('')}</g></svg>`;
+
+// keep the scale's nodes so the beam swings instead of being redrawn
+const BALSET = (f, a) => {
+  const b = $('#bal svg'); if (!b) return;
+  const deg = ART.tilt(f, a), [L, Rt] = ART.ends(deg), beam = b.querySelector('.beam');
+  beam.style.transform = `rotate(${deg}deg)`; beam.setAttribute('transform', `rotate(${deg} 160 50)`);
+  [['for', L, f], ['against', Rt, a]].forEach(([k, [x, y], n]) => {
+    const p = b.querySelector(`[data-p=${k}]`); p.style.transform = `translate(${x}px,${y}px)`; p.setAttribute('transform', `translate(${x} ${y})`);
+    const s = b.querySelector(`[data-s=${k}]`); if (s.childElementCount !== Math.min(n, 6) + (n > 6 ? 1 : 0)) s.innerHTML = ART.stones(n, k);
+  });
+  const lg = $('#legend'); if (lg) { lg.querySelector('[data-c=for]').textContent = f; lg.querySelector('[data-c=against]').textContent = a; }
+};
+
+// one binder for the three writing steps: Continue stays off until there are real words
+function bindText(key, need, hint, ok) {
+  const ta = $('#ta'), st = $('#status');
+  const upd = () => { const good = words(own(R[key])) >= need;
+    document.querySelectorAll('[data-use]').forEach(b => b.setAttribute('aria-pressed', b.dataset.use === R[key].trim()));
+    const qs = $('.qrs [data-use]')?.parentElement; if (qs) qs.hidden = qs.previousElementSibling.hidden = !!R[key].trim(); st.className = 'note' + (good ? ' ok' : ''); st.textContent = good ? ok || '' : hint; $('#next').disabled = !good; };
+  ta.oninput = () => { R[key] = ta.value; upd(); };
+  upd(); focusField(ta);
+  document.querySelectorAll('[data-use]').forEach(b => b.onclick = () => { R[key] = b.dataset.use; ta.value = R[key]; upd(); buzz(); focusField(ta); });
+}
+
+function sliderStep({key, title, sub, before}) {
+  return {stage: key === 'post' ? 3 : 0, valid: () => true, next: 'Continue',
+    // the after-rating starts at the before-rating, so moving nothing reads as "same", never as a made-up improvement
+    render: () => { if (R[key] == null) R[key] = R.intensity; return `<div class="fill">${said('You thought', R.thought)}${head(key === 'post' ? 3 : 0, title, sub)}
+      <div class="mid">${SKY(null, 'live')}</div>
+      <div class="ctl"><p class="read" aria-hidden="true"><b id="v">${R[key]}</b><span>/10</span><em id="w">${WORD(R[key])}</em></p>
+      <div class="scale"><div class="segs" aria-hidden="true">${[...Array(10)].map((_, i) => `<i${before && i === R.intensity - 1 ? ' class="was"' : ''}></i>`).join('')}</div>
+      <input type="range" id="rg" min="0" max="10" step="1" value="${R[key]}" aria-label="${esc(title)}" aria-valuetext="${R[key]} out of 10, ${WORD(R[key])}"></div>
+      <div class="lbls"><span>Not true</span><span>Completely true</span></div>
+      ${before ? `<p class="note" id="cmp" aria-live="polite"></p>` : ''}</div></div>`; },
+    bind() {
+      const segs = document.querySelectorAll('.segs i'), rg = $('#rg');
+      const draw = () => {
+        const v = R[key];
+        $('#v').textContent = v; $('#w').textContent = WORD(v); segs.forEach((s, i) => { s.classList.toggle('f', i < v); s.classList.toggle('cur', i === v - 1); });
+        $('#app').style.setProperty('--heat-f', v / 10); rg.setAttribute('aria-valuetext', `${v} out of 10, ${WORD(v)}`);
+        if (before) { const d = R.intensity - v, c = $('#cmp');
+          c.className = 'note' + (d > 0 ? ' ok' : '');
+          c.textContent = d > 0 ? `Lighter than before: ${R.intensity} to ${v}.` : d === 0 ? `Same as before: ${v}.` : `Heavier than before: ${R.intensity} to ${v}.`; }
+      };
+      rg.oninput = e => { R[key] = +e.target.value; draw(); };
+      draw();
+    }};
+}
+
+function evidenceStep({key, title, sub, ph, socratic}) {
+  const kind = key === 'evFor' ? 'for' : 'against', mark = kind === 'for' ? '<span class="sq"></span>' : '<span class="rd"></span>';
+  return {stage: 1, valid: () => true, next: () => R[key].length ? 'Continue' : 'Skip for now',
+    render: () => `${said('You thought', R.thought)}${head(1, title, sub)}
+      <div class="balcard" id="bal">${ART.scale(R.evFor.length, R.evAgainst.length)}</div>
+      <div class="legend" id="legend"><span class="${kind === 'for' ? 'cur' : ''}"><span class="sq"></span>Backs it up<b data-c="for">${R.evFor.length}</b></span>
+        <span class="${kind === 'against' ? 'cur' : ''}"><span class="rd"></span>Goes against it<b data-c="against">${R.evAgainst.length}</b></span></div>
+      ${socratic ? `<div class="ask ask2"><div class="say"><p id="sq">${esc(SOCRATIC[qIdx])}</p></div><button class="icon-btn" id="nq" aria-label="Ask a different question">${AGAIN}</button></div>` : ''}
+      <div class="row">${mark}<textarea id="in" rows="1" maxlength="240" placeholder="${esc(ph)}" aria-label="${esc(ph)}" enterkeyhint="done"></textarea><button id="add" aria-label="Put this fact on the scale" disabled>${PLUS}</button></div>
+      <ul class="items" id="list" aria-label="${kind === 'for' ? 'Facts that back it up' : 'Facts against it'}"></ul>${quick('Or start from one of these', scene()[key])}`,
+    bind() {
+      const list = $('#list'), inp = $('#in');
+      const draw = (added = -1) => {
+        list.innerHTML = R[key].map((t, i) => `<li${i === added ? ' class="new"' : ''}>${mark}<span>${esc(t)}</span><button data-rm="${i}" aria-label="Remove: ${esc(t)}">${X}</button></li>`).join('');
+        list.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { R[key].splice(+b.dataset.rm, 1); draw(); focusField(inp); });
+        // an added suggestion lives in the list with its own remove button, so it leaves the suggestions instead of showing twice
+        const sug = [...document.querySelectorAll('[data-use]')];
+        sug.forEach(b => b.hidden = R[key].includes(b.dataset.use));
+        const qs = sug[0]?.parentElement; if (qs) qs.hidden = qs.previousElementSibling.hidden = sug.every(b => b.hidden);
+        $('#next').textContent = R[key].length ? 'Continue' : 'Skip for now';
+        BALSET(R.evFor.length, R.evAgainst.length);
+      };
+      const add = t => { t = t.trim(); if (words(t) >= 2 && !R[key].includes(t)) { R[key].push(t); buzz(); draw(R[key].length - 1); return true; } return false; };
+      $('#add').onclick = () => { if (add(inp.value)) inp.value = ''; $('#add').disabled = words(inp.value) < 2; inp.focus(); };
+      inp.oninput = () => { $('#add').disabled = words(inp.value) < 2; };
+      inp.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#add').click(); } };
+      document.querySelectorAll('[data-use]').forEach(b => b.onclick = () => { add(b.dataset.use); focusField(inp); }); // the tapped chip hides, so focus goes back to the field (desktop only: no keyboard over the list on touch)
+      if (socratic) { 
+        $('#nq').onclick = () => { qIdx = (qIdx + 1) % SOCRATIC.length; $('#sq').textContent = SOCRATIC[qIdx]; }; }
+      draw();
+    }};
+}
+
+// each starter situation carries thoughts and facts that belong to it; your own words get the general set
+const SCENES = [
+  {situation: 'My manager gave me feedback on my report this morning',
+    thoughts: ['They think I can’t do my job.', 'I’m going to get fired.', 'I always get this wrong.'],
+    evFor: ['They pointed out two mistakes in the report.', 'I rushed the last section.'],
+    evAgainst: ['They said the structure was clear.', 'Feedback is part of every report here.']},
+  {situation: 'I messaged a friend yesterday and haven’t heard back',
+    thoughts: ['They’re ignoring me on purpose.', 'I must have said something wrong.', 'Nobody really wants to hear from me.'],
+    evFor: ['They usually reply within a few hours.', 'They were online last night.'],
+    evAgainst: ['They told me this week is busy.', 'We had a good call last weekend.']},
+];
+const GENERAL = {thoughts: ['I always mess things up.', 'Something bad is going to happen.', 'They must think I’m useless.'],
+  evFor: ['It went wrong once before.', 'Someone seemed annoyed.'], evAgainst: ['It went fine the other times.', 'Nobody actually said that.']};
+const scene = () => SCENES.find(x => x.situation === R.situation.trim()) || GENERAL;
+
+const evStack = (a, m, [one, many], tail, none) => a.length
+  ? `<details class="ev"><summary>${m}${a.length} ${a.length === 1 ? one : many} ${tail}</summary><ul>${a.map(t => `<li>${esc(t)}</li>`).join('')}</ul></details>`
+  : `<div class="ev"><p>${m}${none}</p></div>`;
+const STARTERS = ['It’s possible that ', 'Even though ', 'I don’t know yet if ', 'A kinder way to see it: '];
+
+// ---- steps ----
+const steps = [
+  {id: 'intro', noProgress: true, noBack: true, next: 'Begin', valid: () => true,
+    render: () => `<p class="meta">Thought Reframing · 10 to 15 min · private to you</p>
+      <div class="scene">${ART.intro()}</div>
+      <div class="ask"><div class="happi" data-pose="reframe"></div><div class="say"><h1>A thought got stuck?</h1><p>Let’s write it down, weigh it against the facts, and find a fairer way to say it.</p></div></div>
+      <ol class="path" aria-label="How it goes">
+        ${[['notice', 'Notice', 'What happened, and what you told yourself'], ['weigh', 'Weigh', 'The facts for it, and against it'],
+          ['reframe', 'Reframe', 'A fairer way to put it'], ['check', 'Check', 'How true it feels afterwards']]
+          .map(([g, b, s]) => `<li><span class="gl">${ART.glyph[g]()}</span><div><b>${b}</b><small>${s}</small></div></li>`).join('')}
+      </ol>`,
+    // first load: happi.js mounts it at DOMContentLoaded; after a restart the new element is ours to mount
+    bind() { const h = $('.happi'); if (h && window.Happi && !h._happi && document.readyState !== 'loading') Happi.mount(h); }},
+
+  {stage: 0, valid: () => words(R.situation) >= 2,
+    render: () => `${head(0, 'What happened?', 'Only what a camera would have caught. Where you were, who was there, what was said.')}
+      <label class="vf">
+        <textarea id="ta" rows="3" maxlength="400" placeholder="This morning, my manager said…" aria-label="What happened">${esc(R.situation)}</textarea></label>
+      <p class="note" id="status" aria-live="polite"></p>
+      ${quick('Or start from one of these', SCENES.map(x => x.situation))}`,
+    bind() { bindText('situation', 2, 'A few words is enough to start.'); }},
+
+  {stage: 0, valid: () => words(R.thought) >= 2,
+    render: () => `${head(0, 'What went through your mind?', 'Write it the way it showed up, even if it sounds harsh.')}
+      ${R.situation.trim() ? `<figure class="snap"><div>${esc(R.situation.trim())}</div><figcaption>What happened</figcaption></figure>` : ''}
+      <span class="trail" aria-hidden="true"><i></i><i></i></span>
+      <div class="tb"><textarea id="ta" rows="3" maxlength="300" placeholder="“${esc(scene().thoughts[0])}”" aria-label="What went through your mind">${esc(R.thought)}</textarea></div>
+      <p class="note" id="status" aria-live="polite"></p>
+      ${quick('Thoughts people often have', scene().thoughts)}`,
+    bind() { bindText('thought', 2, 'A few words is enough.'); }},
+
+  sliderStep({key: 'intensity', title: 'How true does it feel right now?', sub: 'Your gut answer. There is no right number.'}),
+
+  {stage: 0, valid: () => R.emotions.length >= 1,
+    render: () => `${said('You thought', R.thought)}${head(0, 'How did it make you feel?', `Pick up to ${MAX_EMOTIONS}.`)}<p class="count" id="cnt" aria-live="polite"></p><div class="emos" id="grid"></div>`,
+    bind() {
+      const draw = (just) => {
+        const full = R.emotions.length >= MAX_EMOTIONS;
+        $('#cnt').textContent = R.emotions.length ? `${R.emotions.map(n => EMOTIONS.find(x => x.name === n).label).join(', ')} · ${R.emotions.length} of ${MAX_EMOTIONS}` : '';
+        $('#grid').innerHTML = EMOTIONS.map(e => { const on = R.emotions.includes(e.name);
+          return `<button class="emo${full && !on ? ' dim' : ''}${e.name === just ? ' just' : ''}" data-e="${e.name}" aria-pressed="${on}">${ART.face(e.name, on)}${e.label}${on ? `<span class="tick" aria-hidden="true">${CHECK}</span>` : ''}</button>`; }).join('');
+        document.querySelectorAll('[data-e]').forEach(b => b.onclick = () => { const n = b.dataset.e, i = R.emotions.indexOf(n);
+          if (i >= 0) R.emotions.splice(i, 1); else if (!full) R.emotions.push(n); else { toast(`Up to ${MAX_EMOTIONS}. Tap one to swap it out.`); return; }
+          buzz(); draw(n); $('#next').disabled = !R.emotions.length;
+          $(`[data-e=${n}]`).focus(); });
+      };
+      draw();
+    }},
+
+  // naming a pattern helps, but none may fit; forcing a label would be inaccurate
+  {stage: 0, valid: () => true, next: () => R.distortions.length ? 'Continue' : 'Skip for now',
+    render: () => `${said('You thought', R.thought)}${head(0, 'Does it sound like any of these?', `Thoughts tend to fall into a few patterns. Pick up to ${MAX_DISTORTIONS}.`)}
+      <div id="dlist"></div><button class="more" id="more"></button>`,
+    bind() {
+      const draw = (just) => {
+        const full = R.distortions.length >= MAX_DISTORTIONS;
+        const list = showAllDist ? DISTORTIONS : DISTORTIONS.filter((d, i) => i < COLLAPSED_DISTORTIONS || R.distortions.includes(d.key));
+        $('#dlist').innerHTML = list.map(d => { const on = R.distortions.includes(d.key);
+          return `<button class="pat${full && !on ? ' dim' : ''}${d.key === just ? ' just' : ''}" data-d="${d.key}" aria-pressed="${on}"><span class="pic">${ART.pat(d.key)}</span>
+            <div><b>${d.label}</b><p>${d.desc}</p><i>${d.example}</i></div>${on ? `<span class="tick" aria-hidden="true">${CHECK}</span>` : ''}</button>`; }).join('');
+        $('#more').textContent = showAllDist ? 'Show fewer' : `Show ${DISTORTIONS.length - list.length} more patterns`;
+        $('#more').hidden = !showAllDist && list.length >= DISTORTIONS.length;
+        document.querySelectorAll('[data-d]').forEach(b => b.onclick = () => { const k = b.dataset.d, i = R.distortions.indexOf(k);
+          if (i >= 0) R.distortions.splice(i, 1); else if (!full) R.distortions.push(k); else { toast(`Up to ${MAX_DISTORTIONS}. Tap one to swap it out.`); return; }
+          buzz(); draw(k); $('#next').textContent = R.distortions.length ? 'Continue' : 'Skip for now'; $(`[data-d=${k}]`).focus(); });
+      };
+      $('#more').onclick = () => { showAllDist = !showAllDist; draw(); };
+      draw();
+    }},
+
+  evidenceStep({key: 'evFor', title: 'What backs the thought up?', sub: 'Things that happened. Feelings don’t count here, you named those already.', ph: 'Add a fact'}),
+
+  evidenceStep({key: 'evAgainst', title: 'And what goes against it?', sub: 'Anything that makes the thought less certain.', ph: 'Add a fact', socratic: true}),
+
+  {stage: 2, valid: () => words(own(R.balanced)) >= 2,
+    render: () => `${head(2, 'What’s a fairer way to say it?', 'Not forced positive. Something you could actually believe.')}
+      ${evStack(R.evFor, '<span class="sq"></span>', ['fact backs', 'facts back'], 'it up', 'No facts backing it up')}
+      ${evStack(R.evAgainst, '<span class="rd"></span>', ['fact goes', 'facts go'], 'against it', 'No facts against it')}
+      ${R.thought.trim() ? `<p class="old"><small>The stuck version</small>${esc(R.thought.trim())}</p>` : ''}
+      <div class="frame"><div><small>A fairer version</small><textarea id="ta" rows="3" maxlength="300" placeholder="It’s possible that…" aria-label="A fairer way to say it">${esc(R.balanced)}</textarea></div></div>
+      <p class="note" id="status" aria-live="polite"></p>${quick('Start with', STARTERS, 'start')}`,
+    bind() {
+      bindText('balanced', 2, 'A short sentence is enough.');
+      // a starter goes in front of what is already there (swapping any earlier starter), so tapping never wipes your words
+      document.querySelectorAll('[data-start]').forEach(b => b.onclick = () => { const ta = $('#ta'), cur = ta.value.trim();
+        const old = STARTERS.find(s => cur.startsWith(s.trim())), rest = old ? cur.slice(old.trim().length).trim() : cur;
+        R.balanced = b.dataset.start + (old || /^I\b/.test(rest) ? rest : rest.charAt(0).toLowerCase() + rest.slice(1));
+        ta.value = R.balanced; ta.dispatchEvent(new Event('input')); focusField(ta); buzz(); });
+    }},
+
+  sliderStep({key: 'post', title: 'And how true does it feel now?', sub: 'Same thought, after weighing it. Any answer is fine.', before: true}),
+
+  {id: 'summary', noProgress: true, next: 'Save and finish', secondary: 'Edit answers', valid: () => true,
+    render: () => {
+      const diff = R.intensity - R.post;
+      // honest copy: only call it lighter if the number actually went down
+      const [title, line] = diff > 0 ? ['It weighs less than it did.', `From ${R.intensity} to ${R.post} out of 10${R.evFor.length + R.evAgainst.length ? ', once the facts were on the table' : ''}.`]
+        : diff === 0 ? ['It feels about the same, and that’s okay.', 'Some thoughts take more than one look. You still tested it instead of taking it on trust.']
+        : ['It feels heavier right now.', 'Looking closely can stir a thought up before it settles. Coming back to it later can help.'];
+      const hasRf = words(own(R.balanced)) >= 2;
+      const fig = (lbl, v) => `<figure>${SKY(v / 10)}<figcaption>${lbl}<b>${v}</b></figcaption></figure>`;
+      const tags = (arr, all, k) => arr.map(x => all.find(d => d[k] === x).label).join(', ');
+      const items = (a, m) => `<ul>${a.map(t => `<li>${m}<span>${esc(t)}</span></li>`).join('')}</ul>`;
+      const row = (dt, dd) => dd ? `<dt>${dt}</dt><dd>${dd}</dd>` : '';
+      return `<div class="verdict"><h1>${title}</h1><p class="sub">${line}</p></div>
+        <article class="keep" aria-label="Your reframe">
+          <div class="wx">${fig('Before', R.intensity)}${ARROW}${fig('Now', R.post)}</div>
+          <p class="lead">${hasRf ? 'A fairer way to see it' : 'Your fairer version'}</p>
+          ${hasRf ? `<p class="rf">${esc(R.balanced.trim())}</p>` : '<p class="rf none">Not written yet. You can add it with “Edit answers”.</p>'}
+          ${R.thought.trim() ? `<p class="was">Instead of: “${esc(R.thought.trim())}”</p>` : ''}
+        </article>
+        <details class="ans"><summary>See your answers</summary><dl>
+          ${row('What happened', esc(R.situation.trim()))}
+          ${row('The thought', esc(R.thought.trim()))}
+          ${row('Feelings', tags(R.emotions, EMOTIONS, 'name'))}
+          ${row('Patterns', tags(R.distortions, DISTORTIONS, 'key'))}
+          ${row('Backs it up', R.evFor.length ? items(R.evFor, '<span class="sq"></span>') : '')}
+          ${row('Goes against it', R.evAgainst.length ? items(R.evAgainst, '<span class="rd"></span>') : '')}
+        </dl></details>
+        <p class="fine">Saving keeps this in your exercise history, in your own words.</p>`;
+    }},
+];
+
+// ---- engine ----
+function show() {
+  const s = steps[idx], last = idx === steps.length - 1;
+  $('#main').innerHTML = s.render(); $('#main').scrollTop = 0;
+  const counted = steps.filter(x => !x.noProgress), pos = counted.indexOf(s);
+  const pct = s.noProgress ? (last ? 100 : 0) : Math.round((pos + 1) / counted.length * 100);
+  // each segment is one stage; it fills as that stage's steps are done
+  document.querySelectorAll('.bar i').forEach((f, g) => { const inStage = counted.filter(x => x.stage === g), k = inStage.indexOf(s);
+    f.style.width = (s.noProgress ? (last ? 100 : 0) : s.stage > g ? 100 : s.stage < g ? 0 : Math.round((k + 1) / inStage.length * 100)) + '%'; });
+  $('.bar').setAttribute('aria-valuenow', pct); $('.bar').setAttribute('aria-valuetext', s.noProgress ? (last ? 'Done' : 'Not started') : `${STAGES[s.stage]}, part ${s.stage + 1} of 4`);
+  $('#back').style.visibility = s.noBack ? 'hidden' : 'visible';
+  $('#next').textContent = typeof s.next === 'function' ? s.next() : s.next || 'Continue';
+  $('#next').disabled = !s.valid();
+  const sec = $('#secondary'); sec.hidden = !s.secondary; sec.textContent = s.secondary || '';
+  document.querySelectorAll('.happi').forEach(h => { if (window.Happi && !h._happi) Happi.mount(h); });
+  s.bind && s.bind();
+  // a new step should be announced: land on its heading unless a field already took focus
+  if (!$('#main').contains(document.activeElement)) { const h = $('#main h1'); h.tabIndex = -1; h.focus({preventScroll: true}); }
+}
+$('#next').onclick = () => { if (idx === steps.length - 1) { toast('Saved to your exercise history'); restart(); return; } if (!steps[idx].valid()) return; idx++; show(); };
+$('#back').onclick = () => { if (idx > 0) { idx--; show(); } };
+$('#secondary').onclick = () => { idx = 1; show(); };
+$('#close').onclick = () => { if (idx === 0 || confirm('Leave this exercise? What you wrote so far won’t be saved.')) restart(); };
+let tt; function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2200); }
+function restart() { R = fresh(); idx = 0; showAllDist = false; qIdx = 0; show(); }
+show();
+</script>
+</body>
+</html>

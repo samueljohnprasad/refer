@@ -1,0 +1,70 @@
+/* Happy UI: the shared design system of the prototypes. Link this AFTER the page's own <style>;
+   its tokens win over the page's :root. Source of truth: ux-onboarding-and-day-0/DESIGN.md.
+   Benchmarks: Duolingo and BitePal first (white base, one heavy rounded display face, colour lives
+   in the illustration, tactile rims), then Ahead / Finch / Headspace. */
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;500;600;700;800&display=swap");
+
+:root{
+  /* type: one display face for one line per screen, Nunito for everything else */
+  --display:"Fredoka","Nunito",ui-rounded,system-ui,sans-serif;
+  --t-cap:12px;    /* tags, tiny meta */
+  --t-foot:13px;   /* captions, labels, help text */
+  --t-sub:15px;    /* secondary lines under a title */
+  --t-body:17px;   /* chat lines, rows, fields */
+  --t-lead:20px;   /* section headers, Happi's key statement */
+  --t-h:24px;      /* completion and sheet headlines */
+  --t-title:28px;  /* screen title, display face */
+  --t-num:34px;    /* hero numerals (count, stat), display face */
+  --lh-body:1.45;--lh-tight:1.2;
+
+  /* weights: one step per level, never two bolds side by side */
+  --w-body:500;--w-strong:700;--w-display:600;
+
+  /* colour: white base, neutral greys, one sage accent; exercise hues are illustration washes only */
+  --bg:#fff;--surface:#fff;--surface-2:#f7f7f7;--sep:#e5e5e5;
+  --label:#142414;--label-2:#4b4b4b;--label-3:#767676;
+  --hue-catch:#e6f0e2;--hue-reframe:#fdf0d2;--hue-abc:#e2eef8;--hue-act:#fde5dc;--hue-ladder:#ece6f7;
+
+  /* space: 16 gutter, 32 between sections, 12 between cards, 16 inside a card */
+  --gutter:var(--sp-4);--gap-section:var(--sp-6);--gap-card:var(--sp-3);--pad-card:var(--sp-4);
+
+  --bw:1px;
+}
+
+body{font-weight:var(--w-body);line-height:var(--lh-body)}
+h1{font-family:var(--display);font-weight:var(--w-display);font-size:var(--t-title);line-height:var(--lh-tight);letter-spacing:-.01em}
+.sec{font-size:var(--t-lead);font-weight:var(--w-strong);color:var(--label);margin:var(--gap-section) 0 var(--sp-3)}
+
+/* fields: filled, and the same when focused (L11: no focus styling on text fields); overrides each page's own :focus rules */
+textarea,input[type=text]{background:var(--surface-2);border-color:transparent;font-weight:var(--w-body)}
+textarea:focus,input[type=text]:focus{background:var(--surface-2);border-color:transparent;outline:none}
+textarea.paper:focus{border-color:var(--sep)}
+.row,.row:focus-within{background:var(--surface-2);border-color:transparent}
+.row textarea,.row textarea:focus{background:transparent}
+.row button:disabled{background:transparent;border-bottom-color:transparent;color:var(--label-3)}
+
+/* answer buttons are tactile (Duolingo, BitePal): white, a 2px rim and a 3px rim beneath; pressing sinks into it.
+   Picked = sage tint + ink rim. Typing starters, filter chips and content cards stay flat: they aren't answers. */
+.qr,.opt{background:var(--surface);border:2px solid var(--sep);box-shadow:0 3px 0 var(--sep);
+  transition:transform .12s cubic-bezier(.23,1,.32,1),box-shadow .12s cubic-bezier(.23,1,.32,1),background .2s,border-color .2s}
+.qr,.opt,.qrs .qr{font-weight:600}
+.qr:not([data-use]){border-radius:var(--r-pill)}
+.qr:active,.opt:active{transform:translateY(2px);box-shadow:0 1px 0 var(--sep);background:var(--surface);color:inherit}
+.opt.on,.opt[aria-pressed=true],.qr[aria-pressed=true]{background:var(--tint);border-color:var(--ink);box-shadow:0 3px 0 var(--ink);color:var(--label)}
+.opt.on:active,.opt[aria-pressed=true]:active,.qr[aria-pressed=true]:active{box-shadow:0 1px 0 var(--ink)}
+/* suggestions that fill a text field ([data-use], .starters) are not answers: flat, and they don't sink */
+.starters .qr,.qr[data-use]{background:var(--surface-2);border-color:transparent;box-shadow:none;font-weight:var(--w-body)}
+.starters .qr:active,.qr[data-use]:active{transform:none;box-shadow:none;background:var(--tint)}
+.qr[data-use][aria-pressed=true]{background:var(--tint);box-shadow:inset 0 0 0 2px var(--ink)} /* a suggestion in use stays flat but visibly picked */
+
+/* filter chips and cards: fill at rest; selected = tint + 2px ink ring */
+.chip,.card{background:var(--surface-2);border-color:transparent;box-shadow:none}
+.chip.on,.card.on,.chip[aria-pressed=true],.card[aria-pressed=true]{background:var(--tint);border-color:transparent;box-shadow:inset 0 0 0 2px var(--ink)}
+.opt{font-weight:600}
+.opt i{background:none;width:auto;height:auto;border-radius:0}   /* icon beside a label, no tinted tile */
+
+/* numerals: display face, contrast by size */
+.big,.shift b{font-family:var(--display);font-weight:var(--w-display)}
+.hero p{font-weight:var(--w-strong)}
+.how li::before{background:none;border:1px solid var(--sep);color:var(--label-2);font-weight:600}
+.card i{font-style:normal}

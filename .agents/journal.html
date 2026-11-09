@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Journal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700&display=swap">
+<style>
+  /* Journal tab. Production: src/screens/DailyNotesScreen (header + week strip, day list, Record Voice / Write Text).
+     Research (Mobbin, Nov 2026): Calm Daily Reflections and Bevel (week strip with a mark per day), stoic and
+     5 Minute Journal (time-led entry rows), Bears Gratitude (one character, dated), Duolingo (rimmed cards, chunky buttons). */
+  :root{
+    --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--sp-7:48px;
+    --r-pill:999px;--tap:44px;
+    --t-cap:12px;--t-foot:13px;--t-sub:15px;--t-body:17px;--t-lead:20px;--t-h:24px;
+    --ease:cubic-bezier(.23,1,.32,1);--in:cubic-bezier(.4,0,1,1);
+    --font:"Nunito",ui-rounded,-apple-system,system-ui,sans-serif;--display:var(--font);
+    --bg:#fff;--surface:#fff;--surface-2:#f7f7f7;--tint:#f2f8ef;--sel:#f8fbf6;
+    --label:#142414;--label-2:#4b4b4b;--label-3:#767676;--sep:#e5e5e5;
+    --accent:#44633f;--ink:#5f7f58;--on-ink:#fff;--ink-rim:#29452a;--face:#243226;
+    color-scheme:light;
+  }
+  *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+  [hidden]{display:none!important}
+  html{font-size:17px}
+  body{font-family:var(--font);background:var(--bg);color:var(--label);min-height:100dvh;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;line-height:1.35}
+  #app{width:100%;max-width:430px;height:100dvh;display:flex;flex-direction:column;position:relative;background:var(--bg);overflow:hidden}
+  @media (min-width:600px){body{align-items:center;background:#d9d8d3}#app{width:390px;height:min(844px,calc(100dvh - 48px));border-radius:48px;box-shadow:0 0 0 10px #142414}}
+  button,a{font:inherit;color:inherit;cursor:pointer}
+  a{text-decoration:none}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* ===== header: calendar toggle, month, Today pill, pinned notes; then the week ===== */
+  header{flex:none;padding:calc(var(--sp-2) + env(safe-area-inset-top)) var(--sp-3) var(--sp-3);border-bottom:1px solid var(--sep);background:var(--bg)}
+  .top{position:relative;display:flex;align-items:center;justify-content:space-between;min-height:var(--tap)}
+  /* inset clear of both side groups (production: 72px each side, shrinks to fit) */
+  .top h1{position:absolute;left:124px;right:124px;text-align:center;font-size:clamp(17px,5.4vw,21px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;transition:opacity .2s,visibility .2s}
+  .top h1.off{opacity:0;visibility:hidden}
+  .ib:disabled{opacity:.4;cursor:default}
+  .ib{width:var(--tap);height:var(--tap);display:grid;place-items:center;border:0;border-radius:50%;background:none;color:var(--accent)}
+  .ib:active{background:var(--tint)}
+  .right{display:flex;align-items:center}
+  .today{position:relative;display:inline-flex;align-items:center;gap:2px;height:30px;padding:0 var(--sp-2) 0 var(--sp-3);border:1px solid #d3e0cd;border-radius:var(--r-pill);background:var(--sel);color:var(--accent);font-size:var(--t-foot);font-weight:600;animation:in .2s var(--ease)}
+  .today::before{content:"";position:absolute;inset:-7px -2px} /* 44px tap target */
+  @keyframes in{from{opacity:0;transform:scale(.95)}}
+
+  /* week strip: one sliding pill behind the picked day, a mood face under days that have one;
+     swipe the strip to page weeks (production useWeekNavigation) */
+  .week{position:relative;display:grid;grid-template-columns:repeat(7,1fr);margin-top:var(--sp-2);touch-action:pan-y}
+  .week.fwd{animation:fwd .25s var(--ease)}.week.back{animation:back .25s var(--ease)}
+  .pill{position:absolute;top:0;bottom:0;left:0;width:calc(100%/7);border:1px solid rgba(187,199,185,.5);border-radius:16px;background:var(--sel);transition:transform .25s var(--ease)}
+  .day{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0 8px;border:0;background:none;color:var(--label)}
+  .day small{font-size:var(--t-cap);font-weight:600;color:var(--label-3)}
+  .day b{font-size:var(--t-body);font-weight:600;line-height:1.3}
+  .day[aria-current=date] b,.day[aria-pressed=true] b,.day[aria-pressed=true] small{color:var(--accent);font-weight:700}
+  .day:disabled{cursor:default;opacity:.4}
+  .day .m{width:22px;height:22px;display:grid;place-items:center}
+
+  /* month view, opened from the calendar button */
+  .month{margin-top:var(--sp-2);animation:open .25s var(--ease)}
+  @keyframes open{from{opacity:0;transform:translateY(-6px)}}
+  .mhead{display:flex;align-items:center;justify-content:space-between;padding:0 var(--sp-1)}
+  .mhead b{flex:1;text-align:center;font-size:var(--t-lead);font-weight:700}
+  .month .jump{display:block;margin:var(--sp-1) auto 0;min-height:var(--tap);padding:0 var(--sp-4);border:0;background:none;color:var(--accent);font-size:var(--t-foot);font-weight:700}
+  .mhead .ib{width:36px;height:36px;background:var(--sel)}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);row-gap:2px;margin-top:var(--sp-2);text-align:center}
+  .grid>small{font-size:var(--t-cap);font-weight:600;color:var(--label-3);padding-bottom:var(--sp-1)}
+  .grid .day{padding:4px 0}
+  .grid .day b{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;font-size:var(--t-sub)}
+  .grid .day[aria-pressed=true] b{background:var(--sel);box-shadow:inset 0 0 0 2px var(--ink-rim)}
+  .grid .day[aria-current=date]:not([aria-pressed=true]) b{background:var(--surface-2)}
+  .grid .m{height:16px}
+  .grid .m svg{width:16px;height:16px}
+
+  /* ===== the day ===== */
+  main{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;padding:var(--sp-5) var(--sp-4) 112px}
+  main::-webkit-scrollbar{display:none}
+  #dayv{touch-action:pan-y}
+  #dayv.fwd{animation:fwd .25s var(--ease)}
+  #dayv.back{animation:back .25s var(--ease)}
+  @keyframes fwd{from{opacity:0;transform:translateX(30px)}}
+  @keyframes back{from{opacity:0;transform:translateX(-30px)}}
+  .dh{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:var(--sp-3)}
+  .dh h2{font-size:var(--t-lead);font-weight:700}
+  .dh span{font-size:var(--t-foot);font-weight:600;color:var(--label-3)}
+
+  /* entry: a flat content card (happy-ui: content cards stay flat, only answers are rimmed); the mood face carries the colour */
+  .list{display:flex;flex-direction:column;gap:var(--sp-3)}
+  .entry{display:flex;gap:var(--sp-3);width:100%;padding:var(--sp-4);text-align:left;border:0;border-radius:20px;background:var(--surface-2);
+    transition:transform .12s var(--ease);animation:rise .28s var(--ease) backwards}
+  .entry:active{transform:scale(.98)}
+  @keyframes rise{from{opacity:0;transform:translateY(8px) scale(.98)}}
+  .entry .mf{flex:none;width:32px;height:32px;display:grid;place-items:center;color:var(--label-3)}
+  .entry .mf svg{width:32px;height:32px}
+  .entry>span{flex:1;min-width:0}
+  .entry span{display:block}
+  .meta{display:flex!important;align-items:center;gap:6px;margin-top:2px;font-size:var(--t-foot);font-weight:600;color:var(--label-3)}
+  .meta svg{flex:none}
+  .meta .pin{margin-left:auto;color:var(--accent)}
+  .entry .h{font-size:var(--t-body);font-weight:700;line-height:1.3}
+  .entry .x2{margin-top:var(--sp-1);font-size:var(--t-sub);font-weight:500;color:var(--label-2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .entry .guided{display:inline-block;margin-bottom:var(--sp-2);padding:2px 10px;border-radius:var(--r-pill);background:var(--tint);color:var(--accent);font-size:var(--t-cap);font-weight:700}
+  /* a reflection from an exercise keeps its turn: old thought, then the view you landed on */
+  .entry .was{-webkit-line-clamp:1}
+  .entry .now{color:var(--label);font-weight:600}
+
+  /* compose: the two production actions, side by side; they stack on narrow phones */
+  .compose{display:flex;flex-wrap:wrap;gap:var(--sp-3);margin-top:var(--sp-5)}
+  .btn{flex:1 1 140px;display:flex;align-items:center;justify-content:center;gap:var(--sp-2);min-height:52px;padding:0 var(--sp-4);border:0;border-radius:var(--r-pill);
+    background:var(--ink);color:var(--on-ink);box-shadow:0 4px 0 var(--ink-rim);margin-bottom:4px;font-size:var(--t-body);font-weight:700;transition:transform .12s var(--ease),box-shadow .12s var(--ease)}
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink-rim)}
+  .btn.alt{background:var(--surface);color:var(--label);border:2px solid var(--sep);box-shadow:0 4px 0 var(--sep)}
+  .btn.alt:active{box-shadow:0 1px 0 var(--sep)}
+  .btn:disabled{background:var(--sep);color:var(--label-3);box-shadow:0 4px 0 #d4d4d4;transform:none;cursor:default}
+
+  /* empty day: Happi with a notebook-sized pause, one line, then the same two actions */
+  .empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:var(--sp-3)}
+  .empty .happi{width:150px;aspect-ratio:220/246}
+  .empty h2{margin-top:var(--sp-3);font-size:var(--t-lead);font-weight:700}
+  .empty .compose{align-self:stretch}
+
+  /* ===== sheets: entry, write, record, pinned ===== */
+  .scrim{position:absolute;inset:0;z-index:5;background:rgba(0,0,0,.4);animation:fade .2s}
+  .scrim.out{animation:unfade .15s var(--in) forwards}
+  @keyframes fade{from{opacity:0}}
+  @keyframes unfade{to{opacity:0}}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:6;max-height:88%;overflow-y:auto;padding:var(--sp-5) var(--sp-4) calc(var(--sp-5) + env(safe-area-inset-bottom));background:var(--bg);border-radius:24px 24px 0 0;animation:up .28s var(--ease)}
+  .sheet.out{animation:down .18s var(--in) forwards}
+  @keyframes up{from{transform:translateY(100%)}}
+  @keyframes down{to{transform:translateY(100%)}}
+  .sheet h3{font-size:var(--t-h);font-weight:700;line-height:1.2;padding-right:var(--tap)}
+  .sheet .x{position:absolute;top:var(--sp-3);right:var(--sp-3);width:var(--tap);height:var(--tap);display:grid;place-items:center;border:0;border-radius:50%;background:var(--surface-2);color:var(--label-2)}
+  .sheet .sub{margin-top:var(--sp-1);font-size:var(--t-foot);font-weight:600;color:var(--label-3)}
+  .sheet .body{margin-top:var(--sp-4);font-size:var(--t-body);font-weight:500;line-height:1.5;white-space:pre-wrap}
+  .turn{margin-top:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-2)}
+  .turn .lab{font-size:var(--t-foot);font-weight:600;color:var(--label-3)}
+  .turn .old{padding:var(--sp-3) var(--sp-4);border-radius:16px;background:var(--surface-2);color:var(--label-2);font-weight:500}
+  .turn .new{padding:var(--sp-3) var(--sp-4);border-radius:16px;border:2px solid var(--ink);background:var(--tint);font-weight:700;line-height:1.35}
+  .acts{display:flex;gap:var(--sp-3);margin-top:var(--sp-5)}
+  textarea{width:100%;min-height:180px;margin-top:var(--sp-4);padding:var(--sp-4);border:0;border-radius:18px;font:inherit;font-size:var(--t-body);resize:none;color:var(--label)}
+  .rec{display:flex;flex-direction:column;align-items:center;gap:var(--sp-3);margin-top:var(--sp-5)}
+  .rec time{font-size:var(--t-num,34px);font-weight:700;font-variant-numeric:tabular-nums}
+  .mic{width:88px;height:88px;display:grid;place-items:center;border:0;border-radius:50%;background:var(--ink);color:#fff;box-shadow:0 4px 0 var(--ink-rim);transition:transform .12s var(--ease)}
+  .mic:active{transform:translateY(3px)}
+  .mic[aria-pressed=true]{background:#c2554a;box-shadow:0 4px 0 #8f3a32;animation:breathe 1.6s ease-in-out infinite}
+  @keyframes breathe{50%{transform:scale(1.04)}}
+  .pins{display:flex;flex-direction:column;gap:var(--sp-3);margin-top:var(--sp-4)}
+  .pins .dl{margin-top:var(--sp-2);font-size:var(--t-foot);font-weight:600;color:var(--label-3)}
+  .none{display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);padding:var(--sp-6) 0;text-align:center;color:var(--label-2);font-weight:500}
+
+  /* ===== tab bar: Journal is current ===== */
+  nav.tabs{display:flex;padding:var(--sp-2) var(--sp-1) calc(var(--sp-2) + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--bg) 82%,transparent);border-top:1px solid var(--sep);
+    -webkit-backdrop-filter:blur(var(--sp-5)) saturate(1.4);backdrop-filter:blur(var(--sp-5)) saturate(1.4)}
+  nav.tabs a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:var(--tap);padding:var(--sp-1) 0;font-size:var(--t-cap);font-weight:600;color:var(--label-3)}
+  nav.tabs a[aria-current]{color:var(--accent)}
+  nav.tabs svg{width:26px;height:26px}
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+<link rel="stylesheet" href="happy-ui.css">
+<script src="happi.js" defer></script>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="top">
+      <button class="ib" id="cal" aria-expanded="false" aria-label="Show month"></button>
+      <h1 id="title"></h1>
+      <div class="right">
+        <button class="today" id="today" hidden>Today<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button class="ib" id="pinned" aria-label="Pinned notes"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4Z"/></svg></button>
+      </div>
+    </div>
+    <div id="cals"></div>
+  </header>
+  <main id="main"><div id="dayv"></div></main>
+  <nav class="tabs" aria-label="Tabs">
+    <a href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</a>
+    <a href="journal.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3Z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>Journal</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Timeline</a>
+    <a href="journeys.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2Z"/><path d="M9 4v14M15 6v14"/></svg>Journeys</a>
+    <a href="exercises.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-14 14-14 0 9-6 14-14 14Z"/><path d="M5 19c3-5 6-8 10-10" fill="none"/></svg>Exercises</a>
+  </nav>
+  <div class="scrim" id="scrim" hidden></div>
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t" hidden></section>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=x=>String(x??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const get=k=>{try{return JSON.parse(localStorage.getItem(k))}catch{return null}};
+const put=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
+const buzz=()=>navigator.vibrate&&navigator.vibrate(8);
+const STILL=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const IC=(d,s=18)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const MIC='<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',PEN='<path d="M4 20h4L19 9l-4-4L4 16Z"/><path d="M13 7l4 4"/>',PIN='<path d="M6 3h12v18l-6-4-6 4Z"/>';
+
+// mood faces: production MoodIcon colours, the same five steps Home logs
+const MOOD={terrible:['#F09282','#D97262','M8 16.5q4-3.5 8 0','Terrible'],bad:['#F2AC79','#DC9059','M8.5 16q3.5-2 7 0','Bad'],
+  fine:['#ECCB77','#D5B054','M8.5 15h7','Okay'],good:['#97BC91','#7DA876','M8.5 14q3.5 2.5 7 0','Good'],great:['#7ABBB7','#5FA5A1','M8 13.5q4 5 8 0Z','Great']};
+const face=(m,s=22)=>{const [f,st,mouth]=MOOD[m];return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="${f}" stroke="${st}" stroke-width="1.5"/>
+  <circle cx="8.8" cy="10" r="1.1" fill="var(--face)"/><circle cx="15.2" cy="10" r="1.1" fill="var(--face)"/><path d="${mouth}" stroke="var(--face)" stroke-width="1.6" stroke-linecap="round" fill="${m==='great'?'var(--face)':'none'}"/></svg>`};
+
+// ===== data: journal_records, keyed by day; seeded relative to today so the week always has a past =====
+const key=d=>[d.getFullYear(),d.getMonth()+1,d.getDate()].map(n=>String(n).padStart(2,'0')).join('-');
+const day=k=>{const [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d)};
+const shift=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
+const NOW=new Date(),TODAY=key(NOW);
+const at=(back,h,m)=>{const d=shift(NOW,-back);d.setHours(h,m,0,0);return d.getTime()};
+const SEED=[
+  {id:'s1',ts:at(1,13,12),type:'voice',secs:84,mood:'good',title:'Walk after lunch',body:'Felt lighter after getting outside. The meeting went better than I feared, and I finally said the thing I’d been holding back.'},
+  {id:'s2',ts:at(2,23,40),type:'text',mood:'bad',guided:'Anxious thoughts',title:'Couldn’t sleep',body:'Kept replaying the email to Sam. I keep assuming they’re annoyed, but they replied fine. Writing it down helps me see it’s a guess, not a fact.'},
+  {id:'s3',ts:at(2,8,5),type:'text',mood:'fine',title:'Slow start',body:'Coffee, no phone for twenty minutes. Small win.'},
+  {id:'s4',ts:at(4,19,30),type:'text',mood:'great',title:'Dinner with Mia',body:'Laughed more than I have in weeks. Note to self: say yes more often.',pinned:true},
+];
+// onboarding hands its saved reflection to the journal ("Saved to your journal")
+const ONB=get('happy.onboarding');
+const unq=s=>String(s||'').trim().replace(/^["“”']+|["“”']+$/g,''); // the card adds its own quotes
+const fromOnb=ONB?[{id:'onb',ts:ONB.at||Date.now(),type:'reflection',mood:null,title:ONB.source==='personal'?'Your first reflection':'Practice reflection',
+  thought:unq(ONB.thought),fair:ONB.fair,trap:ONB.trapLabel||'',body:''}]:[];
+const homeMood=get('happy.mood'); // today's check-in from Home marks today in the strip
+let mine=get('happy.journal')||[];
+const all=()=>[...SEED,...fromOnb,...mine].map(e=>({...e,pinned:pins.has(e.id)?!e.pinned:e.pinned}));
+const pins=new Set(get('happy.journalPins')||[]); // toggled ids, flipped against their seeded state
+const onDay=k=>all().filter(e=>key(new Date(e.ts))===k).sort((a,b)=>b.ts-a.ts);
+const moodOf=k=>{const e=onDay(k).find(e=>e.mood);if(e)return e.mood;
+  if(k===TODAY&&homeMood&&homeMood.day===NOW.toDateString())return homeMood.v==='okay'?'fine':homeMood.v;return null};
+const words=t=>(t.trim().match(/\S+/g)||[]).length;
+const clock=ts=>new Date(ts).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+const mmss=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+
+// ===== header and week =====
+const weekOf=k=>{const d=day(k);return key(shift(d,-d.getDay()))}; // Sunday-first, as production
+const THIS_WK=weekOf(TODAY);
+let sel=TODAY,open=false,view=day(TODAY),wk=THIS_WK; // view = month in the grid; wk = week in the strip, paged on its own
+const WD=['S','M','T','W','T','F','S'];
+const longDay=d=>d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+// no mood, no mark (production MoodBadge hideEmptySlot)
+const dayBtn=(d,cls='')=>{const k=key(d),m=moodOf(k),future=k>TODAY;
+  return `<button class="day${cls}" data-k="${k}"${future?' disabled':''}${k===TODAY?' aria-current="date"':''} aria-pressed="${k===sel}" aria-label="${longDay(d)}${m?', felt '+MOOD[m][3].toLowerCase():''}">${cls?'':`<small aria-hidden="true">${WD[d.getDay()]}</small>`}<b>${d.getDate()}</b><span class="m">${m?face(m,cls?16:22):''}</span></button>`};
+function header(dir){
+  const t=day(sel).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  if($('#title').textContent!==t)$('#title').textContent=t;
+  $('#title').classList.toggle('off',open); // the month view carries its own title
+  $('#today').hidden=open||(sel===TODAY&&wk===THIS_WK);
+  $('#cal').setAttribute('aria-expanded',open);$('#cal').setAttribute('aria-label',open?'Hide month':'Show month');
+  $('#cal').innerHTML=IC(open?'<path d="M6 6l12 12M18 6L6 18"/>':'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',22);
+  if(open){
+    const first=new Date(view.getFullYear(),view.getMonth(),1),start=shift(first,-first.getDay()),cells=Array.from({length:42},(_,i)=>shift(start,i));
+    const thisMonth=view.getMonth()===NOW.getMonth()&&view.getFullYear()===NOW.getFullYear();
+    $('#cals').innerHTML=`<div class="month"><div class="mhead"><button class="ib" data-mo="-1" aria-label="Previous month">${IC('<path d="M15 6l-6 6 6 6"/>')}</button>
+      <b>${view.toLocaleDateString('en-US',{month:'long',year:'numeric'})}</b>
+      <button class="ib" data-mo="1" aria-label="Next month"${thisMonth?' disabled':''}>${IC('<path d="M9 6l6 6-6 6"/>')}</button></div>
+      <div class="grid">${WD.map(w=>`<small aria-hidden="true">${w}</small>`).join('')}${cells.map(d=>d.getMonth()===view.getMonth()?dayBtn(d,' g'):'<span></span>').join('')}</div>
+      ${thisMonth?'':'<button class="jump" data-jump>Back to this month</button>'}</div>`;
+    return}
+  const w=$('.week'),place=()=>{const i=$$('.week .day').findIndex(b=>b.dataset.k===sel),p=$('.week .pill');
+    p.hidden=i<0;if(i>=0)p.style.transform=`translateX(${i*100}%)`};
+  if(w&&w.dataset.wk===wk&&!dir){ // same week: slide the pill and flip the pressed day in place, so focus and motion survive
+    $$('.week .day').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===sel));return place()}
+  const days=Array.from({length:7},(_,i)=>shift(day(wk),i));
+  $('#cals').innerHTML=`<div class="week${dir&&!STILL?dir>0?' fwd':' back':''}" data-wk="${wk}" role="group" aria-label="Week of ${longDay(day(wk))}"><span class="pill"></span>${days.map(d=>dayBtn(d)).join('')}</div>`;
+  place();
+}
+
+// ===== the day =====
+const metaOf=e=>e.type==='voice'?`${IC(MIC,14)}${mmss(e.secs)}`:e.type==='reflection'?'Reflection':(n=>`${n} word${n===1?'':'s'}`)(e.words??words(e.body));
+// title first, then time and length (production EntryCard order); a button holds phrasing content only
+const card=(e,i=0)=>{const lab=[e.title,clock(e.ts),e.mood&&'felt '+MOOD[e.mood][3].toLowerCase(),e.guided&&'guided',e.pinned&&'pinned'].filter(Boolean).join(', ');
+  return `<button class="entry" data-id="${e.id}" aria-label="${esc(lab)}" style="animation-delay:${i*50}ms">
+  <span class="mf">${e.mood?face(e.mood,32):IC(e.type==='reflection'?'<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3Z"/>':PEN,24)}</span>
+  <span>${e.guided?`<span class="guided">Guided · ${esc(e.guided)}</span>`:''}
+    <span class="h">${esc(e.title)}</span>
+    <span class="meta">${clock(e.ts)} · ${metaOf(e)}${e.pinned?`<span class="pin">${IC(PIN,14)}</span>`:''}</span>
+    ${e.type==='reflection'?`<span class="x2 was">“${esc(e.thought)}”</span><span class="x2 now">${esc(e.fair)}</span>`:e.body?`<span class="x2">${esc(e.body)}</span>`:''}
+  </span></button>`};
+const COMPOSE='<div class="compose"><button class="btn" data-new="voice">'+IC(MIC,20)+'Record Voice</button><button class="btn alt" data-new="text">'+IC(PEN,20)+'Write Text</button></div>';
+function render(dir){
+  const k=sel,d=day(k),list=onDay(k),isToday=k===TODAY;
+  const name=isToday?'Today':k===key(shift(NOW,-1))?'Yesterday':d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+  $('#dayv').innerHTML=list.length?`<div class="dh"><h2>${name}</h2><span>${list.length} ${list.length===1?'entry':'entries'}</span></div>
+    <div class="list">${list.map(card).join('')}</div>${COMPOSE}`
+    // empty: production EmptyState (panda + one line); past days get a plainer line, never guilt
+    :`<div class="empty"><div class="happi" data-pose="${isToday?'wave':'content'}"></div>
+      <h2>${isToday?'What’s on your mind?':`Nothing from ${name}`}</h2>${COMPOSE}</div>`;
+  const v=$('#dayv');v.className='';if(dir&&!STILL){v.offsetWidth;v.className=dir>0?'fwd':'back'}
+  $$('#dayv .happi').forEach(h=>window.Happi&&Happi.mount&&Happi.mount(h));
+}
+const pick=k=>{if(k>TODAY||k===sel&&!open)return;const was=sel,ow=wk;sel=k;open=false;view=day(k);wk=weekOf(k);
+  header(wk===ow?0:Math.sign(wk.localeCompare(ow)));render(Math.sign(k.localeCompare(was)));$('#main').scrollTop=0;
+  $(`#cals [data-k="${k}"]`)?.focus({preventScroll:true})};
+const draw=()=>{header();render()};
+
+// horizontal swipes, vertical scroll untouched: the day view pages days (production useJournalDateSwipe, 75px),
+// the strip pages weeks on its own (useWeekNavigation, 50px; never past this week). A swipe never also taps.
+let sx=null,sy=0,swiped=false;
+const swipe=(el,min,go)=>{el.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY;swiped=false});
+  el.addEventListener('pointercancel',()=>sx=null);
+  el.addEventListener('pointerup',e=>{if(sx===null)return;const dx=e.clientX-sx,dy=e.clientY-sy;sx=null;
+    if(Math.abs(dx)>10){swiped=true;setTimeout(()=>swiped=false,350)}if(Math.abs(dx)>min&&Math.abs(dx)>Math.abs(dy)*1.5)go(dx<0?1:-1)})};
+swipe($('#dayv'),75,n=>pick(key(shift(day(sel),n))));
+swipe($('#cals'),50,n=>{if(open)return;const w=key(shift(day(wk),7*n));if(w>THIS_WK)return;wk=w;header(n)});
+document.addEventListener('pointerdown',()=>swiped=false,true); // touch drags often fire no click: any new press clears the flag
+document.addEventListener('click',ev=>{if(swiped){swiped=false;ev.stopPropagation();ev.preventDefault()}},true);
+
+// ===== sheets =====
+let from=null,timer=null;
+const SHEET={
+  entry:id=>{const e=all().find(x=>x.id===id),d=new Date(e.ts);
+    return `<h3 id="sh-t">${esc(e.title)}</h3><p class="sub">${d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})} · ${clock(e.ts)}${e.mood?` · ${MOOD[e.mood][3]}`:''}</p>
+      ${e.type==='reflection'?`<div class="turn"><span class="lab">${e.trap?esc(e.trap):'The thought'}</span><p class="old">“${esc(e.thought)}”</p><span class="lab">Another view</span><p class="new">${esc(e.fair)}</p></div>`
+        :e.body?`<p class="body">${esc(e.body)}</p>`:e.type==='voice'?`<p class="sub" style="margin-top:var(--sp-4)">Voice note · ${mmss(e.secs)}</p>`:''}
+      <div class="acts"><button class="btn alt" data-pin="${e.id}">${IC(PIN,20)}<span>${e.pinned?'Unpin':'Pin'}</span></button></div>`},
+  text:()=>`<h3 id="sh-t">${sel===TODAY?'Write':longDay(day(sel))}</h3><textarea id="txt" aria-label="Journal entry" placeholder="What’s on your mind?"></textarea>
+    <div class="acts"><button class="btn" id="save" disabled>Save</button></div>`,
+  voice:()=>`<h3 id="sh-t">${sel===TODAY?'Record':longDay(day(sel))}</h3><div class="rec"><time id="t" aria-live="off">0:00</time>
+    <button class="mic" id="mic" aria-pressed="false" aria-label="Start recording">${IC(MIC,36)}</button></div>
+    <div class="acts"><button class="btn" id="save" disabled>Save</button></div>`,
+  pinned:()=>{const p=all().filter(e=>e.pinned).sort((a,b)=>b.ts-a.ts);
+    return `<h3 id="sh-t">Pinned notes</h3><p class="sub">${p.length} pinned note${p.length===1?'':'s'}</p>
+      ${p.length?`<div class="pins">${p.map(e=>`<span class="dl">${new Date(e.ts).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</span>${card(e)}`).join('')}</div>`
+        :`<div class="none">${IC(PIN,32)}<b>No pinned notes</b></div>`}`},
+};
+const BEHIND=['header','main','nav.tabs'];
+function openSheet(kind,arg){if($('#sheet').hidden)from=document.activeElement; // a sheet opened from a sheet returns to the first opener
+  clearInterval(timer);
+  $('#sheet').className='sheet';$('#sheet').innerHTML=`<button class="x" data-close aria-label="Close">${IC('<path d="M6 6l12 12M18 6L6 18"/>',20)}</button>`+SHEET[kind](arg);
+  $('#scrim').className='scrim';$('#scrim').hidden=$('#sheet').hidden=false;BEHIND.forEach(s=>$(s).inert=true);
+  ($('#txt')||$('#mic')||$('#sheet .x')).focus();
+  if(kind==='text'){const t=$('#txt');t.oninput=()=>$('#save').disabled=!t.value.trim();
+    // first line titles the entry (production falls back to "Untitled Entry"); the rest is the body
+    $('#save').onclick=()=>{const [h,...rest]=t.value.trim().split('\n');add({type:'text',title:h.slice(0,60),body:rest.join('\n').trim(),words:words(t.value)})}}
+  if(kind==='voice'){let s=0;const m=$('#mic');
+    m.onclick=()=>{buzz();const on=m.getAttribute('aria-pressed')!=='true';m.setAttribute('aria-pressed',on);m.setAttribute('aria-label',on?'Stop recording':'Start recording');
+      if(on){timer=setInterval(()=>{s++;$('#t').textContent=mmss(s)},1000)}else{clearInterval(timer);$('#save').disabled=!s}};
+    $('#save').onclick=()=>{clearInterval(timer);add({type:'voice',title:'Voice note',secs:s,body:''})}}
+}
+const closeSheet=()=>{clearInterval(timer);const sh=$('#sheet');if(sh.hidden)return;
+  const end=()=>{sh.hidden=$('#scrim').hidden=true;BEHIND.forEach(s=>$(s).inert=false);from&&from.isConnected&&from.focus()};
+  if(STILL)return end();sh.classList.add('out');$('#scrim').classList.add('out');setTimeout(end,180)};
+// new entries land on the picked day, at the current time (production records for the selected date)
+const add=e=>{const n=new Date(),ts=day(sel);ts.setHours(n.getHours(),n.getMinutes());mine=[...mine,{...e,id:'u'+Date.now(),ts:ts.getTime(),mood:null}];put('happy.journal',mine);
+  buzz();render();header();from=$(`#dayv [data-new="${e.type}"]`);closeSheet()}; // the old opener was re-rendered away
+
+document.addEventListener('click',ev=>{const t=ev.target;
+  const d=t.closest('[data-k]');if(d&&!d.disabled){buzz();return pick(d.dataset.k)}
+  const mo=t.closest('[data-mo]');if(mo){const n=mo.dataset.mo;view=new Date(view.getFullYear(),view.getMonth()+ +n,1);header();
+    return ($(`[data-mo="${n}"]:not(:disabled)`)||$('[data-mo="-1"]')).focus()}
+  if(t.closest('[data-jump]')){view=day(TODAY);header();return $('[data-mo="-1"]').focus()}
+  const en=t.closest('.entry');if(en){buzz();return openSheet('entry',en.dataset.id)}
+  const n=t.closest('[data-new]');if(n){buzz();return openSheet(n.dataset.new)}
+  // pin flips in place: the sheet and its focus stay put, the list behind catches up
+  const p=t.closest('[data-pin]');if(p){const id=p.dataset.pin;pins.has(id)?pins.delete(id):pins.add(id);put('happy.journalPins',[...pins]);buzz();
+    p.querySelector('span').textContent=all().find(x=>x.id===id).pinned?'Unpin':'Pin';return render()}
+  if(t.closest('[data-close]')||t===$('#scrim'))return closeSheet();
+});
+$('#cal').onclick=()=>{buzz();open=!open;view=day(sel);header()};
+$('#today').onclick=()=>{buzz();if(sel!==TODAY)return pick(TODAY);wk=THIS_WK;header(1);$(`#cals [data-k="${TODAY}"]`).focus({preventScroll:true})}; // also brings a paged-away strip home
+$('#pinned').onclick=()=>{buzz();openSheet('pinned')};
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closeSheet()});
+$('#sheet').addEventListener('keydown',ev=>{if(ev.key!=='Tab')return; // keep focus inside the dialog
+  const f=$$('#sheet button:not(:disabled),#sheet textarea'),i=f.indexOf(document.activeElement);
+  if(ev.shiftKey&&i<=0){ev.preventDefault();f.at(-1).focus()}else if(!ev.shiftKey&&i===f.length-1){ev.preventDefault();f[0].focus()}});
+draw();
+</script>
+</body>
+</html>

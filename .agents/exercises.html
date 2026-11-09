@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Exercises</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&display=swap">
+<style>
+  /* ===== tokens (same as the four exercises) ===== */
+  :root{
+    --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--sp-7:48px;
+    --r-s:12px;--r-m:16px;--r-pill:999px;
+    --tap:44px;
+    --t-cap:12px;--t-foot:13px;--t-sub:15px;--t-body:17px;--t-lead:20px;--t-h:24px;--t-title:28px;--t-num:34px;
+    --dur:.28s;--ease:cubic-bezier(.32,.72,0,1);--spring:cubic-bezier(.34,1.56,.64,1);
+    --font:"Nunito",ui-rounded,-apple-system,system-ui,sans-serif;--display:var(--font);
+    --bg:#fff;--surface:#fff;--surface-2:#f7f7f7;--tint:#f2f8ef;--sun:#f5b942;--cloud-lo:#e4eee0;--cloud-hi:#a9bfa0;
+    --label:#142414;--label-2:#4b4b4b;--label-3:#767676;
+    --sep:#e5e5e5;--rim:#cfcfcf;
+    --accent:#44633f;--on-accent:#fff;--ink:#5f7f58;--on-ink:#fff;--ink-rim:#29452a;
+    --bw:2px;--rimw:4px;
+    color-scheme:light; /* the app's Exercises screen is light only (white backgrounds) */
+  }
+  @media (prefers-contrast:more){:root{--sep:currentColor;--label-3:var(--label-2)}}
+
+  /* ===== base ===== */
+  *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+  [hidden]{display:none!important}
+  html{font-size:17px}
+  body{font-family:var(--font);background:var(--bg);color:var(--label);min-height:100dvh;display:flex;justify-content:center;
+    -webkit-font-smoothing:antialiased;line-height:1.35}
+  #app{width:100%;max-width:430px;height:100dvh;display:flex;flex-direction:column;position:relative;background:var(--bg);overflow:hidden}
+  @media (min-width:600px){
+    body{align-items:center;background:#d9d8d3}
+    #app{width:390px;height:min(844px,calc(100dvh - 48px));border-radius:48px;box-shadow:0 0 0 10px #142414}
+  }
+  button,a{font:inherit;color:inherit;cursor:pointer}
+  a{text-decoration:none}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* ===== header: title, completed count, coping cards, support, then the three views ===== */
+  header{padding:calc(var(--sp-3) + env(safe-area-inset-top)) var(--sp-4) var(--sp-3);border-bottom:1px solid var(--sep);background:var(--bg)}
+  header .top{display:flex;align-items:center;justify-content:space-between;min-height:var(--tap)}
+  header h2{font-size:var(--t-lead);font-weight:700;letter-spacing:-.01em}
+  .acts{display:flex;align-items:center;gap:var(--sp-1)}
+  /* plain words, no ring: brand.soft #E5EDE1 + onSoft #29452A = 8.86:1 (05-tokens) */
+  .count{display:inline-flex;align-items:center;height:32px;padding:0 var(--sp-3);margin-right:var(--sp-1);border-radius:var(--r-pill);background:#e5ede1;color:#29452a;font-size:var(--t-foot);font-weight:700}
+  .ib{width:var(--tap);height:var(--tap);display:grid;place-items:center;border:0;border-radius:50%;background:none;color:var(--accent)}
+  .ib:active{background:var(--tint)}
+  .seg{display:flex;gap:2px;padding:2px;margin-top:var(--sp-2);border-radius:var(--r-s);background:var(--surface-2)}
+  .seg button{flex:1;min-height:36px;border:0;border-radius:10px;background:none;font-size:var(--t-sub);font-weight:600;color:var(--label-2);transition:background var(--dur) var(--ease),color var(--dur) var(--ease)}
+  .seg button[aria-selected=true],.seg button[aria-pressed=true]{background:var(--surface);color:var(--label);box-shadow:0 1px 2px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.05)}
+  .seg.sm button{min-height:32px;font-size:var(--t-foot);padding:0 var(--sp-3)}
+  .seg.sm{margin:0;flex:none}
+
+  main{flex:1;min-height:0;padding:var(--sp-4) var(--sp-4) var(--sp-7);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;animation:enter var(--dur) var(--ease) both}
+  main::-webkit-scrollbar{display:none}
+  @keyframes enter{from{opacity:0}}
+  h1{font-family:var(--display);font-size:var(--t-title);line-height:1.1;letter-spacing:-.01em;font-weight:800;text-wrap:balance}
+
+  /* ===== primary button (shared with the exercises) ===== */
+  .btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:56px;border:0;border-bottom:var(--rimw) solid var(--ink-rim);border-radius:var(--r-pill);padding:var(--sp-3) var(--sp-5);margin-top:var(--sp-3);
+    font-size:var(--t-body);font-weight:700;background:var(--ink);color:var(--on-ink);transition:transform .12s var(--spring),border-bottom-width .12s var(--spring)}
+  .btn:active{transform:translateY(2px);border-bottom-width:2px}
+  .btn.ghost{background:none;color:var(--accent);border:var(--bw) solid var(--sep);border-bottom-width:var(--bw)}
+  @keyframes pop{from{transform:scale(.6);opacity:0}}
+  @keyframes drop{from{transform:translateY(-14px);opacity:0}}
+  @keyframes rise{from{transform:translateY(100%)}}
+  @keyframes fade{from{opacity:0}}
+
+  /* ===== lessons ===== */
+  /* Happi asks once (the screen's only bubble); the answers are tiles you can tap without reading every word */
+  .ask{display:flex;align-items:flex-end;gap:var(--sp-2);margin-bottom:var(--sp-4)}
+  .ask .happi{flex:none;width:92px;aspect-ratio:220/246;margin-bottom:-6px}
+  .ask .happi svg{width:100%;height:100%;display:block}
+  .say{position:relative;flex:1;align-self:center;background:var(--tint);border-radius:var(--r-m);padding:var(--sp-3) var(--sp-4)}
+  .say::before{content:"";position:absolute;left:-8px;bottom:18px;border:8px solid transparent;border-right-color:var(--tint);border-left:0}
+  .say h1{font-size:var(--t-h);line-height:1.15}
+  .say p{margin-top:2px;font-size:var(--t-sub);color:var(--label-2)}
+  .feel{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2)}
+  .fe{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:var(--sp-3);min-height:112px;padding:var(--sp-3) var(--sp-3) var(--sp-4);
+    border:0;border-radius:var(--r-m);background:var(--surface-2);text-align:left;font-size:var(--t-sub);font-weight:700;line-height:1.25;color:var(--label);
+    transition:transform .12s var(--spring),background var(--dur) var(--ease)}
+  .fe:active{transform:scale(.97);background:var(--tint)}
+  .gi{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;color:var(--accent)}
+  .unsure{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);width:100%;min-height:var(--tap);margin-top:var(--sp-2);border:0;background:none;font-size:var(--t-sub);font-weight:700;color:var(--accent)}
+  /* the answer you gave, then one recommendation with its picture */
+  .you{display:flex;align-items:center;justify-content:flex-end;gap:var(--sp-2);margin-bottom:var(--sp-3)}
+  .you p{max-width:80%;background:var(--ink);color:var(--on-ink);border-radius:var(--r-m) var(--r-m) 4px var(--r-m);padding:var(--sp-2) var(--sp-4);font-weight:600;animation:pop .4s var(--spring) both}
+  .rec{border-radius:20px;background:var(--surface);box-shadow:0 0 0 1px var(--sep),0 8px 24px -12px rgba(20,36,20,.25);overflow:hidden;animation:drop .4s var(--spring) both}
+  .rec .art{display:block;aspect-ratio:160/96;overflow:hidden}
+  .rec .art svg{display:block;width:100%;height:auto;margin-top:-6%}
+  .rec .body{padding:var(--sp-4)}
+  .rec h3{font-size:var(--t-lead);font-weight:700;line-height:1.15}
+  .rec p{margin-top:var(--sp-1);font-size:var(--t-sub);color:var(--label-2)}
+  .meta{display:flex;align-items:center;gap:6px;margin-top:var(--sp-2);font-size:var(--t-foot);font-weight:700;color:var(--label-3)}
+  .rec .btn{margin-top:var(--sp-4)}
+  .link{display:block;width:100%;background:none;border:0;padding:var(--sp-3) 0;min-height:var(--tap);font-size:var(--t-foot);font-weight:700;color:var(--label-3)}
+
+  /* pick up again: rows with the exercise's picture and how far you got */
+  .rs{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3);border-radius:var(--r-m);background:var(--surface);box-shadow:0 0 0 1px var(--sep);transition:transform .12s var(--spring)}
+  .rs+.rs{margin-top:var(--sp-2)}
+  .rs:active{transform:scale(.98)}
+  .th{flex:none;width:72px;aspect-ratio:1;border-radius:14px;overflow:hidden;display:grid;place-items:center}
+  .th svg{width:118%;height:auto;display:block}
+  .th.s{width:48px;border-radius:12px}
+  .rs .t{flex:1;min-width:0}
+  .rs b{display:block;font-weight:700;line-height:1.2}
+  .rs small{display:block;margin-top:2px;font-size:var(--t-foot);font-weight:600;color:var(--label-2)}
+  .prog{display:flex;gap:3px;margin-top:var(--sp-2)}
+  .prog i{flex:1;height:6px;border-radius:3px;background:var(--sep)}
+  .prog i.on{background:var(--ink)}
+  .rs svg.chev{flex:none;color:var(--label-3)}
+
+  /* library: a filter row, then one shelf per topic */
+  .chips{display:flex;gap:var(--sp-2);overflow-x:auto;margin:0 calc(-1*var(--sp-4));padding:0 var(--sp-4);scrollbar-width:none}
+  .chip{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 var(--sp-3);border:0;border-radius:var(--r-pill);font-size:var(--t-foot);font-weight:700;color:var(--label-2)}
+  /* selected: #F2F8EF with #29452A text (9.83:1), ink ring and a check so color is not alone */
+  .chips .chip[aria-pressed=true]{color:#29452a}
+  .cat{margin-top:var(--sp-5)}
+  .cat{scroll-margin-top:var(--sp-4)}
+  .cath{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-2)}
+  .cath h3{font-size:var(--t-lead);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+  .cath span{font-size:var(--t-foot);font-weight:700;color:var(--label-3)}
+  .cat>p{margin-top:2px;font-size:var(--t-sub);color:var(--label-2)}
+  /* scroll-padding keeps the first tile on the gutter after a snap */
+  .shelf{display:flex;gap:var(--sp-3);overflow-x:auto;scroll-snap-type:x proximity;scroll-padding-inline:var(--sp-4);margin:var(--sp-3) calc(-1*var(--sp-4)) 0;padding:var(--sp-1) var(--sp-4) var(--sp-2);scrollbar-width:none}
+  .shelf::-webkit-scrollbar,.chips::-webkit-scrollbar{display:none}
+  .tile{flex:none;width:156px;scroll-snap-align:start;display:flex;flex-direction:column;transition:transform .12s var(--spring)}
+  .tile:active{transform:scale(.97)}
+  .tile .art{position:relative;display:block;aspect-ratio:4/3;border-radius:var(--r-m);overflow:hidden}
+  .tile .art svg{display:block;width:100%;height:100%}
+  .tile.hi .art{box-shadow:inset 0 0 0 2px var(--ink)}
+  .badge{position:absolute;top:8px;display:inline-flex;align-items:center;gap:3px;height:22px;padding:0 8px;border-radius:var(--r-pill);background:#fff;font-size:var(--t-cap);font-weight:800;color:var(--label)}
+  .badge.pro{right:8px}.badge.new{left:8px;background:var(--ink);color:#fff}
+  .tile b{display:block;margin-top:var(--sp-2);font-size:var(--t-sub);font-weight:700;line-height:1.2}
+  .tile small{display:flex;align-items:center;gap:4px;margin-top:2px;font-size:var(--t-foot);font-weight:600;color:var(--label-3)}
+  .none{padding:var(--sp-4) 0;color:var(--label-2);font-weight:600}
+  /* a full-width row, not fine print: text.primary #142414 on white (16.25:1), 52pt target */
+  .help{margin-top:var(--sp-6);border-top:1px solid var(--sep)}
+  .help button{display:flex;align-items:center;gap:var(--sp-3);width:100%;min-height:52px;padding:var(--sp-3) 0;background:none;border:0;text-align:left;font-size:var(--t-body);font-weight:700;color:var(--label)}
+  .help svg{flex:none;color:var(--accent)}
+
+  /* ===== my log ===== */
+  /* the week as presence, never a streak: a leaf on days you practised, nothing taken away on the others */
+  .week{padding:var(--sp-4);border-radius:20px;background:var(--tint)}
+  .week h2{margin-top:var(--sp-1);font-family:var(--display);font-size:var(--t-h);font-weight:600;line-height:1.15;letter-spacing:-.01em}
+  .week h2+p{margin-top:var(--sp-1);font-size:var(--t-sub);color:var(--label-2)}
+  .days{list-style:none;padding:0;margin-top:var(--sp-4);display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:var(--t-cap);font-weight:700;color:var(--label-2)}
+  .days span{display:grid;place-items:center;width:34px;height:34px;margin:0 auto 4px;border-radius:50%;background:#fff;color:#fff}
+  .days .on span{background:var(--ink)}
+  .days li:not(.on) span{background:none}
+  .days li:not(.on) span::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--cloud-hi)}
+    .days .today{color:var(--label)}
+  .days .today span{box-shadow:inset 0 0 0 2px var(--ink)}
+  .tl{position:relative;margin-top:var(--sp-6)}
+  .day{margin:var(--sp-6) 0 var(--sp-2);font-size:var(--t-sub);font-weight:700;color:var(--label-2)}
+  .day:first-child{margin-top:0}
+  .en{border-top:1px solid var(--sep)}
+  .enh{display:flex;align-items:flex-start;gap:var(--sp-3);width:100%;padding:var(--sp-3) 0;text-align:left;background:none;border:0;color:inherit}
+  .enh .tx{flex:1;min-width:0}
+  .enr{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-2)}
+  .enr b{font-weight:700;line-height:1.2}
+  .enr time{flex:none;font-size:var(--t-cap);font-weight:700;color:var(--label-3)}
+  .pv{display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:2px;font-size:var(--t-sub);line-height:1.35;color:var(--label-2)}
+  .lab{font-size:var(--t-foot);font-weight:600;color:var(--label-3)}
+    .enh[aria-expanded=true] .pv{display:none}
+  .enh .cv,.enh .chev{flex:none;color:var(--label-3);transition:transform var(--dur) var(--ease)}
+  .enh[aria-expanded=true] .cv{transform:rotate(180deg)}
+  /* before and after on one 0-10 track; the same style whichever way it moved */
+  .mv{display:flex;align-items:center;gap:var(--sp-2);margin-top:var(--sp-2);font-size:var(--t-foot);font-weight:700;color:var(--label-2)}
+  .mv svg{flex:none}
+  .exp{margin:0 0 var(--sp-4) 60px;display:flex;flex-direction:column;gap:var(--sp-4)}
+  /* the entry as one small arc in the user's own words: hollow dot = where you started,
+     filled dot = where you landed (same encoding as the before/after track above) */
+  .arc{list-style:none;padding:0;display:flex;flex-direction:column;gap:var(--sp-4)}
+  .arc li{position:relative;padding-left:22px}
+  .arc li::before{content:"";position:absolute;left:0;top:4px;width:11px;height:11px;border-radius:50%;box-sizing:border-box;background:var(--ink)}
+  .arc .from::before{background:#fff;border:2px solid var(--ink)}
+  .arc .from:not(:last-child)::after{content:"";position:absolute;left:4.5px;top:18px;bottom:calc(-1 * var(--sp-4) - 1px);width:2px;border-radius:1px;background:var(--cloud-hi)}
+  .arc .lab{display:block;line-height:20px}
+  .arc p{margin-top:2px;line-height:1.4}
+  .arc .from p{font-size:var(--t-sub);color:var(--label-2)}
+  .arc .to p{font-size:var(--t-body);font-weight:700;color:var(--label)}
+  .note{font-size:var(--t-foot);line-height:1.5;color:var(--label-2)}
+  .note b{font-weight:700;color:var(--label)}
+  .grat{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px;font-size:var(--t-sub)}
+  .grat li{position:relative;padding-left:22px}
+  .grat li::before{content:"";position:absolute;left:2.5px;top:7px;width:6px;height:6px;border-radius:50%;background:var(--ink)}
+  .open,.resume{align-self:flex-start;min-height:var(--tap);display:inline-flex;align-items:center;font-size:var(--t-foot);font-weight:700;color:var(--accent)}
+  .resume{margin-top:var(--sp-1);min-height:32px}
+  .empty{padding:var(--sp-6) var(--sp-4);text-align:center}
+  .empty .th{width:160px;margin:0 auto var(--sp-4);border-radius:20px}
+  .empty h1{font-size:var(--t-lead)}
+  .empty p{margin:var(--sp-2) 0 var(--sp-5);color:var(--label-2);font-weight:500}
+  .empty .btn{width:auto;display:inline-flex}
+
+  /* ===== practice ===== */
+  .ph{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+  .ph h2{font-size:var(--t-lead);font-weight:700;letter-spacing:-.01em}
+  .eye-b{font-size:var(--t-foot);font-weight:700;color:var(--accent)}
+  /* the one finding, drawn: before and after as two bars you can compare at a glance */
+  .win{margin-top:var(--sp-4);padding:var(--sp-4);border-radius:20px;background:var(--tint)}
+  .win .big{margin-top:var(--sp-2);font-size:var(--t-h);line-height:1.15;letter-spacing:-.01em;text-wrap:balance}
+  .ba{display:flex;flex-direction:column;gap:var(--sp-2);margin-top:var(--sp-4)}
+  .ba div{display:grid;grid-template-columns:52px 1fr 28px;align-items:center;gap:var(--sp-2);font-size:var(--t-foot);font-weight:700;color:var(--label-2)}
+  .ba i{display:block;height:14px;border-radius:7px;background:#fff}
+  .ba i s{display:block;height:100%;width:calc(var(--v)*100%);border-radius:7px;text-decoration:none;background:var(--ink);transform-origin:left;animation:grow .7s var(--ease) both}
+  .ba div:first-child i s{background:#a9bfa0}
+  .ba b{font-family:var(--display);font-size:var(--t-lead);font-weight:600;color:var(--label);text-align:right}
+  @keyframes grow{from{transform:scaleX(0)}}
+  .disc{margin-top:var(--sp-3);font-size:var(--t-cap);font-weight:600;color:var(--label-3)}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2);margin-top:var(--sp-2)}
+  .st{padding:var(--sp-4);border-radius:var(--r-m);background:var(--surface-2)}
+  .st svg{color:var(--accent)}
+  .st b{display:block;margin-top:var(--sp-2);font-family:var(--display);font-size:var(--t-title);font-weight:600;line-height:1}
+  .st span{display:block;margin-top:4px;font-size:var(--t-foot);font-weight:600;color:var(--label-2)}
+  .chart{display:block;width:100%;height:auto;margin-top:var(--sp-2)}
+  /* line #44633F (6.4:1 on white); only today and the brightest day carry a number */
+  .chart .ln{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+  .chart .pt{fill:#fff;stroke:var(--accent);stroke-width:2}
+  .chart .pt.t{fill:var(--accent);stroke:#fff;stroke-width:3}
+  .chart .ahead{fill:none;stroke:#8a918a;stroke-width:1.5}
+  .chart .grid{stroke:var(--sep);stroke-dasharray:2 4}
+  .chart .lf{fill:var(--ink)}
+  .chart .v{font-family:var(--display);font-size:13px;font-weight:600;fill:var(--label)}
+  .chart text{font-family:var(--font);font-size:var(--t-cap);font-weight:700;fill:var(--label-3);text-anchor:middle}
+  .chart text.now{fill:var(--label)}
+  .sub{margin-top:calc(var(--sp-1) - var(--sp-3));color:var(--label-2);font-weight:600}
+  /* topics as four plots: one leaf per session, an empty plot shows a seed */
+  .garden{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2)}
+  .plot{display:flex;flex-direction:column;gap:var(--sp-2);min-height:136px;padding:var(--sp-3) var(--sp-3) var(--sp-4) var(--sp-4);border-radius:20px;color:inherit;text-decoration:none}
+  .plot .top{display:flex;align-items:flex-start;justify-content:space-between}
+  .plot .ico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#fff;color:var(--accent)}
+  .plot .chev{color:var(--label-3)}
+  .plot b{margin-top:auto;font-weight:700;line-height:1.2}
+  .plot .sp{display:flex;align-items:center;gap:2px;min-height:16px;color:var(--accent)}
+  .plot .sp .half{opacity:.35}
+  .plot .seed{width:12px;height:12px;border-radius:50%;border:1.5px dashed var(--label-3)}
+  .plot small{font-size:var(--t-foot);font-weight:600;color:var(--label-2)}
+  .next{display:flex;align-items:center;gap:var(--sp-3);margin-top:var(--sp-5);padding:var(--sp-3);border-radius:var(--r-m);box-shadow:0 0 0 1px var(--sep)}
+  .next .t{flex:1;min-width:0}
+  .next b{display:block;font-weight:700;line-height:1.2}
+  .next small{display:block;margin-top:2px;font-size:var(--t-foot);font-weight:600;color:var(--label-2)}
+  .go{flex:none;min-height:var(--tap);display:inline-flex;align-items:center;padding:0 var(--sp-4);border-radius:var(--r-pill);background:var(--ink);color:var(--on-ink);font-size:var(--t-foot);font-weight:700}
+  .base{display:flex;align-items:center;justify-content:space-between;position:relative;margin:var(--sp-5) 0 var(--sp-2);padding:0 var(--sp-3)}
+  .base::before{content:"";position:absolute;left:var(--sp-5);right:var(--sp-5);top:50%;height:2px;background:var(--sep)}
+  .base span{position:relative;width:40px;height:40px;display:grid;place-items:center;border-radius:50%;border:2px solid var(--rim);background:var(--bg);font-weight:700;color:var(--label-3)}
+  .base span.on{border-color:var(--ink);background:var(--ink);color:var(--on-ink)}
+
+  /* ===== sheets: support, coping cards, pro ===== */
+  .scrim{position:absolute;inset:0;z-index:5;background:rgba(0,0,0,.4);animation:fade .2s}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:6;max-height:82%;overflow-y:auto;padding:var(--sp-5) var(--sp-4) calc(var(--sp-5) + env(safe-area-inset-bottom));background:var(--bg);border-radius:24px 24px 0 0;animation:rise .3s var(--ease)}
+  .sheet h3{font-size:var(--t-h);font-weight:700;line-height:1.15;letter-spacing:-.01em;padding-right:var(--tap)}
+  .sheet .x{position:absolute;top:var(--sp-3);right:var(--sp-3);width:var(--tap);height:var(--tap);display:grid;place-items:center;border:0;border-radius:50%;background:var(--surface-2);color:var(--label-2)}
+  .lede{margin:var(--sp-2) 0 var(--sp-4);color:var(--label-2);font-weight:500}
+  .res{list-style:none;padding:0;border-bottom:1px solid var(--sep)}
+  .res a{display:block;padding:var(--sp-3) 0;border-top:1px solid var(--sep)}
+  .res b{display:block;font-size:var(--t-lead);font-weight:700;color:var(--accent)}
+  .res small{display:block;font-size:var(--t-foot);font-weight:600;color:var(--label-3)}
+  .fine{margin-top:var(--sp-3);font-size:var(--t-foot);color:var(--label-3)}
+  .cards{list-style:none;padding:0;display:flex;flex-direction:column;gap:var(--sp-3)}
+  .cards li{padding:var(--sp-4);border-radius:var(--r-m);background:var(--tint);font-weight:700;line-height:1.35}
+  .cards small{display:block;margin-top:var(--sp-2);font-size:var(--t-foot);font-weight:600;color:var(--label-3)}
+
+  /* ===== tab bar: the app's five tabs, Exercises is current ===== */
+  nav.tabs{display:flex;padding:var(--sp-2) var(--sp-1) calc(var(--sp-2) + env(safe-area-inset-bottom));
+    background:color-mix(in srgb,var(--bg) 82%,transparent);border-top:1px solid var(--sep);
+    -webkit-backdrop-filter:blur(var(--sp-5)) saturate(1.4);backdrop-filter:blur(var(--sp-5)) saturate(1.4)}
+  nav.tabs a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:var(--tap);padding:var(--sp-1) 0;font-size:var(--t-cap);font-weight:600;color:var(--label-3)}
+  nav.tabs a[aria-current]{color:var(--accent)}
+  nav.tabs svg{width:26px;height:26px}
+
+  /* ===== shared with Home: progress ring, sheets (paywall, sign-in) ===== */
+  .later{min-height:var(--tap);padding:0 var(--sp-2);background:none;border:0;font-size:var(--t-foot);font-weight:500;color:var(--label-3)}
+  .sheet.tall{max-height:94%}
+  .sample{display:inline-block;margin-bottom:var(--sp-3);padding:2px 9px;border-radius:8px;border:1px dashed var(--rim);font-size:var(--t-cap);font-weight:600;color:var(--label-3)}
+  .get{list-style:none;padding:0;margin:var(--sp-4) 0;display:flex;flex-direction:column;gap:var(--sp-3)}
+  .get li{display:flex;gap:var(--sp-3);align-items:flex-start}
+  .get li::before{content:"";flex:none;width:10px;height:10px;margin-top:6px;border-radius:50%;background:var(--ink)}
+  .get b,.tlx b{display:block;font-weight:700}
+  .get small,.tlx small{display:block;font-size:var(--t-foot);font-weight:600;color:var(--label-2)}
+  .tlx{list-style:none;padding:0 0 0 var(--sp-5);margin:var(--sp-4) 0;position:relative;display:flex;flex-direction:column;gap:var(--sp-4)}
+  .tlx::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--sep)}
+  .tlx li{position:relative}
+  .tlx li::before{content:"";position:absolute;left:calc(-1*var(--sp-5));top:3px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:var(--bw) solid var(--ink);box-sizing:border-box}
+  .tlx li:first-child::before{background:var(--ink)}
+  .free{padding:var(--sp-3);border-radius:var(--r-s);background:var(--tint);font-weight:700;color:var(--accent);font-size:var(--t-sub)}
+  .sso{display:flex;flex-direction:column;gap:var(--sp-2)}
+  .sso button{min-height:52px;border-radius:var(--r-pill);border:var(--bw) solid var(--sep);background:var(--surface);font-weight:700}
+  .sso button.dark{background:var(--label);color:#fff;border-color:var(--label)}
+  .center{display:block;width:100%;text-align:center}
+
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+<link rel="stylesheet" href="happy-ui.css">
+<script src="exercise-art.js"></script>
+<script src="happi.js" defer></script>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="top">
+      <h2>Exercises</h2>
+      <div class="acts">
+        <span class="count" id="count" hidden></span>
+        <button class="ib" id="coping" aria-label="My Coping Cards"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4Z"/></svg></button>
+        <button class="ib" id="help" aria-label="Need to talk to someone?"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M5.6 5.6l3.9 3.9M14.5 14.5l3.9 3.9M18.4 5.6l-3.9 3.9M9.5 14.5l-3.9 3.9"/></svg></button>
+      </div>
+    </div>
+    <div class="seg" id="seg" role="tablist" aria-label="Exercises view">
+      <button role="tab" id="t-lessons" data-t="lessons" aria-controls="p-lessons" aria-selected="true">Lessons</button>
+      <button role="tab" id="t-log" data-t="log" aria-controls="p-log" aria-selected="false" tabindex="-1">My Log</button>
+      <button role="tab" id="t-practice" data-t="practice" aria-controls="p-practice" aria-selected="false" tabindex="-1">Practice</button>
+    </div>
+  </header>
+  <main id="main">
+    <section id="p-lessons" role="tabpanel" aria-labelledby="t-lessons">
+      <div id="chat" aria-live="polite"></div>
+      <h2 class="sec">Pick up again</h2>
+      <div id="resume"></div>
+      <h2 class="sec">All exercises</h2>
+      <div class="chips" id="chips" role="group" aria-label="Filter by length"></div>
+      <div id="cats"></div>
+    </section>
+    <section id="p-log" role="tabpanel" aria-labelledby="t-log" hidden></section>
+    <section id="p-practice" role="tabpanel" aria-labelledby="t-practice" hidden></section>
+  </main>
+  <nav class="tabs" aria-label="Tabs">
+    <a href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3Z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>Journal</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Timeline</a>
+    <a href="journeys.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2Z"/><path d="M9 4v14M15 6v14"/></svg>Journeys</a>
+    <a href="#" aria-current="page"><svg viewBox="0 0 24 24" fill="currentColor" fill-opacity=".15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-14 14-14 0 9-6 14-14 14Z"/><path d="M5 19c3-5 6-8 10-10" fill="none"/></svg>Exercises</a>
+  </nav>
+  <div class="scrim" id="scrim" hidden></div>
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t" hidden></section>
+</div>
+<script>
+// ---- data: the app's real registry (src/data/exerciseRegistry.ts) plus the two new flows ----
+// ?empty shows a brand-new account: empty log, practice baseline at 0 of 3
+const Q=new URLSearchParams(location.search);
+// ?new: a fresh install, so onboarding runs first. onboarding.html lands on home.html?empty&welcome; ?new here also replays it
+const KEYS=['happy.onboarding','happy.paywallSeen','happy.signupLater','happy.signedIn'];
+const get=k=>{try{return JSON.parse(localStorage.getItem(k))}catch{return null}};
+const put=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
+if(Q.has('new')){try{KEYS.forEach(k=>localStorage.removeItem(k))}catch{};location.replace('onboarding.html')}
+const esc=x=>String(x??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ONB=get('happy.onboarding');
+const IC=p=>`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const CAT={
+  cbt_core:{label:'CBT basics',hue:'catch',icon:IC('<path d="M5 6a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-5l-4 4v-4H8a3 3 0 0 1-3-3Z"/>')},
+  mindfulness:{label:'Mindfulness',hue:'abc',icon:IC('<path d="M5 19c0-8 5-14 14-14 0 9-6 14-14 14Z"/><path d="M5 19c3-5 6-8 10-10"/>')},
+  anxiety:{label:'Anxiety',hue:'act',icon:IC('<path d="M7 18a4 4 0 0 1-.6-7.95A6 6 0 0 1 18 9a4.5 4.5 0 0 1 0 9Z"/>')},
+  overthinking:{label:'Overthinking',hue:'reframe',icon:IC('<path d="M13 2 4 14h7l-1 8 9-12h-7Z"/>')},
+};
+// html: a prototype flow exists. reply/why: the cloud's routing for the four flows that do
+const EX=[
+  {id:'thought_catcher',cat:'cbt_core',name:'Thought Catcher',sub:'Catch and examine your automatic thoughts',min:'3-5 min',f:.75,html:'thought-catcher.html'},
+  {id:'thought_reframing',cat:'cbt_core',name:'Thought Reframing',sub:'Challenge and reframe negative thoughts',min:'10-15 min',f:.8,html:'thought-reframing.html',last:'Done 3 times · last Tuesday',
+    reply:'A thought keeps going round',why:'Thoughts on a loop loosen once they are written down and checked against the facts.'},
+  {id:'gratitude_reframe',cat:'cbt_core',name:'Gratitude Reframe',sub:'Shift your perspective with gratitude',min:'5-7 min',f:.3},
+  {id:'abc_analysis',cat:'cbt_core',name:'ABC Analysis',sub:'See how a moment, a thought, and a reaction connect.',min:'7-10 min',f:.55,pro:1,mark:'abc',html:'abc-analysis.html',
+    reply:'Something happened and it stung',why:'The sting usually comes from the belief in the middle, not the event itself. We will find it.'},
+  {id:'behavioral_activation',cat:'cbt_core',name:'Behavioral Activation',sub:'Pick one small thing to do today and see how it actually feels.',min:'8-10 min',f:.1,isNew:1,html:'behavioral-activation.html',
+    reply:'I have no energy for anything',why:'Low mood says wait until you feel like it. Doing one small thing first is what brings the energy back.'},
+  {id:'box_breathing',cat:'mindfulness',name:'Box Breathing',sub:'4-4-4-4 square breathing for calm',min:'3-5 min',f:.35},
+  {id:'breathing_478',cat:'mindfulness',name:'4-7-8 Breathing',sub:'Calm your nervous system with 4-7-8',min:'3-5 min',f:.3,pro:1},
+  {id:'grounding_54321',cat:'mindfulness',name:'5-4-3-2-1 Grounding',sub:'Anchor yourself using your senses',min:'5-7 min',f:.4,pro:1},
+  {id:'body_scan_pmr',cat:'mindfulness',name:'Body Scan & PMR',sub:'Release tension from head to toe',min:'10-15 min',f:.4,pro:1},
+  {id:'mindful_breathing_1min',cat:'mindfulness',name:'1-Minute Mindful Breathing',sub:'A quick mindfulness reset',min:'2-3 min',f:.25},
+  {id:'decatastrophizing',cat:'anxiety',name:'Decatastrophizing',sub:'Put feared outcomes in perspective',min:'7-10 min',f:.7,pro:1},
+  {id:'worry_decision_tree',cat:'anxiety',name:'Worry Decision Tree',sub:'Act on it or accept it · decide and move on',min:'5-7 min',f:.65,pro:1},
+  {id:'fear_ladder',cat:'anxiety',name:'Fear Ladder',sub:'Break a fear into rungs and stay with the easiest one.',min:'15-20 min',isNew:1,mark:'lad',html:'fear-ladder.html',go:1,last:'Paused at rung 2 of 5',
+    reply:'I keep avoiding something',why:'Avoiding keeps a fear fed. One small rung at a time is how it shrinks.'},
+  {id:'detached_mindfulness',cat:'overthinking',name:'Detached Mindfulness',sub:'Observe your thoughts without engaging',min:'5-7 min',f:.55,pro:1},
+  {id:'attention_training',cat:'overthinking',name:'Attention Training',sub:'Strengthen your attentional control (Wells ATT)',min:'7-10 min',f:.5,pro:1},
+].map(e=>({...e,m:+e.min.match(/(\d+) min/)[1]}));
+const byId=id=>EX.find(e=>e.id===id);
+const JUMP=['fear_ladder','thought_reframing'];
+// "not sure" is a real answer: the shortest free flow never tried
+const AUTO={...EX.find(e=>!e.last&&!e.pro&&e.html),reply:'Not sure. Pick one for me',why:'Nothing to name yet? That is fine. This one is short and a gentle way in.'};
+
+const D=n=>{const d=new Date();d.setDate(d.getDate()-n);return d};
+const LOG=Q.has('empty')?[]:[
+  {id:'thought_reframing',day:0,time:'9:12 AM',status:'completed',pl:'You thought',prev:'I always mess things up in meetings.',
+    emo:[['Anxious',7],['Ashamed',5]],tags:['All or nothing','Always and never'],xl:'You landed on',exp:'I stumbled on one point. The rest of the meeting went fine.',lbl:'Distress',b:8,a:4},
+  {id:'mindful_breathing_1min',day:0,time:'8:40 AM',status:'completed',lbl:'Calm',b:4,a:7,inv:1},
+  {id:'gratitude_reframe',day:1,time:'9:05 PM',status:'completed',lbl:'Mood',b:4,a:6,grat:['The walk I took at lunch','My sister called back','Coffee that was still hot']},
+  {id:'abc_analysis',day:1,time:'1:30 PM',status:'completed',pl:'What happened',prev:'My manager did not reply to my message.',
+    emo:[['Worried',8],['Annoyed',4]],xl:'You landed on',exp:'A late reply is a busy day, not a verdict on me.',lbl:'Worry',b:8,a:5},
+  {id:'fear_ladder',day:5,time:'6:20 PM',status:'in_progress'},
+];
+if(ONB)LOG.unshift({id:'thought_catcher',day:0,time:new Date(ONB.at).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}),status:'completed',
+  pl:'You thought',prev:esc(ONB.thought),tags:ONB.trapLabel?[esc(ONB.trapLabel)]:undefined,xl:'You landed on',exp:esc(ONB.fair)});
+// progress is a plain lifetime count: no ring, no streak, nothing to lose
+const DONE=LOG.filter(x=>x.status==='completed').length;
+
+// ---- helpers ----
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const buzz=()=>navigator.vibrate&&navigator.vibrate(8);
+const HUE={cbt_core:'catch',mindfulness:'abc',anxiety:'act',overthinking:'reframe'};
+const hue=e=>`var(--hue-${HUE[e.cat]})`;
+const art=e=>ART[e.id]?ART[e.id]():'';
+const thumb=(e,cls='')=>`<span class="th ${cls}" style="background:${hue(e)}">${art(e)}</span>`;
+const CHEV='<svg class="chev" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+const CV='<svg class="cv" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+const CHECK='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const LOCK='<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const CLOCK='<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+const LEAF='<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M5 19c0-8 5-14 14-14 0 9-6 14-14 14Z"/></svg>';
+const SUNI='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6 19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>';
+const LEAFO='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-14 14-14 0 9-6 14-14 14Z"/><path d="M5 19c3-5 6-8 10-10"/></svg>';
+const HELP=`<p class="help"><button data-sheet="help"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M5.6 5.6l3.9 3.9M14.5 14.5l3.9 3.9M18.4 5.6l-3.9 3.9M9.5 14.5l-3.9 3.9"/></svg>Need to talk to someone now?</button></p>`;
+const href=e=>e.html??'#';
+const plural=(n,one,many)=>`${n} ${n===1?one:many}`;
+
+// ---- header: three views, count ----
+const TABS=['lessons','log','practice'];
+let tab='lessons';
+const show=t=>{tab=t;history.replaceState(null,'','#'+t);
+  TABS.forEach(k=>{const on=k===t,b=$('#t-'+k);$('#p-'+k).hidden=!on;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1});
+  $('#main').scrollTop=0};
+$('#seg').addEventListener('click',ev=>{const b=ev.target.closest('[role=tab]');if(b){buzz();show(b.dataset.t)}});
+$('#seg').addEventListener('keydown',ev=>{const d={ArrowRight:1,ArrowLeft:-1}[ev.key];if(!d)return;
+  const t=TABS[(TABS.indexOf(tab)+d+TABS.length)%TABS.length];show(t);$('#t-'+t).focus()});
+if(DONE){const c=$('#count');c.hidden=false;c.setAttribute('aria-label',`${plural(DONE,'exercise','exercises')} done`);c.textContent=`${DONE} done`}
+
+// ---- lessons: Happi asks once, one recommendation, pick up again, the library ----
+// Happi holds the prop of the exercise it suggests; asking uses the plain wave
+const POSE={thought_catcher:'catch',thought_reframing:'reframe',abc_analysis:'abc',behavioral_activation:'act',fear_ladder:'ladder'};
+const FEEL={thought_reframing:['loop','catch'],abc_analysis:['sting','abc'],behavioral_activation:['empty','act'],fear_ladder:['avoid','ladder']};
+let pick=null,filter='all';
+$('#p-lessons').insertAdjacentHTML('beforeend',HELP);
+const REPLIES=EX.filter(e=>e.reply);
+const chat=()=>{
+  const e=pick;
+  $('#chat').innerHTML=!e
+    ?`<div class="ask"><div class="happi" data-pose="wave"></div><div class="say"><h1>What’s on your mind?</h1><p>Pick the closest. I’ll suggest one.</p></div></div>
+      <div class="feel">${REPLIES.map((x,i)=>{const[g,h]=FEEL[x.id];return `<button class="fe" data-i="${i}"><span class="gi" style="background:var(--hue-${h})">${GLYPH[g]}</span>${x.reply}</button>`}).join('')}</div>
+      <button class="unsure" data-i="auto">${GLYPH.unsure}Not sure? Pick one for me</button>`
+    :`<div class="you"><p>${e.reply}</p></div>
+      <article class="rec"><span class="art" style="background:${hue(e)}">${art(e)}</span>
+        <div class="body"><h3>${e.name}</h3><p>${e.why}</p>
+          <p class="meta">${CLOCK}${e.min}${e.last?` · ${e.last}`:''}</p>
+          <a class="btn" href="${href(e)}" data-id="${e.id}"${e.pro?' data-pro':''}>${e.go?'Continue':'Start'}</a></div></article>
+      <button class="link" id="reset">Something else is on my mind</button>`;
+  const h=$('#chat .happi');if(h&&window.Happi)Happi.mount(h);
+  $$('.tile').forEach(a=>a.classList.toggle('hi',!!e&&a.dataset.id===e.id));
+};
+// fear ladder: five rungs, two climbed; the others: how often and when
+const RUNGS={fear_ladder:[2,5]};
+$('#resume').innerHTML=JUMP.map(id=>{const e=byId(id),r=RUNGS[id];
+  return `<a class="rs" href="${href(e)}" data-id="${e.id}">${thumb(e)}<span class="t"><b>${e.name}</b><small>${e.last}</small>
+    ${r?`<span class="prog" role="img" aria-label="${r[0]} of ${r[1]} rungs">${[...Array(r[1])].map((_,i)=>`<i class="${i<r[0]?'on':''}"></i>`).join('')}</span>`:''}</span>${CHEV}</a>`}).join('');
+const tile=e=>`<a class="tile" href="${href(e)}" data-id="${e.id}"${e.pro?' data-pro':''}>
+  <span class="art" style="background:${hue(e)}">${art(e)}${e.pro?`<span class="badge pro">${LOCK}Pro</span>`:''}${e.isNew?'<span class="badge new">New</span>':''}</span>
+  <b>${e.name}</b><small>${CLOCK}${e.min}</small></a>`;
+const BLURB={cbt_core:'Catch a thought and weigh it fairly',mindfulness:'Settle your body and your attention',anxiety:'Face a worry at its own pace',overthinking:'Step out of the loop'};
+const FILTERS=[['all','Any length'],['short','10 min or less'],['new','Not tried yet']];
+const KEEP={all:()=>1,short:e=>e.m<=10,new:e=>!e.last};
+const cats=()=>{
+  $('#chips').innerHTML=FILTERS.map(([k,l])=>`<button class="chip" data-f="${k}" aria-pressed="${k===filter}">${k===filter?CHECK:''}${l}</button>`).join('');
+  const keep=EX.filter(KEEP[filter]);
+  $('#cats').innerHTML=Object.keys(CAT).map(c=>{const rows=keep.filter(e=>e.cat===c);
+    return rows.length?`<section class="cat" id="cat-${c}"><div class="cath"><h3>${CAT[c].label}</h3><span>${rows.length}</span></div><p>${BLURB[c]}</p><div class="shelf">${rows.map(tile).join('')}</div></section>`:'';
+  }).join('')||'<p class="none">Nothing at this length yet. Try another filter.</p>';
+  chat();
+};
+cats();
+$('#chat').addEventListener('click',ev=>{
+  const q=ev.target.closest('[data-i]');
+  if(q){pick=q.dataset.i==='auto'?AUTO:REPLIES[q.dataset.i];buzz();chat();$('.rec .btn').focus();return}
+  if(ev.target.closest('#reset')){pick=null;chat();$('.fe').focus()}
+});
+$('#chips').addEventListener('click',ev=>{
+  const c=ev.target.closest('.chip');
+  if(c){filter=c.dataset.f;buzz();cats();$(`.chip[data-f=${filter}]`).focus()}
+});
+
+// ---- my log: the week as presence, then entries by day ----
+const dayLabel=n=>n===0?'Today':n===1?'Yesterday':D(n).toLocaleDateString('en-US',n<7?{weekday:'long'}:{weekday:'short',month:'short',day:'numeric'});
+// one 0-10 track: hollow dot before, filled dot after, a line between
+const move=l=>{const x=v=>8+v*8.4;return `<span class="mv"><svg viewBox="0 0 100 16" width="100" height="16" aria-hidden="true">
+  <line x1="8" y1="8" x2="92" y2="8" stroke="#e5e5e5" stroke-width="4" stroke-linecap="round"/>
+  <line x1="${x(l.b)}" y1="8" x2="${x(l.a)}" y2="8" stroke="#5f7f58" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="${x(l.b)}" cy="8" r="5" fill="#fff" stroke="#5f7f58" stroke-width="2.5"/><circle cx="${x(l.a)}" cy="8" r="5.5" fill="#5f7f58"/></svg>
+  <span>${l.lbl} went ${l.a<l.b?'down':l.a>l.b?'up':'nowhere'}, ${l.b} to ${l.a}</span></span>`};
+// intensity in words, not 7/10 bars (How We Feel shows "Somewhat / A little" beside each emotion)
+const amount=v=>v>=9?'very much':v>=7?'a lot':v>=4?'somewhat':'a little';
+const list=xs=>xs.length>1?xs.slice(0,-1).join(', ')+' and '+xs.at(-1):xs[0];
+const note=l=>{const f=l.emo?`You felt ${list(l.emo.map(([n,v])=>`<b>${n.toLowerCase()}</b> ${amount(v)}`))}.`:'',
+  t=l.tags?` ${l.tags.length>1?'Traps':'Trap'} you spotted: ${list(l.tags.map(t=>`“${t.toLowerCase()}”`))}.`:'';
+  return f||t?`<p class="note">${(f+t).trim()}</p>`:''};
+const entry=(l,i)=>{
+  const e=byId(l.id),more=l.exp||l.emo||l.grat,r=RUNGS[l.id];
+  // the user's words stay theirs: labelled, never the row's title
+  const head=`${thumb(e,'s').replace('<span','<span aria-hidden="true"')}<span class="tx"><span class="enr"><b>${e.name}</b><time>${l.time}</time></span>
+    ${l.prev?`<span class="pv">“${l.prev}”</span>`:''}
+    ${l.lbl?move(l):l.status==='in_progress'?`<span class="pv">${r?`Paused at rung ${r[0]} of ${r[1]}`:'Paused part way'}. It’s saved.</span>`:''}</span>${more?CV:e.html?CHEV:'<span class="cv" style="width:20px"></span>'}`;
+  const body=more?`<div class="exp" id="x${i}" hidden>
+    ${l.prev?`<ol class="arc"><li class="from"><span class="lab">${l.pl}</span><p>“${l.prev}”</p></li>${l.exp?`<li class="to"><span class="lab">${l.xl}</span><p>${l.exp}</p></li>`:''}</ol>`:''}
+    ${note(l)}
+    ${l.grat?`<ul class="grat">${l.grat.map(g=>`<li>${g}</li>`).join('')}</ul>`:''}
+    ${e.html?`<a class="open" href="${e.html}">Do it again <span aria-hidden="true">→</span></a>`:''}</div>`:'';
+  return `<article class="en">${more?`<button class="enh" aria-expanded="false" aria-controls="x${i}">${head}</button>${body}`:e.html?`<a class="enh" href="${e.html}">${head}</a>`:`<div class="enh">${head}</div>`}</article>`;
+};
+const week=()=>{const wk=LOG.filter(l=>l.day<7),on=new Set(wk.map(l=>l.day)),n=on.size,said=[...on].sort((a,b)=>b-a).map(dayLabel).join(', ');
+  return `<div class="week"><p class="eye-b">This week</p><h2>You practised on ${plural(n,'day','days')}.</h2><p>${plural(wk.length,'entry','entries')} below, newest first.</p>
+    <ol class="days" role="img" aria-label="Last 7 days. Practised: ${said}">${[6,5,4,3,2,1,0].map(d=>`<li class="${on.has(d)?'on':''}${d===0?' today':''}"><span>${on.has(d)?LEAF:''}</span>${D(d).toLocaleDateString('en-US',{weekday:'narrow'})}</li>`).join('')}</ol></div>`};
+const log=()=>{
+  if(!LOG.length){$('#p-log').innerHTML=`<div class="empty"><span class="th" style="background:var(--hue-catch)">${ART.gratitude_reframe()}</span><h1>Your entries will live here.</h1><p>Each one you finish is kept in your own words.</p><button class="btn" data-go="lessons">Start an exercise</button></div>${HELP}`;return}
+  const days=[...new Set(LOG.map(l=>l.day))];
+  $('#p-log').innerHTML=`${week()}<div class="tl">${days.map(d=>`<h3 class="day">${dayLabel(d)}</h3>${LOG.map((l,i)=>l.day===d?entry(l,i):'').join('')}`).join('')}</div>${HELP}`;
+};
+log();
+$('#p-log').addEventListener('click',ev=>{
+  const h=ev.target.closest('button.enh');
+  if(!h)return;
+  buzz();const on=h.getAttribute('aria-expanded')!=='true';
+  h.setAttribute('aria-expanded',on);$('#'+h.getAttribute('aria-controls')).hidden=!on;
+});
+
+// ---- practice: baseline until three completed, then what your own ratings show ----
+const RANGE={'7d':7,'30d':30,all:Infinity};
+let range='7d';
+const MOOD=[6,5,7,4,6,7,5],today=new Date().getDay();
+const WD=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+// a line, not bars: mood is one thing moving through the week. A leaf under a day means you practised.
+const chart=()=>{
+  const X=i=>i*44+22,Y=v=>112-v*9.6,pts=MOOD.slice(0,today+1).map((v,i)=>[X(i),Y(v)]);
+  const peak=MOOD.slice(0,today+1).reduce((b,v,i,a)=>v>a[b]?i:b,0);
+  const curve=pts.map(([x,y],i)=>{if(!i)return `M${x} ${y}`;const[px,py]=pts[i-1],m=(px+x)/2;return `C${m} ${py} ${m} ${y} ${x} ${y}`}).join(' ');
+  const did=new Set(LOG.map(l=>today-l.day).filter(i=>i>=0));
+  const said=WD.map((d,i)=>`${d} ${i<=today?`${MOOD[i]} of 10${did.has(i)?', practised':''}`:'not yet'}`).join(', ');
+  return `<p class="sub">Brightest so far: ${WD[peak]}, ${MOOD[peak]} of 10.</p>
+  <svg class="chart" viewBox="0 0 308 160" role="img" aria-label="Mood you logged this week, out of 10. ${said}">
+    <defs><linearGradient id="mg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fb184" stop-opacity=".45"/><stop offset="1" stop-color="#8fb184" stop-opacity="0"/></linearGradient></defs>
+    <line class="grid" x1="8" x2="300" y1="${Y(5)}" y2="${Y(5)}"/>
+    ${pts.length>1?`<path d="${curve} L${pts.at(-1)[0]} 118 L${pts[0][0]} 118 Z" fill="url(#mg)"/><path class="ln" d="${curve}"/>`:''}
+    ${WD.map((d,i)=>{const x=X(i),t=i===today;
+      const mark=i>today?`<circle class="ahead" cx="${x}" cy="112" r="3.5"/>`
+        :`<circle class="pt${t?' t':''}" cx="${x}" cy="${Y(MOOD[i])}" r="${t?7:4.5}"/>${t||i===peak?`<text class="v" x="${x}" y="${Y(MOOD[i])-13}">${MOOD[i]}</text>`:''}`;
+      return mark+(did.has(i)?`<path class="lf" transform="translate(${x} 130)" d="M-6 5C-6-2-1-6 6-6 6 1 1 6-6 5Z"/>`:'')
+        +`<text x="${x}" y="154"${t?' class="now"':''}>${t?'Today':d[0]}</text>`}).join('')}
+  </svg>
+  <p class="disc">Mood you logged each day, out of 10. A leaf marks a day you practised.</p>`};
+const untried=EX.find(e=>!LOG.some(l=>l.id===e.id)&&!e.pro&&e.html);
+const AM=LOG.filter(l=>l.status==='completed'&&l.time?.endsWith('AM')).length;
+const practice=()=>{
+  if(DONE<3){
+    $('#p-practice').innerHTML=`<div class="empty"><span class="th" style="background:var(--hue-abc)">${ART.grounding_54321()}</span>
+      <h1>Patterns show up after three</h1><p>Finish three exercises. Then you’ll see how your feelings move, in your own ratings.</p>
+      <div class="base" role="img" aria-label="${DONE} of 3 done">${[1,2,3].map(n=>`<span class="${n<=DONE?'on':''}">${n}</span>`).join('')}</div>
+      <button class="btn" data-go="lessons">Choose an exercise</button></div>${HELP}`;
+    return;
+  }
+  $('#p-practice').innerHTML=`<div class="ph"><h2>Your practice</h2>
+    <div class="seg sm" id="range" role="group" aria-label="Time range">${['7d','30d','all'].map(r=>`<button data-r="${r}" aria-pressed="${r===range}">${r==='all'?'All':r}</button>`).join('')}</div></div>
+    <article class="win"><p class="eye-b">Thought Reframing · 3 sessions</p>
+      <p class="big">Your distress eased by 4 points on average.</p>
+      <div class="ba" role="img" aria-label="Average distress 8 before, 4 after, out of 10">
+        <div><span>Before</span><i><s style="--v:.8"></s></i><b>8</b></div>
+        <div><span>After</span><i><s style="--v:.4"></s></i><b>4</b></div></div>
+      <p class="disc">From your own ratings, out of 10. Three sessions is an early read, not a clinical assessment.</p></article>
+    <div class="stats">
+      <div class="st">${LEAFO}<b>${DONE}</b><span>exercises done</span></div>
+      <div class="st">${SUNI}<b>${AM}<small style="font-size:var(--t-lead)"> of ${DONE}</small></b><span>done before noon</span></div></div>
+    ${untried?`<a class="next" href="${href(untried)}">${thumb(untried)}<span class="t"><span class="eye-b">Not tried yet</span><b>${untried.name}</b><small>${untried.min}</small></span><span class="go">Try it</span></a>`:''}
+    <h2 class="sec">Mood this week</h2>${chart()}
+    <h2 class="sec">By topic</h2>
+    <div class="garden">${Object.keys(CAT).map(c=>{
+      const mine=LOG.filter(l=>byId(l.id).cat===c&&l.day<RANGE[range]),n=mine.filter(l=>l.status==='completed').length,wip=mine.length-n;
+      const sp=n||wip?LEAF.repeat(Math.min(n,6))+(wip?LEAF.replace('<svg','<svg class="half"'):''):'<span class="seed"></span>';
+      return `<a class="plot" href="#lessons" data-go="lessons" data-cat="${c}" style="background:var(--hue-${HUE[c]})">
+        <span class="top"><span class="ico">${CAT[c].icon}</span>${CHEV}</span><b>${CAT[c].label}</b>
+        <span class="sp" aria-hidden="true">${sp}</span><small>${n?plural(n,'session','sessions'):''}${n&&wip?' · ':''}${wip?`${wip} in progress`:''}${n||wip?'':'Not tried yet'}</small></a>`}).join('')}</div>
+    ${HELP}`;
+};
+practice();
+$('#p-practice').addEventListener('click',ev=>{
+  const r=ev.target.closest('[data-r]');
+  if(r){range=r.dataset.r;buzz();practice();$(`[data-r="${range}"]`).focus()}
+});
+
+// ---- sheets: support, coping cards, pro ----
+const SHEETS={
+  help:()=>`<h3 id="sh-t">Need to talk to someone?</h3><p class="lede">You do not have to carry this alone. These are free, private and open day and night.</p>
+    <ul class="res"><li><a href="tel:988"><b>Call or text 988</b><small>Suicide and Crisis Lifeline</small></a></li>
+    <li><a href="sms:741741?&body=HOME"><b>Text HOME to 741741</b><small>Crisis Text Line</small></a></li>
+    <li><a href="tel:911"><b>In danger right now? Call 911</b><small>Emergency services</small></a></li></ul>
+    <p class="fine">Numbers shown are for the United States.</p>`,
+  coping:()=>`<h3 id="sh-t">My Coping Cards</h3><p class="lede">Balanced thoughts you saved from your exercises, ready for a hard moment.</p>
+    ${LOG.some(l=>l.exp)?`<ul class="cards">${LOG.filter(l=>l.exp).map(l=>`<li>${l.exp}<small>${byId(l.id).name} · ${dayLabel(l.day)}</small></li>`).join('')}</ul>`
+      :'<p class="fine">Nothing saved yet. Finish a reframe and keep the balanced thought here.</p>'}`,
+  pro:e=>`<h3 id="sh-t">${e.name} is part of Pro</h3><p class="lede">${e.sub}</p>
+    <button class="btn" data-sheet="paywall">See Happy Pro</button>
+    ${e.html?`<a class="btn ghost" href="${e.html}">Preview this exercise</a>`:''}`,
+  // sample only: the live paywall is the RevenueCat template for the current offering
+  paywall:()=>`<span class="sample">Sample · live paywall comes from RevenueCat</span><h3 id="sh-t">Keep going with Happy Pro</h3>
+    <ul class="get"><li><span><b>Guided journeys</b><small>Step-by-step courses, open today</small></span></li>
+      <li><span><b>Pattern insights</b><small>Unlock after 3 reflections: see what lightens your thoughts most</small></span></li>
+      <li><span><b>Every exercise</b><small>ABC Analysis, Decatastrophizing, Worry Decision Tree and more</small></span></li></ul>
+    <ol class="tlx"><li><b>Today</b><small>Full access. Nothing due now.</small></li><li><b>Day 5</b><small>We remind you before the trial ends</small></li><li><b>Day 7</b><small>$39.99/year starts. Cancel anytime before.</small></li></ol>
+    <p class="free">Your saved reflections stay free, always.</p>
+    <button class="btn" data-trial>Start 7-day free trial</button><button class="later center" data-close>Not now</button>
+    <p class="fine" style="text-align:center">Cancel anytime in Settings · Restore purchases</p>`,
+  signin:why=>`<h3 id="sh-t">${why==='purchase'?'Protect your subscription on other devices':'Keep your reflections safe'}</h3>
+    <p class="lede">${why==='purchase'?'Sign in so Pro follows you to a new phone.':'Sign in so your reflections survive a new phone or a reinstall.'}</p>
+    <div class="sso"><button class="dark" data-signin>Continue with Apple</button><button data-signin>Continue with Google</button><button data-signin>Continue with email</button></div>
+    <button class="later center" data-close>Later</button><p class="fine" style="text-align:center">Sample sign-in. No account is created.</p>`,
+};
+let from=null;
+const openSheet=(kind,e)=>{from=document.activeElement;$('#sheet').className='sheet'+(kind==='paywall'?' tall':'');
+  $('#sheet').style.animation=$('#scrim').style.animation=kind==='help'?'none':'';
+  $('#sheet').innerHTML=`<button class="x" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`+SHEETS[kind](e);
+  $('#scrim').hidden=$('#sheet').hidden=false;$('#sheet .x').focus()};
+const closeSheet=()=>{$('#scrim').hidden=$('#sheet').hidden=true;from&&from.focus()};
+$('#help').onclick=()=>openSheet('help');
+$('#coping').onclick=()=>openSheet('coping');
+$('#scrim').onclick=closeSheet;
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
+document.addEventListener('click',ev=>{
+  const s=ev.target.closest('[data-sheet]');if(s)return openSheet(s.dataset.sheet);
+  if(ev.target.closest('[data-close]'))return closeSheet();
+  const g=ev.target.closest('[data-go]');if(g){ev.preventDefault();buzz();show(g.dataset.go);return g.dataset.cat&&$('#cat-'+g.dataset.cat)?.scrollIntoView({block:'start'})}
+  if(ev.target.closest('[data-trial]'))return openSheet('signin','purchase'); // after purchase: protect it with an account
+  if(ev.target.closest('[data-signin]')){put('happy.signedIn',true);return closeSheet()}
+  const a=ev.target.closest('a[data-id]');if(!a)return;
+  if(a.hasAttribute('data-pro')){ev.preventDefault();openSheet('pro',byId(a.dataset.id))}
+  else if(a.getAttribute('href')==='#')ev.preventDefault();
+});
+$('#sheet').addEventListener('keydown',ev=>{ // keep focus inside the dialog
+  if(ev.key!=='Tab')return;
+  const f=$$('#sheet button,#sheet a'),i=f.indexOf(document.activeElement);
+  if(ev.shiftKey&&i<=0){ev.preventDefault();f.at(-1).focus()}
+  else if(!ev.shiftKey&&i===f.length-1){ev.preventDefault();f[0].focus()}
+});
+show(TABS.includes(location.hash.slice(1))?location.hash.slice(1):'lessons');
+</script>
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fear Ladder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&display=swap">
+<style>
+  /* ===== tokens ===== */
+  :root{
+    --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--sp-7:48px;
+    --r-s:12px;--r-m:16px;--r-pill:999px;
+    --tap:44px;
+    --t-cap:12px;--t-foot:13px;--t-sub:15px;--t-body:17px;--t-lead:20px;--t-h:24px;--t-title:28px;--t-num:34px;--t-display:9rem;
+    --dur:.28s;--ease:cubic-bezier(.32,.72,0,1);--spring:cubic-bezier(.34,1.56,.64,1);
+    /* Happy: Nunito everywhere, sage on white, thick borders with a bottom rim (DESIGN.md) */
+    --font:"Nunito",ui-rounded,-apple-system,system-ui,sans-serif;--display:var(--font);
+    --bg:#fff;--surface:#fff;--surface-2:#f7f7f7;--tint:#f2f8ef;--sun:#f5b942;--cloud-lo:#e4eee0;--cloud-hi:#a9bfa0;
+    --label:#142414;--label-2:#4b4b4b;--label-3:#767676;
+    --sep:#e5e5e5;--rim:#cfcfcf;
+    --accent:#44633f;--on-accent:#fff;--ink:#5f7f58;--on-ink:#fff;--ink-rim:#29452a;
+    --bw:2px;--rimw:4px;
+    color-scheme:light;
+  }
+  @media (prefers-contrast:more){:root{--sep:currentColor;--label-3:var(--label-2)}}
+
+  /* ===== base ===== */
+  *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+  html{font-size:17px}
+  body{font-family:var(--font);
+    background:var(--bg);color:var(--label);min-height:100dvh;display:flex;justify-content:center;
+    -webkit-font-smoothing:antialiased;line-height:1.35}
+  #app{width:100%;max-width:430px;height:100dvh;display:flex;flex-direction:column;position:relative;background:var(--bg);overflow:hidden;
+    transition:background var(--dur) var(--ease)}
+  /* desktop preview: show it as a phone */
+  @media (min-width:600px){
+    body{align-items:center;background:#d9d8d3}
+    #app{width:390px;height:min(844px,calc(100dvh - 48px));border-radius:48px;box-shadow:0 0 0 10px #142414}
+  }
+  button{font:inherit;color:inherit;cursor:pointer}
+  header,main,footer{position:relative;z-index:1}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* ===== nav ===== */
+  header{display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-3) 0;
+    padding-top:calc(var(--sp-2) + env(safe-area-inset-top))}
+  header{gap:var(--sp-3)}
+  .icon-btn{width:var(--tap);height:var(--tap);display:grid;place-items:center;background:none;border:0;
+    border-radius:var(--r-pill);color:var(--label);transition:background var(--dur) var(--ease),transform var(--dur) var(--ease)}
+  .icon-btn:active{background:var(--surface);transform:scale(.92)}
+  .bar{flex:1;height:4px;background:var(--sep);border-radius:var(--r-pill);overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--accent);border-radius:inherit;transition:width var(--dur) var(--ease)}
+
+  /* ===== content ===== */
+  main{flex:1;min-height:0;padding:var(--sp-5) var(--sp-4) var(--sp-6);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+  main::-webkit-scrollbar{display:none}
+  main{animation:enter var(--dur) var(--ease) both}
+  @keyframes enter{from{opacity:0}}
+  h1{font-family:var(--display);font-size:var(--t-title);line-height:1.1;letter-spacing:-.01em;font-weight:800;margin-bottom:var(--sp-3);text-wrap:balance}
+  h1.lg{font-size:2.75rem;line-height:1;letter-spacing:-.02em;margin-bottom:var(--sp-4)}
+  .sub{font-size:var(--t-lead);line-height:1.3;font-weight:500;color:var(--label-2);margin-bottom:var(--sp-5);max-width:65ch}
+  .note{font-size:var(--t-foot);color:var(--label-3);margin-top:var(--sp-2);padding:0 var(--sp-1);min-height:1.2em}
+  .ok{color:var(--accent)}
+  .meta{font-size:var(--t-foot);color:var(--label-3);margin-bottom:var(--sp-5)}
+
+  /* ===== footer ===== */
+  footer{padding:var(--sp-4) var(--sp-4) calc(var(--sp-4) + env(safe-area-inset-bottom));display:flex;gap:var(--sp-3);
+    background:color-mix(in srgb,var(--bg) 82%,transparent);
+    -webkit-backdrop-filter:blur(var(--sp-5)) saturate(1.4);backdrop-filter:blur(var(--sp-5)) saturate(1.4)}
+  .btn{flex:1;min-height:56px;border:0;border-bottom:var(--rimw) solid var(--ink-rim);border-radius:var(--r-pill);padding:var(--sp-3) var(--sp-5);
+    font-size:var(--t-body);font-weight:700;background:var(--ink);color:var(--on-ink);
+    transition:transform .12s var(--spring),border-bottom-width .12s var(--spring),background var(--dur) var(--ease)}
+  .btn:active:not(:disabled){transform:translateY(2px);border-bottom-width:2px}
+  .btn:disabled{background:var(--sep);border-bottom-color:var(--rim);color:var(--label-3);cursor:default}
+  .btn.ghost{flex:0 0 auto;background:var(--surface-2);color:var(--label-2);border:0}
+  .btn.ghost:active:not(:disabled){transform:scale(.98)}
+  #more{width:100%;margin-top:var(--sp-1)}
+
+  /* ===== inputs ===== */
+  /* a sheet of paper on the lit ground: no border, the ring on focus is the only edge */
+  textarea,input[type=text]{width:100%;border:var(--bw) solid var(--sep);border-radius:var(--r-m);padding:var(--sp-4);font:inherit;
+    font-size:var(--t-lead);line-height:1.35;font-weight:600;resize:none;outline:none;background:var(--surface);color:var(--label);
+    transition:border-color var(--dur) var(--ease),background var(--dur) var(--ease)}
+  textarea{min-height:11rem}
+  input[type=text]{font-size:var(--t-body);border-radius:var(--r-pill);padding:0 var(--sp-4)}
+  textarea::placeholder,input::placeholder{color:var(--label-3)}
+  textarea:focus,input[type=text]:focus{border-color:var(--ink);background:var(--tint)}
+  /* composer: one field, the add control lives inside it */
+  .row{display:flex;align-items:flex-end;gap:var(--sp-2);margin-bottom:var(--sp-4);padding:var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-4);
+    background:var(--surface);border:var(--bw) solid var(--sep);border-radius:calc(var(--tap)/2 + var(--sp-1) + var(--bw));transition:border-color var(--dur) var(--ease),background var(--dur) var(--ease)}
+  .row:focus-within{border-color:var(--ink);background:var(--tint)}
+  .row textarea{flex:1;min-width:0;min-height:var(--tap);max-height:9rem;padding:var(--sp-3) 0;border:0;border-radius:0;background:transparent;
+    font-size:var(--t-body);line-height:1.35;field-sizing:content;overflow-y:auto}
+  .row textarea:focus{background:transparent}
+  .row button{flex:none;width:var(--tap);height:var(--tap);display:grid;place-items:center;border:0;border-bottom:var(--rimw) solid var(--ink-rim);border-radius:50%;
+    background:var(--ink);color:var(--on-ink);transition:transform .12s var(--spring),opacity var(--dur) var(--ease)}
+  .row button:active:not(:disabled){transform:translateY(2px);border-bottom-width:var(--bw)}
+  .row button:disabled{background:var(--sep);border-bottom-color:var(--sep);color:var(--label-3);cursor:default}
+  .count{font-size:var(--t-foot);font-weight:700;color:var(--label-3);margin-bottom:var(--sp-2)}
+
+  /* ===== conversation ===== */
+  /* the cloud asks, you answer. One question per screen, like a message thread, not a form */
+  .ask{display:flex;align-items:flex-end;gap:var(--sp-3);margin-bottom:var(--sp-5)}
+  .ask .sky{flex:none;width:84px;margin:0 0 -6px}
+  .ask .sky.nod{animation:nod .5s var(--spring)}
+  @keyframes nod{30%{transform:translateY(-6px)}65%{transform:translateY(2px)}}
+  .bub{flex:1;min-width:0;background:var(--tint);border-radius:var(--r-m) var(--r-m) var(--r-m) 4px;padding:var(--sp-4)}
+  .bub.solo{border-radius:var(--r-m)}
+  .bub h1{font-size:var(--t-h);line-height:1.15;margin:0}
+  .bub p{font-size:var(--t-body);line-height:1.35;font-weight:500;color:var(--label-2);margin-top:var(--sp-2)}
+  /* what you said earlier comes back as your own bubble */
+  .me{display:flex;flex-direction:column;align-items:flex-end;margin-bottom:var(--sp-4)}
+  .me small{font-size:var(--t-foot);font-weight:600;color:var(--label-3);margin-bottom:var(--sp-1)}
+  .me p{max-width:85%;background:var(--ink);color:var(--on-ink);border-radius:var(--r-m) var(--r-m) 4px var(--r-m);padding:var(--sp-3) var(--sp-4);
+    font-weight:600;line-height:1.35;overflow-wrap:anywhere}
+  /* your reply is paper, not a box: big type on a hairline */
+  textarea.paper{border:0;border-bottom:var(--bw) solid var(--sep);border-radius:0;padding:var(--sp-2) 0;min-height:6.5rem;font-size:var(--t-lead);font-weight:700;background:transparent}
+  textarea.paper:focus{border-color:var(--ink);background:transparent}
+  /* quick replies: tap one to use it, like a suggested message */
+  .qrl{font-size:var(--t-foot);font-weight:600;color:var(--label-3);margin-top:var(--sp-5)}
+  .qrs{display:flex;gap:var(--sp-2);overflow-x:auto;scrollbar-width:none;margin:var(--sp-2) calc(-1*var(--sp-4)) 0;padding:0 var(--sp-4) var(--sp-1);scroll-snap-type:x proximity}
+  .qrs::-webkit-scrollbar{display:none}
+  .qr{flex:none;max-width:78%;scroll-snap-align:start;text-align:left;border:var(--bw) solid var(--sep);border-radius:var(--r-m) var(--r-m) 4px var(--r-m);
+    background:var(--surface);padding:var(--sp-3) var(--sp-4);font-size:var(--t-sub);font-weight:600;line-height:1.3;color:var(--label-2);
+    transition:transform .12s var(--spring),border-color var(--dur) var(--ease)}
+  .qr:active{transform:scale(.97);border-color:var(--ink)}
+  .hero{padding:var(--sp-4);background:var(--tint);border-radius:var(--r-m)}
+  .hero small{display:block;font-size:var(--t-foot);font-weight:600;color:var(--label-2);margin-bottom:var(--sp-1)}
+
+
+  /* ===== list ===== */
+  /* a ledger on the ground: hairlines, no box */
+  ul.items{list-style:none;padding:0;border-bottom:1px solid var(--sep)}
+  ul.items:empty{display:none}
+  ul.items li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--ink);margin-right:var(--sp-1)}
+  ul.items li span{flex:1}
+  ul.items li{display:flex;justify-content:space-between;align-items:center;gap:var(--sp-2);padding:var(--sp-2) 0;
+    min-height:var(--tap);font-size:var(--t-body);font-weight:500;border-top:1px solid var(--sep)}
+  ul.items button{flex:none;width:var(--tap);height:var(--tap);display:grid;place-items:center;background:none;border:0;color:var(--label-3);border-radius:var(--r-pill)}
+  ul.items button:active{background:var(--surface-2)}
+
+  /* ===== slider ===== */
+  /* the gauge screen: numeral is the poster, pinned low; a ten-cell bar under it */
+  .gauge{min-height:100%;display:flex;flex-direction:column}
+  .gauge .mid{flex:1;min-height:140px;display:grid;place-items:center;overflow:hidden}
+  .gauge .mid .sky{width:100%;height:100%;max-width:240px;margin:0}
+  .big{font-family:var(--display);font-size:var(--t-display);line-height:.85;font-weight:600;color:var(--label);font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin:0 0 var(--sp-4) -.03em}
+  .big small{font-size:var(--t-lead);color:var(--label-2);font-weight:700;letter-spacing:0;margin-left:var(--sp-2)}
+  .scale{position:relative;height:var(--tap)}
+  .segs{position:absolute;inset:var(--sp-2) 0;display:grid;grid-template-columns:repeat(10,1fr);gap:var(--sp-1)}
+  .segs i{border:var(--bw) solid var(--sep);border-radius:6px;transition:background var(--dur) var(--ease)}
+  .segs i.f{background:var(--ink);border-color:var(--ink-rim)}
+  input[type=range]{-webkit-appearance:none;appearance:none;position:absolute;inset:0;width:100%;height:var(--tap);margin:0;background:transparent}
+  input[type=range]::-webkit-slider-runnable-track{height:var(--tap);background:transparent}
+  input[type=range]::-moz-range-track{height:var(--tap);background:transparent}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:var(--tap);border-radius:8px;
+    background:var(--surface);border:var(--bw) solid var(--ink-rim)}
+  input[type=range]::-moz-range-thumb{width:16px;height:var(--tap);border-radius:8px;background:var(--surface);border:var(--bw) solid var(--ink-rim)}
+  .lbls{display:flex;justify-content:space-between;font-size:var(--t-foot);font-weight:600;color:var(--label-2);margin-top:var(--sp-2)}
+
+  /* ===== intro ===== */
+  /* the thought as weather: a heavy cloud when it feels true, a sun and a smile as it loosens.
+     --f is believability 0..1; the slider sets it live, other screens set it inline */
+  .sky,.bal{display:block;width:min(100%,200px);height:auto;margin:0 auto var(--sp-4)}
+  .sky{--f:var(--heat-f,.5)}
+  .sky.lead{width:208px;margin:var(--sp-5) 0 var(--sp-4)}
+  .sky .deco circle{fill:var(--cloud-lo)}
+  .sky .deco path{fill:none;stroke:var(--sun);stroke-width:3;stroke-linecap:round}
+  .sky .brow{fill:none;stroke:var(--label);stroke-width:3;stroke-linecap:round;opacity:max(0,calc((var(--f) - .6)*2.5))}
+  /* rain falls only when the thought feels heavy */
+  .sky .rain{opacity:max(0,calc((var(--f) - .55)*2.2))}
+  .sky .rain line{stroke:var(--accent);stroke-width:3;stroke-linecap:round;animation:fall 1.2s linear infinite}
+  .sky.lead .bob,.sky.live .bob{animation:bob 4s ease-in-out infinite}
+  .sky.lead .rays,.sky.live .rays{transform-origin:140px 46px;animation:spin 30s linear infinite}
+  .sky.lead .eye,.sky.live .eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+  .sky.lead .deco path{animation:twinkle 2.8s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(-4px)}}
+  @keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+  @keyframes twinkle{50%{opacity:.25}}
+  @keyframes fall{0%{transform:translateY(-4px);opacity:0}30%{opacity:1}100%{transform:translateY(12px);opacity:0}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .sky.sm{width:112px;margin:0 0 var(--sp-4);animation:pop .5s var(--ease) both}
+  .pair{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);margin-bottom:var(--sp-5);color:var(--label-3);animation:pop .5s var(--ease) both}
+  .pair figure{margin:0;text-align:center}
+  .pair .sky{width:128px;margin:0 0 var(--sp-1)}
+  .pair figcaption{font-size:var(--t-foot);font-weight:700;color:var(--label-2)}
+  .sky .sun{fill:var(--sun);stroke:var(--sun);stroke-width:4;stroke-linecap:round;opacity:calc(1 - var(--f));transform:translateY(calc(var(--f)*14px));transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
+  .sky .cloud{fill:color-mix(in srgb,var(--cloud-hi) calc(var(--f)*100%),var(--cloud-lo));transform:scale(calc(.72 + .28*var(--f)));transform-box:fill-box;transform-origin:50% 100%;transition:transform var(--dur) var(--ease)}
+  .sky .eye{fill:var(--label)}
+  .sky .mouth{fill:none;stroke:var(--label);stroke-width:3;stroke-linecap:round;transform:scaleY(calc(1 - 2*var(--f)));transform-box:fill-box;transform-origin:center;transition:transform var(--dur) var(--ease)}
+  @keyframes drop{from{transform:translateY(-14px);opacity:0}}
+  /* intro: the cloud is the hero, its first line sits under it */
+  .intro .sky.lead,.intro .lad.lead{margin-bottom:var(--sp-3)}
+  .intro .bub{border-radius:4px var(--r-m) var(--r-m) var(--r-m);margin-bottom:var(--sp-5)}
+  .intro .bub h1{font-size:var(--t-title)}
+
+  /* ===== summary ===== */
+  @keyframes pop{from{transform:scale(.6);opacity:0}}
+  .hero{padding:var(--sp-5);margin-bottom:var(--sp-6)}
+  .hero p{font-family:var(--display);font-size:var(--t-title);line-height:1.05;font-weight:700;margin-top:var(--sp-2);text-wrap:balance}
+  /* the record: sections on the ground, separated by rules only */
+  .group{border-top:1px solid var(--sep)}
+  .group section{padding:var(--sp-4) 0 var(--sp-5)}
+  .group section+section{border-top:1px solid var(--sep)}
+  .group h3{font-size:var(--t-foot);font-weight:600;color:var(--label-2);margin-bottom:var(--sp-2)}
+  .group p,.group li{font-size:var(--t-body);line-height:1.4}.group ul{padding-left:var(--sp-4)}
+  .tags span{border:1px solid var(--sep);display:inline-block;margin:0 var(--sp-2) var(--sp-2) 0;padding:var(--sp-1) var(--sp-3);border-radius:var(--r-pill);font-size:var(--t-foot);font-weight:600;color:var(--label)}
+  /* scoreboard: before and now as two numerals, the verdict beside them */
+  .shift{display:grid;grid-template-columns:auto auto 1fr;align-items:end;gap:var(--sp-5)}
+  .shift span{display:flex;flex-direction:column}
+  .shift b{font-family:var(--display);font-size:3.5rem;line-height:.85;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .shift small{font-size:var(--t-foot);font-weight:600;color:var(--label-2);margin-top:var(--sp-2)}
+  .shift em{font-style:normal;font-weight:600;color:var(--label-2);padding-bottom:var(--sp-1)}
+
+  /* ===== toast ===== */
+  #toast{position:fixed;left:50%;bottom:calc(var(--sp-7) + var(--sp-6) + env(safe-area-inset-bottom));transform:translate(-50%,var(--sp-4));opacity:0;pointer-events:none;
+    background:var(--label);color:var(--bg);padding:var(--sp-3) var(--sp-5);border-radius:var(--r-pill);font-size:var(--t-body);font-weight:600;
+    transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
+  #toast.on{opacity:1;transform:translate(-50%,0)}
+
+
+  /* ===== fear ladder ===== */
+  .lad{display:block;width:min(100%,200px);height:auto;margin:0 auto var(--sp-4)}
+  .lad.lead{width:208px;margin:var(--sp-5) 0 var(--sp-4)}
+  .lad .rail{stroke:var(--accent);stroke-width:4;stroke-linecap:round}
+  .lad .rg{stroke:var(--sep);stroke-width:4;stroke-linecap:round;transition:stroke var(--dur) var(--ease)}
+  .lad .rg.on{stroke:var(--accent)}
+  .lad .rg.new{animation:drop .4s var(--spring);transform-box:fill-box;transform-origin:center}
+  .lad .sunb{fill:var(--sun)}
+  .lad .sunr{stroke:var(--sun);stroke-width:3;stroke-linecap:round;transform-origin:172px 30px;animation:spin 30s linear infinite}
+  .lad .cl{fill:color-mix(in srgb,var(--cloud-hi) 60%,var(--cloud-lo))}
+  .lad .eye{fill:var(--label)}
+  .lad .mouth{fill:none;stroke:var(--label);stroke-width:4;stroke-linecap:round}
+  .lad.lead .bob{animation:bob 4s ease-in-out infinite}
+  /* the ladder as a route, hardest on top: rows joined by a line */
+  ul.rungs{list-style:none;padding:0;display:flex;flex-direction:column;gap:var(--sp-3)}
+  ul.rungs li{position:relative}
+  ul.rungs li:not(:last-child)::after{content:"";position:absolute;left:calc(var(--sp-4) + 18px - var(--bw)/2);top:100%;height:var(--sp-3);width:var(--bw);background:var(--sep)}
+  .rungrow{width:100%;display:flex;align-items:center;gap:var(--sp-3);text-align:left;min-height:68px;border:var(--bw) solid var(--sep);border-radius:var(--r-m);
+    padding:var(--sp-3) var(--sp-4);background:var(--surface);font-weight:700;color:var(--label);
+    transition:transform .12s var(--spring),border-color var(--dur) var(--ease),background var(--dur) var(--ease)}
+  button.rungrow:active{transform:scale(.99)}
+  .rungrow .n{flex:none;width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:var(--tint);color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums}
+  .rungrow .n svg{width:18px;height:18px;stroke-width:3}
+  .rungrow .t{flex:1;line-height:1.25}
+  .rungrow.on{border-color:var(--ink);box-shadow:0 var(--bw) 0 var(--ink);background:var(--tint)}
+  .rungrow.on .n,.rungrow.done .n{background:var(--ink);color:var(--on-ink)}
+  .pill{flex:none;font-size:var(--t-foot);font-weight:700;color:var(--accent);background:var(--tint);padding:2px var(--sp-3);border-radius:var(--r-pill)}
+  .rungrow.on .pill{background:var(--surface)}
+  .rungrow.done .t{color:var(--label-2)}
+  /* rate each rung: one number, one ten-cell bar */
+  .rate{padding:var(--sp-4) 0 var(--sp-2);border-top:1px solid var(--sep)}
+  .rate:last-child{border-bottom:1px solid var(--sep)}
+  .rate .hd{display:flex;justify-content:space-between;align-items:baseline;gap:var(--sp-3);font-weight:700;line-height:1.25}
+  .rate .hd b{font-family:var(--display);font-size:var(--t-lead);font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+  .rate .scale{margin-top:var(--sp-1)}
+  /* get ready (breathing) and stay with it (timer) */
+  .stage{min-height:100%;display:flex;flex-direction:column}
+  .stage .mid{flex:1;min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-5);text-align:center}
+  .breath{width:132px;height:132px;border-radius:50%;background:var(--tint);box-shadow:0 0 0 20px color-mix(in srgb,var(--tint) 55%,transparent);animation:breathe 8s ease-in-out infinite}
+  @keyframes breathe{50%{transform:scale(1.3)}}
+  .ringbox{position:relative;width:220px;height:220px;display:grid;place-items:center}
+  .ringbox svg{position:absolute;inset:0;transform:rotate(-90deg)}
+  .ringbox circle{fill:none;stroke-width:10;stroke-linecap:round}
+  .ringbox .tr{stroke:var(--sep)}
+  .ringbox .pg{stroke:var(--ink);stroke-dasharray:597;transition:stroke-dashoffset 1s linear}
+  .clock{font-family:var(--display);font-size:3.5rem;line-height:1;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .cue{font-size:var(--t-lead);line-height:1.3;font-weight:700;text-wrap:balance;max-width:20ch}
+  .cue.soft{font-weight:600;color:var(--label-2);font-size:var(--t-body)}
+
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+<link rel="stylesheet" href="happy-ui.css">
+</head>
+<body>
+<div id="app">
+  <header><button class="icon-btn" id="back" aria-label="Back"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i id="prog"></i></div><button class="icon-btn" id="close" aria-label="Exit exercise"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header>
+  <main id="main"></main>
+  <footer><button class="btn ghost" id="secondary" hidden></button><button class="btn" id="next"></button></footer>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+// ---- state ----
+const MIN_RUNGS = 3, MAX_RUNGS = 5, HOLD = 120;
+const fresh = () => ({fear:'',peak:7,rungs:[],pick:null,predict:'',post:null,learned:''});
+let R = fresh(), idx = 0, uid = 0, tick;
+
+// ---- helpers ----
+const IC=p=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const PLUS=IC('<path d="M12 5v14M5 12h14"/>'), X=IC('<path d="M6 6l12 12M18 6L6 18"/>'), CHECK=IC('<path d="M5 12.5l4.5 4.5L19 7"/>');
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const buzz=()=>navigator.vibrate&&navigator.vibrate(8);
+// the conversation: the cloud asks (av=0 when a bigger illustration is already on screen), you answer, quick replies fill the field
+const ask=(title,sub='',av=1)=>`<div class="ask">${av?SKY(null,'live'):''}<div class="bub${av?'':' solo'}"><h1>${title}</h1>${sub?`<p>${sub}</p>`:''}</div></div>`;
+const said=(label,text)=>String(text).trim()?`<div class="me"><small>${label}</small><p>${esc(text)}</p></div>`:'';
+const quick=items=>`<p class="qrl">Or tap one to use it</p><div class="qrs">${items.map(([,t])=>`<button class="qr" data-use="${esc(t)}">${esc(t)}</button>`).join('')}</div>`;
+const nod=()=>{const s=$('.ask .sky');if(!s)return;s.classList.remove('nod');void s.offsetWidth;s.classList.add('nod')};
+const byEase = () => [...R.rungs].sort((a,b)=>a.r-b.r);
+const picked = () => R.rungs.find(x=>x.id===R.pick);
+const suggest = () => byEase().find(x=>x.r>=3)||byEase()[0];
+
+// the thought-reframing weather, reused: a heavy storm cloud when it feels scary, sun and a smile as it eases
+const RAYS=[...Array(8)].map((_,i)=>{const a=i*Math.PI/4,c=Math.cos(a),n=Math.sin(a),r=Math.round;
+  return `<line x1="${r(140+c*32)}" y1="${r(46+n*32)}" x2="${r(140+c*40)}" y2="${r(46+n*40)}"/>`}).join('');
+const SKY=(f,cls='')=>`<svg class="sky ${cls}" viewBox="0 0 200 130" aria-hidden="true"${f==null?'':` style="--f:${f}"`}>
+  <g class="sun"><circle cx="140" cy="46" r="24" stroke="none"/><g class="rays">${RAYS}</g></g>
+  <g class="bob"><g class="cloud"><circle cx="64" cy="78" r="24"/><circle cx="96" cy="62" r="30"/><circle cx="130" cy="80" r="22"/><rect x="40" y="78" width="112" height="24" rx="12"/></g>
+  <circle class="eye" cx="86" cy="80" r="3.5"/><circle class="eye" cx="112" cy="80" r="3.5"/>
+  <path class="brow" d="M80 72L92 75M118 72L106 75"/><path class="mouth" d="M91 91Q99 99 107 91"/></g>
+  <g class="rain">${[78,98,118].map((x,i)=>`<line x1="${x}" y1="108" x2="${x}" y2="113" style="animation-delay:${i*.4}s"/>`).join('')}</g></svg>`;
+
+// the ladder: a small cloud at the foot, the sun at the top, one rung lights per step you add
+const LADDER=(n,cls='')=>`<svg class="lad ${cls}" viewBox="0 0 200 130" aria-hidden="true">
+  <circle class="sunb" cx="172" cy="30" r="14"/><g class="sunr">${[...Array(8)].map((_,i)=>{const a=i*Math.PI/4,c=Math.cos(a),s=Math.sin(a),r=Math.round;return `<line x1="${r(172+c*20)}" y1="${r(30+s*20)}" x2="${r(172+c*26)}" y2="${r(30+s*26)}"/>`}).join('')}</g>
+  <path class="rail" d="M108 14V122M148 14V122"/>
+  ${[0,1,2,3,4].map(i=>`<path class="rg${i<n?' on':''}" d="M108 ${106-i*20}H148"/>`).join('')}
+  <g class="bob"><g transform="translate(8 68) scale(.5)"><g class="cl"><circle cx="64" cy="78" r="24"/><circle cx="96" cy="62" r="30"/><circle cx="130" cy="80" r="22"/><rect x="40" y="78" width="112" height="24" rx="12"/></g>
+  <circle class="eye" cx="86" cy="80" r="3.5"/><circle class="eye" cx="112" cy="80" r="3.5"/><path class="mouth" d="M91 91Q99 99 107 91"/></g></g></svg>`;
+const LADSET=n=>document.querySelectorAll('.lad .rg').forEach((g,i)=>{g.classList.toggle('on',i<n);g.classList.toggle('new',i===n-1)});
+
+const row=(r,{tag='',cls='',btn=false,num})=>{const el=btn?'button':'div';
+  return `<${el} class="rungrow ${cls}"${btn?` data-r="${r.id}" aria-pressed="${cls.includes('on')}"`:''}><span class="n">${num??r.r}</span><span class="t">${esc(r.t)}</span>${tag?`<span class="pill">${tag}</span>`:''}</${el}>`};
+
+// ---- step builders ----
+function textStep({key,title,sub,ph,max,min=5,hint,okText,ex,recallBefore}) {
+  return {valid:()=>R[key].trim().length>=min,
+    render:()=>`${recallBefore?recallBefore():''}${ask(title,sub)}
+      <textarea id="ta" class="paper" rows="3" maxlength="${max}" placeholder="${esc(ph)}" aria-label="${esc(title)}">${esc(R[key])}</textarea>
+      <p class="note" id="status"></p>${ex?quick(ex):''}`,
+    bind(){
+      const ta=$('#ta'), st=$('#status');
+      const upd=()=>{const ok=R[key].trim().length>=min;st.className='note'+(ok?' ok':'');st.textContent=ok?okText:hint;$('#next').disabled=!ok};
+      ta.oninput=()=>{R[key]=ta.value;upd()};upd();ta.focus({preventScroll:true});
+      document.querySelectorAll('[data-use]').forEach(b=>b.onclick=()=>{R[key]=b.dataset.use;ta.value=R[key];upd();buzz();nod()});
+    }};
+}
+
+// the 0-10 gauge: numeral low, ten-cell bar, the weather above it. --heat-f drives the sky live
+// seed: an unset value starts at the earlier rating, so no answer is pre-picked
+function sliderStep({key,seed,title,labels,ctx}) {
+  return {valid:()=>true,next:'Continue',
+    render:()=>{if(seed&&R[key]==null)R[key]=seed();return `<div class="gauge">${ctx()}${ask(title,'',0)}<div class="mid">${SKY(null,'live')}</div>
+      <div class="big"><span id="v">${R[key]}</span><small>/10</small></div>
+      <div class="scale"><div class="segs" aria-hidden="true">${'<i></i>'.repeat(10)}</div>
+      <input type="range" id="rg" min="0" max="10" value="${R[key]}" aria-label="${title}"></div>
+      <div class="lbls">${labels.map(l=>`<span>${l}</span>`).join('')}</div></div>`},
+    bind(){
+      const segs=document.querySelectorAll('.segs i'), app=$('#app').style;
+      const draw=()=>{const v=R[key];$('#v').textContent=v;segs.forEach((s,i)=>s.classList.toggle('f',i<v));app.setProperty('--heat-f',v/10)};
+      $('#rg').oninput=e=>{R[key]=+e.target.value;draw()};draw();
+    }};
+}
+
+// ---- steps ----
+const steps = [
+  {id:'intro',noProgress:true,noBack:true,next:'Begin',valid:()=>true,
+    render:()=>`<div class="intro"><p class="meta">Fear Ladder · 15 to 20 min</p>${LADDER(3,'lead')}
+      <div class="bub"><h1>Something you keep avoiding?</h1><p>Tell me what it is. We will break it into small steps and try the first one together, so it feels a little less scary each time.</p></div></div>`},
+
+  textStep({key:'fear',title:'What are you avoiding?',sub:'One situation that makes you tense up. The more specific, the better.',
+    ph:'Speaking up in team meetings',max:200,hint:'A few words is enough to start.',okText:'Good. Keep it specific.',
+    ex:[['Example','Speaking up in team meetings'],['Example','Making a phone call to someone I do not know'],['Example','Going to a crowded place on my own']]}),
+
+  sliderStep({key:'peak',title:'How scary is the worst version of it?',labels:['Calm','Uneasy','Terrified'],
+    ctx:()=>said('The fear',R.fear)}),
+
+  {valid:()=>R.rungs.length>=MIN_RUNGS,
+    render:()=>`${said('The fear',R.fear)}${ask('What are some smaller versions of it?',`Add ${MIN_RUNGS} to ${MAX_RUNGS}, from gentle to hard. One rung lights up for each.`,0)}
+      ${LADDER(R.rungs.length)}
+      <div class="row"><textarea id="in" rows="1" maxlength="160" placeholder="One small step" enterkeyhint="done"></textarea><button id="add" aria-label="Add" disabled>${PLUS}</button></div>
+      <p class="count" id="count"></p><ul class="items" id="list"></ul>
+      ${quick([['Easy','Ask a coworker a quick question'],['Medium','Share an opinion in a small group chat'],['Hard','Speak for one minute in the team meeting']])}`,
+    bind(){
+      const list=$('#list'), inp=$('#in'), add=$('#add');
+      const sync=()=>{const full=R.rungs.length>=MAX_RUNGS;inp.disabled=full;add.disabled=full||!inp.value.trim()};
+      const draw=()=>{const n=R.rungs.length;
+        list.innerHTML=R.rungs.map((r,i)=>`<li><span>${esc(r.t)}</span><button data-rm="${i}" aria-label="Remove ${esc(r.t)}">${X}</button></li>`).join('');
+        list.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{R.rungs.splice(+b.dataset.rm,1);draw()});
+        LADSET(n);sync();$('#next').disabled=n<MIN_RUNGS;
+        $('#count').textContent=n>=MAX_RUNGS?'Ladder is full':n<MIN_RUNGS?`${n} of ${MIN_RUNGS} to start`:`${n} of ${MAX_RUNGS}`};
+      const put=t=>{t=t.trim();if(t&&R.rungs.length<MAX_RUNGS&&!R.rungs.some(r=>r.t===t)){R.rungs.push({id:++uid,t,r:5});buzz();draw()}};
+      const grow=()=>{inp.style.height='auto';inp.style.height=inp.scrollHeight+'px'};
+      add.onclick=()=>{put(inp.value);inp.value='';grow();sync();inp.focus()};
+      inp.oninput=()=>{sync();grow()};
+      inp.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();add.click()}};
+      document.querySelectorAll('[data-use]').forEach(b=>b.onclick=()=>put(b.dataset.use));
+      draw();}},
+
+  {valid:()=>true,
+    render:()=>`${ask('How scary is each one?','Rate every rung from 0 to 10. The ladder lines itself up.')}
+      <div>${R.rungs.map(r=>`<div class="rate" data-id="${r.id}"><div class="hd"><span>${esc(r.t)}</span><b>${r.r}</b></div>
+        <div class="scale"><div class="segs" aria-hidden="true">${'<i></i>'.repeat(10)}</div>
+        <input type="range" min="0" max="10" value="${r.r}" aria-label="${esc(r.t)}"></div></div>`).join('')}</div>`,
+    bind(){
+      document.querySelectorAll('.rate').forEach(el=>{const r=R.rungs.find(x=>x.id===+el.dataset.id),segs=el.querySelectorAll('.segs i');
+        const draw=()=>{el.querySelector('b').textContent=r.r;segs.forEach((s,i)=>s.classList.toggle('f',i<r.r))};
+        el.querySelector('input').oninput=e=>{r.r=+e.target.value;draw()};draw()})}},
+
+  {valid:()=>!!picked(),
+    render:()=>{if(!picked())R.pick=suggest().id;return `${ask('Here is your ladder. Where do you want to start?','Start low. Around 3 or 4 out of 10 is a good first rung.')}
+      <ul class="rungs" id="lad"></ul>`},
+    bind(){
+      const draw=()=>{const sug=suggest().id;
+        $('#lad').innerHTML=[...byEase()].reverse().map(r=>`<li>${row(r,{btn:true,cls:r.id===R.pick?'on':'',tag:r.id===R.pick?'Start here':r.id===sug?'Suggested':''})}</li>`).join('');
+        document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{R.pick=+b.dataset.r;buzz();nod();draw()})};
+      draw();}},
+
+  textStep({key:'predict',title:'What do you think will happen?',sub:'Be specific. We will check it against what really happens.',
+    ph:'I will freeze, and everyone will notice.',max:300,hint:'A few words is enough.',okText:'Hold on to that. You will test it next.',
+    recallBefore:()=>said('Your first rung',picked().t),
+    ex:[['Example',"I'll freeze and everyone will notice."],['Example',"They'll think my idea is stupid."],['Example',"I'll panic and have to leave."]]}),
+
+  {valid:()=>true,
+    next:()=>'I am ready',
+    render:()=>{ph='ready';return `<div class="stage">${said('Your first rung',picked().t)}<div class="ask"><div class="bub solo"><h1 id="sh">Get ready</h1></div></div><div class="mid" id="stg"></div></div>`},
+    bind(){
+      const stg=$('#stg');
+      stg.innerHTML=`<div class="breath"></div><p class="cue" id="cue">Breathe in</p><p class="cue soft">Three slow breaths. When you are ready, start. Stay until the timer ends, even if it spikes.</p>`;
+      let n=0;tick=setInterval(()=>{n++;$('#cue').textContent=n%2?'Breathe out':'Breathe in'},4000);
+    },
+    go(){
+      if(ph!=='ready')return false;
+      ph='run';clearInterval(tick);let left=HOLD;
+      $('#sh').textContent='Stay with it';
+      $('#stg').innerHTML=`<div class="ringbox"><svg viewBox="0 0 220 220" aria-hidden="true"><circle class="tr" cx="110" cy="110" r="95"/><circle class="pg" id="pg" cx="110" cy="110" r="95" style="stroke-dashoffset:0"/></svg><div class="clock" id="clk"></div></div><p class="cue" id="cue">It will peak, then ease.</p>`;
+      const paint=()=>{$('#clk').textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`;$('#pg').style.strokeDashoffset=597*(1-left/HOLD)};
+      paint();$('#next').textContent='I stayed with it';
+      tick=setInterval(()=>{left=Math.max(0,left-1);paint();if(!left){clearInterval(tick);$('#cue').textContent='Time. You stayed.'}},1000);
+      return true;
+    }},
+
+  sliderStep({key:'post',seed:()=>picked().r,title:'How anxious was it, really?',labels:['Calm','Uneasy','Terrified'],
+    ctx:()=>said('Your first rung',picked().t)}),
+
+  textStep({key:'learned',title:'So what actually happened?',sub:'Compare it with what you expected.',
+    ph:'It was shaky for a minute, then it eased.',max:300,hint:'A few words is enough.',okText:'That is the part worth remembering.',
+    recallBefore:()=>said('You expected',R.predict),
+    ex:[['Example','I felt shaky for a minute, then it eased. Nobody reacted badly.'],['Example','It was harder than I thought, but I stayed and nothing bad happened.']]}),
+
+  {id:'summary',noProgress:true,next:'Complete',secondary:'Edit answers',valid:()=>true,
+    render:()=>{
+      const p=picked(),pre=p.r,diff=pre-R.post,up=byEase()[byEase().indexOf(p)+1];
+      const shift=diff<0?[`${-diff} higher`,'Harder than you expected. You stayed anyway, which is what counts. Repeat this rung before you climb.']
+        :diff===0?['No change','Same as you expected. Repeat this rung until it eases, then move up.']
+        :[`${diff} lower`,diff>=3?'Much easier than you predicted. Your brain just learned this is safer than it feared.':'A little easier than you predicted. Keep going and it keeps easing.'];
+      const next=R.post<=3&&up?`Your anxiety is low enough to try “${up.t}” next.`:'Repeat this rung a few times, until it drops to about 3, then climb.';
+      const sec=(h,b)=>`<section><h3>${h}</h3>${b}</section>`;
+      return `<div class="pair"><figure>${SKY(pre/10)}<figcaption>Before</figcaption></figure>${IC('<path d="M5 12h14M13 6l6 6-6 6"/>')}<figure>${SKY(R.post/10)}<figcaption>Now</figcaption></figure></div>
+        ${ask('You stayed with it.','Staying with the fear teaches your brain it is safer than it predicted.',0)}
+        <div class="hero"><small>What you learned</small><p>${esc(R.learned)}</p></div>
+        <div class="group">
+          ${sec('The fear',`<p>${esc(R.fear)}</p>`)}
+          ${sec('Your ladder',`<ul class="rungs">${[...byEase()].reverse().map(r=>`<li>${row(r,{cls:r.id===p.id?'done':'',tag:r.id===p.id?'Done':up&&r.id===up.id?'Next up':'',num:r.id===p.id?CHECK:r.r})}</li>`).join('')}</ul>`)}
+          ${sec('You expected',`<p><em>${esc(R.predict)}</em></p>`)}
+          ${sec('Anxiety shift',`<p class="shift"><span><b>${pre}</b><small>Before</small></span><span><b>${R.post}</b><small>Now</small></span><em>${shift[0]}</em></p><p class="note">${shift[1]}</p>`)}
+          ${sec('Next',`<p>${next}</p>`)}
+        </div>
+        <p class="note" style="text-align:center;margin-top:var(--sp-5)">Completing saves this reflection to your exercise history.</p>`;
+    }},
+];
+let ph;
+
+// ---- engine ----
+function show(){
+  clearInterval(tick);
+  const s=steps[idx], last=idx===steps.length-1;
+  $('#main').innerHTML=s.render(); $('#main').scrollTop=0;
+  $('#app').style.removeProperty('--heat-f');
+  const counted=steps.filter(x=>!x.noProgress), pos=counted.indexOf(s);
+  const pct=s.noProgress?(last?100:0):Math.round((pos+1)/counted.length*100);
+  $('#prog').style.width=pct+'%'; $('.bar').setAttribute('aria-valuenow',pct);
+  $('#back').style.visibility=s.noBack?'hidden':'visible';
+  const n=typeof s.next==='function'?s.next():s.next||'Continue';
+  $('#next').textContent=n; $('#next').disabled=!s.valid();
+  const sec=$('#secondary'); sec.hidden=!s.secondary; sec.textContent=s.secondary||'';
+  s.bind&&s.bind();
+}
+$('#next').onclick=()=>{ if(steps[idx].go&&steps[idx].go())return;
+  if(idx===steps.length-1){toast('Saved to your exercise history');restart();return} idx++;show()};
+$('#back').onclick=()=>{if(idx>0){idx--;show()}};
+$('#secondary').onclick=()=>{idx=1;show()};
+$('#close').onclick=()=>{if(confirm('Exit exercise? Your progress will be lost.'))restart()};
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200)}
+function restart(){R=fresh();idx=0;show()}
+show();
+</script>
+</body>
+</html>

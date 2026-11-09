@@ -56,6 +56,7 @@ Read each one when its step needs it, not all up front:
 | [appstore.md](references/appstore.md) | App Store screenshot panels |
 | [swiftui.md](references/swiftui.md) | writing SwiftUI |
 | [industry-conventions.md](references/industry-conventions.md) | Industry-specific design patterns & conventions |
+| [mobbin-principles.md](references/mobbin-principles.md) | Step 1 and 4. Cross-app principles learned from Mobbin, evidence-cited, reusable on any product |
 
 ## Step 0: The brief
 
