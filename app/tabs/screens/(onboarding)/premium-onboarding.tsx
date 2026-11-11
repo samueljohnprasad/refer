@@ -3,14 +3,14 @@ import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import SignInBottomSheet, { type SignInBottomSheetHandle } from "@/src/components/SignInBottomSheet";
 import { useAuth } from "@/src/context/AuthContext";
-import OnboardingScreen from "@/src/screens/OnboardingScreen/OnboardingScreen";
+import { OnboardingContainer } from "@/src/domains/onboarding";
 
-// ponytail: restore previous onboarding flow with account continuity sheet
+// ponytail: use clean architecture OnboardingContainer with guest continuity
 export default function PremiumOnboardingRoute(): React.JSX.Element {
   const router = useRouter();
   const signInSheetRef = useRef<SignInBottomSheetHandle>(null);
   const hasContinuedRef = useRef<boolean>(false);
-  const { isAnonymous } = useAuth();
+  const { user } = useAuth();
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
 
   const continueToHome = useCallback((): void => {
@@ -19,14 +19,14 @@ export default function PremiumOnboardingRoute(): React.JSX.Element {
     router.replace("/tabs/(tabs)/home");
   }, [router]);
 
-  const handleComplete = useCallback(async (_skipped?: boolean): Promise<void> => {
+  const handleComplete = useCallback((): void => {
     // ponytail: route anonymous guest directly to home without last-mile sheet friction
     continueToHome();
   }, [continueToHome]);
 
   return (
-    <View className="flex-1">
-      <OnboardingScreen onComplete={handleComplete} />
+    <View className="flex-1 bg-happy-bg">
+      <OnboardingContainer userId={user?.id} onComplete={handleComplete} />
       {isSheetOpen && (
         <View
           style={StyleSheet.absoluteFill}

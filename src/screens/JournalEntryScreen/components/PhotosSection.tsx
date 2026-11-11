@@ -18,7 +18,7 @@ export const PhotosSection = React.memo<PhotosSectionProps>(
     const { t } = useTranslation("journal");
     return (
       <View className="mb-6">
-        <Text className="text-theme-text-secondary text-xs uppercase font-semibold tracking-wider mb-2">
+        <Text className="text-happy-label-2 text-xs uppercase font-semibold tracking-wider mb-2">
           {t("entryDetail.photos")}
         </Text>
 
@@ -26,7 +26,7 @@ export const PhotosSection = React.memo<PhotosSectionProps>(
           {photos.map((photo, index) => (
             <View
               key={index}
-              className="w-20 h-20 rounded-lg overflow-hidden bg-theme-background-secondary border border-theme-border/50"
+              className="w-20 h-20 rounded-lg overflow-hidden bg-happy-surface-2 border border-happy-sep"
             >
               <Image source={{ uri: photo }} className="w-full h-full" />
             </View>
@@ -34,12 +34,12 @@ export const PhotosSection = React.memo<PhotosSectionProps>(
 
           <TouchableOpacity
             onPress={() => {}}
-            className="w-20 h-20 rounded-lg bg-theme-background-secondary border border-theme-border/50 items-center justify-center"
+            className="w-20 h-20 rounded-lg bg-happy-surface-2 border border-happy-sep items-center justify-center"
             activeOpacity={0.7}
             accessibilityRole="button"
             accessibilityLabel={t("entryDetail.addPhoto")}
           >
-            <Feather name="plus" size={32} className="text-theme-text-secondary" />
+            <Feather name="plus" size={32} className="text-happy-label-2" />
           </TouchableOpacity>
         </View>
       </View>

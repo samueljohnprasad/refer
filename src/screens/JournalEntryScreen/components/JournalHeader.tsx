@@ -44,7 +44,7 @@ export const JournalHeader = React.memo<JournalHeaderProps>(
         }}
       >
         <AnimatedTouchableOpacity
-          className="w-10 h-10 rounded-full items-center justify-center bg-theme-purple-deep"
+          className="w-10 h-10 rounded-full items-center justify-center bg-happy-accent"
           activeOpacity={0.7}
           onPress={onClose}
           accessibilityRole="button"
@@ -85,13 +85,13 @@ export const JournalHeader = React.memo<JournalHeaderProps>(
         </AnimatedTouchableOpacity>
 
         <View className="flex-1 items-center">
-          <Text className="text-base font-cormorantBold text-theme-text-primary mt-1">
+          <Text className="text-base font-cormorantBold text-happy-label mt-1">
             {formattedDateTime}
           </Text>
         </View>
 
         <AnimatedTouchableOpacity
-          className="w-10 h-10 rounded-full items-center justify-center bg-theme-purple-deep"
+          className="w-10 h-10 rounded-full items-center justify-center bg-happy-accent"
           activeOpacity={0.7}
           onPress={isEditing ? onDone : onEdit}
           accessibilityRole="button"

@@ -196,7 +196,7 @@ const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
               title={t("micronutrients.minerals")}
               icon={SparklesIcon}
               count={`${trackedMineralsCount} / ${minerals.length}`}
-              iconBgClass="bg-otter-blue/10"
+              iconBgClass="bg-happy-tint"
               iconColor={SEMANTIC_COLORS.info.indicator}
               className="mb-4"
             />

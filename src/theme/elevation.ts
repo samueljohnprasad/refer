@@ -1,7 +1,9 @@
+import { OpaqueColorValue } from "react-native";
 import { SEMANTIC_COLORS } from "./colors";
+import { NEUTRAL, SAGE } from "./palette";
 
 export type ElevationToken = {
-  shadowColor: string;
+  shadowColor: string | OpaqueColorValue;
   shadowOffset: { width: number; height: number };
   shadowOpacity: number;
   shadowRadius: number;
@@ -45,3 +47,12 @@ export const ELEVATION: ElevationSystem = {
     elevation: 8,
   },
 };
+
+// ponytail: tactile rim tokens matching Duolingo / BitePal style in .agents/happy-ui.css
+export const TACTILE_DEPTH = {
+  borderWidth: 2,
+  rimOffset: 3,
+  activeOffset: 1,
+  borderColorRest: NEUTRAL.sep,
+  borderColorPicked: SAGE.ink,
+} as const;

@@ -24,7 +24,7 @@ export const MoodCard = React.memo<MoodCardProps>(
     return (
       <Animated.View
         style={[moodCardStyle]}
-        className="bg-theme-background-card border border-theme-border/50 rounded-3xl p-6 mb-4"
+        className="bg-happy-surface border border-happy-sep rounded-3xl p-6 mb-4"
       >
         {!isEditing ? (
           /* Display mode: MoodIcon + Title */
@@ -37,7 +37,7 @@ export const MoodCard = React.memo<MoodCardProps>(
               />
             </Animated.View>
             <Animated.View style={[{ flex: 1 }, summaryStyle]}>
-              <Text className="text-xl font-cormorantBold text-theme-text-primary leading-7">
+              <Text className="text-xl font-cormorantBold text-happy-label leading-7">
                 {title}
               </Text>
             </Animated.View>

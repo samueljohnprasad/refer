@@ -1,5 +1,5 @@
 import { DynamicColorIOS, OpaqueColorValue } from "react-native";
-import { SAGE, NEUTRAL, RED, ORANGE, YELLOW, BLUE, PURPLE, SUCCESS } from "./palette";
+import { SAGE, NEUTRAL, EXERCISE_HUES, WEATHER } from "./palette";
 
 export interface AdaptiveColorInput {
   light: string | OpaqueColorValue;
@@ -85,65 +85,66 @@ export type SemanticColors = {
   shadow: string | OpaqueColorValue;
 };
 
+// ponytail: Happy UI semantic color tokens mapping to SAGE and NEUTRAL
 export const SEMANTIC_COLORS: SemanticColors = {
   text: {
-    primary: adaptiveColor({ light: NEUTRAL.ink, dark: "#f0f5f0" }),
-    secondary: adaptiveColor({ light: NEUTRAL.inkSoft, dark: "#a0b0a0" }),
-    tertiary: adaptiveColor({ light: NEUTRAL.inkMuted, dark: "#5a6a5a" }),
-    disabled: adaptiveColor({ light: NEUTRAL.inkMuted, dark: "#5a6a5a" }),
+    primary: adaptiveColor({ light: NEUTRAL.label, dark: "#f0f5f0" }),
+    secondary: adaptiveColor({ light: NEUTRAL.label2, dark: "#a0b0a0" }),
+    tertiary: adaptiveColor({ light: NEUTRAL.label3, dark: "#767676" }),
+    disabled: adaptiveColor({ light: NEUTRAL.label3, dark: "#767676" }),
   },
   brand: {
-    primary: adaptiveColor({ light: SAGE[500], dark: SAGE[400] }),
+    primary: adaptiveColor({ light: SAGE.accent, dark: SAGE[400] }),
     onPrimary: adaptiveColor({ light: NEUTRAL.white, dark: "#1a2a1a" }),
-    pressed: adaptiveColor({ light: SAGE[600], dark: SAGE[500] }),
-    soft: adaptiveColor({ light: SAGE[100], dark: "#142414" }),
-    onSoft: adaptiveColor({ light: SAGE[700], dark: SAGE[300] }),
+    pressed: adaptiveColor({ light: SAGE.ink, dark: SAGE[500] }),
+    soft: adaptiveColor({ light: SAGE.tint, dark: "#142414" }),
+    onSoft: adaptiveColor({ light: SAGE.accent, dark: SAGE[300] }),
   },
   surface: {
-    canvas: adaptiveColor({ light: NEUTRAL.offWhite, dark: "#0f1a0f" }),
+    canvas: adaptiveColor({ light: NEUTRAL.white, dark: "#0f1a0f" }),
     primary: adaptiveColor({ light: NEUTRAL.white, dark: "#1a2a1a" }),
     secondary: adaptiveColor({ light: NEUTRAL.surface, dark: "#142414" }),
     elevated: adaptiveColor({ light: NEUTRAL.white, dark: "#2a3a2a" }),
   },
   border: {
-    default: adaptiveColor({ light: NEUTRAL.border, dark: "#2a3a2a" }),
-    strong: adaptiveColor({ light: NEUTRAL.border, dark: "#3a4a3a" }),
-    selected: adaptiveColor({ light: SAGE[300], dark: SAGE[500] }),
+    default: adaptiveColor({ light: NEUTRAL.sep, dark: "#2a3a2a" }),
+    strong: adaptiveColor({ light: NEUTRAL.rim, dark: "#3a4a3a" }),
+    selected: adaptiveColor({ light: SAGE.ink, dark: SAGE[500] }),
   },
   selection: {
-    surface: adaptiveColor({ light: SAGE[50], dark: "#142414" }),
-    border: adaptiveColor({ light: SAGE[300], dark: SAGE[500] }),
-    foreground: adaptiveColor({ light: SAGE[700], dark: SAGE[200] }),
-    indicator: adaptiveColor({ light: SAGE[500], dark: SAGE[400] }),
+    surface: adaptiveColor({ light: SAGE.tint, dark: "#142414" }),
+    border: adaptiveColor({ light: SAGE.ink, dark: SAGE[500] }),
+    foreground: adaptiveColor({ light: SAGE.accent, dark: SAGE[200] }),
+    indicator: adaptiveColor({ light: SAGE.ink, dark: SAGE[400] }),
   },
   disabled: {
     surface: adaptiveColor({ light: NEUTRAL.surface, dark: "#142414" }),
     border: adaptiveColor({ light: NEUTRAL.border, dark: "#2a3a2a" }),
-    foreground: adaptiveColor({ light: NEUTRAL.inkMuted, dark: "#5a6a5a" }),
+    foreground: adaptiveColor({ light: NEUTRAL.label3, dark: "#767676" }),
   },
   success: {
-    surface: adaptiveColor({ light: SUCCESS[50], dark: "#0f2e1a" }),
-    border: adaptiveColor({ light: SUCCESS[400], dark: SUCCESS[700] }),
-    foreground: adaptiveColor({ light: SUCCESS[700], dark: SUCCESS[400] }),
-    indicator: adaptiveColor({ light: SUCCESS[600], dark: SUCCESS[600] }),
+    surface: adaptiveColor({ light: SAGE.tint, dark: "#0f2e1a" }),
+    border: adaptiveColor({ light: SAGE[400], dark: SAGE[700] }),
+    foreground: adaptiveColor({ light: SAGE[700], dark: SAGE[400] }),
+    indicator: adaptiveColor({ light: SAGE[600], dark: SAGE[600] }),
   },
   error: {
-    surface: adaptiveColor({ light: RED.tint, dark: "#2e0f0f" }),
-    border: adaptiveColor({ light: RED.light, dark: RED.primary }),
-    foreground: adaptiveColor({ light: RED.dark, dark: RED.light }),
-    indicator: adaptiveColor({ light: RED.primary, dark: RED.primary }),
+    surface: adaptiveColor({ light: EXERCISE_HUES.act, dark: "#2e0f0f" }),
+    border: adaptiveColor({ light: "#ff9090", dark: "#ff4b4b" }),
+    foreground: adaptiveColor({ light: "#c73030", dark: "#ff9090" }),
+    indicator: adaptiveColor({ light: "#ff4b4b", dark: "#ff4b4b" }),
   },
   warning: {
-    surface: adaptiveColor({ light: ORANGE.tint, dark: "#2e1f0f" }),
-    border: adaptiveColor({ light: ORANGE.primary, dark: ORANGE.primary }),
-    foreground: adaptiveColor({ light: "#8A4F00", dark: "#FFD299" }),
-    indicator: adaptiveColor({ light: "#C76F00", dark: ORANGE.primary }),
+    surface: adaptiveColor({ light: EXERCISE_HUES.reframe, dark: "#2e1f0f" }),
+    border: adaptiveColor({ light: WEATHER.sun, dark: WEATHER.sun }),
+    foreground: adaptiveColor({ light: "#8a4f00", dark: "#ffd299" }),
+    indicator: adaptiveColor({ light: WEATHER.sun, dark: WEATHER.sun }),
   },
   info: {
-    surface: adaptiveColor({ light: BLUE.tint, dark: "#0f1f2e" }),
-    border: adaptiveColor({ light: BLUE.primary, dark: BLUE.primary }),
-    foreground: adaptiveColor({ light: "#006699", dark: "#99D6FF" }),
-    indicator: adaptiveColor({ light: BLUE.primary, dark: BLUE.primary }),
+    surface: adaptiveColor({ light: EXERCISE_HUES.abc, dark: "#0f1f2e" }),
+    border: adaptiveColor({ light: "#62a0ea", dark: "#1c71d8" }),
+    foreground: adaptiveColor({ light: "#1c71d8", dark: "#99d6ff" }),
+    indicator: adaptiveColor({ light: "#1c71d8", dark: "#1c71d8" }),
   },
-  shadow: adaptiveColor({ light: NEUTRAL.black, dark: NEUTRAL.black }),
+  shadow: adaptiveColor({ light: NEUTRAL.sep, dark: "#000000" }),
 };

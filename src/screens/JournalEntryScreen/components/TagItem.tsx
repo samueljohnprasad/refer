@@ -24,12 +24,12 @@ export const TagItem = React.memo<TagItemProps>(
             ? { backgroundColor: tag.colorsGradient[0] }
             : undefined,
         ]}
-        className="flex-row items-center py-2 px-4 rounded-full mr-2 mb-2 border border-theme-border/50 bg-theme-background-secondary"
+        className="flex-row items-center py-2 px-4 rounded-full mr-2 mb-2 border border-happy-sep bg-happy-surface-2"
         entering={FadeIn.springify().damping(16)}
         exiting={FadeOut.duration(140)}
         layout={Layout.springify().stiffness(180)}
       >
-        <Text className="text-base font-medium text-theme-text-primary">
+        <Text className="text-base font-medium text-happy-label">
           {tag.emoji} {tag.name}
         </Text>
         {isEditing && (
@@ -37,7 +37,7 @@ export const TagItem = React.memo<TagItemProps>(
             <Feather
               name="x-circle"
               size={16}
-              className="text-theme-text-secondary"
+              className="text-happy-label-2"
             />
           </TouchableOpacity>
         )}

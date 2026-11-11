@@ -3,167 +3,59 @@
 @import "heroui-native/styles";
 @source "./node_modules/heroui-native/lib";
 
-@theme {
-  --breakpoint-phone: 390px;
-  --breakpoint-phablet: 430px;
-}
-
-/* ─── UniWind theme variants ──────────────────────────────────────────────────
-   Switched at runtime via Uniwind.setTheme('light' | 'dark' | 'system').
-   These are the generic Gluestack/shadcn-compatible tokens — used by UI
-   primitives (Button, Input, Card, etc.) but NOT by the happy-brand system.
-   Do not use these for custom brand components; use the brand tokens below. */
-@layer theme {
-  :where(.light, .light *) {
-    --gs-primary: 23 23 23;
-    --gs-primary-foreground: 250 250 250;
-    --gs-card: 255 255 255;
-    --gs-secondary: 245 245 245;
-    --gs-secondary-foreground: 23 23 23;
-    --gs-background: 255 255 255;
-    --gs-popover: 255 255 255;
-    --gs-popover-foreground: 10 10 10;
-    --gs-muted: 245 245 245;
-    --gs-muted-foreground: 115 115 115;
-    --gs-destructive: 231 0 11;
-    --gs-foreground: 10 10 10;
-    --gs-border: 229 229 229;
-    --gs-input: 229 229 229;
-    --gs-ring: 212 212 212;
-    --gs-accent: 247 247 247;
-    --gs-accent-foreground: 52 52 52;
-    --app-background: #ffffff;
-    --app-foreground: #142414;
-  }
-
-  @media (prefers-color-scheme: light) {
-    :root:not(:where(.light, .light *, .dark, .dark *)) {
-      --gs-primary: 23 23 23;
-      --gs-primary-foreground: 250 250 250;
-      --gs-card: 255 255 255;
-      --gs-secondary: 245 245 245;
-      --gs-secondary-foreground: 23 23 23;
-      --gs-background: 255 255 255;
-      --gs-popover: 255 255 255;
-      --gs-popover-foreground: 10 10 10;
-      --gs-muted: 245 245 245;
-      --gs-muted-foreground: 115 115 115;
-      --gs-destructive: 231 0 11;
-      --gs-foreground: 10 10 10;
-      --gs-border: 229 229 229;
-      --gs-input: 229 229 229;
-      --gs-ring: 212 212 212;
-      --gs-accent: 247 247 247;
-      --gs-accent-foreground: 52 52 52;
-      --app-background: #ffffff;
-      --app-foreground: #142414;
-    }
-  }
-
-  :where(.dark, .dark *) {
-    --gs-primary: 255 245 245;
-    --gs-primary-foreground: 23 23 23;
-    --gs-card: 23 23 23;
-    --gs-secondary: 38 38 38;
-    --gs-secondary-foreground: 250 250 250;
-    --gs-background: 10 10 10;
-    --gs-popover: 23 23 23;
-    --gs-popover-foreground: 250 250 250;
-    --gs-muted: 38 38 38;
-    --gs-muted-foreground: 161 161 161;
-    --gs-destructive: 255 100 103;
-    --gs-foreground: 250 250 250;
-    --gs-border: 46 46 46;
-    --gs-input: 46 46 46;
-    --gs-accent: 38 38 38;
-    --gs-accent-foreground: 250 250 250;
-    --gs-ring: 115 115 115;
-    --app-background: #0f1a0f;
-    --app-foreground: #f0f5f0;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root:not(:where(.light, .light *, .dark, .dark *)) {
-      --gs-primary: 255 245 245;
-      --gs-primary-foreground: 23 23 23;
-      --gs-card: 23 23 23;
-      --gs-secondary: 38 38 38;
-      --gs-secondary-foreground: 250 250 250;
-      --gs-background: 10 10 10;
-      --gs-popover: 23 23 23;
-      --gs-popover-foreground: 250 250 250;
-      --gs-muted: 38 38 38;
-      --gs-muted-foreground: 161 161 161;
-      --gs-destructive: 255 100 103;
-      --gs-foreground: 250 250 250;
-      --gs-border: 46 46 46;
-      --gs-input: 46 46 46;
-      --gs-accent: 38 38 38;
-      --gs-accent-foreground: 250 250 250;
-      --gs-ring: 115 115 115;
-      --app-background: #0f1a0f;
-      --app-foreground: #f0f5f0;
-    }
-  }
-}
-
 /* ═══════════════════════════════════════════════════════════════════════════
-   HAPPY BRAND DESIGN SYSTEM
+   HAPPY UI DESIGN SYSTEM (.agents/happy-ui.css)
    ═══════════════════════════════════════════════════════════════════════════
-
-   Architecture: neutral base + intentional sage accents.
-   The app is built on a sage-cream canvas. Sage green appears only where it
-   communicates something: active states, primary icons, CTAs, brand moments.
-   Structural elements (borders, secondary text) are neutral so the sage
-   accents remain meaningful.
-
-   Colour roles
-   ────────────
-   Sage     Brand identity. Active states, primary icons, CTAs, eyebrows.
-   Gold     Achievement. XP, streaks, rewards — premium moments only.
-   Ink      Text. Dark green-black heading → neutral body → neutral muted.
-   Terracotta  Warning / error / destructive actions.
-   Borders  Neutral warm-grey — recede behind content, never compete with sage.
-
-   CRITICAL RULE: Light tinted backgrounds MUST use dark text.
-   Bright accent colours on matching tints fail WCAG AA.
-   Example: #ff4b4b on #ffdfe0 = 2.65:1 (unreadable).
-   Always pair tint bg with its matching *-dark text token.
-
-   DO NOT use raw Tailwind gray-* / slate-* in brand components.
-   Map all text to the three ink tokens, all card borders to brand-border. */
+   Source of truth: .agents/happy-ui.css and ux-onboarding-and-day-0/DESIGN.md
+   Benchmarks: Duolingo and BitePal (white base, heavy rounded display face,
+   colour in illustration only, tactile rims), then Ahead / Finch / Headspace.
+   One display face for one line per screen (Fredoka), Nunito everywhere else.
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 @theme inline {
-  /* ── Gluestack token bridge ──────────────────────────────────────────── */
-  --color-primary: rgb(var(--gs-primary));
-  --color-primary-foreground: rgb(var(--gs-primary-foreground));
-  --color-card: rgb(var(--gs-card));
-  --color-secondary: rgb(var(--gs-secondary));
-  --color-secondary-foreground: rgb(var(--gs-secondary-foreground));
-  --color-background: rgb(var(--gs-background));
-  --color-popover: rgb(var(--gs-popover));
-  --color-popover-foreground: rgb(var(--gs-popover-foreground));
-  --color-muted: rgb(var(--gs-muted));
-  --color-muted-foreground: rgb(var(--gs-muted-foreground));
-  --color-destructive: rgb(var(--gs-destructive));
-  --color-foreground: rgb(var(--gs-foreground));
-  --color-border: rgb(var(--gs-border));
-  --color-input: rgb(var(--gs-input));
-  --color-ring: rgb(var(--gs-ring));
-  --color-accent: rgb(var(--gs-accent));
-  --color-accent-foreground: rgb(var(--gs-accent-foreground));
+  /* ── Typography (happy-ui.css) ────────────────────────────────────────── */
+  --font-display: "Fredoka";
+  --font-body: "Nunito";
+  --font-sans: "Nunito";
+  --font-fredoka: "Fredoka";
+  --font-nunito: "Nunito";
 
-  /* ── Sage palette ────────────────────────────────────────────────────────
-     Full scale from near-white tint to near-black.
-     Usage guide:
-       sage-50  / sage-100  Background tints, icon wells, inactive chips
-       sage-200 / sage-300  Decorative borders on selected surfaces, dividers
-       sage-400 / sage-500  Mid-weight: eyebrow text, progress fills
-       sage-600             Primary icon colour, brand text accents
-       sage-700             CTA bottom-border shadow, pressed CTA
-       sage-800             Heavy headings (rare)
-       sage-selected        Selected card background (tinted white-green)
-       sage-pill            Status badge background                          */
+  /* Type scale */
+  --text-t-cap: 12px;    /* tags, tiny meta */
+  --text-t-foot: 13px;   /* captions, labels, help text */
+  --text-t-sub: 15px;    /* secondary lines under a title */
+  --text-t-body: 17px;   /* chat lines, rows, fields */
+  --text-t-lead: 20px;   /* section headers, Happi's key statement */
+  --text-t-h: 24px;      /* completion and sheet headlines */
+  --text-t-title: 28px;  /* screen title, display face */
+  --text-t-num: 34px;    /* hero numerals (count, stat), display face */
+
+  --leading-body: 1.45;
+  --leading-tight: 1.2;
+
+  --font-weight-body: 500;
+  --font-weight-display: 600;
+  --font-weight-strong: 700;
+
+  /* ── Core Palette (happy-ui.css) ─────────────────────────────────────────
+     White base, neutral greys, one sage accent; illustration washes only. */
+  --color-happy-bg: #ffffff;
+  --color-happy-surface: #ffffff;
+  --color-happy-surface-2: #f7f7f7;
+  --color-happy-sep: #e5e5e5;
+  --color-happy-rim: #cfcfcf;
+  --color-happy-tint: #f2f8ef;
+
+  /* Labels */
+  --color-happy-label: #142414;
+  --color-happy-label-2: #4b4b4b;
+  --color-happy-label-3: #767676;
+
+  /* Sage Brand */
+  --color-happy-accent: #44633f; /* sage-600: primary icons & CTAs */
+  --color-happy-ink: #5f7f58;    /* sage-500: active borders & rings */
+
+  /* Full Sage Scale */
   --color-sage-50: #f8fbf6;
   --color-sage-100: #e5ede1;
   --color-sage-200: #d3e0cd;
@@ -175,132 +67,90 @@
   --color-sage-800: #152714;
   --color-sage-selected: #f2f8ef;
   --color-sage-pill: #edf5e9;
+  --color-sage-dark: #1b5e20;
 
-  /* ── Surfaces ────────────────────────────────────────────────────────────
-     brand-canvas   #FFFFFF  Screen root background.
-                             Cards (brand-surface #FFFFFF) sit on this.
-     brand-surface  #FFFFFF  Card and panel face — pure white. Always on top
-                             of brand-canvas.
-     brand-surface-soft      Icon wells, secondary card tints — use sparingly.*/
+  /* Exercise Illustration Washes (happy-ui.css) */
+  --color-hue-catch: #e6f0e2;   /* Thought Catcher */
+  --color-hue-reframe: #fdf0d2; /* Reframe */
+  --color-hue-abc: #e2eef8;     /* ABC Model */
+  --color-hue-act: #fde5dc;     /* Action Planning */
+  --color-hue-ladder: #ece6f7;  /* Fear Ladder */
+
+  /* Weather & Gamification */
+  --color-happy-sun: #f5b942;
+  --color-happy-cloud-lo: #e4eee0;
+  --color-happy-cloud-hi: #a9bfa0;
+
+  /* Surfaces & Inks */
   --color-brand-canvas: #ffffff;
   --color-brand-surface: #ffffff;
   --color-brand-surface-soft: #f7f7f7;
   --color-mascot-stage: #ffffff;
-  --color-cream: #ffffff;
-  --color-cream-raised: #f7f7f7;
-  --color-warm-white: #ffffff;
-  --color-offwhite: #ffffff;
-
-  /* ── Accent palette (Duolingo values) ───────────────────────────────────
-     Cardinal Red  Error, warning, destructive.
-     Bee Yellow    Gamification: XP badges, streaks, rewards.
-     Otter Blue    Correct-answer state, info banners.
-     Macaw Purple  Super / premium surfaces.
-     Parrot Orange Rare rewards, bonus moments.                           */
-  --color-cardinal-red: #ff4b4b;
-  --color-cardinal-red-border: #ff9090;
-  --color-cardinal-red-tint: #ffdfe0;
-  --color-bee-yellow: #ffd900;
-  --color-bee-yellow-tint: #fff5d6;
-  --color-otter-blue: #1cb0f6;
-  --color-otter-blue-tint: #ddf4ff;
-  --color-macaw-purple: #ce82ff;
-  --color-macaw-purple-tint: #f0deff;
-  --color-parrot-orange: #ff9600;
-  --color-parrot-orange-tint: #feede0;
-
-  /* Aliases — keep terracotta/gold names so existing code keeps working    */
-  --color-terracotta: #ff4b4b;
-  --color-terracotta-light: #ff9090;
-  --color-terracotta-tint: #ffdfe0;
-  --color-gold: #ffd900;
-  --color-gold-tint: #fff5d6;
-
-  /* ── Semantic text colours (MANDATORY for tinted backgrounds) ───────────
-     Light tinted backgrounds MUST use these dark text variants.
-     Never use the bright accent colour as text on its matching tint.
-
-     Verified contrast ratios on their matching tints:
-       sage-dark:      7.00:1 on sage-selected
-       cardinal-dark:  5.75:1 on cardinal-red-tint
-       otter-dark:     7.56:1 on otter-blue-tint
-       bee-dark:       8.77:1 on bee-yellow-tint
-       macaw-dark:     6.15:1 on macaw-purple-tint
-       parrot-dark:    5.06:1 on parrot-orange-tint                       */
-  --color-sage-dark: #1b5e20;
-  --color-cardinal-dark: #b71c1c;
-  --color-otter-dark: #0d47a1;
-  --color-bee-dark: #5d4037;
-  --color-macaw-dark: #4a148c;
-  --color-parrot-dark: #e65100;
-
-  /* ── Ink text scale ──────────────────────────────────────────────────────
-     ink         #142414  Dark green-black. Screen titles, card headings,
-                          primary labels.
-     ink-soft    #6B6B6B  Body copy, descriptions, secondary labels.
-                          4.72:1 on brand-canvas (#f8faf7) — WCAG AA.
-                          4.59:1 on sage-selected — WCAG AA.
-                          5.08:1 on white — WCAG AA.
-                          (Previous value #767676 failed on cream at 4.33:1)
-     ink-muted   #AFAFAF  Timestamps, metadata, captions, inactive labels.
-                          2.19:1 on white — decorative / non-essential only.
-                          Never use for readable text or interactive labels.
-
-     NEVER use text-gray-* or text-slate-* in brand components.            */
-  --color-ink: #142414;
-  --color-ink-soft: #6b6b6b;
-  --color-ink-muted: #afafaf;
-
-  /* ── Structural borders ──────────────────────────────────────────────────
-     brand-border        #E5E5E5  Default card edge, panel outline, divider.
-     brand-border-strong #999999  Bottom-border shadow on raised cards.
-
-     NOTE: brand-border-strong was darkened from #AFAFAF → #999999 to
-     improve visibility on white card surfaces (2.85:1 vs 2.19:1).
-
-     NEVER use border-gray-100, border-gray-200, border-slate-* for cards.
-     Sage borders are only correct on selected / active states.            */
   --color-brand-border: #e5e5e5;
-  --color-brand-border-strong: #999999;
+  --color-brand-border-strong: #cfcfcf;
+  --color-ink: #142414;
+  --color-ink-soft: #4b4b4b;
+  --color-ink-muted: #767676;
 
-  /* ── Border radius scale ─────────────────────────────────────────────────
-     Prefer the happy-brand utility classes (which bake in the right radius)
-     over applying radius manually.                                         */
+  /* Spacing Scale (happy-ui.css) */
+  --spacing-sp-1: 4px;
+  --spacing-sp-2: 8px;
+  --spacing-sp-3: 12px;
+  --spacing-sp-4: 16px;
+  --spacing-sp-5: 24px;
+  --spacing-sp-6: 32px;
+  --spacing-sp-7: 48px;
+  --spacing-gutter: 16px;
+  --spacing-gap-section: 32px;
+  --spacing-gap-card: 12px;
+  --spacing-pad-card: 16px;
+
+  /* Border Radii (happy-ui.css) */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;
-  --radius-icon-well: 18px;
-  --radius-2xl: 20px;
-  --radius-3xl: 24px;
+  --radius-s: 12px;
+  --radius-m: 16px;
+  --radius-l: 24px;
   --radius-full: 9999px;
-
-  /* ── Legacy semantic palette (avoid in new code) ─────────────────────────
-     These theme-* tokens predate the brand system. Prefer the brand tokens
-     above. They remain here for backward compat with older components.     */
-  --color-theme-background-primary: #ffffff;
-  --color-theme-background-secondary: #f7f7f7;
-  --color-theme-background-card: #ffffff;
-  --color-theme-text-primary: #142414;
-  --color-theme-text-secondary: #6b6b6b;
-  --color-theme-border: #e5e5e5;
-  --color-theme-purple-light: #eee9ff;
-  --color-theme-purple-primary: #7b61ff;
-  --color-theme-purple-deep: #5f46e8;
+  --radius-pill: 9999px;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    TYPOGRAPHY UTILITIES
-   ═══════════════════════════════════════════════════════════════════════════
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-   One-family rule: Nunito everywhere. Hierarchy comes from weight and size. */
+@utility font-display {
+  font-family: "Fredoka";
+}
+
+@utility font-body {
+  font-family: "Nunito";
+}
+
+@utility font-fredoka {
+  font-family: "Fredoka";
+}
+
+@utility font-nunito {
+  font-family: "Nunito";
+}
+
+@utility happy-font-display {
+  font-family: "Fredoka";
+}
 
 @utility happy-font-heading {
-  font-family: "NunitoExtraBold";
+  font-family: "Fredoka";
 }
 
 @utility happy-font-heading-bold {
-  font-family: "NunitoExtraBold";
+  font-family: "Fredoka";
+}
+
+@utility happy-font-heading-semibold {
+  font-family: "Fredoka";
 }
 
 @utility happy-font-heading-medium {
@@ -311,24 +161,12 @@
   font-family: "NunitoSemiBold";
 }
 
-@utility happy-font-heading-italic {
-  font-family: "NunitoRegularItalic";
-}
-
-@utility happy-font-heading-semibold-italic {
-  font-family: "NunitoSemiBoldItalic";
-}
-
-@utility happy-font-heading-medium-italic {
-  font-family: "NunitoSemiBoldItalic";
-}
-
 @utility happy-font-body {
-  font-family: "NunitoRegular";
+  font-family: "Nunito";
 }
 
 @utility happy-font-body-medium {
-  font-family: "NunitoSemiBold";
+  font-family: "NunitoMedium";
 }
 
 @utility happy-font-body-semibold {
@@ -339,88 +177,66 @@
   font-family: "NunitoBold";
 }
 
+@utility happy-ui-display-title {
+  font-family: "Fredoka";
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+  color: #142414;
+}
+
+@utility happy-ui-display-num {
+  font-family: "Fredoka";
+  font-size: 34px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+@utility happy-ui-section-header {
+  font-size: 20px;
+  font-weight: 700;
+  color: #142414;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
-   SURFACE UTILITIES
-   ═══════════════════════════════════════════════════════════════════════════
-
-   Depth system: cards simulate elevation with a thick bottom border instead
-   of a box-shadow. This is lighter, crisper, and works without blur.
-
-   Hierarchy:
-   happy-brand-screen          Screen root background. bg-brand-canvas (#f8faf7).
-   happy-brand-card            Flat card. Static info — no press affordance.
-   happy-brand-card-strong     Flat card with heavier border edge.
-   happy-brand-card-selected   Active/selected state. Sage border + sage tint.
-   happy-brand-raised-panel    Hero / prominent panel. Deepest depth (6px).
-   happy-brand-preview-tile    Interactive card with press affordance (5px).
-   happy-brand-pressed-card    Tactile card for list items (4px).
-   happy-brand-pressed-card-selected  Active version of pressed-card.
-
-   NOTE: Always combine these with a rounded-* class.                       */
+   SURFACE & CARD UTILITIES (Tactile Rims & Fills from happy-ui.css)
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 @utility happy-brand-screen {
-  @apply bg-brand-canvas;
+  @apply bg-happy-bg;
 }
 
 @utility happy-brand-card {
-  @apply border-2 border-brand-border bg-brand-surface;
+  @apply border-2 border-happy-sep bg-happy-surface;
 }
 
 @utility happy-brand-card-strong {
-  @apply border-2 border-brand-border-strong bg-brand-surface;
+  @apply border-2 border-happy-rim bg-happy-surface;
 }
 
 @utility happy-brand-card-selected {
-  @apply border-2 border-sage-500 bg-sage-selected;
-}
-
-@utility happy-brand-raised-panel {
-  @apply border-2 border-b-[6px] border-brand-border border-b-brand-border-strong bg-brand-surface;
-}
-
-@utility happy-brand-preview-tile {
-  @apply border-2 border-b-[5px] border-brand-border border-b-brand-border-strong bg-brand-surface;
-}
-
-@utility happy-brand-pressed-card {
-  @apply border-2 border-b-4 border-brand-border border-b-brand-border-strong bg-brand-surface;
-}
-
-@utility happy-brand-pressed-card-selected {
-  @apply border-2 border-b-4 border-sage-500 border-b-sage-600 bg-sage-selected;
-}
-
-@utility happy-brand-metric-card {
-  @apply bg-brand-surface-soft;
+  @apply border-2 border-happy-ink bg-happy-tint;
 }
 
 @utility happy-brand-surface {
-  @apply bg-brand-surface;
+  @apply bg-happy-surface;
 }
 
 @utility happy-brand-surface-soft {
-  @apply bg-brand-surface-soft;
+  @apply bg-happy-surface-2;
 }
 
-/* ── Mascot stage ────────────────────────────────────────────────────────── */
 @utility happy-mascot-stage {
-  @apply border-2 border-brand-border bg-mascot-stage;
+  @apply border-2 border-happy-sep bg-happy-surface;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    CHIP & BADGE UTILITIES
-   ═══════════════════════════════════════════════════════════════════════════
-
-   All chip/badge utilities enforce their own text colour.
-   Do NOT override with text-white — white on these sage tints is ~1:1
-   contrast (completely invisible).
-
-   happy-brand-soft-chip     Pill-shaped container. sage-50 tint + ink text.
-   happy-brand-status-chip   Status label pill. sage-pill + sage-dark text.
-   happy-brand-score-badge   Score badge. sage-selected + sage-dark text.   */
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 @utility happy-brand-soft-chip {
-  @apply rounded-full bg-sage-50 text-ink;
+  @apply rounded-full bg-happy-surface-2 text-happy-label;
 }
 
 @utility happy-brand-status-chip {
@@ -428,125 +244,107 @@
 }
 
 @utility happy-brand-score-badge {
-  @apply rounded-[22px] bg-sage-selected text-sage-dark;
+  @apply rounded-[22px] bg-happy-tint text-sage-dark;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   TEXT STYLE UTILITIES
-   ═══════════════════════════════════════════════════════════════════════════
-
-   happy-brand-eyebrow   ALL-CAPS section label. sage-500 colour.
-                         On brand-canvas: 4.29:1 — borderline.
-                         Always pair with text-xs or larger, bold weight.
-                         For smaller text, use sage-600 instead.
-
-   happy-brand-copy      Inline prose text style. ink-soft colour.
-   happy-brand-secondary-cta-text  Dismiss/skip/secondary action text.       */
-
 @utility happy-brand-eyebrow {
-  @apply text-xs font-bold uppercase tracking-widest text-sage-500;
+  @apply text-xs font-bold uppercase tracking-widest text-happy-accent;
 }
 
 @utility happy-brand-copy {
-  @apply text-ink-soft;
+  @apply text-happy-label-2;
 }
 
 @utility happy-brand-secondary-cta-text {
-  @apply text-sm font-medium text-ink-muted;
+  @apply text-sm font-medium text-happy-label-3;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   CTA UTILITIES
-   ═══════════════════════════════════════════════════════════════════════════
-
-   The primary CTA uses the same thick-bottom-border depth trick as cards.
-   sage-500 fill + sage-700 bottom border gives a tactile pressed look.
-   White text on sage-500 is 4.50:1 on white cards — the minimum for WCAG AA.
-   Do not use smaller than 16pt font on primary CTAs.
-
-   happy-brand-primary-cta           Active state. Pair with text-white.
-   happy-brand-primary-cta-disabled  Visually greyed out.                  */
+   TACTILE CTA & BUTTON UTILITIES (Duolingo & BitePal style from happy-ui.css)
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 @utility happy-brand-primary-cta {
-  @apply border-b-4 border-b-sage-700 bg-sage-500;
+  @apply border-b-4 border-b-sage-700 bg-happy-ink rounded-pill;
 }
 
 @utility happy-brand-primary-cta-disabled {
-  @apply border-b-4 border-b-sage-300 bg-sage-200;
+  @apply border-b-4 border-b-sage-300 bg-sage-200 rounded-pill;
 }
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   SECONDARY CTA UTILITY
-   ═══════════════════════════════════════════════════════════════════════════
-
-   Maps to Duolingo's ghost/secondary button.
-   Neutral depth border signals pressability without competing with the
-   primary CTA. Always pair with a primary CTA — never use standalone.
-   Label text: text-ink-soft (never ink — that implies primary).           */
 
 @utility happy-brand-secondary-cta {
-  @apply border-2 border-b-4 border-brand-border border-b-brand-border-strong bg-brand-surface;
+  @apply border-2 border-b-4 border-happy-sep border-b-happy-rim bg-happy-surface rounded-pill;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   ANSWER STATE UTILITIES
-   ═══════════════════════════════════════════════════════════════════════════
-
-   Correct/incorrect feedback states for exercise cards and choice items.
-
-   happy-brand-card-correct    Sage-tinted. Text: sage-dark (NOT sage-500).
-   happy-brand-card-incorrect  Terracotta-tinted. Text: cardinal-dark
-                               (NOT cardinal-red).
-
-   Both use the same depth structure as happy-brand-pressed-card.          */
-
-@utility happy-brand-card-correct {
-  @apply border-2 border-b-4 border-sage-300 border-b-sage-400 bg-sage-selected text-sage-dark;
+/* Tactile answer options (.qr, .opt) */
+@utility happy-ui-tactile-qr {
+  @apply border-2 border-happy-sep border-b-[3px] bg-happy-surface rounded-full font-semibold text-happy-label;
 }
 
-@utility happy-brand-card-incorrect {
-  @apply border-2 border-b-4 border-terracotta-light border-b-terracotta bg-terracotta-tint text-cardinal-dark;
+@utility happy-ui-tactile-qr-picked {
+  @apply border-2 border-happy-ink border-b-[3px] bg-happy-tint rounded-full font-semibold text-happy-label;
 }
 
-/* Shared exercise selection surfaces. Keep state semantics centralized so
-   exercise views compose behavior instead of rebuilding visual language. */
-@utility happy-course-selection {
-  @apply border-brand-border bg-brand-surface-soft;
+@utility happy-ui-tactile-opt {
+  @apply border-2 border-happy-sep border-b-[3px] bg-happy-surface rounded-2xl font-semibold text-happy-label;
 }
 
-@utility happy-course-selection-active {
-  @apply border-sage-300 bg-sage-selected;
+@utility happy-ui-tactile-opt-picked {
+  @apply border-2 border-happy-ink border-b-[3px] bg-happy-tint rounded-2xl font-semibold text-happy-label;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   PROGRESS BAR UTILITIES
-   ═══════════════════════════════════════════════════════════════════════════
+/* Flat starters & filter chips */
+@utility happy-ui-starter {
+  @apply bg-happy-surface-2 border-0 rounded-full font-medium text-happy-label-2;
+}
 
-   Track: brand-border (#e5e5e5)
-   Fill:  sage-500 (#5f7f58) — 4.50:1 on white, minimum AA               */
+@utility happy-ui-starter-picked {
+  @apply bg-happy-tint border-2 border-happy-ink rounded-full font-medium text-happy-label;
+}
+
+@utility happy-ui-chip {
+  @apply bg-happy-surface-2 border-0 rounded-full font-semibold text-happy-label;
+}
+
+@utility happy-ui-chip-selected {
+  @apply bg-happy-tint border-2 border-happy-ink rounded-full font-semibold text-happy-label;
+}
+
+@utility happy-ui-card {
+  @apply bg-happy-surface-2 border-0 rounded-2xl;
+}
+
+@utility happy-ui-card-selected {
+  @apply bg-happy-tint border-2 border-happy-ink rounded-2xl;
+}
+
+/* Fields (L11: filled, no focus outlines) */
+@utility happy-ui-field {
+  @apply bg-happy-surface-2 border-transparent font-medium;
+}
 
 @utility happy-brand-progress-track {
-  @apply rounded-full bg-brand-border;
+  @apply rounded-full bg-happy-sep;
 }
 
 @utility happy-brand-progress-fill {
-  @apply rounded-full bg-sage-500;
+  @apply rounded-full bg-happy-ink;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   EMPTY STATE CARD
-   ═══════════════════════════════════════════════════════════════════════════
+   DARK MODE ADAPTATIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-   Dashed border universally reads as "slot awaiting content." No border-b
-   depth — flat appearance communicates "not a pressable action."          */
-
-@utility happy-brand-empty-state {
-  @apply border-2 border-dashed border-brand-border bg-brand-surface-soft;
-}
-
-/* Sage-tinted dark surfaces retain the brand's warmth without pure black. */
 @media (prefers-color-scheme: dark) {
   :root {
+    --color-happy-bg: #0f1a0f;
+    --color-happy-surface: #1a2a1a;
+    --color-happy-surface-2: #142414;
+    --color-happy-tint: #1a2f1a;
+    --color-happy-sep: #2a3a2a;
+    --color-happy-rim: #3a4a3a;
+    --color-happy-label: #f0f5f0;
+    --color-happy-label-2: #a0b0a0;
+    --color-happy-label-3: #5a6a5a;
     --color-brand-canvas: #0f1a0f;
     --color-brand-surface: #1a2a1a;
     --color-brand-surface-soft: #142414;
@@ -560,162 +358,4 @@
     --color-sage-selected: #1a2f1a;
     --color-sage-pill: #1a2a1a;
   }
-}
-
-/* ─── Happy Semantic Color System ─────────────────────────────────────────── */
-@layer theme {
-  :root, :where(.light, .light *) {
-    --text-primary: #142414;
-    --text-secondary: #767676;
-    --text-tertiary: #afafaf;
-    --text-disabled: #afafaf;
-
-    --brand-primary: #5f7f58;
-    --brand-onPrimary: #ffffff;
-    --brand-pressed: #44633f;
-    --brand-soft: #e5ede1;
-    --brand-onSoft: #29452a;
-
-    --surface-canvas: #f8faf7;
-    --surface-primary: #ffffff;
-    --surface-secondary: #f7f7f7;
-    --surface-elevated: #ffffff;
-
-    --border-default: #e5e5e5;
-    --border-strong: #e5e5e5;
-    --border-selected: #abc0a2;
-
-    --selection-surface: #f8fbf6;
-    --selection-border: #abc0a2;
-    --selection-foreground: #29452a;
-    --selection-indicator: #5f7f58;
-
-    --disabled-surface: #f7f7f7;
-    --disabled-border: #e5e5e5;
-    --disabled-foreground: #afafaf;
-
-    --success-surface: #f0fdf4;
-    --success-border: #4ade80;
-    --success-foreground: #15803d;
-    --success-indicator: #16a34a;
-
-    --error-surface: #FFDFE0;
-    --error-border: #FF9090;
-    --error-foreground: #e7000b;
-    --error-indicator: #FF4B4B;
-
-    --warning-surface: #FEEDE0;
-    --warning-border: #FF9600;
-    --warning-foreground: #8A4F00;
-    --warning-indicator: #C76F00;
-
-    --info-surface: #DDF4FF;
-    --info-border: #1CB0F6;
-    --info-foreground: #006699;
-    --info-indicator: #1CB0F6;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --text-primary: #f0f5f0;
-      --text-secondary: #a0b0a0;
-      --text-tertiary: #5a6a5a;
-      --text-disabled: #5a6a5a;
-
-      --brand-primary: #7e9874;
-      --brand-onPrimary: #1a2a1a;
-      --brand-pressed: #5f7f58;
-      --brand-soft: #142414;
-      --brand-onSoft: #abc0a2;
-
-      --surface-canvas: #0f1a0f;
-      --surface-primary: #1a2a1a;
-      --surface-secondary: #142414;
-      --surface-elevated: #2a3a2a;
-
-      --border-default: #2a3a2a;
-      --border-strong: #3a4a3a;
-      --border-selected: #5f7f58;
-
-      --selection-surface: #142414;
-      --selection-border: #5f7f58;
-      --selection-foreground: #d3e0cd;
-      --selection-indicator: #7e9874;
-
-      --disabled-surface: #142414;
-      --disabled-border: #2a3a2a;
-      --disabled-foreground: #5a6a5a;
-
-      --success-surface: #0f2e1a;
-      --success-border: #15803d;
-      --success-foreground: #4ade80;
-      --success-indicator: #16a34a;
-
-      --error-surface: #2e0f0f;
-      --error-border: #FF4B4B;
-      --error-foreground: #FF9090;
-      --error-indicator: #FF4B4B;
-
-      --warning-surface: #2e1f0f;
-      --warning-border: #FF9600;
-      --warning-foreground: #FFD299;
-      --warning-indicator: #FF9600;
-
-      --info-surface: #0f1f2e;
-      --info-border: #1CB0F6;
-      --info-foreground: #99D6FF;
-      --info-indicator: #1CB0F6;
-    }
-  }
-}
-
-@theme {
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-tertiary: var(--text-tertiary);
-  --color-text-disabled: var(--text-disabled);
-
-  --color-brand-primary: var(--brand-primary);
-  --color-brand-onPrimary: var(--brand-onPrimary);
-  --color-brand-pressed: var(--brand-pressed);
-  --color-brand-soft: var(--brand-soft);
-  --color-brand-onSoft: var(--brand-onSoft);
-
-  --color-surface-canvas: var(--surface-canvas);
-  --color-surface-primary: var(--surface-primary);
-  --color-surface-secondary: var(--surface-secondary);
-  --color-surface-elevated: var(--surface-elevated);
-
-  --color-border-default: var(--border-default);
-  --color-border-strong: var(--border-strong);
-  --color-border-selected: var(--border-selected);
-
-  --color-selection-surface: var(--selection-surface);
-  --color-selection-border: var(--selection-border);
-  --color-selection-foreground: var(--selection-foreground);
-  --color-selection-indicator: var(--selection-indicator);
-
-  --color-disabled-surface: var(--disabled-surface);
-  --color-disabled-border: var(--disabled-border);
-  --color-disabled-foreground: var(--disabled-foreground);
-
-  --color-success-surface: var(--success-surface);
-  --color-success-border: var(--success-border);
-  --color-success-foreground: var(--success-foreground);
-  --color-success-indicator: var(--success-indicator);
-
-  --color-error-surface: var(--error-surface);
-  --color-error-border: var(--error-border);
-  --color-error-foreground: var(--error-foreground);
-  --color-error-indicator: var(--error-indicator);
-
-  --color-warning-surface: var(--warning-surface);
-  --color-warning-border: var(--warning-border);
-  --color-warning-foreground: var(--warning-foreground);
-  --color-warning-indicator: var(--warning-indicator);
-
-  --color-info-surface: var(--info-surface);
-  --color-info-border: var(--info-border);
-  --color-info-foreground: var(--info-foreground);
-  --color-info-indicator: var(--info-indicator);
 }

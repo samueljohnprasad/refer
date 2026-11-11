@@ -1,0 +1,92 @@
+// ponytail: static goal catalog for onboarding worked examples using design system tokens
+import { GoalId, TrapType } from './enums';
+import type { GoalDefinition } from './types';
+import { HAPPY_COLORS } from '@/lib/tokens';
+
+export const GOALS: GoalDefinition[] = [
+  {
+    id: GoalId.Worry,
+    tint: HAPPY_COLORS.hues.reframe,
+    label: 'Worry',
+    sub: 'I worry about what could go wrong',
+    f: 0.68,
+    mirror: 'Worry jumps to what might happen. Let’s catch one together.',
+    scene: 'A friend texts: “Can we talk later?”',
+    thought: 'I’ve done something wrong.',
+    trap: TrapType.MindReading,
+    why: 'She didn’t say what it’s about, so “I did something wrong” is a guess, not a fact.',
+    fair: 'I don’t know why she wants to talk. It could be about anything.',
+    ideas: {
+      sit: ['A friend left my message on read.', 'I have a doctor’s appointment next week.', 'My boss said “let’s talk Monday.”'],
+      th: ['Something is going to go wrong.', 'I’ve missed something important.', 'They’re upset with me.'],
+    },
+  },
+  {
+    id: GoalId.Mood,
+    tint: HAPPY_COLORS.hues.abc,
+    label: 'Low mood',
+    sub: 'Everything feels hard lately',
+    f: 0.78,
+    mirror: 'Low mood makes everything look worse. Let’s look at one thought.',
+    scene: 'You stayed in all weekend.',
+    thought: 'I never get anything done.',
+    trap: TrapType.Overgeneralizing,
+    why: 'Resting one weekend doesn’t erase what you got done last month.',
+    fair: 'This weekend I rested. Last month I finished a lot.',
+    ideas: {
+      sit: ['I stayed in bed most of Saturday.', 'I skipped the thing I’d planned.', 'I forgot to reply to a few messages.'],
+      th: ['I never get anything done.', 'Nothing is going to get better.', 'I’m letting everyone down.'],
+    },
+  },
+  {
+    id: GoalId.Stress,
+    tint: HAPPY_COLORS.hues.act,
+    label: 'Stress',
+    sub: 'I have too much to do',
+    f: 0.72,
+    mirror: 'Stress turns every task into an emergency. Let’s catch one.',
+    scene: 'Three things are due on the same day.',
+    thought: 'If I miss one, everything falls apart.',
+    trap: TrapType.Catastrophizing,
+    why: 'Deadlines slip and get handled. One late task rarely ruins everything.',
+    fair: 'One late task is a problem I can explain, not the end of everything.',
+    ideas: {
+      sit: ['Three things are due this week.', 'My inbox has 80 unread emails.', 'I’m behind on a project.'],
+      th: ['It’s all going to fall apart.', 'I can’t handle all of this.', 'If I slip once, I’m done.'],
+    },
+  },
+  {
+    id: GoalId.Self,
+    tint: HAPPY_COLORS.hues.ladder,
+    label: 'Self-talk',
+    sub: 'I’m hard on myself',
+    f: 0.64,
+    mirror: 'The voice in your head can be very harsh. Let’s look at what it says.',
+    scene: 'You stumbled over a word in a meeting.',
+    thought: 'I’m such an idiot.',
+    trap: TrapType.Labeling,
+    why: 'Everyone gets a word wrong sometimes. One stumble is a moment, not a verdict on you.',
+    fair: 'I stumbled once. That’s a moment, not who I am.',
+    ideas: {
+      sit: ['I got a word wrong in a meeting.', 'I snapped at someone I love.', 'I made a small mistake at work.'],
+      th: ['I’m such an idiot.', 'I always mess things up.', 'I’m not good enough.'],
+    },
+  },
+  {
+    id: GoalId.Sleep,
+    tint: HAPPY_COLORS.cloudLo,
+    label: 'Sleep',
+    sub: 'My thoughts keep me up',
+    f: 0.6,
+    mirror: 'At night, small worries grow big. Let’s catch one.',
+    scene: 'It’s 1 AM and you’re still awake.',
+    thought: 'Tomorrow is going to be a disaster.',
+    trap: TrapType.FortuneTelling,
+    why: 'You’ve got through tired days before, so “disaster” is a prediction, not a fact.',
+    fair: 'I’ve managed on little sleep before. Tomorrow may be tiring, not ruined.',
+    ideas: {
+      sit: ['It’s 1 AM and I’m still awake.', 'I woke up at 3 AM again.', 'I have an early start tomorrow.'],
+      th: ['Tomorrow will be a disaster.', 'I’ll never fall asleep.', 'I can’t function on this little sleep.'],
+    },
+  },
+];
