@@ -25,10 +25,10 @@ export function SavedReflectionCard({
   const bandTint = goal?.tint ?? 'var(--color-happy-tint)';
 
   return (
-    <View className="relative w-full rounded-l border-2 border-happy-sep bg-happy-surface shadow-[0_3px_0_var(--color-happy-sep)] my-6">
+    <View className="relative w-full rounded-l border-2 border-b-[5px] border-happy-sep bg-happy-surface my-6">
       {/* Corner sticker rotated 8deg (exact prototype) */}
       <View
-        className="absolute -top-4 right-3.5 w-[62px] h-[62px] p-1 border-2 border-happy-sep rounded-pill bg-happy-surface shadow-[0_3px_0_var(--color-happy-sep)] z-20 items-center justify-center"
+        className="absolute -top-4 right-3.5 w-[62px] h-[62px] p-1 border-2 border-happy-sep rounded-pill bg-happy-surface z-20 items-center justify-center"
         style={{ transform: [{ rotate: '8deg' }] }}
       >
         <HappiHeadSvg goalId="card" size={48} />

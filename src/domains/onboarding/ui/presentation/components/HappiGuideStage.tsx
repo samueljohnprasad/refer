@@ -15,6 +15,7 @@ import Svg, {
 export interface HappiGuideStageProps {
   weather: number;
   size?: 'hero' | 'compact' | 'mini';
+  hideWeather?: boolean;
 }
 
 const INK = '#252525';
@@ -22,11 +23,15 @@ const INK = '#252525';
 export function HappiGuideStage({
   weather,
   size = 'compact',
+  hideWeather,
 }: HappiGuideStageProps): React.JSX.Element {
   const isHero = size === 'hero';
   const isMini = size === 'mini';
-  const width = isHero ? 220 : isMini ? 76 : 148;
-  const height = isHero ? 220 : isMini ? 76 : 148;
+  // ponytail: S1 .ask host hides weather props and crops to panda (exact line 465 of onboarding.html)
+  const shouldHideWeather = hideWeather ?? isMini;
+  const width = isHero ? 220 : isMini ? 88 : 148;
+  const height = isHero ? 220 : isMini ? 94 : 148;
+  const viewBox = shouldHideWeather ? '46 12 172 226' : '44 0 236 240';
 
   // Cloud parting calculation matching prototype
   const cloudColor = weather > 0.5 ? '#a9bfa0' : '#e4eee0';
@@ -34,7 +39,7 @@ export function HappiGuideStage({
 
   return (
     <View style={{ width, height }} className="items-center justify-center">
-      <Svg viewBox="44 0 236 240" width="100%" height="100%">
+      <Svg viewBox={viewBox} width="100%" height="100%">
         <Defs>
           <ClipPath id="happi-eye-clip-stage">
             <Ellipse cx={99} cy={99} rx={18.5} ry={17.5} />
@@ -42,33 +47,37 @@ export function HappiGuideStage({
           </ClipPath>
         </Defs>
 
-        {/* Sun */}
-        <G opacity={sunOpacity} transform="translate(240, 36)">
-          <Circle r={11} fill="#F5B942" />
-          {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
-            const a = (i * Math.PI) / 4;
-            return (
-              <Line
-                key={i}
-                x1={Math.cos(a) * 14}
-                y1={Math.sin(a) * 14}
-                x2={Math.cos(a) * 18}
-                y2={Math.sin(a) * 18}
-                stroke="#F5B942"
-                strokeWidth={2.5}
-                strokeLinecap="round"
-              />
-            );
-          })}
-        </G>
+        {/* Sun (hidden off the chat per spec) */}
+        {!shouldHideWeather && (
+          <G opacity={sunOpacity} transform="translate(240, 36)">
+            <Circle r={11} fill="#F5B942" />
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
+              const a = (i * Math.PI) / 4;
+              return (
+                <Line
+                  key={i}
+                  x1={Math.cos(a) * 14}
+                  y1={Math.sin(a) * 14}
+                  x2={Math.cos(a) * 18}
+                  y2={Math.sin(a) * 18}
+                  stroke="#F5B942"
+                  strokeWidth={2.5}
+                  strokeLinecap="round"
+                />
+              );
+            })}
+          </G>
+        )}
 
-        {/* Thought Cloud Prop */}
-        <G fill={cloudColor}>
-          <Rect x={220} y={29} width={50} height={12} rx={6} />
-          <Circle cx={229} cy={30} r={11} />
-          <Circle cx={245} cy={22} r={14} />
-          <Circle cx={260} cy={31} r={10} />
-        </G>
+        {/* Thought Cloud Prop (hidden off the chat per spec) */}
+        {!shouldHideWeather && (
+          <G fill={cloudColor}>
+            <Rect x={220} y={29} width={50} height={12} rx={6} />
+            <Circle cx={229} cy={30} r={11} />
+            <Circle cx={245} cy={22} r={14} />
+            <Circle cx={260} cy={31} r={10} />
+          </G>
+        )}
 
         {/* Floor shadow */}
         <Ellipse cx={130} cy={229} rx={54} ry={8} fill="#BCD0AF" />

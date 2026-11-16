@@ -55,7 +55,7 @@ export function InlineReminderBanner({
       <View className="flex-col gap-2.5">
         <Pressable
           onPress={() => onPickPreset(ReminderPreset.Morning)}
-          className="flex-row items-center gap-3 w-full min-h-[68px] p-2 pr-4 rounded-2xl border-2 border-happy-sep bg-happy-surface shadow-[0_3px_0_var(--color-happy-sep)] active:translate-y-0.5"
+          className="flex-row items-center gap-3 w-full min-h-[68px] p-2.5 pr-4 rounded-[20px] border-2 border-b-[5px] border-happy-sep bg-happy-surface active:translate-y-[2px] active:border-b-2"
         >
           <View className="w-12 h-12 rounded-[14px] bg-happy-surface-2 items-center justify-center">
             <Sun size={24} color="#f5b942" />
@@ -66,7 +66,7 @@ export function InlineReminderBanner({
 
         <Pressable
           onPress={() => onPickPreset(ReminderPreset.Evening)}
-          className="flex-row items-center gap-3 w-full min-h-[68px] p-2 pr-4 rounded-2xl border-2 border-happy-sep bg-happy-surface shadow-[0_3px_0_var(--color-happy-sep)] active:translate-y-0.5"
+          className="flex-row items-center gap-3 w-full min-h-[68px] p-2.5 pr-4 rounded-[20px] border-2 border-b-[5px] border-happy-sep bg-happy-surface active:translate-y-[2px] active:border-b-2"
         >
           <View className="w-12 h-12 rounded-[14px] bg-happy-surface-2 items-center justify-center">
             <Moon size={24} color="#a493d6" />

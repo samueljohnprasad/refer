@@ -16,6 +16,8 @@
     "laya:start": ".venv/bin/python scripts/laya_service.py",
     "test:laya": "npx tsx scripts/test_app_with_laya.ts",
     "types": "npx supabase gen types typescript --project-id xaqeueshxpehijtxwklo > database.types.ts",
+    "build:sim:ios": "eas build --platform ios --profile simulator-preview",
+    "sim:stop": "eas simulator:stop",
     "prewidget": "EXPO_NO_GIT_STATUS=1 npx expo prebuild --template ./node_modules/@bacons/apple-targets/prebuild-blank.tgz --clean",
     "postinstall": "node ./node_modules/@shopify/react-native-skia/scripts/install-libs.js && node ./node_modules/llama.rn/install/download-native-artifacts.js",
     "eas-build-post-install": "node ./node_modules/@shopify/react-native-skia/scripts/install-libs.js && node ./node_modules/llama.rn/install/download-native-artifacts.js",

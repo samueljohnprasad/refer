@@ -37,7 +37,7 @@ export function ThoughtCatcherChatStepView({
       <View className="flex-1 justify-between px-6 pb-6 pt-8">
         <View className="flex-1 items-center justify-center">
           {/* Speech bubble above Happi */}
-          <View className="relative max-w-[300px] mb-6 p-4 border-2 border-happy-sep rounded-2xl bg-happy-surface shadow-xs">
+          <View className="relative max-w-[300px] mb-6 p-4 border-2 border-happy-sep rounded-2xl bg-happy-surface">
             <Text className="text-t-title font-semibold font-display text-happy-label text-center leading-tight">
               {heroMirrorText}
             </Text>
@@ -53,7 +53,7 @@ export function ThoughtCatcherChatStepView({
 
         <Pressable
           onPress={onShowMe}
-          className="w-full min-h-[56px] bg-happy-ink rounded-pill items-center justify-center shadow-[0_4px_0_var(--color-happy-accent)] active:translate-y-1 active:shadow-[0_1px_0_var(--color-happy-accent)]"
+          className="w-full min-h-[56px] bg-happy-ink rounded-pill items-center justify-center border-b-4 border-happy-accent active:translate-y-1 active:border-b-0"
           accessibilityRole="button"
         >
           <Text className="text-white text-t-body font-bold">Show me</Text>

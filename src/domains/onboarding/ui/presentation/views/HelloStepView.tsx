@@ -20,14 +20,14 @@ export function HelloStepView({
     <View className="flex-1 justify-between px-6 pb-6 pt-10">
       <View className="items-center text-center">
         {/* Happi speech bubble */}
-        <View className="relative bg-happy-surface border border-happy-rim rounded-2xl px-3.5 py-2 mb-2 shadow-xs">
+        <View className="relative bg-happy-surface border border-happy-rim rounded-2xl px-3.5 py-2 mb-2">
           <Text className="text-t-sub font-semibold text-happy-label">Hi, I’m Happi.</Text>
           <View className="absolute left-1/2 -ml-1.5 -bottom-1.5 w-3 h-3 bg-happy-surface border-r border-b border-happy-rim rotate-45" />
         </View>
 
         {/* Hero Character */}
         <View className="w-[220px] h-[220px] items-center justify-center my-2">
-          {guideStage ?? <HappiGuideStage weather={0.2} size="hero" />}
+          {guideStage ?? <HappiGuideStage weather={0.2} size="hero" hideWeather />}
         </View>
 
         {/* Headings: Fredoka display for one title per screen */}
@@ -46,7 +46,7 @@ export function HelloStepView({
       <View className="w-full gap-2.5">
         <Pressable
           onPress={onHiPress}
-          className="w-full min-h-[56px] bg-happy-ink rounded-pill items-center justify-center shadow-[0_4px_0_var(--color-happy-accent)] active:translate-y-1 active:shadow-[0_1px_0_var(--color-happy-accent)]"
+          className="w-full min-h-[56px] bg-happy-ink rounded-pill items-center justify-center border-b-4 border-happy-accent active:translate-y-1 active:border-b-0"
           accessibilityRole="button"
         >
           <Text className="text-white text-t-body font-bold">Hi, Happi</Text>
