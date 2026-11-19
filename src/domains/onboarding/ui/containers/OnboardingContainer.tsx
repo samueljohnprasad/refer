@@ -152,7 +152,7 @@ export function OnboardingContainer({
           <GoalPickStepView
             goals={GOALS}
             selectedGoalId={selectedGoal?.id ?? null}
-            guideStage={<HappiGuideStage weather={guide.weatherF.value} size="compact" />}
+            guideStage={<HappiGuideStage weather={guide.weatherF.value} size="mini" hideWeather />}
             onSelectGoal={handleSelectGoal}
           />
         )}

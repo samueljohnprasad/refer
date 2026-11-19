@@ -17,28 +17,28 @@ export function OnboardingHeader({
   onBack,
 }: OnboardingHeaderProps): React.JSX.Element {
   return (
-    <View className="flex-row items-center gap-3 px-3 pt-2 min-h-[52px]">
+    <View className="flex-row items-center gap-3 px-3 pt-1 min-h-[48px]">
       {showBack ? (
         <Pressable
           onPress={onBack}
-          className="w-11 h-11 items-center justify-center rounded-pill active:scale-95"
+          className="w-10 h-10 items-center justify-center rounded-pill active:scale-95"
           accessibilityRole="button"
           accessibilityLabel="Back"
         >
           <ChevronLeft size={22} color="#142414" strokeWidth={2.5} />
         </Pressable>
       ) : (
-        <View className="w-11" />
+        <View className="w-10" />
       )}
 
       {showProgress ? (
-        <View className="flex-1 h-[14px] bg-happy-sep rounded-pill overflow-hidden relative justify-center">
+        <View className="flex-1 h-[12px] bg-happy-sep rounded-pill overflow-hidden relative justify-center">
           <View
             className="h-full bg-happy-accent rounded-pill relative"
             style={{ width: `${Math.max(10, Math.min(100, progressFill * 100))}%` }}
           >
             {/* Duolingo glossy sheen strip */}
-            <View className="absolute left-[7px] right-[7px] top-[3px] h-[3px] rounded-[2px] bg-white/30" />
+            <View className="absolute left-[5px] right-[5px] top-[2.5px] h-[2.5px] rounded-[1.5px] bg-white/35" />
           </View>
         </View>
       ) : (
@@ -46,7 +46,7 @@ export function OnboardingHeader({
       )}
 
       {/* Spacer to keep bar centered */}
-      <View className="w-11" />
+      <View className="w-10" />
     </View>
   );
 }
