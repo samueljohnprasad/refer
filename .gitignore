@@ -80,3 +80,5 @@ credentials.json
 .update-state.json
 # docs
 # app-soul-design
+*.app
+*.app.tar.gz
