@@ -20,10 +20,10 @@ export const SingleChoiceAdapter: React.FC<AdapterProps<CheckpointSingleChoice>>
   if (showWorkedSupport) {
     return (
       <View className="space-y-6">
-        <Text className="text-2xl font-cormorant text-ink">{item.question}</Text>
+        <Text className="text-2xl happy-font-heading text-ink">{item.question}</Text>
         <View className="p-4 bg-sage-50 rounded-xl border border-sage-200">
-          <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider mb-2">{t("flow.ui.categoryEngine.checkpoint.workedSupport")}</Text>
-          <Text className="text-lg font-geist text-ink">{item.workedSupport}</Text>
+          <Text className="text-sm font-nunito text-sage-500 uppercase tracking-wider mb-2">{t("flow.ui.categoryEngine.checkpoint.workedSupport")}</Text>
+          <Text className="text-lg font-nunito text-ink">{item.workedSupport}</Text>
         </View>
         <Button label={t("flow.ui.categoryEngine.checkpoint.next")} onPress={() => onComplete(false)} size="lg" />
       </View>
@@ -32,7 +32,7 @@ export const SingleChoiceAdapter: React.FC<AdapterProps<CheckpointSingleChoice>>
 
   return (
     <View className="space-y-6">
-      <Text className="text-2xl font-cormorant text-ink">{item.question}</Text>
+      <Text className="text-2xl happy-font-heading text-ink">{item.question}</Text>
       <View className="space-y-4">
         {item.options.map(opt => (
           <TouchableOpacity 
@@ -40,7 +40,7 @@ export const SingleChoiceAdapter: React.FC<AdapterProps<CheckpointSingleChoice>>
             onPress={() => onComplete(opt.isCorrect)}
             className="p-4 rounded-xl border border-sage-200 bg-white"
           >
-            <Text className="text-lg font-geist text-ink">{opt.text}</Text>
+            <Text className="text-lg font-nunito text-ink">{opt.text}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -57,10 +57,10 @@ export const OrderingAdapter: React.FC<AdapterProps<CheckpointOrdering>> = ({ it
   if (showWorkedSupport) {
     return (
       <View className="space-y-6">
-        <Text className="text-2xl font-cormorant text-ink">{item.instruction}</Text>
+        <Text className="text-2xl happy-font-heading text-ink">{item.instruction}</Text>
         <View className="p-4 bg-sage-50 rounded-xl border border-sage-200">
-          <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider mb-2">{t("flow.ui.categoryEngine.checkpoint.workedSupport")}</Text>
-          <Text className="text-lg font-geist text-ink">{item.workedSupport}</Text>
+          <Text className="text-sm font-nunito text-sage-500 uppercase tracking-wider mb-2">{t("flow.ui.categoryEngine.checkpoint.workedSupport")}</Text>
+          <Text className="text-lg font-nunito text-ink">{item.workedSupport}</Text>
         </View>
         <Button label={t("flow.ui.categoryEngine.checkpoint.next")} onPress={() => onComplete(false)} size="lg" />
       </View>
@@ -82,9 +82,9 @@ export const OrderingAdapter: React.FC<AdapterProps<CheckpointOrdering>> = ({ it
   
   return (
     <View className="space-y-6">
-      <Text className="text-2xl font-cormorant text-ink">{item.instruction}</Text>
+      <Text className="text-2xl happy-font-heading text-ink">{item.instruction}</Text>
       {attempts === 1 && (
-        <Text className="text-sm font-geist text-amber-700 uppercase tracking-wider mb-2">{t("flow.ui.categoryEngine.checkpoint.orderRetry")}</Text>
+        <Text className="text-sm font-nunito text-amber-700 uppercase tracking-wider mb-2">{t("flow.ui.categoryEngine.checkpoint.orderRetry")}</Text>
       )}
       <View className="space-y-2">
         {order.map((o, index) => {
@@ -96,10 +96,10 @@ export const OrderingAdapter: React.FC<AdapterProps<CheckpointOrdering>> = ({ it
           return (
             <View key={o.id} className="flex-row items-center space-x-2">
               <TouchableOpacity onPress={() => moveUp(index)} className="p-4 bg-sage-100 rounded-lg">
-                <Text className="text-ink font-bold font-geist">↑</Text>
+                <Text className="text-ink font-bold font-nunito">↑</Text>
               </TouchableOpacity>
               <View className={`flex-1 p-4 rounded-xl ${borderClass} ${bgClass}`}>
-                <Text className="text-lg font-geist text-ink">{o.text}</Text>
+                <Text className="text-lg font-nunito text-ink">{o.text}</Text>
               </View>
             </View>
           );
@@ -124,10 +124,10 @@ export const MatchingAdapter: React.FC<AdapterProps<CheckpointMatching>> = ({ it
   if (showWorkedSupport) {
     return (
       <View className="space-y-6">
-        <Text className="text-2xl font-cormorant text-ink">{item.instruction}</Text>
+        <Text className="text-2xl happy-font-heading text-ink">{item.instruction}</Text>
         <View className="p-4 bg-sage-50 rounded-xl border border-sage-200">
-          <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider mb-2">{t("flow.ui.categoryEngine.checkpoint.workedSupport")}</Text>
-          <Text className="text-lg font-geist text-ink">{item.workedSupport}</Text>
+          <Text className="text-sm font-nunito text-sage-500 uppercase tracking-wider mb-2">{t("flow.ui.categoryEngine.checkpoint.workedSupport")}</Text>
+          <Text className="text-lg font-nunito text-ink">{item.workedSupport}</Text>
         </View>
         <Button label={t("flow.ui.categoryEngine.checkpoint.next")} onPress={() => onComplete(false)} size="lg" />
       </View>
@@ -168,7 +168,7 @@ export const MatchingAdapter: React.FC<AdapterProps<CheckpointMatching>> = ({ it
 
   return (
     <View className="space-y-6">
-      <Text className="text-2xl font-cormorant text-ink">{item.instruction}</Text>
+      <Text className="text-2xl happy-font-heading text-ink">{item.instruction}</Text>
       
       <View className="flex-row space-x-4">
         {/* Left List */}
@@ -179,7 +179,7 @@ export const MatchingAdapter: React.FC<AdapterProps<CheckpointMatching>> = ({ it
               onPress={() => handleSelectLeft(p.id)}
               className={`p-4 rounded-xl border ${leftId === p.id ? "bg-sage-100 border-ink" : "bg-white border-sage-200"}`}
             >
-              <Text className="text-base font-geist text-ink">{p.left}</Text>
+              <Text className="text-base font-nunito text-ink">{p.left}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -192,7 +192,7 @@ export const MatchingAdapter: React.FC<AdapterProps<CheckpointMatching>> = ({ it
               onPress={() => handleSelectRight(p.id)}
               className={`p-4 rounded-xl border ${rightId === p.id ? "bg-sage-100 border-ink" : "bg-white border-sage-200"}`}
             >
-              <Text className="text-base font-geist text-ink">{p.right}</Text>
+              <Text className="text-base font-nunito text-ink">{p.right}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -208,16 +208,16 @@ export const RecallAdapter: React.FC<AdapterProps<CheckpointRecall>> = ({ item, 
   return (
     <View className="space-y-6">
       <View className="p-6 bg-white rounded-2xl border border-sage-200 shadow-sm min-h-[200px] justify-center items-center">
-        <Text className="text-2xl font-cormorant text-ink text-center mb-6">{item.question}</Text>
+        <Text className="text-2xl happy-font-heading text-ink text-center mb-6">{item.question}</Text>
         
         {revealed ? (
           <View className="items-center w-full">
             <View className="w-16 h-px bg-sage-200 mb-6" />
-            <Text className="text-xl font-geist text-ink text-center">{item.answer}</Text>
+            <Text className="text-xl font-nunito text-ink text-center">{item.answer}</Text>
           </View>
         ) : (
           <TouchableOpacity onPress={() => setRevealed(true)} className="px-6 py-3 bg-sage-100 rounded-full">
-            <Text className="text-sage-800 font-geist font-bold">{t("flow.ui.categoryEngine.checkpoint.revealAnswer")}</Text>
+            <Text className="text-sage-800 font-nunito font-bold">{t("flow.ui.categoryEngine.checkpoint.revealAnswer")}</Text>
           </TouchableOpacity>
         )}
       </View>

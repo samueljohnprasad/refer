@@ -174,7 +174,7 @@ export function WaveFaqCategoryEngine({
 
       {/* Scenario Quote Card */}
       <View className="mb-4 rounded-[18px] bg-[#FAF6EF] px-4.5 py-3.5 border border-[#EDE6DA]">
-        <Text className="font-serif italic text-[15.5px] leading-[23px] text-[#2C2825]">
+        <Text className="happy-font-body italic text-[15.5px] leading-[23px] text-[#2C2825]">
           {readString(content.scenario) ??
             "“I was finally calming down.\nWhy is the anxiety coming back?”"}
         </Text>

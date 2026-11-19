@@ -37,7 +37,7 @@ export const MoodCard = React.memo<MoodCardProps>(
               />
             </Animated.View>
             <Animated.View style={[{ flex: 1 }, summaryStyle]}>
-              <Text className="text-xl font-cormorantBold text-happy-label leading-7">
+              <Text className="text-xl happy-font-body-bold text-happy-label leading-7">
                 {title}
               </Text>
             </Animated.View>

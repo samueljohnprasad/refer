@@ -114,8 +114,8 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   durationText: {
+    fontFamily: APP_FONT_FAMILIES.bold,
     fontSize: 11,
-    fontWeight: "700",
     color: SAGE[400],
   },
   content: {
@@ -124,14 +124,15 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   title: {
-    color: NEUTRAL.ink,
+    fontFamily: APP_FONT_FAMILIES.bold,
+    color: NEUTRAL.label,
     fontSize: 20,
-    fontWeight: "800",
     letterSpacing: -0.2,
     lineHeight: 24,
   },
   subtitle: {
-    color: NEUTRAL.inkSoft,
+    fontFamily: APP_FONT_FAMILIES.medium,
+    color: NEUTRAL.label2,
     fontSize: 13,
     lineHeight: 18,
     marginTop: 3,

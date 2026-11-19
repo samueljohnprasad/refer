@@ -1,6 +1,7 @@
 // ponytail: reusable Duolingo-grade empty state for exercise & thought timelines
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import { Text } from "@/src/components/ui/Text";
 import { useRouter } from "expo-router";
 import { Button } from "@/src/components/ui/Button";
 import { Mascot } from "@/src/components/ui/Mascot";

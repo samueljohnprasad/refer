@@ -164,7 +164,7 @@ export default function AIInsightsScreen() {
               paddingVertical: 20,
             }}
           >
-            <Text className="text-[28px] font-cormorantSemiBold text-white mb-6">
+            <Text className="text-[28px] happy-font-heading-semibold text-white mb-6">
               {t("screen.yourJourney")}
             </Text>
             <Animated.View
@@ -206,7 +206,7 @@ export default function AIInsightsScreen() {
           <View className="flex-row justify-between items-center mb-5">
             <View className="flex-row items-center gap-2">
               <HugeiconsIcon icon={Target03Icon} size={24} color="#7B61FF" />
-              <Text className="text-[22px] font-extrabold text-[#0F172A] tracking-normal font-cormorantBold">
+              <Text className="text-[22px] text-[#0F172A] tracking-normal happy-font-heading-bold">
                 {t("screen.previousWeekTitle")}
               </Text>
             </View>

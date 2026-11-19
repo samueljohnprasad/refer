@@ -57,7 +57,7 @@ const CalorieTrackerHeader: React.FC<{ selectedDate: Date }> = ({
       )}
 
       <View className="items-center">
-        <Text className="text-[28px] font-extrabold text-[#0F172A] font-cormorantBold">
+        <Text className="text-[28px] text-[#0F172A] happy-font-heading-bold">
           {t("calorie.title")}
         </Text>
         <View className="bg-purple-100 px-3 py-1 rounded-full mt-1">

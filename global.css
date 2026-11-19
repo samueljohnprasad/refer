@@ -134,8 +134,36 @@
   font-family: "Fredoka";
 }
 
+@utility font-fredoka-bold {
+  font-family: "FredokaBold";
+}
+
+@utility font-fredoka-semibold {
+  font-family: "FredokaSemiBold";
+}
+
+@utility font-fredoka-medium {
+  font-family: "FredokaMedium";
+}
+
 @utility font-nunito {
   font-family: "Nunito";
+}
+
+@utility font-nunito-bold {
+  font-family: "NunitoBold";
+}
+
+@utility font-nunito-semibold {
+  font-family: "NunitoSemiBold";
+}
+
+@utility font-nunito-medium {
+  font-family: "NunitoMedium";
+}
+
+@utility font-nunito-regular {
+  font-family: "NunitoRegular";
 }
 
 @utility happy-font-display {

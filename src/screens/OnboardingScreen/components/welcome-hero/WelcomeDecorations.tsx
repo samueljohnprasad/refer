@@ -88,7 +88,7 @@ export function WelcomeLabel({ index, frame, scale }: LabelProps): React.JSX.Ele
         <Text
           key={i}
           style={{
-            fontFamily: APP_FONT_FAMILIES.caveatSemiBold,
+            fontFamily: APP_FONT_FAMILIES.semiBold,
             fontSize: 42 * scale,
             lineHeight: 46 * scale,
             color: "#6C7A85",
@@ -138,7 +138,7 @@ export function TodayCallout({ frame, scale }: { frame: SharedValue<number>; sca
       >
         <Text
           style={{
-            fontFamily: APP_FONT_FAMILIES.caveatBold,
+            fontFamily: APP_FONT_FAMILIES.bold,
             fontSize: 58 * scale,
             lineHeight: 60 * scale,
             color: "#2F7FE0",
@@ -149,7 +149,7 @@ export function TodayCallout({ frame, scale }: { frame: SharedValue<number>; sca
         </Text>
         <Text
           style={{
-            fontFamily: APP_FONT_FAMILIES.caveatSemiBold,
+            fontFamily: APP_FONT_FAMILIES.semiBold,
             fontSize: 38 * scale,
             lineHeight: 40 * scale,
             color: "#6C7A85",
@@ -252,7 +252,7 @@ export function XpFloat({ frame, index, scale }: LabelProps): React.JSX.Element 
       ]}
       pointerEvents="none"
     >
-      <Text style={{ fontFamily: APP_FONT_FAMILIES.caveatBold, fontSize: 50 * scale, color: "#C79A00" }}>
+      <Text style={{ fontFamily: APP_FONT_FAMILIES.displayBold, fontSize: 50 * scale, color: "#C79A00" }}>
         +15 XP
       </Text>
     </Animated.View>

@@ -7,7 +7,8 @@
  */
 
 import React, { useCallback, useMemo } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
+import { Text } from "@/src/components/ui/Text";
 import { LegendList } from "@legendapp/list";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -52,7 +53,7 @@ const ExerciseTimeline: React.FC<ExerciseTimelineProps> = React.memo(
 
     const renderItem = useCallback(({ item: row }: { item: Row }) =>
       row.kind === "day" ? (
-        <Text accessibilityRole="header" className="mt-6 mb-2 text-t-sub font-bold text-happy-label-2">
+        <Text accessibilityRole="header" className="mt-6 mb-2 text-t-sub happy-font-body-bold text-happy-label-2">
           {row.label}
         </Text>
       ) : (

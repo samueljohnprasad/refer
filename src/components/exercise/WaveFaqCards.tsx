@@ -64,7 +64,7 @@ export function WaveFaqMechanismCard({
                 isHeroInterpretation
                   ? "happy-font-body-bold text-[#1B3B2B]"
                   : isThought
-                    ? "font-serif italic text-[#3F3A34]"
+                    ? "happy-font-body italic text-[#3F3A34]"
                     : "happy-font-body-medium text-[#201E1D]"
               }`}
             >

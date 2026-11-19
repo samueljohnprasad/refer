@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { View, type ViewStyle } from "react-native";
+import { Pressable, View, type ViewStyle } from "react-native";
 import Animated, { type AnimatedStyle } from "react-native-reanimated";
-import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
-import { pickerStyle, tag, tint } from "@expo/ui/swift-ui/modifiers";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { SymbolView } from "expo-symbols";
@@ -91,20 +89,39 @@ export function ExercisesTabHeader({
             </View>
           </View>
           <Animated.View style={tabPillStyle} className="w-full">
-            <Host style={{ width: "100%", height: 36 }}>
-              <Picker
-                modifiers={[pickerStyle("segmented"), tint(SEMANTIC_COLORS.brand.pressed)]}
-                label={t("tab.view")}
-                selection={activeTab}
-                onSelectionChange={(selection) => selectionHandlers[selection]?.()}
-              >
-                {options.map((option) => (
-                  <SwiftUIText key={option.value} modifiers={[tag(option.value)]}>
-                    {option.label}
-                  </SwiftUIText>
-                ))}
-              </Picker>
-            </Host>
+            <View
+              role="tablist"
+              accessibilityLabel={t("tab.view")}
+              className="flex-row p-1 rounded-2xl bg-happy-surface-2 border border-happy-sep/50"
+            >
+              {options.map((option) => {
+                const isSelected = activeTab === option.value;
+                return (
+                  <Pressable
+                    key={option.value}
+                    role="tab"
+                    accessibilityState={{ selected: isSelected }}
+                    accessibilityLabel={option.label}
+                    onPress={() => selectionHandlers[option.value]?.()}
+                    className={`flex-1 py-1.5 items-center justify-center rounded-xl ${
+                      isSelected
+                        ? "bg-white shadow-sm border border-black/5"
+                        : "bg-transparent"
+                    }`}
+                  >
+                    <Text
+                      className={`text-[15px] ${
+                        isSelected
+                          ? "happy-font-body-bold text-happy-label"
+                          : "happy-font-body-semibold text-happy-label-2"
+                      }`}
+                    >
+                      {option.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
           </Animated.View>
         </View>
       </SafeAreaView>

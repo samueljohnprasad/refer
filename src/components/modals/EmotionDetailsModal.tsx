@@ -83,7 +83,7 @@ export const EmotionDetailsModal: React.FC<EmotionDetailsModalProps> = ({
     <ShortBottomModal ref={sheetRef} snapPoints={["70%"]} onDismiss={onClose}>
       <VStack className="flex-1 px-5 pt-1 pb-6" space="sm">
         <View className="items-center w-full mb-4">
-          <Heading className="text-center text-3xl font-cormorantSemiBold text-[#1f2937] mb-2 leading-9">
+          <Heading className="text-center text-3xl happy-font-heading-semibold text-[#1f2937] mb-2 leading-9">
             {t("emotionDetails.title", { date: selectedDateLabel })}
           </Heading>
           <Text className="text-gray-600 text-center text-base">

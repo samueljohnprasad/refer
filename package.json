@@ -17,6 +17,7 @@
     "test:laya": "npx tsx scripts/test_app_with_laya.ts",
     "types": "npx supabase gen types typescript --project-id xaqeueshxpehijtxwklo > database.types.ts",
     "build:sim:ios": "eas build --platform ios --profile simulator-preview",
+    "sim:cloud": "npx native-sim up --public --minutes 180",
     "sim:stop": "eas simulator:stop",
     "prewidget": "EXPO_NO_GIT_STATUS=1 npx expo prebuild --template ./node_modules/@bacons/apple-targets/prebuild-blank.tgz --clean",
     "postinstall": "patch-package",

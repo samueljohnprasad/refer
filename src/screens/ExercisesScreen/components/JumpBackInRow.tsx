@@ -44,8 +44,8 @@ export const JumpBackInRow = memo(function JumpBackInRow({ exercise, paused, run
           <ExerciseArt type={exercise.type} />
         </View>
         <View style={{ flex: 1, minWidth: 0 }}>
-          <Text variant="h3" style={{ fontSize: 17, fontWeight: "700", color: "#142414" }} numberOfLines={1}>{title}</Text>
-          <Text style={{ fontSize: 13, fontWeight: "600", color: "#4b4b4b", marginTop: 2 }} numberOfLines={1}>
+          <Text className="happy-font-body-bold text-[17px] leading-[22px] text-happy-label" numberOfLines={1}>{title}</Text>
+          <Text className="happy-font-body-medium text-[13px] leading-[18px] text-happy-label-2 mt-0.5" numberOfLines={1}>
             {paused
               ? rung
                 ? t("log.pausedRung", { ...rung, defaultValue: "Paused at rung {{position}} of {{total}}. It's saved." })

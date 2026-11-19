@@ -33,12 +33,12 @@ export function WeeklySummaryEmptyState({
         <Mascot state="panda-analyst" size={170} />
       </View>
       <View className="px-8 pt-6 pb-8">
-        <Text className="text-[28px] font-cormorantBold text-[#0F172A] mb-3 text-center leading-tight">
+        <Text className="text-[28px] happy-font-heading-bold text-[#0F172A] mb-3 text-center leading-tight">
           {labels.title}
         </Text>
-        <Text className="text-[15px] text-[#64748B] text-center mb-6 leading-6 font-jakartaMedium">
+        <Text className="text-[15px] text-[#64748B] text-center mb-6 leading-6 happy-font-body-medium">
           {labels.description}{"\n"}
-          <Text className="font-jakartaBold text-[#475569]">{dateRange}</Text>
+          <Text className="happy-font-body-bold text-[#475569]">{dateRange}</Text>
         </Text>
       </View>
       <View className="w-full px-6 pb-6">
@@ -50,7 +50,7 @@ export function WeeklySummaryEmptyState({
             className="flex-row items-center justify-center py-4 px-6 gap-2"
           >
             {isGenerating ? <ActivityIndicator size="small" color="#FFF" /> : <Feather name={shouldShowPaywall ? "lock" : "zap"} size={18} color="#FFF" />}
-            <Text className="text-base font-bold text-white font-jakarta">
+            <Text className="text-base happy-font-body-bold text-white">
               {isGenerating ? labels.generating : shouldShowPaywall ? labels.unlock : labels.generate}
             </Text>
           </LinearGradient>

@@ -2,7 +2,8 @@
 // filled dot where you landed, connected by a line; the user's own words stay theirs, never the
 // card's title. Pure presentation: takes a ThoughtArcModel, renders it.
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
 import type { ThoughtArcModel } from '../../../domain/timelineEntry';
 
 export interface ThoughtArcProps {
@@ -28,8 +29,8 @@ export function ThoughtArc({ arc }: ThoughtArcProps): React.JSX.Element {
         {arc.toText && (
           <View className="absolute left-[4.5px] top-[18px] bottom-[-20px] w-0.5 bg-[#a9bfa0] rounded-full" />
         )}
-        <Text className="text-t-foot font-bold text-happy-label-3 leading-5">{arc.fromLabel}</Text>
-        <Text className="text-t-sub text-happy-label-2 mt-0.5" style={{ lineHeight: 21 }}>
+        <Text className="text-t-foot happy-font-body-bold text-happy-label-3 leading-5">{arc.fromLabel}</Text>
+        <Text className="text-t-sub happy-font-body-medium text-happy-label-2 mt-0.5" style={{ lineHeight: 21 }}>
           "{arc.fromText}"
         </Text>
       </View>
@@ -37,8 +38,8 @@ export function ThoughtArc({ arc }: ThoughtArcProps): React.JSX.Element {
       {arc.toText && (
         <View className="relative pl-[22px]">
           <ArcDot hollow={false} />
-          <Text className="text-t-foot font-bold text-happy-label-3 leading-5">{arc.toLabel}</Text>
-          <Text className="text-t-body font-bold text-happy-label mt-0.5" style={{ lineHeight: 24 }}>
+          <Text className="text-t-foot happy-font-body-bold text-happy-label-3 leading-5">{arc.toLabel}</Text>
+          <Text className="text-t-body happy-font-body-bold text-happy-label mt-0.5" style={{ lineHeight: 24 }}>
             {arc.toText}
           </Text>
         </View>

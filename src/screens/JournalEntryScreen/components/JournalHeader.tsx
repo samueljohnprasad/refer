@@ -85,7 +85,7 @@ export const JournalHeader = React.memo<JournalHeaderProps>(
         </AnimatedTouchableOpacity>
 
         <View className="flex-1 items-center">
-          <Text className="text-base font-cormorantBold text-happy-label mt-1">
+          <Text className="text-base happy-font-body-bold text-happy-label mt-1">
             {formattedDateTime}
           </Text>
         </View>

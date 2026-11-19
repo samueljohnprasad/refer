@@ -3,7 +3,8 @@
 // EXERCISE_REPLY_COPY render as tiles (see exerciseCopy.ts for why the prototype's 15-exercise
 // set is narrower here); "Not sure" falls back to the first free, untried exercise.
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
 import { HappiStage } from '@/src/domains/onboarding/ui/presentation/components/HappiStage';
 import { useHappiGuideMotion } from '@/src/domains/onboarding/ui/containers/useHappiGuideMotion';
 import { ActingPose } from '@/src/domains/onboarding/ui/containers/happiPoses';
@@ -61,8 +62,8 @@ export function LessonsChatPicker({ exercises, recentIds, onStart }: LessonsChat
             <HappiStage motion={motion} size="scene" width={92} />
           </View>
           <View className="flex-1 self-center px-4 py-3 rounded-2xl bg-happy-tint">
-            <Text className="text-t-h font-bold text-happy-label">What's on your mind?</Text>
-            <Text className="text-t-sub text-happy-label-2 mt-0.5">Pick the closest. I'll suggest one.</Text>
+            <Text className="happy-font-body-bold text-t-h text-happy-label">What's on your mind?</Text>
+            <Text className="happy-font-body-medium text-t-sub text-happy-label-2 mt-0.5">Pick the closest. I'll suggest one.</Text>
           </View>
         </View>
 
@@ -84,7 +85,7 @@ export function LessonsChatPicker({ exercises, recentIds, onStart }: LessonsChat
                     <ReplyGlyph kind={copy.glyph} />
                   </View>
                 </View>
-                <Text className="text-t-sub font-bold leading-snug text-happy-label">{copy.reply}</Text>
+                <Text className="happy-font-body-bold text-t-sub leading-snug text-happy-label">{copy.reply}</Text>
               </Pressable>
             );
           })}
@@ -95,7 +96,7 @@ export function LessonsChatPicker({ exercises, recentIds, onStart }: LessonsChat
             <View style={{ width: 24, height: 24 }}>
               <ReplyGlyph kind="unsure" />
             </View>
-            <Text className="text-t-sub font-bold text-happy-accent">Not sure? Pick one for me</Text>
+            <Text className="happy-font-body-bold text-t-sub text-happy-accent">Not sure? Pick one for me</Text>
           </Pressable>
         )}
       </View>
@@ -109,7 +110,7 @@ export function LessonsChatPicker({ exercises, recentIds, onStart }: LessonsChat
     <View className="mb-4">
       <View className="items-end mb-3">
         <View className="max-w-[80%] px-4 py-2 rounded-2xl rounded-br-[4px] bg-happy-ink">
-          <Text className="text-white font-semibold">{reply}</Text>
+          <Text className="happy-font-body-semibold text-white">{reply}</Text>
         </View>
       </View>
 
@@ -120,23 +121,23 @@ export function LessonsChatPicker({ exercises, recentIds, onStart }: LessonsChat
           <ExerciseArt type={exercise.type} />
         </View>
         <View className="p-4">
-          <Text className="text-t-lead font-bold text-happy-label">{exercise.title}</Text>
-          <Text className="text-t-sub text-happy-label-2 mt-1">{why}</Text>
-          <Text className="text-t-foot font-bold text-happy-label-3 mt-2">{exercise.duration}</Text>
+          <Text className="happy-font-body-bold text-t-lead text-happy-label">{exercise.title}</Text>
+          <Text className="happy-font-body-medium text-t-sub text-happy-label-2 mt-1">{why}</Text>
+          <Text className="happy-font-body-bold text-t-foot text-happy-label-3 mt-2">{exercise.duration}</Text>
 
           <CircularRevealWrapper href={buildExerciseRoute(exercise.type)} color={theme.bg} disabled={!!exercise.isProOnly && !hasPro}>
             <Pressable
               onPress={() => onStart(exercise)}
               className="w-full min-h-14 mt-4 items-center justify-center rounded-pill bg-happy-ink border-b-4 border-b-sage-700 active:translate-y-0.5 active:border-b-2"
             >
-              <Text className="text-white text-t-body font-bold">Start</Text>
+              <Text className="happy-font-body-bold text-white text-t-body">Start</Text>
             </Pressable>
           </CircularRevealWrapper>
         </View>
       </View>
 
       <Pressable onPress={reset} className="w-full min-h-11 mt-3">
-        <Text className="text-t-foot font-bold text-happy-label-3">Something else is on my mind</Text>
+        <Text className="happy-font-body-bold text-t-foot text-happy-label-3">Something else is on my mind</Text>
       </Pressable>
     </View>
   );

@@ -9,6 +9,7 @@ import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
 import { getExerciseConfig } from "@/src/data/exerciseRegistry";
 import { Text } from "@/src/components/ui/Text";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import type { HistoryLogItem } from "../hooks/useCBTHistory";
 import { getCategoryBadgeTheme } from "../exerciseScreenUtils";
 import { nutrieStyles } from "../ExercisesScreen.styles";
@@ -83,9 +84,9 @@ export const ExerciseLogCard = memo(function ExerciseLogCard({ item, onPress }: 
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 8 }}>
             <View style={[nutrieStyles.inlinePill, { backgroundColor: statusBg, borderColor: status.isComplete ? "#C5ECD3" : "#E0E0E2" }]}>
               {Platform.OS === "ios" ? <SymbolView name={(status.isComplete ? "checkmark.circle.fill" : "clock") as any} size={11} tintColor={statusColor} weight="medium" style={{ width: 13, height: 13 }} /> : <Feather name={status.isComplete ? "check-circle" : "clock"} size={11} color={statusColor} />}
-              <Text style={[nutrieStyles.inlinePillText, { color: statusColor, fontWeight: "700" }]}>{status.label}</Text>
+              <Text style={[nutrieStyles.inlinePillText, { color: statusColor, fontFamily: APP_FONT_FAMILIES.bold }]}>{status.label}</Text>
             </View>
-            {status.isComplete && status.xpEarned > 0 ? <View style={[nutrieStyles.inlinePill, { backgroundColor: "#FFF5D6", borderColor: "#F5E6B8" }]}><Text style={[nutrieStyles.inlinePillText, { color: "#A67C00" }]}>+{status.xpEarned} XP</Text></View> : null}
+            {status.isComplete && status.xpEarned > 0 ? <View style={[nutrieStyles.inlinePill, { backgroundColor: "#FFF5D6", borderColor: "#F5E6B8" }]}><Text style={[nutrieStyles.inlinePillText, { color: "#A67C00", fontFamily: APP_FONT_FAMILIES.bold }]}>+{status.xpEarned} XP</Text></View> : null}
           </View>
         </View>
       </View>

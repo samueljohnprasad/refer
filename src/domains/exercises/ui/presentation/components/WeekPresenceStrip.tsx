@@ -1,7 +1,8 @@
 // ponytail: exact .days row matching .agents/exercises.html's My Log — presence, never a streak.
 // A leaf on days you showed up (completed exercise or mood log), an empty ring on the rest, today gets a ring regardless.
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
 import Svg, { Path } from 'react-native-svg';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 
@@ -36,8 +37,8 @@ export function WeekPresenceStrip({ showedUp }: WeekPresenceStripProps): React.J
 
   return (
     <View className="p-4 rounded-[20px] bg-happy-tint">
-      <Text className="text-t-foot font-bold text-happy-accent">This week</Text>
-      <Text className="mt-1 font-display text-t-h leading-[28px] tracking-tight text-happy-label">
+      <Text className="text-t-foot happy-font-body-bold text-happy-accent">This week</Text>
+      <Text className="mt-1 happy-font-heading text-t-h leading-[28px] tracking-tight text-happy-label">
         {count === 0 ? 'A fresh week.' : `You showed up on ${count} ${count === 1 ? 'day' : 'days'}.`}
       </Text>
       <View className="flex-row justify-between mt-4">
@@ -61,7 +62,7 @@ export function WeekPresenceStrip({ showedUp }: WeekPresenceStripProps): React.J
               )}
               {isToday && <View className="w-[34px] h-[34px] rounded-full border-2 border-happy-ink absolute" />}
             </View>
-            <Text className={`text-t-cap font-bold mt-1 ${isToday ? 'text-happy-label' : 'text-happy-label-2'}`}>
+            <Text className={`text-t-cap happy-font-body-bold mt-1 ${isToday ? 'text-happy-label' : 'text-happy-label-2'}`}>
               {label}
             </Text>
           </View>

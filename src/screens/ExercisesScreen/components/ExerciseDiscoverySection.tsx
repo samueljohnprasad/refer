@@ -66,7 +66,7 @@ export const DiscoverSection = memo(function DiscoverSection({
           <TextLabel color={SAGE[600]}>{label} • {availableExercises.length}</TextLabel>
         </View>
       </View>
-      <Text style={{ fontSize: 13, fontWeight: "600", color: "#4b4b4b", marginTop: -4 }}>{CATEGORY_BLURB[category]}</Text>
+      <Text className="happy-font-body-medium text-[13px] leading-[18px] text-happy-label-2 -mt-1">{CATEGORY_BLURB[category]}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -20 }} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 12, gap: 12 }}>
         {availableExercises.map((exercise) => (
           <ExerciseTile key={exercise.type} exercise={exercise} onPress={onPress} />

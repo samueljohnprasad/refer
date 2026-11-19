@@ -17,10 +17,10 @@ export const CheckpointCategoryEngine: React.FC<Props> = ({ content, response, o
   if (phase === "intro") {
     return (
       <View className="flex-1 p-6 justify-center">
-        <Text className="text-3xl font-cormorant text-ink text-center mb-4">
+        <Text className="text-3xl happy-font-heading text-ink text-center mb-4">
           {content.intro.title}
         </Text>
-        <Text className="text-lg font-geist text-sage-600 text-center">
+        <Text className="text-lg font-nunito text-sage-600 text-center">
           {content.intro.subtitle}
         </Text>
       </View>
@@ -30,19 +30,19 @@ export const CheckpointCategoryEngine: React.FC<Props> = ({ content, response, o
   if (phase === "summary" || phase === "complete") {
     return (
       <View className="flex-1 p-6 justify-center">
-        <Text className="text-3xl font-cormorant text-ink text-center mb-4">
+        <Text className="text-3xl happy-font-heading text-ink text-center mb-4">
           {content.summary.title}
         </Text>
-        <Text className="text-lg font-geist text-sage-600 text-center mb-12">
+        <Text className="text-lg font-nunito text-sage-600 text-center mb-12">
           {content.summary.subtitle}
         </Text>
         
         <View className="space-y-4">
-          <Text className="text-xl font-cormorant text-ink font-bold">Concept Mastery:</Text>
+          <Text className="text-xl happy-font-body-bold text-ink font-bold">Concept Mastery:</Text>
           {Object.entries(response.itemOutcomes).map(([conceptId, outcome]) => (
             <View key={conceptId} className="flex-row justify-between items-center p-4 bg-white rounded-xl border border-sage-200">
-              <Text className="text-lg font-geist text-ink">{conceptId}</Text>
-              <Text className={`text-sm font-geist uppercase tracking-wider font-bold ${outcome === "solid" ? "text-green-700" : "text-amber-700"}`}>
+              <Text className="text-lg font-nunito text-ink">{conceptId}</Text>
+              <Text className={`text-sm font-nunito uppercase tracking-wider font-bold ${outcome === "solid" ? "text-green-700" : "text-amber-700"}`}>
                 {outcome === "solid" ? "Solid" : "Review Soon"}
               </Text>
             </View>
@@ -87,7 +87,7 @@ export const CheckpointCategoryEngine: React.FC<Props> = ({ content, response, o
   return (
     <ScrollView className="flex-1 p-6">
       <View className="mb-6 flex-row justify-between items-center">
-        <Text className="text-sm font-geist text-sage-500 uppercase tracking-wider">
+        <Text className="text-sm font-nunito text-sage-500 uppercase tracking-wider">
           Question {currentItemIndex + 1} of {content.items.length}
         </Text>
       </View>

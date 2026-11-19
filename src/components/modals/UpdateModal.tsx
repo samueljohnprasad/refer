@@ -83,7 +83,7 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
             <HugeiconsIcon icon={SparklesIcon} size={26} color="#7B61FF" />
           </View>
 
-          <Heading className="text-center text-3xl font-cormorantSemiBold text-[#1f2937] mb-2 leading-9">
+          <Heading className="text-center text-3xl happy-font-heading-semibold text-[#1f2937] mb-2 leading-9">
             {title}
           </Heading>
 

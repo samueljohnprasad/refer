@@ -2,7 +2,8 @@
 // every prop is already-derived data from useTimelineEntryCard (container) + ThoughtArc/
 // TimelineNote/GratitudeList/MoveTrack (presentation). No hooks, no data fetching here.
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
 import Animated from 'react-native-reanimated';
 import { Feather } from '@expo/vector-icons';
 import type { ExerciseType } from '@/src/types/exerciseFlow';
@@ -58,25 +59,25 @@ export function TimelineEntryCard(props: TimelineEntryCardProps): React.JSX.Elem
 
         <View className="flex-1 min-w-0">
           <View className="flex-row items-baseline justify-between gap-2">
-            <Text className="font-bold leading-tight text-happy-label" numberOfLines={1}>{title}</Text>
-            <Text className="text-t-cap font-bold text-happy-label-3">{timeLabel}</Text>
+            <Text className="happy-font-body-bold leading-tight text-happy-label" numberOfLines={1}>{title}</Text>
+            <Text className="text-t-cap happy-font-body-bold text-happy-label-3">{timeLabel}</Text>
           </View>
 
           {collapsedPreviewText && (
-            <Text className="text-t-sub leading-snug text-happy-label-2 mt-0.5" numberOfLines={2}>
+            <Text className="text-t-sub happy-font-body-medium leading-snug text-happy-label-2 mt-0.5" numberOfLines={2}>
               "{collapsedPreviewText}"
             </Text>
           )}
           {!collapsedPreviewText && moveTrack && (
             <View className="flex-row items-center gap-2 mt-1.5">
               <MoveTrack before={moveTrack.before} after={moveTrack.after} tone={moveTrack.tone} />
-              <Text className="text-t-foot font-bold text-happy-label-2" numberOfLines={1}>
+              <Text className="text-t-foot happy-font-body-bold text-happy-label-2" numberOfLines={1}>
                 {moveTrack.label} went {moveTrack.after < moveTrack.before ? 'down' : moveTrack.after > moveTrack.before ? 'up' : 'nowhere'}, {moveTrack.before} to {moveTrack.after}
               </Text>
             </View>
           )}
           {!collapsedPreviewText && !moveTrack && inProgressText && (
-            <Text className="text-t-sub text-happy-label-2 mt-0.5">{inProgressText}</Text>
+            <Text className="text-t-sub happy-font-body-medium text-happy-label-2 mt-0.5">{inProgressText}</Text>
           )}
         </View>
 
@@ -96,7 +97,7 @@ export function TimelineEntryCard(props: TimelineEntryCardProps): React.JSX.Elem
           {gratitudeEntries && gratitudeEntries.length > 0 && <GratitudeList entries={gratitudeEntries} />}
 
           <Pressable onPress={onOpenAgain} className="self-start min-h-11 justify-center">
-            <Text className="text-t-foot font-bold text-happy-accent">Do it again →</Text>
+            <Text className="text-t-foot happy-font-body-bold text-happy-accent">Do it again →</Text>
           </Pressable>
         </View>
       )}

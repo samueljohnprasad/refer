@@ -103,7 +103,7 @@ function Subhead({
     <Animated.View style={[{ marginTop: 18 * scale }, animatedStyle]}>
       <Text
         style={{
-          fontFamily: APP_FONT_FAMILIES.caveatSemiBold,
+          fontFamily: APP_FONT_FAMILIES.semiBold,
           fontSize: 48 * scale,
           lineHeight: 52 * scale,
           color: "#6C7A85",
