@@ -12,42 +12,68 @@ export interface NutrieBadgeTheme {
 
 const CATEGORY_BADGE_THEME: Record<ExerciseCategory, NutrieBadgeTheme> = {
   cbt_core: {
-    bg: "#E5EDE1",
-    text: "#5F7F58",
-    iconColor: "#44633F",
-    rim: "#44633F",
-    cardRim: "#D3E0CD",
+    bg: "#e6f0e2",
+    text: "#29452a",
+    iconColor: "#44633f",
+    rim: "#44633f",
+    cardRim: "#e5e5e5",
     sf: "brain.head.profile",
     feather: "cpu",
   },
   mindfulness: {
-    bg: "#E4F6FC",
-    text: "#00A3D9",
-    iconColor: "#00A3D9",
-    rim: "#0084B4",
-    cardRim: "#BCE5F5",
+    bg: "#e2eef8",
+    text: "#29452a",
+    iconColor: "#44633f",
+    rim: "#44633f",
+    cardRim: "#e5e5e5",
     sf: "leaf",
     feather: "feather",
   },
   anxiety: {
-    bg: "#FFEDE8",
-    text: "#FF6B4A",
-    iconColor: "#FF6B4A",
-    rim: "#E04B2A",
-    cardRim: "#FED2C7",
+    bg: "#fde5dc",
+    text: "#29452a",
+    iconColor: "#44633f",
+    rim: "#44633f",
+    cardRim: "#e5e5e5",
     sf: "cloud",
     feather: "cloud",
   },
   overthinking: {
-    bg: "#F0EDFF",
-    text: "#6B5CE7",
-    iconColor: "#6B5CE7",
-    rim: "#5243C7",
-    cardRim: "#DDD2FC",
+    bg: "#fdf0d2",
+    text: "#29452a",
+    iconColor: "#44633f",
+    rim: "#44633f",
+    cardRim: "#e5e5e5",
     sf: "sparkles",
     feather: "zap",
   },
 };
+
+export const EXERCISE_HUE: Record<string, string> = {
+  thought_catcher: "#e6f0e2",
+  thought_reframing: "#fdf0d2",
+  gratitude_reframe: "#fdf0d2",
+  abc_analysis: "#e2eef8",
+  behavioral_activation: "#fde5dc",
+  box_breathing: "#e2eef8",
+  breathing_478: "#e2eef8",
+  grounding_54321: "#e2eef8",
+  body_scan_pmr: "#e2eef8",
+  mindful_breathing_1min: "#e2eef8",
+  decatastrophizing: "#fde5dc",
+  worry_decision_tree: "#fde5dc",
+  fear_ladder: "#ece6f7",
+  detached_mindfulness: "#fdf0d2",
+  attention_training: "#fdf0d2",
+};
+
+export function getExerciseHue(type: string, category?: string): string {
+  if (EXERCISE_HUE[type]) return EXERCISE_HUE[type];
+  if (category && CATEGORY_BADGE_THEME[category as ExerciseCategory]) {
+    return CATEGORY_BADGE_THEME[category as ExerciseCategory].bg;
+  }
+  return "#e6f0e2";
+}
 
 export function getCategoryBadgeTheme(category: string): NutrieBadgeTheme {
   return CATEGORY_BADGE_THEME[category as ExerciseCategory] ?? CATEGORY_BADGE_THEME.cbt_core;

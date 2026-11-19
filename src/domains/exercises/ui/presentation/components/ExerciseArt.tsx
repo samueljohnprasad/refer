@@ -344,43 +344,43 @@ export function ExerciseArt({ type }: ExerciseArtProps): React.JSX.Element {
 
 export type ReplyGlyphKind = 'loop' | 'sting' | 'empty' | 'avoid' | 'unsure';
 
-function GlyphScene({ children }: { children: React.ReactNode }): React.JSX.Element {
+function GlyphScene({ children, color = '#44633f' }: { children: React.ReactNode; color?: string }): React.JSX.Element {
   return (
-    <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
       {children}
     </Svg>
   );
 }
 
-const GLYPHS: Record<ReplyGlyphKind, () => React.JSX.Element> = {
-  loop: () => (
-    <GlyphScene>
+const GLYPHS: Record<ReplyGlyphKind, (color?: string) => React.JSX.Element> = {
+  loop: (color) => (
+    <GlyphScene color={color}>
       <Path d="M20 12a8 8 0 1 1-2.34-5.66" />
       <Path d="M20 4v4h-4" />
     </GlyphScene>
   ),
-  sting: () => (
-    <GlyphScene>
+  sting: (color) => (
+    <GlyphScene color={color}>
       <Path d="M13 3 5 14h6l-1 7 8-11h-6Z" />
     </GlyphScene>
   ),
-  empty: () => (
-    <GlyphScene>
+  empty: (color) => (
+    <GlyphScene color={color}>
       <Rect x={2.5} y={7.5} width={17} height={9} rx={2} />
       <Path d="M22 11v2" />
       <Path d="M6 11v2" />
     </GlyphScene>
   ),
-  avoid: () => (
-    <GlyphScene>
+  avoid: (color) => (
+    <GlyphScene color={color}>
       <Path d="M5 21V4h10v17" />
       <Path d="M2 21h20" />
       <Path d="M11 12h.01" />
       <Path d="M15 4l4 2v15" />
     </GlyphScene>
   ),
-  unsure: () => (
-    <GlyphScene>
+  unsure: (color) => (
+    <GlyphScene color={color}>
       <Circle cx={12} cy={12} r={9} fill="none" />
       <Path d="m15.5 8.5-2 5-5 2 2-5Z" />
     </GlyphScene>
@@ -389,10 +389,11 @@ const GLYPHS: Record<ReplyGlyphKind, () => React.JSX.Element> = {
 
 export interface ReplyGlyphProps {
   kind: ReplyGlyphKind;
+  color?: string;
 }
 
 /** 24px line icon for one Lessons reply tile, matching .agents/exercise-art.js's GLYPH set. */
-export function ReplyGlyph({ kind }: ReplyGlyphProps): React.JSX.Element {
+export function ReplyGlyph({ kind, color }: ReplyGlyphProps): React.JSX.Element {
   const Glyph = GLYPHS[kind];
-  return Glyph();
+  return Glyph(color);
 }

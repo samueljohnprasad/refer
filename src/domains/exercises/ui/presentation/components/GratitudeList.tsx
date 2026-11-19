@@ -13,8 +13,8 @@ export function GratitudeList({ entries }: GratitudeListProps): React.JSX.Elemen
     <View className="flex-col gap-1.5">
       {entries.map((entry, i) => (
         <View key={i} className="relative pl-[22px]">
-          <View className="absolute left-[2.5px] top-[9px] w-1.5 h-1.5 rounded-full bg-happy-ink" />
-          <Text className="text-t-sub happy-font-body-medium text-happy-label">{entry}</Text>
+          <View className="absolute left-[2.5px] top-[7px] w-1.5 h-1.5 rounded-full bg-happy-ink" />
+          <Text className="text-[15px] happy-font-body-medium text-happy-label leading-[21px]">{entry}</Text>
         </View>
       ))}
     </View>

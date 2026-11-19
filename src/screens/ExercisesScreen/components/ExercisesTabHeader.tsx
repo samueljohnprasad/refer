@@ -41,28 +41,21 @@ export function ExercisesTabHeader({
   };
 
   return (
-    <View
-      style={{
-        backgroundColor: "#FCFDFB",
-        borderBottomWidth: 1,
-        borderBottomColor: "#EEF2EC",
-      }}
-    >
+    <View className="bg-white border-b border-happy-sep">
       <SafeAreaView edges={["top"]}>
-        <View className="px-5 pb-3 pt-3">
-          <View className="mb-5">
-            <View className="flex-row items-center justify-between pt-2">
-              <Text variant="h1" className="text-[32px] leading-[38px] tracking-tight">
+        <View className="px-4 pb-3 pt-2">
+          <View className="mb-2">
+            <View className="flex-row items-center justify-between min-h-[44px]">
+              <Text className="happy-font-heading text-[28px] leading-[32px] tracking-tight text-happy-label">
                 {t("title")}
               </Text>
-              <View className="flex-row items-center gap-3">
+              <View className="flex-row items-center gap-1">
                 {completedCount > 0 ? (
                   <View
                     accessibilityLabel={t("tab.completedCount", { count: completedCount })}
-                    className="items-center justify-center rounded-full px-3 py-1.5"
-                    style={{ backgroundColor: "#e5ede1" }}
+                    className="h-8 items-center justify-center rounded-full px-3 mr-1 bg-[#e5ede1]"
                   >
-                    <Text variant="chip" className="font-nunito-bold text-sage-700">
+                    <Text className="happy-font-body-bold text-[13px] text-[#29452a]">
                       {t("tab.doneCount", { count: completedCount })}
                     </Text>
                   </View>
@@ -72,18 +65,18 @@ export function ExercisesTabHeader({
                   accessibilityRole="button"
                   accessibilityLabel={t("tab.copingCards")}
                   hitSlop={8}
-                  className="w-9 h-9 rounded-full items-center justify-center"
+                  className="w-11 h-11 rounded-full items-center justify-center"
                 >
-                  <SymbolView name="bookmark" size={18} tintColor={SEMANTIC_COLORS.brand.pressed} weight="medium" />
+                  <SymbolView name="bookmark" size={20} tintColor="#44633f" weight="medium" />
                 </TouchableGlass>
                 <TouchableGlass
                   onPress={() => setHelpOpen(true)}
                   accessibilityRole="button"
                   accessibilityLabel={t("tab.support")}
                   hitSlop={8}
-                  className="w-9 h-9 rounded-full items-center justify-center"
+                  className="w-11 h-11 rounded-full items-center justify-center"
                 >
-                  <SymbolView name="lifepreserver" size={18} tintColor={SEMANTIC_COLORS.brand.pressed} weight="medium" />
+                  <SymbolView name="lifepreserver" size={20} tintColor="#44633f" weight="medium" />
                 </TouchableGlass>
               </View>
             </View>
@@ -92,7 +85,7 @@ export function ExercisesTabHeader({
             <View
               role="tablist"
               accessibilityLabel={t("tab.view")}
-              className="flex-row p-1 rounded-2xl bg-happy-surface-2 border border-happy-sep/50"
+              className="flex-row p-[2px] gap-[2px] rounded-xl bg-happy-surface-2 mt-2"
             >
               {options.map((option) => {
                 const isSelected = activeTab === option.value;
@@ -103,16 +96,16 @@ export function ExercisesTabHeader({
                     accessibilityState={{ selected: isSelected }}
                     accessibilityLabel={option.label}
                     onPress={() => selectionHandlers[option.value]?.()}
-                    className={`flex-1 py-1.5 items-center justify-center rounded-xl ${
+                    className={`flex-1 min-h-[36px] items-center justify-center rounded-[10px] ${
                       isSelected
-                        ? "bg-white shadow-sm border border-black/5"
+                        ? "bg-white shadow-sm"
                         : "bg-transparent"
                     }`}
                   >
                     <Text
                       className={`text-[15px] ${
                         isSelected
-                          ? "happy-font-body-bold text-happy-label"
+                          ? "happy-font-body-semibold text-happy-label"
                           : "happy-font-body-semibold text-happy-label-2"
                       }`}
                     >

@@ -31,25 +31,27 @@ export const ExerciseTimelineEmptyState: React.FC<ExerciseTimelineEmptyStateProp
       const router = useRouter();
 
       return (
-        <View className="items-center justify-center px-8 py-20">
+        <View className="items-center justify-center px-4 py-8">
           {artType ? (
-            <View className="mb-5 h-24 w-24 overflow-hidden rounded-[28px]" style={{ backgroundColor: getCategoryBadgeTheme("cbt_core").bg }}>
+            <View className="mb-4 h-[120px] w-[160px] overflow-hidden rounded-[20px] items-center justify-center bg-[#e6f0e2]">
               <ExerciseArt type={artType} />
             </View>
           ) : (
-            <View className="happy-mascot-stage mb-5 h-28 w-28 items-center justify-center rounded-[36px]">
+            <View className="mb-4 h-28 w-28 items-center justify-center rounded-[20px] bg-[#e6f0e2]">
               <Mascot state="panda-bubble" size={96} />
             </View>
           )}
-          <Text className="happy-font-heading-bold text-2xl text-ink text-center">
+          <Text className="happy-font-body-bold text-[20px] leading-[26px] text-happy-label text-center">
             {title}
           </Text>
-          <Text className="happy-font-body-medium mt-3 mb-8 text-center text-base leading-relaxed text-ink-muted">
+          <Text className="happy-font-body-medium text-[15px] leading-[21px] mt-2 mb-6 text-center text-happy-label-2">
             {description}
           </Text>
           <Button
             label={buttonLabel}
+            fullWidth={false}
             onPress={onAction ?? (() => router.push("/tabs/(tabs)/exercises" as never))}
+            className="self-center px-6"
           />
         </View>
       );

@@ -20,7 +20,7 @@ export interface TimelineNoteProps {
 export function TimelineNote({ note }: TimelineNoteProps): React.JSX.Element | null {
   const felt = note.feltEmotions.length > 0
     ? (
-      <Text className="text-t-foot happy-font-body-medium text-happy-label-2" style={{ lineHeight: 19.5 }}>
+      <Text className="text-[13px] happy-font-body-medium text-happy-label-2 leading-[20px]">
         You felt{' '}
         {interleaveWithAnd(
           note.feltEmotions.map((e, i) => (
@@ -35,7 +35,7 @@ export function TimelineNote({ note }: TimelineNoteProps): React.JSX.Element | n
 
   const trap = note.trapTags.length > 0
     ? (
-      <Text className="text-t-foot happy-font-body-medium text-happy-label-2" style={{ lineHeight: 19.5 }}>
+      <Text className="text-[13px] happy-font-body-medium text-happy-label-2 leading-[20px]">
         {note.trapTags.length > 1 ? 'Traps' : 'Trap'} you spotted:{' '}
         {interleaveWithAnd(note.trapTags.map((tag, i) => <Fragment key={i}>"{tag.toLowerCase()}"</Fragment>))}.
       </Text>

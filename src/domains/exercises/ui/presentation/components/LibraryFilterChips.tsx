@@ -26,10 +26,12 @@ export function LibraryFilterChips({ value, onChange }: LibraryFilterChipsProps)
             accessibilityRole="button"
             accessibilityState={{ selected }}
             onPress={() => onChange(key)}
-            className={`flex-row items-center gap-1.5 min-h-9 px-3 rounded-pill ${selected ? 'bg-happy-tint' : 'bg-happy-surface-2'}`}
+            className={`flex-row items-center gap-1.5 min-h-[36px] px-3 rounded-full ${
+              selected ? 'bg-happy-tint border-2 border-happy-ink' : 'bg-happy-surface-2'
+            }`}
           >
             {selected && <Feather name="check" size={14} color="#29452a" />}
-            <Text className={`text-t-foot happy-font-body-bold ${selected ? 'text-[#29452a]' : 'text-happy-label-2'}`}>{label}</Text>
+            <Text className={`text-[13px] happy-font-body-bold ${selected ? 'text-[#29452a]' : 'text-happy-label-2'}`}>{label}</Text>
           </Pressable>
         );
       })}

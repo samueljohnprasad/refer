@@ -1,7 +1,9 @@
 // ponytail: the "Need to talk to someone now?" row every tab ends with (.agents/*.html `HELP`),
 // owning its own sheet so each screen drops it in with one line.
 import React, { useState } from 'react';
-import { Modal, Pressable, Text, View } from 'react-native';
+import { Modal, Pressable, View } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { Text } from '@/src/components/ui/Text';
 import { HelpSheet } from '../presentation/views/HelpSheet';
 
 export function HelpSheetModal({ visible, onClose }: { visible: boolean; onClose: () => void }): React.JSX.Element {
@@ -16,16 +18,19 @@ export function HelpSheetModal({ visible, onClose }: { visible: boolean; onClose
   );
 }
 
-export function HelpRowWithSheet({ className = 'mt-12' }: { className?: string }): React.JSX.Element {
+export function HelpRowWithSheet({ className = 'mt-8' }: { className?: string }): React.JSX.Element {
   const [open, setOpen] = useState(false);
   return (
     <>
       <Pressable
         accessibilityRole="button"
         onPress={() => setOpen(true)}
-        className={`min-h-13 pt-4 border-t border-happy-sep justify-center ${className}`}
+        className={`min-h-[52px] py-3 border-t border-happy-sep flex-row items-center gap-3 ${className}`}
       >
-        <Text className="text-t-sub font-semibold text-happy-label-2">Need to talk to someone now?</Text>
+        <Feather name="life-buoy" size={22} color="#44633f" />
+        <Text className="happy-font-body-bold text-[17px] leading-[22px] text-happy-label">
+          Need to talk to someone now?
+        </Text>
       </Pressable>
       <HelpSheetModal visible={open} onClose={() => setOpen(false)} />
     </>

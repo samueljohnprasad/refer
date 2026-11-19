@@ -18,9 +18,14 @@ export function ExerciseLibrary({ groups, excludedExerciseTypes, onPress }: Exer
 
   return (
     <View>
+      <Text className="happy-font-body-bold text-[20px] leading-[24px] text-happy-label mt-8 mb-3">
+        {t("library.allExercises", { defaultValue: "All exercises" })}
+      </Text>
       <LibraryFilterChips value={filter} onChange={setFilter} />
       {visible.length === 0 ? (
-        <Text style={{ fontSize: 15, color: "#4b4b4b", paddingVertical: 24 }}>Nothing at this length yet. Try another filter.</Text>
+        <Text className="happy-font-body-semibold text-[15px] text-happy-label-2 py-6">
+          Nothing at this length yet. Try another filter.
+        </Text>
       ) : (
         visible.map((group, index) => (
           <DiscoverSection

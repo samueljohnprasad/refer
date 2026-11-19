@@ -1,16 +1,15 @@
 import { memo } from "react";
-import { Platform, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
 import { SymbolView } from "expo-symbols";
 import { Feather } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 import { CircularRevealWrapper } from "@/src/components/CircularRevealWrapper";
 import { ExerciseArt } from "@/src/domains/exercises/ui/presentation/components/ExerciseArt";
-import { Card } from "@/src/components/ui/Card";
 import { Text } from "@/src/components/ui/Text";
 import type { ExerciseConfig } from "@/src/types/exerciseFlow";
-import { NEUTRAL, SAGE } from "@/src/theme/palette";
-import { buildExerciseRoute, getCategoryBadgeTheme } from "../exerciseScreenUtils";
+import { SAGE } from "@/src/theme/palette";
+import { buildExerciseRoute, getExerciseHue } from "../exerciseScreenUtils";
 
 type JumpBackInRowProps = {
   exercise: ExerciseConfig<any>;
@@ -21,31 +20,29 @@ type JumpBackInRowProps = {
   onPress: (exercise: ExerciseConfig<any>) => void;
 };
 
-// ponytail: .rs row from .agents/exercises.html — art, name, one quiet line, rung pips (Fear Ladder
+// ponytail: exact .rs row from .agents/exercises.html — art, name, one quiet line, rung pips (Fear Ladder
 // only, from the paused entry's real rung), chevron.
 export const JumpBackInRow = memo(function JumpBackInRow({ exercise, paused, rung, onPress }: JumpBackInRowProps) {
   const { t } = useTranslation("exercises");
   const translateCopy = useExerciseCopy();
   const title = translateCopy(exercise.title);
   const duration = exercise.duration.replace(/\smin$/, ` ${t("flow.ui.engine.minutesShort")}`);
+  const artBg = getExerciseHue(exercise.type, exercise.category);
 
   return (
     <CircularRevealWrapper href={buildExerciseRoute(exercise.type)} color={SAGE[100]} duration={800}>
-      <Card
-        variant="tile"
-        radius="md"
-        showDepth={false}
+      <Pressable
         onPress={() => onPress(exercise)}
-        faceStyle={{ backgroundColor: NEUTRAL.white, borderWidth: 1, borderColor: SAGE[100] }}
-        contentClassName="flex-row items-center px-3 py-3"
+        className="flex-row items-center p-3 gap-3 rounded-2xl bg-white border border-[#e5e5e5] active:scale-[0.98]"
+        accessibilityRole="button"
         accessibilityLabel={`${t("library.start")} ${title}`}
       >
-        <View style={{ width: 48, height: 48, borderRadius: 12, overflow: "hidden", marginRight: 12, backgroundColor: getCategoryBadgeTheme(exercise.category).bg }}>
+        <View className="w-[72px] h-[72px] rounded-[14px] overflow-hidden" style={{ backgroundColor: artBg }}>
           <ExerciseArt type={exercise.type} />
         </View>
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Text className="happy-font-body-bold text-[17px] leading-[22px] text-happy-label" numberOfLines={1}>{title}</Text>
-          <Text className="happy-font-body-medium text-[13px] leading-[18px] text-happy-label-2 mt-0.5" numberOfLines={1}>
+        <View className="flex-1 min-w-0">
+          <Text className="happy-font-body-bold text-[17px] leading-[21px] text-happy-label" numberOfLines={1}>{title}</Text>
+          <Text className="happy-font-body-semibold text-[13px] leading-[17px] text-happy-label-2 mt-0.5" numberOfLines={1}>
             {paused
               ? rung
                 ? t("log.pausedRung", { ...rung, defaultValue: "Paused at rung {{position}} of {{total}}. It's saved." })
@@ -54,17 +51,24 @@ export const JumpBackInRow = memo(function JumpBackInRow({ exercise, paused, run
           </Text>
           {paused && rung ? <RungPips {...rung} label={t("log.rungsLabel", { ...rung, defaultValue: "{{position}} of {{total}} rungs" })} /> : null}
         </View>
-        {Platform.OS === "ios" ? <SymbolView name="chevron.right" size={15} tintColor={SAGE[400]} /> : <Feather name="chevron-right" size={16} color={SAGE[400]} />}
-      </Card>
+        {Platform.OS === "ios" ? (
+          <SymbolView name="chevron.right" size={18} tintColor="#767676" />
+        ) : (
+          <Feather name="chevron-right" size={20} color="#767676" />
+        )}
+      </Pressable>
     </CircularRevealWrapper>
   );
 });
 
 function RungPips({ position, total, label }: { position: number; total: number; label: string }) {
   return (
-    <View accessibilityRole="image" accessibilityLabel={label} style={{ flexDirection: "row", gap: 4, marginTop: 6 }}>
+    <View accessibilityRole="image" accessibilityLabel={label} className="flex-row gap-[3px] mt-2">
       {Array.from({ length: total }, (_, i) => (
-        <View key={i} style={{ width: 16, height: 6, borderRadius: 3, backgroundColor: i < position ? "#5f7f58" : SAGE[100] }} />
+        <View
+          key={i}
+          className={`flex-1 h-1.5 rounded-[3px] ${i < position ? "bg-happy-ink" : "bg-happy-sep"}`}
+        />
       ))}
     </View>
   );

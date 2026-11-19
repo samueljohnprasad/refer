@@ -118,10 +118,10 @@ export default function ExercisesScreen(): ReactElement {
       />
       {activeTab === "discover" ? (
         <ScrollView
-          style={{ flex: 1, backgroundColor: "#FFFFFF" }}
+          className="flex-1 bg-white"
           contentInsetAdjustmentBehavior="automatic"
           scrollEventThrottle={16}
-          contentContainerStyle={{ paddingTop: 16, paddingBottom: insets.bottom + 120, paddingHorizontal: 20 }}
+          contentContainerStyle={{ paddingTop: 16, paddingBottom: insets.bottom + 120, paddingHorizontal: 16 }}
           showsVerticalScrollIndicator={false}
         >
           {recommendation && getExerciseConfig(recommendation.exerciseType) ? null : null}
@@ -139,11 +139,11 @@ export default function ExercisesScreen(): ReactElement {
           )}
         </ScrollView>
       ) : (
-        <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+        <View className="flex-1 bg-white">
           <Suspense fallback={<TimelineSkeleton />}>
             <ExerciseTimeline
               onPressItem={handleLogPress}
-              header={<WeekPresenceStrip showedUp={showedUp ?? new Set()} />}
+              header={<WeekPresenceStrip showedUp={showedUp ?? new Set()} totalEntries={completedCount} />}
             />
           </Suspense>
         </View>

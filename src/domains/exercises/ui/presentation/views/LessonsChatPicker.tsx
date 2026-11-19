@@ -15,6 +15,13 @@ import { ExerciseArt, ReplyGlyph } from '../components/ExerciseArt';
 import { EXERCISE_REPLY_COPY, AUTO_FALLBACK } from '../../../data/exerciseCopy';
 import { getCategoryBadgeTheme, buildExerciseRoute } from '@/src/screens/ExercisesScreen/exerciseScreenUtils';
 
+const FEEL_HUE: Record<string, string> = {
+  thought_reframing: '#f0f6ed',
+  abc_analysis: '#eef5fb',
+  behavioral_activation: '#fef0ea',
+  fear_ladder: '#f3f0fa',
+};
+
 export interface LessonsChatPickerProps {
   exercises: ExerciseConfig<any>[];
   recentIds: string[];
@@ -57,46 +64,61 @@ export function LessonsChatPicker({ exercises, recentIds, onStart }: LessonsChat
   if (!picked) {
     return (
       <View className="mb-4">
-        <View className="flex-row items-end gap-2">
-          <View style={{ width: 92, aspectRatio: 220 / 246 }}>
+        <View className="flex-row items-end gap-2 mb-4">
+          <View className="w-[92px] aspect-[220/246] -mb-1.5">
             <HappiStage motion={motion} size="scene" width={92} />
           </View>
-          <View className="flex-1 self-center px-4 py-3 rounded-2xl bg-happy-tint">
-            <Text className="happy-font-body-bold text-t-h text-happy-label">What's on your mind?</Text>
-            <Text className="happy-font-body-medium text-t-sub text-happy-label-2 mt-0.5">Pick the closest. I'll suggest one.</Text>
+          <View className="flex-1 self-center px-4 py-3 rounded-2xl bg-happy-tint relative">
+            <View
+              style={{
+                position: 'absolute',
+                left: -8,
+                bottom: 18,
+                width: 0,
+                height: 0,
+                borderTopWidth: 8,
+                borderTopColor: 'transparent',
+                borderBottomWidth: 8,
+                borderBottomColor: 'transparent',
+                borderRightWidth: 8,
+                borderRightColor: '#f2f8ef',
+              }}
+            />
+            <Text className="happy-font-body-bold text-t-h leading-[28px] text-happy-label">What's on your mind?</Text>
+            <Text className="happy-font-body-medium text-t-sub leading-[20px] text-happy-label-2 mt-0.5">Pick the closest. I'll suggest one.</Text>
           </View>
         </View>
 
         <View className="flex-row flex-wrap gap-2">
           {replies.map((exercise) => {
             const copy = EXERCISE_REPLY_COPY[exercise.type]!;
-            const theme = getCategoryBadgeTheme(exercise.category);
+            const tileBg = FEEL_HUE[exercise.type] ?? getCategoryBadgeTheme(exercise.category).bg;
             return (
               <Pressable
                 key={exercise.type}
                 onPress={() => setPickedType(exercise.type)}
-                className="basis-[48%] grow min-h-28 p-3 pb-4 rounded-[20px] active:scale-95"
-                style={{ backgroundColor: theme.bg }}
+                className="basis-[48%] grow min-h-28 p-3 pb-4 rounded-[20px] active:scale-95 justify-between"
+                style={{ backgroundColor: tileBg }}
               >
                 <View
-                  className="w-10 h-10 rounded-xl items-center justify-center mb-3 bg-white"
+                  className="w-10 h-10 rounded-xl items-center justify-center bg-white"
                 >
-                  <View style={{ width: 24, height: 24 }}>
-                    <ReplyGlyph kind={copy.glyph} />
+                  <View className="w-6 h-6">
+                    <ReplyGlyph kind={copy.glyph} color="#44633f" />
                   </View>
                 </View>
-                <Text className="happy-font-body-bold text-t-sub leading-snug text-happy-label">{copy.reply}</Text>
+                <Text className="happy-font-body-bold text-[15px] leading-[19px] text-happy-label mt-3">{copy.reply}</Text>
               </Pressable>
             );
           })}
         </View>
 
         {autoTarget && (
-          <Pressable onPress={() => setPickedType('auto')} className="flex-row items-center justify-center gap-2 w-full min-h-11 mt-2">
-            <View style={{ width: 24, height: 24 }}>
-              <ReplyGlyph kind="unsure" />
+          <Pressable onPress={() => setPickedType('auto')} className="flex-row items-center justify-center gap-2 w-full min-h-[44px] mt-2">
+            <View className="w-6 h-6">
+              <ReplyGlyph kind="unsure" color="#44633f" />
             </View>
-            <Text className="happy-font-body-bold text-t-sub text-happy-accent">Not sure? Pick one for me</Text>
+            <Text className="happy-font-body-bold text-[15px] text-happy-accent">Not sure? Pick one for me</Text>
           </Pressable>
         )}
       </View>
@@ -117,7 +139,7 @@ export function LessonsChatPicker({ exercises, recentIds, onStart }: LessonsChat
       <View
         className="rounded-[20px] bg-happy-surface overflow-hidden border border-happy-sep"
       >
-        <View style={{ aspectRatio: 160 / 96, backgroundColor: theme.bg }}>
+        <View className="aspect-[160/96]" style={{ backgroundColor: theme.bg }}>
           <ExerciseArt type={exercise.type} />
         </View>
         <View className="p-4">

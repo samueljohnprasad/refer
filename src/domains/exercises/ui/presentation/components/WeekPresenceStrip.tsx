@@ -13,7 +13,7 @@ const toYmd = (d: Date): string => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-
 
 function Leaf(): React.JSX.Element {
   return (
-    <Svg width={16} height={16} viewBox="0 0 24 24" fill="#5f7f58">
+    <Svg width={16} height={16} viewBox="0 0 24 24" fill="#ffffff">
       <Path d="M5 19c0-8 5-14 14-14 0 9-6 14-14 14Z" />
     </Svg>
   );
@@ -22,9 +22,10 @@ function Leaf(): React.JSX.Element {
 export interface WeekPresenceStripProps {
   /** local YYYY-MM-DD days this week with a completed exercise or a mood log */
   showedUp: ReadonlySet<string>;
+  totalEntries?: number;
 }
 
-export function WeekPresenceStrip({ showedUp }: WeekPresenceStripProps): React.JSX.Element {
+export function WeekPresenceStrip({ showedUp, totalEntries }: WeekPresenceStripProps): React.JSX.Element {
   const now = new Date();
   const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7));
   const today = toYmd(now);
@@ -37,9 +38,16 @@ export function WeekPresenceStrip({ showedUp }: WeekPresenceStripProps): React.J
 
   return (
     <View className="p-4 rounded-[20px] bg-happy-tint">
-      <Text className="text-t-foot happy-font-body-bold text-happy-accent">This week</Text>
-      <Text className="mt-1 happy-font-heading text-t-h leading-[28px] tracking-tight text-happy-label">
+      <Text className="text-[13px] happy-font-body-bold text-happy-accent">This week</Text>
+      <Text className="mt-1 happy-font-heading text-[24px] leading-[28px] tracking-tight text-happy-label">
         {count === 0 ? 'A fresh week.' : `You showed up on ${count} ${count === 1 ? 'day' : 'days'}.`}
+      </Text>
+      <Text className="mt-1 happy-font-body-medium text-[15px] leading-[20px] text-happy-label-2">
+        {totalEntries !== undefined && totalEntries > 0
+          ? `${totalEntries} ${totalEntries === 1 ? 'entry' : 'entries'} below, newest first.`
+          : count === 0
+          ? 'Entries will appear here as you practice.'
+          : 'Entries below, newest first.'}
       </Text>
       <View className="flex-row justify-between mt-4">
         {days.map(({ key, label, isToday, logged, name }, i) => (
@@ -53,16 +61,24 @@ export function WeekPresenceStrip({ showedUp }: WeekPresenceStripProps): React.J
               {logged ? (
                 <Animated.View
                   entering={ZoomIn.delay(150 + i * 100).springify().damping(14)}
-                  className="w-[34px] h-[34px] rounded-full items-center justify-center absolute bg-happy-ink"
+                  className="w-[34px] h-[34px] rounded-full items-center justify-center bg-happy-ink"
                 >
                   <Leaf />
                 </Animated.View>
               ) : (
-                <View className="w-[34px] h-[34px] rounded-full border-2 border-[#a9bfa0] absolute" />
+                <View
+                  className={`w-[34px] h-[34px] rounded-full items-center justify-center ${
+                    isToday ? 'border-2 border-happy-ink' : ''
+                  }`}
+                >
+                  <View className="w-[6px] h-[6px] rounded-full bg-[#a9bfa0]" />
+                </View>
               )}
-              {isToday && <View className="w-[34px] h-[34px] rounded-full border-2 border-happy-ink absolute" />}
+              {isToday && logged && (
+                <View className="w-[34px] h-[34px] rounded-full border-2 border-happy-ink absolute" pointerEvents="none" />
+              )}
             </View>
-            <Text className={`text-t-cap happy-font-body-bold mt-1 ${isToday ? 'text-happy-label' : 'text-happy-label-2'}`}>
+            <Text className={`text-[12px] happy-font-body-bold mt-1 ${isToday ? 'text-happy-label' : 'text-happy-label-2'}`}>
               {label}
             </Text>
           </View>

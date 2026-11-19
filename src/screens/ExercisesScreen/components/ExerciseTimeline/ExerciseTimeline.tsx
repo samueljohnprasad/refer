@@ -51,9 +51,12 @@ const ExerciseTimeline: React.FC<ExerciseTimelineProps> = React.memo(
       [sections, dayLabels],
     );
 
-    const renderItem = useCallback(({ item: row }: { item: Row }) =>
+    const renderItem = useCallback(({ item: row, index }: { item: Row; index: number }) =>
       row.kind === "day" ? (
-        <Text accessibilityRole="header" className="mt-6 mb-2 text-t-sub happy-font-body-bold text-happy-label-2">
+        <Text
+          accessibilityRole="header"
+          className={`${index === 0 ? "mt-4" : "mt-6"} mb-2 text-[15px] happy-font-body-bold text-happy-label-2`}
+        >
           {row.label}
         </Text>
       ) : (
