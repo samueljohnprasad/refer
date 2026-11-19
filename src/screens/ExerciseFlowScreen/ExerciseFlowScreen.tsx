@@ -1,3 +1,4 @@
+import { ExercisePoseContext, poseForExercise } from "@/src/components/exercise/steps/exercisePose";
 import React from "react";
 import { Pressable, SafeAreaView } from "react-native";
 import { useRouter } from "expo-router";
@@ -63,6 +64,7 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
   }
 
   return (
+    <ExercisePoseContext.Provider value={poseForExercise(exerciseType)}>
     <ExerciseFlowRunner
       config={config}
       existingEntry={entry}
@@ -74,6 +76,7 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
       practiceSource={practiceSource}
       practiceId={practiceId}
     />
+    </ExercisePoseContext.Provider>
   );
 };
 

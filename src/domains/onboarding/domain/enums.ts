@@ -27,15 +27,19 @@ export enum OnboardingStep {
 export enum ChatPhase {
   ShowMe = 'show_me',
   RateInitial = 'rate_initial',
+  Reality = 'reality',
   RateShift = 'rate_shift',
-  ReadyToSave = 'ready_to_save',
-  PersonalInput = 'personal_input',
+  AfterTeach = 'after_teach',
+  PersonalSituation = 'personal_situation',
+  PersonalThought = 'personal_thought',
+  PersonalFair = 'personal_fair',
 }
 
 export enum SheetType {
   Who = 'who',
   Leave = 'leave',
   SignIn = 'signin',
+  Help = 'help',
 }
 
 export enum MessageSender {

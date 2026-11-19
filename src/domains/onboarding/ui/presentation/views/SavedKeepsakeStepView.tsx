@@ -3,12 +3,13 @@ import React from 'react';
 import { View, ScrollView, Pressable, Text } from 'react-native';
 import { ReminderPreset } from '../../../domain/enums';
 import type { ReflectionData } from '../../../domain/types';
+import type { ReminderStatus } from '../../containers/hooks/useReminderSelection';
 import { SavedReflectionCard } from '../components/SavedReflectionCard';
 import { InlineReminderBanner } from '../components/InlineReminderBanner';
 
 export interface SavedKeepsakeStepViewProps {
   reflection: ReflectionData;
-  isReminderSet: boolean;
+  reminderStatus: ReminderStatus;
   activeReminderTime: string | null;
   onPickPreset: (preset: ReminderPreset) => void;
   onChangeReminderTime: () => void;
@@ -17,7 +18,7 @@ export interface SavedKeepsakeStepViewProps {
 
 export function SavedKeepsakeStepView({
   reflection,
-  isReminderSet,
+  reminderStatus,
   activeReminderTime,
   onPickPreset,
   onChangeReminderTime,
@@ -28,7 +29,7 @@ export function SavedKeepsakeStepView({
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
         <SavedReflectionCard reflection={reflection} />
         <InlineReminderBanner
-          isSet={isReminderSet}
+          status={reminderStatus}
           activeTime={activeReminderTime}
           onPickPreset={onPickPreset}
           onChangeTime={onChangeReminderTime}

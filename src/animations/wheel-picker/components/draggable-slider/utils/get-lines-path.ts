@@ -36,8 +36,8 @@ export const getLinesPath = (params: {
     scrollOffset,
   } = params;
 
-  // Creating a new Skia path
-  const skPath = Skia.Path.Make();
+  // ponytail: Skia 2.x PathBuilder
+  const builder = Skia.PathBuilder.Make();
 
   // Looping through linesAmount + 1 times to generate paths for lines
   for (let i = 0; i < linesAmount + 1; i++) {
@@ -76,9 +76,9 @@ export const getLinesPath = (params: {
     );
 
     // Adding the rounded rectangle to the Skia path
-    skPath.addRRect(roundedRect);
+    builder.addRRect(roundedRect);
   }
 
   // Returning the generated Skia path
-  return skPath;
+  return builder.build();
 };

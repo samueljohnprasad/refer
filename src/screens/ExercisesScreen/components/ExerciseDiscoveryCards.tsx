@@ -1,17 +1,17 @@
 import { memo, useCallback, type ReactElement } from "react";
-import { Platform, View } from "react-native";
-import { SymbolView } from "expo-symbols";
+import { View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { CircularRevealWrapper } from "@/src/components/CircularRevealWrapper";
-import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
+import { ExerciseArt } from "@/src/domains/exercises/ui/presentation/components/ExerciseArt";
 import { Card } from "@/src/components/ui/Card";
 import { Text } from "@/src/components/ui/Text";
 import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 import { useFreemiumGate } from "@/src/hooks/useFreemiumGate";
 import type { ExerciseConfig } from "@/src/types/exerciseFlow";
 import { NEUTRAL, SAGE } from "@/src/theme/palette";
-import { buildExerciseRoute } from "../exerciseScreenUtils";
+import { NEW_EXERCISE_TYPES } from "@/src/domains/exercises/data/exerciseCopy";
+import { buildExerciseRoute, getCategoryBadgeTheme } from "../exerciseScreenUtils";
 import { nutrieStyles } from "../ExercisesScreen.styles";
 
 interface ExerciseCardProps {
@@ -23,7 +23,9 @@ function localizeDuration(duration: string, minutesShort: string): string {
   return duration.replace(/\smin$/, ` ${minutesShort}`);
 }
 
-export const CompactExerciseRow = memo(function CompactExerciseRow({ exercise, onPress }: ExerciseCardProps): ReactElement {
+// ponytail: .tile from .agents/exercises.html — art block (category hue) with Pro/New badge on it,
+// bold name, clock + duration. Hairline ring, no shadow.
+export const ExerciseTile = memo(function ExerciseTile({ exercise, onPress }: ExerciseCardProps): ReactElement {
   const { t } = useTranslation("exercises");
   const translateCopy = useExerciseCopy();
   const { hasPro, requirePro } = useFreemiumGate();
@@ -40,30 +42,37 @@ export const CompactExerciseRow = memo(function CompactExerciseRow({ exercise, o
         radius="md"
         showDepth={false}
         onPress={handlePress}
-        style={{ marginBottom: 8 }}
+        style={{ width: 148 }}
         faceStyle={{ backgroundColor: NEUTRAL.white, borderWidth: 1, borderColor: SAGE[100] }}
-        contentClassName="flex-row items-center px-3.5 py-3"
+        contentClassName="p-2"
       >
-        <View style={{ width: 28, alignItems: "center", justifyContent: "center", marginRight: 12 }}>
-          <ExerciseIcon type={exercise.type} size={24} color={SAGE[600]} />
-        </View>
-        <View style={{ flex: 1, minWidth: 0, justifyContent: "center" }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={[nutrieStyles.exerciseTitle, { fontSize: 15, marginBottom: 2, flexShrink: 1 }]} numberOfLines={2}>{translateCopy(exercise.title)}</Text>
-            {isGated ? <TextBadge label="PRO" /> : null}
+        <View style={{ height: 96, borderRadius: 12, overflow: "hidden", backgroundColor: getCategoryBadgeTheme(exercise.category).bg }}>
+          <ExerciseArt type={exercise.type} />
+          <View style={{ position: "absolute", top: 6, left: 6, flexDirection: "row" }}>
+            {isGated ? <TextBadge label="PRO" icon="lock" first /> : null}
+            {NEW_EXERCISE_TYPES.has(exercise.type) ? <TextBadge label="New" solid first={!isGated} /> : null}
           </View>
-          <Text style={[nutrieStyles.exerciseSubtitle, { fontSize: 13 }]} numberOfLines={1}>{localizeDuration(exercise.duration, t("flow.ui.engine.minutesShort"))} • +{exercise.xp} XP</Text>
         </View>
-        {Platform.OS === "ios" ? <SymbolView name="chevron.right" size={15} tintColor={SAGE[400]} /> : <Feather name="chevron-right" size={16} color={SAGE[400]} />}
+        <Text style={[nutrieStyles.exerciseTitle, { fontSize: 15, marginTop: 8, marginBottom: 2 }]} numberOfLines={2}>{translateCopy(exercise.title)}</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+          <Feather name="clock" size={12} color={SAGE[400]} />
+          <Text style={[nutrieStyles.exerciseSubtitle, { fontSize: 13 }]} numberOfLines={1}>{localizeDuration(exercise.duration, t("flow.ui.engine.minutesShort"))}</Text>
+        </View>
       </Card>
     </CircularRevealWrapper>
   );
 });
 
-function TextBadge({ label }: { label: string }) {
+function TextBadge({ label, icon, solid, first }: { label: string; icon?: "lock"; solid?: boolean; first?: boolean }) {
   return (
-    <View style={{ paddingHorizontal: 7, paddingVertical: 3, borderRadius: 8, backgroundColor: NEUTRAL.surface, borderWidth: 1, borderColor: NEUTRAL.border }}>
-      <Text variant="chip" color="ink">{label}</Text>
+    <View
+      style={{
+        flexDirection: "row", alignItems: "center", gap: 3, marginLeft: first ? 0 : 4, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 999,
+        backgroundColor: solid ? "#5f7f58" : NEUTRAL.surface, borderWidth: solid ? 0 : 1, borderColor: NEUTRAL.border,
+      }}
+    >
+      {icon ? <Feather name={icon} size={10} color="#142414" /> : null}
+      <Text variant="chip" style={{ color: solid ? "#fff" : "#142414" }}>{label}</Text>
     </View>
   );
 }

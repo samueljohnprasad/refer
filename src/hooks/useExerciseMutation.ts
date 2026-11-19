@@ -74,7 +74,12 @@ export const useExerciseMutation = (): UseExerciseMutationReturn => {
       queryClient.invalidateQueries({ queryKey: ["cbt_history"] });
       queryClient.invalidateQueries({ queryKey: ["completed_exercises_count"] });
       queryClient.invalidateQueries({ queryKey: ["exercise_stats"] });
+      queryClient.invalidateQueries({ queryKey: ["exercise_in_progress"] });
+      queryClient.invalidateQueries({ queryKey: ["exercise_entry_status"] });
       queryClient.invalidateQueries({ queryKey: ["streak"] });
+      queryClient.invalidateQueries({ queryKey: ["practice_counts"] });
+      queryClient.invalidateQueries({ queryKey: ["week_showed_up"] });
+      queryClient.invalidateQueries({ queryKey: ["trap_picks"] });
       if (id) {
         queryClient.invalidateQueries({ queryKey: ["exercise_entry", id] });
       }

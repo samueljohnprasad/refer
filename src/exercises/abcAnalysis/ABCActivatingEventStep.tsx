@@ -1,23 +1,21 @@
 import React from "react";
-import { MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
 import type { ABCAnalysisResponse, StepProps } from "@/src/types/exerciseFlow";
-import { useABCCopy } from "./customStepShared";
+import { AbcWritingStep } from "./abcWritingStep";
+import { ABC_SCENES } from "./abcDomain";
 
-export function ABCActivatingEventStep(
-  stepProps: StepProps<ABCAnalysisResponse>,
-): React.JSX.Element {
-  const copy = useABCCopy();
+export function ABCActivatingEventStep(stepProps: StepProps<ABCAnalysisResponse>): React.JSX.Element {
   return (
-    <MultiTextInputStep maxItems={1} 
+    <AbcWritingStep
       {...stepProps}
-      {...copy.sharedProps}
-      title={copy.t("flow.ui.abc.event.title")}
-      subtitle={copy.t("flow.ui.abc.event.subtitle")}
-      tipText={copy.t("flow.ui.abc.event.tip")}
-      tipIcon="camera"
       fieldKey="activatingEvent"
-      placeholder={copy.t("flow.ui.abc.event.placeholder")}
-      suggestions={copy.eventSuggestions}
+      variant="viewfinder"
+      question="What happened?"
+      sub="Write what a camera could have seen or heard."
+      placeholder="This morning, my manager…"
+      hint="A few words is enough to start."
+      need={2}
+      chips={ABC_SCENES.map((s) => s.event)}
+      sentence={() => null}
     />
   );
 }

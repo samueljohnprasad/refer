@@ -171,6 +171,7 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
 
     return (
       <StepLayout
+        happi={false}
         title={title}
         subtitle={subtitle}
         progress={progress}

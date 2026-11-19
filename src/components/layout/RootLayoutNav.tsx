@@ -40,6 +40,7 @@ import { useSystemBackgroundColor } from "@/src/utils/useSystemBackgroundColor";
 import { APP_NAVIGATION_FONTS } from "@/src/theme/typography";
 import { useUserIdLogger } from "@/src/hooks/useUserIdLogger";
 import { useRetentionTracker } from "@/src/hooks/useRetentionTracker";
+import { useOutboxReplay } from "@/src/domains/thoughtCatcher/ui/containers/useOutboxReplay";
 
 const queryClient = new QueryClient();
 const globalPressableHandlers = {
@@ -113,6 +114,11 @@ function AuthStateLogger() {
   return null;
 }
 
+function OutboxReplayIntegration() {
+  useOutboxReplay();
+  return null;
+}
+
 export function RootLayoutNav() {
   const isDark = useColorScheme() === "dark";
   const navigationTheme = isDark
@@ -127,6 +133,7 @@ export function RootLayoutNav() {
             <HeroUINativeProvider>
               <AuthProvider>
                 <AuthStateLogger />
+                <OutboxReplayIntegration />
                 <NotificationIntegration />
                 <XPProvider>
                   <LevelProvider>

@@ -43,3 +43,12 @@ title = "7-Step Day-0 Onboarding & First 60s Home Landing"
 covers = ["CAP-1", "CAP-5", "CAP-6"]
 after = []
 
+
+[[epic]]
+id = 6
+slug = "epic-engagement-logging"
+title = "Logging a thought is small enough to do on a hard day"
+covers = ["CAP-2", "CAP-4", "CAP-6"]
+after = [
+  { epic = 2, needs = "the practice-completion adapter for path-launched sittings" },
+]

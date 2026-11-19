@@ -298,6 +298,7 @@
   <div class="scrim" id="scrim" hidden></div>
   <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t" hidden></section>
 </div>
+<script src="happi.js"></script>
 <script>
 // ---- data: one worked example per goal (plain-language traps, no clinical terms) ----
 const GOALS=[
@@ -349,158 +350,19 @@ const IC=p=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke=
 const store=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
 
 // ================= Happi, the guide =================
-// Web port of the production rig so this prototype maps 1:1 to Expo:
-//   art (verbatim) = src/components/ui/happy-scene/art.ts, joints + matrix() = pose.ts,
-//   curves + wave/loop/seeded/track = src/components/ui/motion/engine.ts. Handoff: onboarding-handoff.md
-// The thought cloud is a prop beside Happi. Its weather f (0 clear .. 1 heavy) is how true the thought feels.
-function bez(x1,y1,x2,y2){const c=(a,b,t)=>((1-3*b+3*a)*t+(3*b-6*a))*t*t+3*a*t;
-  return x=>{let lo=0,hi=1,t=x;for(let i=0;i<24;i++){t=(lo+hi)/2;c(x1,x2,t)<x?lo=t:hi=t}return c(y1,y2,t)}}
-const EASE_IN_OUT=bez(.77,0,.175,1),EASE_OUT=bez(.23,1,.32,1); // engine.ts: things that travel / things that arrive
-const wave=(t,per,ph=0)=>Math.sin((t/per+ph)*Math.PI*2);
-const loop=(t,per,ph=0)=>{const p=(t/per+ph)%1;return p<0?p+1:p};
-const seeded=(i,salt=0)=>{const x=Math.sin(i*12.9898+salt*78.233)*43758.5453;return x-Math.floor(x)};
-const clamp01=x=>Math.min(1,Math.max(0,x));
-function track(t,keys){if(t<=keys[0][0])return keys[0][1];
-  for(let i=1;i<keys.length;i++){const k1=keys[i];if(t<=k1[0]){const k0=keys[i-1],sp=k1[0]-k0[0],p=sp>0?(t-k0[0])/sp:1;
-    return k0[1]+(k1[1]-k0[1])*(k1[2]==='out'?EASE_OUT(p):EASE_IN_OUT(p))}}
-  return keys[keys.length-1][1]}
-function mx(x=0,y=0,angle=0,px=0,py=0,sx=1,sy=1){const r=angle*Math.PI/180,c=Math.cos(r),s=Math.sin(r);
-  return `matrix(${[c*sx,s*sx,-s*sy,c*sy,x+px-c*sx*px+s*sy*py,y+py-s*sx*px-c*sy*py].map(n=>+n.toFixed(4)).join(' ')})`}
-const mix=(a,b,p)=>{const h=x=>[1,3,5].map(i=>parseInt(x.slice(i,i+2),16)),A=h(a),B=h(b);return `rgb(${A.map((x,i)=>Math.round(x+(B[i]-x)*clamp01(p))).join()})`};
-
-const INK='#252525',ink=`fill="${INK}" stroke="${INK}" stroke-width="5.5" stroke-linejoin="round"`,line=`fill="none" stroke="${INK}" stroke-linecap="round" stroke-linejoin="round"`;
-const DROPS=[0,1,2,3].map(i=>({x:+(226+seeded(i,1)*36).toFixed(1),per:950+seeded(i,2)*450,ph:seeded(i,3),len:5+seeded(i,4)*3,cyc:-1,a:0}));
-const HAPPI=(u='')=>`<svg class="guide" viewBox="44 0 236 240" aria-hidden="true">
-  <defs><clipPath id="happi-eye-clip${u}"><ellipse cx="99" cy="99" rx="18.5" ry="17.5"/><ellipse cx="165.5" cy="102.75" rx="18" ry="17.75"/></clipPath></defs>
-  <g data-p="sun"><g data-p="rays" stroke="#F5B942" stroke-width="3" stroke-linecap="round">${[...Array(8)].map((_,i)=>{const a=i*Math.PI/4;
-    return `<line x1="${(Math.cos(a)*14).toFixed(1)}" y1="${(Math.sin(a)*14).toFixed(1)}" x2="${(Math.cos(a)*18).toFixed(1)}" y2="${(Math.sin(a)*18).toFixed(1)}"/>`}).join('')}</g><circle r="10" fill="#F5B942"/></g>
-  <g data-p="cloud"><rect data-p="c3" x="220" y="29" width="50" height="12" rx="6"/><circle data-p="c0" cx="229" cy="30" r="11"/><circle data-p="c1" cx="245" cy="22" r="14"/><circle data-p="c2" cx="260" cy="31" r="10"/></g>
-  <g stroke="#44633F" stroke-width="2.5" stroke-linecap="round">${DROPS.map(d=>`<line data-d x1="${d.x}" x2="${d.x}" y1="44" y2="50" opacity="0"/>`).join('')}</g>
-  <g data-p="shadow"><ellipse cx="130" cy="229" rx="54" ry="8" fill="#BCD0AF"/></g>
-  <g data-p="root">
-    <path d="M97 200 L99 218 C100 226 105 229 111 229 C118 229 123 226 124 219 L125 206 Z" ${ink}/>
-    <path d="M135 206 L136 219 C137 226 142 229 149 229 C155 229 160 226 161 218 L163 200 Z" ${ink}/>
-    <g data-p="body"><path d="M96 150 C92 172 93 196 98 210 C104 216 156 216 162 210 C167 196 168 172 164 150 Z" ${ink}/>
-      <path d="M104 166 C100 180 100 196 104 206 C116 212 144 212 156 206 C160 196 160 180 156 166 C150 158 110 158 104 166 Z" fill="#FFF"/>
-      <g data-p="heart"><path d="M131.5 183 C127 175 117 177 118.5 186 C119.5 192 126 196 131.5 199.5 C137 196 143.5 192 144.5 186 C146 177 136 175 131.5 183 Z" fill="#C8BEE6"/></g>
-      <path d="M118 205 Q130 209.5 142.5 205.5" ${line} stroke-width="4"/></g>
-    <g data-p="armR"><path d="M149 158 A11 11 0 0 1 171 158 L171 172 A11 11 0 0 1 149 172 Z" ${ink}/>
-      <g data-p="foreR"><path d="M149 172 A11 11 0 0 1 171 172 L172.5 186 A12.5 12.5 0 0 1 147.5 186 Z" ${ink}/></g></g>
-    <g data-p="armL"><path d="M87 158 A11 11 0 0 1 109 158 L109 172 A11 11 0 0 1 87 172 Z" ${ink}/></g>
-    <g data-p="head">
-      <g data-p="earL"><path d="M60 36 C66 22 86 18 98 26 C108 33 108 50 100 60 C90 70 70 70 62 60 C56 53 56 44 60 36 Z" ${ink}/></g>
-      <g data-p="earR"><path d="M164 40 C172 30 192 30 200 42 C207 53 205 68 196 74 C186 80 170 76 165 66 C161 58 160 48 164 40 Z" ${ink}/></g>
-      <path d="M66 64 C84 46 104 40 118 40 C124 35 132 33 136 37 C158 38 182 44 196 64 C208 82 212 106 208 124 C204 144 186 158 160 163 C140 166 122 166 102 163 C76 158 55 142 52 112 C51 92 56 76 66 64 Z" fill="#FFF" stroke="${INK}" stroke-width="5.5" stroke-linejoin="round"/>
-      <path d="M131 35 Q138 38 136 47 Q135 52 132 51 M141 45 Q146 49 144 55" ${line} stroke-width="4"/>
-      <ellipse cx="97.5" cy="99" rx="25.5" ry="25" fill="${INK}" transform="rotate(-8 97.5 99)"/><ellipse cx="166" cy="102.5" rx="25.5" ry="25.5" fill="${INK}" transform="rotate(6 166 102.5)"/>
-      <g data-p="eyes"><ellipse cx="99" cy="99" rx="18.5" ry="17.5" fill="#FFF"/><ellipse cx="165.5" cy="102.75" rx="18" ry="17.75" fill="#FFF"/>
-        <g clip-path="url(#happi-eye-clip${u})"><g data-p="pupils" fill="${INK}"><circle cx="100.5" cy="101" r="14"/><circle cx="164.5" cy="105" r="14"/>
-          <g fill="#FFF"><circle cx="95.5" cy="93.5" r="3.3"/><circle cx="91.5" cy="99.5" r="2"/><circle cx="159.5" cy="97" r="3"/><circle cx="155.5" cy="103" r="2"/></g></g><g data-p="cheeks" fill="${INK}"><ellipse cx="99" cy="129" rx="24" ry="12"/><ellipse cx="165.5" cy="133" rx="24" ry="12"/></g></g></g>
-      <g data-p="face"><ellipse cx="131.75" cy="113.75" rx="7" ry="4.6" fill="${INK}"/>
-        <g data-p="mouth"><path d="M121 122 Q123.5 127.5 127 126 Q130 125 132 122.5 Q134 125.5 137 126 Q140.5 127.5 142.5 122.5" ${line} stroke-width="3.5"/></g></g>
-    </g>
-    <g data-p="armLF"><g data-p="foreL"><path d="M87 172 A11 11 0 0 1 109 172 L110.5 186 A12.5 12.5 0 0 1 85.5 186 Z" ${ink}/>
-      <g data-p="pad" opacity="0"><circle cx="98" cy="190" r="4.5" fill="#FFF" stroke="${INK}" stroke-width="2"/></g></g></g>
-  </g></svg>`;
-
-// channels ease from wherever they are to a target (never teleport); idle waves ride on top
-const REST={head:0,gx:0,gy:0,mouth:1,lid:0,sink:0,sy:1,cheek:0,pup:1,sL:12,eL:6,sR:-16,eR:8,f:.35,c0:.65,c1:.65,c2:.65};
-// acting poses. mouth: 1 smile, 0 flat, below 0 turned down. lid: resting eyelid. sink: px the head drops
-const POSES={
-  // eyes are Happi's biggest feature: cheek 0..1 pushes each eye into a smiling arch, pup scales the pupils (small = alarmed)
-  // mouths stay ≥0 and the head sinks ≤2: Happi shows attention, never mirrors distress (03 F6, ED5.1)
-  // arms carry the read at chat size (Duolingo, Yazio, BitePal react with the whole body, not a head tilt).
-  // sL/sR shoulder, eL/eR elbow, degrees; + on sL / - on sR swings the arm out, the opposite folds it in to the chest
-  rest:    {head:0, gx:0,   gy:0,   mouth:1,   lid:0,  sink:0,sy:1,    sL:12, eL:6,   sR:-16,eR:8, cheek:0,pup:1},
-  worry:   {head:7, gx:3.5, gy:-1.5,mouth:0,   lid:0,  sink:1,sy:1,    sL:-6, eL:-78, sR:6,  eR:78, cheek:0,pup:0.9},  // paws clasped at the chest
-  mood:    {head:-6,gx:0,   gy:3,   mouth:0, lid:0.15, sink:2,sy:0.99, sL:2,  eL:0,   sR:-2, eR:0, cheek:0,pup:1},   // arms hang limp, head low
-  stress:  {head:-2,gx:-2.5,gy:-.5, mouth:0, lid:0,  sink:1,sy:.95,  sL:26, eL:34,  sR:-26,eR:-34, cheek:0,pup:0.9}, // braced, arms stiff and out
-  self:    {head:-8,gx:-2.5,gy:3,   mouth:0, lid:.2, sink:1,sy:.985, sL:-8, eL:-82, sR:-6, eR:2, cheek:0,pup:0.9},   // one paw pulled in, shrinking
-  sleep:   {head:8, gx:0,   gy:1.5, mouth:.2,  lid:.65,sink:3,sy:.985, sL:10, eL:4,   sR:4,  eR:96, cheek:0,pup:1},  // head drooping onto a paw tucked under the chin (arm can't reach the eye)
-  heavy:   {head:-4,gx:0,   gy:2.5, mouth:0, lid:.25,sink:2,sy:.97,  sL:4,  eL:0,   sR:-4, eR:0, cheek:0,pup:0.9},   // a thought you believe a lot
-  listen:  {head:-6,gx:-2,  gy:2.5, mouth:.6,  lid:0,  sink:0,sy:1,    sL:12, eL:6,   sR:8,  eR:92, cheek:0,pup:1.05},  // paw to the chin, thinking with you
-  gentle:  {head:8, gx:0,   gy:.5,  mouth:.6,  lid:.15,sink:0,sy:1,    sL:34, eL:30,  sR:-34,eR:-30, cheek:0,pup:1.08}, // arms open, palms out, below the shoulders
-  relieved:{head:-2,gx:3,   gy:-3,  mouth:1,   lid:0,  sink:0,sy:1.01, sL:24, eL:20,  sR:-24,eR:-20, cheek:0.6,pup:1}, // arms open a little and look up at the clearing sky; it plays every reframe, so well under the Welcome-back range
-  pride:   {head:5, gx:0,   gy:0,   mouth:1,   lid:0,  sink:0,sy:1.02, sL:-4, eL:-70, sR:-16,eR:8, cheek:0.6,pup:1},   // paw on the heart
-};
-// follow-through: eyes and mouth lead, the head follows, the body settles last (ms at a 600ms pose)
-const LAG={gx:0,gy:0,mouth:0,lid:60,head:90,sink:150,sy:150,sL:60,sR:60,eL:130,eR:130,cheek:40,pup:0}; // elbows trail the shoulders
-const H={hold:0,t:0,ch:{},shots:{},p:null,run:false,gen:0,last:0,vis:true,blinkAt:1800,blinkN:0,greeted:false};
-for(const k in REST)H.ch[k]={from:REST[k],to:REST[k],t0:0,dur:0,curve:'inOut'};
-const val=k=>{const c=H.ch[k];if(H.t>=c.t0+c.dur)return c.to;if(H.t<=c.t0)return c.from;
-  const p=(H.t-c.t0)/c.dur;return c.from+(c.to-c.from)*(c.curve==='out'?EASE_OUT(p):EASE_IN_OUT(p))};
-function to(k,v,dur=600,delay=0,curve='inOut'){const c=H.ch[k];
-  Object.assign(c,STILL?{from:v,to:v,t0:0,dur:0}:{from:val(k),to:v,t0:H.t+delay,dur,curve})}
-// one-shot keyframes added on top of a channel (a nod, the wave); reduced motion skips them
-const shot=(k,keys)=>{if(!STILL)H.shots[k]={t0:H.t,keys}};
-const sv=k=>{const s=H.shots[k];if(!s)return 0;const d=H.t-s.t0;if(d>=s.keys.at(-1)[0]){delete H.shots[k];return 0}return track(d,s.keys)};
-
-// a long pose (a story beat) owns the gaze until it lands; conversational glances wait
-const act=(name,dur=600)=>{const p=POSES[name];for(const k in p)to(k,p[k],dur,LAG[k]*dur/600);if(dur>=1000)H.hold=H.t+dur+200;wake()};
-const look=(gx,gy)=>{if(!STILL&&H.t<H.hold)return;to('gx',gx,400);to('gy',gy,400);wake()};
-// the body grows under the head, so the head rises with it to show; feet stay down (F11)
-const stretch=()=>{shot('sy',[[0,0],[260,.025],[700,0,'out']]);shot('sink',[[0,0],[260,-3],[700,0,'out']]);wake()};
-const nod=()=>{shot('head',[[0,0],[160,5],[460,0,'out']]);wake()};
-// the brand wave from pose.ts: shoulder raises, elbow trails 90ms, forearm swings on a 680ms beat, then rests
-const greet=()=>{shot('sL',[[0,0],[700,58],[2600,58],[3300,0]]);shot('eL',[[0,0],[90,0],[790,104],[2690,104],[3390,0]]);
-  shot('wave',[[0,0],[800,0],[1100,1],[2300,1],[2600,0]]);wake()};
-// weather; slow=true is the story beat: the puffs part one after another, then the sun climbs its arc
-function sky(f,slow=false){const d=slow?1600:600;to('f',f,d);[0,1,2].forEach(i=>to('c'+i,1-f,d,slow?i*90:0));wake()}
-
-// goal tiles: Happi's head in that goal's pose, drawn once (frequent-use surfaces stay still)
-// viewBox fits ears + tilt; lid is exaggerated so the pose reads at 76px
-// pupils and their highlights shrink together about each pupil's centre, so no white dot floats on the sclera
-const PUP=[[100.5,101,14,0],[164.5,105,14,1],[95.5,93.5,3.3,0],[91.5,99.5,2,0],[159.5,97,3,1],[155.5,103,2,1]];
-const sizePupils=(cs,k)=>cs.forEach((c,i)=>{const[x,y,r,o]=PUP[i],[px,py]=PUP[o];
-  c.setAttribute('cx',(px+(x-px)*k).toFixed(2));c.setAttribute('cy',(py+(y-py)*k).toFixed(2));c.setAttribute('r',(r*k).toFixed(2))});
-const headSvg=(id,pose=id)=>HAPPI('-'+id).replace('viewBox="44 0 236 240"',`viewBox="40 10 180 166" data-pose="${pose}"`);
-function posed(svg){const P=POSES[svg.dataset.pose],q=k=>svg.querySelector(`[data-p="${k}"]`),ear=.5*P.head;
-  [...svg.children].forEach(n=>n.tagName!=='defs'&&n.dataset.p!=='root'&&n.remove());
-  [...q('root').children].forEach(n=>n.dataset.p!=='head'&&n.remove());
-  q('head').setAttribute('transform',mx(0,P.sink,P.head,131,152));q('earL').setAttribute('transform',mx(0,0,-ear,88,62));q('earR').setAttribute('transform',mx(0,0,ear,176,68));
-  q('face').setAttribute('transform',mx(P.gx*.35,P.gy*.25));q('eyes').setAttribute('transform',mx(0,0,0,132,101,1,Math.max(.12,1-Math.min(.85,P.lid*1.7))));
-  q('pupils').setAttribute('transform',mx(P.gx,P.gy));q('cheeks').setAttribute('transform',mx(0,-15*P.cheek));sizePupils([...q('pupils').querySelectorAll('circle')],P.pup);q('mouth').setAttribute('transform',mx(0,0,0,132,124.5,1,P.mouth))}
-function mount(host){if(H.crisis)$$('#main .host,#main .gi,#main .speech').forEach(e=>e.hidden=true);host.innerHTML=HAPPI();const s=host.firstElementChild,q=k=>s.querySelector(`[data-p="${k}"]`);
-  H.p={svg:s};['sun','rays','cloud','c0','c1','c2','c3','shadow','body','heart','armR','foreR','armL','armLF','foreL','pad','head','earL','earR','eyes','pupils','cheeks','face','mouth'].forEach(k=>H.p[k]=q(k));H.p.pd=[...H.p.pupils.querySelectorAll('circle')];
-  if(host.closest('.ask'))s.setAttribute('viewBox','46 12 172 226'); // off the chat the weather means nothing: crop to the panda, the cloud prop is hidden
-  H.p.drops=[...s.querySelectorAll('[data-d]')];io.disconnect();io.observe(s);H.vis=true;render();wake()}
-const set=(el,tr)=>el.setAttribute('transform',tr);
-function render(){const P=H.p;if(!P)return;const t=H.t;
-  const sy=(1+.014*wave(t,3200))*val('sy')+sv('sy'),sx=1/Math.pow(sy,.6),sink=val('sink')+sv('sink');
-  const head=val('head')+sv('head')+.8*wave(t,4400),ear=.5*head+1.2*wave(t,4400,.15);
-  const eLbase=val('eL')+sv('eL'),eL=eLbase+3*wave(t,2200,.4)+13*wave(t,680)*clamp01(sv('wave'));
-  const gx=val('gx')+.8*wave(t,4800),gy=val('gy')+.5*wave(t,3600,.2);
-  // blink: 110ms close, 40ms hold, 190ms ease-out reopen; the next one lands 3 to 4s later, never on a metronome
-  let bl=0;if(!STILL&&t>=H.blinkAt){const d=t-H.blinkAt;if(d<340)bl=track(d,[[0,0],[110,1],[150,1],[340,0,'out']]);else{H.blinkN++;H.blinkAt=t+3000+seeded(H.blinkN,7)*1000}}
-  const hc=(t%1600)/1600,hs=1+(hc<.15?Math.sin(hc/.15*Math.PI)*.08:0);
-  set(P.shadow,mx(0,0,0,130,229,sx,1));
-  set(P.body,mx(0,0,0,130,212,sx,sy));set(P.heart,mx(0,0,0,131.5,188,hs,hs));
-  const aL=mx(0,0,val('sL')+sv('sL')+2*wave(t,3000),98,158);set(P.armL,aL);set(P.armLF,aL);
-  set(P.foreL,mx(0,0,eL,98,172));P.pad.setAttribute('opacity',clamp01((eLbase-70)/50).toFixed(3));
-  set(P.armR,mx(0,0,val('sR')-2*wave(t,4000,.35),160,158));set(P.foreR,mx(0,0,val('eR')+2.5*wave(t,2800,.6),160,172));
-  set(P.head,mx(0,sink,head,131,152)); // sink: the head drops into the shoulders, feet stay on the floor
-  set(P.earL,mx(0,0,-ear,88,62));set(P.earR,mx(0,0,ear,176,68));
-  set(P.face,mx(gx*.35,gy*.25));set(P.eyes,mx(0,0,0,132,101,1,Math.max(.06,1-Math.max(val('lid'),bl))));
-  set(P.pupils,mx(gx,gy));set(P.cheeks,mx(0,-15*val('cheek')));sizePupils(P.pd,val('pup'));set(P.mouth,mx(0,0,0,132,124.5,1,val('mouth')));
-  // thought cloud: heavy = darker and raining; clearing parts the puffs and lifts the sun on an arc
-  const f=val('f');P.svg.parentElement.style.setProperty('--w',f.toFixed(3));const th=(-10+80*(1-f))*Math.PI/180;
-  set(P.sun,`translate(${(240+30*Math.cos(th)).toFixed(2)} ${(44-30*Math.sin(th)).toFixed(2)})`);P.sun.setAttribute('opacity',clamp01(1.15-f*1.4).toFixed(3));
-  set(P.rays,`rotate(${(t/40000*360%360).toFixed(2)})`);
-  P.cloud.setAttribute('fill',mix('#e4eee0','#a9bfa0',f));set(P.cloud,mx(1.5*wave(t,7000),0));
-  let part=0;[[-12,2,229,30],[0,-7,245,22],[12,3,260,31]].forEach(([dx,dy,cx,cy],i)=>{const pa=clamp01((val('c'+i)-.6)/.35);part+=pa/3;
-    set(P['c'+i],mx(dx*pa,dy*pa,0,cx,cy,1-.3*pa,1-.3*pa));P['c'+i].setAttribute('opacity',(1-.6*pa).toFixed(3))});
-  P.c3.setAttribute('opacity',(1-part).toFixed(3));
-  // rain: seeded speed and phase per drop; a drop already falling finishes its fall when the sky clears
-  DROPS.forEach((d,i)=>{const p=loop(t,d.per,d.ph),c=Math.floor(t/d.per+d.ph),el=P.drops[i];
-    if(c!==d.cyc||STILL){d.cyc=c;d.a=clamp01((f-.5)*3)}
-    const y=44+p*18;el.setAttribute('y1',y.toFixed(2));el.setAttribute('y2',(y+d.len).toFixed(2));el.setAttribute('opacity',(d.a*Math.min(1,p*6,(1-p)*3)).toFixed(3))});
-}
-// one clock; nothing runs unseen: paused when the page is hidden, Happi is off screen, or motion is reduced
-const io=new IntersectionObserver(es=>{H.vis=es[0].isIntersecting;wake()});
-function wake(){const on=!STILL&&!document.hidden&&H.vis&&!!H.p?.svg.isConnected&&!H.p.svg.closest('.aside');
-  if(on&&!H.run){H.run=true;H.last=0;const g=++H.gen;const tick=now=>{if(!H.run||g!==H.gen)return;H.t+=H.last?Math.min(now-H.last,64):0;H.last=now;render();requestAnimationFrame(tick)};requestAnimationFrame(tick)}
-  else if(!on){H.run=false;render()}}
-document.addEventListener('visibilitychange',wake);
+// Now the shared rig: happi.js (script tag above), not a local fork. See CBT poses
+// (rest/worry/mood/stress/self/sleep/listen/gentle/relieved/pride) + weather() for the thought cloud.
+// happi.js's svg ships width/height="100%" (needs a definite parent height to resolve against, which .host
+// never sets). Re-anchor both to the viewBox's own units so CSS width + auto height keeps the true aspect
+// ratio — otherwise the figure gets clipped (legs cut) instead of scaled to fit.
+const crop=(el,vb)=>{const svg=el.querySelector("svg");svg.setAttribute("viewBox",vb);const[,,w,h]=vb.split(" ");
+  svg.setAttribute("width",w);svg.setAttribute("height",h);svg.style.width="100%";svg.style.height="auto";};
+// bounds recomputed from happi.js's own rig coords (P.floor=[130,244], shadow ry=5 -> bottom ~249), not the
+// old fork's (which sat the floor at y=229) — that mismatch is what was cropping the feet/ground shadow.
+const VB_FULL="10 10 280 250",VB_ASK="20 10 195 250",VB_HEAD="20 20 195 155";
+const mountIcon=(el,name)=>{Happi.at(el,name,Happi.POSES[name].hold);crop(el,VB_HEAD)};
+let greeted=false,crisis=false,spT;
+function greet(el){Happi.set(el,"wave");setTimeout(()=>{if(el.isConnected)Happi.set(el,"rest")},Happi.POSES.wave.hold)}
 
 // ---- state ----
 let R,goal,beat=0,more=true,view='s0';
@@ -514,9 +376,9 @@ const inch=()=>{fill+=(TO[st]-fill)*.35;paint()};
 const fresh=()=>({goal:null,source:'example',situation:'',thought:'',trap:'',fair:'',why:'',before:null,after:null,reminder:null});
 // every screen starts here: header state, the screen's wash, an empty footer
 function enter(name,{back=true,bar=null,wash='#fff'}={}){
-  view=name;live++;pin=true;$('#app').style.setProperty('--wash',wash);$('#sos').hidden=!H.crisis;const on=bar!==null; // Get help stays once a crisis matched
+  view=name;live++;pin=true;$('#app').style.setProperty('--wash',wash);$('#sos').hidden=!crisis;const on=bar!==null; // Get help stays once a crisis matched
   // with a bar showing, a hidden Back keeps its slot so the bar stays centred
-  $('#back').hidden=!back&&!on;$('#back').style.visibility=back?'':'hidden';$('#bar').hidden=!on;$('#spacer').hidden=!on||!!H.crisis;if(on)stage(bar,name==='s1');$('#foot').innerHTML=''}
+  $('#back').hidden=!back&&!on;$('#back').style.visibility=back?'':'hidden';$('#bar').hidden=!on;$('#spacer').hidden=!on||!!crisis;if(on)stage(bar,name==='s1');$('#foot').innerHTML=''}
 // a screen whose button just disappeared hands focus to its question, so VoiceOver keeps its place
 const land=()=>{const h=$('#main h1');if(!h)return;h.tabIndex=-1;h.focus({preventScroll:true})};
 // replay a CSS animation: by inline style, or by re-adding a class
@@ -579,7 +441,7 @@ const TIMES=[{v:'morning',t:'Morning',s:'8:00 AM',ic:'sun',g:'var(--surface-2)'}
 // ================= Happi's speech =================
 // Happi's passing remarks in the chat (hello, "You named the thought.", "Saved. It’s yours.") fade on their own;
 // question bubbles (.ask h1) are the screen's question and stay
-const speak=t=>{const s=$('#main .speech');if(!s||H.crisis)return;s.textContent=t;s.classList.add('on');clearTimeout(H.spT);H.spT=setTimeout(()=>s.classList.remove('on'),STILL?6000:3600)};
+const speak=t=>{const s=$('#main .speech');if(!s||crisis)return;s.textContent=t;s.classList.add('on');clearTimeout(spT);spT=setTimeout(()=>s.classList.remove('on'),STILL?6000:3600)};
 
 // ================= S0: hello =================
 function s0(){
@@ -587,8 +449,9 @@ function s0(){
   $('#main').innerHTML=`<div class="s0"><p class="speech on">Hi, I’m Happi.</p><div class="host" id="guide"></div>
     <h1>One thought at a time.</h1><p class="lede">Two minutes. No sign-up.</p><p class="scope0">Happy helps you practise CBT skills. It isn’t therapy and doesn’t replace professional care.</p></div>`;
   $('#foot').innerHTML=`<button class="btn" id="hi">Hi, Happi</button><button class="link" id="who">Who is Happi?</button><button class="link" id="have">I already have an account</button>`;
-  mount($('#guide'));act('rest');sky(.2);
-  if(!H.greeted){H.greeted=true;greet()} // hello once per visit, the brand pose from Home
+  if(crisis)$$('#main .host,#main .gi,#main .speech').forEach(e=>e.hidden=true);
+  Happi.mount($('#guide'));Happi.set($('#guide'),'rest');Happi.weather($('#guide'),.2);crop($('#guide'),VB_FULL);
+  if(!greeted){greeted=true;greet($('#guide'))} // hello once per visit, the brand pose from Home
   $('#hi').onclick=()=>{buzz();s1()};
   $('#have').onclick=e=>openSheet('signin',e.currentTarget);$('#who').onclick=e=>openSheet('who',e.currentTarget);
 }
@@ -598,13 +461,14 @@ function s1(){
   R=fresh();beat=0;enter('s1',{bar:0});
   $('#main').innerHTML=`<div class="s1"><div class="ask"><div class="host" id="guide"></div><h1>What’s on your mind?</h1></div>
     <div class="goals" role="group" aria-label="Pick what is on your mind">${GOALS.map((g,i)=>
-      `<button class="goal" data-g="${g.id}" style="--g:${g.tint};animation-delay:${80+i*50}ms"><span class="gi">${headSvg(g.id)}</span><span>${g.label}<small>${g.sub}</small></span></button>`).join('')}</div></div>`;
-  $$('.goal .gi svg').forEach(posed);
-  mount($('#guide'));act('rest');sky(.35);
+      `<button class="goal" data-g="${g.id}" style="--g:${g.tint};animation-delay:${80+i*50}ms"><span class="gi" data-icon="${g.id}"></span><span>${g.label}<small>${g.sub}</small></span></button>`).join('')}</div></div>`;
+  $$('.goal .gi').forEach(el=>mountIcon(el,el.dataset.icon));
+  if(crisis)$$('#main .host,#main .gi,#main .speech').forEach(e=>e.hidden=true);
+  Happi.mount($('#guide'));Happi.set($('#guide'),'rest');Happi.weather($('#guide'),.35);crop($('#guide'),VB_ASK);
   $('.goals').onclick=async ev=>{
     const b=ev.target.closest('.goal');if(!b||$('.goal.on'))return;
     b.classList.add('on');buzz();inch();goal=GOALS.find(g=>g.id===b.dataset.g);R.goal=goal.id;
-    act(goal.id);sky(goal.f);await wait(420);if(b.isConnected)chat(); // S1's main beat: Happi leans into what you picked
+    Happi.set($('#guide'),goal.id);Happi.weather($('#guide'),goal.f);await wait(420);if(b.isConnected)chat(); // S1's main beat: Happi leans into what you picked
   };
   land();
 }
@@ -619,11 +483,11 @@ const progress=()=>{beat++;inch()}; // back before the second reply returns to t
 async function say(html,cls=''){
   const row=document.createElement('div');row.className='msg';
   const t=document.createElement('div');t.className='typing';t.innerHTML='<i></i><i></i><i></i>';t.setAttribute('aria-hidden','true');
-  look(1.5,-2); // thinking while typing
   thread().append(row);
+  Happi.look($('#guide'),1.5,-2); // thinking while typing
   if(!STILL){row.append(t);scroll();await wait(Math.min(900,380+html.replace(/<[^>]+>/g,'').length*7))}
   t.remove();
-  const b=document.createElement('div');b.className='bub '+cls;b.innerHTML=html;row.append(b);scroll();look(-1.2,1.6);
+  const b=document.createElement('div');b.className='bub '+cls;b.innerHTML=html;row.append(b);scroll();Happi.look($('#guide'),-1.2,1.6);
   await wait(220);return b;
 }
 const me=(text,from)=>{const p=document.createElement('div');p.className='me';p.textContent=text;thread().append(p);
@@ -639,12 +503,12 @@ function choose(items,{wrap=false,label='',echo=true}={}){
       $('#foot .qrs').onclick=null;
       if(!STILL)$$('#foot .qr').forEach(o=>o!==b&&o.animate([{opacity:1},{opacity:0}],{duration:120,fill:'forwards'}));
       await wait(120);$('#foot').innerHTML='';if(echo)me(it.t,from);progress();res(it.v??it.t)};
-    $('#foot .qr').focus({preventScroll:true});look(0,2.8);
+    $('#foot .qr').focus({preventScroll:true});Happi.look($('#guide'),0,2.8);
   });
 }
 // stepping aside also pauses the clock: opacity 0 still intersects, so the observer alone won't stop it
-const aside=on=>{$('.stage')?.classList.toggle('aside',on||H.crisis);wake()}; // after a crisis match Happi stays gone (zone 2)
-const typing=on=>{aside(on);const sos=on||H.crisis;$('#sos').hidden=!sos;$('#spacer').hidden=sos}; // after a crisis match, Get help stays for the rest of onboarding
+const aside=on=>{$('.stage')?.classList.toggle('aside',on||crisis)}; // after a crisis match Happi stays gone (zone 2)
+const typing=on=>{aside(on);const sos=on||crisis;$('#sos').hidden=!sos;$('#spacer').hidden=sos}; // after a crisis match, Get help stays for the rest of onboarding
 // P6 English crisis phrases; a match keeps the text and opens help, it never blocks or grades
 const CRISIS=/\b((kill|hurt|cut)(ing)? myself|kms|end (my life|it all)|wanna die|want(ed)? to die|wish i (was|were) dead|better off (dead|without me)|suicid\w*|self[- ]?harm\w*|overdos\w*|no reason to live|can'?t go on|can ?not go on|do(n'?t| not) want to be here)\b/i;
 function type({ph,starters=[]}){
@@ -659,10 +523,10 @@ function type({ph,starters=[]}){
     ta.oninput=upd;ta.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send.click()}};
     $$('#foot [data-s]').forEach(b=>b.onclick=()=>{ta.value=starters[+b.dataset.s];upd();ta.focus();buzz()});
     send.onclick=()=>{const v=ta.value.trim();if(!v)return;
-      if(!H.crisis&&CRISIS.test(v.replace(/[’‘]/g,"'"))){H.crisis=true;aside(true);openSheet('help',send);return}
+      if(!crisis&&CRISIS.test(v.replace(/[’‘]/g,"'"))){crisis=true;aside(true);openSheet('help',send);return}
       $('#foot').innerHTML='';typing(false);me(v);progress();res(v)};
     $('#ex').onclick=()=>{$('#foot').innerHTML='';typing(false);me(skip);progress();res(null)};
-    ta.focus({preventScroll:true});look(0,2.8);
+    ta.focus({preventScroll:true});Happi.look($('#guide'),0,2.8);
   });
 }
 
@@ -682,11 +546,11 @@ async function reality(before){
   if(before===0){await say('Then you don’t believe it. Let’s look at it anyway.');return null}
   await say('Is it actually true?');
   const check=await choose(CHECK,{wrap:true});
-  if(check==='yes')act('gentle');else nod();
+  if(check==='yes')Happi.set($('#guide'),'gentle');else Happi.nod($('#guide'));
   await say(CHECK_REPLY[check]);return check}
 // after the reframe the user's honest answer is not graded by rain or a slump
 async function rate(q,after=false){await say(q);const v=await choose(BELIEF.map((t,i)=>({t,v:i})),{wrap:true});
-  sky(after?Math.min(weigh(v),.3):weigh(v));act(after?'listen':v>=3?'heavy':v===0?'gentle':'listen');return v}
+  Happi.weather($('#guide'),after?Math.min(weigh(v),.3):weigh(v));Happi.set($('#guide'),after?'listen':v>=3?'heavy':v===0?'gentle':'listen');return v}
 
 // the hero folds into the chat: Happi travels to the corner (FLIP on the host), the bubble leaves with it
 async function settle(){
@@ -708,34 +572,34 @@ async function teach(g){
   await say(`Then this thought shows up:<q class="pt">“${esc(g.thought)}”</q>`);
   const before=await rate(`If that happened to you, how much would you believe “${esc(bare(g.thought))}”?`);
   await reality(before);
-  if(before>0){sky(.12,true);act('relieved',1600);stretch()}else{sky(.12);act('listen')} // relief only for a thought that had weight. The main beat: the sky clears as the reframe lands, Happi looks up at it
+  if(before>0){Happi.weather($('#guide'),.12,true);Happi.set($('#guide'),'relieved');Happi.stretch($('#guide'))}else{Happi.weather($('#guide'),.12);Happi.set($('#guide'),'listen')} // relief only for a thought that had weight. The main beat: the sky clears as the reframe lands, Happi looks up at it
   await say(`Here’s another way to see it:<span class="pt">${esc(g.fair)}</span><span class="why">${esc(g.why)} This trap is called “${TRAPS[g.trap].toLowerCase()}.”</span>`);
   await wait(400);
-  if(before===0){act('rest');return {g,before,after:0}} // nothing to lower; asking again reads as a quiz
+  if(before===0){Happi.set($('#guide'),'rest');return {g,before,after:0}} // nothing to lower; asking again reads as a quiz
   const after=await rate(`Look at “${esc(bare(g.thought))}” again. How much do you believe it now?`,true);
-  await say(shiftCopy(before,after));act('rest'); // rate's reaction holds while Happi answers
+  await say(shiftCopy(before,after));Happi.set($('#guide'),'rest'); // rate's reaction holds while Happi answers
   return {g,before,after};
 }
 
 // the same three moves on your own moment: what happened, the thought, one fairer view
 async function personal(){
-  sky(.6);act('listen');
+  Happi.weather($('#guide'),.6);Happi.set($('#guide'),'listen');
   await say('What happened? Just what a camera would have seen.');
   const situation=await type({ph:'What happened, in a few words',starters:goal.ideas.sit});
   if(situation===null)return null;
   await say('What did your mind add? Write it the way it showed up.');
   const thought=await type({ph:'The thought, in a few words',starters:goal.ideas.th});
   if(thought===null)return null;
-  speak('You named the thought.');nod();
+  speak('You named the thought.');Happi.nod($('#guide'));
   const before=await rate(`How much do you believe “${esc(bare(thought))}” right now?`);
   await reality(before);
   await say('What’s another way to see it? Fair and believable, not forced positive.');
   const fair=await type({ph:'Another way to see it',starters:STARTERS});
   if(fair===null)return null;
-  if(before>0){sky(.15,true);act('relieved',1600);stretch()}else{sky(.15);act('listen')}
+  if(before>0){Happi.weather($('#guide'),.15,true);Happi.set($('#guide'),'relieved');Happi.stretch($('#guide'))}else{Happi.weather($('#guide'),.15);Happi.set($('#guide'),'listen')}
   if(before===0)return {source:'personal',situation,thought,fair,trap:'',why:'',before,after:0};
   const after=await rate(`Look at “${esc(bare(thought))}” again. How much do you believe it now?`,true);
-  await say(shiftCopy(before,after));act('rest');
+  await say(shiftCopy(before,after));Happi.set($('#guide'),'rest');
   return {source:'personal',situation,thought,fair,trap:'',why:'',before,after};
 }
 const fromExample=({g,before,after})=>({source:'example',art:g.id,situation:g.scene,thought:g.thought,fair:g.fair,trap:g.trap,why:g.why,before,after});
@@ -744,7 +608,8 @@ async function chat(){
   enter('chat',{bar:1});beat=0;
   $('#main').innerHTML=`<div class="stage hero"><h1 class="say">${esc(goal.mirror)}</h1><p class="speech" aria-live="polite"></p><div class="host" id="guide"></div></div><div class="thread" aria-live="polite"></div>`;
   // the weather keeps the topic's weight; at this size Happi meets you warm, never a magnified slump (03 F6)
-  mount($('#guide'));act('gentle');stretch();
+  if(crisis)$$('#main .host,#main .gi,#main .speech').forEach(e=>e.hidden=true);
+  Happi.mount($('#guide'));Happi.set($('#guide'),'gentle');Happi.stretch($('#guide'));crop($('#guide'),VB_FULL);
   $('#foot').innerHTML='<button class="btn" id="show">Show me</button>';land(); // the line is heard first, then the one button
   await new Promise(r=>$('#show').onclick=()=>{buzz();r()});
   $('#foot').innerHTML='';progress();await settle();
@@ -756,7 +621,7 @@ async function chat(){
     stage(2);if(!asked)await say('Want to try one of yours?');asked=false;
     const opts=[{t:'Try with something from today',v:'mine'},...(more?[{t:'Another example',v:'more'}]:[]),{t:'Save this one',v:'go'}];
     const c=await choose(opts);
-    const another=async lead=>{more=false;const g2=GOALS[(GOALS.indexOf(goal)+1)%GOALS.length];if(lead)await say(lead);sky(g2.f);act(g2.id);
+    const another=async lead=>{more=false;const g2=GOALS[(GOALS.indexOf(goal)+1)%GOALS.length];if(lead)await say(lead);Happi.weather($('#guide'),g2.f);Happi.set($('#guide'),g2.id);
       last=await teach(g2);Object.assign(R,fromExample(last))};
     if(c==='more'){await another();continue}
     if(c==='mine'){
@@ -775,8 +640,8 @@ const sentence=s=>{s=s.trim();s=s[0].toUpperCase()+s.slice(1);return /[.!?…”
 async function saved(){
   const mine=R.source==='personal'; // the example's words are the app's, never claimed as the user's
   stage(3);$('#back').style.visibility=$('#bar').style.visibility='hidden'; // done: no step left to show (Duolingo drops the bar on completion)
-act('pride');sky(.08);speak(mine?'Saved. It’s yours.':'You finished this one.');
-  to('gx',-2.5,500);to('gy',2,500);H.hold=H.t+1500; // quiet pride, eyes on the card with you (03 F5)
+Happi.set($('#guide'),'pride');Happi.weather($('#guide'),.08);speak(mine?'Saved. It’s yours.':'You finished this one.');
+  Happi.nudge($('#guide'),'gx',-2.5,500);Happi.nudge($('#guide'),'gy',2,500); // quiet pride, eyes on the card with you (03 F5)
   const card=document.createElement('section');card.className='keep';card.setAttribute('aria-label','Saved reflection'); // not .card: happy-ui.css flattens .card to grey
   const gid=mine?R.goal:R.art; // "Another example" may have switched goals: the band shows the example actually saved
   card.style.setProperty('--g',GOALS.find(g=>g.id===gid)?.tint||'');
@@ -784,7 +649,7 @@ act('pride');sky(.08);speak(mine?'Saved. It’s yours.':'You finished this one.'
   const belief=R.before===0?BELIEF[0]:R.after===R.before?`${BELIEF[R.before]}, still`:`${BELIEF[R.before]}, now ${BELIEF[R.after].toLowerCase()}`;
   const now=new Date(),ymd=[now.getFullYear(),now.getMonth()+1,now.getDate()].map(n=>String(n).padStart(2,'0')).join('-'); // local date, not UTC
   // one character per card (Bears Gratitude, Wysa): the sticker only when no scene art is shown, since scenes can hold Happi
-  card.innerHTML=`${H.crisis||!(mine||!SCENE[gid])?'':`<span class="sticker" aria-hidden="true">${headSvg('card','pride')}</span>`}
+  card.innerHTML=`${crisis||!(mine||!SCENE[gid])?'':`<span class="sticker gi" data-icon="pride" aria-hidden="true"></span>`}
     <div class="band">${mine?'':SCENE[gid]||''}<div class="top"><svg class="chk" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16"/><path d="M9 16.5l5 5L23.5 11"/></svg>${mine?'Saved to your journal':'Saved as practice'}<time datetime="${ymd}">${now.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</time></div></div>
     <div class="body">
       <div class="was">${mine?`<span class="lab">What happened</span><p class="sit">${esc(sentence(R.situation))}</p>`:''}<span class="lab">${mine?'You thought':'The thought'}</span><p>“${esc(unq(R.thought))}”</p></div>
@@ -792,7 +657,7 @@ act('pride');sky(.08);speak(mine?'Saved. It’s yours.':'You finished this one.'
       <div class="now"><span class="lab">${mine?'You landed on':'Another view'}</span><p>${esc(R.fair)}</p></div>
       <div class="stats"><div class="stat"><span class="lab">How true it felt</span><span>${belief}</span></div><div class="stat"><span class="lab">Practice</span><span>1 completed · 1 of 3 this week</span></div>${R.trap?`<div class="stat"><span class="lab">Trap</span><span>${TRAPS[R.trap]}</span></div>`:''}</div>
     </div>`;
-  card.querySelector('.sticker svg')&&posed(card.querySelector('.sticker svg'));
+  const sticker=card.querySelector('.sticker');if(sticker)mountIcon(sticker,'pride');
   // the keepsake lands with its top (art and sticker) in view; on small phones the chips sit below the fold, not the art
   pin=false;thread().append(card);const top=()=>card.scrollIntoView({block:'start',behavior:STILL?'auto':'smooth'});top();
   // one-shot, overlapping: card rises, sticker lands, check draws, the turn pops, the chips follow
@@ -836,7 +701,7 @@ function systemPrompt(time){
 function finish(){
   R.reminder??='not_now'; // left without picking a time
   if(R.reminder!=='not_now'&&R.reminder!=='denied')store('happy.reminder',R.reminder);
-  store('happy.onboarding',{...R,crisis:!!H.crisis,trapLabel:R.trap?TRAPS[R.trap]:'',at:Date.now()}); // Home stays quiet after a crisis match
+  store('happy.onboarding',{...R,crisis:!!crisis,trapLabel:R.trap?TRAPS[R.trap]:'',at:Date.now()}); // Home stays quiet after a crisis match
   location.href='home.html?empty&welcome';
 }
 

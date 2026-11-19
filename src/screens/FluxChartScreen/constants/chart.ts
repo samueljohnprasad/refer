@@ -1,4 +1,4 @@
-import { Skia } from "@shopify/react-native-skia";
+import { Skia, type SkPath } from "@shopify/react-native-skia";
 import { Dimensions } from "react-native";
 
 const { width } = Dimensions.get("window");
@@ -12,13 +12,14 @@ const BOTTOM = CHART_HEIGHT * (1 - CHART_PADDING_BOTTOM);
 const RANGE = BOTTOM - TOP;
 
 export type PathSet = {
-  line: ReturnType<typeof Skia.Path.Make>;
-  fill: ReturnType<typeof Skia.Path.Make>;
+  line: SkPath;
+  fill: SkPath;
 };
 
 export function getPaths(data: number[]): PathSet {
-  const path = Skia.Path.Make();
-  const fill = Skia.Path.Make();
+  // ponytail: Skia 2.x PathBuilder for mutable construction
+  const path = Skia.PathBuilder.Make();
+  const fill = Skia.PathBuilder.Make();
   const stepX = CHART_WIDTH / (data.length - 1);
   const top = CHART_HEIGHT * CHART_PADDING_TOP;
   const bottom = CHART_HEIGHT * (1 - CHART_PADDING_BOTTOM);
@@ -43,7 +44,7 @@ export function getPaths(data: number[]): PathSet {
   fill.lineTo(0, CHART_HEIGHT);
   fill.close();
 
-  return { line: path, fill };
+  return { line: path.build(), fill: fill.build() };
 }
 
 export {

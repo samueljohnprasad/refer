@@ -465,59 +465,10 @@ const AppleIntelligencePresentation: React.FC<AppleIntelligencePresentationProps
     },
   );
 
-import { llama, downloadModel } from "@react-native-ai/llama";
-import { LOCAL_MODELS } from "@/src/constants/models";
-import { createAIProvider } from "@/src/services/ai";
-
-let isTesting = false;
-
 // ─── Container Component ──────────────────────────────────────────────────────
 
 export default function AppleIntelligenceScreen(): React.ReactElement {
   const ai = useLocalAI();
-
-  useEffect(() => {
-    const testProvider = async (): Promise<void> => {
-      if (isTesting) return;
-      isTesting = true;
-      try {
-        console.log("Provider Test: Starting...");
-
-        // 1. Download and prepare the model
-        const modelPath: string = await downloadModel(LOCAL_MODELS.LFM_2_5_VL_450M);
-        const model = llama.languageModel(modelPath);
-        await model.prepare();
-        console.log("Provider Test: Model ready");
-
-        // 2. Use the new provider layer
-        const provider = createAIProvider('local-llm');
-
-        // 3. Test with a Thought Catcher–style schema (array of objects)
-        const items = await provider.generateStructured({
-          model,
-          prompt: 'You are a CBT therapist assistant. The user just described a stressful situation: "I dropped my coffee on my lap during a meeting". Generate 3 highly varied, distinct automatic negative thoughts they might be having right now. Make them sound like natural, spontaneous human fears. Each thought should be written in first person and be concise (1 sentence).',
-          responseSchema: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                text: { type: "string" },
-              },
-              required: ["text"],
-            },
-          },
-          maxResults: 3,
-        });
-
-        console.log("Provider Test: Success!", JSON.stringify(items, null, 2));
-      } catch (error) {
-        console.error("Provider Test: Error", error);
-      } finally {
-        isTesting = false;
-      }
-    };
-    testProvider();
-  }, []);
   const [inputValue, setInputValue] = useState<string>("");
 
   const handleSubmit = useCallback(async (): Promise<void> => {

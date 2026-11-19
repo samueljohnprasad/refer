@@ -114,6 +114,7 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
 
     return (
       <StepLayout
+        happi={false}
         title={title}
         subtitle={subtitle}
         progress={progress}

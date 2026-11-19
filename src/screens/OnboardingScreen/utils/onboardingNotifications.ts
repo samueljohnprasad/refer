@@ -12,11 +12,12 @@ const log = createLogger("OnboardingNotifications");
 /**
  * Executes when user taps "Continue" on the notification_permission onboarding step.
  * Requests OS notification permissions, registers push token, and schedules enabled daily reminders.
+ * Returns whether permission was granted, so callers can reflect the OS decision back in the UI.
  */
 export async function handleNotificationPermissionOnContinue(
   userId: string | undefined,
   remindersCfg: RemindersConfig
-): Promise<void> {
+): Promise<boolean> {
   try {
     log.info("Requesting notification permissions on continue click...");
     const granted = await ensureNotificationPermissions();
@@ -41,7 +42,9 @@ export async function handleNotificationPermissionOnContinue(
     } else {
       log.info("Notification permissions not granted by user in onboarding");
     }
+    return granted;
   } catch (err) {
     log.error("Error during notification permission flow in onboarding:", err);
+    return false;
   }
 }

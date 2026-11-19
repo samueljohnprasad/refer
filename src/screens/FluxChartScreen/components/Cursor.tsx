@@ -7,10 +7,8 @@ type CursorProps = {
 };
 
 function makeCrosshairLinePath(x: number) {
-  const p = Skia.Path.Make();
-  p.moveTo(x, 0);
-  p.lineTo(x, CHART_HEIGHT);
-  return p;
+  // ponytail: Skia 2.x Line factory
+  return Skia.Path.Line({ x, y: 0 }, { x, y: CHART_HEIGHT });
 }
 
 export const Cursor = ({ cursor }: CursorProps) => {

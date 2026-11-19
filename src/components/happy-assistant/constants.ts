@@ -1,4 +1,5 @@
 import type { ExerciseType } from "@/src/types/exerciseFlow";
+import { buildExerciseRoute } from "@/src/screens/ExercisesScreen/exerciseScreenUtils";
 
 export const ASSISTANT_BUTTON_SIZE = 54;
 export const ASSISTANT_BUTTON_INNER_SIZE = 44;
@@ -21,8 +22,7 @@ export const HAPPY_ASSISTANT_ROUTES = {
   support: "/tabs/screens/support-chat",
   breathingExercise:
     "/tabs/screens/exercise-flow?type=mindful_breathing_1min",
-  thoughtCatcherExercise:
-    "/tabs/screens/exercise-flow?type=thought_catcher",
+  thoughtCatcherExercise: buildExerciseRoute("thought_catcher"),
 } as const;
 
 export function shouldHideAssistant(pathname: string | null): boolean {
@@ -37,6 +37,7 @@ export function shouldHideAssistant(pathname: string | null): boolean {
     path.includes("paywall") ||
     path.includes("purchase") ||
     path.includes("exercise-flow") ||
+    path.includes("thought-catcher") ||
     path.includes("course-exercises") ||
     path.includes("exercise") ||
     path.includes("journey") ||

@@ -85,9 +85,8 @@ export const TransitionOverlay = () => {
   }, [isActive, isReversing, onComplete, endTransition, opacity, radius]);
 
   const clipPath = useDerivedValue(() => {
-    const path = Skia.Path.Make();
-    path.addCircle(cx, cy, radius.value);
-    return path;
+    // ponytail: Skia 2.x immutable path factory
+    return Skia.Path.Circle(cx, cy, Math.max(0, radius.value));
   }, [cx, cy, radius]);
 
   if (!isActive && !isVisible) {

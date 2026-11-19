@@ -1,12 +1,11 @@
 import React from "react";
-import { Pressable } from "react-native";
+import { Pressable, View } from "react-native";
 import { Text } from "@/components/ui/Text";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 import { Feather } from "@expo/vector-icons";
 import type { EmotionOption } from "../data/emotions";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { EmotionFace } from "@/src/domains/exercises/ui/presentation/components/ReframingArt";
 
 interface EmotionChipProps {
   emotion: EmotionOption;
@@ -20,14 +19,9 @@ interface EmotionChipProps {
   locked?: boolean;
 }
 
+// ponytail: .emo tile from .agents/thought-reframing.html — a drawn face, warm when picked, tick badge.
 export const EmotionChip: React.FC<EmotionChipProps> = React.memo(
-  ({
-    emotion,
-    isSelected,
-    onToggle,
-    disabled = false,
-    locked = false,
-  }) => {
+  ({ emotion, isSelected, onToggle, disabled = false, locked = false }) => {
     const translateCopy = useExerciseCopy();
     const emotionLabel = translateCopy(emotion.label);
     const isDisabled = locked || (disabled && !isSelected);
@@ -43,26 +37,27 @@ export const EmotionChip: React.FC<EmotionChipProps> = React.memo(
         accessibilityRole="checkbox"
         accessibilityState={{ checked: isSelected, disabled: isDisabled }}
         accessibilityLabel={`${emotionLabel} ${translateCopy("emotion")}`}
-        className={`w-full rounded-lg border px-3 flex-row items-center ${
-          isDisabled ? "opacity-45" : ""
-        }`}
-        style={({ pressed }) => ({
-          borderColor: isSelected ? SEMANTIC_COLORS.brand.primary : SEMANTIC_COLORS.border.default,
-          backgroundColor: isSelected ? SEMANTIC_COLORS.selection.surface : SEMANTIC_COLORS.surface.primary,
-          minHeight: 48,
-          opacity: pressed ? 0.72 : 1,
-        })}
+        className="w-full min-h-[112px] items-center justify-center gap-2 p-3 rounded-2xl active:scale-[0.97]"
+        style={{
+          backgroundColor: isSelected ? "#eef3ea" : "#f7f7f7",
+          borderWidth: 2,
+          borderColor: isSelected ? "#5f7f58" : "transparent",
+        }}
       >
-        <Text className="mr-2 text-[17px] leading-[20px]">{emotion.emoji}</Text>
+        <View style={{ opacity: isDisabled ? 0.45 : 1 }}>
+          <EmotionFace name={emotion.name} on={isSelected} />
+        </View>
         <Text
-          className="flex-1 text-[15px] font-medium"
-          style={{ color: isSelected ? SEMANTIC_COLORS.brand.onSoft : SEMANTIC_COLORS.text.primary }}
+          className="text-t-body font-bold"
+          style={{ color: isDisabled ? "#4b4b4b" : "#142414" }}
           numberOfLines={1}
         >
           {emotionLabel}
         </Text>
         {isSelected ? (
-          <Feather name="check" size={16} color={SEMANTIC_COLORS.brand.onSoft} />
+          <View className="absolute top-3 right-3 w-6 h-6 rounded-full items-center justify-center bg-[#29452a]">
+            <Feather name="check" size={14} color="#fff" />
+          </View>
         ) : null}
       </Pressable>
     );

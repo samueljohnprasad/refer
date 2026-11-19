@@ -9,14 +9,19 @@ import { useRecentExercises, trackRecentExercise } from "@/src/hooks/useRecentEx
 import { useExerciseRecommendation } from "@/src/hooks/insights/useExerciseRecommendation";
 import { useCompletedExercisesCount, type HistoryLogItem } from "./hooks/useCBTHistory";
 import { useCircularRevealNavigate } from "@/src/hooks/useCircularRevealNavigate";
+import { HelpRowWithSheet } from "@/src/domains/home/ui/containers/HelpRowWithSheet";
 import { useFreemiumGate } from "@/src/hooks/useFreemiumGate";
 import { ExercisesTabHeader } from "./components/ExercisesTabHeader";
 import { EmptyDiscoverState } from "./components/ExercisesTabEmptyStates";
 import { ExerciseTimeline } from "./components/ExerciseTimeline";
-import { JumpBackInShelf, DiscoverSection } from "./components/ExerciseDiscoverySection";
+import { JumpBackInShelf } from "./components/ExerciseDiscoverySection";
+import { ExerciseLibrary } from "./components/ExerciseLibrary";
 import { TimelineSkeleton } from "@/src/components/ui/Timeline/TimelineSkeleton";
 import { getCategoryBadgeTheme, buildExerciseRoute } from "./exerciseScreenUtils";
 import { useRecentPracticeCompletion } from "./hooks/useRecentPracticeCompletion";
+import { useWeekShowedUp } from "@/src/domains/exercises/ui/containers/useWeekShowedUp";
+import { LessonsChatPicker } from "@/src/domains/exercises/ui/presentation/views/LessonsChatPicker";
+import { WeekPresenceStrip } from "@/src/domains/exercises/ui/presentation/components/WeekPresenceStrip";
 
 type TabKey = "discover" | "log";
 const TAB_KEYS = ["discover", "log"] as const;
@@ -36,6 +41,7 @@ export default function ExercisesScreen(): ReactElement {
   const { hasPro, requirePro } = useFreemiumGate();
   const { recentIds } = useRecentExercises();
   const { completion } = useRecentPracticeCompletion();
+  const { data: showedUp } = useWeekShowedUp();
   const tabPillStyle = useMemo(() => ({ transform: [{ scale: 1 }] }), []);
 
   useEffect(() => {
@@ -121,21 +127,24 @@ export default function ExercisesScreen(): ReactElement {
           {recommendation && getExerciseConfig(recommendation.exerciseType) ? null : null}
           {exerciseGroups.length === 0 ? <EmptyDiscoverState /> : (
             <>
+              <LessonsChatPicker exercises={allExercises} recentIds={recentIds} onStart={handleExercisePress} />
               <JumpBackInShelf
                 items={jumpBackInItems}
                 onPress={handleExercisePress}
                 title={completion ? t("runtime.practiceAgain") : undefined}
               />
-              {exerciseGroups.map((group, index) => (
-                <DiscoverSection key={group.category} label={t(`categories.${group.category}`)} category={group.category} exercises={group.exercises} excludedExerciseTypes={jumpBackInTypes} onPress={handleExercisePress} isFirst={index === 0} />
-              ))}
+              <ExerciseLibrary groups={exerciseGroups} excludedExerciseTypes={jumpBackInTypes} onPress={handleExercisePress} />
+              <HelpRowWithSheet />
             </>
           )}
         </ScrollView>
       ) : (
         <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
           <Suspense fallback={<TimelineSkeleton />}>
-            <ExerciseTimeline onPressItem={handleLogPress} />
+            <ExerciseTimeline
+              onPressItem={handleLogPress}
+              header={<WeekPresenceStrip showedUp={showedUp ?? new Set()} />}
+            />
           </Suspense>
         </View>
       )}

@@ -9,7 +9,7 @@ import SignInBottomSheetContent from "./SignInBottomSheet/SignInBottomSheetConte
 import { useSignInBottomSheetController } from "./SignInBottomSheet/useSignInBottomSheetController";
 
 interface SignInBottomSheetProps {
-  source?: "entry" | "onboarding";
+  source?: "entry" | "onboarding" | "home";
   onDismiss?: () => void;
   onSkip?: () => void;
   onSuccess?: () => void;

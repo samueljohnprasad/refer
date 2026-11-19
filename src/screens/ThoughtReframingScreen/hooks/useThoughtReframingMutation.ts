@@ -63,6 +63,8 @@ export const useThoughtReframingMutation = (): UseMutationReturn => {
       queryClient.invalidateQueries({ queryKey: ['exercises'] });
       queryClient.invalidateQueries({ queryKey: ['completed_exercises_count'] });
       queryClient.invalidateQueries({ queryKey: ['exercise_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['exercise_in_progress'] });
+      queryClient.invalidateQueries({ queryKey: ['exercise_entry_status'] });
     },
   });
 

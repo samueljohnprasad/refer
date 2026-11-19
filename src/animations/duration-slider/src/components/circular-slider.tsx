@@ -65,9 +65,8 @@ export const CircularSlider: React.FC<CircularSliderProps> = ({
 
   // Create circle path for clipping
   const circlePath = useMemo(() => {
-    const path = Skia.Path.Make();
-    path.addCircle(cx, cy, radius + strokeWidth / 2);
-    return path;
+    // ponytail: Skia 2.x Circle factory
+    return Skia.Path.Circle(cx, cy, radius + strokeWidth / 2);
   }, [cx, cy, radius, strokeWidth]);
 
   // Calculate and format the current value

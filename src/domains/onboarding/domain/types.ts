@@ -1,4 +1,5 @@
 // ponytail: typed interfaces for onboarding domain models
+import type { TrapChoice } from '@/src/domains/exercises/domain/trap';
 import { GoalId, TrapType, MessageSender, ReminderPreset } from './enums';
 
 export interface GoalDefinition {
@@ -23,6 +24,8 @@ export interface ChatMessage {
   id: string;
   sender: MessageSender;
   text: string;
+  /** plain lead-in line shown above a quote/fair dot row, e.g. "Then this thought shows up:" */
+  leadText?: string;
   isHeading?: boolean;
   isQuote?: boolean;
   isFair?: boolean;
@@ -32,12 +35,13 @@ export interface ChatMessage {
 }
 
 export interface ReflectionData {
+  id?: string;
   goal: GoalId | null;
   source: 'example' | 'personal';
   art?: GoalId;
   situation: string;
   thought: string;
-  trap?: TrapType;
+  trap?: TrapType | TrapChoice;
   why: string;
   fair: string;
   before: number | null;

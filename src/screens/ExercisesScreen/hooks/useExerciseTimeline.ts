@@ -22,6 +22,8 @@ import { RATING_EXTRACTOR_MAP } from "../config/ratingExtractors";
 import type { TimelineSection } from "@/src/components/ui/Timeline/types";
 import type { ExerciseTimelineItem } from "../components/ExerciseTimeline/types";
 import type { ExerciseType } from "@/src/types/exerciseFlow";
+import { pausedRung } from "@/src/domains/exercises/domain/fearLadder";
+import { isCatchOnly } from "@/src/domains/exercises/domain/practice";
 
 // ─── Status normaliser ──────────────────────────────────────────────────
 
@@ -46,13 +48,14 @@ function normaliseStatus(
 function extractRatings(
   exerciseType: ExerciseType,
   response?: Record<string, any>,
+  status?: string,
 ): {
   beforeRating?: number;
   afterRating?: number;
   ratingLabel?: string;
   invertScale?: boolean;
 } {
-  if (!response) return {};
+  if (!response || isCatchOnly(exerciseType, response, status)) return {}; // AD-13
 
   const config = RATING_EXTRACTOR_MAP[exerciseType];
   if (!config) return {};
@@ -194,7 +197,7 @@ interface UseExerciseTimelineReturn {
       const exerciseType = item.exerciseType as ExerciseType;
       const config = getExerciseConfig(exerciseType);
       const categoryMeta = config ? getCategoryMeta(config.category) : null;
-      const ratings = extractRatings(exerciseType, item.response);
+      const ratings = extractRatings(exerciseType, item.response, item.status);
       const previewData = extractTimelinePreview(exerciseType, item.response);
 
       const enriched: ExerciseTimelineItem = {
@@ -206,6 +209,7 @@ interface UseExerciseTimelineReturn {
         categoryLabel: categoryMeta?.label ?? "Exercise",
         ...ratings,
         ...previewData,
+        pausedRung: exerciseType === "fear_ladder" ? pausedRung(item.response) : undefined,
         onPress: makeOnPress(item),
       };
 

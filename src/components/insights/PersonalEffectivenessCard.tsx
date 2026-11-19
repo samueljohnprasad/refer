@@ -5,6 +5,8 @@ import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { useRouter } from "expo-router";
+import { buildExerciseRoute } from "@/src/screens/ExercisesScreen/exerciseScreenUtils";
+import type { ExerciseType } from "@/src/types/exerciseFlow";
 import {
   usePersonalEffectiveness,
   type EffectivenessScore,
@@ -30,10 +32,7 @@ function EffectivenessRow({
   return (
     <Pressable
       onPress={() =>
-        router.push({
-          pathname: "/tabs/screens/exercise-flow",
-          params: { type: score.exerciseType },
-        })
+        router.push(buildExerciseRoute(score.exerciseType as ExerciseType) as never)
       }
       accessibilityRole="button"
       accessibilityLabel={tInsights("personalEffectiveness.accessibilityLabel", {

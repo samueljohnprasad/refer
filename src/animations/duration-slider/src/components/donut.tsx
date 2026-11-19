@@ -37,9 +37,8 @@ export const Donut: React.FC<DonutProps> = ({
   initialAngleRad = 0,
 }) => {
   const circlePath = useMemo(() => {
-    const path = Skia.Path.Make();
-    path.addCircle(cx, cy, radius);
-    return path;
+    // ponytail: Skia 2.x Circle factory
+    return Skia.Path.Circle(cx, cy, radius);
   }, [cx, cy, radius]);
 
   return (

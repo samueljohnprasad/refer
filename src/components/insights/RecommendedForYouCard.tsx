@@ -5,6 +5,8 @@ import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { useRouter } from "expo-router";
+import { buildExerciseRoute } from "@/src/screens/ExercisesScreen/exerciseScreenUtils";
+import type { ExerciseType } from "@/src/types/exerciseFlow";
 import { usePersonalEffectiveness } from "@/src/hooks/insights/usePersonalEffectiveness";
 import { getExerciseIcon } from "@/src/data/exerciseIconRegistry";
 import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
@@ -27,10 +29,7 @@ export function RecommendedForYouCard() {
       variant="answer-selected"
       radius="xl"
       onPress={() =>
-        router.push({
-          pathname: "/tabs/screens/exercise-flow",
-          params: { type: best.exerciseType },
-        })
+        router.push(buildExerciseRoute(best.exerciseType as ExerciseType) as never)
       }
       haptic="light"
       className="mb-5"

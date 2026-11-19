@@ -1,4 +1,3 @@
-import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import React, { useCallback, useMemo, useState } from "react";
 import { Alert, Pressable, View } from "react-native";
 import * as Haptics from "expo-haptics";
@@ -15,16 +14,15 @@ import {
   ReflectionTimelineItem,
 } from "@/src/components/exercise/ReflectionTimeline";
 import { Text } from "@/src/components/ui/Text";
-import { Mascot } from "@/src/components/ui/Mascot";
-import { ExerciseCopyText } from "@/src/components/exercise/ExerciseCopyText";
 import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
 import { useTranslation } from "react-i18next";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
 import {
   EMOTION_OPTIONS,
   type EmotionOption,
 } from "@/src/screens/ThoughtReframingScreen/data/emotions";
 import { COGNITIVE_DISTORTIONS } from "@/src/screens/ThoughtReframingScreen/data/cognitiveDistortions";
+import { Feather } from "@expo/vector-icons";
+import { ThoughtSky } from "@/src/domains/exercises/ui/presentation/components/ReframingArt";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
 import { ThoughtReframingTimeline } from "./ThoughtReframingTimeline";
 import type {
@@ -52,7 +50,7 @@ function getShiftCopy(pre: number, post: number): {
       labelCount: Math.abs(change),
       detail:
         "The thought feels more believable right now. Looking closely can sometimes make a difficult thought feel sharper before it settles.",
-      color: SEMANTIC_COLORS.text.primary,
+      color: "#29452a",
     };
   }
 
@@ -61,7 +59,7 @@ function getShiftCopy(pre: number, post: number): {
       label: "No score change",
       detail:
         "The score stayed steady, but you still practiced testing the thought instead of accepting it automatically.",
-      color: SEMANTIC_COLORS.text.primary,
+      color: "#29452a",
     };
   }
 
@@ -72,8 +70,16 @@ function getShiftCopy(pre: number, post: number): {
       change >= 4
         ? "The thought became meaningfully less believable after you reviewed the evidence."
         : "Even a small shift matters. You made room for a more balanced interpretation.",
-    color: SEMANTIC_COLORS.brand.onSoft,
+    color: "#44633f",
   };
+}
+
+// honest copy: only call it lighter if the number actually went down (.agents/thought-reframing.html)
+function getVerdict(pre: number, post: number, hadEvidence: boolean): { title: string; line: string } {
+  const diff = pre - post;
+  if (diff > 0) return { title: "It weighs less than it did.", line: `From ${pre} to ${post} out of 10${hadEvidence ? ", once the facts were on the table" : ""}.` };
+  if (diff === 0) return { title: "It feels about the same, and that’s okay.", line: "Some thoughts take more than one look. You still tested it instead of taking it on trust." };
+  return { title: "It feels heavier right now.", line: "Looking closely can stir a thought up before it settles. Coming back to it later can help." };
 }
 
 export const ThoughtReframingSummary: React.FC<
@@ -86,6 +92,7 @@ export const ThoughtReframingSummary: React.FC<
     key: string,
     options: { count: number },
   ) => string;
+  const [answersOpen, setAnswersOpen] = useState(false);
   const [cardSaved, setCardSaved] = useState(false);
   const [isSavingCard, setIsSavingCard] = useState(false);
   const [cardSaveError, setCardSaveError] = useState<string | null>(null);
@@ -171,100 +178,74 @@ export const ThoughtReframingSummary: React.FC<
     }
   }, [cardSaved, isSavingCard, response.balancedThought, saveCard, translateCopy]);
 
+  const balanced = response.balancedThought?.trim() ?? "";
+  const verdict = getVerdict(preScore, postScore ?? preScore, evidenceFor.length + evidenceAgainst.length > 0);
+
   return (
     <View className="px-3" style={{ paddingBottom: 40 }}>
-      <View className="flex-row items-center justify-between pb-6 pt-2">
-        <View className="flex-1 pr-3">
-          <ExerciseCopyText
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
-            className="text-[34px] leading-[37px] tracking-[-0.01em]"
-          >
-            Thought reframed
-          </ExerciseCopyText>
-          <ExerciseCopyText
-            style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
-            className="mt-2 max-w-[330px] text-[15px] leading-[22px]"
-          >
-            You separated what happened from what the thought predicted.
-          </ExerciseCopyText>
-        </View>
-        {/* ponytail: proud-tears mascot celebrates cognitive reframe breakthrough */}
-        <View className="happy-mascot-stage h-20 w-20 items-center justify-center rounded-[28px]">
-          <Mascot state="panda-proud-tears" size={62} />
-        </View>
+      <View className="pb-4 pt-2">
+        <Text className="font-display text-t-h leading-[28px] tracking-tight text-happy-label">{verdict.title}</Text>
+        <Text className="mt-2 text-t-sub font-semibold leading-[22px] text-happy-label-2">{verdict.line}</Text>
       </View>
 
-      {response.balancedThought?.trim() ? (
-        <View
-          className="py-8"
-          style={{
-            marginHorizontal: -28,
-            paddingHorizontal: 28,
-            backgroundColor: SEMANTIC_COLORS.selection.surface,
-          }}
-        >
-          <ExerciseCopyText
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.pressed }}
-            className="text-[13px] leading-[18px]"
-          >
-            The reframe you are carrying forward
-          </ExerciseCopyText>
-          <Text
-            accessibilityRole="summary"
-            style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.text.primary }}
-            className="mt-1.5 text-[25px] leading-[33px]"
-          >
-            {response.balancedThought}
-          </Text>
-
-          {!readOnly ? (
-            <Pressable
-              onPress={handleSaveCopingCard}
-              disabled={cardSaved || isSavingCard}
-              accessibilityRole="button"
-              accessibilityLabel={translateCopy(
-                cardSaved
-                  ? "Saved to coping cards"
-                  : isSavingCard
-                    ? "Saving coping card"
-                    : "Save as coping card"
-              )}
-              accessibilityState={{
-                disabled: cardSaved || isSavingCard,
-                busy: isSavingCard,
-              }}
-              className="mt-5 min-h-11 flex-row items-center self-start py-2 active:opacity-60"
-            >
-              <HugeiconsIcon
-                icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon}
-                size={18}
-                color={SEMANTIC_COLORS.brand.onSoft}
-                strokeWidth={2}
-              />
-              <ExerciseCopyText
-                style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.brand.onSoft }}
-                className="ml-2 text-[14px] leading-[20px]"
-              >
-                {cardSaved
-                  ? "Saved to coping cards"
-                  : isSavingCard
-                    ? "Saving..."
-                    : "Save for a difficult moment"}
-              </ExerciseCopyText>
-            </Pressable>
-          ) : null}
-
-          {cardSaveError ? (
-            <Text
-              style={{ fontFamily: APP_FONT_FAMILIES.semiBold, color: SEMANTIC_COLORS.error.indicator }}
-              className="mt-2 text-[13px] leading-[18px]"
-            >
-              {cardSaveError}
-            </Text>
-          ) : null}
+      <View className="rounded-3xl bg-[#f6ecd8] px-3 pt-3 pb-6" accessibilityLabel="Your reframe">
+        <View className="flex-row items-center gap-1">
+          <View className="flex-1 overflow-hidden rounded-2xl">
+            <ThoughtSky value={preScore} />
+            <Text className="text-center text-t-foot font-bold text-happy-label-2 pt-1">Before <Text className="font-display text-t-h text-happy-label">{preScore}</Text></Text>
+          </View>
+          <Feather name="arrow-right" size={20} color="#4b4b4b" />
+          <View className="flex-1 overflow-hidden rounded-2xl">
+            <ThoughtSky value={postScore ?? preScore} />
+            <Text className="text-center text-t-foot font-bold text-happy-label-2 pt-1">Now <Text className="font-display text-t-h text-happy-label">{postScore ?? preScore}</Text></Text>
+          </View>
         </View>
-      ) : null}
+        <Text className="mx-2 mt-6 text-t-foot font-bold text-happy-label-2">
+          {balanced ? "A fairer way to see it" : "Your fairer version"}
+        </Text>
+        {balanced ? (
+          <Text accessibilityRole="summary" className="mx-2 mt-1 font-display text-t-title leading-[32px] tracking-tight text-happy-label">
+            {balanced}
+          </Text>
+        ) : (
+          <Text className="mx-2 mt-1 text-t-body font-bold text-happy-label-2">
+            Not written yet. You can add it with “Edit answers”.
+          </Text>
+        )}
+        {response.automaticThought?.trim() ? (
+          <Text className="mx-2 mt-3 text-t-sub font-semibold text-happy-label-2">
+            Instead of: “{response.automaticThought.trim()}”
+          </Text>
+        ) : null}
 
+        {balanced && !readOnly ? (
+          <Pressable
+            onPress={handleSaveCopingCard}
+            disabled={cardSaved || isSavingCard}
+            accessibilityRole="button"
+            accessibilityLabel={translateCopy(cardSaved ? "Saved to coping cards" : isSavingCard ? "Saving coping card" : "Save as coping card")}
+            accessibilityState={{ disabled: cardSaved || isSavingCard, busy: isSavingCard }}
+            className="mx-2 mt-4 min-h-11 flex-row items-center self-start py-2 active:opacity-60"
+          >
+            <HugeiconsIcon icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon} size={18} color="#44633f" strokeWidth={2} />
+            <Text className="ml-2 text-t-sub font-bold text-happy-accent">
+              {cardSaved ? "Saved to coping cards" : isSavingCard ? "Saving..." : "Save for a difficult moment"}
+            </Text>
+          </Pressable>
+        ) : null}
+        {cardSaveError ? <Text className="mx-2 mt-2 text-t-foot font-semibold text-happy-label-2">{cardSaveError}</Text> : null}
+      </View>
+
+      <Pressable
+        onPress={() => setAnswersOpen((o) => !o)}
+        accessibilityRole="button"
+        accessibilityState={{ expanded: answersOpen }}
+        className="mt-6 min-h-[52px] flex-row items-center justify-between rounded-2xl bg-happy-surface-2 px-4"
+      >
+        <Text className="text-t-body font-extrabold text-happy-label">See your answers</Text>
+        <Feather name={answersOpen ? "chevron-up" : "chevron-down"} size={20} color="#142414" />
+      </Pressable>
+      {answersOpen ? (
       <ThoughtReframingTimeline
         response={response}
         emotions={emotions}
@@ -284,12 +265,10 @@ export const ThoughtReframingSummary: React.FC<
         evidenceAgainst={evidenceAgainst}
         shift={shift}
       />
-      <ExerciseCopyText
-        style={{ fontFamily: APP_FONT_FAMILIES.regular, color: SEMANTIC_COLORS.text.secondary }}
-        className="mb-2 mt-10 px-5 text-center text-[13px] leading-[20px]"
-      >
-        Completing saves this reflection to your exercise history.
-      </ExerciseCopyText>
+      ) : null}
+      <Text className="mt-6 px-5 text-center text-t-foot font-semibold text-happy-label-2">
+        Saving keeps this in your exercise history, in your own words.
+      </Text>
     </View>
   );
 };

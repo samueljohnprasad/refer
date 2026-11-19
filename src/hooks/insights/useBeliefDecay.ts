@@ -8,6 +8,7 @@ import {
 } from "@/src/utils/insights/beliefClustering";
 import { PRE_POST_FIELDS } from "@/src/constants/insights";
 import type { ExerciseType } from "@/src/types/exerciseFlow";
+import { isCatchOnly } from "@/src/domains/exercises/domain/practice";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -57,6 +58,8 @@ function extractThoughtEntries(
 
     const r = entry.response;
     if (!r) continue;
+    // AD-13: a catch has no after-rating to compare, so it never becomes a flat line
+    if (isCatchOnly(entry.exercise_type, r)) continue;
 
     const text = r.automaticThought ?? r.belief ?? "";
     if (!text || text.trim().length < 5) continue;
@@ -82,6 +85,7 @@ function extractThoughtEntries(
     if (entry.exercise_type === "thought_catcher") {
       if (typeof r.intensity === "number") preIntensity = r.intensity;
       if (typeof r.postIntensity === "number") postIntensity = r.postIntensity;
+      if (postIntensity === undefined) continue; // unrated after: no after-rating, not pre-as-post
     }
 
     result.push({

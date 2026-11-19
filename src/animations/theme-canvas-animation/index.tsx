@@ -56,12 +56,14 @@ const ThemeScreen = () => {
   const radius = useSharedValue(0);
 
   const clipPath = useDerivedValue(() => {
-    const path = Skia.Path.Make();
-
+    // ponytail: Skia 2.x immutable path factory
     const x = coordinates.value[selectedIndex.value]?.cx ?? 0;
     const y = coordinates.value[selectedIndex.value]?.cy ?? 0;
-    path.addCircle(x + SQUARE_SIZE / 2, y + SQUARE_SIZE / 2, radius.value);
-    return path;
+    return Skia.Path.Circle(
+      x + SQUARE_SIZE / 2,
+      y + SQUARE_SIZE / 2,
+      Math.max(0, radius.value)
+    );
   }, [selectedIndex, coordinates, radius]);
 
   const onSelectSquare = useCallback(

@@ -62,6 +62,7 @@ export const EXERCISE_ICON_REGISTRY: Record<ExerciseType, HugeIconObject> = {
   thought_reframing: AiBrain01Icon,
   gratitude_reframe: SparklesIcon,
   abc_analysis: BalanceScaleIcon,
+  behavioral_activation: Target01Icon,
   // Mindfulness
   box_breathing: Yoga01Icon,
   breathing_478: WellnessIcon,
@@ -71,6 +72,7 @@ export const EXERCISE_ICON_REGISTRY: Record<ExerciseType, HugeIconObject> = {
   // Anxiety
   decatastrophizing: CloudIcon,
   worry_decision_tree: PathIcon,
+  fear_ladder: Road01Icon,
   // Overthinking
   detached_mindfulness: Leaf01Icon,
   attention_training: HeadphonesIcon,

@@ -187,6 +187,10 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
         refetchType: "active",
       });
 
+      // The week leaf and practice count read mood logs too
+      queryClient.invalidateQueries({ queryKey: ["week_showed_up"] });
+      queryClient.invalidateQueries({ queryKey: ["practice_counts"] });
+
       // Persist last emotion log time and update cache
       if (lastLogKey) {
         const ts = dayjs().valueOf();

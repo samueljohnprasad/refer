@@ -11,6 +11,7 @@ import { XPActionType } from "@/src/types/xp";
 import { updateUserStreak } from "@/src/lib/api/mentalHealthJourneyApi";
 import { buildReminderConfig } from "@/src/screens/OnboardingScreen/utils/reminderConfig";
 import { useAuth } from "@/src/context/AuthContext";
+import { buildExerciseRoute } from "@/src/screens/ExercisesScreen/exerciseScreenUtils";
 import { hasExerciseConfig } from "@/src/data/exerciseRegistry";
 import {
   getStarterPath,
@@ -125,6 +126,20 @@ export default function StarterPathScreen(): React.JSX.Element {
       path_version: selectedPath.pathVersion,
       practice_id: practice.id,
     });
+    const practiceParams = {
+      practiceSessionId: practiceSessionIdRef.current,
+      pathId: selectedPath.pathId,
+      pathVersion: String(selectedPath.pathVersion),
+      practiceSource: practice.source,
+    };
+    if (practice.id === "thought_catcher") {
+      router.push(
+        buildExerciseRoute("thought_catcher", {
+          practice: { ...practiceParams, practiceId: practice.id },
+        }) as never,
+      );
+      return;
+    }
     router.push({
       pathname: "/tabs/screens/exercise-flow",
       params: {

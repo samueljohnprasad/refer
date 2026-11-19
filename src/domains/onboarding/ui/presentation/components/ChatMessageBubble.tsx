@@ -1,8 +1,10 @@
 // ponytail: exact Chat Message Bubble matching .agents/onboarding.html and happy-ui tokens
 import React from 'react';
 import { View, Text, Image } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { MessageSender } from '../../../domain/enums';
 import type { ChatMessage } from '../../../domain/types';
+import { sayIn, sendIn } from '../animations';
 
 export interface ChatMessageBubbleProps {
   message: ChatMessage;
@@ -13,16 +15,19 @@ export function ChatMessageBubble({ message }: ChatMessageBubbleProps): React.JS
 
   if (!isHappi) {
     return (
-      <View className="self-end max-w-[85%] bg-happy-ink rounded-m rounded-br-[4px] py-3 px-4 mb-2 shadow-xs">
+      <Animated.View
+        entering={sendIn()}
+        className="self-end max-w-[85%] bg-happy-ink rounded-m rounded-br-[4px] py-3 px-4 mb-2 shadow-xs"
+      >
         <Text className="text-white text-t-body font-medium leading-snug">
           {message.text}
         </Text>
-      </View>
+      </Animated.View>
     );
   }
 
   return (
-    <View className="flex-row items-end gap-2 mb-2 self-start max-w-[94%]">
+    <Animated.View entering={sayIn()} className="flex-row items-end gap-2 mb-2 self-start max-w-[94%]">
       {/* 30pt Panda avatar with 9 radius and hairline ring (exact prototype) */}
       <Image
         source={require('@/assets/icons/icon-panda.png')}
@@ -30,9 +35,17 @@ export function ChatMessageBubble({ message }: ChatMessageBubbleProps): React.JS
       />
 
       <View className="bg-happy-tint rounded-m rounded-bl-[4px] py-3 px-4 flex-1">
-        <Text className="text-happy-label text-t-body font-medium leading-relaxed">
-          {message.text}
-        </Text>
+        {(message.isQuote || message.isFair) ? (
+          Boolean(message.leadText) && (
+            <Text className="text-happy-label text-t-body font-medium leading-relaxed">
+              {message.leadText}
+            </Text>
+          )
+        ) : (
+          <Text className="text-happy-label text-t-body font-medium leading-relaxed">
+            {message.text}
+          </Text>
+        )}
 
         {/* Hollow dot for the thought as it showed up (exact prototype .pt) */}
         {message.isQuote && (
@@ -61,6 +74,6 @@ export function ChatMessageBubble({ message }: ChatMessageBubbleProps): React.JS
           </Text>
         )}
       </View>
-    </View>
+    </Animated.View>
   );
 }

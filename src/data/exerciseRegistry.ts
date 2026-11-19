@@ -11,6 +11,8 @@ import { thoughtCatcherConfig } from "@/src/exercises/thoughtCatcher/config";
 import { thoughtReframingConfig } from "@/src/exercises/thoughtReframing/config";
 import { gratitudeReframeConfig } from "@/src/exercises/gratitudeReframe/config";
 import { abcAnalysisConfig } from "@/src/exercises/abcAnalysis/config";
+import { behavioralActivationConfig } from "@/src/exercises/behavioralActivation/config";
+import { fearLadderConfig } from "@/src/exercises/fearLadder/config";
 import { boxBreathingConfig } from "@/src/exercises/boxBreathing/config";
 import { breathing478Config } from "@/src/exercises/breathing478/config";
 import { grounding54321Config } from "@/src/exercises/grounding54321/config";
@@ -29,6 +31,7 @@ const ALL_CONFIGS: ExerciseConfig<any>[] = [
   thoughtReframingConfig,
   gratitudeReframeConfig,
   abcAnalysisConfig,
+  behavioralActivationConfig,
   // Mindfulness
   boxBreathingConfig,
   breathing478Config,
@@ -38,6 +41,7 @@ const ALL_CONFIGS: ExerciseConfig<any>[] = [
   // Anxiety
   decatastrophizingConfig,
   worryDecisionTreeConfig,
+  fearLadderConfig,
   // Overthinking
   detachedMindfulnessConfig,
   attentionTrainingConfig,

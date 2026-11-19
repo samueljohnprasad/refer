@@ -11,6 +11,7 @@
  */
 
 import { getExerciseConfig } from "@/src/data/exerciseRegistry";
+import { buildExerciseRoute } from "@/src/screens/ExercisesScreen/exerciseScreenUtils";
 import { ExerciseType } from "../types/exerciseFlow";
 
 /**
@@ -20,7 +21,7 @@ import { ExerciseType } from "../types/exerciseFlow";
 export function getExerciseFlowRoute(taskType: string): string | undefined {
   const config = getExerciseConfig(taskType as ExerciseType);
   if (!config) return undefined;
-  return `/tabs/screens/exercise-flow?type=${config.type}`;
+  return buildExerciseRoute(config.type);
 }
 
 /**

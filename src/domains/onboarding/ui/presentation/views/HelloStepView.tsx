@@ -1,10 +1,11 @@
 // ponytail: exact S0 Hello view matching .agents/onboarding.html and happy-ui tokens
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { HappiGuideStage } from '../components/HappiGuideStage';
+import Animated from 'react-native-reanimated';
+import { fadeIn } from '../animations';
 
 export interface HelloStepViewProps {
-  guideStage?: React.ReactNode;
+  guideStage: React.ReactNode;
   onHiPress: () => void;
   onWhoPress: () => void;
   onSignInPress: () => void;
@@ -17,7 +18,7 @@ export function HelloStepView({
   onSignInPress,
 }: HelloStepViewProps): React.JSX.Element {
   return (
-    <View className="flex-1 justify-between px-6 pb-6 pt-10">
+    <Animated.View entering={fadeIn()} className="flex-1 justify-between px-6 pb-6 pt-10">
       <View className="items-center text-center">
         {/* Happi speech bubble */}
         <View className="relative bg-happy-surface border border-happy-rim rounded-2xl px-3.5 py-2 mb-2">
@@ -27,7 +28,7 @@ export function HelloStepView({
 
         {/* Hero Character */}
         <View className="w-[220px] h-[220px] items-center justify-center my-2">
-          {guideStage ?? <HappiGuideStage weather={0.2} size="hero" hideWeather />}
+          {guideStage}
         </View>
 
         {/* Headings: Fredoka display for one title per screen */}
@@ -64,6 +65,6 @@ export function HelloStepView({
           </Text>
         </Pressable>
       </View>
-    </View>
+    </Animated.View>
   );
 }

@@ -35,7 +35,9 @@
     "practice": "Practice",
     "view": "Exercises View",
     "copingCards": "My Coping Cards",
-    "completedCount": "{{count}} exercises completed"
+    "completedCount": "{{count}} exercises completed",
+    "doneCount": "{{count}} done",
+    "support": "Need to talk to someone"
   },
   "library": {
     "jumpBackIn": "Jump Back In",
@@ -53,9 +55,14 @@
   "log": {
     "emptyTitle": "No reflections logged yet",
     "emptyBody": "Your CBT timeline tracks shifts in distress, mood, and anxiety over time. Complete an exercise from Discover to record your first entry.",
-    "spaceTitle": "A space for your thoughts",
-    "spaceBody": "Your completed reflections and exercises will live here.",
-    "explore": "Explore Exercises",
+    "spaceTitle": "Your entries will live here.",
+    "spaceBody": "Each one you finish is kept in your own words.",
+    "explore": "Start an exercise",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "rungsLabel": "{{position}} of {{total}} rungs",
+    "pausedPartWay": "Paused part way. It's saved.",
+    "pausedRung": "Paused at rung {{position}} of {{total}}. It's saved.",
     "loading": "Retrieving your reflection history...",
     "completed": "Completed",
     "readyToReframe": "Ready to Reframe",
@@ -75,7 +82,16 @@
     "gratitudeEntries": "Gratitude Entries",
     "reframedPerspective": "Reframed Perspective",
     "gratitudePrompt": "I am grateful for...",
-    "ratingLabels": { "distress": "Distress", "mood": "Mood", "emotion": "Emotion", "calm": "Calm", "presence": "Presence", "tension": "Tension", "anxiety": "Anxiety", "focus": "Focus" }
+    "ratingLabels": {
+      "distress": "Distress",
+      "mood": "Mood",
+      "emotion": "Emotion",
+      "calm": "Calm",
+      "presence": "Presence",
+      "tension": "Tension",
+      "anxiety": "Anxiety",
+      "focus": "Focus"
+    }
   },
   "milestone": "{{count}} mindful exercises logged! Consistency compounds over time.",
   "cbt": {
@@ -121,6 +137,7 @@
       "thought_reframing": "Thought Reframing",
       "gratitude_reframe": "Gratitude Reframe",
       "abc_analysis": "ABC Analysis",
+      "behavioral_activation": "Behavioral Activation",
       "decatastrophizing": "Decatastrophizing",
       "worry_time": "Worry Time",
       "fear_ladder": "Fear Ladder",
@@ -198,173 +215,197 @@
       "scoreBefore": "before /10",
       "scoreAfter": "after /10",
       "applyIt": "Apply it → {{label}}",
-        "engine": {
-          "exampleStarters": "Example starters",
-          "minutesShort": "min",
-          "timer": {
-            "start": "Start Timer",
-            "pause": "Pause Timer",
-            "nextArea": "Next Area",
-            "finish": "Finish",
-            "fallbackSubtitle": "Tense and release each muscle group using the timer.",
-            "tensing": "Tensing Muscles...",
-            "released": "Released!",
-            "seconds": "Seconds",
-            "runAgain": "Run Timer Again",
-            "skipAndRelease": "Skip Timer & Mark Released",
-            "areasReleased": "{{completed}} of {{total}} areas released"
-          }
+      "engine": {
+        "exampleStarters": "Example starters",
+        "minutesShort": "min",
+        "timer": {
+          "start": "Start Timer",
+          "pause": "Pause Timer",
+          "nextArea": "Next Area",
+          "finish": "Finish",
+          "fallbackSubtitle": "Tense and release each muscle group using the timer.",
+          "tensing": "Tensing Muscles...",
+          "released": "Released!",
+          "seconds": "Seconds",
+          "runAgain": "Run Timer Again",
+          "skipAndRelease": "Skip Timer & Mark Released",
+          "areasReleased": "{{completed}} of {{total}} areas released"
+        }
+      },
+      "abc": {
+        "event": {
+          "title": "What happened?",
+          "subtitle": "Start with the moment, not what it meant.",
+          "tip": "Write what a camera could have seen or heard.",
+          "placeholder": "Describe what happened..."
         },
-        "abc": {
-          "event": {
-            "title": "What happened?",
-            "subtitle": "Start with the moment, not what it meant.",
-            "tip": "Write what a camera could have seen or heard.",
-            "placeholder": "Describe what happened..."
-          },
-          "belief": {
-            "title": "Automatic thought",
-            "subtitle": "Write the sentence your mind added.",
-            "tip": "Do not make it fair yet. Just catch it.",
-            "placeholder": "The thought was..."
-          },
-          "behavior": {
-            "title": "What did you do next?",
-            "subtitle": "Name the reaction that followed.",
-            "tip": "What did you do, avoid, say, or repeat?",
-            "placeholder": "I responded by..."
-          },
-          "alternativeBelief": {
-            "title": "More balanced thought",
-            "subtitle": "Write a fairer version that still feels believable.",
-            "placeholder": "A fairer thought could be..."
-          },
-          "newConsequence": {
-            "title": "What might change now?",
-            "subtitle": "If you held that thought, what might feel or go differently?",
-            "placeholder": "With that thought, I might..."
-          },
-          "automaticThought": "Automatic thought",
-          "suggestions": {
-            "event": [
-              "My manager gave me difficult feedback.",
-              "I sent a message and did not get a reply.",
-              "My plans changed at the last minute."
-            ],
-            "belief": [
-              "I always mess things up.",
-              "They must be upset with me.",
-              "I cannot handle this."
-            ],
-            "behavior": [
-              "I shut down and stopped replying.",
-              "I avoided dealing with it.",
-              "I kept replaying it in my mind."
-            ],
-            "balancedThought": [
-              "This is hard, but one moment does not define me.",
-              "I do not know the full story yet.",
-              "I can take this one useful step at a time."
-            ],
-            "newConsequence": [
-              "I might feel calmer and respond more clearly.",
-              "I might pause instead of spiraling.",
-              "I might take one useful next step."
-            ]
-          }
+        "belief": {
+          "title": "Automatic thought",
+          "subtitle": "Write the sentence your mind added.",
+          "tip": "Do not make it fair yet. Just catch it.",
+          "placeholder": "The thought was..."
         },
-        "gratitude": {
-          "summaryTitle": "Gratitude noted",
-          "summarySubtitle": "Here is what you named and how your mood changed."
+        "behavior": {
+          "title": "What did you do next?",
+          "subtitle": "Name the reaction that followed.",
+          "tip": "What did you do, avoid, say, or repeat?",
+          "placeholder": "I responded by..."
         },
-        "thoughtReframing": {
-          "evidenceAgainstTitle": "Evidence Against",
-          "evidenceAgainstSubtitle": "What facts do not fit the prediction?",
-          "findingStartingPoints": "Finding starting points..."
+        "alternativeBelief": {
+          "title": "More balanced thought",
+          "subtitle": "Write a fairer version that still feels believable.",
+          "placeholder": "A fairer thought could be..."
         },
-        "categoryEngine": {
-          "curiosityBet": { "yourBet": "YOUR BET", "theAnswer": "THE ANSWER" },
-          "nameIt": { "familySelected": "{{family}} family selected.", "wordSelected": "{{word}} selected." },
-          "paradoxCard": { "alertnessIncreased": "Body alertness increased toward wired", "explanationRevealed": "Explanation revealed" },
-          "waveScrubber": {
-            "titleFallback": "One wave, up close",
-            "instructionFallback": "Drag through the wave to see how it changes.",
-            "alarmIntensity": "ALARM INTENSITY",
-            "waveAccessibility": "An anxiety wave showing rise, peak, settling, second rise, and recovery",
-            "progressionAccessibility": "Wave progression",
-            "start": "START",
-            "later": "LATER",
-            "patternTitle": "THE PATTERN",
-            "patternSummary": "A surge changes over time.",
-            "patternDescription": "It can rise quickly, peak, ease, and sometimes rise again before settling.",
-            "phases": {
-              "earlyRise": { "label": "EARLY RISE", "body": "The alarm is switching on.\nThe sensations can build quickly." },
-              "peak": { "label": "PEAK", "body": "The alarm is at its strongest.\n\nStrong sensations can feel convincing, even when they aren't proof of danger." },
-              "settling": { "label": "SETTLING", "body": "The surge is beginning to ease.\n\nYour body may still feel activated while the alarm comes down." },
-              "anotherRise": { "label": "ANOTHER RISE", "body": "A sensation or worried thought can push the alarm upward again.\n\nAnother rise doesn't mean you're back at the beginning." },
-              "settlingAgain": { "label": "SETTLING AGAIN", "body": "The alarm is easing again.\n\nWaves can rise and fall more than once." }
+        "newConsequence": {
+          "title": "What might change now?",
+          "subtitle": "If you held that thought, what might feel or go differently?",
+          "placeholder": "With that thought, I might..."
+        },
+        "automaticThought": "Automatic thought",
+        "suggestions": {
+          "event": [
+            "My manager gave me difficult feedback.",
+            "I sent a message and did not get a reply.",
+            "My plans changed at the last minute."
+          ],
+          "belief": [
+            "I always mess things up.",
+            "They must be upset with me.",
+            "I cannot handle this."
+          ],
+          "behavior": [
+            "I shut down and stopped replying.",
+            "I avoided dealing with it.",
+            "I kept replaying it in my mind."
+          ],
+          "balancedThought": [
+            "This is hard, but one moment does not define me.",
+            "I do not know the full story yet.",
+            "I can take this one useful step at a time."
+          ],
+          "newConsequence": [
+            "I might feel calmer and respond more clearly.",
+            "I might pause instead of spiraling.",
+            "I might take one useful next step."
+          ]
+        }
+      },
+      "gratitude": {
+        "summaryTitle": "Gratitude noted",
+        "summarySubtitle": "Here is what you named and how your mood changed."
+      },
+      "thoughtReframing": {
+        "evidenceAgainstTitle": "Evidence Against",
+        "evidenceAgainstSubtitle": "What facts do not fit the prediction?",
+        "findingStartingPoints": "Finding starting points..."
+      },
+      "categoryEngine": {
+        "curiosityBet": {
+          "yourBet": "YOUR BET",
+          "theAnswer": "THE ANSWER"
+        },
+        "nameIt": {
+          "familySelected": "{{family}} family selected.",
+          "wordSelected": "{{word}} selected."
+        },
+        "paradoxCard": {
+          "alertnessIncreased": "Body alertness increased toward wired",
+          "explanationRevealed": "Explanation revealed"
+        },
+        "waveScrubber": {
+          "titleFallback": "One wave, up close",
+          "instructionFallback": "Drag through the wave to see how it changes.",
+          "alarmIntensity": "ALARM INTENSITY",
+          "waveAccessibility": "An anxiety wave showing rise, peak, settling, second rise, and recovery",
+          "progressionAccessibility": "Wave progression",
+          "start": "START",
+          "later": "LATER",
+          "patternTitle": "THE PATTERN",
+          "patternSummary": "A surge changes over time.",
+          "patternDescription": "It can rise quickly, peak, ease, and sometimes rise again before settling.",
+          "phases": {
+            "earlyRise": {
+              "label": "EARLY RISE",
+              "body": "The alarm is switching on.\nThe sensations can build quickly."
+            },
+            "peak": {
+              "label": "PEAK",
+              "body": "The alarm is at its strongest.\n\nStrong sensations can feel convincing, even when they aren't proof of danger."
+            },
+            "settling": {
+              "label": "SETTLING",
+              "body": "The surge is beginning to ease.\n\nYour body may still feel activated while the alarm comes down."
+            },
+            "anotherRise": {
+              "label": "ANOTHER RISE",
+              "body": "A sensation or worried thought can push the alarm upward again.\n\nAnother rise doesn't mean you're back at the beginning."
+            },
+            "settlingAgain": {
+              "label": "SETTLING AGAIN",
+              "body": "The alarm is easing again.\n\nWaves can rise and fall more than once."
             }
-          },
-          "panicWaveCommit": {
-            "titleFallback": "The panic wave: commit your guess",
-            "instructionFallback": "Commit before the reveal.",
-            "waveAccessibility": "A panic wave over twenty minutes",
-            "guessNever": "your guess: never",
-            "guessLabel": "your guess",
-            "minuteMarker": "{{count}} min",
-            "myGuess": "My guess",
-            "neverComesDown": "it never comes down",
-            "aboutMinutes": "about {{count}} min",
-            "guessAccessibility": "Your guess in minutes; the far right means never",
-            "never": "never"
-          },
-          "leverMatch": {
-            "leftSelected": "{{label}} selected. Choose a consequence.",
-            "rightSelected": "{{label}} selected. Choose an action.",
-            "pairMatched": "{{left}} matched with {{right}}. {{matched}} of {{total}} matched.",
-            "allPairsMatched": "All pairs matched.",
-            "mismatch": "Not a match. Try again.",
-            "stateMatched": "matched",
-            "stateSelected": "selected",
-            "stateUnmatched": "unmatched"
-          },
-          "layerZoom": {
-            "layer": "Layer",
-            "accessibilityLabel": "Layered explanation"
-          },
-          "checkpoint": {
-            "workedSupport": "Worked Support",
-            "next": "Next",
-            "orderRetry": "Some items are in the wrong position. Try again!",
-            "checkOrder": "Check Order",
-            "revealAnswer": "Reveal Answer",
-            "needPractice": "Need Practice",
-            "gotIt": "Got It",
-            "yourAnswer": "YOUR ANSWER",
-            "whatHappened": "WHAT HAPPENED?",
-            "introTitleFallback": "Sleep science checkpoint",
-            "introHeadingFallback": "Let’s see what stuck.",
-            "introBodyFallback": "4 quick questions about the sleep system.\nA miss just gives you something to revisit.",
-            "introTagFallback": "4 QUESTIONS · ~1 MIN",
-            "summaryTitleFallback": "Checkpoint",
-            "summaryInstruction": "What the review showed.",
-            "solidGroupTitle": "FEELS SOLID",
-            "revisitGroupTitle": "WORTH A TWO-MINUTE REVISIT",
-            "revisitMessageFallback": "The marked ideas are worth a short revisit before changing your routine. Nothing is lost.",
-            "solidMessageFallback": "The map is holding. Next, use it to run one small experiment and read what changes."
-          },
-          "socratic": {
-            "you": "YOU",
-            "person": "PERSON",
-            "guidance": "GUIDANCE",
-            "whatWeKnowSoFar": "What we know so far",
-            "prediction": "THE PREDICTION",
-            "whatWeKnow": "WHAT WE KNOW",
-            "balancedThought": "BALANCED THOUGHT",
-            "skill": "THE SKILL",
-            "showHint": "Show hint",
-            "hideHint": "Hide hint",
-            "hint": "Hint",
+          }
+        },
+        "panicWaveCommit": {
+          "titleFallback": "The panic wave: commit your guess",
+          "instructionFallback": "Commit before the reveal.",
+          "waveAccessibility": "A panic wave over twenty minutes",
+          "guessNever": "your guess: never",
+          "guessLabel": "your guess",
+          "minuteMarker": "{{count}} min",
+          "myGuess": "My guess",
+          "neverComesDown": "it never comes down",
+          "aboutMinutes": "about {{count}} min",
+          "guessAccessibility": "Your guess in minutes; the far right means never",
+          "never": "never"
+        },
+        "leverMatch": {
+          "leftSelected": "{{label}} selected. Choose a consequence.",
+          "rightSelected": "{{label}} selected. Choose an action.",
+          "pairMatched": "{{left}} matched with {{right}}. {{matched}} of {{total}} matched.",
+          "allPairsMatched": "All pairs matched.",
+          "mismatch": "Not a match. Try again.",
+          "stateMatched": "matched",
+          "stateSelected": "selected",
+          "stateUnmatched": "unmatched"
+        },
+        "layerZoom": {
+          "layer": "Layer",
+          "accessibilityLabel": "Layered explanation"
+        },
+        "checkpoint": {
+          "workedSupport": "Worked Support",
+          "next": "Next",
+          "orderRetry": "Some items are in the wrong position. Try again!",
+          "checkOrder": "Check Order",
+          "revealAnswer": "Reveal Answer",
+          "needPractice": "Need Practice",
+          "gotIt": "Got It",
+          "yourAnswer": "YOUR ANSWER",
+          "whatHappened": "WHAT HAPPENED?",
+          "introTitleFallback": "Sleep science checkpoint",
+          "introHeadingFallback": "Let’s see what stuck.",
+          "introBodyFallback": "4 quick questions about the sleep system.\nA miss just gives you something to revisit.",
+          "introTagFallback": "4 QUESTIONS · ~1 MIN",
+          "summaryTitleFallback": "Checkpoint",
+          "summaryInstruction": "What the review showed.",
+          "solidGroupTitle": "FEELS SOLID",
+          "revisitGroupTitle": "WORTH A TWO-MINUTE REVISIT",
+          "revisitMessageFallback": "The marked ideas are worth a short revisit before changing your routine. Nothing is lost.",
+          "solidMessageFallback": "The map is holding. Next, use it to run one small experiment and read what changes."
+        },
+        "socratic": {
+          "you": "YOU",
+          "person": "PERSON",
+          "guidance": "GUIDANCE",
+          "whatWeKnowSoFar": "What we know so far",
+          "prediction": "THE PREDICTION",
+          "whatWeKnow": "WHAT WE KNOW",
+          "balancedThought": "BALANCED THOUGHT",
+          "skill": "THE SKILL",
+          "showHint": "Show hint",
+          "hideHint": "Hide hint",
+          "hint": "Hint",
           "hideHintAction": "Hide hint",
           "youAsked": "You asked: {{text}}",
           "personSays": "Person says: {{text}}",
@@ -373,225 +414,324 @@
           "evidenceLabel": "What we know: {{text}}",
           "skillLabel": "The skill: {{text}}",
           "askNext": "WHAT WOULD YOU ASK NEXT?"
-          },
-          "explorable": {
-            "lever": "Lever",
-            "optionalSandbox": "Optional sandbox",
-            "reset": "Reset",
-            "complete": "You tested every lever.",
-            "exploreFreely": "Explore freely"
-          },
-          "concept": {
-            "myth": "THE MYTH",
-            "reality": "THE REALITY"
-          },
-          "surge": {
-            "elapsedSincePeak": "Elapsed time since peak",
-            "peak": "PEAK",
-            "tenMinutes": "+10 MIN",
-            "watchedWaveFall": "YOU WATCHED THE WAVE FALL",
-            "rememberThis": "REMEMBER THIS",
-            "veryHigh": "VERY HIGH",
-            "fading": "FADING",
-            "lower": "LOWER",
-            "muchLower": "MUCH LOWER",
-            "stillStrong": "The surge is still strong.",
-            "comingDown": "The surge is already coming down.",
-            "beginningToSettle": "Your body is beginning to settle.",
-            "passed": "Much of the surge has passed."
-          },
-          "lever": {
-            "lower": "LOWER",
-            "higher": "HIGHER",
-            "accessibilityShift": "{{label}}. Shifts alertness {{direction}}.",
-            "shiftInAlertness": "Shift in alertness",
-            "tryAccessibility": "{{label}}. Not explored. Try this lever.",
-            "tryThis": "Try this lever"
-          },
-          "workedRewrite": {
-            "move": "Move",
-            "notebook": "Worked rewrite notebook",
-            "originalThought": "Original thought",
-            "workingRewrite": "Working rewrite",
-            "moveApplied": "Move applied",
-            "balanced": "Balanced",
-            "lookAgain": "Look again"
-          },
-          "reframeBuilder": {
-            "hotThought": "Hot thought",
-            "fairerThought": "Fairer thought",
-            "slot": "Slot",
-            "ready": "Your fairer thought is ready to compare.",
-            "nextRemaining": "Next: {{labels}} ({{count}} left)"
-          },
-          "guidedDiscovery": {
-            "clue": "Clue",
-            "pattern": "The pattern"
-          },
-          "whatIf": {
-            "predicted": "You predicted",
-          "actualOutcome": "Actual outcome"
-          },
-          "whatIfMachine": {
-            "titleFallback": "What if?",
-            "instructionFallback": "Predict, then run it.",
-            "betLabel": "YOUR BET"
-          },
-          "lensReplay": {
-            "titleFallback": "Replay the scene",
-            "instructionFallback": "Tap the highlighted parts to see what you noticed and what your mind added.",
-            "whatHappened": "WHAT HAPPENED",
-            "observedScene": "Everyone stopped talking.",
-            "mindAdded": "WHAT THE MIND ADDED",
-            "assumedMeaning": "“They were talking about me.”",
-            "idea": "THE IDEA",
-            "completionMessage": "Same lines. New eyes.",
-            "revealAccessibility": "{{text}}. Reveal.",
-            "progress": "{{explored}} of {{total}} highlights explored"
-          },
-          "fillBlank": {
-            "titleFallback": "Complete the sentence",
-            "instructionFallback": "Type the missing word.",
-            "inputLabel": "Missing word",
-            "inputPlaceholder": "Type here",
-            "wordBank": "Word bank",
-            "feedbackThinking": "Here’s the thinking",
-            "feedbackFits": "Why it fits",
-            "feedbackTryAnother": "Try another way.",
-            "newCapability": "New capability:"
-          },
-          "whiteBear": {
-            "titleFallback": "A 10-second experiment",
-            "instructionFallback": "Try not to think about a white bear.",
-            "term": "white bear",
-            "debrief": "So… what happened?"
-          },
-          "fadedThoughtRecord": {
-            "stage": "Field",
-            "notebookAccessibility": "Thought record notebook",
-            "completedExample": "Record completed",
-            "fieldComplete": "Field complete",
-            "aClue": "A clue",
-            "yourTurnNext": "Your turn next",
-            "chooseBelow": "Choose below"
-          },
-          "situationLanguage": {
-            "titleFallback": "Change the frame",
-            "instructionFallback": "Flip each sentence from identity to experience.",
-            "identity": "Identity",
-            "experience": "Experience",
-            "identitySelected": "Identity selected. {{text}}.",
-            "experienceSelected": "Experience selected. {{text}}.",
-            "shift": "The shift",
-            "takeawayFallback": "A setback or feeling can describe a moment without defining who you are.\n\nDescribe what’s happening without turning it into who you are."
-          },
-          "ifThenPlan": {
-            "titleFallback": "Set up the next small test",
-            "chooseCue": "Choose something you’ve noticed.",
-            "chooseAction": "Choose how you’ll test it.",
-            "ifLabel": "IF",
-            "thenLabel": "THEN I WILL",
-            "summaryLabel": "Your small test",
-            "privateNote": "Private to you · No reminders unless you ask.",
-            "ifCue": "If {{cue}},",
-            "thenAction": "then I will {{action}}.",
-            "saved": "✓ Added to My Plans"
-          },
-          "storySerial": {
-            "titleFallback": "Walk both alarm paths",
-            "instructionFallback": "Walk one path, then rewind and compare.",
-            "sameStart": "SAME START",
-            "sameStartAccessibility": "Same start: {{start}}",
-            "chooseForSam": "YOU CHOOSE FOR SAM",
-            "alarmSignal": "Alarm as signal",
-            "alarmProof": "Alarm as proof",
-            "pathSummaryAccessibility": "{{pathType}} path summary: {{summary}}",
-            "rewindCTA": "Rewind and walk the other path",
-            "comparisonAccessibility": "Comparison between paths",
-            "proofPathAccessibility": "Alarm as proof path: {{path}}",
-            "proofPathHeading": "ALARM = PROOF",
-            "signalPathAccessibility": "Alarm as signal path: {{path}}",
-            "signalPathHeading": "ALARM = SIGNAL",
-            "notQuite": "NOT QUITE",
-            "patternHeading": "THE PATTERN",
-            "quickRelief": "QUICK RELIEF",
-            "checkReality": "CHECK REALITY"
-          },
-          "interactiveReframe": {
-            "titleFallback": "After a hard night...",
-            "heroWrongText": "“My body is broken.”",
-            "question": "What should you look at first?",
-            "correctOption": "What might have changed",
-            "wrongOption": "Whether I need to try harder",
-            "wrongPathTitle": "Whether I need to try harder",
-            "correctFinale": "Same night.\nDifferent story.",
-            "wrongAnswerLabel": "× YOUR ANSWER",
-            "wrongCascade1": "TRY HARDER",
-            "wrongCascade2": "“Is it working yet?”",
-            "wrongCascade3": "more checking",
-            "wrongCascade4": "more pressure",
-            "correctHeroMorph": "“Something may have shifted.”",
-            "correctCascade1": "WHAT CHANGED?",
-            "correctCascade2": "timing · pressure · arousal",
-            "correctCascade3": "nap · light · stress · routine...",
-            "correctCascade4": "something I can investigate"
-          },
-          "mayaAlarmChart": {
-            "bedtime": "11 pm",
-            "threshold": "switch-off line",
-            "startTime": "7 am",
-            "afternoonTime": "4 pm",
-            "endTime": "1 am"
-          }
         },
-        "celebration": {
-            "title": "Lesson complete!",
-            "perfectTitle": "Perfect lesson!",
-            "continue": "Continue",
-            "sharePerfect": "Perfect lesson",
-            "shareComplete": "Lesson complete",
-            "shareTitle": "Share your win",
-            "shareDialogTitle": "Share your win",
-            "chestDescription": "Perfect week chest",
-            "goalAchieved": "Daily goal achieved!",
-            "goalReached": "Daily goal reached. Beautiful.",
-            "goalAlmost": "Almost there!",
-            "xpToGo": "{{count}} XP to go",
-            "mute": "Mute celebration sounds",
-            "unmute": "Unmute celebration sounds",
-            "streakMessage": "Seven days straight. Look at you.",
-            "perfectBadge": "PERFECT LESSON",
-            "milestoneDays": "{{count}}-DAY STREAK",
-            "milestoneMessage3": "Three days in a row — a habit is forming.",
-            "milestoneMessage7": "A full week of showing up. Your mind thanks you.",
-            "milestoneMessage15": "Fifteen days strong. This is who you are now.",
-            "milestoneMessage30": "Thirty days. A whole month of choosing yourself.",
-            "xp": "XP",
-            "streak": "STREAK",
-            "thisWeek": "THIS WEEK",
-            "dailyGoal": "DAILY GOAL",
-            "day": "DAY",
-            "days": "DAYS",
-            "chestOpened": "Perfect week chest opened. Plus {{xp}} XP",
-            "chestOpen": "Perfect week. Tap to open your chest",
-            "perfectWeek": "PERFECT WEEK",
-            "sevenForSeven": "Seven for seven!",
-            "chestOpenedHint": "Every dot lit this week. Proud of you.",
-            "chestOpenHint": "Tap to open your bonus chest",
-            "preparing": "Preparing…",
-            "encouragements": [
-              "You showed up for yourself today.",
-              "Small steps, real change.",
-              "That's one more win for your mind.",
-              "Progress feels good, doesn't it?",
-              "You're building a calmer you."
-            ],
-            "perfectEncouragements": [
-              "Not a single slip. That's mastery.",
-              "Flawless — you really know this one.",
-              "Every answer landed. Take a bow."
-            ]
-          }
+        "explorable": {
+          "lever": "Lever",
+          "optionalSandbox": "Optional sandbox",
+          "reset": "Reset",
+          "complete": "You tested every lever.",
+          "exploreFreely": "Explore freely"
+        },
+        "concept": {
+          "myth": "THE MYTH",
+          "reality": "THE REALITY"
+        },
+        "surge": {
+          "elapsedSincePeak": "Elapsed time since peak",
+          "peak": "PEAK",
+          "tenMinutes": "+10 MIN",
+          "watchedWaveFall": "YOU WATCHED THE WAVE FALL",
+          "rememberThis": "REMEMBER THIS",
+          "veryHigh": "VERY HIGH",
+          "fading": "FADING",
+          "lower": "LOWER",
+          "muchLower": "MUCH LOWER",
+          "stillStrong": "The surge is still strong.",
+          "comingDown": "The surge is already coming down.",
+          "beginningToSettle": "Your body is beginning to settle.",
+          "passed": "Much of the surge has passed."
+        },
+        "lever": {
+          "lower": "LOWER",
+          "higher": "HIGHER",
+          "accessibilityShift": "{{label}}. Shifts alertness {{direction}}.",
+          "shiftInAlertness": "Shift in alertness",
+          "tryAccessibility": "{{label}}. Not explored. Try this lever.",
+          "tryThis": "Try this lever"
+        },
+        "workedRewrite": {
+          "move": "Move",
+          "notebook": "Worked rewrite notebook",
+          "originalThought": "Original thought",
+          "workingRewrite": "Working rewrite",
+          "moveApplied": "Move applied",
+          "balanced": "Balanced",
+          "lookAgain": "Look again"
+        },
+        "reframeBuilder": {
+          "hotThought": "Hot thought",
+          "fairerThought": "Fairer thought",
+          "slot": "Slot",
+          "ready": "Your fairer thought is ready to compare.",
+          "nextRemaining": "Next: {{labels}} ({{count}} left)"
+        },
+        "guidedDiscovery": {
+          "clue": "Clue",
+          "pattern": "The pattern"
+        },
+        "whatIf": {
+          "predicted": "You predicted",
+          "actualOutcome": "Actual outcome"
+        },
+        "whatIfMachine": {
+          "titleFallback": "What if?",
+          "instructionFallback": "Predict, then run it.",
+          "betLabel": "YOUR BET"
+        },
+        "lensReplay": {
+          "titleFallback": "Replay the scene",
+          "instructionFallback": "Tap the highlighted parts to see what you noticed and what your mind added.",
+          "whatHappened": "WHAT HAPPENED",
+          "observedScene": "Everyone stopped talking.",
+          "mindAdded": "WHAT THE MIND ADDED",
+          "assumedMeaning": "“They were talking about me.”",
+          "idea": "THE IDEA",
+          "completionMessage": "Same lines. New eyes.",
+          "revealAccessibility": "{{text}}. Reveal.",
+          "progress": "{{explored}} of {{total}} highlights explored"
+        },
+        "fillBlank": {
+          "titleFallback": "Complete the sentence",
+          "instructionFallback": "Type the missing word.",
+          "inputLabel": "Missing word",
+          "inputPlaceholder": "Type here",
+          "wordBank": "Word bank",
+          "feedbackThinking": "Here’s the thinking",
+          "feedbackFits": "Why it fits",
+          "feedbackTryAnother": "Try another way.",
+          "newCapability": "New capability:"
+        },
+        "whiteBear": {
+          "titleFallback": "A 10-second experiment",
+          "instructionFallback": "Try not to think about a white bear.",
+          "term": "white bear",
+          "debrief": "So… what happened?"
+        },
+        "fadedThoughtRecord": {
+          "stage": "Field",
+          "notebookAccessibility": "Thought record notebook",
+          "completedExample": "Record completed",
+          "fieldComplete": "Field complete",
+          "aClue": "A clue",
+          "yourTurnNext": "Your turn next",
+          "chooseBelow": "Choose below"
+        },
+        "situationLanguage": {
+          "titleFallback": "Change the frame",
+          "instructionFallback": "Flip each sentence from identity to experience.",
+          "identity": "Identity",
+          "experience": "Experience",
+          "identitySelected": "Identity selected. {{text}}.",
+          "experienceSelected": "Experience selected. {{text}}.",
+          "shift": "The shift",
+          "takeawayFallback": "A setback or feeling can describe a moment without defining who you are.\n\nDescribe what’s happening without turning it into who you are."
+        },
+        "ifThenPlan": {
+          "titleFallback": "Set up the next small test",
+          "chooseCue": "Choose something you’ve noticed.",
+          "chooseAction": "Choose how you’ll test it.",
+          "ifLabel": "IF",
+          "thenLabel": "THEN I WILL",
+          "summaryLabel": "Your small test",
+          "privateNote": "Private to you · No reminders unless you ask.",
+          "ifCue": "If {{cue}},",
+          "thenAction": "then I will {{action}}.",
+          "saved": "✓ Added to My Plans"
+        },
+        "storySerial": {
+          "titleFallback": "Walk both alarm paths",
+          "instructionFallback": "Walk one path, then rewind and compare.",
+          "sameStart": "SAME START",
+          "sameStartAccessibility": "Same start: {{start}}",
+          "chooseForSam": "YOU CHOOSE FOR SAM",
+          "alarmSignal": "Alarm as signal",
+          "alarmProof": "Alarm as proof",
+          "pathSummaryAccessibility": "{{pathType}} path summary: {{summary}}",
+          "rewindCTA": "Rewind and walk the other path",
+          "comparisonAccessibility": "Comparison between paths",
+          "proofPathAccessibility": "Alarm as proof path: {{path}}",
+          "proofPathHeading": "ALARM = PROOF",
+          "signalPathAccessibility": "Alarm as signal path: {{path}}",
+          "signalPathHeading": "ALARM = SIGNAL",
+          "notQuite": "NOT QUITE",
+          "patternHeading": "THE PATTERN",
+          "quickRelief": "QUICK RELIEF",
+          "checkReality": "CHECK REALITY"
+        },
+        "interactiveReframe": {
+          "titleFallback": "After a hard night...",
+          "heroWrongText": "“My body is broken.”",
+          "question": "What should you look at first?",
+          "correctOption": "What might have changed",
+          "wrongOption": "Whether I need to try harder",
+          "wrongPathTitle": "Whether I need to try harder",
+          "correctFinale": "Same night.\nDifferent story.",
+          "wrongAnswerLabel": "× YOUR ANSWER",
+          "wrongCascade1": "TRY HARDER",
+          "wrongCascade2": "“Is it working yet?”",
+          "wrongCascade3": "more checking",
+          "wrongCascade4": "more pressure",
+          "correctHeroMorph": "“Something may have shifted.”",
+          "correctCascade1": "WHAT CHANGED?",
+          "correctCascade2": "timing · pressure · arousal",
+          "correctCascade3": "nap · light · stress · routine...",
+          "correctCascade4": "something I can investigate"
+        },
+        "mayaAlarmChart": {
+          "bedtime": "11 pm",
+          "threshold": "switch-off line",
+          "startTime": "7 am",
+          "afternoonTime": "4 pm",
+          "endTime": "1 am"
+        }
+      },
+      "celebration": {
+        "title": "Lesson complete!",
+        "perfectTitle": "Perfect lesson!",
+        "continue": "Continue",
+        "sharePerfect": "Perfect lesson",
+        "shareComplete": "Lesson complete",
+        "shareTitle": "Share your win",
+        "shareDialogTitle": "Share your win",
+        "chestDescription": "Perfect week chest",
+        "goalAchieved": "Daily goal achieved!",
+        "goalReached": "Daily goal reached. Beautiful.",
+        "goalAlmost": "Almost there!",
+        "xpToGo": "{{count}} XP to go",
+        "mute": "Mute celebration sounds",
+        "unmute": "Unmute celebration sounds",
+        "streakMessage": "Seven days straight. Look at you.",
+        "perfectBadge": "PERFECT LESSON",
+        "milestoneDays": "{{count}}-DAY STREAK",
+        "milestoneMessage3": "Three days in a row — a habit is forming.",
+        "milestoneMessage7": "A full week of showing up. Your mind thanks you.",
+        "milestoneMessage15": "Fifteen days strong. This is who you are now.",
+        "milestoneMessage30": "Thirty days. A whole month of choosing yourself.",
+        "xp": "XP",
+        "streak": "STREAK",
+        "thisWeek": "THIS WEEK",
+        "dailyGoal": "DAILY GOAL",
+        "day": "DAY",
+        "days": "DAYS",
+        "chestOpened": "Perfect week chest opened. Plus {{xp}} XP",
+        "chestOpen": "Perfect week. Tap to open your chest",
+        "perfectWeek": "PERFECT WEEK",
+        "sevenForSeven": "Seven for seven!",
+        "chestOpenedHint": "Every dot lit this week. Proud of you.",
+        "chestOpenHint": "Tap to open your bonus chest",
+        "preparing": "Preparing…",
+        "encouragements": [
+          "You showed up for yourself today.",
+          "Small steps, real change.",
+          "That's one more win for your mind.",
+          "Progress feels good, doesn't it?",
+          "You're building a calmer you."
+        ],
+        "perfectEncouragements": [
+          "Not a single slip. That's mastery.",
+          "Flawless — you really know this one.",
+          "Every answer landed. Take a bow."
+        ]
+      }
+    }
+  },
+  "thoughtCatcher": {
+    "question": {
+      "thought": "What thought keeps coming back?",
+      "thought_plain": "What is the thought?",
+      "trap": "Does one of these fit?",
+      "trap_plain": "Which of these fits?",
+      "fair": "What's a fairer way to say it?",
+      "fair_plain": "Write a fairer version."
+    },
+    "example": {
+      "thought": {
+        "1": "I forgot the milk, so I'm hopeless at this.",
+        "2": "My friend hasn't texted back. She must be annoyed.",
+        "3": "The meeting will go badly, I just know it.",
+        "4": "Everyone else seems to have it figured out."
+      },
+      "fair": {
+        "1": "I forgot one thing today, and I've remembered plenty.",
+        "2": "She might just be busy. I can ask her later.",
+        "3": "I can't know how it will go. I can prepare a little.",
+        "4": "I only see what others show. I don't see the whole picture."
+      }
+    },
+    "recentThoughts": "Your recent thoughts",
+    "trapMore": "More",
+    "trapNotSure": "Not sure",
+    "trapNone": "None of these, it's just hard",
+    "trapSelectedA11y": "selected",
+    "trapName": {
+      "all_or_nothing": "All-or-nothing",
+      "catastrophizing": "Catastrophizing",
+      "mind_reading": "Mind reading",
+      "overgeneralizing": "Overgeneralizing",
+      "personalizing": "Personalizing",
+      "filtering": "Mental filter",
+      "should_statements": "Should statements",
+      "fortune_telling": "Fortune telling",
+      "emotional_reasoning": "Emotional reasoning",
+      "labeling": "Labeling"
+    },
+    "trapDefinition": {
+      "all_or_nothing": "Seeing things as only perfect or a failure, with nothing between.",
+      "catastrophizing": "Jumping to the worst possible outcome.",
+      "mind_reading": "Assuming you know what someone else is thinking.",
+      "overgeneralizing": "Treating one event as a pattern that will always repeat.",
+      "personalizing": "Taking blame for things that are not only yours.",
+      "filtering": "Focusing on one negative detail and missing the rest.",
+      "should_statements": "Holding yourself or others to strict rules about what must happen.",
+      "fortune_telling": "Predicting that things will go badly as if it were certain.",
+      "emotional_reasoning": "Treating a feeling as proof that something is true.",
+      "labeling": "Calling yourself or someone else a name instead of describing what happened."
+    },
+    "stepUp": {
+      "body": "Want to go one step further? About 1 min.",
+      "body_plain": "One more step is available. About 1 min.",
+      "write": "Write a fairer version · 1 min",
+      "stop": "That's enough for today",
+      "stop_plain": "Stop here"
+    },
+    "stem": {
+      "1": "Another way to see it is…",
+      "2": "What I'd tell a friend is…",
+      "3": "The part I'm missing might be…",
+      "4": "What I know for sure is…",
+      "5": "A kinder way to say this is…",
+      "6": "The evidence I'm leaving out is…",
+      "7": "Looking back, I'll probably see this as…",
+      "8": "One small thing that is true is…"
+    },
+    "recall": {
+      "why": "Why am I seeing this?",
+      "a11y": "Use your earlier thought: {{text}}",
+      "sheetTitle": "Why am I seeing this?",
+      "sheetBody": "You wrote this the last time you picked {{trap}}.",
+      "sheetBody_plain": "You wrote this when you last picked {{trap}}.",
+      "sheetCaption": "{{date}} · {{trap}}",
+      "forget": "Forget this"
+    },
+    "saved": {
+      "title": "Saved to your journal",
+      "caught": "You caught the thought.",
+      "hard": "That sounds hard.",
+      "thoughtRow": "The thought",
+      "breathe": "Breathe for a minute",
+      "home": "Go to Home",
+      "unsynced": "Saved on this phone. It will sync when you're back online.",
+      "unsynced_plain": "Saved on this phone. Syncs when you're online.",
+      "loggedA11y": "logged",
+      "move": "You split what happened from what your mind added, and found another way to see it.",
+      "another": "Another way to see it",
+      "before": "Before",
+      "now": "Now",
+      "practices": "Practices completed",
+      "ofThree": "{{count}} of 3 this week"
+    },
+    "garden": {
+      "notTried": "Not tried yet"
     }
   }
 }

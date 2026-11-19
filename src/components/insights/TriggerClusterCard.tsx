@@ -5,6 +5,8 @@ import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { useRouter } from "expo-router";
+import { buildExerciseRoute } from "@/src/screens/ExercisesScreen/exerciseScreenUtils";
+import type { ExerciseType } from "@/src/types/exerciseFlow";
 import {
   useTriggerClusters,
   type TriggerCluster,
@@ -61,10 +63,7 @@ function ClusterRow({ cluster }: { cluster: TriggerCluster }) {
       {cluster.bestExercise && (
         <Pressable
           onPress={() =>
-            router.push({
-              pathname: "/tabs/screens/exercise-flow",
-              params: { type: cluster.bestExercise!.type },
-            })
+            router.push(buildExerciseRoute(cluster.bestExercise!.type as ExerciseType) as never)
           }
           className="flex-row items-center gap-1 active:opacity-70 mt-0.5"
         >

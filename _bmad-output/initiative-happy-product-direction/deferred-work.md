@@ -74,3 +74,7 @@
 - source_plan: `/Users/samuelprasad/Desktop/happy/journals/_bmad-output/initiative-happy-product-direction/epic-job-led-first-use/story-refactor-sweep-closes-first-use-foundation-plan.md`
   summary: StarterPath repository typing and AuthContext file size remain cleanup work.
   evidence: The `any` cast and oversized provider are pre-existing ticket 2/3 implementation state, not caused by ticket 8.
+
+- source_plan: `epic-engagement-logging/story-queue-a-failed-save-and-show-it-as-unsynced-plan.md`
+  summary: Outbox is one global key, so an entry queued by one account replays into whichever account is signed in next.
+  evidence: `useOutboxReplay` uses the current user at call time and payloads carry no user id; decide whether guest entries should adopt the new account or stay user-scoped.

@@ -6,6 +6,7 @@ export const EXERCISE_CATEGORY_MAP: Record<ExerciseType, ExerciseCategory> = {
   thought_reframing: "cbt_core",
   gratitude_reframe: "cbt_core",
   abc_analysis: "cbt_core",
+  behavioral_activation: "cbt_core",
   // Mindfulness
   box_breathing: "mindfulness",
   breathing_478: "mindfulness",
@@ -15,6 +16,7 @@ export const EXERCISE_CATEGORY_MAP: Record<ExerciseType, ExerciseCategory> = {
   // Anxiety
   decatastrophizing: "anxiety",
   worry_decision_tree: "anxiety",
+  fear_ladder: "anxiety",
   detached_mindfulness: "overthinking",
   attention_training: "overthinking",
 };

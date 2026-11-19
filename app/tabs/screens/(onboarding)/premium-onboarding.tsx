@@ -26,7 +26,11 @@ export default function PremiumOnboardingRoute(): React.JSX.Element {
 
   return (
     <View className="flex-1 bg-happy-bg">
-      <OnboardingContainer userId={user?.id} onComplete={handleComplete} />
+      <OnboardingContainer
+        userId={user?.id}
+        onComplete={handleComplete}
+        onRequestSignIn={(): void => signInSheetRef.current?.present()}
+      />
       {isSheetOpen && (
         <View
           style={StyleSheet.absoluteFill}

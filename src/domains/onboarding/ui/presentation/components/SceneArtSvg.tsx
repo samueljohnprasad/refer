@@ -1,8 +1,10 @@
 // ponytail: exact full-fidelity vector scene art from .agents/onboarding.html
 import React from 'react';
 import { View, Text } from 'react-native';
+import Animated from 'react-native-reanimated';
 import Svg, { Rect, Circle, G, Ellipse, Path, Line, Text as SvgText } from 'react-native-svg';
 import { GoalId } from '../../../domain/enums';
+import { riseIn } from '../animations';
 
 export interface SceneArtSvgProps {
   goalId: GoalId;
@@ -11,7 +13,10 @@ export interface SceneArtSvgProps {
 
 export function SceneArtSvg({ goalId, caption }: SceneArtSvgProps): React.JSX.Element {
   return (
-    <View className="w-full rounded-3xl overflow-hidden bg-white/40 mb-3 border border-black/5 shadow-xs">
+    <Animated.View
+      entering={riseIn()}
+      className="w-full rounded-3xl overflow-hidden bg-white/40 mb-3 border border-black/5 shadow-xs"
+    >
       <View className="w-full h-28 items-center justify-center p-1">
         {goalId === GoalId.Worry && (
           <Svg viewBox="0 0 240 100" width="100%" height="100%">
@@ -146,6 +151,6 @@ export function SceneArtSvg({ goalId, caption }: SceneArtSvgProps): React.JSX.El
       {Boolean(caption) && (
         <Text className="px-4 pb-3 font-bold text-neutral-900 text-sm">{caption}</Text>
       )}
-    </View>
+    </Animated.View>
   );
 }

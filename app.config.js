@@ -1,10 +1,8 @@
-const appConfig = require("./app.json");
-
-module.exports = () => ({
-  ...appConfig.expo,
-  plugins: [...(appConfig.expo.plugins || []), "expo-video"],
+module.exports = ({ config }) => ({
+  ...config,
+  plugins: [...(config.plugins || []), "expo-video"],
   extra: {
-    ...appConfig.expo.extra,
+    ...config.extra,
     posthogProjectToken:
       process.env.POSTHOG_PROJECT_TOKEN ||
       "phc_BojwmboNhq7cfCBxCXaTTtNxHuvbCm5zHDp56STTA3rc",

@@ -1,0 +1,38 @@
+diff --git a/node_modules/whisper.rn/ios/RNWhisper.mm b/node_modules/whisper.rn/ios/RNWhisper.mm
+index 27908d4..8b5d006 100644
+--- a/node_modules/whisper.rn/ios/RNWhisper.mm
++++ b/node_modules/whisper.rn/ios/RNWhisper.mm
+@@ -12,6 +12,11 @@
+ #import <RNWhisperSpec/RNWhisperSpec.h>
+ #endif
+ 
++@protocol RNWhisperBridgeRuntimeAccess <NSObject>
++@property (nonatomic, readonly) void *runtime;
++@property (nonatomic, readonly) std::shared_ptr<facebook::react::CallInvoker> jsCallInvoker;
++@end
++
+ @implementation RNWhisper
+ 
+ NSMutableDictionary *contexts;
+@@ -595,14 +600,18 @@ - (void)releaseAllVadContexts {
+ RCT_EXPORT_METHOD(installJSIBindings:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject)
+ {
+-    RCTBridge *bridge = [RCTBridge currentBridge];
++    RCTBridge *bridge = self.bridge ?: [RCTBridge currentBridge];
+     if (bridge == nil) {
+         reject(@"whisper_jsi_error", @"Bridge not available", nil);
+         return;
+     }
+ 
+-    RCTCxxBridge *cxxBridge = (RCTCxxBridge *)bridge;
+-    auto callInvoker = bridge.jsCallInvoker;
++    id<RNWhisperBridgeRuntimeAccess> cxxBridge = (id<RNWhisperBridgeRuntimeAccess>)bridge.batchedBridge;
++    if (!cxxBridge) {
++        cxxBridge = (id<RNWhisperBridgeRuntimeAccess>)bridge;
++    }
++
++    auto callInvoker = cxxBridge.jsCallInvoker;
+     if (cxxBridge.runtime) {
+         facebook::jsi::Runtime *runtime = static_cast<facebook::jsi::Runtime *>(cxxBridge.runtime);
+ 

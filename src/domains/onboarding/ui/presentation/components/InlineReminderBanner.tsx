@@ -3,21 +3,22 @@ import React from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
 import { Sun, Moon } from 'lucide-react-native';
 import { ReminderPreset } from '../../../domain/enums';
+import type { ReminderStatus } from '../../containers/hooks/useReminderSelection';
 
 export interface InlineReminderBannerProps {
-  isSet: boolean;
+  status: ReminderStatus;
   activeTime: string | null;
   onPickPreset: (preset: ReminderPreset) => void;
   onChangeTime: () => void;
 }
 
 export function InlineReminderBanner({
-  isSet,
+  status,
   activeTime,
   onPickPreset,
   onChangeTime,
 }: InlineReminderBannerProps): React.JSX.Element {
-  if (isSet) {
+  if (status === 'granted') {
     return (
       <View className="flex-row items-center justify-between p-4 bg-happy-surface-2 rounded-m mb-4">
         <Text className="text-t-sub font-bold text-happy-label">
@@ -26,6 +27,17 @@ export function InlineReminderBanner({
         <Pressable onPress={onChangeTime} className="p-1 min-h-[44px] justify-center">
           <Text className="text-t-foot font-bold text-happy-accent">Change</Text>
         </Pressable>
+      </View>
+    );
+  }
+
+  // no retry this session, matching .agents/onboarding.html's systemPrompt() denial copy
+  if (status === 'denied') {
+    return (
+      <View className="p-4 bg-happy-surface-2 rounded-m mb-4">
+        <Text className="text-t-sub font-bold text-happy-label">
+          Reminders are off. You can turn them on in Settings.
+        </Text>
       </View>
     );
   }

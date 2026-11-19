@@ -53,10 +53,28 @@ export function getCategoryBadgeTheme(category: string): NutrieBadgeTheme {
   return CATEGORY_BADGE_THEME[category as ExerciseCategory] ?? CATEGORY_BADGE_THEME.cbt_core;
 }
 
+export const THOUGHT_CATCHER_ROUTE = "/tabs/screens/thought-catcher";
+
+export type PracticeLaunchParams = Partial<
+  Record<
+    "practiceSessionId" | "pathId" | "pathVersion" | "practiceSource" | "practiceId",
+    string
+  >
+>;
+
+// AD-12: the single redirect. thought_catcher opens the wizard unless a past entry is read-only.
 export function buildExerciseRoute(
   type: ExerciseType,
-  options?: { entryId?: string; readOnly?: boolean },
+  options?: { entryId?: string; readOnly?: boolean; practice?: PracticeLaunchParams },
 ): string {
+  if (type === "thought_catcher" && !options?.readOnly) {
+    const query = Object.entries(options?.practice ?? {})
+      .filter(([, value]) => value)
+      .map(([key, value]) => `${key}=${encodeURIComponent(value as string)}`)
+      .join("&");
+    return query ? `${THOUGHT_CATCHER_ROUTE}?${query}` : THOUGHT_CATCHER_ROUTE;
+  }
+
   const params = [`type=${encodeURIComponent(type)}`];
 
   if (options?.entryId) params.push(`entryId=${encodeURIComponent(options.entryId)}`);

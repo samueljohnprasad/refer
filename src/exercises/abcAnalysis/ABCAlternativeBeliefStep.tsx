@@ -1,25 +1,22 @@
 import React from "react";
-import { MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
 import type { ABCAnalysisResponse, StepProps } from "@/src/types/exerciseFlow";
-import { useABCCopy } from "./customStepShared";
+import { AbcWritingStep } from "./abcWritingStep";
+import { ABC_FAIR_STARTERS, abcSentence } from "./abcDomain";
 
-export function ABCAlternativeBeliefStep(
-  stepProps: StepProps<ABCAnalysisResponse>,
-): React.JSX.Element {
-  const copy = useABCCopy();
+export function ABCAlternativeBeliefStep(stepProps: StepProps<ABCAnalysisResponse>): React.JSX.Element {
   return (
-    <MultiTextInputStep maxItems={1} 
+    <AbcWritingStep
       {...stepProps}
-      {...copy.sharedProps}
-      title={copy.t("flow.ui.abc.alternativeBelief.title")}
-      subtitle={copy.t("flow.ui.abc.alternativeBelief.subtitle")}
       fieldKey="alternativeBelief"
-      placeholder={copy.t("flow.ui.abc.alternativeBelief.placeholder")}
-      suggestions={copy.balancedThoughtSuggestions}
-      referenceQuote={{
-        label: copy.t("flow.ui.abc.automaticThought"),
-        text: stepProps.response.belief,
-      }}
+      variant="frame"
+      question="What’s a fairer way to say it?"
+      sub="Aim for something fair and believable, not forced positive."
+      placeholder="It’s possible that…"
+      hint="A short sentence is enough."
+      need={2}
+      chips={ABC_FAIR_STARTERS}
+      chipMode="start"
+      sentence={(r) => abcSentence({ event: r.activatingEvent, belief: r.belief, feel: "", withFeel: false })}
     />
   );
 }

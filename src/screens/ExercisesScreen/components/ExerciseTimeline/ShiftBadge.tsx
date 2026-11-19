@@ -1,23 +1,19 @@
-import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 /**
  * ShiftBadge
  *
- * A compact inline pill that shows the before → after rating shift.
- * Example: "Distress  8 → 3"
- *
- * Color semantics:
- *  - Green tint → improvement (distress down, calm up)
- *  - Amber tint → no meaningful change or regression
+ * ponytail: before/after on one 0-10 track, matching .agents/exercises.html's `.mv` move-track.
+ * Track geometry lives once in MoveTrack (shared with TimelineEntryCard's collapsed-row use) —
+ * this component just adds the footer-row label text.
  *
  * Only renders when both `before` and `after` are provided.
  */
 
 import React from "react";
-import { View, Text, StyleSheet, Platform } from "react-native";
-import { SymbolView } from "expo-symbols";
-import { Feather } from "@expo/vector-icons";
+import { View, Text, StyleSheet } from "react-native";
+import { MoveTrack } from "@/src/domains/exercises/ui/presentation/components/MoveTrack";
+import { moveTone } from "@/src/domains/exercises/domain/timelineEntry";
+import { APP_FONT_FAMILIES } from "@/src/theme/typography";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 
 interface ShiftBadgeProps {
   /** Human label like "Distress", "Calm", "Anxiety" */
@@ -30,62 +26,22 @@ interface ShiftBadgeProps {
   readonly invertScale?: boolean;
 }
 
-function isImprovement(
-  before: number,
-  after: number,
-  invert: boolean,
-): boolean {
-  return invert ? after > before : after < before;
-}
-
 const ShiftBadge: React.FC<ShiftBadgeProps> = React.memo(
-  ({ label, before, after, invertScale = false }) => {
+  ({ label, before, after }) => {
     const hasBoth = before !== undefined && after !== undefined;
-    const improved: boolean = hasBoth ? isImprovement(before!, after!, invertScale) : false;
+    if (!hasBoth) {
+      return (
+        <Text style={styles.text}>{`${label}: ${before ?? after}`}</Text>
+      );
+    }
 
-    const accessibleText = hasBoth
-      ? `${label} shifted from ${before} to ${after}`
-      : `${label}: ${before ?? after}`;
+    const direction = after! < before! ? "down" : after! > before! ? "up" : "nowhere";
+    const accessibleText = `${label} went ${direction}, ${before} to ${after}`;
 
     return (
-      <View
-        style={[
-          styles.pill,
-          hasBoth && improved ? styles.pillImproved : styles.pillNeutral,
-        ]}
-        accessibilityRole="text"
-        accessibilityLabel={accessibleText}
-      >
-        {/* Arrow icon */}
-        {hasBoth && Platform.OS === "ios" ? (
-          <SymbolView
-            name={
-              improved
-                ? ("arrow.down.right" as any)
-                : ("arrow.right" as any)
-            }
-            size={9}
-            tintColor={improved ? SEMANTIC_COLORS.brand.onSoft : SEMANTIC_COLORS.text.secondary}
-            weight="semibold"
-            style={styles.icon}
-          />
-        ) : hasBoth ? (
-          <Feather
-            name={improved ? "trending-down" : "minus"}
-            size={10}
-            color={improved ? SEMANTIC_COLORS.brand.onSoft : SEMANTIC_COLORS.text.secondary}
-          />
-        ) : null}
-
-        {/* Label + values */}
-        <Text
-          style={[
-            styles.text,
-            hasBoth && improved ? styles.textImproved : styles.textNeutral,
-          ]}
-        >
-          {hasBoth ? `${label} ${before} → ${after}` : `${label}: ${before ?? after}`}
-        </Text>
+      <View style={styles.row} accessibilityRole="text" accessibilityLabel={accessibleText}>
+        <MoveTrack before={before!} after={after!} tone={moveTone(label, before!, after!)} />
+        <Text style={styles.text}>{`${label} ${before} → ${after}`}</Text>
       </View>
     );
   },
@@ -95,34 +51,16 @@ ShiftBadge.displayName = "ShiftBadge";
 export { ShiftBadge };
 
 const styles = StyleSheet.create({
-  pill: {
+  row: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 0,
-    borderRadius: 0,
+    gap: 6,
     alignSelf: "flex-start",
-  },
-  pillImproved: {
-    backgroundColor: "transparent",
-  },
-  pillNeutral: {
-    backgroundColor: "transparent",
-  },
-  icon: {
-    width: 10,
-    height: 10,
   },
   text: {
     fontFamily: APP_FONT_FAMILIES.semiBold,
     fontSize: 11,
     lineHeight: 14,
-  },
-  textImproved: {
-    color: SEMANTIC_COLORS.brand.onSoft,
-  },
-  textNeutral: {
     color: SEMANTIC_COLORS.text.secondary,
   },
 });

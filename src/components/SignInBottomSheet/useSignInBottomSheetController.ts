@@ -10,7 +10,7 @@ import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useTranslation } from "react-i18next";
 import { useSignupAnalytics } from "./useSignUpAnalytics";
 
-type SignupSource = "entry" | "onboarding";
+type SignupSource = "entry" | "onboarding" | "home";
 
 export interface PremiumRecoveryState {
   appUserID: string | null;

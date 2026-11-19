@@ -1,6 +1,6 @@
 import React, { Component, type ReactNode } from "react";
 import { View, Text, Pressable } from "react-native";
-import JournalCalendarScreen from "@/src/screens/JournalCalendarScreen/JournalCalendarScreen";
+import { HomeContainer } from "@/src/domains/home/ui/containers/HomeContainer";
 import { useTranslation } from "react-i18next";
 
 // ponytail: catch any unhandled render errors on home tab instead of native process abort
@@ -55,7 +55,7 @@ class HomeErrorBoundary extends Component<Props, State> {
 export default function HomeTab() {
   return (
     <HomeErrorBoundary>
-      <JournalCalendarScreen />
+      <HomeContainer />
     </HomeErrorBoundary>
   );
 }

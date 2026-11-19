@@ -1,22 +1,24 @@
 import React from "react";
-import { MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
 import type { ABCAnalysisResponse, StepProps } from "@/src/types/exerciseFlow";
-import { useABCCopy } from "./customStepShared";
+import { AbcWritingStep } from "./abcWritingStep";
+import { ABC_SCENES, ABC_THOUGHT_STARTERS, abcSentence } from "./abcDomain";
+import { abcFeelPhrase } from "./customStepShared";
 
-export function ABCBeliefStep(
-  stepProps: StepProps<ABCAnalysisResponse>,
-): React.JSX.Element {
-  const copy = useABCCopy();
+export function ABCBeliefStep(stepProps: StepProps<ABCAnalysisResponse>): React.JSX.Element {
+  const scene = ABC_SCENES.find((s) => s.event === stepProps.response.activatingEvent.trim());
   return (
-    <MultiTextInputStep maxItems={1} 
+    <AbcWritingStep
       {...stepProps}
-      {...copy.sharedProps}
-      title={copy.t("flow.ui.abc.belief.title")}
-      subtitle={copy.t("flow.ui.abc.belief.subtitle")}
-      tipText={copy.t("flow.ui.abc.belief.tip")}
       fieldKey="belief"
-      placeholder={copy.t("flow.ui.abc.belief.placeholder")}
-      suggestions={copy.beliefSuggestions}
+      variant="bubble"
+      question="What went through your mind just then?"
+      sub="Do not make it fair yet. Just catch it."
+      placeholder={scene?.placeholder ?? "“They think I…”"}
+      hint="A few words is enough."
+      need={2}
+      chips={scene ? scene.thoughts : ABC_THOUGHT_STARTERS}
+      chipMode={scene ? "use" : "start"}
+      sentence={(r) => abcSentence({ event: r.activatingEvent, belief: r.belief, feel: abcFeelPhrase(r.consequenceEmotion) })}
     />
   );
 }

@@ -153,24 +153,27 @@ const SwitchThemeProvider: React.FC<SwitchThemeProviderProps> = ({
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
   const clipPath = useDerivedValue(() => {
+    // ponytail: Skia 2.x immutable path factory
     const yPosition = Math.max(windowHeight - center.value.y, center.value.y);
     const xPosition = Math.max(windowWidth - center.value.x, center.value.x);
 
     const maxCircleRadius = Math.sqrt(yPosition ** 2 + xPosition ** 2);
     const minCircleRadius = 2;
 
-    const path = Skia.Path.Make();
-
-    path.addCircle(
-      center.value.x + center.value.width / 2,
-      center.value.y + center.value.height / 2,
+    const r = Math.max(
+      0,
       interpolate(
         clipPathRadiusScale.value,
         [0, 0.9],
         [minCircleRadius, maxCircleRadius],
       ),
     );
-    return path;
+
+    return Skia.Path.Circle(
+      center.value.x + center.value.width / 2,
+      center.value.y + center.value.height / 2,
+      r,
+    );
   }, [center]);
 
   return (

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thought Catcher · trap chips, step-up, stems, why sheet</title>
+<style>
+  /*
+  key-trap-chips-and-stems.html — governed by:
+  ux-engagement-logging/DESIGN.md: Layout & Spacing (chips wrap; escapes on their own last row; recall chip above the
+    stems; stems above the field; step-up options stacked); Shapes; Components > Trap chips and Trap definition,
+    Stems, Recall chip, Why sheet, Step-up row; Do's and Don'ts.
+  ux-engagement-logging/EXPERIENCE.md: Component Patterns > Trap chips, Trap definition, Step-up row, Stems,
+    Recall chip, Why sheet; The effort ladder rungs 2-3 and rule 3; Key Flows 1 (steps 3-6) and 4 (steps 2-3);
+    Accessibility Floor.
+  ux-onboarding-and-day-0/DESIGN.md: Choice rows & DistortionChips, Chat bubbles & QuickReplyChips (starter pill 36px),
+    Text field, tactile-button, Get help text button; EXPERIENCE.md ChatThread (a past reply collapses to a user
+    bubble), Memory callbacks.
+  Layout source: .agents/thought-catcher.html (header with back, progress, Get help, close; the person's line as a
+    right-aligned bubble; Happi beside the question; replies below; forward button in the footer; sheet with close).
+  Fonts: the product faces are Fredoka (display) and Nunito (text). No network is allowed in a mock,
+  so this file uses a system rounded/sans stack; sizes, weights and line heights are the spines'.
+  Rules checked: no shadow anywhere (fill and 1px hairline only), no emoji, no streak/XP/coins/confetti,
+  moods and traps colourless, every hex from one of the two DESIGN.md files. Static: no script, no network.
+  Placeholder copy (spines supply none yet) is listed in the hand-off summary.
+  */
+  :root{--font:ui-rounded,"SF Pro Rounded",-apple-system,system-ui,"Segoe UI",Roboto,sans-serif}
+  *{box-sizing:border-box;margin:0}
+  [hidden]{display:none!important}
+  body{font-family:var(--font);font-size:17px;line-height:25px;font-weight:500;color:#142414;background:#F7F7F7;padding:32px 24px}
+  .page{font-size:20px;line-height:26px;font-weight:700}
+  .pnote{font-size:15px;line-height:21px;color:#4B4B4B;margin:4px 0 24px;max-width:90ch}
+  .frames{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+  figure{width:410px}
+  figcaption{margin-top:12px;font-size:15px;line-height:21px;color:#4B4B4B}
+  figcaption b{display:block;font-size:17px;line-height:25px;font-weight:700;color:#142414}
+  /* device frame: 390x844 screen inside a 10px bezel (a border, not a shadow) */
+  .phone{width:410px;height:864px;border:10px solid #142414;border-radius:48px;overflow:hidden;background:#FFFFFF;display:flex;flex-direction:column;position:relative}
+  .status{flex:none;height:44px;display:flex;align-items:center;padding:0 28px;font-size:15px;font-weight:700}
+  svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .ib{width:44px;height:44px;display:grid;place-items:center;color:#44633F}
+  /* help-pill (base): outlined, never filled */
+  .pill-help{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid #767676;border-radius:9999px;font-size:15px;line-height:21px;font-weight:700;color:#142414}
+  /* chat bubbles (base): body text, sage-50 / sage-500 */
+  .bub{background:#F8FBF6;color:#142414;border-radius:20px;padding:12px;max-width:80%}
+  .me{display:flex;justify-content:flex-end;margin-bottom:16px}
+  .me p{max-width:80%;background:#5F7F58;color:#FFFFFF;border-radius:20px;padding:12px}
+  /* tactile-button (base): 56px face + 6px rim; the rim is a border */
+  .tactile{display:flex;align-items:center;justify-content:center;width:100%;height:62px;border-radius:9999px;background:#5F7F58;border-bottom:6px solid #44633F;color:#FFFFFF;font-size:17px;font-weight:700}
+  /* outline-button (base) */
+  .outline{display:flex;align-items:center;justify-content:center;width:100%;height:56px;border-radius:9999px;background:#FFFFFF;border:1px solid #767676;color:#142414;font-size:17px;font-weight:700}
+  /* one pill for quick-reply, check-in and DistortionChips; .s = starter/stem pill at 36px */
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:9999px;background:#F7F7F7;border:1px solid #F7F7F7;color:#142414}
+  .chip.b{font-weight:700}
+  .chip.sel{background:#F8FBF6;border-color:#5F7F58}
+  .chip.s{min-height:36px}
+  .chips.col{flex-direction:column}
+  .chips.col .chip{width:100%}
+  .sub{font-size:15px;line-height:21px;color:#4B4B4B}
+  .cap{font-size:13px;line-height:18px;color:#4B4B4B}
+  .link{color:#44633F;font-weight:700}
+  .g8{margin-top:8px}.g12{margin-top:12px}.g16{margin-top:16px}.g24{margin-top:24px}
+  /* SavedCard + ProgressPair (base) */
+  .card{background:#F7F7F7;border-radius:24px;padding:16px}
+  .savedrow{display:flex;align-items:center;gap:4px;font-size:13px;line-height:18px;color:#44633F}
+  .savedrow svg{width:14px;height:14px;fill:none;stroke:#44633F;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .move{margin-top:8px;font-size:24px;line-height:29px;font-weight:600}
+  .hardline{margin-top:8px;font-size:17px;line-height:25px;font-weight:700;color:#142414}
+  .r{margin-top:12px;padding-top:12px;border-top:1px solid #E5E5E5}
+  .r .cap{display:flex;justify-content:space-between}
+  .thought{color:#4B4B4B}
+  .other{color:#44633F;font-weight:700}
+  .pp{display:flex;align-items:center;justify-content:space-between}
+  .pp .n{font-size:34px;line-height:40px;font-weight:600}
+  .pp.home .n{font-size:28px;line-height:34px}
+  .pp .ring{display:flex;align-items:center;gap:8px}
+  .pp svg{width:34px;height:34px}
+
+  /* flow chrome (.agents/thought-catcher.html): back, 3-part progress, Get help text button, close */
+  .fh{flex:none;display:flex;align-items:center;gap:12px;padding:0 12px}
+  .fh .ib{color:#142414}
+  .bar{flex:1;display:flex;gap:4px}
+  .bar i{flex:1;height:8px;border-radius:9999px;background:#E5E5E5}
+  .bar i.f{background:#5F7F58}
+  .fh .gh{font-size:15px;line-height:21px;font-weight:700;color:#142414}
+  main{flex:1;min-height:0;padding:16px}
+  footer{flex:none;padding:12px 16px 24px;display:flex;flex-direction:column;gap:12px;align-items:center}
+  .ask{display:flex;align-items:flex-end;gap:8px;margin-bottom:16px}
+  .ask .happi{flex:none;width:84px}
+  .ask.small .happi{width:64px}
+  .ask .bub{flex:1;align-self:center;font-size:20px;line-height:26px;font-weight:700}
+  /* recall-chip */
+  .recall{background:#F8FBF6;border:1px solid #D3E0CD;border-radius:18px;padding:12px}
+  .field{display:flex;align-items:center;min-height:56px;padding:0 16px;border-radius:9999px;background:#F7F7F7}
+  .field i{width:2px;height:24px;background:#5F7F58}
+  /* step-up-row options */
+  .opt{display:flex;align-items:center;min-height:56px;padding:0 16px;background:#F7F7F7;border-radius:18px;font-weight:700}
+  .stack{display:flex;flex-direction:column;gap:8px}
+  /* why-sheet over a scrim */
+  .scrim{position:absolute;inset:0;background:#142414;opacity:.4}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:#FFFFFF;border-radius:24px 24px 0 0;padding:16px 16px 32px}
+  .sheet h3{font-size:20px;line-height:26px;font-weight:700;padding-right:44px}
+  .sheet .x{position:absolute;top:8px;right:8px;color:#4B4B4B}
+  .sheet .src{background:#F7F7F7;border-radius:20px;padding:16px}
+  .sheet .acts{display:flex;gap:24px}
+  .sheet .acts span{display:flex;align-items:center;min-height:44px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="cloud" viewBox="0 0 120 92">
+    <g fill="#ABC0A2"><circle cx="36" cy="56" r="22"/><circle cx="62" cy="40" r="30"/><circle cx="88" cy="58" r="20"/><rect x="26" y="52" width="72" height="30" rx="15"/></g>
+    <g fill="#FFFFFF"><circle cx="36" cy="56" r="20"/><circle cx="62" cy="40" r="28"/><circle cx="88" cy="58" r="18"/><rect x="28" y="54" width="68" height="26" rx="13"/></g>
+  </symbol>
+  <symbol id="h-idle" viewBox="0 0 120 92"><use href="#cloud"/>
+    <ellipse cx="51" cy="54" rx="3.2" ry="4.2" fill="#142414"/><ellipse cx="73" cy="54" rx="3.2" ry="4.2" fill="#142414"/>
+    <path d="M56 64q6 5 12 0" fill="none" stroke="#142414" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="h-rest" viewBox="0 0 120 92"><use href="#cloud"/>
+    <path d="M46 55q5 4 10 0M68 55q5 4 10 0M58 66q4 2 8 0" fill="none" stroke="#142414" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="h-pride" viewBox="0 0 120 92"><use href="#cloud"/>
+    <circle cx="42" cy="63" r="5" fill="#D3E0CD"/><circle cx="82" cy="63" r="5" fill="#D3E0CD"/>
+    <ellipse cx="51" cy="54" rx="3.2" ry="4.2" fill="#142414"/><ellipse cx="73" cy="54" rx="3.2" ry="4.2" fill="#142414"/>
+    <path d="M56 64q6 5 12 0" fill="none" stroke="#142414" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="h-concern" viewBox="0 0 120 92"><g transform="rotate(-7 62 56)"><use href="#cloud"/>
+    <path d="M45 46l8-3M79 46l-8-3M57 66q5-2 10 0" fill="none" stroke="#142414" stroke-width="2.2" stroke-linecap="round"/>
+    <ellipse cx="51" cy="55" rx="3.2" ry="4.2" fill="#142414"/><ellipse cx="73" cy="55" rx="3.2" ry="4.2" fill="#142414"/></g></symbol>
+</defs></svg>
+<h1 class="page">Thought Catcher · trap chips, step-up, stems, why sheet</h1>
+<p class="pnote">Priya’s entry (Flow 1). The recall chip and Why sheet are the Flow 4 (Ravi) pattern, shown on the same thread.</p>
+<div class="frames">
+<figure><div class="phone"><div class="status">6:41</div><div class="fh"><span class="ib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span><div class="bar"><i class=f></i><i></i><i></i></div><span class="gh">Get help</span><span class="ib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span></div><main><div class="me"><p>They think I’m not pulling my weight</p></div><div class="ask"><svg class="happi" viewBox="0 0 120 92" role="img" aria-label="Happi"><use href="#h-idle"/></svg><p class="bub">Does one of these fit?</p></div><div class="chips"><span class="chip b sel">Mind reading</span><span class="chip b">Catastrophising</span><span class="chip b">All-or-nothing</span><span class="chip b">More</span></div><p class="sub g8">Assuming you know what someone else is thinking.</p><div class="g8"><div class="chips "><span class="chip b">Not sure</span><span class="chip b">None of these, it’s just hard</span></div></div></main><footer><div class="tactile">Next</div></footer></div><figcaption><b>1 · Trap step</b>Priya’s thought, then “Does one of these fit?”. Her top three traps, More, the definition under the chip rows, then “Not sure” and “None of these, it’s just hard” on their own row in the same pill at the same weight.</figcaption></figure>
+<figure><div class="phone"><div class="status">6:41</div><div class="fh"><span class="ib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span><div class="bar"><i class=f></i><i></i><i></i></div><span class="gh">Get help</span><span class="ib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span></div><main><div class="me"><p>They think I’m not pulling my weight</p></div><div class="me"><p>Mind reading</p></div><p>Want to go one step further? About 1 min.</p><div class="stack g12"><div class="opt">Write a fairer version · 1 min</div><div class="opt">That’s enough for today</div></div></main></div><figcaption><b>2 · Step-up row</b>After the trap step, once. One body line, then two stacked options with identical height and fill (surface-soft, 18px radius). No filled sage button.</figcaption></figure>
+<figure><div class="phone"><div class="status">6:42</div><div class="fh"><span class="ib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span><div class="bar"><i class=f></i><i class=f></i><i></i></div><span class="gh">Get help</span><span class="ib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span></div><main><div class="me"><p>They think I’m not pulling my weight</p></div><div class="ask"><svg class="happi" viewBox="0 0 120 92" role="img" aria-label="Happi"><use href="#h-idle"/></svg><p class="bub">What’s a fairer way to say it?</p></div><div class="recall"><p>I can’t know what they think until I ask.</p><p class="cap">2 November · <span style="color:#44633F">Why am I seeing this?</span></p></div><div class="g12"><div class="chips "><span class="chip s">Another way to see it is…</span><span class="chip s">What I’d tell a friend is…</span><span class="chip s">The part I’m missing might be…</span></div></div><div class="field g8"><i></i></div></main><footer><div class="tactile">Next</div></footer></div><figcaption><b>3 · Fair-thought step</b>Recall chip (own earlier sentence, dated 2 November, with its why link) full width above the stems; stems wrap above the field.</figcaption></figure>
+<figure><div class="phone"><div class="status">6:42</div><div class="fh"><span class="ib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span><div class="bar"><i class=f></i><i class=f></i><i></i></div><span class="gh">Get help</span><span class="ib"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span></div><main><div class="me"><p>They think I’m not pulling my weight</p></div><div class="ask"><svg class="happi" viewBox="0 0 120 92" role="img" aria-label="Happi"><use href="#h-idle"/></svg><p class="bub">What’s a fairer way to say it?</p></div><div class="recall"><p>I can’t know what they think until I ask.</p><p class="cap">2 November · <span style="color:#44633F">Why am I seeing this?</span></p></div><div class="g12"><div class="chips "><span class="chip s">Another way to see it is…</span><span class="chip s">What I’d tell a friend is…</span><span class="chip s">The part I’m missing might be…</span></div></div><div class="field g8"><i></i></div></main><footer><div class="tactile">Next</div></footer><div class="scrim"></div><div class="sheet"><span class="ib x"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span><h3>Why am I seeing this?</h3><p class="g8">You wrote this the last time you picked Mind reading.</p><div class="src g16"><p>“I can’t know what they think until I ask.”</p><p class="cap g8">2 November · Mind reading</p></div><div class="acts g8"><span class="link">Edit</span><span class="link">Forget this</span></div></div></div><figcaption><b>4 · Why sheet</b>Opened from the recall chip’s link. Title, one sentence on where the line came from, the source entry quoted on surface-soft, then “Edit” and “Forget this” as sage-600 text actions. No destructive colour.</figcaption></figure>
+</div>
+</body>
+</html>

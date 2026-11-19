@@ -160,6 +160,7 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
 
     return (
       <StepLayout
+        happi={false}
         title={title}
         subtitle={subtitle ?? t("flow.ui.engine.timer.fallbackSubtitle")}
         progress={progress}

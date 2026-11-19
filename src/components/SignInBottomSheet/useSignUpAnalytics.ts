@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { usePostHog } from "posthog-react-native";
 
 type SignupProvider = "apple" | "google";
-type SignupSource = "entry" | "onboarding";
+type SignupSource = "entry" | "onboarding" | "home";
 
 const SIGNUP_COPY_VARIANT = "personalized_journey_v1";
 

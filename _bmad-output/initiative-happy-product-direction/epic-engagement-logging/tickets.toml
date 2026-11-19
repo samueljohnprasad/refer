@@ -1,0 +1,208 @@
+# Engagement and logging stories. Table order is the recommended build order.
+
+[[entry]]
+id = 1
+type = "story"
+title = "One sitting, one row, one count on Home"
+description = "Thought Catcher generates its entry id at the start of a sitting and passes it on every write with a fixed selected_date; the new rules entryRung and countsAsPractice and the usePracticeCounts hook (lifetime and this-week counts) feed Home's ring and lifetime count from Supabase rows, with the first co-located domain tests."
+verify = "Finish a Thought Catcher sitting on a device: exactly one new exercise_entries row exists, Home's ring and count rise by one without restarting the app, and the two rule table tests pass."
+covers = ["R1", "R6"]
+after = []
+hitl = true
+risk = "high"
+plan_checkpoint = true
+unknown = "Whether an anonymous user can write exercise_entries on the hosted project; a person checks the hosted access policy before this starts."
+references = ["architecture-engagement-logging/architecture-engagement-logging.md#ad-13", "architecture-engagement-logging/architecture-engagement-logging.md#ad-14", "architecture-engagement-logging/architecture-engagement-logging.md#ad-16", "architecture-engagement-logging/architecture-engagement-logging.md#ad-25", "src/domains/thoughtCatcher/ui/containers/ThoughtCatcherContainer.tsx", "src/hooks/useExerciseMutation.ts", "src/domains/home/ui/containers/HomeContainer.tsx"]
+
+[[entry]]
+id = 2
+type = "story"
+title = "Write the logging copy"
+description = "Adds every English i18n key the epic's later stories use: ask lines, button labels with time costs, the trap prompt, escape labels and trap definitions, the step-up row, stems and examples, saved-card lines including You caught the thought and That sounds hard, the unsynced line, recall and why-sheet strings, the tone card and Account row, Catch another one, accessibility labels, and the Plain variants; later stories add no keys."
+verify = "Every string named in the UX spine's Voice and Tone, Component Patterns, Saved card variants, Rotation and Accessibility Floor sections resolves to English text in the exercises or home namespace, and a person has signed off the wording."
+covers = ["R2", "R3", "R4", "R7", "R8", "R9"]
+after = []
+hitl = true
+risk = "low"
+references = ["ux-engagement-logging/EXPERIENCE.md#voice-and-tone", "ux-engagement-logging/EXPERIENCE.md#rotation", "architecture-engagement-logging/architecture-engagement-logging.md#ad-23", "src/locales/en/exercises.json", "src/locales/en/home.json"]
+
+[[entry]]
+id = 3
+type = "story"
+title = "Thought, then trap, saved as a catch"
+description = "Reshapes the wizard to thought then trap, dropping the situation, checkpoint and is-it-true steps and showing the intro to first-time users only; adds recent-thought chips, the trap step with the three most-picked traps from completed thought_catcher rows, More, Not sure and None of these, the trap definition line, the TrapChoice type with its label table and the TrapType mapping function, the optional trap field, the completed rung-2 write when the step is answered with situation saved as an empty string, and replace-by-id writes to the local reflection cache."
+verify = "Answer the trap step with a trap, with Not sure and with None of these: each leaves one completed row carrying that trap value and one cache record; going Back and re-answering changes the same row; the Home reflection card still labels an older entry's trap."
+covers = ["R1", "R2"]
+after = [1, 2]
+hitl = false
+risk = "medium"
+references = ["architecture-engagement-logging/architecture-engagement-logging.md#ad-15", "architecture-engagement-logging/architecture-engagement-logging.md#ad-22", "ux-engagement-logging/mockups/key-trap-chips-and-stems.html", "src/domains/thoughtCatcher/domain/steps.ts", "src/domains/thoughtCatcher/data/buildEntryPayload.ts", "src/domains/home/data/reflectionsStorage.ts", "src/domains/home/ui/presentation/views/ReflectionsSection.tsx"]
+
+[[entry]]
+id = 7
+type = "story"
+title = "Every Thought Catcher entry point opens the wizard"
+description = "Makes buildExerciseRoute the single redirect for thought_catcher, replaces the hardcoded generic-flow routes in the assistant and starter path, keeps the generic flow for read-only history, and has the wizard call the practice-completion adapter on its first completed write only when it was launched with starter-path parameters."
+verify = "Starting Thought Catcher from Home, Lessons, the resume row, the assistant and the starter path all open the wizard; opening a past entry from My Log still renders it read-only; a path-launched sitting writes one practice-completion record and a Home-launched sitting writes none."
+covers = ["R1"]
+after = [3, "2.2"]
+hitl = false
+risk = "medium"
+references = ["architecture-engagement-logging/architecture-engagement-logging.md#ad-12", "src/screens/ExercisesScreen/exerciseScreenUtils.ts", "src/components/happy-assistant/constants.ts", "src/domains/journey/model/starterPath.ts", "src/domains/practice/data/practiceCompletion.repo.ts", "src/screens/ExerciseFlowScreen/useExerciseFlowActions.ts"]
+
+[[entry]]
+id = 4
+type = "story"
+title = "Step up, stems and a resumable draft"
+description = "Shows the step-up row once after the trap step with the stop option at equal weight, offers three rotating stems and a rotating example at the fair-thought step, keeps unfinished input in a draft adapter holding the entry id, selected_date and text that survives closing the app, saves the fair thought with its before and after ratings onto the same row, and keeps the existing go-deeper link to Thought Reframing as a quiet text link; the draft's shape is the paused-entry input the Home resolver reads."
+verify = "Catch a thought, step up, close the app mid-sentence and reopen the wizard: the input is restored, saving leaves one row at rung 3, and choosing That's enough for today leaves one row at rung 2 with no draft."
+covers = ["R1", "R3"]
+after = [3, 7]
+hitl = false
+risk = "medium"
+references = ["architecture-engagement-logging/architecture-engagement-logging.md#ad-14", "architecture-engagement-logging/architecture-engagement-logging.md#ad-21", "ux-engagement-logging/mockups/key-trap-chips-and-stems.html"]
+
+[[entry]]
+id = 8
+type = "story"
+title = "Week leaf from completed exercises and mood logs"
+description = "Replaces useWeekPracticeDays with useWeekShowedUp on a Monday to Sunday local week bucketed by selected_date, filled by a completed exercise or a mood log and never by an in-progress row, updates its callers including useMoodWeek, and has both the exercise save and the mood log invalidate the showed-up and practice-count keys."
+verify = "Log a mood on a day with no exercise and the leaf fills at once; an in-progress Fear Ladder row fills nothing; the week starts on Monday; the Practice mood chart still marks practised days."
+covers = ["R6"]
+after = [1]
+hitl = false
+risk = "medium"
+references = ["architecture-engagement-logging/architecture-engagement-logging.md#ad-16", "architecture-engagement-logging/architecture-engagement-logging.md#ad-25", "src/screens/ExercisesScreen/hooks/useWeekPracticeDays.ts", "src/hooks/insights/useMoodWeek.ts", "src/domains/exercises/ui/presentation/components/WeekPresenceStrip.tsx", "hooks/data/useEmotionLogger.tsx"]
+
+[[entry]]
+id = 5
+type = "story"
+title = "Saved card variants and the hard-entry rule"
+description = "Adds moodBand, bandForDay over a moods read that includes input_method and selected_date, and isHardEntry; omits postIntensity from the payload when the after-rating was not set; and replaces the wizard's summary step with the saved card as standard, catch-only or hard entry with the matching Happi expression and haptic."
+verify = "A rung-3 save shows the standard card, a rung-2 save shows one row and no belief change, a save on a Bad-mood day or with None of these shows That sounds hard with Breathe for a minute and the help pill, onboarding's keepsake step still renders its card unchanged, and the three rule table tests pass."
+covers = ["R4"]
+after = [4, 8]
+hitl = false
+risk = "medium"
+references = ["architecture-engagement-logging/architecture-engagement-logging.md#ad-18", "architecture-engagement-logging/architecture-engagement-logging.md#ad-19", "ux-engagement-logging/mockups/key-saved-card-cases.html", "src/domains/onboarding/ui/presentation/components/SavedReflectionCard.tsx", "hooks/data/useEmotionLogger.tsx"]
+
+[[entry]]
+id = 6
+type = "story"
+title = "Queue a failed save and show it as unsynced"
+description = "Keeps a failed Thought Catcher write in an outbox keyed by entry id, replays it when the app next comes to the foreground with a user, and passes synced or queued to the saved card so a queued entry shows the unsynced line and moves no count; a queued entry is still in the local reflection cache, so Home treats it as saved today."
+verify = "Save with the network off: the card shows the unsynced line and Home's count does not change; restore the network and foreground the app: one row appears and the count rises once."
+covers = ["R5"]
+after = [5]
+hitl = true
+risk = "high"
+plan_checkpoint = true
+references = ["architecture-engagement-logging/architecture-engagement-logging.md#ad-26"]
+
+[[entry]]
+id = 9
+type = "story"
+title = "Practice and garden on the shared count"
+description = "Adds per-topic counts to usePracticeCounts, moves Practice stats, the baseline pots and the by-topic plots onto it, animates a new growth step once on the next visit with a still frame under Reduce Motion, and makes the belief, recommendation and timeline readers skip entries below rung 3 and treat a missing postIntensity as no after-rating."
+verify = "After a catch-only save and a breathing session, Home's count and Practice's count match, the right topic plots gain a leaf that animates once, and the belief chart shows no flat line for the catch."
+covers = ["R6"]
+after = [5, 8]
+hitl = false
+risk = "medium"
+references = ["architecture-engagement-logging/architecture-engagement-logging.md#ad-13", "src/hooks/insights/useInsightsOverview.ts", "src/hooks/insights/useBeliefDecay.ts", "src/hooks/insights/useExerciseRecommendation.ts", "src/screens/ExercisesScreen/hooks/useExerciseTimeline.ts", "src/screens/InsightsScreen/InsightsScreen.tsx", "src/screens/ExercisesScreen/ExercisesScreen.tsx"]
+
+[[entry]]
+id = 10
+type = "story"
+title = "The Home resolver as a pure rule"
+description = "Adds resolveHomeAsk in the home domain with the base precedence, modifiers M1 to M6, the paused-versus-saved rule and the tone-card condition over a typed input object that includes install day, gap days and the draft shape from the step-up story, plus the home preferences adapter with the first-open date; it renders nothing."
+verify = "The resolver's table test covers every modifier, the lapsed and return inputs, the paused-versus-saved rule and the one-bubble limit."
+covers = ["R7"]
+after = [4, 5]
+hitl = false
+risk = "medium"
+references = ["architecture-engagement-logging/architecture-engagement-logging.md#ad-17", "ux-engagement-logging/EXPERIENCE.md#state-patterns", "ux-engagement-logging/EXPERIENCE.md#silence-rules"]
+
+[[entry]]
+id = 17
+type = "story"
+title = "Home renders what the resolver returns"
+description = "Wires HomeContainer to one inputs hook and the resolver, puts the time cost in the button label, shows Wind down at night, Continue for a paused draft and Catch another one once a thought is saved today, routes the mood-reply bubble through the resolver, and removes the bubble lines and night window from useHomeScene."
+verify = "On a device the button reads Wind down after 22:00, Continue with a paused draft and Catch a thought with its time cost otherwise; a queued save still shows as saved today; no screen shows two bubbles."
+covers = ["R7"]
+after = [6, 10]
+hitl = false
+risk = "high"
+plan_checkpoint = true
+references = ["ux-engagement-logging/mockups/key-home-ask.html", "src/domains/home/ui/containers/useHomeScene.ts", "src/domains/home/ui/containers/HomeContainer.tsx", "src/domains/home/ui/presentation/views/MoodCheckInView.tsx"]
+
+[[entry]]
+id = 11
+type = "story"
+title = "The daily ask bubble"
+description = "Adds pickAskLine with the fixed lines for days 1 to 5 and the no-repeat rotation after, the ask-shown preference, and shows the ask bubble once per local day under the resolver's conditions and silence rules."
+verify = "The ask shows on the first Home open of a day and not on later opens that day; on day 2 the line is the fixed one for its window; from day 6 the line differs on three consecutive days; no ask shows after a Bad or Terrible chip, at night, or once a thought is saved today."
+covers = ["R7"]
+after = [2, 17]
+hitl = false
+risk = "medium"
+references = ["architecture-engagement-logging/architecture-engagement-logging.md#ad-21", "ux-engagement-logging/EXPERIENCE.md#silence-rules"]
+
+[[entry]]
+id = 12
+type = "story"
+title = "Recall your own fair thought"
+description = "Adds the recall repo function with its trap, exclusion and Low-day rules, the exercises preferences adapter with the device-local exclusion set, the recall chip above the stems, and the why sheet with Open entry, which shows the source entry read-only, and Forget this."
+verify = "With an earlier fair thought for the same trap the chip shows it with its date; one saved on a Bad-mood day never shows; Open entry shows the source entry read-only; Forget this removes the chip for that sentence and leaves the entry in My Log."
+covers = ["R8"]
+after = [4, 5, 6]
+hitl = false
+risk = "medium"
+references = ["architecture-engagement-logging/architecture-engagement-logging.md#ad-20", "ux-engagement-logging/mockups/key-trap-chips-and-stems.html"]
+
+[[entry]]
+id = 13
+type = "story"
+title = "Gentle or Plain tone"
+description = "Adds the tone preference to the exercises preferences adapter, passes it as i18next context to logging copy in the wizard, saved card and Home, shows the tone card once after the third completed exercise through the resolver, and adds the tone row in Account."
+verify = "Choosing Plain changes the lines that have a Plain variant in English and leaves the rest unchanged in another language; the card appears once and never on a Bad or Terrible day; clearing storage returns Gentle."
+covers = ["R9"]
+after = [2, 6, 11, 12]
+hitl = false
+risk = "low"
+references = ["architecture-engagement-logging/architecture-engagement-logging.md#ad-23", "src/domains/home/ui/presentation/views/AccountSheet.tsx"]
+
+[[entry]]
+id = 14
+type = "story"
+title = "Logging events from one module"
+description = "Adds loggingEvents with typed functions for the ask, rung, step-up, recall, tone and one entry_saved event per sitting, and calls them from the ask, wizard, saved card, recall and tone paths."
+verify = "A captured session of one stepped-up sitting shows one entry_saved event with rung 3 and no text properties, and no new call site uses posthog.capture directly."
+covers = ["R10"]
+after = [6, 11, 12, 13]
+hitl = false
+risk = "low"
+references = ["architecture-engagement-logging/architecture-engagement-logging.md#ad-24", "docs/research/engagement-and-logging.md#92-events-to-add"]
+
+[[entry]]
+id = 15
+type = "story"
+title = "Clinician review of the catch stop and the hard-entry card"
+description = "A clinician reviews stopping at a caught thought with no fair version, the None of these path and the hard-entry card on a build, and their required changes are recorded as new entries."
+verify = "A dated sign-off or a list of required changes exists in the epic's Notes."
+covers = ["R4"]
+after = [5]
+hitl = true
+risk = "medium"
+
+[[entry]]
+id = 16
+type = "story"
+title = "Refactor sweep"
+description = "Cleans up what the epic's plans and deferred review findings name; its scope is set when it starts."
+verify = "The typecheck and domain tests pass and the four journeys in the epic's Done when still run on a device."
+covers = []
+after = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17]
+hitl = false
+risk = "low"
+

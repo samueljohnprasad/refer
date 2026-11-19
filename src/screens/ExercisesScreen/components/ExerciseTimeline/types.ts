@@ -37,6 +37,8 @@ export interface ExerciseTimelineItem extends TimelineItemData {
   readonly gratitudeEntries?: string[];
   /** Optional array of emotions felt */
   readonly emotions?: Array<{ emotion: string; intensity: number }>;
+  /** Where a paused Fear Ladder run stands, from its saved rungs */
+  readonly pausedRung?: { position: number; total: number };
   /** Navigation callback */
   readonly onPress: (e?: any) => void;
 }

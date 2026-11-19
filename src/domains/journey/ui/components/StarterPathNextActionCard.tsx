@@ -3,6 +3,7 @@ import { Pressable, Text, View } from "react-native";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 
+import { buildExerciseRoute } from "@/src/screens/ExercisesScreen/exerciseScreenUtils";
 import { useStarterPathProgress } from "../../data/useStarterPathProgress";
 
 export function StarterPathNextActionCard(): React.JSX.Element | null {
@@ -12,6 +13,10 @@ export function StarterPathNextActionCard(): React.JSX.Element | null {
   const openNextAction = useCallback((): void => {
     if (!progress) return;
     if (progress.nextAction.kind === "practice") {
+      if (progress.nextAction.targetId === "thought_catcher") {
+        router.push(buildExerciseRoute("thought_catcher") as never);
+        return;
+      }
       router.push({
         pathname: "/tabs/screens/exercise-flow",
         params: {

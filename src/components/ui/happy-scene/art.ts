@@ -5,6 +5,7 @@ export const INK = "#252525";
 export const WHITE = "#FFFFFF";
 export const HEART = "#D3CDEB";
 export const SHADOW = "#BCD0AF";
+export const TONGUE = "#F2A7A0";
 export const STROKE = 3;
 export const LINE = { head: 3, tuft: 3, mouth: 2.5, pad: 1.5, fold: 3 } as const;
 
@@ -13,6 +14,7 @@ export const PIVOT = {
   body: [130, 227],
   heart: [130, 201],
   neck: [131, 152],
+  mouth: [131.75, 134.5],
   earL: [80, 72],
   earR: [178, 76],
   eyes: [132, 109],
@@ -20,6 +22,8 @@ export const PIVOT = {
   elbowL: [91, 180],
   shoulderR: [169, 158],
   elbowR: [169, 180],
+  pawL: [91, 204],
+  pawR: [169, 204],
 } as const;
 
 export const shadow = { cx: 130, cy: 244, rx: 44, ry: 5 } as const;
@@ -41,6 +45,12 @@ export const eyes = [
 
 export const nose = { cx: 131.75, cy: 123.75, rx: 6, ry: 4.2 } as const;
 export const pawPad = { cx: 91, cy: 208, r: 3 } as const;
+export const mouthInner = { cx: 131.75, cy: 141.4, rx: 4.7, ry: 2.9 } as const;
+// closed happy-squint curve per eye, crossfaded against the eye's white/pupil content by the `cheek` channel
+export const happyEyes = [
+  "M85 111 C88.5 100 106.5 100 110 111",
+  "M153.5 114.5 C157 103.5 175 103.5 178.5 114.5",
+] as const;
 
 export const paths = {
   legL: "M96 211 L96.6 219.6 C97.2 225 98.5 231 100.5 235 C102.3 239 105.5 242.5 112 242.5 L117 242.5 C122.5 242.5 126.5 239.5 126.5 235 L126.5 211 Z",
@@ -62,6 +72,8 @@ export const paths = {
   head: "M98.9 51 C111.4 46.8 113.4 47.3 117.5 46.4 C121.8 45.4 127.3 40.4 131.4 40.4 C135.5 40.4 137.8 46.7 137.9 46.7 C177 49.7 210.2 84.8 210.7 122.1 C211.7 142.3 204.6 156.9 185.5 164.5 C170.3 171.3 150.2 170 131 170 C129.8 169.8 126.5 169.4 124 169.1 C121.5 168.8 118.7 168.4 116 168 C113.3 167.6 110.7 167 108 166.4 C105.3 165.8 103 165.2 100 164.3 C97 163.4 93.3 162.4 90 161.2 C86.7 160 83.3 158.8 80 157.3 C76.7 155.8 72.9 153.9 70 152 C67.1 150.1 64.5 148.1 62.4 146 C60.3 143.9 58.9 141.5 57.6 139.2 C56.3 136.9 55.4 134.2 54.5 132 C53.6 129.8 53 128.2 52.5 126 C52 123.8 51.8 121.3 51.6 119 C51.4 116.7 51.3 113.2 51.3 112.1 C51.3 88.2 69.8 61.1 98.9 51 Z",
   hairTufts: "M135.5 41.6 Q138.6 46 136.6 52 Q135.2 56.5 132.6 56.2 M140.5 47 Q147 52 144.5 62",
   mouth: "M124.22 132.15 Q125.97 136 128.43 134.95 Q130.53 134.25 131.93 132.5 Q133.32 134.6 135.43 134.95 Q137.88 136 139.28 132.5",
+  // open-mouth+tongue, crossfaded against the closed smile above by the `mouth` channel (binary at >.03)
+  mouthOpen: "M122.5 132.2 Q131.75 135.5 141 132.2 C141.3 141 137 145 131.75 145 C126.5 145 122.2 141 122.5 132.2 Z",
 } as const;
 
 export const scenery = {

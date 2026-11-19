@@ -2,18 +2,18 @@
 import { supabase } from '@/src/network/auth/supabase';
 import { updateUserStreak } from '@/src/lib/api/mentalHealthJourneyApi';
 import { saveLocalReflection } from './onboardingStorage';
-import { scheduleOnboardingReminder } from './notificationScheduler';
+import { upsertReflection } from '@/src/domains/home/data/reflectionsStorage';
 import type { ReflectionData } from '../domain/types';
 
+// ponytail: the reminder itself is scheduled immediately when a time is tapped in the saved card
+// (useReminderSelection), matching .agents/onboarding.html's "native prompt only after a time chip is
+// tapped" rule — not re-scheduled here on Finish.
 export async function completeOnboarding(
   userId: string | undefined,
   reflection: ReflectionData
 ): Promise<void> {
   await saveLocalReflection(reflection);
-
-  if (reflection.reminder) {
-    await scheduleOnboardingReminder(reflection.reminder);
-  }
+  await upsertReflection(reflection);
 
   if (userId) {
     try {

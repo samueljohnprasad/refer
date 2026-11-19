@@ -29,6 +29,18 @@
     { patch: [97.5, 107, 25.5, 25, -8], white: [99, 107, 18.5, 17.5], pupil: [100.5, 109, 14], glints: [[95.5, 101.5, 3.3], [91.5, 107.5, 2]] },
     { patch: [166, 110.5, 25.5, 25.5, 6], white: [165.5, 110.75, 18, 17.75], pupil: [164.5, 113, 14], glints: [[159.5, 105, 3], [155.5, 111, 2]] },
   ];
+  // pupil+glints shrink toward their own eye's pupil centre (never the other eye's) — the "pup" channel,
+  // used for alarmed/narrowed looks. DOM order matches build()'s `data-pupils` markup: pupil, glint, glint per eye.
+  const PUPIL_SHAPES = EYES.flatMap(e => [
+    { x: e.pupil[0], y: e.pupil[1], r: e.pupil[2], ax: e.pupil[0], ay: e.pupil[1] },
+    ...e.glints.map(g => ({ x: g[0], y: g[1], r: g[2], ax: e.pupil[0], ay: e.pupil[1] })),
+  ]);
+  const sizePupils = (circles, k) => circles.forEach((c, i) => {
+    const s = PUPIL_SHAPES[i];
+    c.setAttribute("cx", (s.ax + (s.x - s.ax) * k).toFixed(2));
+    c.setAttribute("cy", (s.ay + (s.y - s.ay) * k).toFixed(2));
+    c.setAttribute("r", (s.r * k).toFixed(2));
+  });
 
   // Props, drawn upright with the grip at (0,0). The paw is drawn over them, so it reads as holding.
   const S = `stroke="${INK}" stroke-width="3" stroke-linejoin="round"`;
@@ -65,7 +77,7 @@
 
   // Poses as data. Arm angles: a = shoulder, e = elbow bend, both + outward for either arm (0 hangs down).
   // hold = ms the entry takes; hop = little jump on entry; palm = show paw pads; propL/R = held prop.
-  const NEUTRAL = { aL: 12, eL: 6, aR: 16, eR: -8, head: 0, lean: 0, shift: 0, stage: 0, gx: 0, gy: 0, lid: 0, cheek: 0, mouth: 0 };
+  const NEUTRAL = { aL: 12, eL: 6, aR: 16, eR: -8, head: 0, lean: 0, shift: 0, stage: 0, gx: 0, gy: 0, lid: 0, cheek: 0, mouth: 0, sink: 0, sy: 1, pup: 1, f: .35 };
   const POSES = {
     wave:    { use: "Home, first visit", aL: 50, eL: 125, head: 3, gx: 1, palmL: 1, accent: "wave", hold: 1150 },
     welcome: { use: "Home, back after a gap", aL: 62, eL: 34, aR: 58, eR: 26, head: -3, cheek: .7, mouth: .6, palmL: 1, palmR: 1, hop: 1, hold: 1300 },
@@ -78,6 +90,21 @@
     ladder:  { use: "Fear Ladder", aL: 82, eL: 92, aR: 22, eR: -12, head: -3, gx: 1.5, gy: -1.5, cheek: .4, stage: -18, propL: "flag", ground: "step", hold: 1300 },
     cheer:   { use: "Completion", aL: 58, eL: -24, aR: 60, eR: -26, head: -2, cheek: 1, mouth: 1, palmL: 1, palmR: 1, hop: 1, hold: 1100 },
     proud:   { use: "Completion, quiet", aL: 18, eL: 4, aR: -50, eR: 24, head: 7, cheek: 1, gy: -1, hold: 1300 },
+    // Onboarding's CBT acting poses (ported from the former onboarding.html fork, kept in sync here now).
+    // aR/eR are stored already negated (this file negates the right arm at use-site; see `set("armR", ...)` below).
+    // No `mouth:` on any of these — this rig's `mouth` is a binary open-mouth-grin toggle (>.03), not onboarding's
+    // old continuous smile-curve scale; Happi's face stays the same calm closed smile through every mood on purpose.
+    rest:     { use: "Onboarding, idle/base", aL: 12, eL: 6, aR: 16, eR: -8, head: 0, hold: 600 },
+    worry:    { use: "Onboarding, goal: Worry", aL: -6, eL: -78, aR: -6, eR: -78, head: 7, gx: 3.5, gy: -1.5, sink: 1, pup: .9, hold: 600 },
+    mood:     { use: "Onboarding, goal: Low mood", aL: 2, eL: 0, aR: 2, eR: 0, head: -6, gy: 3, lid: .15, sink: 2, sy: .99, hold: 600 },
+    stress:   { use: "Onboarding, goal: Stress", aL: 26, eL: 34, aR: 26, eR: 34, head: -2, gx: -2.5, gy: -.5, sink: 1, sy: .95, pup: .9, hold: 600 },
+    self:     { use: "Onboarding, goal: Self-talk", aL: -8, eL: -82, aR: 6, eR: -2, head: -8, gx: -2.5, gy: 3, lid: .2, sink: 1, sy: .985, pup: .9, hold: 600 },
+    sleep:    { use: "Onboarding, goal: Sleep", aL: 10, eL: 4, aR: -4, eR: -96, head: 8, gy: 1.5, lid: .65, sink: 3, sy: .985, hold: 600 },
+    heavy:    { use: "Onboarding, a thought believed a lot", aL: 4, eL: 0, aR: 4, eR: 0, head: -4, gy: 2.5, lid: .25, sink: 2, sy: .97, pup: .9, hold: 600 },
+    listen:   { use: "Onboarding, personal practice starts", aL: 12, eL: 6, aR: -8, eR: -92, head: -6, gx: -2, gy: 2.5, pup: 1.05, hold: 600 },
+    gentle:   { use: "Onboarding, wrong trap pick / chat entry", aL: 34, eL: 30, aR: 34, eR: 30, head: 8, gy: .5, lid: .15, pup: 1.08, hold: 600 },
+    relieved: { use: "Onboarding, reframe lands", aL: 24, eL: 20, aR: 24, eR: 20, head: -2, gx: 3, gy: -3, cheek: .6, sy: 1.01, hold: 1600 },
+    pride:    { use: "Onboarding, saved", aL: -4, eL: -70, aR: 16, eR: -8, head: 5, cheek: .6, sy: 1.02, hold: 1300 },
   };
   const CHANNELS = Object.keys(NEUTRAL);
 
@@ -102,6 +129,9 @@
   const clamp01 = v => Math.min(1, Math.max(0, v));
   const easeOut = p => 1 - Math.pow(1 - p, 3);
   const seeded = (i, s = 0) => { const x = Math.sin(i * 12.9898 + s * 78.233) * 43758.5453; return x - Math.floor(x); };
+  // thought-cloud colour: clear (#e4eee0) to heavy (#a9bfa0), by weather `f`
+  const mix = (a, b, p) => { const h = x => [1, 3, 5].map(i => parseInt(x.slice(i, i + 2), 16)), A = h(a), B = h(b);
+    return `rgb(${A.map((x, i) => Math.round(x + (B[i] - x) * clamp01(p))).join(",")})`; };
   const mat = (x = 0, y = 0, deg = 0, px = 0, py = 0, sx = 1, sy = 1) => {
     const r = deg * Math.PI / 180, c = Math.cos(r), s = Math.sin(r);
     return `matrix(${c * sx} ${s * sx} ${-s * sy} ${c * sy} ${x + px - c * sx * px + s * sy * py} ${y + py - s * sx * px - c * sy * py})`;
@@ -127,6 +157,9 @@
     const line = w => `fill="none" stroke="${INK}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"`;
     const pad = (c, k) => `<circle data-pad="${k}" cx="${c[0]}" cy="${c[1] + 4}" r="3" fill="#fff" stroke="${INK}" stroke-width="1.5" opacity="0"/>`;
     svg.innerHTML = `<defs><clipPath id="${id}">${EYES.map(e => `<ellipse cx="${e.white[0]}" cy="${e.white[1]}" rx="${e.white[2]}" ry="${e.white[3]}"/>`).join("")}</clipPath></defs>
+      <g data-sun><g data-rays stroke="#F5B942" stroke-width="3" stroke-linecap="round">${[...Array(8)].map((_, i) => { const a = i * Math.PI / 4;
+        return `<line x1="${(Math.cos(a) * 14).toFixed(1)}" y1="${(Math.sin(a) * 14).toFixed(1)}" x2="${(Math.cos(a) * 18).toFixed(1)}" y2="${(Math.sin(a) * 18).toFixed(1)}"/>`; }).join("")}</g><circle r="10" fill="#F5B942"/></g>
+      <g data-cloud><rect data-c3 x="220" y="29" width="50" height="12" rx="6"/><circle data-c0 cx="229" cy="30" r="11"/><circle data-c1 cx="245" cy="22" r="14"/><circle data-c2 cx="260" cy="31" r="10"/></g>
       <g data-ground></g>
       <g data-stage>
         <g data-shadow><ellipse cx="130" cy="244" rx="44" ry="5" fill="${SHADOW}"/></g>
@@ -152,11 +185,12 @@
     el.replaceChildren(svg);
     const q = s => svg.querySelector(`[data-${s}]`);
     const parts = {};
-    for (const k of ["ground", "stage", "shadow", "root", "body", "heart", "armR", "foreR", "armL", "head", "earL", "earR", "cheek", "happy", "lid", "pupils", "face", "smile", "mouth", "armLFront", "foreL"]) parts[k] = q(k);
+    for (const k of ["ground", "stage", "shadow", "root", "body", "heart", "armR", "foreR", "armL", "head", "earL", "earR", "cheek", "happy", "lid", "pupils", "face", "smile", "mouth", "armLFront", "foreL", "sun", "rays", "cloud", "c0", "c1", "c2", "c3"]) parts[k] = q(k);
     parts.propL = svg.querySelector('[data-prop="L"]');
     parts.propR = svg.querySelector('[data-prop="R"]');
     parts.padL = svg.querySelector('[data-pad="L"]');
     parts.padR = svg.querySelector('[data-pad="R"]');
+    parts.pupilCircles = [...q("pupils").querySelectorAll("circle")];
     return parts;
   }
 
@@ -164,7 +198,9 @@
   function keysFor(from, pose) {
     const to = { ...NEUTRAL, ...pose }, h = pose.hold, keys = {};
     for (const c of CHANNELS) {
-      const a = from[c], b = to[c];
+      const a = from[c];
+      // weather (`f`) is independent of pose: a pose change never resets it unless the pose names its own `f`.
+      const b = c === "f" ? (pose.f !== undefined ? pose.f : a) : to[c];
       keys[c] = c[0] === "a" && Math.abs(b - a) > 20
         ? [[0, a], [h * .25, a - Math.sign(b - a) * 6], [h, b]]
         : [[0, a], [h * .2, a], [h, b]];
@@ -172,6 +208,16 @@
     keys.lift = pose.hop ? [[0, 0], [260, 0], [520, 13], [780, 0], [h, 0]] : [[0, 0], [h, 0]];
     keys.sy = pose.hop ? [[0, 1], [260, .93], [470, 1.06], [780, .88], [960, 1.03], [1150, 1]] : [[0, 1], [1, 1]];
     return keys;
+  }
+
+  // one-shot keyframes added on top of a channel (a nod, a growth pulse) — independent of the current pose's
+  // own transition, never retargets it. Reuses `flow` for the easing.
+  function shotValue(st, channel, t) {
+    const s = st.shots && st.shots[channel];
+    if (!s) return 0;
+    const d = t - s.t0, end = s.keys[s.keys.length - 1][0];
+    if (d >= end) { delete st.shots[channel]; return 0; }
+    return flow(d, s.keys);
   }
 
   function pose(st, t, idle) {
@@ -189,10 +235,10 @@
     if (st.pose.accent === "wave") eL += 13 * wave(t - 1150, 680) * clamp01((t - 1150) / 300) * clamp01((4300 - t) / 300);
     const lean = v.lean + on * .8 * wave(it, 5200, ph + .2);
     const shift = v.shift + on * 1.2 * wave(it, 4800, ph + .5);
-    const head = v.head - .45 * (flow(Math.max(0, t - 110), st.keys.lean) - 0) + on * 1.5 * wave(it, 4400, ph);
+    const head = v.head - .45 * (flow(Math.max(0, t - 110), st.keys.lean) - 0) + on * 1.5 * wave(it, 4400, ph) + shotValue(st, "head", t);
     const ear = .5 * (head - v.head) + on * 1.2 * wave(it, 4400, ph + .15);
     const breath = 1 + on * .014 * wave(it, st.pose.breath || 3200, ph);
-    const bsx = 1 / Math.pow(breath, .6), sx = 1 / Math.pow(sy, .6);
+    const sx = 1 / Math.pow(sy, .6);
     const gx = v.gx + on * .6 * wave(it, 4800, ph + .4), gy = v.gy + on * .4 * wave(it, 3600, ph + .2);
     const blinkLid = on ? blink(it + ph * 3700) : 0;
     const lid = v.lid + (1 - v.lid) * blinkLid;
@@ -202,15 +248,17 @@
     set("stage", `translate(0 ${v.stage})`);
     set("shadow", mat(shift, 0, 0, fx, fy, (1 - lift / 220) * sx, 1));
     set("root", mat(shift, -lift, lean, fx, fy, sx, sy));
-    set("body", mat(0, 0, 0, P.body[0], P.body[1], bsx, breath));
+    const bodySquash = breath * (v.sy + shotValue(st, "sy", t)), bodySx = 1 / Math.pow(bodySquash, .6);
+    set("body", mat(0, 0, 0, P.body[0], P.body[1], bodySx, bodySquash));
     set("heart", mat(0, 0, 0, P.heart[0], P.heart[1], hs, hs));
     set("armL", mat(0, 0, aL, ...P.shoulderL)); set("armLFront", mat(0, 0, aL, ...P.shoulderL));
     set("foreL", mat(0, 0, eL, ...P.elbowL));
     set("armR", mat(0, 0, -aR, ...P.shoulderR)); set("foreR", mat(0, 0, -eR, ...P.elbowR));
-    set("head", mat(0, 0, head, ...P.neck));
+    set("head", mat(0, v.sink + shotValue(st, "sink", t), head, ...P.neck));
     set("earL", mat(0, 0, -ear, ...P.earL)); set("earR", mat(0, 0, ear, ...P.earR));
     set("face", `translate(${gx * .35} ${gy * .25})`);
     set("pupils", `translate(${gx} ${gy})`);
+    sizePupils(p.pupilCircles, v.pup);
     const joy = clamp01((v.cheek - .6) / .1);
     p.cheek.setAttribute("opacity", 1 - joy); p.happy.setAttribute("opacity", joy);
     set("lid", mat(0, 0, 0, ...P.eyes, 1, Math.max(.06, 1 - lid)));
@@ -218,6 +266,20 @@
     p.mouth.setAttribute("opacity", v.mouth > .03 ? 1 : 0); p.smile.setAttribute("opacity", v.mouth > .03 ? 0 : 1);
     const palm = s => clamp01((t - st.pose.hold * .5) / 250) * (st.pose[`palm${s}`] ? 1 : 0);
     p.padL.setAttribute("opacity", palm("L")); p.padR.setAttribute("opacity", palm("R"));
+
+    // thought-cloud prop: how heavy the thought feels (v.f, 0 clear..1 heavy). Sits past this rig's default
+    // viewBox (20 4 220 246), so it's invisible unless the host widens the viewBox to include it (onboarding.html does).
+    const clear = 1 - v.f, part = clamp01((clear - .6) / .35);
+    p.sun.setAttribute("transform", `translate(${(240 + 30 * Math.cos((-10 + 80 * clear) * Math.PI / 180)).toFixed(2)} ${(44 - 30 * Math.sin((-10 + 80 * clear) * Math.PI / 180)).toFixed(2)})`);
+    p.sun.setAttribute("opacity", clamp01(1.15 - v.f * 1.4).toFixed(3));
+    p.rays.setAttribute("transform", `rotate(${(t / 40000 * 360 % 360).toFixed(2)})`);
+    p.cloud.setAttribute("fill", mix("#e4eee0", "#a9bfa0", v.f));
+    p.cloud.setAttribute("transform", `translate(${(1.5 * wave(it, 7000)).toFixed(2)} 0)`);
+    [["c0", -12, 2, 229, 30], ["c1", 0, -7, 245, 22], ["c2", 12, 3, 260, 31]].forEach(([k, dx, dy, cx, cy]) => {
+      p[k].setAttribute("transform", mat(dx * part, dy * part, 0, cx, cy, 1 - .3 * part, 1 - .3 * part));
+      p[k].setAttribute("opacity", (1 - .6 * part).toFixed(3));
+    });
+    p.c3.setAttribute("opacity", (1 - part).toFixed(3));
 
     // props stay upright in the paw (counter-rotate the arm), and appear once the paw arrives
     const grow = clamp01((t - st.pose.hold * .45) / 260);
@@ -272,6 +334,8 @@
     // continue from where the figure is now, never restart from neutral
     if (st.keys) for (const c of CHANNELS) st.cur[c] = flow(st.t, st.keys[c]);
     st.pose = p; st.keys = keysFor(st.cur, p); st.t = 0;
+    // a long pose (a story beat) owns the gaze until it lands; conversational glances (`look`) wait
+    st.holdUntil = p.hold >= 1000 ? p.hold + 200 : 0;
     for (const s of ["L", "R"]) {
       const g = st.parts[`prop${s}`], want = p[`prop${s}`] || "";
       if (g.dataset.kind !== want) { g.dataset.kind = want; g.innerHTML = want ? PROPS[want] : ""; }
@@ -306,7 +370,39 @@
     pose(el._happi, ms, ms);
   }
 
-  window.Happi = { POSES, set, replay, mount, at };
+  // eases one channel toward a new target without disturbing any other channel's own transition in progress,
+  // or resetting on the next pose change (unless that pose names the channel itself — see keysFor's `f` case).
+  function splice(st, channel, value, dur) {
+    const from = flow(st.t, st.keys[channel]);
+    st.keys[channel] = [[st.t, from], [st.t + dur, value]];
+  }
+  function nudge(el, channel, value, dur = 400) {
+    const st = el._happi; if (!st) return;
+    splice(st, channel, value, dur);
+  }
+  // weather prop (onboarding's thought cloud): eases the `f` channel independently of the current pose.
+  function weather(el, f, slow = false) { nudge(el, "f", f, slow ? 1600 : 600); }
+  // a conversational glance (typing, a bubble lands, a reply shows): a long pose (a story beat) owns the
+  // gaze until it lands, so this waits rather than interrupting it. Deliberate gaze beats inside a pose
+  // (e.g. "pride" settling onto the card) use `nudge` directly instead, which never waits.
+  function look(el, gx, gy, dur = 400) {
+    const st = el._happi; if (!st || st.t < (st.holdUntil || 0)) return;
+    splice(st, "gx", gx, dur); splice(st, "gy", gy, dur);
+  }
+  // one-shot head bump (a correct answer), independent of whatever the current pose's own head angle is doing
+  function nod(el) {
+    const st = el._happi; if (!st) return;
+    st.shots = st.shots || {}; st.shots.head = { t0: st.t, keys: [[0, 0], [160, 5], [460, 0]] };
+  }
+  // one-shot "grows" pulse on pose entry: a small body-squash + head-lift bump, independent of the pose
+  function stretch(el) {
+    const st = el._happi; if (!st) return;
+    st.shots = st.shots || {};
+    st.shots.sy = { t0: st.t, keys: [[0, 0], [260, .025], [700, 0]] };
+    st.shots.sink = { t0: st.t, keys: [[0, 0], [260, -3], [700, 0]] };
+  }
+
+  window.Happi = { POSES, set, replay, mount, at, weather, look, nudge, nod, stretch };
   const start = () => { document.querySelectorAll(".happi").forEach(mount); requestAnimationFrame(tick); };
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", start) : start();
 })();

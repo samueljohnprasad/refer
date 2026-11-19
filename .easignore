@@ -68,3 +68,19 @@ credentials.json
 remotion/
 remotion.config.ts
 screenshots/
+design/
+launch/
+store/
+docs/
+assets/screenshots/
+
+# dev prototypes & bmad tooling output, not needed for build
+.agents/
+_bmad-output/
+_bmad/
+.remember/
+.r2d/
+.specify/
+specs/
+metadata/
+/supabase/

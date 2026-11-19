@@ -81,5 +81,64 @@
     "loadTitle": "Something went wrong",
     "loadDescription": "We couldn't load your home screen.",
     "tryAgain": "Try again"
+  },
+  "ask": {
+    "morning": {
+      "1": "Anything on your mind this morning?",
+      "1_plain": "Any thought to log this morning?",
+      "2": "What's on your mind as the day starts?",
+      "2_plain": "Log a thought from this morning?",
+      "3": "Is a thought following you into this morning?",
+      "3_plain": "Any thought to catch this morning?",
+      "4": "Is something already on your mind today?",
+      "4_plain": "Anything to log from this morning?"
+    },
+    "afternoon": {
+      "1": "What's been on your mind today?",
+      "1_plain": "Any thought to log today?",
+      "2": "Has a thought been hanging around today?",
+      "2_plain": "Log a thought from today?",
+      "3": "Anything from this afternoon worth a look?",
+      "3_plain": "Any thought to catch this afternoon?",
+      "4": "Is something sitting with you today?",
+      "4_plain": "Anything to log from today?"
+    },
+    "evening": {
+      "1": "Anything from today still with you?",
+      "1_plain": "Any thought from today to log?",
+      "2": "Is a thought from today still around?",
+      "2_plain": "Log a thought from today?",
+      "3": "What's left over from today?",
+      "3_plain": "Any thought to catch from today?",
+      "4": "Anything from today you'd like to set down?",
+      "4_plain": "Anything to log before today ends?"
+    }
+  },
+  "cta": {
+    "catch": "Catch a thought · 2 min",
+    "catchA11y": "Catch a thought, about 2 minutes, button",
+    "windDown": "Wind down · 1 min",
+    "windDownA11y": "Wind down, about 1 minute, button",
+    "continue": "Continue · about 1 min",
+    "continueA11y": "Continue, about 1 minute, button",
+    "catchAnother": "Catch another one",
+    "catchAnotherA11y": "Catch another thought, button"
+  },
+  "lookBack": {
+    "notReady": "Two entries this week and Monday shows them back.",
+    "notReady_plain": "Log two entries this week to see them on Monday."
+  },
+  "tone": {
+    "title": "How should Happi sound?",
+    "subtitle": "You can change this any time in Account.",
+    "gentle": "Gentle",
+    "gentleBody": "Soft and warm. This is the default.",
+    "gentleSample": "That sounds hard, and there's no rush.",
+    "plain": "Plain",
+    "plainBody": "Short and direct. Same meaning.",
+    "plainSample": "That sounds hard.",
+    "accountLabel": "Happi's tone",
+    "keep": "Keep it as it is",
+    "a11ySelected": "selected"
   }
 }

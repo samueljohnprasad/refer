@@ -60,6 +60,16 @@ export const PRE_POST_FIELDS: Partial<Record<ExerciseType, PrePostField>> = {
     post: "postRating",
     direction: "pre_minus_post",
   },
+  behavioral_activation: {
+    pre: "mood",
+    post: "moodAfter",
+    direction: "post_minus_pre",
+  },
+  fear_ladder: {
+    pre: "startAnxiety",
+    post: "postAnxiety",
+    direction: "pre_minus_post",
+  },
   abc_analysis: {
     pre: "preEmotionalIntensity",
     post: "postEmotionalIntensity",
@@ -109,5 +119,7 @@ export const EXERCISE_LABELS: Partial<Record<ExerciseType, string>> = {
   detached_mindfulness: "Detached Mindfulness",
   attention_training: "Attention Training",
   abc_analysis: "ABC Analysis",
+  behavioral_activation: "Behavioral Activation",
+  fear_ladder: "Fear Ladder",
   gratitude_reframe: "Gratitude Reframe",
 };

@@ -14,4 +14,6 @@ export { SummaryStep } from "./SummaryStep";
 export { RecordMapStep } from "./RecordMapStep";
 export { MultiFieldStep } from "./MultiFieldStep";
 export { PMRCircularTimerStep } from "./PMRCircularTimerStep";
+export { SliderListStep } from "./SliderListStep";
+export { ChipRowsStep } from "./ChipRowsStep";
 export { createStep } from "./createStep";

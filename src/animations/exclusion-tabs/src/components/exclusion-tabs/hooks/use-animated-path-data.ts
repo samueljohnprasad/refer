@@ -61,10 +61,8 @@ export const useAnimatedPathData = ({
 
   // Create an animated Skia path for the current tab's rounded rectangle.
   const skPath = useDerivedValue(() => {
-    const path = Skia.Path.Make(); // Create a new Skia path object.
-
-    // Add a rounded rectangle (rrect) to the path for the current tab.
-    path.addRRect(
+    // ponytail: Skia 2.x RRect factory
+    return Skia.Path.RRect(
       rrect(
         rect(
           getPreviousBoxWidth(index) +
@@ -78,8 +76,6 @@ export const useAnimatedPathData = ({
         borderRadius.value, // Same radius for both x and y directions.
       ),
     );
-
-    return path; // Return the animated path.
   }, [borderRadius, pathHeight, index]);
 
   // Return the animated values and the path for use in components.

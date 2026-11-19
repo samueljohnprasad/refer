@@ -46,6 +46,17 @@ export const RATING_EXTRACTOR_MAP: Partial<
     beforeKey: "preEmotionalIntensity",
     afterKey: "postEmotionalIntensity",
   },
+  behavioral_activation: {
+    label: "Mood",
+    beforeKey: "mood",
+    afterKey: "moodAfter",
+    invertScale: true,
+  },
+  fear_ladder: {
+    label: "Anxiety",
+    beforeKey: "startAnxiety",
+    afterKey: "postAnxiety",
+  },
 
   // ── Mindfulness ─────────────────────────────────────────────────────
   box_breathing: {

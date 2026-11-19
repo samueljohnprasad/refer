@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View, type ViewStyle } from "react-native";
 import Animated, { type AnimatedStyle } from "react-native-reanimated";
@@ -9,6 +10,7 @@ import { SymbolView } from "expo-symbols";
 import { Text } from "@/src/components/ui/Text";
 import { TouchableGlass } from "@/src/components/touchable-glass";
 import { SEMANTIC_COLORS } from "@/src/theme/colors";
+import { HelpSheetModal } from "@/src/domains/home/ui/containers/HelpRowWithSheet";
 
 type ExercisesTab = "discover" | "log";
 
@@ -28,6 +30,7 @@ export function ExercisesTabHeader({
   onPracticePress,
 }: ExercisesTabHeaderProps) {
   const { t } = useTranslation("exercises");
+  const [helpOpen, setHelpOpen] = useState(false);
   const options = [
     { value: "discover", label: t("tab.lessons") },
     { value: "log", label: t("tab.myLog") },
@@ -58,11 +61,11 @@ export function ExercisesTabHeader({
                 {completedCount > 0 ? (
                   <View
                     accessibilityLabel={t("tab.completedCount", { count: completedCount })}
-                    className="flex-row items-center justify-center rounded-full bg-sage-50/80 px-3 py-1.5"
+                    className="items-center justify-center rounded-full px-3 py-1.5"
+                    style={{ backgroundColor: "#e5ede1" }}
                   >
-                    <SymbolView name="checkmark.circle.fill" size={16} tintColor={SEMANTIC_COLORS.brand.pressed} />
-                    <Text variant="chip" className="ml-1.5 font-nunito-bold text-sage-700">
-                      {completedCount}
+                    <Text variant="chip" className="font-nunito-bold text-sage-700">
+                      {t("tab.doneCount", { count: completedCount })}
                     </Text>
                   </View>
                 ) : null}
@@ -74,6 +77,15 @@ export function ExercisesTabHeader({
                   className="w-9 h-9 rounded-full items-center justify-center"
                 >
                   <SymbolView name="bookmark" size={18} tintColor={SEMANTIC_COLORS.brand.pressed} weight="medium" />
+                </TouchableGlass>
+                <TouchableGlass
+                  onPress={() => setHelpOpen(true)}
+                  accessibilityRole="button"
+                  accessibilityLabel={t("tab.support")}
+                  hitSlop={8}
+                  className="w-9 h-9 rounded-full items-center justify-center"
+                >
+                  <SymbolView name="lifepreserver" size={18} tintColor={SEMANTIC_COLORS.brand.pressed} weight="medium" />
                 </TouchableGlass>
               </View>
             </View>
@@ -96,6 +108,7 @@ export function ExercisesTabHeader({
           </Animated.View>
         </View>
       </SafeAreaView>
+      <HelpSheetModal visible={helpOpen} onClose={() => setHelpOpen(false)} />
     </View>
   );
 }

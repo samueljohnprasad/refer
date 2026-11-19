@@ -73,17 +73,17 @@
   /* Happi asks once (the screen's only bubble); the answers are tiles you can tap without reading every word */
   .ask{display:flex;align-items:flex-end;gap:var(--sp-2);margin-bottom:var(--sp-4)}
   .ask .happi{flex:none;width:92px;aspect-ratio:220/246;margin-bottom:-6px}
-  .ask .happi svg{width:100%;height:100%;display:block}
+  .ask .happi svg{width:100%;height:100%;display:block;overflow:visible}
   .say{position:relative;flex:1;align-self:center;background:var(--tint);border-radius:var(--r-m);padding:var(--sp-3) var(--sp-4)}
   .say::before{content:"";position:absolute;left:-8px;bottom:18px;border:8px solid transparent;border-right-color:var(--tint);border-left:0}
   .say h1{font-size:var(--t-h);line-height:1.15}
   .say p{margin-top:2px;font-size:var(--t-sub);color:var(--label-2)}
   .feel{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2)}
   .fe{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:var(--sp-3);min-height:112px;padding:var(--sp-3) var(--sp-3) var(--sp-4);
-    border:0;border-radius:var(--r-m);background:var(--surface-2);text-align:left;font-size:var(--t-sub);font-weight:700;line-height:1.25;color:var(--label);
-    transition:transform .12s var(--spring),background var(--dur) var(--ease)}
-  .fe:active{transform:scale(.97);background:var(--tint)}
-  .gi{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;color:var(--accent)}
+    border:0;border-radius:20px;background:color-mix(in srgb,var(--h) 60%,#fff);text-align:left;font-size:var(--t-sub);font-weight:700;line-height:1.25;color:var(--label);
+    transition:transform .12s var(--spring),background var(--dur) var(--ease);animation:pop .4s var(--spring) calc(var(--i)*60ms) both}
+  .fe:active{transform:scale(.97);background:var(--h)}
+  .gi{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:#fff;color:var(--accent)}
   .unsure{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);width:100%;min-height:var(--tap);margin-top:var(--sp-2);border:0;background:none;font-size:var(--t-sub);font-weight:700;color:var(--accent)}
   /* the answer you gave, then one recommendation with its picture */
   .you{display:flex;align-items:center;justify-content:flex-end;gap:var(--sp-2);margin-bottom:var(--sp-3)}
@@ -149,7 +149,7 @@
   .week h2+p{margin-top:var(--sp-1);font-size:var(--t-sub);color:var(--label-2)}
   .days{list-style:none;padding:0;margin-top:var(--sp-4);display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:var(--t-cap);font-weight:700;color:var(--label-2)}
   .days span{display:grid;place-items:center;width:34px;height:34px;margin:0 auto 4px;border-radius:50%;background:#fff;color:#fff}
-  .days .on span{background:var(--ink)}
+  .days .on span{background:var(--ink);animation:pop .45s var(--spring) calc(var(--i)*.1s + .15s) both}
   .days li:not(.on) span{background:none}
   .days li:not(.on) span::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--cloud-hi)}
     .days .today{color:var(--label)}
@@ -157,7 +157,8 @@
   .tl{position:relative;margin-top:var(--sp-6)}
   .day{margin:var(--sp-6) 0 var(--sp-2);font-size:var(--t-sub);font-weight:700;color:var(--label-2)}
   .day:first-child{margin-top:0}
-  .en{border-top:1px solid var(--sep)}
+  .en{padding:0 var(--sp-3);border-radius:var(--r-m);background:var(--surface);box-shadow:0 0 0 1px var(--sep)}
+  .en+.en{margin-top:var(--sp-2)}
   .enh{display:flex;align-items:flex-start;gap:var(--sp-3);width:100%;padding:var(--sp-3) 0;text-align:left;background:none;border:0;color:inherit}
   .enh .tx{flex:1;min-width:0}
   .enr{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-2)}
@@ -170,7 +171,8 @@
   .enh[aria-expanded=true] .cv{transform:rotate(180deg)}
   /* before and after on one 0-10 track; the same style whichever way it moved */
   .mv{display:flex;align-items:center;gap:var(--sp-2);margin-top:var(--sp-2);font-size:var(--t-foot);font-weight:700;color:var(--label-2)}
-  .mv svg{flex:none}
+  .mv>svg{flex:none;width:64px;height:auto}
+  .mv span{white-space:nowrap}
   .exp{margin:0 0 var(--sp-4) 60px;display:flex;flex-direction:column;gap:var(--sp-4)}
   /* the entry as one small arc in the user's own words: hollow dot = where you started,
      filled dot = where you landed (same encoding as the before/after track above) */
@@ -192,6 +194,31 @@
   .resume{margin-top:var(--sp-1);min-height:32px}
   .empty{padding:var(--sp-6) var(--sp-4);text-align:center}
   .empty .th{width:160px;margin:0 auto var(--sp-4);border-radius:20px}
+  .empty .happi{width:112px;aspect-ratio:220/246;margin:0 auto var(--sp-3)}
+  .empty .happi svg{width:100%;height:100%;display:block;overflow:visible}
+  /* under 3 done: every finished exercise plants one pot; the third opens the garden (the unlocked Practice screen) */
+  .empty.lock{padding-top:var(--sp-4)}
+  .empty.lock h1{font-size:var(--t-h);line-height:1.12;letter-spacing:-.02em;text-wrap:balance}
+  .ghost{margin-top:var(--sp-4);padding:var(--sp-3) var(--sp-4) var(--sp-4);border-radius:24px;background:var(--tint);text-align:left}
+  .empty .ghost p{margin:0}
+  .empty .ghost .n{font-size:var(--t-sub);font-weight:700;color:var(--label-2)}
+  .ghost .n b{font-family:var(--display);font-size:var(--t-num);line-height:1;letter-spacing:-.02em;color:var(--label);margin-right:6px}
+  .plants{display:block;width:100%;height:auto;margin-top:var(--sp-2);overflow:visible}
+  .plants .ground{stroke:var(--cloud-lo);stroke-width:6;stroke-linecap:round}
+  .plants .pot{fill:#d9825b}
+  .plants .rim{fill:#e89a73}
+  .plants .wait .pot,.plants .wait .rim{fill:none;stroke:var(--cloud-hi);stroke-width:2;stroke-dasharray:3 4}
+  .plants .stem{fill:none;stroke:var(--ink);stroke-width:5;stroke-linecap:round}
+  .plants .leaf{fill:#7fa876}
+  .plants .petal{fill:var(--sun)}
+  .plants .eye{fill:#fff7d6}
+  .plants .grow,.plants .sway{transform-box:fill-box;transform-origin:50% 100%}
+  .plants .grow{animation:sprout .7s cubic-bezier(.23,1,.32,1) calc(var(--i)*.15s + .2s) backwards}
+  .plants .sway{animation:sway 3s ease-in-out calc(var(--i)*-1.3s) infinite alternate}
+  @keyframes sprout{from{transform:scaleY(0)}}
+  @keyframes sway{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}
+  @media (prefers-reduced-motion:reduce){.plants .grow,.plants .sway{animation:none}}
+  .empty.lock .btn{width:100%;display:flex;margin-top:var(--sp-4)}
   .empty h1{font-size:var(--t-lead)}
   .empty p{margin:var(--sp-2) 0 var(--sp-5);color:var(--label-2);font-weight:500}
   .empty .btn{width:auto;display:inline-flex}
@@ -438,7 +465,7 @@ const chat=()=>{
   const e=pick;
   $('#chat').innerHTML=!e
     ?`<div class="ask"><div class="happi" data-pose="wave"></div><div class="say"><h1>What’s on your mind?</h1><p>Pick the closest. I’ll suggest one.</p></div></div>
-      <div class="feel">${REPLIES.map((x,i)=>{const[g,h]=FEEL[x.id];return `<button class="fe" data-i="${i}"><span class="gi" style="background:var(--hue-${h})">${GLYPH[g]}</span>${x.reply}</button>`}).join('')}</div>
+      <div class="feel">${REPLIES.map((x,i)=>{const[g,h]=FEEL[x.id];return `<button class="fe" data-i="${i}" style="--h:var(--hue-${h});--i:${i}"><span class="gi">${GLYPH[g]}</span>${x.reply}</button>`}).join('')}</div>
       <button class="unsure" data-i="auto">${GLYPH.unsure}Not sure? Pick one for me</button>`
     :`<div class="you"><p>${e.reply}</p></div>
       <article class="rec"><span class="art" style="background:${hue(e)}">${art(e)}</span>
@@ -481,11 +508,11 @@ $('#chips').addEventListener('click',ev=>{
 
 // ---- my log: the week as presence, then entries by day ----
 const dayLabel=n=>n===0?'Today':n===1?'Yesterday':D(n).toLocaleDateString('en-US',n<7?{weekday:'long'}:{weekday:'short',month:'short',day:'numeric'});
-// one 0-10 track: hollow dot before, filled dot after, a line between
-const move=l=>{const x=v=>8+v*8.4;return `<span class="mv"><svg viewBox="0 0 100 16" width="100" height="16" aria-hidden="true">
+// one 0-10 track: hollow dot before, filled dot after, colour says whether it helped: sage = helped, grey = unchanged, amber = went the other way
+const move=l=>{const x=v=>8+v*8.4;const lowerIsBetter=/distress|worry|anxi|stress|fear|anger|tension/i.test(l.lbl),c=l.a===l.b?'#8a918a':(lowerIsBetter?l.a<l.b:l.a>l.b)?'#5f7f58':'#c9852f';return `<span class="mv"><svg viewBox="0 0 100 16" width="100" height="16" aria-hidden="true">
   <line x1="8" y1="8" x2="92" y2="8" stroke="#e5e5e5" stroke-width="4" stroke-linecap="round"/>
-  <line x1="${x(l.b)}" y1="8" x2="${x(l.a)}" y2="8" stroke="#5f7f58" stroke-width="4" stroke-linecap="round"/>
-  <circle cx="${x(l.b)}" cy="8" r="5" fill="#fff" stroke="#5f7f58" stroke-width="2.5"/><circle cx="${x(l.a)}" cy="8" r="5.5" fill="#5f7f58"/></svg>
+  <line x1="${x(l.b)}" y1="8" x2="${x(l.a)}" y2="8" stroke="${c}" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="${x(l.b)}" cy="8" r="5" fill="#fff" stroke="${c}" stroke-width="2.5"/><circle cx="${x(l.a)}" cy="8" r="5.5" fill="${c}"/></svg>
   <span>${l.lbl} went ${l.a<l.b?'down':l.a>l.b?'up':'nowhere'}, ${l.b} to ${l.a}</span></span>`};
 // intensity in words, not 7/10 bars (How We Feel shows "Somewhat / A little" beside each emotion)
 const amount=v=>v>=9?'very much':v>=7?'a lot':v>=4?'somewhat':'a little';
@@ -508,7 +535,7 @@ const entry=(l,i)=>{
 };
 const week=()=>{const wk=LOG.filter(l=>l.day<7),on=new Set(wk.map(l=>l.day)),n=on.size,said=[...on].sort((a,b)=>b-a).map(dayLabel).join(', ');
   return `<div class="week"><p class="eye-b">This week</p><h2>You practised on ${plural(n,'day','days')}.</h2><p>${plural(wk.length,'entry','entries')} below, newest first.</p>
-    <ol class="days" role="img" aria-label="Last 7 days. Practised: ${said}">${[6,5,4,3,2,1,0].map(d=>`<li class="${on.has(d)?'on':''}${d===0?' today':''}"><span>${on.has(d)?LEAF:''}</span>${D(d).toLocaleDateString('en-US',{weekday:'narrow'})}</li>`).join('')}</ol></div>`};
+    <ol class="days" role="img" aria-label="Last 7 days. Practised: ${said}">${[6,5,4,3,2,1,0].map(d=>`<li class="${on.has(d)?'on':''}${d===0?' today':''}" style="--i:${6-d}"><span>${on.has(d)?LEAF:''}</span>${D(d).toLocaleDateString('en-US',{weekday:'narrow'})}</li>`).join('')}</ol></div>`};
 const log=()=>{
   if(!LOG.length){$('#p-log').innerHTML=`<div class="empty"><span class="th" style="background:var(--hue-catch)">${ART.gratitude_reframe()}</span><h1>Your entries will live here.</h1><p>Each one you finish is kept in your own words.</p><button class="btn" data-go="lessons">Start an exercise</button></div>${HELP}`;return}
   const days=[...new Set(LOG.map(l=>l.day))];
@@ -550,10 +577,23 @@ const untried=EX.find(e=>!LOG.some(l=>l.id===e.id)&&!e.pro&&e.html);
 const AM=LOG.filter(l=>l.status==='completed'&&l.time?.endsWith('AM')).length;
 const practice=()=>{
   if(DONE<3){
-    $('#p-practice').innerHTML=`<div class="empty"><span class="th" style="background:var(--hue-abc)">${ART.grounding_54321()}</span>
-      <h1>Patterns show up after three</h1><p>Finish three exercises. Then you’ll see how your feelings move, in your own ratings.</p>
-      <div class="base" role="img" aria-label="${DONE} of 3 done">${[1,2,3].map(n=>`<span class="${n<=DONE?'on':''}">${n}</span>`).join('')}</div>
-      <button class="btn" data-go="lessons">Choose an exercise</button></div>${HELP}`;
+    // never a dead end: Happi waters, each finished exercise is a grown plant, the next pot has a sprout, the rest wait
+    const left=3-DONE,more=['','One more','Two more','Three'][left];
+    const LEAF='M0 0C-10-2-14-10-12-14-4-14 2-8 0 0Z';
+    const pot=x=>`<rect class="rim" x="${x-19}" y="66" width="38" height="8" rx="3"/><path class="pot" d="M${x-15} 74h30l-4 22h-22z"/>`;
+    const plant=(x,i)=>i>DONE?`<g class="wait">${pot(x)}</g>`
+      :`<g class="grow" style="--i:${i}"><g class="sway">${i<DONE
+        ?`<path class="stem" d="M${x} 68C${x-6} 54 ${x+6} 44 ${x} 30"/><path class="leaf" transform="translate(${x-1} 56)" d="${LEAF}"/><path class="leaf" transform="translate(${x+1} 48) scale(-1 1)" d="${LEAF}"/>`
+          +[0,1,2,3,4,5].map(k=>`<circle class="petal" cx="${(x+9*Math.cos(k*Math.PI/3)).toFixed(1)}" cy="${(30+9*Math.sin(k*Math.PI/3)).toFixed(1)}" r="6.5"/>`).join('')+`<circle class="eye" cx="${x}" cy="30" r="5"/>`
+        :`<path class="stem" d="M${x} 68V58"/><path class="leaf" transform="translate(${x} 59) scale(.6)" d="${LEAF}"/><path class="leaf" transform="translate(${x} 59) scale(-.6 .6)" d="${LEAF}"/>`}</g></g>${pot(x)}`;
+    $('#p-practice').innerHTML=`<div class="empty lock"><div class="happi" data-pose="act"></div>
+      <h1>${more} ${left===1?'exercise':'exercises'} and your patterns bloom</h1>
+      <div class="ghost">
+        <p class="n"><b>${DONE}</b>of 3 done</p>
+        <svg class="plants" viewBox="0 0 280 104" role="img" aria-label="${DONE} of 3 exercises done"><path class="ground" d="M12 97H268"/>${[50,140,230].map(plant).join('')}</svg>
+      </div>
+      <button class="btn" data-go="lessons">Choose your ${DONE?'next':'first'} exercise</button></div>${HELP}`;
+    const h=$('.empty .happi');if(h&&window.Happi)Happi.mount(h);
     return;
   }
   $('#p-practice').innerHTML=`<div class="ph"><h2>Your practice</h2>

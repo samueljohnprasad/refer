@@ -149,12 +149,6 @@
       "@react-native-community/datetimepicker",
       "expo-image",
       "expo-status-bar",
-      [
-        "llama.rn",
-        {
-          "enableEntitlements": false
-        }
-      ],
       "expo-sharing"
     ],
     "experiments": {

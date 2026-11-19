@@ -31,10 +31,8 @@ import {
 } from "@/src/store/slices/happyAssistantSlice";
 import { useVoiceFeature } from "@/src/hooks/useVoiceFeature";
 import { getLatestIncompleteExercise } from "./assistantHistory";
-import {
-  buildExerciseFlowRoute,
-  HAPPY_ASSISTANT_ROUTES,
-} from "./constants";
+import { buildExerciseRoute } from "@/src/screens/ExercisesScreen/exerciseScreenUtils";
+import { HAPPY_ASSISTANT_ROUTES } from "./constants";
 
 const ASSISTANT_COMMAND_EXECUTION_DELAY_MS = 450;
 const PREMIUM_ENTITLEMENT_ID = "Premium journals";
@@ -120,7 +118,7 @@ export function useHappyAssistantCommandExecutor(): UseHappyAssistantCommandExec
       [HappyAssistantCommandEnum.ResumeExercise]: () => {
         if (latestIncompleteExercise?.exerciseType) {
           router.push(
-            buildExerciseFlowRoute(latestIncompleteExercise.exerciseType, {
+            buildExerciseRoute(latestIncompleteExercise.exerciseType, {
               entryId: latestIncompleteExercise.id,
             }) as never,
           );

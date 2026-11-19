@@ -1,18 +1,17 @@
 import { memo, useMemo, type ReactElement, type ReactNode } from "react";
-import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
+import { Platform, ScrollView, View } from "react-native";
 import { SymbolView } from "expo-symbols";
 import { Feather } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { Text } from "@/src/components/ui/Text";
-import { JumpBackInCard } from "./JumpBackInCard";
-import { CompactExerciseRow } from "./ExerciseDiscoveryCards";
+import { JumpBackInRow } from "./JumpBackInRow";
+import { CATEGORY_BLURB } from "@/src/domains/exercises/data/exerciseCopy";
+import { useExerciseEntryStatus } from "@/src/domains/exercises/ui/containers/useExerciseEntryStatus";
+import { ExerciseTile } from "./ExerciseDiscoveryCards";
 import { nutrieStyles } from "../ExercisesScreen.styles";
 import { getCategoryBadgeTheme } from "../exerciseScreenUtils";
 import type { ExerciseCategory, ExerciseConfig } from "@/src/types/exerciseFlow";
 import { SAGE } from "@/src/theme/palette";
-
-const CAROUSEL_PEEK = 20;
-const CAROUSEL_GAP = 12;
 
 interface ExercisePressProps {
   onPress: (exercise: ExerciseConfig<any>) => void;
@@ -20,23 +19,18 @@ interface ExercisePressProps {
 
 export function JumpBackInShelf({ items, onPress, title }: { items: ExerciseConfig<any>[]; title?: string } & ExercisePressProps) {
   const { t } = useTranslation("exercises");
-  const { width: screenWidth } = useWindowDimensions();
+  const { paused, fearLadderRung } = useExerciseEntryStatus();
   if (items.length === 0) return null;
-  const cardWidth = screenWidth - CAROUSEL_PEEK * 2 - 20;
 
   return (
     <View style={{ marginBottom: 20 }}>
       <View style={[nutrieStyles.sectionHeader, { paddingTop: 8 }]}>
         <TextLabel>{title ?? t("library.jumpBackIn")}</TextLabel>
       </View>
-      <View style={{ marginHorizontal: -CAROUSEL_PEEK, marginTop: 10 }}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: CAROUSEL_GAP, paddingHorizontal: CAROUSEL_PEEK, paddingTop: 4, paddingBottom: 8 }} snapToInterval={cardWidth + CAROUSEL_GAP} decelerationRate="fast">
-          {items.map((item) => (
-            <View key={item.type} style={{ width: cardWidth, paddingBottom: 4 }}>
-              <JumpBackInCard exercise={item} width={cardWidth} onPress={onPress} />
-            </View>
-          ))}
-        </ScrollView>
+      <View style={{ marginTop: 10, gap: 8 }}>
+        {items.map((item) => (
+          <JumpBackInRow key={item.type} exercise={item} paused={paused.has(item.type)} rung={item.type === "fear_ladder" ? fearLadderRung : undefined} onPress={onPress} />
+        ))}
       </View>
     </View>
   );
@@ -72,11 +66,12 @@ export const DiscoverSection = memo(function DiscoverSection({
           <TextLabel color={SAGE[600]}>{label} • {availableExercises.length}</TextLabel>
         </View>
       </View>
-      <View style={{ marginTop: 4 }}>
+      <Text style={{ fontSize: 13, fontWeight: "600", color: "#4b4b4b", marginTop: -4 }}>{CATEGORY_BLURB[category]}</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -20 }} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 12, gap: 12 }}>
         {availableExercises.map((exercise) => (
-          <CompactExerciseRow key={exercise.type} exercise={exercise} onPress={onPress} />
+          <ExerciseTile key={exercise.type} exercise={exercise} onPress={onPress} />
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
 });

@@ -406,7 +406,7 @@ After a Low chip, Home never routes back to a lesson CTA the user did not pick; 
 
 **Blocks every variant draws from:** Header (greeting, Get help pill, help, Account), Hero (Happi plus at most one bubble), Check-in chips, one filled CTA, Last-reflection card, ProgressPair, Pattern line, Look-back, Explore, Signup and Premium. One filled CTA per state, with two exceptions: D0 has none; Lapsed 30+ has two equal outline buttons; the Distressed variant has three equal options. Cards that offer a choice rather than an action (graduation card, wellbeing prompt) use equal-weight choice rows and are not CTAs.
 
-**Presence caps for Happi:** at most 1 bubble per screen and 3 per session; Welcome back at most once per 24 h; Celebrating at most once per 7 days. A bubble appears only for: D1 recall, return greeting, pattern unlock, ring filled, exercise unlock, look-back ready, graduation card. Otherwise Happi idles silently.
+**Presence caps for Happi:** at most 1 bubble per screen and 3 per session; Welcome back at most once per 24 h; Celebrating at most once per 7 days. A bubble appears only for: D1 recall, return greeting, pattern unlock, ring filled, exercise unlock, look-back ready, graduation card, and the daily ask (at most once per day, lowest priority of the eight; conditions in [ux-engagement-logging/EXPERIENCE.md](../ux-engagement-logging/EXPERIENCE.md), added 2026-11-15). Otherwise Happi idles silently.
 
 ### Check-in chips (from D1)
 - Once a day. The question rotates and never repeats on consecutive days: "How's today?" · "How are you feeling right now?" · "What's the weather inside today?" · "How's your head today?". Answers stay **Good · Okay · Low · Not okay**. Word chips only: no drag-a-face input.
@@ -518,7 +518,7 @@ Other regions use the soul/06 locale table. **Never list KIRAN (1800-599-0019):*
 | C1 | Return recall: "From your note on {date}: '{quote}'" | "Last time, you wrote: '{quote}'" | This spine's wording wins; **Why am I seeing this?** link from soul/06 kept |
 | C2 | Recall off: "Last time you practised: {exercise}." | Fallback "Your reflections are right where you left them." | Strategy fallback wins: when recall is off, no last-session detail is named |
 | C3 | Crisis entry only in Settings (2 taps) and on free-text screens | Get help pill on every Home state | Both ship; the pill is the stricter rule |
-| C4 | Home check-in: 12 feeling words, "Which word fits right now?" | Four routing chips with a rotating question | **Open.** Four chips kept because they drive Home routing; a 12-word second step is undecided |
+| C4 | Home check-in: 12 feeling words, "Which word fits right now?" | Four routing chips with a rotating question | **Closed 2026-11-15.** Four chips kept because they drive Home routing; no feeling-word second step |
 | C5 | Home flame pill replaced by a leaf "days practised this month" counter | Practice count plus weekly ring (decided 2026-10-31, Q4) | This spine wins; soul/06's **Hide counter** kept as Hide progress |
 | C6 | D0 Home shows `StarterPathNextActionCard` as the next step | D0 is a closure state: no filled CTA; link "Catch another one" | Strategy wins; the Starter card moves to D1. [ASSUMPTION] pending confirmation |
 | C7 | Completion screen "Saved. It's yours." with no ring | Saved card shows count and weekly ring | This spine wins; the ring has no fail state |

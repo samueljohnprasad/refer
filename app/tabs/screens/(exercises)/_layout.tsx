@@ -43,6 +43,15 @@ export default function ExercisesGroupLayout() {
           animation: "fade",
         }}
       />
+      <Stack.Screen
+        name="thought-catcher"
+        options={{
+          headerShown: false,
+          title: "Thought Catcher",
+          freezeOnBlur: true,
+          animation: "slide_from_right",
+        }}
+      />
     </Stack>
   );
 }

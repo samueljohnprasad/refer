@@ -33,9 +33,9 @@ export const CircularProgressTimer: React.FC<CircularProgressTimerProps> = ({
   const radius = (size - strokeWidth) / 2;
   const center = size / 2;
   
-  const path = Skia.Path.Make();
+  // ponytail: Skia 2.x immutable path factory
   // Start from top (angle 0 corresponds to right, so we'll rotate the Canvas)
-  path.addCircle(center, center, radius);
+  const path = Skia.Path.Circle(center, center, radius);
 
   return (
     <View style={{ width: size, height: size, justifyContent: "center", alignItems: "center" }}>

@@ -62,24 +62,22 @@ export const Picker: React.FC<PickerProps> = ({
 
   // Create the path for the outer picker circle
   const pickerPath = useDerivedValue(() => {
-    const path = Skia.Path.Make();
-    path.addCircle(
+    // ponytail: Skia 2.x Circle factory
+    return Skia.Path.Circle(
       radius * Math.cos(theta.value) + cx,
       radius * Math.sin(theta.value) + cy,
       strokeWidth / 2,
     );
-    return path;
   });
 
   // Create the path for the inner picker circle
   const internalPickerPath = useDerivedValue(() => {
-    const path = Skia.Path.Make();
-    path.addCircle(
+    // ponytail: Skia 2.x Circle factory
+    return Skia.Path.Circle(
       radius * Math.cos(theta.value) + cx,
       radius * Math.sin(theta.value) + cy,
       strokeWidth / 2 - 10,
     );
-    return path;
   });
 
   return (

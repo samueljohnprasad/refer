@@ -11,7 +11,10 @@ export interface UseReflectionDraftReturn {
   reflection: ReflectionData;
   applyGoal: (g: GoalDefinition) => void;
   setBeliefRating: (rating: number, isAfter: boolean) => void;
+  startPersonal: () => void;
+  setPersonalSituation: (text: string) => void;
   setPersonalThought: (text: string) => void;
+  setPersonalFair: (text: string) => void;
   setReminder: (time: ReminderPreset | string) => void;
 }
 
@@ -22,12 +25,15 @@ export function useReflectionDraft(): UseReflectionDraftReturn {
     setReflection((prev) => ({
       ...prev,
       goal: g.id,
+      source: 'example',
       art: g.id,
       situation: g.scene,
       thought: g.thought,
       trap: g.trap,
       why: g.why,
       fair: g.fair,
+      before: null,
+      after: null,
     }));
   }, []);
 
@@ -35,18 +41,29 @@ export function useReflectionDraft(): UseReflectionDraftReturn {
     setReflection((prev) => (isAfter ? { ...prev, after: rating } : { ...prev, before: rating }));
   }, []);
 
+  // personal practice never carries over a worked example's trap/why label
+  const startPersonal = useCallback((): void => {
+    setReflection((prev) => ({ ...prev, source: 'personal', trap: undefined, why: '', before: null, after: null }));
+  }, []);
+
+  const setPersonalSituation = useCallback((text: string): void => {
+    setReflection((prev) => ({ ...prev, situation: text }));
+  }, []);
+
   const setPersonalThought = useCallback((text: string): void => {
-    setReflection((prev) => ({
-      ...prev,
-      source: 'personal',
-      thought: text,
-      situation: text,
-    }));
+    setReflection((prev) => ({ ...prev, thought: text }));
+  }, []);
+
+  const setPersonalFair = useCallback((text: string): void => {
+    setReflection((prev) => ({ ...prev, fair: text }));
   }, []);
 
   const setReminder = useCallback((time: ReminderPreset | string): void => {
     setReflection((prev) => ({ ...prev, reminder: time }));
   }, []);
 
-  return { reflection, applyGoal, setBeliefRating, setPersonalThought, setReminder };
+  return {
+    reflection, applyGoal, setBeliefRating, startPersonal,
+    setPersonalSituation, setPersonalThought, setPersonalFair, setReminder,
+  };
 }

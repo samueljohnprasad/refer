@@ -6,6 +6,7 @@
  */
 
 import type React from "react";
+import type { TrapChoice } from "../domains/exercises/domain/trap";
 import type {
   EmotionName as _EmotionName,
   EmotionRating as _EmotionRating,
@@ -34,6 +35,7 @@ export type ExerciseType =
   | "thought_reframing"
   | "gratitude_reframe"
   | "abc_analysis"
+  | "behavioral_activation"
   // Mindfulness (5)
   | "box_breathing"
   | "breathing_478"
@@ -43,6 +45,7 @@ export type ExerciseType =
   // Anxiety
   | "decatastrophizing"
   | "worry_decision_tree"
+  | "fear_ladder"
   // Overthinking (4)
   | "detached_mindfulness"
   | "attention_training";
@@ -323,6 +326,7 @@ export interface ThoughtCatcherResponse {
   // Checker continuation (optional — populated if user taps "Check it")
   isTrue?: "YES" | "NOT SURE" | "NO" | null;
   balancedThought?: string;
+  trap?: TrapChoice;
 }
 
 export interface ThoughtReframingResponse {
@@ -354,6 +358,25 @@ export interface ABCAnalysisResponse {
   newConsequence: string;
   preEmotionalIntensity: number;
   postEmotionalIntensity: number;
+  /** how the user judged the belief: fact/friend/help → the option they tapped */
+  beliefChecks?: Partial<Record<"fact" | "friend" | "help", string>>;
+}
+
+/** Activity keys come from src/exercises/behavioralActivation/activities.ts; day 0 = Monday, time 0 = morning. */
+export interface BehavioralActivationResponse {
+  mood: number;
+  activities: string[];
+  /** minutes per activity key */
+  sizes: Record<string, number>;
+  /** planned day and time-of-day index per activity key */
+  plans: Record<string, { day: number | null; time: number | null }>;
+  tryNow: string;
+  didIt: boolean;
+  expectedEnjoyment: number;
+  expectedAccomplishment: number;
+  actualEnjoyment: number;
+  actualAccomplishment: number;
+  moodAfter: number;
 }
 
 // ── Mindfulness ─────────────────────────────────────────────────────────────
@@ -409,6 +432,23 @@ export interface DecatastrophizingResponse {
   anxietyAfter: number;
 }
 
+export interface FearLadderResponse {
+  fear: string;
+  peakFear: number;
+  /** small versions of the fear, 3-5 */
+  rungs: string[];
+  /** how scary each rung is, 0-10, keyed by rung text so edits to the list can't shift answers */
+  rungRatings: Record<string, number>;
+  /** text of the rung chosen to try first */
+  pickedRung: string;
+  /** rating of the picked rung, copied when it is chosen: the "before" */
+  startAnxiety: number;
+  prediction: string;
+  holdCompleted: boolean;
+  postAnxiety: number;
+  learned: string;
+}
+
 export interface WorryDecisionTreeResponse {
   worry: string;
   canAct: "yes" | "no" | null;
@@ -448,6 +488,7 @@ export type ExerciseResponseMap = {
   thought_reframing: ThoughtReframingResponse;
   gratitude_reframe: GratitudeReframeResponse;
   abc_analysis: ABCAnalysisResponse;
+  behavioral_activation: BehavioralActivationResponse;
   box_breathing: BoxBreathingResponse;
   breathing_478: Breathing478Response;
   grounding_54321: Grounding54321Response;
@@ -455,6 +496,7 @@ export type ExerciseResponseMap = {
   mindful_breathing_1min: MindfulBreathing1MinResponse;
   decatastrophizing: DecatastrophizingResponse;
   worry_decision_tree: WorryDecisionTreeResponse;
+  fear_ladder: FearLadderResponse;
   detached_mindfulness: DetachedMindfulnessResponse;
   attention_training: AttentionTrainingResponse;
 };

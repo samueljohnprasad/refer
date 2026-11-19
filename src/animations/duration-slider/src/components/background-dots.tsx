@@ -15,7 +15,8 @@ export const BackgroundDots: React.FC<BackgroundDotsProps> = ({
   initialAngleRad,
 }) => {
   const dotsPath = useMemo(() => {
-    const path = Skia.Path.Make();
+    // ponytail: Skia 2.x PathBuilder for multi-shape path
+    const builder = Skia.PathBuilder.Make();
     const dots = new Array(12).fill(0).map((_, i) => {
       const angle = (i * Math.PI) / 6;
       if (angle === 2 * Math.PI - initialAngleRad) {
@@ -27,10 +28,10 @@ export const BackgroundDots: React.FC<BackgroundDotsProps> = ({
     }, []);
 
     dots.forEach(({ x, y }) => {
-      path.addCircle(x, y, 3);
+      builder.addCircle(x, y, 3);
     });
 
-    return path;
+    return builder.build();
   }, [cx, cy, initialAngleRad, radius]);
 
   return <Path path={dotsPath} strokeWidth={2} color={'#656565'} />;

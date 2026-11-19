@@ -2,11 +2,10 @@ import React from "react";
 import { Pressable, View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Feather } from "@expo/vector-icons";
-import { SEMANTIC_COLORS } from "@/src/theme/colors";
-import { RADIUS } from "@/src/theme/radius";
 import type { CognitiveDistortion } from "../types";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 import { useExerciseCopy } from "@/src/hooks/useExerciseCopy";
+import { TRPatternArt } from "@/src/exercises/thoughtReframing/TRPatternArt";
 
 interface DistortionCardProps {
   distortion: CognitiveDistortion;
@@ -39,50 +38,38 @@ export const DistortionCard: React.FC<DistortionCardProps> = React.memo(
         accessibilityRole="checkbox"
         accessibilityLabel={`${distortionLabel} ${translateCopy("thinking pattern")}`}
         accessibilityState={{ checked: isSelected, disabled: isDisabled }}
-        className={`border-b border-sage-100/70 px-1 py-3.5 ${
-          isDisabled ? "opacity-50" : ""
-        }`}
+        className="mb-3 rounded-2xl p-3"
         style={({ pressed }) => ({
-          backgroundColor: isSelected ? SEMANTIC_COLORS.selection.surface : SEMANTIC_COLORS.surface.primary,
-          minHeight: 72,
-          opacity: pressed ? 0.72 : 1,
+          backgroundColor: isSelected ? "#eef3ea" : "#f7f7f7",
+          borderWidth: 2,
+          borderColor: isSelected ? "#5f7f58" : "transparent",
+          transform: [{ scale: pressed ? 0.99 : 1 }],
         })}
       >
-        <View className="flex-row items-start">
-          <Text className="mr-3 mt-0.5 text-[18px] leading-[22px]">
-            {distortion.icon}
-          </Text>
-          <View className="flex-1">
-            <Text
-              variant="body-bold"
-              className={`text-[15px] leading-[20px] ${
-                isSelected ? "text-sage-800" : "text-ink"
-              }`}
-              numberOfLines={1}
-            >
+        <View className="flex-row items-start gap-3">
+          <View
+            className="h-16 w-16 overflow-hidden rounded-[14px]"
+            style={{ backgroundColor: isSelected ? "#ffffff" : "#f6ecd8", opacity: isDisabled && !isSelected ? 0.45 : 1 }}
+          >
+            <TRPatternArt name={distortion.key} size={64} />
+          </View>
+          <View className="flex-1 pr-7">
+            <Text className="text-[17px] font-extrabold leading-[20px] text-happy-label">
               {distortionLabel}
             </Text>
-            <Text
-              variant="caption"
-              color="soft"
-              className="mt-1 text-[13px] leading-[18px]"
-              numberOfLines={2}
-            >
+            <Text className="mt-0.5 text-[13px] font-semibold leading-[18px] text-happy-label-2">
               {translateCopy(distortion.description)}
             </Text>
-          </View>
-          <View
-            className="ml-3 h-6 w-6 items-center justify-center rounded-full border"
-            style={{
-              backgroundColor: isSelected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.surface.primary,
-              borderColor: isSelected ? SEMANTIC_COLORS.brand.pressed : SEMANTIC_COLORS.border.default,
-            }}
-          >
-            {isSelected ? (
-              <Feather name="check" size={14} color={SEMANTIC_COLORS.surface.primary} />
-            ) : null}
+            <Text className="mt-2 text-[15px] font-bold leading-[20px] text-happy-label">
+              {translateCopy(distortion.example)}
+            </Text>
           </View>
         </View>
+        {isSelected ? (
+          <View className="absolute right-3 top-3 h-6 w-6 items-center justify-center rounded-full" style={{ backgroundColor: "#29452a" }}>
+            <Feather name="check" size={14} color="#ffffff" />
+          </View>
+        ) : null}
       </Pressable>
     );
   },

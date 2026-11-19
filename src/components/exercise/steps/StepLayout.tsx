@@ -24,6 +24,8 @@ interface StepLayoutProps {
   /** If true, wraps children in a ScrollView */
   scrollable?: boolean;
   showStepCount?: boolean;
+  /** Happi asks the question (default); timer steps pass false */
+  happi?: boolean;
 }
 
 export const StepLayout: React.FC<StepLayoutProps> = React.memo(
@@ -43,6 +45,7 @@ export const StepLayout: React.FC<StepLayoutProps> = React.memo(
     children,
     scrollable = false,
     showStepCount = true,
+    happi = true,
   }) => {
     const lastTapRef = useRef(0);
     const translateCopy = useExerciseCopy();
@@ -77,6 +80,7 @@ export const StepLayout: React.FC<StepLayoutProps> = React.memo(
           stepNumber={stepIndex + 1}
           totalSteps={totalSteps}
           showStepCount={showStepCount}
+          happi={happi}
         />
         <View className="pb-4">{children}</View>
       </Pressable>
